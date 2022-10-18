@@ -1,7 +1,7 @@
 ---
 name: Paid Issue
 about: Paid issue for some research and development task
-title: '×× for appname - pay ￥200'
+title: '×××× for appname - pay ¥200'
 labels: 'enhancement'
 assignees: ''
 
