@@ -1,0 +1,51 @@
+x-java-defaults: &java_defaults
+  restart: always
+  command: bash -c "cat /java_service > /cmd.sh && chmod +x /cmd.sh && /cmd.sh"
+  working_dir: /data/apps
+  configs:
+    - source: java_service
+
+services:
+
+  java18:
+    container_name: java18
+    image: amazoncorretto:18
+    volumes: 
+      - java18:/data/apps
+    <<: *java_defaults
+
+  java17:
+    container_name: java17
+    image: amazoncorretto:17
+    volumes: 
+      - java17:/data/apps
+    <<: *java_defaults
+
+  java11:
+    container_name: java11
+    image: amazoncorretto:11
+    volumes: 
+      - java11:/data/apps
+    <<: *java_defaults
+
+  java8:
+    container_name: java8
+    image: amazoncorretto:8
+    volumes: 
+      - java8:/data/apps
+    <<: *java_defaults
+
+volumes:
+  java18:
+  java17:
+  java11:
+  java8:
+
+configs:
+  java_service:
+    file: ./config/java/service.sh
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true

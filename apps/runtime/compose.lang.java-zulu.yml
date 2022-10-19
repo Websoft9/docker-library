@@ -1,0 +1,93 @@
+x-java-defaults: &java_defaults
+  restart: always
+  command: bash -c "cat /java_service > /cmd.sh && chmod +x /cmd.sh && /cmd.sh"
+  working_dir: /data/apps
+  configs:
+    - source: java_service
+
+services:
+
+  java18:
+    container_name: java18
+    image: azul/zulu-openjdk-debian:18-latest
+    volumes: 
+      - java18:/data/apps
+    <<: *java_defaults
+
+  java17:
+    container_name: java17
+    image: azul/zulu-openjdk-debian:17-latest
+    volumes: 
+      - java17:/data/apps
+    <<: *java_defaults
+
+  java15:
+    container_name: java15
+    image: azul/zulu-openjdk-debian:15-latest
+    volumes: 
+      - java15:/data/apps
+    <<: *java_defaults
+
+  java14:
+    container_name: java14
+    image: azul/zulu-openjdk-debian:14-latest
+    volumes: 
+      - java14:/data/apps
+    <<: *java_defaults
+
+  java13:
+    container_name: java13
+    image: azul/zulu-openjdk-debian:13-latest
+    volumes: 
+      - java13:/data/apps
+    <<: *java_defaults
+
+  java11:
+    container_name: java11
+    image: azul/zulu-openjdk-debian:11-latest
+    volumes: 
+      - java11:/data/apps
+    <<: *java_defaults
+
+  java8:
+    container_name: java8
+    image: azul/zulu-openjdk-debian:8-latest
+    volumes: 
+      - java8:/data/apps
+    <<: *java_defaults
+
+  java7:
+    container_name: java7
+    image: azul/zulu-openjdk-debian:7-latest
+    volumes: 
+      - java7:/data/apps
+    <<: *java_defaults
+
+  java6:
+    container_name: java6
+    image: azul/zulu-openjdk-debian:6-latest
+    volumes: 
+      - java6:/data/apps
+    <<: *java_defaults
+
+
+volumes:
+  java19:
+  java18:
+  java17:
+  java15:
+  java14:
+  java13:
+  java11:
+  java8:
+  java7:
+  java6:
+
+configs:
+  java_service:
+    file: ./config/java/service.sh
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true

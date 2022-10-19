@@ -1,0 +1,26 @@
+{
+  "name": "sscms",
+  "trademark": "SSCMS",
+  "installpath": "/data/wwwroot/onlyoffice",
+  "compose_file": "docker-compose.yml",
+  "fork_url": "https://github.com/siteserver/cms",
+  "env_file": ".env",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, x86/i686",
+    "cpu": "1",
+    "memory": "1",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://github.com/siteserver/cms"
+  },
+
+  "services":[
+    {
+      "name": "sscms",
+      "port": "9001",
+      "description_cn": "浏览器访问 SSCMS",
+      "description_en": "Access SSCMS",
+      "required": "Y"
+    }
+  ]
+}

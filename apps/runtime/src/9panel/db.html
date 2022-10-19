@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="cn">
+
+<head>
+    <!-- Required meta tags-->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Chinese tags-->
+    <meta name="description" content="全球10万用户正享用Websoft9提供的镜像库，包括：运行环境镜像、数据库镜像、建站镜像、WordPress等，7x24小时售后支持，专业快速解决软件安装和配置问题，助中小企业轻松用云。">
+    <meta name="keywords" content="云计算，运行环境，镜像库，自动部署，云服务，安装网站，阿里云，华为云，腾讯云，AWS,Azure">
+    <!-- english tags-->
+    <meta name="description" content="100,000 users around the world are enjoying the image library provided by Websoft9, including: running environment image, database mirroring, website mirroring, WordPress, etc., 7x24 hours after-sales support, professionally solve software installation and configuration problems quickly, help SMEs easily use the cloud">
+    <meta name="keywords" content="Cloud computing, runtime environment, image library, auto-deployment, cloud service, installation website, AWS,Azure,Huawei Cloud,Alibaba Cloud">
+
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Hau Nguyen">
+
+    <link rel="icon" href="favicon.ico" />
+    <!-- Title Page-->
+    <title>9Panel-用于Websoft9镜像的快速入门小工具</title>
+
+    <!-- Fontfaces CSS-->
+    <link href="css/font-face.css" rel="stylesheet" media="all">
+    <link href="vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
+    <link href="vendor/font-awesome-5/css/fontawesome-all.min.css" rel="stylesheet" media="all">
+    <link href="vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
+
+    <!-- Bootstrap CSS-->
+    <link href="vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all">
+
+    <!-- Vendor CSS-->
+    <link href="vendor/animsition/animsition.min.css" rel="stylesheet" media="all">
+
+    <!-- Main CSS-->
+    <link href="css/theme.css" rel="stylesheet" media="all">
+
+    <!-- Vue JS-->
+    <script src="vendor/vue/vue.min.js" ></script>
+    <script src="vendor/vue/vue-i18n.js" ></script>
+
+
+
+</head>
+
+<body>
+<!-- Vue实例作用域开始。v-cloak标签用于在渲染前禁止显示模板标签，v-cloak需要在css中进行定义-->
+  <div id="vuejsdisplay" v-cloak>
+    <div class="page-wrapper">
+        <!-- MENU SIDEBAR-->
+        <aside class="menu-sidebar d-none d-lg-block">
+            <div class="logo">
+                <a href="#">
+                    <img src="images/icon/websoft9-imagepanel.png" alt="Cool Admin" />
+                </a>
+            </div>
+            <div class="menu-sidebar__content js-scrollbar1">
+                <nav class="navbar-sidebar" id="leftmenu">
+                        <panelleftmenu></panelleftmenu>
+                </nav>
+            </div>
+        </aside>
+        <!-- END MENU SIDEBAR-->
+
+        <!-- PAGE CONTAINER-->
+        <div class="page-container">
+            <!-- HEADER DESKTOP-->
+            <panelheader></panelheader>
+            <!-- HEADER DESKTOP-->
+
+            <!-- MAIN CONTENT-->
+            <div class="main-content">
+                <div class="section__content section__content--p30">
+                   <!-- 路径-->
+                   <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">{{ $t('message.breadcrumbs_index') }}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ $t('message.breadcrumbs_db') }}</li>
+                        </ol>
+                   </nav>
+                   <!-- End 路径-->
+                    <div class="container-fluid">
+
+                        
+                        <!-- 数据库管理-->
+                        <div class="row" id="databasepanel">
+                            
+                            <databasegui v-bind:dblist="item" v-for="item in get_dbtoolsID"></databasegui>
+                        </div>
+                        <!-- End 数据库管理-->
+
+                        <!-- 版权区-->
+                        <script src="js/copyright.js"></script>
+                        <!-- End 版权区-->
+                    </div>
+                </div>
+            </div>
+            <!-- END MAIN CONTENT-->
+            <!-- END PAGE CONTAINER-->
+        </div>
+
+    </div>
+
+    <!-- Modal -->
+    <modalsupport></modalsupport>
+    <modaldbpassword></modaldbpassword>
+
+    <!-- Jquery JS-->
+    <script src="vendor/jquery-3.2.1.min.js"></script>
+    <!-- Bootstrap JS-->
+    <script src="vendor/bootstrap-4.1/popper.min.js"></script>
+    <script src="vendor/bootstrap-4.1/bootstrap.min.js"></script>
+    <!-- Vendor JS       -->
+    <script src="vendor/animsition/animsition.min.js"></script>
+    <!-- Main JS-->
+    <script src="js/main.js"></script>
+    <!-- Websoft9 JS-->
+    <script src="js/websoft9.js"></script>
+
+</div>
+</body>
+
+</html>
+<!-- end document-->

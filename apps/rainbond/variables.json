@@ -1,0 +1,16 @@
+{
+  "name": "rainbond",
+  "trademark": "Rainbond",
+  "installpath": "/data/wwwroot/apps",
+  "compose_file": "docker-compose.yml",
+  "fork_url": "https://www.rainbond.com/docs/installation/install-with-dind",
+  "env_file": ".env",
+  "requirements":{
+    "cpu_arch": "Linux x86-64",
+    "cpu": "2",
+    "memory": "4",
+    "disk": "50",
+    "swap": "2",
+    "url": "https://www.rainbond.com/docs/installation/install-with-dind"
+  }
+}

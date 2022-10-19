@@ -1,0 +1,30 @@
+# docs: https://github.com/docker-library/docs/blob/master/rethinkdb/README.md
+# image: https://hub.docker.com/_/rethinkdb
+
+version: '3.8'
+
+services:
+  rethinkdb:
+    image: rethinkdb:${APP_VERSION}
+    container_name: rethinkdb
+    restart: always
+    ports:
+     #- 8080:8080
+     - ${APP_CLIENT_PORT}:28015
+     - ${APP_CLUSTER_PORT}:29015
+    command:
+      - /bin/bash
+      - -c
+      - |
+        rethinkdb create --initial-password  ${APP_PASSWORD}
+        rethinkdb --bind all
+    volumes:
+      - rethinkdb_data:/data
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  rethinkdb_data:

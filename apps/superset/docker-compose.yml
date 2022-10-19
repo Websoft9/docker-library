@@ -1,0 +1,177 @@
+# image: https://hub.docker.com/r/apache/superset
+# docs: https://github.com/apache/superset
+
+x-superset-image: &superset-image apache/superset:$APP_VERSION
+x-superset-depends-on: &superset-depends-on
+  - db
+  - redis
+x-superset-volumes: &superset-volumes
+  # /app/pythonpath_docker will be appended to the PYTHONPATH in the final container
+  - ./src/docker:/app/docker
+  - superset_home:/app/superset_home
+
+version: "3.8"
+services:
+  redis:
+    image: redis:$DB_REDIS_VERSION
+    container_name: $APP_NAME-cache
+    restart: always
+    ports:
+      - 127.0.0.1:$DB_REDIS_PORT:$DB_REDIS_PORT
+    volumes:
+      - redis:/data
+
+  db:
+    env_file: src/docker/.env
+    image: postgres:$DB_POSTGRESQL_VERSION
+    container_name: $APP_NAME-db
+    restart: always
+    ports:
+      - $DB_POSTGRESQL_PORT:$DB_POSTGRESQL_PORT
+    environment: 
+     # database configurations (do not modify)
+     - DATABASE_DB=$DB_POSTGRESQL_NAME
+     - DATABASE_HOST=$DB_POSTGRESQL_HOST
+     - DATABASE_PASSWORD=$DB_POSTGRESQL_PASSWORD
+     - DATABASE_USER=superset
+
+     # database engine specific environment variables
+     # change the below if you prefers another database engine
+     - DATABASE_PORT=$DB_POSTGRESQL_PORT
+     - DATABASE_DIALECT=postgresql
+     - POSTGRES_DB=$DB_POSTGRESQL_NAME
+     - POSTGRES_USER=$DB_POSTGRESQL_USER
+     - POSTGRES_PASSWORD=$DB_POSTGRESQL_PASSWORD
+
+     - REDIS_HOST=$DB_REDIS_HOST
+     - REDIS_PORT=$DB_REDIS_PORT
+
+    volumes:
+      - postgresql:/var/lib/postgresql/data
+
+  superset:
+    env_file: src/docker/.env-non-dev
+    image: *superset-image
+    container_name: $APP_NAME-app
+    restart: always
+    ports:
+      - $APP_HTTP_PORT:8088
+    privileged: true
+    user: root
+    environment: 
+      - COMPOSE_PROJECT_NAME=superset
+      # database configurations (do not modify)
+      - DATABASE_DB=$DB_POSTGRESQL_NAME
+      - DATABASE_HOST=$DB_POSTGRESQL_HOST
+      - DATABASE_PASSWORD=$DB_POSTGRESQL_PASSWORD
+      - DATABASE_USER=$DB_POSTGRESQL_USER
+      # database engine specific environment variables
+      # change the below if you prefers another database engine
+      - DATABASE_PORT=$DB_POSTGRESQL_PORT
+      - DATABASE_DIALECT=postgresql
+      - POSTGRES_DB=$DB_POSTGRESQL_NAME
+      - POSTGRES_USER=$DB_POSTGRESQL_USER
+      - POSTGRES_PASSWORD=$DB_POSTGRESQL_PASSWORD
+      
+      # Add the mapped in /app/pythonpath_docker which allows devs to override stuff
+      - REDIS_HOST=$DB_REDIS_HOST
+      - REDIS_PORT=$DB_REDIS_PORT
+    depends_on: *superset-depends-on
+    volumes: *superset-volumes
+
+  superset-init:
+    image: *superset-image
+    container_name: $APP_NAME-init
+    command: ["/app/docker/docker-init.sh"]
+    env_file: src/docker/.env-non-dev
+    environment: 
+      - COMPOSE_PROJECT_NAME=superset
+      # database configurations (do not modify)
+      - DATABASE_DB=$DB_POSTGRESQL_NAME
+      - DATABASE_HOST=$DB_POSTGRESQL_HOST
+      - DATABASE_PASSWORD=$DB_POSTGRESQL_PASSWORD
+      - DATABASE_USER=$DB_POSTGRESQL_USER
+      # database engine specific environment variables
+      # change the below if you prefers another database engine
+      - DATABASE_PORT=$DB_POSTGRESQL_PORT
+      - DATABASE_DIALECT=postgresql
+      - POSTGRES_DB=$DB_POSTGRESQL_NAME
+      - POSTGRES_USER=$DB_POSTGRESQL_USER
+      - POSTGRES_PASSWORD=$DB_POSTGRESQL_PASSWORD
+      
+      # Add the mapped in /app/pythonpath_docker which allows devs to override stuff
+      - REDIS_HOST=$DB_REDIS_HOST
+      - REDIS_PORT=$DB_REDIS_PORT
+      - APP_PASSWORD=$APP_PASSWORD
+    depends_on: *superset-depends-on
+    user: "root"
+    volumes: *superset-volumes
+
+  superset-worker:
+    image: *superset-image
+    container_name: $APP_NAME-worker
+    command: ["/app/docker/docker-bootstrap.sh", "worker"]
+    env_file: src/docker/.env-non-dev
+    environment: 
+      - COMPOSE_PROJECT_NAME=superset
+      # database configurations (do not modify)
+      - DATABASE_DB=$DB_POSTGRESQL_NAME
+      - DATABASE_HOST=$DB_POSTGRESQL_HOST
+      - DATABASE_PASSWORD=$DB_POSTGRESQL_PASSWORD
+      - DATABASE_USER=$DB_POSTGRESQL_USER
+      # database engine specific environment variables
+      # change the below if you prefers another database engine
+      - DATABASE_PORT=$DB_POSTGRESQL_PORT
+      - DATABASE_DIALECT=postgresql
+      - POSTGRES_DB=$DB_POSTGRESQL_NAME
+      - POSTGRES_USER=$DB_POSTGRESQL_USER
+      - POSTGRES_PASSWORD=$DB_POSTGRESQL_PASSWORD
+      
+      # Add the mapped in /app/pythonpath_docker which allows devs to override stuff
+      - REDIS_HOST=$DB_REDIS_HOST
+      - REDIS_PORT=$DB_REDIS_PORT
+    restart: always
+    depends_on: *superset-depends-on
+    user: "root"
+    volumes: *superset-volumes
+
+  superset-worker-beat:
+    image: *superset-image
+    container_name: $APP_NAME-worker-beat
+    command: ["/app/docker/docker-bootstrap.sh", "beat"]
+    env_file: src/docker/.env-non-dev
+    environment: 
+      - COMPOSE_PROJECT_NAME=superset
+      # database configurations (do not modify)
+      - DATABASE_DB=$DB_POSTGRESQL_NAME
+      - DATABASE_HOST=$DB_POSTGRESQL_HOST
+      - DATABASE_PASSWORD=$DB_POSTGRESQL_PASSWORD
+      - DATABASE_USER=$DB_POSTGRESQL_USER
+      # database engine specific environment variables
+      # change the below if you prefers another database engine
+      - DATABASE_PORT=$DB_POSTGRESQL_PORT
+      - DATABASE_DIALECT=postgresql
+      - POSTGRES_DB=$DB_POSTGRESQL_NAME
+      - POSTGRES_USER=$DB_POSTGRESQL_USER
+      - POSTGRES_PASSWORD=$DB_POSTGRESQL_PASSWORD
+      
+      # Add the mapped in /app/pythonpath_docker which allows devs to override stuff
+      - REDIS_HOST=$DB_REDIS_HOST
+      - REDIS_PORT=$DB_REDIS_PORT
+    restart: always
+    depends_on: *superset-depends-on
+    user: "root"
+    volumes: *superset-volumes
+
+volumes:
+  superset_home:
+    external: false
+  postgresql:
+    external: false
+  redis:
+    external: false
+    
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true

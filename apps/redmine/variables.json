@@ -1,0 +1,39 @@
+{
+  "name": "redmine",
+  "trademark": "Redmine",
+  "compose_file": "docker-compose.yml",
+  "installpath": "/data/wwwroot/redmine",
+  "env_file": ".env",
+  "fork_url": "https://github.com/docker-library/redmine",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
+    "cpu": "2",
+    "memory": "4",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://www.redmine.org/projects/redmine/wiki/RedmineInstall#Requirements"
+  },
+  
+  "user": {
+    "username": "admin",
+    "password": "admin"
+  },
+  
+  "services":[
+    {
+      "name": "redmine-server",
+      "port": "9007",
+      "description_cn": "浏览器访问 Redmine",
+      "description_en": "Browser access to Redmine by http",
+      "required": "Y"
+    },
+    {
+      "name": "mysql",
+      "port": "3306",
+      "description_cn": "TCP 访问mysql数据库",
+      "description_en": "Accessing MySQL database with TCP",
+      "required": "Y"
+    }
+  ]
+
+}

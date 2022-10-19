@@ -1,0 +1,54 @@
+x-node-defaults: &node_defaults
+  restart: always
+  command: bash -c "cat /node_service > /cmd.sh && chmod +x /cmd.sh && /cmd.sh"
+  working_dir: /home/node/app
+  configs:
+    - source: node_service
+  environment:
+    - NODE_APP_NAME=${APP_NAME}
+    - NODE_ROOT_PATH=${APP_ROOT_PATH}
+
+services:
+
+  node18:
+    container_name: node18
+    image: node:18
+    volumes: 
+      - node18:/home/node/app
+    <<: *node_defaults
+
+  node17:
+    container_name: node17
+    image: node:17
+    volumes: 
+      - node17:/home/node/app
+    <<: *node_defaults
+
+  node16:
+    container_name: node16
+    image: node:16
+    volumes: 
+      - node16:/home/node/app
+    <<: *node_defaults
+
+  node14:
+    container_name: node14
+    image: node:14
+    volumes: 
+      - node14:/home/node/app
+    <<: *node_defaults
+
+volumes:
+  node14:
+  node16:
+  node17:
+  node18:
+
+configs:
+  node_service:
+    file: ./config/node/service.sh
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true

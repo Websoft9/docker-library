@@ -1,0 +1,32 @@
+{
+  "name": "rancher",
+  "trademark": "Rancher",
+  "installpath": "/data/wwwroot/rancher",
+  "compose_file": "docker-compose.yml",
+  "fork_url": "",
+  "env_file": ".env",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
+    "cpu": "1",
+    "memory": "2",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://rancher.com/quick-start"
+  },
+
+  "user": {
+    "username": "admin",
+    "password": "随机密码"
+  },
+
+  "services":[
+    {
+      "name": "rancher-server",
+      "port": "9002",
+      "description_cn": "浏览器访问 Rancher",
+      "description_en": "Web-GUI of Rancher",
+      "required": "Y"
+    }
+  ]
+
+}

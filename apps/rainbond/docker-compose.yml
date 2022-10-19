@@ -1,0 +1,32 @@
+# docs: https://www.rainbond.com/docs/installation/install-with-dind
+
+version: '3.8'
+
+services:
+  rainbond:
+    image: registry.cn-hangzhou.aliyuncs.com/goodrain/rainbond:${APP_VERSION}
+    container_name: ${APP_NAME}
+    ports:
+      - '${APP_CONSOLE_PORT}:7070'
+      - '${APP_SITE_HTTP_PORT}:80'
+      - '${APP_SITE_HTTPS_PORT}:443'
+      - '${APP_WEBSOCKET_PORT}:6060'
+      - '${APP_API_PORT}:8443'
+      - '${APP_TCP_PORT}:10000'
+    privileged: true
+    environment:
+      - ENABLE_CLUSTER=true
+      - EIP=$APP_URL
+    volumes:
+      - '~/.ssh:/root/.ssh'
+      - '~/rainbonddata:/app/data'
+      - '/opt/rainbond:/opt/rainbond'
+      - '~/dockerdata:/var/lib/docker'
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  rainbond:

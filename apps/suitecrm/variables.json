@@ -1,0 +1,40 @@
+{
+  "name": "suitecrm",
+  "trademark": "SuiteCRM",
+  "installpath": "/data/apps/suitecrm",
+  "compose_file": "docker-compose.yml",
+  "fork_url": "https://github.com/bitnami/bitnami-docker-suitecrm",
+  "env_file": ".env",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, x86/i686",
+    "cpu": "1",
+    "memory": "2",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://docs.suitecrm.com/admin/installation-guide/"
+  },
+
+  "user": {
+    "username": "admin",
+    "password": "password"
+  },
+
+  "services":[
+    {
+      "name": "suitecrm",
+      "port": "9001",
+      "description_cn": "浏览器访问 SuiteCRM",
+      "description_en": "SuiteCRM",
+      "required": "Y"
+    },
+
+    {
+      "name": "elasticsearch",
+      "port": "9200",
+      "description_cn": "elasticsearch HTTP service",
+      "description_en": "elasticsearch HTTP service",
+      "required": "Y"
+    }
+  ]
+
+}

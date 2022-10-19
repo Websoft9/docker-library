@@ -1,0 +1,32 @@
+# image: https://registry.hub.docker.com/_/rabbitmq
+# https://github.com/docker-library/rabbitmq/
+
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:${APP_VERSION}
+    container_name: ${APP_NAME}
+    restart: always
+    ports:
+      # EXPOSE 4369 5671 5672 15691 15692 25672
+      - '${APP_ER_PORT}:4369'
+      - '${APP_MQ_PORT}:5672'
+      - '${APP_HTTP_PORT}:15672'
+    environment:
+      - RABBITMQ_DEFAULT_USER=${APP_USER}
+      - RABBITMQ_DEFAULT_PASS=${APP_PASSWORD}
+    volumes:
+      - 'rabbitmq_data:/var/lib/rabbitmq'
+      - 'rabbitmq_plugins:/plugins'
+      - 'rabbitmq_config:/etc/rabbitmq/conf.d'
+      
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+    
+volumes:
+  rabbitmq_data:
+  rabbitmq_plugins:
+  rabbitmq_config:

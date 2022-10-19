@@ -1,0 +1,54 @@
+# image: https://hub.docker.com/_/redmine
+# docs: https://github.com/docker-library/redmine
+
+version: '3.8'
+services:
+
+  redmine:
+    image: redmine:$APP_VERSION
+    container_name: $APP_NAME
+    restart: always
+    ports:
+     - $APP_HTTP_PORT:3000
+    volumes: 
+     - redmine:/usr/src/redmine
+    environment:
+      REDMINE_DB_MYSQL: $DB_MYSQL_HOST
+      REDMINE_DB_PASSWORD: $DB_MYSQL_PASSWORD
+      REDMINE_SECRET_KEY_BASE: supersecretkey
+      REDMINE_PLUGINS_MIGRATE: "true"
+      REDMINE_PASSWORD: $APP_PASSWORD
+    entrypoint:
+      - bash
+      - -c
+      - cat /my_cmd > cmd.sh && chmod +x /usr/src/redmine/cmd.sh && /usr/src/redmine/cmd.sh
+    depends_on:
+      - db
+    configs:
+      - source: my_cmd
+
+  db:
+    image: mysql:$DB_MYSQL_VERSION
+    container_name: $APP_NAME-db
+    restart: always
+    ports:
+     - $DB_MYSQL_PORT:3306
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+     - mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: $DB_MYSQL_PASSWORD
+      MYSQL_DATABASE: $DB_MYSQL_NAME
+      
+volumes:
+  mysql:
+  redmine:
+  
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+configs:
+  my_cmd:
+    file: ./cmd.sh

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="cn">
+ <head> 
+  <!-- Required meta tags--> 
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
+  <meta name="description" content="全球10万用户正享用Websoft9提供的镜像库，包括：运行环境镜像、数据库镜像、建站镜像、WordPress等，7x24小时售后支持，专业快速解决软件安装和配置问题，助中小企业轻松用云。">
+    <meta name="keywords" content="云计算，运行环境，镜像库，自动部署，云服务，安装网站，阿里云，华为云，腾讯云，AWS,Azure">
+    <!-- english tags-->
+    <meta name="description" content="100,000 users around the world are enjoying the image library provided by Websoft9, including: running environment image, database mirroring, website mirroring, WordPress, etc., 7x24 hours after-sales support, professionally solve software installation and configuration problems quickly, help SMEs easily use the cloud">
+    <meta name="keywords" content="Cloud computing, runtime environment, image library, auto-deployment, cloud service, installation website, AWS,Azure,Huawei Cloud,Alibaba Cloud">
+  <meta http-equiv="Cache-Control" content="no-siteapp" /> 
+  <meta charset="UTF-8" /> 
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" /> 
+  <meta name="author" content="Hau Nguyen" /> 
+  <link rel="icon" href="favicon.ico" /> 
+  <!-- Title Page--> 
+  <title>Websoft9镜像范例页面--这是一个Websoft9镜像被成功安装后的范例页面</title> 
+  <!-- Fontfaces CSS--> 
+  <link href="css/font-face.css" rel="stylesheet" media="all" /> 
+  <link href="vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all" /> 
+  <link href="vendor/font-awesome-5/css/fontawesome-all.min.css" rel="stylesheet" media="all" /> 
+  <link href="vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all" /> 
+  <!-- Bootstrap CSS--> 
+  <link href="vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all" /> 
+  <!-- Main CSS--> 
+  <link href="css/theme.css" rel="stylesheet" media="all" /> 
+  <!-- Vendor CSS--> 
+  <link href="vendor/animsition/animsition.min.css" rel="stylesheet" media="all" /> 
+  <!-- Vue JS-->
+  <script src="vendor/vue/vue.min.js" ></script>
+  <script src="vendor/vue/vue-i18n.js" ></script>
+ </head> 
+
+ <body class="animsition"> 
+
+  <div class="page-wrapper" id="vuejsdisplay" v-cloak> 
+
+   <!-- HEADER DESKTOP--> 
+   <header class="header-desktop3 d-none d-lg-block"> 
+    <div class="section__content section__content--p35"> 
+     <div class="header3-wrap"> 
+      <div> 
+            <h2 class="text-light">{{ $t("exmaple.exm_salong") }}</h2>
+      </div>
+     <div class="content">
+         <i class="fa fa-globe" aria-hidden="true"></i>          
+         <a class="js-acc-btn" href="#" v-on:click="HeaderHandler_selectLanguage('en')">English</a> | <a class="js-acc-btn" href="#" v-on:click="HeaderHandler_selectLanguage('zh')">中文</a>
+     </div>
+     </div> 
+    </div> 
+   </header> 
+   <!-- END HEADER DESKTOP--> 
+   <!-- PAGE CONTENT--> 
+   <div class="page-content--bgf7"> 
+
+
+
+    <!-- BREADCRUMB--> 
+    <section class="au-breadcrumb2"> 
+     <div class="container"> 
+      <div class="row"> 
+       <div class="col-md-12"> 
+        <div class="au-breadcrumb-content"> 
+         <div class="au-breadcrumb-left"> 
+          <span class="au-breadcrumb-span">{{ $t("exmaple.exm_breadcrumbs") }}</span> 
+         </div> 
+         
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+    </section> 
+    <!-- END BREADCRUMB--> 
+    <!-- WELCOME--> 
+    
+            
+     <div class="container"> 
+      <div class="row"> 
+       <div class="col-md-12"> 
+            <displayindexcomponents></displayindexcomponents> 
+       </div> 
+      </div> 
+     </div> 
+
+    <!-- END WELCOME--> 
+    <!-- STATISTIC--> 
+    <section class="statistic-chart"> 
+     <div class="container"> 
+     
+      <div class="row"> 
+       <div class="col-md-6 col-lg-6"> 
+        <!-- CHART--> 
+        <div class="statistic-chart-1"> 
+         <h3 class="title-3 m-b-30"><i class="fa fa-cog"></i>{{ $t("exmaple.exm_to9panel") }}</h3> 
+         <img src="images/example-configit-websoft9.png" class="rounded mx-auto d-block" />
+         <br /> 
+         <div class="statistic-chart-1-note"> 
+          <a class="btn btn-success btn-lg btn-block" href="/wizard.html" target="_blank" role="button">{{ $t("exmaple.exm_to9panel_b") }}</a> 
+         </div> 
+        </div> 
+        <!-- END CHART--> 
+       </div> 
+       <div class="col-md-6 col-lg-6"> 
+        <div class="statistic-chart-1"> 
+         <h3 class="title-3 m-b-30"><i class="fa fa-comment"></i>{{ $t("exmaple.exm_helpdesk") }}</h3> 
+         <img src="images/example-helpdesk-websoft9.png" class="rounded mx-auto d-block" />
+         <br /> 
+         <div class="statistic-chart-1-note"> 
+          <a class="btn btn-primary btn-lg btn-block" href="http://support.websoft9.com" target="_blank" role="button">{{ $t("exmaple.exm_helpdesk_b") }}</a> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+    </section> 
+    <!-- END STATISTIC--> 
+    <!-- COPYRIGHT--> 
+    <script src="js/copyright.js"></script> 
+    <!-- END COPYRIGHT--> 
+   </div> 
+  </div> 
+  <!-- Jquery JS--> 
+  <script src="vendor/jquery-3.2.1.min.js"></script> 
+  <!-- Bootstrap JS--> 
+  <script src="vendor/bootstrap-4.1/popper.min.js"></script> 
+  <script src="vendor/bootstrap-4.1/bootstrap.min.js"></script> 
+  <!-- Vendor JS --> 
+  <script src="vendor/animsition/animsition.min.js"></script> 
+  <!-- Main JS--> 
+  <script src="js/main.js"></script>   
+  <!-- Websoft9 JS-->
+  <script src="js/websoft9.js"></script>
+  <!-- end document-->
+ </body>
+</html>

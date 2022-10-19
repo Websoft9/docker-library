@@ -1,0 +1,14 @@
+FROM php:8.1-fpm
+
+LABEL maintainer="help@websoft9.com"
+LABEL version="8.1-fpm"
+LABEL description="php"
+
+ENV RUNTIME_LANG="LAMP"
+
+COPY  ./9panel /usr/share/nginx/html
+COPY ./entrypoint-9panel.sh /docker-entrypoint.d/
+
+RUN set -ex; \
+    ls /usr/share/nginx/html; \
+    chmod +x /docker-entrypoint.d/entrypoint-9panel.sh

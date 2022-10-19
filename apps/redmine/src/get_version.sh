@@ -1,0 +1,1 @@
+sudo echo "redmine version:" $(docker inspect redmine:$(docker images | grep redmine |awk '{print $2}') |grep -m 1 "REDMINE_VERSION"|cut -d'=' -f2|cut -d"\"" -f1) |sudo tee -a /data/logs/install_version.txt

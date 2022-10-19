@@ -1,0 +1,17 @@
+# image: https://registry.hub.docker.com/r/darkmagus/scratch3
+# docs: https://github.com/DarkMaguz/scratch3-docker
+
+version: '3.8'
+
+services:
+  scratch:
+    image: websoft9dev/scratch:${APP_VERSION}
+    container_name: ${APP_NAME}
+    restart: always
+    ports:
+      - '${APP_HTTP_PORT}:80'
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true

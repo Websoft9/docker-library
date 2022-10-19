@@ -1,0 +1,22 @@
+# image: https://hub.docker.com/r/ossrs/srs
+# docs: https://ossrs.net/lts/zh-cn/docs/v4/doc/getting-started
+
+version: '3.8'
+
+services:
+  srs:
+    image: ossrs/srs:${APP_VERSION}
+    container_name: ${APP_NAME}
+    restart: always
+    ports:
+      - '${APP_HTTP_PORT}:8080'
+      - '1935:1935'
+      - '1985:1985'
+      - '8000:8000'
+    environment:
+      - CANDIDATE=${APP_URL}
+      
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true

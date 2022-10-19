@@ -1,0 +1,83 @@
+x-java-defaults: &java_defaults
+  restart: always
+  command: bash -c "cat /java_service > /cmd.sh && chmod +x /cmd.sh && /cmd.sh"
+  working_dir: /data/apps
+  configs:
+    - source: java_service
+
+services:
+
+  java19:
+    container_name: java19
+    image: openjdk:19
+    volumes: 
+      - java19:/data/apps
+    <<: *java_defaults
+
+  java18:
+    container_name: java18
+    image: openjdk:18
+    volumes: 
+      - java18:/data/apps
+    <<: *java_defaults
+
+  java17:
+    container_name: java17
+    image: openjdk:17
+    volumes: 
+      - java17:/data/apps
+    <<: *java_defaults
+
+  java15:
+    container_name: java15
+    image: openjdk:15
+    volumes: 
+      - java15:/data/apps
+    <<: *java_defaults
+
+  java14:
+    container_name: java14
+    image: openjdk:14
+    volumes: 
+      - java14:/data/apps
+    <<: *java_defaults
+
+  java13:
+    container_name: java13
+    image: openjdk:13
+    volumes: 
+      - java13:/data/apps
+    <<: *java_defaults
+
+  java11:
+    container_name: java11
+    image: openjdk:11
+    volumes: 
+      - java11:/data/apps
+    <<: *java_defaults
+
+  java8:
+    container_name: java8
+    image: openjdk:8
+    volumes: 
+      - java8:/data/apps
+    <<: *java_defaults
+
+volumes:
+  java19:
+  java18:
+  java17:
+  java15:
+  java14:
+  java13:
+  java11:
+  java8:
+
+configs:
+  java_service:
+    file: ./config/java/service.sh
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true

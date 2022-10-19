@@ -1,0 +1,43 @@
+x-dotnet-defaults: &dotnet_defaults
+  restart: always
+  command: bash -c "cat /dotnet_service > /cmd.sh && chmod +x /cmd.sh && /cmd.sh"
+  working_dir: /data/apps
+  configs:
+    - source: dotnet_service
+
+services:
+
+  dotnet6.0:
+    container_name: dotnet6.0
+    image: mcr.microsoft.com/dotnet/sdk:6.0
+    volumes: 
+      - dotnet6.0:/data/apps
+    <<: *dotnet_defaults
+
+  dotnet5.0:
+    container_name: dotnet5.0
+    image: mcr.microsoft.com/dotnet/sdk:5.0
+    volumes: 
+      - dotnet5.0:/data/apps
+    <<: *dotnet_defaults
+
+  dotnet3.1:
+    container_name: dotnet3.1
+    image: mcr.microsoft.com/dotnet/sdk:3.1
+    volumes: 
+      - dotnet3.1:/data/apps
+    <<: *dotnet_defaults
+
+volumes:
+  dotnet6.0:
+  dotnet5.0:
+  dotnet3.1:
+
+configs:
+  dotnet_service:
+    file: ./config/dotnet/service.sh
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true

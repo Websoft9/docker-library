@@ -1,0 +1,53 @@
+x-ruby-defaults: &ruby_defaults
+  restart: always
+  command: bash -c "cat /ruby_service > /cmd.sh && chmod +x /cmd.sh && /cmd.sh"
+  working_dir: /data/apps
+  configs:
+    - source: ruby_service
+
+services:
+
+  ruby3.2:
+    container_name: ruby3.2
+    image: ruby:3.2-rc
+    volumes: 
+      - ruby3.2:/data/apps
+    <<: *ruby_defaults
+
+  ruby3.1:
+    container_name: ruby3.1
+    image: ruby:3.1
+    volumes: 
+      - ruby3.1:/data/apps
+    <<: *ruby_defaults
+
+
+  ruby3.0:
+    container_name: ruby3.0
+    image: ruby:3.0
+    volumes: 
+      - ruby3.0:/data/apps
+    <<: *ruby_defaults
+
+  ruby2.7:
+    container_name: ruby2.7
+    image: ruby:2.7
+    volumes: 
+      - ruby2.7:/data/apps
+    <<: *ruby_defaults
+
+
+volumes:
+  ruby2.7:
+  ruby3.0:
+  ruby3.1:
+  ruby3.2:
+
+configs:
+  ruby_service:
+    file: ./config/ruby/service.sh
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true

@@ -1,0 +1,44 @@
+{
+  "name": "squid",
+  "trademark": "Squid",
+  "installpath": "/data/apps/squid",
+  "compose_file": "docker-compose.yml",
+  "env_file": ".env",
+  "fork_url": "",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, IBM POWER8, x86/i686",
+    "cpu": "1",
+    "memory": "1",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://hub.docker.com/r/datadog/squid"
+  },
+
+  "services":[
+    {
+      "name": "squid",
+      "port": "9091",
+      "description_cn": "范例：http_proxy=http://172.17.42.1:9091",
+      "description_en": "e.g http_proxy=http://172.17.42.1:9091",
+      "required": "Y"
+    }
+  ],
+
+  "faqs": [
+    {
+      "question_cn": "如何才能运行外网IP访问代理服务？",
+      "answer_cn": "需要将配置文件中的 http_access deny all 修改为 http_access allow all",
+      "question_en": "How to enable Internet IP access this proxy?",
+      "answer_en": "Need to modify configuration file `http_access deny all` to 'http_access allow all'"
+    },
+
+    {
+      "question_cn": "如何启用密码访问？",
+      "answer_cn": "参考 Notes.md",
+      "question_en": "How to enable password?",
+      "answer_en": "refer to Notes.md"
+    }
+
+  ]
+
+}

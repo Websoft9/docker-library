@@ -1,0 +1,118 @@
+x-php-defaults: &php_defaults
+  restart: always
+  entrypoint: bash -c "cat /opt/config/php/service.sh > /cmd.sh && chmod +x /cmd.sh && /cmd.sh"
+  working_dir: /var/www/html
+  volumes: 
+      - ./config/php:/opt/config/php
+  environment:
+      - PHP_APP=${PHP_APP}
+
+services:
+
+  php8.1:
+    container_name: php8.1
+    build:
+      context: src
+      dockerfile: Dockerfile.php
+      args:
+        - PHP_VERSION=8.1
+    volumes: 
+      - php8.1:/var/www/html
+    <<: *php_defaults
+
+  php8.0:
+    container_name: php8.0
+    build:
+      context: src
+      dockerfile: Dockerfile.php
+      args:
+        - PHP_VERSION=8.0
+    volumes: 
+      - php8.0:/var/www/html
+    <<: *php_defaults
+
+  php7.4:
+    container_name: php7.4
+    build:
+      context: src
+      dockerfile: Dockerfile.php
+      args:
+        - PHP_VERSION=7.4
+    volumes: 
+      - php7.4:/var/www/html
+    <<: *php_defaults
+
+  php7.3:
+    container_name: php7.3
+    build:
+      context: src
+      dockerfile: Dockerfile.php
+      args:
+        - PHP_VERSION=7.3
+    volumes: 
+      - php7.3:/var/www/html
+    <<: *php_defaults
+
+
+  php7.2:
+    container_name: php7.2
+    build:
+      context: src
+      dockerfile: Dockerfile.php
+      args:
+        - PHP_VERSION=7.2
+    volumes: 
+      - php7.2:/var/www/html
+    <<: *php_defaults
+
+
+  php7.1:
+    container_name: php7.1
+    build:
+      context: src
+      dockerfile: Dockerfile.php
+      args:
+        - PHP_VERSION=7.1
+    volumes: 
+      - php7.1:/var/www/html
+    <<: *php_defaults
+
+
+  php7.0:
+    container_name: php7.0
+    build:
+      context: src
+      dockerfile: Dockerfile.php
+      args:
+        - PHP_VERSION=7.0
+    volumes: 
+      - php7.0:/var/www/html
+    <<: *php_defaults
+
+
+  php5.6:
+    container_name: php5.6
+    build:
+      context: src
+      dockerfile: Dockerfile.php
+      args:
+        - PHP_VERSION=5.6
+    volumes: 
+      - php5.6:/var/www/html
+    <<: *php_defaults
+
+
+volumes:
+  php8.1:
+  php8.0:
+  php7.4:
+  php7.3:
+  php7.2:
+  php7.1:
+  php7.0:
+  php5.6:
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true

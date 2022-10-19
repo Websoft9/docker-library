@@ -1,0 +1,33 @@
+services:
+
+  nginxgui:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: nginxgui
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - ./appdata/nginx:/data
+      - ./appdata/letsencrypt:/etc/letsencrypt
+
+  wizard:
+    build:
+      context: src
+      dockerfile: Dockerfile.9panel
+    container_name: 9panel
+    restart: unless-stopped
+    environment:
+      - RUNTIME_LANG=PHP
+    working_dir: /usr/share/nginx/html
+    volumes:
+      - 9panel:/usr/share/nginx/html
+
+volumes:
+  9panel:
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true

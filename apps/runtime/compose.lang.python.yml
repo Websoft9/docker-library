@@ -1,0 +1,60 @@
+x-python-defaults: &python_defaults
+  restart: always
+  command: bash -c "cat /python_service > /cmd.sh && chmod +x /cmd.sh && /cmd.sh"
+  working_dir: /data/apps
+  configs:
+    - source: python_service
+
+services:
+
+  python3.11:
+    container_name: python3.11
+    image: python:3.11-rc
+    volumes: 
+      - python3.11:/data/apps
+    <<: *python_defaults
+
+  python3.10:
+    container_name: python3.10
+    image: python:3.10
+    volumes: 
+      - python3.10:/data/apps
+    <<: *python_defaults
+
+  python3.9:
+    container_name: python3.9
+    image: python:3.9
+    volumes: 
+      - python3.9:/data/apps
+    <<: *python_defaults
+
+  python3.8:
+    container_name: python3.8
+    image: python:3.8
+    volumes: 
+      - python3.8:/data/apps
+    <<: *python_defaults
+
+  python3.7:
+    container_name: python3.7
+    image: python:3.7
+    volumes: 
+      - python3.7:/data/apps
+    <<: *python_defaults
+
+
+volumes:
+  python3.11:
+  python3.10:
+  python3.9:
+  python3.8:
+  python3.7:
+
+configs:
+  python_service:
+    file: ./config/python/service.sh
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true

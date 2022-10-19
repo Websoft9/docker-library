@@ -1,0 +1,24 @@
+# image: https://hub.docker.com/_/microsoft-mssql-server
+# docs: https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker
+
+version: '3.8'
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:${APP_VERSION}
+    container_name: ${APP_NAME}
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=${APP_PASSWORD}
+      - MSSQL_PID=${APP_PID}
+    ports:
+      - ${APP_DB_PORT}:1433
+    restart: always
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  mssql_data:

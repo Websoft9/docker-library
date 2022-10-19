@@ -1,0 +1,36 @@
+x-golang-defaults: &golang_defaults
+  restart: always
+  command: bash -c "cat /golang_service > /cmd.sh && chmod +x /cmd.sh && /cmd.sh"
+  working_dir: /data/apps
+  configs:
+    - source: golang_service
+
+services:
+
+  golang1.18:
+    container_name: golang1.18
+    image: golang:1.18
+    volumes: 
+      - golang1.18:/data/apps
+    <<: *golang_defaults
+
+
+  golang1.17:
+    container_name: golang1.17
+    image: golang:1.17
+    volumes: 
+      - golang1.17:/data/apps
+    <<: *golang_defaults
+
+volumes:
+  golang1.17:
+  golang1.18:
+
+configs:
+  golang_service:
+    file: ./config/golang/service.sh
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true

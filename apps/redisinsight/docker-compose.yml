@@ -1,0 +1,23 @@
+# image: https://hub.docker.com/r/redislabs/redisinsight
+# docs: https://docs.redis.com/latest/ri/installing/install-docker/
+
+
+version: '3.8'
+
+services:
+  redisinsight:
+    image: redislabs/redisinsight:${APP_VERSION}
+    container_name: ${APP_CONTAINER_NAME}
+    ports:
+      - ${APP_HTTP_PORT}:8001
+    volumes:
+      - redisinsight:/db
+    restart: always
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  redisinsight:
