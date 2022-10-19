@@ -1,0 +1,1 @@
+sudo echo "DiscuzQ version:$(docker exec -it $1 bash -c 'grep -rn "const VERSION =" /var/www/discuz/vendor/discuz/core/src/Foundation/Application.php | awk "{print \$5}" | tr -d ";"')" 1>> /data/logs/install_version.txt

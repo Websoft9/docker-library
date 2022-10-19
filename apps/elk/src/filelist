@@ -1,0 +1,5 @@
+elasticsearch
+extensions
+kibana
+logstash
+docker-stack.yml

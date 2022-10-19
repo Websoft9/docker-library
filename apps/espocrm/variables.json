@@ -1,0 +1,32 @@
+{
+  "name": "espocrm",
+  "trademark": "EspoCRM",
+  "installpath": "/data/apps/espocrm",
+  "compose_file": "docker-compose.yml",
+  "fork_url": "https://github.com/espocrm/espocrm-docker",
+  "env_file": ".env",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, x86/i686",
+    "cpu": "1",
+    "memory": "1",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://docs.espocrm.com/administration/installation-by-script/"
+  },
+
+  "user": {
+    "username": "admin",
+    "password": "password"
+  },
+
+  "services":[
+    {
+      "name": "espocrm",
+      "port": "9001",
+      "description_cn": "浏览器访问 EspoCRM",
+      "description_en": "Access to EspoCRM by browser",
+      "required": "Y"
+    }
+  ]
+
+}

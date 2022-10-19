@@ -1,0 +1,47 @@
+{
+  "name": "elk",
+  "trademark": "ELK",
+  "installpath": "/data/wwwroot/elk",
+  "compose_file": "docker-compose.yml",
+  "env_file": ".env",
+  "fork_url": "https://github.com/deviantony/docker-elk.git",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
+    "cpu": "2",
+    "memory": "4",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://github.com/deviantony/docker-elk#requirements"
+  },
+
+  "user": {
+    "username": "elastic",
+    "password": "changeme"
+  },
+
+  "services":[
+    {
+      "name": "elk-elasticsearch",
+      "port": "9200",
+      "description_cn": "数据搜索引擎",
+      "description_en": "Data search engine",
+      "required": "Y"
+    },
+
+    {
+      "name": "elk-kibana",
+      "port": "9001",
+      "description_cn": "数据库可视化WEB管理工具",
+      "description_en": "Database visual management web tool",
+      "required": "Y"
+    },
+
+    {
+      "name": "elk-logstash",
+      "port": "5044",
+      "description_cn": "数据收集器",
+      "description_en": "Data collector",
+      "required": "Y"
+    }
+  ]
+}
