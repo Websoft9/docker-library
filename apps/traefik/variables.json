@@ -1,0 +1,26 @@
+{
+  "name": "traefik",
+  "trademark": "Traefik",
+  "installpath": "/data/wwwroot/traefik",
+  "compose_file": "docker-compose.yml",
+  "env_file": ".env",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, x86/i686",
+    "cpu": "1",
+    "memory": "2",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://hub.docker.com/_/traefik"
+  },
+
+  "services":[
+    {
+      "name": "Traefik",
+      "port": "8080",
+      "description_cn": "浏览器访问 Traefik",
+      "description_en": "Traefik Dashboard",
+      "required": "Y"
+    }
+  ]
+
+}

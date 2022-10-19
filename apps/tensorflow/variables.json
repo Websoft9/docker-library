@@ -1,0 +1,34 @@
+{
+  "name": "tensorflow",
+  "trademark": "Tensorflow",
+  "installpath": "/data/apps/tensorflow",
+  "compose_file": "docker-compose.yml",
+  "fork_url": "https://github.com/tensorflow/tensorflow",
+  "env_file": ".env",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
+    "cpu": "2",
+    "memory": "4",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://github.com/onlyoffice/docker#recommended-system-requirements"
+  },
+
+  "services":[
+    {
+      "name": "tensorboard",
+      "port": "6006",
+      "description_cn": "浏览器访问 tensorboard",
+      "description_en": "tensorboard tool",
+      "required": "Y"
+    },
+
+    {
+      "name": "phpmyadmin",
+      "port": "9001",
+      "description_cn": "jupyter",
+      "description_en": "Web-GUI jupyter tool",
+      "required": "Y"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+sudo echo "tensorflow version:" $(docker exec -it tensorflow grep "_VERSION =" /usr/local/lib/python3.8/dist-packages/tensorflow/tools/pip_package/setup.py| cut -d= -f2) 1>> /data/logs/install_version.txt

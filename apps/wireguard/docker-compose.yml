@@ -1,0 +1,37 @@
+# refer to: https://github.com/linuxserver/docker-wireguard
+
+version: '3.8'
+services:
+  wireguard:
+    image: lscr.io/linuxserver/wireguard:$APP_VERSION
+    container_name: wireguard
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Europe/London
+      - SERVERURL=${APP_URL} #public IP of Server
+      - SERVERPORT=51820 #optional
+      - PEERS=10 #optional
+      - PEERDNS=auto #optional
+      - INTERNAL_SUBNET=192.168.2.1 #your intranet gateway
+      - ALLOWEDIPS=0.0.0.0/0 #optional
+      - LOG_CONFS=true #optional
+    volumes:
+      - wireguard:/config
+      - /lib/modules:/lib/modules
+    ports:
+      - $APP_UDP_PORT:51820/udp
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: unless-stopped
+
+volumes:
+  wireguard:
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true

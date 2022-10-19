@@ -1,0 +1,24 @@
+# image: https://hub.docker.com/r/tensorflow/tensorflow
+# docs: https://github.com/tensorflow/tensorflow
+
+version: '3.8'
+
+services:
+  tensorflow:
+    image: tensorflow/tensorflow:${APP_VERSION}
+    container_name: ${APP_NAME}
+    restart: always
+    ports:
+      # tensorboard port is 6006, but you need to start it on container by yourself 
+      - '${APP_GUI_PORT}:8888'
+      - '${APP_HTTP_PORT}:6006'
+    volumes:
+      - tensorflow:/tf/notebooks
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  tensorflow:

@@ -1,0 +1,27 @@
+{
+  "name": "theia",
+  "trademark": "Theia",
+  "installpath": "/data/wwwroot/theia",
+  "compose_file": "docker-compose.yml",
+  "fork_url": "",
+  "env_file": ".env",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, IBM POWER8, x86/i686",
+    "cpu": "1",
+    "memory": "1",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://registry.hub.docker.com/r/theiaide/theia"
+  },
+
+  "services":[
+    {
+      "name": "Theia",
+      "port": "9001",
+      "description_cn": "浏览器访问 Theia",
+      "description_en": "Browser access to Theia Document by HTTP",
+      "required": "Y"
+    }
+  ]
+
+}

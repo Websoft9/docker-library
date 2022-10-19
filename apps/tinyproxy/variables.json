@@ -1,0 +1,44 @@
+{
+  "name": "tinyproxy",
+  "trademark": "tinyproxy ",
+  "installpath": "/data/apps/tinyproxy ",
+  "compose_file": "docker-compose.yml",
+  "env_file": ".env",
+  "fork_url": "",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
+    "cpu": "2",
+    "memory": "4",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://github.com/tinyproxy/tinyproxy"
+  },
+
+
+  "services":[
+    {
+      "name": "tinyproxy",
+      "port": "9091",
+      "description_cn": "HTTP/HTTPS 代理端口",
+      "description_en": "HTTP/HTTPS Proxy port",
+      "required": "Y"
+    }
+  ],
+
+  "command_comments":[
+    {
+      "comment_cn": "必须设置IP白名单，且只有白名单中的服务器方可使用代理服务",
+      "comment_en": "You must bind your IP for this service"
+    }
+  ],
+
+  "faqs": [
+    {
+      "question_cn": "HTTP 与 HTTPS 代理是共用一个端口吗？",
+      "answer_cn": "是的",
+      "question_en": "Is the same port for HTTP and HTTPS proxy?",
+      "answer_en": "Yes"
+    }
+  ]
+
+}

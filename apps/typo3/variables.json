@@ -1,0 +1,16 @@
+{
+  "name": "typo3",
+  "trademark": "Typo3",
+  "installpath": "/data/apps/typo3",
+  "compose_file": "docker-compose.yml",
+  "env_file": ".env",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, x86/i686",
+    "cpu": "2",
+    "memory": "4",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://docs.typo3.org/m/typo3/tutorial-getting-started/11.5/en-us/Installation/Index.html"
+  }
+
+}

@@ -1,0 +1,21 @@
+# image: https://hub.docker.com/_/traefik
+# docs: https://doc.traefik.io/traefik/providers/docker/
+
+
+version: '3.8'
+
+services:
+  traefik:
+    image: traefik:${APP_VERSION}
+    container_name: ${APP_NAME}
+    ports:
+      - '${APP_WEB_PORT}:80'
+      - '${APP_DASHBOARD_PORT}:8080'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - $PWD/src/traefik.yml:/etc/traefik/traefik.yml
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true

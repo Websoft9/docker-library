@@ -1,0 +1,243 @@
+# image: https://registry.hub.docker.com/r/zabbix/zabbix-server-mysql
+# docs: https://github.com/zabbix/zabbix-docker
+
+version: '3.8'
+
+services:
+ zabbix-server:
+  image: zabbix/zabbix-server-mysql:centos-${APP_VERSION}-latest
+  container_name: ${APP_NAME}-server
+  restart: always
+  ports:
+   - "10051:10051"
+  volumes:
+   - /etc/localtime:/etc/localtime:ro
+   - /etc/timezone:/etc/timezone:ro 
+   - zabbix_alertscripts:/usr/lib/zabbix/alertscripts:ro
+   - zabbix_externalscripts:/usr/lib/zabbix/externalscripts:ro
+   - zabbix_export:/var/lib/zabbix/export:rw
+   - zabbix_modules:/var/lib/zabbix/modules:ro
+   - zabbix_enc:/var/lib/zabbix/enc:ro
+   - zabbix_ssh_keys:/var/lib/zabbix/ssh_keys:ro
+   - zabbix_mibs:/var/lib/zabbix/mibs:ro
+  volumes_from:
+   - zabbix-snmptraps:ro
+  links:
+   - mysql:mysql
+   - zabbix-java-gateway:zabbix-java-gateway
+  ulimits:
+   nproc: 65535
+   nofile:
+    soft: 20000
+    hard: 40000
+  deploy:
+   resources:
+    limits:
+      memory: 1G
+    reservations:
+      memory: 512M
+  env_file:
+   - ./src/env_vars/.env_srv
+  environment:
+   - DB_SERVER_HOST=${DB_MYSQL_HOST}
+   - DB_SERVER_PORT=${DB_MYSQL_PORT}
+   - MYSQL_ROOT_PASSWORD=${DB_MYSQL_PASSWORD}
+   - MYSQL_PASSWORD=${DB_MYSQL_PASSWORD}
+   - MYSQL_DATABASE=${DB_MYSQL_NAME}
+   - APP_PASSWORD=${APP_PASSWORD}
+   - APP_ENCRYPT_PASSWORD=${APP_ENCRYPT_PASSWORD}
+  depends_on:
+   - mysql
+  stop_grace_period: 30s
+  sysctls:
+   - net.ipv4.ip_local_port_range=1024 65000
+   - net.ipv4.conf.all.accept_redirects=0
+   - net.ipv4.conf.all.secure_redirects=0
+   - net.ipv4.conf.all.send_redirects=0
+  labels:
+   com.zabbix.description: "Zabbix server with MySQL database support"
+   com.zabbix.company: "Zabbix LLC"
+   com.zabbix.component: "zabbix-server"
+   com.zabbix.dbtype: "mysql"
+   com.zabbix.os: "centos"
+  user: root
+  entrypoint:
+    - bash
+    - -c
+    - cat /my_cmd > /var/lib/zabbix/cmd.sh && chmod +x /var/lib/zabbix/cmd.sh && /var/lib/zabbix/cmd.sh
+  configs:
+    - source: my_cmd
+ 
+ zabbix-web-apache-mysql:
+  image: zabbix/zabbix-web-apache-mysql:centos-${APP_VERSION}-latest
+  container_name: ${APP_NAME}-web
+  restart: always
+  ports:
+   - "${APP_HTTP_PORT}:8080"
+  volumes:
+   - /etc/localtime:/etc/localtime:ro
+   - /etc/timezone:/etc/timezone:ro
+   - apache2:/etc/ssl/apache2:ro
+   - zabbix_modules:/usr/share/zabbix/modules:ro
+  links:
+   - mysql:mysql
+   - zabbix-server:zabbix-server
+  deploy:
+   resources:
+    limits:
+      memory: 512M
+    reservations:
+      memory: 256M
+  environment:
+   - DB_SERVER_HOST=${DB_MYSQL_HOST}
+   - DB_SERVER_PORT=${DB_MYSQL_PORT}
+   - MYSQL_ROOT_PASSWORD=${DB_MYSQL_PASSWORD}
+   - MYSQL_PASSWORD=${DB_MYSQL_PASSWORD}
+  env_file:
+   - ./src/env_vars/.env_web
+  depends_on:
+   - mysql
+   - zabbix-server
+  healthcheck:
+   test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+   interval: 20s
+   timeout: 20s
+   retries: 5
+   start_period: 30s
+  stop_grace_period: 10s
+  sysctls:
+   - net.core.somaxconn=65535
+  labels:
+   com.zabbix.description: "Zabbix frontend on Apache web-server with MySQL database support"
+   com.zabbix.company: "Zabbix LLC"
+   com.zabbix.component: "zabbix-frontend"
+   com.zabbix.webserver: "apache2"
+   com.zabbix.dbtype: "mysql"
+   com.zabbix.os: "centos"
+
+ zabbix-agent:
+  image: zabbix/zabbix-agent:centos-${APP_VERSION}-latest
+  container_name: ${APP_NAME}-agent
+  restart: always
+  ports:
+   - "10050:10050"
+  volumes:
+   - /etc/localtime:/etc/localtime:ro
+   - /etc/timezone:/etc/timezone:ro
+   - zabbix_agentd.d:/etc/zabbix/zabbix_agentd.d:ro
+   - zabbix_modules:/var/lib/zabbix/modules:ro
+   - zabbix_enc:/var/lib/zabbix/enc:ro
+   - zabbix_ssh_keys:/var/lib/zabbix/ssh_keys:ro
+  links:
+   - mysql:mysql
+   - zabbix-server:zabbix-server
+  deploy:
+   resources:
+    limits:
+      memory: 128M
+    reservations:
+      memory: 64M
+   mode: global
+  env_file:
+   - ./src/env_vars/.env_agent
+  privileged: true
+  pid: "host"
+  stop_grace_period: 5s
+  labels:
+   com.zabbix.description: "Zabbix agent"
+   com.zabbix.company: "Zabbix LLC"
+   com.zabbix.component: "zabbix-agentd"
+   com.zabbix.os: "centos"
+
+ zabbix-java-gateway:
+  image: zabbix/zabbix-java-gateway:centos-${APP_VERSION}-latest
+  container_name: ${APP_NAME}-java
+  restart: always
+  ports:
+   - "10052:10052"
+  deploy:
+   resources:
+    limits:
+      memory: 512M
+    reservations:
+      memory: 256M
+  env_file:
+   - ./src/env_vars/.env_java
+  stop_grace_period: 5s
+  labels:
+   com.zabbix.description: "Zabbix Java Gateway"
+   com.zabbix.company: "Zabbix LLC"
+   com.zabbix.component: "java-gateway"
+   com.zabbix.os: "centos"
+
+ zabbix-snmptraps:
+  image: zabbix/zabbix-snmptraps:centos-${APP_VERSION}-latest
+  container_name: ${APP_NAME}-snmptraps
+  restart: always
+  ports:
+   - "162:1162/udp"
+  volumes:
+   - snmptraps:/var/lib/zabbix/snmptraps:rw
+  deploy:
+   resources:
+    limits:
+      memory: 256M
+    reservations:
+      memory: 128M
+  stop_grace_period: 5s
+  labels:
+   com.zabbix.description: "Zabbix snmptraps"
+   com.zabbix.company: "Zabbix LLC"
+   com.zabbix.component: "snmptraps"
+   com.zabbix.os: "centos"
+
+ mysql:
+  image: mysql:${DB_MYSQL_VERSION}
+  container_name: ${APP_NAME}-db
+  restart: always
+  ports: 
+   - ${DB_MYSQL_PORT}:3306
+  command:
+   - mysqld
+   - --character-set-server=utf8mb4
+   - --collation-server=utf8mb4_bin
+   - --default-authentication-plugin=mysql_native_password
+  volumes:
+   - mysql:/var/lib/mysql:rw
+  environment: 
+   - DB_SERVER_HOST=${DB_MYSQL_HOST}
+   - MYSQL_ROOT_PASSWORD=${DB_MYSQL_PASSWORD}
+   - DB_SERVER_PORT=${DB_MYSQL_PORT}
+   - MYSQL_USER=${DB_MYSQL_USER}
+   - MYSQL_PASSWORD=${DB_MYSQL_PASSWORD}
+  security_opt:
+   - seccomp:unconfined
+  stop_grace_period: 1m
+
+ db_data_mysql:
+  image: busybox
+  container_name: ${APP_NAME}-data
+  volumes:
+   - mysql:/var/lib/mysql:rw
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  snmptraps:
+  mysql:
+  zabbix_agentd.d:
+  zabbix_modules:
+  zabbix_enc:
+  zabbix_ssh_keys:
+  zabbix_alertscripts:
+  zabbix_externalscripts:
+  zabbix_export:
+  zabbix_mibs:
+  apache2:
+
+configs:
+  my_cmd:
+    file: ./cmd.sh
