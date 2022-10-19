@@ -1,0 +1,22 @@
+# image: https://hub.docker.com/r/coredns
+# docs: https://github.com/coredns/coredns
+version: '3.8'
+
+services:
+  coredns:
+    image: coredns/coredns:${APP_VERSION}
+    container_name: ${APP_NAME}
+    expose:
+      - '53'
+    ports:
+      - '${APP_HTTP_PORT}:53'
+    volumes:
+      - './src/config:/etc/coredns'
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  coredns:

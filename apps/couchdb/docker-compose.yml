@@ -1,0 +1,31 @@
+# docs: https://docs.couchdb.org/en/latest/install/docker.html
+# source: https://github.com/apache/couchdb-docker
+# image: https://hub.docker.com/_/couchdb
+
+version: '3.8'
+
+services:
+
+  couchdb:
+    image: couchdb:${APP_VERSION}
+    container_name: ${APP_NAME}
+    restart: always
+    ports:
+     - ${APP_HTTP_PORT}:5984
+    volumes:
+     - couchdb_data:/opt/couchdb/data
+     - couchdb_config:/opt/couchdb/etc/local.d
+     - couchdb_log:/opt/couchdb/var/log
+    environment:
+      COUCHDB_USER: ${APP_USER}
+      COUCHDB_PASSWORD: ${APP_PASSWORD}
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  couchdb_data:
+  couchdb_config:
+  couchdb_log:

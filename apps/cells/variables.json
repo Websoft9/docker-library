@@ -1,0 +1,26 @@
+{
+  "name": "pydio",
+  "trademark": "Pydio Cells",
+  "installpath": "/data/apps/pydio",
+  "compose_file": "docker-compose.yml",
+  "env_file": ".env",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, x86/i686",
+    "cpu": "2",
+    "memory": "4",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://hub.docker.com/r/pydio/cells"
+  },
+
+  "services":[
+    {
+      "name": "pydio",
+      "port": "9001",
+      "description_cn": "浏览器访问 Pydio",
+      "description_en": "HTTP visit Pydio",
+      "required": "Y"
+    }
+  ]
+
+}

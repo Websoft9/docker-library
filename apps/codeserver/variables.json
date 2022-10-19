@@ -1,0 +1,31 @@
+{
+  "name": "codeserver",
+  "trademark": "CodeServer",
+  "compose_file": "docker-compose-production.yml",
+  "installpath": "/data/apps/codeserver",
+  "fork_url": "https://github.com/linuxserver/docker-code-server",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
+    "cpu": "1",
+    "memory": "2",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://github.com/cdr/code-server/blob/main/docs/guide.md#requirements"
+  },
+
+  "user": {
+    "username": "nothing",
+    "password": "123456"
+  },
+
+  "services":[
+
+    {
+      "name": "codeserver",
+      "port": "9001",
+      "description_cn": "Vscode可视化工具",
+      "description_en": "Web-GUI Vscode management tool",
+      "required": "Y"
+    }
+  ]
+}

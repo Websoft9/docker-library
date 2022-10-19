@@ -1,0 +1,21 @@
+# image: https://hub.docker.com/r/clamav/clamav
+# docs: https://docs.clamav.net/manual/Installing/Docker.html
+
+
+version: '3.8'
+
+services:
+  clamav:
+    image: clamav/clamav:$APP_VERSION
+    container_name: $APP_NAME
+    privileged: true
+    volumes:
+      - 'clamav:/var/lib/clamav'
+      - '$APP_SCAN_PATH:/scandir'
+networks:
+  default:
+    name: $APP_NETWORK
+    external: true
+
+volumes:
+  clamav:

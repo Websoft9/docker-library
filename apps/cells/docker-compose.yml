@@ -1,0 +1,44 @@
+# image and compose: https://hub.docker.com/r/pydio/cells
+
+version: '3.8'
+
+services:
+  cells:
+    image: pydio/cells:${APP_VERSION}
+    container_name: ${APP_NAME}
+    ports:
+      - ${APP_HTTP_PORT}:8080
+    volumes:
+      - pydio:/var/cells
+    environment:
+      - CELLS_LOG_LEVEL=production
+      - CELLS_BIND=:8080
+      - CELLS_NO_TLS=1
+      - CELLS_EXTERNAL=$APP_URL
+    restart: always
+
+  mysql:
+    image: mysql:${DB_MYSQL_VERSION}
+    container_name: ${APP_NAME}-mysql
+    restart: unless-stopped
+    command: [mysqld, --character-set-server=utf8mb4, --collation-server=utf8mb4_unicode_ci]
+    ports:
+     - ${DB_MYSQL_PORT}:3306
+    volumes:
+      - mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${DB_MYSQL_NAME}
+      MYSQL_USER: ${DB_MYSQL_USER}
+      MYSQL_PASSWORD: ${DB_MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_MYSQL_PASSWORD}
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  pydio:
+    driver: local
+  mysql:
+    driver: local

@@ -1,0 +1,16 @@
+{
+  "name": "clamav",
+  "trademark": "ClamAV",
+  "installpath": "/data/wwwroot/clamav",
+  "compose_file": "docker-compose.yml",
+  "fork_url": "https://hub.docker.com/r/clamav/clamav",
+  "env_file": ".env",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, x86/i686",
+    "cpu": "1",
+    "memory": "2",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://docs.clamav.net/manual/Installing/Docker.html"
+  }
+}

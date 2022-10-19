@@ -1,0 +1,32 @@
+{
+  "name": "collabora",
+  "trademark": "Collabora",
+  "installpath": "/data/wwwroot/collabora",
+  "compose_file": "docker-compose.yml",
+  "fork_url": "  https://github.com/CollaboraOnline/online",
+  "env_file": ".env",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64",
+    "cpu": "1",
+    "memory": "2",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://sdk.collaboraonline.com/docs/installation/index.html"
+  },
+
+  "user": {
+    "username": "admin",
+    "password": "123456"
+  },
+
+  "services":[
+    {
+      "name": "onlyoffice-server",
+      "port": "9980",
+      "description_cn": "浏览器访问 Collabora",
+      "description_en": "Collabora",
+      "required": "Y"
+    }
+  ],
+  
+}

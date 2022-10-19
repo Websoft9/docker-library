@@ -1,0 +1,16 @@
+{
+  "name": "budibase",
+  "trademark": "Budibase",
+  "installpath": "/data/apps/budibase",
+  "compose_file": "docker-compose.yml",
+  "fork_url": "https://github.com/Budibase/budibase/tree/develop/hosting",
+  "env_file": ".env",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, x86/i686",
+    "cpu": "2",
+    "memory": "6",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://github.com/Budibase/budibase/tree/develop/hosting"
+  }
+}

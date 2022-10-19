@@ -1,0 +1,17 @@
+{
+  "name": "ckan",
+  "trademark": "Ckan",
+  "installpath": "/data/wwwroot/ckan",
+  "compose_file": "docker-compose.yml",
+  "fork_url": "https://github.com/ckan/ckan",
+  "env_file": ".env",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, IBM POWER8, x86/i686",
+    "cpu": "2",
+    "memory": "4",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://docs.ckan.org/en/2.9/maintaining/installing/install-from-docker-compose.html"
+  }
+
+}

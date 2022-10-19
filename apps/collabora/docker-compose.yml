@@ -1,0 +1,29 @@
+# image: https://hub.docker.com/r/collabora/code/
+# docs: https://sdk.collaboraonline.com/docs/installation/CODE_Docker_image.html
+
+
+version: '3.8'
+services:
+  collabora-online:
+    container_name: ${APP_NAME}
+    image: collabora/code:${APP_VERSION}
+    environment:
+     - domain=${APP_URL}
+     - username=${APP_USER}
+     - password=${APP_PASSWORD}
+     - DONT_GEN_SSL_CERT=YES
+     - extra_params=--o:ssl.enable=false --o:ssl.termination=true
+    ports:
+      - ${APP_HTTP_PORT}:9980
+    tty: true
+    restart: always
+     
+    
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+    
+volumes:
+  collabora:
+    driver: local
