@@ -1,0 +1,24 @@
+# imag: https://hub.docker.com/_/postgres
+
+version: '3.8'
+services:
+  postgres:
+    image: postgres:${APP_VERSION}
+    container_name: ${APP_NAME}
+    restart: always
+    ports:
+     - ${APP_DB_PORT}:5432
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${APP_DB_NAME}
+      POSTGRES_USER: ${APP_USER}
+      POSTGRES_PASSWORD: ${APP_PASSWORD}
+    
+volumes:
+  postgres:
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true

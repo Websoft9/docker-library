@@ -1,0 +1,46 @@
+# compose: https://github.com/nocodb/nocodb/blob/master/docker-compose/pg/docker-compose.yml
+
+
+version: '3.8'
+
+services:
+  nocodb:
+    depends_on:
+      db:
+        condition: service_healthy
+    image: nocodb/nocodb:${APP_VERSION}
+    container_name: ${APP_CONTAINER_NAME}
+    ports:
+      - "${APP_HTTP_PORT}:8080"
+      - "8081:8081"
+      - "8082:8082"
+      - "8083:8083"
+    restart: always
+    environment:
+      NC_DB: "pg://${APP_CONTAINER_NAME}-postgre:5432?u=${DB_POSTGRE_USER}&p=${DB_POSTGRE_PASSWORD}&d=${DB_POSTGRE_NAME}"
+
+  db:
+    image: postgres:${DB_POSTGRE_VERSION}
+    container_name: ${APP_CONTAINER_NAME}-postgre
+    hostname: ${APP_CONTAINER_NAME}-postgre
+    restart: always
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${DB_POSTGRE_PASSWORD}
+      POSTGRES_USER: ${DB_POSTGRE_USER}
+      POSTGRES_DB: ${DB_POSTGRE_NAME}
+    healthcheck:
+      test: pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"
+      interval: 10s
+      timeout: 2s
+      retries: 10
+    
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+    
+volumes:
+  db_data:
+    driver: local

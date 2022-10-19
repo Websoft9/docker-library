@@ -1,0 +1,40 @@
+{
+  "name": "neo4j",
+  "trademark": "Neo4j",
+  "installpath": "/data/db/neo4j",
+  "compose_file": "docker-compose.yml",
+  "env_file": ".env",
+  "fork_url": "https://github.com/neo4j/docker-neo4j",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
+    "cpu": "2",
+    "memory": "2",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://neo4j.com/docs/operations-manual/current/installation/requirements/"
+  },
+
+  "user": {
+    "username": "neo4j",
+    "password": "123456"
+  },
+
+  "services":[
+    {
+      "name": "neo4j",
+      "port": "7474",
+      "description_cn": "浏览器访问 Neo4j",
+      "description_en": "Web-GUI database management tool",
+      "required": "Y"
+    },
+
+    {
+      "name": "neo4j_api",
+      "port": "7687",
+      "description_cn": "API访问Neo4j数据库",
+      "description_en": "Accessing Neo4j database with API",
+      "required": "Y"
+    }
+  ]
+
+}

@@ -1,0 +1,44 @@
+{
+  "name": "odoo",
+  "trademark": "Odoo",
+  "installpath": "/data/wwwroot/odoo",
+  "compose_file": "docker-compose.yml",
+  "fork_url": "https://github.com/odoo/docker",
+  "env_file": ".env",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
+    "cpu": "1",
+    "memory": "4",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://github.com/odoo/docker"
+  },
+
+  "services":[
+    {
+      "name": "Odoo",
+      "port": "9001",
+      "description_cn": "浏览器访问 Odoo",
+      "description_en": "HTTP to access to odoo",
+      "required": "Y"
+    },
+
+    {
+      "name": "Postgres",
+      "port": "5432",
+      "description_cn": "PostgreSQL 端口",
+      "description_en": "Postgres port",
+      "required": "Y"
+    }
+  ],
+
+  "faqs": [
+    {
+      "question_cn": "编排文件中是否支持自定义数据库名称？",
+      "answer_cn": "不支持，名称只能为 postgres",
+      "question_en": "Can I set a persnal database name for Odoo?",
+      "answer_en": "No, the name is must postgres"
+    }
+  ]
+
+}

@@ -1,0 +1,36 @@
+# docs: https://learn.netdata.cloud/docs/agent/packaging/docker
+# image: https://hub.docker.com/r/netdata/netdata
+
+version: '3.8'
+
+services:
+  netdata:
+    image: netdata/netdata:${APP_VERSION}
+    container_name: ${APP_CONTAINER_NAME}
+    hostname: ${APP_SITE_URL}
+    ports:
+      - ${APP_HTTP_PORT}:19999
+    restart: unless-stopped
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - netdataconfig:/etc/netdata
+      - netdatalib:/var/lib/netdata
+      - netdatacache:/var/cache/netdata
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  netdataconfig:
+  netdatalib:
+  netdatacache:

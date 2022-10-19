@@ -1,0 +1,35 @@
+{
+  "name": "owncloud",
+  "trademark": "Owncloud",
+  "installpath": "/data/wwwroot/owncloud",
+  "compose_file": "docker-compose.yml",
+  "fork_url": "https://github.com/owncloud-docker/server",
+  "env_file": ".env",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
+    "cpu": "1",
+    "memory": "2",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://doc.owncloud.com/server/10.8/admin_manual/installation/docker/"
+  },
+
+  "services":[
+    {
+      "name": "Owncloud",
+      "port": "9001",
+      "description_cn": "浏览器访问 owncloud",
+      "description_en": "Browser access to owncloud Document by http",
+      "required": "Y"
+    },
+
+    {
+      "name": "MySQL",
+      "port": "3306",
+      "description_cn": "MySQL 远程端口",
+      "description_en": "Remote access MySQL",
+      "required": "N"
+    }
+  ]
+
+}

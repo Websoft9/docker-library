@@ -1,0 +1,27 @@
+{
+  "name": "prestashop",
+  "trademark": "Prestashop",
+  "installpath": "/data/wwwroot/prestashop",
+  "compose_file": "docker-compose.yml",
+  "fork_url": "https://github.com/PrestaShop/docker",
+  "env_file": ".env",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, IBM POWER8, x86/i686",
+    "cpu": "1",
+    "memory": "1",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://www.prestashop.org/docs/user_guide/en/install-requirements.html"
+  },
+
+  "services":[
+    {
+      "name": "prestashop-server",
+      "port": "9001",
+      "description_cn": "浏览器访问 prestashop",
+      "description_en": "Browser access to prestashop Document by http",
+      "required": "Y"
+    }
+  ]
+
+}

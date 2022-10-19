@@ -1,0 +1,29 @@
+# image: https://hub.docker.com/r/dpage/pgadmin4
+# docs: https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html
+# postgres only for test
+
+version: "3.8"
+services:
+  pgadmin:
+    image: dpage/pgadmin4:${APP_VERSION}
+    restart: always
+    container_name: ${APP_NAME}
+    ports:
+      - "${APP_HTTP_PORT}:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${APP_USER}
+      - PGADMIN_DEFAULT_PASSWORD=${APP_PASSWORD}
+      - PGADMIN_LISTEN_ADDRESS=0.0.0.0
+
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: example
+    profiles:
+      - db
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
