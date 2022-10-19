@@ -1,0 +1,46 @@
+# image: https://hub.docker.com/r/bitnami/joomla
+
+version: '3.8'
+
+services:
+  joomla:
+    image: $APP_REPO:$APP_VERSION
+    container_name: $APP_NAME
+    restart: always
+    ports:
+      - ${APP_HTTP_PORT}:8080
+    volumes:
+      - joomla:/bitnami/joomla
+    environment:
+      - JOOMLA_USERNAME=$APP_USER	
+      - JOOMLA_PASSWORD=$APP_PASSWORD
+      - JOOMLA_DATABASE_HOST=mariadb
+      - JOOMLA_DATABASE_PORT_NUMBER=3306
+      - JOOMLA_DATABASE_NAME=$DB_MARIADB_NAME
+      - JOOMLA_DATABASE_USER=$DB_MARIADB_USER
+      - JOOMLA_DATABASE_PASSWORD=$DB_MARIADB_PASSWORD
+    depends_on:
+      - mariadb
+
+  mariadb:
+    image: mariadb:$DB_MARIADB_VERSION
+    container_name: $APP_NAME-db
+    restart: always
+    ports:
+     - ${DB_MARIADB_PORT}:3306
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mariadb:/var/lib/mysql
+    environment:
+      - MARIADB_DATABASE=$DB_MARIADB_NAME
+      - MARIADB_USER=$DB_MARIADB_USER
+      - MARIADB_PASSWORD=$DB_MARIADB_PASSWORD
+      - MARIADB_ROOT_PASSWORD=$DB_MARIADB_PASSWORD
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  joomla:
+  mariadb:

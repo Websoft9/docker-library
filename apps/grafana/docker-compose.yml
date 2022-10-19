@@ -1,0 +1,69 @@
+# docs: https://grafana.com/docs/grafana/latest/installation/docker/
+# dockerfile: https://github.com/grafana/grafana/blob/main/Dockerfile
+# dockerhub: https://hub.docker.com/r/grafana/grafana
+# mysql db for grafana meta storage
+
+version: '3.8'
+
+services:
+
+  grafana:
+    image: grafana/grafana:${APP_VERSION}
+    container_name: ${APP_NAME}  
+    restart: always
+    ports:
+      - ${APP_HTTP_PORT}:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - grafana_config:/etc/grafana
+      - grafana_logs:/var/log/grafana
+      - grafana_plugins:/var/lib/grafana/plugins
+    environment:
+      # You can use any environment from grafana.ini. format: GF_[group]_item
+      - GF_INSTALL_PLUGINS
+      - GF_LOG_MODE
+      - GF_SECURITY_ADMIN_USER=${APP_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${APP_PASSWORD}
+      - GF_DATABASE_URL=mysql://$DB_MYSQL_USER:$DB_MYSQL_PASSWORD@db:3306/$DB_MYSQL_NAME
+  db:
+    image: mysql:${DB_MYSQL_VERSION}
+    container_name: ${APP_NAME}-db
+    restart: always
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: $DB_MYSQL_NAME
+      MYSQL_USER: $DB_MYSQL_USER
+      MYSQL_PASSWORD: $DB_MYSQL_PASSWORD
+      MYSQL_ROOT_PASSWORD: $DB_MYSQL_PASSWORD
+
+  loki:
+    image: grafana/loki:main
+    container_name: ${APP_NAME}-loki
+    restart: always
+    volumes:
+      - grafana_loki_data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+
+  promtail:
+    image: grafana/promtail:main
+    container_name: ${APP_NAME}-promtail
+    restart: always
+    volumes:
+      -  grafana_promtail_log:/var/log
+    command: -config.file=/etc/promtail/config.yml
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  grafana_data:
+  grafana_config:
+  grafana_logs:
+  grafana_plugins:
+  grafana_loki_data:
+  grafana_promtail_log:
+  mysql:

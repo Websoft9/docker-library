@@ -1,0 +1,36 @@
+{
+  "name": "haproxy",
+  "trademark": "HAProxy",
+  "compose_file": "docker-compose.yml",
+  "fork_url": "https://github.com/docker-library/haproxy",
+  "env_file": ".env_all",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, IBM POWER8, x86/i686",
+    "cpu": "1",
+    "memory": "1",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://hub.docker.com/_/haproxy"
+  },
+
+  "services":[
+    {
+      "name": "haproxy",
+      "port": "8080",
+      "description_cn": "HAProxy 地址",
+      "description_en": "HAProxy port",
+      "required": "Y"
+    }
+  ],
+
+  "faqs": [
+    {
+      "question_cn": "为什么 haproxy 容器错误，且提示没有配置文件？",
+      "answer_cn": "正常现象，需增加准确的配置文件到容器挂载的目录下",
+      "question_en": "Why haproxy container error for the reason that need configuration file?",
+      "answer_en": "You should add your haproxy.cfg file at haproxy volume"
+    }
+
+  ]
+
+}

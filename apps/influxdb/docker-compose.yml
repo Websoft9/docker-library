@@ -1,0 +1,36 @@
+# image: https://hub.docker.com/_/chronograf
+# docs: https://docs.influxdata.com/influxdb/latest/install/?t=Docker
+
+
+version: '3.8'
+
+services:
+  chronograf:
+    image: chronograf:${APP_VERSION}
+    container_name: ${APP_NAME}-chronograf
+    ports:
+      - '${APP_HTTP_PORT}:8888'
+    command: --influxdb-url=http://influxdb:8086
+    volumes:
+      - chronograf:/var/lib/chronograf
+    depends_on:
+      - influxdb
+
+  influxdb:
+    image: influxdb:${DB_INFLUXDB_VERSION}
+    container_name: ${APP_NAME}
+    ports:
+      - '${DB_INFLUXDB_PORT}:8086'
+      - '${DB_INFLUXDB_GRAPHITE_PORT}:2003'
+    volumes:
+      - influxdb:/var/lib/influxdb2
+    restart: always
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  chronograf:
+  influxdb:

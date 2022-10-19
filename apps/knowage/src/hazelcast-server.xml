@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hazelcast xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-3.6.xsd"
+           xmlns="http://www.hazelcast.com/schema/config"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <network>
+        <port auto-increment="false" port-count="100">5701</port>
+        <join>
+            <multicast enabled="false"></multicast>
+            <tcp-ip enabled="true">
+                <member-list>
+			<member>hazelcast</member>
+		</member-list>
+            </tcp-ip>
+        </join>
+    </network>
+    <properties> 
+    	<property name="hazelcast.socket.bind.any">false</property>
+    </properties>
+</hazelcast>

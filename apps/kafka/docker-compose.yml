@@ -1,0 +1,54 @@
+# kafka image: https://hub.docker.com/r/bitnami/kafka
+# cmak: https://github.com/eshepelyuk/cmak-docker
+
+version: "3.8"
+
+services:
+  kafka:
+    image: $APP_REPO:$APP_VERSION
+    container_name: $APP_NAME
+    restart: always
+    ports:
+      - "$DB_KAFKA_PORT:9092"
+    volumes:
+      - "kafka_data:/bitnami"
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    depends_on:
+      - zookeeper
+
+  zookeeper:
+    image: $KAFKA_ZOOMKEEPER_REPO:$KAFKA_ZOOMKEEPER_VERSION
+    container_name: $APP_NAME-zookeeper
+    restart: always
+    ports:
+      - "$KAFKA_ZOOMKEEPER_PORT:2181"
+    volumes:
+      - "zookeeper_data:/bitnami"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+  cmak:
+    image: $KAFKA_CMAK_REPO:$KAFKA_CMAK_VERSION
+    container_name: $APP_NAME-cmak
+    restart: always
+    ports:
+      - "$APP_HTTP_PORT:9000"
+    environment:
+      ZK_HOSTS: "zookeeper:2181"
+      APPLICATION_SECRET: "random-secret"
+      KAFKA_MANAGER_AUTH_ENABLED: "true"
+      KAFKA_MANAGER_USERNAME: $KAFKA_CMAK_USER
+      KAFKA_MANAGER_PASSWORD: $KAFKA_CMAK_PASSWORD
+
+volumes:
+  zookeeper_data:
+    driver: local
+  kafka_data:
+    driver: local
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true

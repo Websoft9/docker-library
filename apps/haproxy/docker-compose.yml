@@ -1,0 +1,23 @@
+# dockerhub: https://hub.docker.com/_/haproxy/
+
+version: '3.8'
+
+services:
+  haproxy:
+    image: haproxy:${APP_VERSION}
+    container_name: ${APP_NAME}
+    ports:
+      - 1080:1080
+      - ${APP_HTTP_PORT}:80
+    volumes:    
+      - ./src/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+    restart: always
+    user: root
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  haproxy:

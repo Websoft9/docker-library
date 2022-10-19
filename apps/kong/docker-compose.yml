@@ -1,0 +1,76 @@
+# refer to:
+# image: https://hub.docker.com/_/kong
+
+version: '3.8'
+
+services:
+  kong:
+    image: kong:${APP_VERSION}
+    container_name: ${APP_NAME}
+    environment:
+      - LC_CTYPE=en_US.UTF-8
+      - LC_ALL=en_US.UTF-8
+      - KONG_DATABASE=postgres
+      - KONG_PG_HOST=postgres
+      - KONG_PG_USER=${DB_POSTGRES_USER}
+      - KONG_PG_PASSWORD=${DB_POSTGRES_PASSWORD}
+      - KONG_PROXY_ACCESS_LOG=/dev/stdout
+      - KONG_ADMIN_ACCESS_LOG=/dev/stdout
+      - KONG_PROXY_ERROR_LOG=/dev/stderr
+      - KONG_ADMIN_ERROR_LOG=/dev/stderr
+      - KONG_ADMIN_LISTEN=0.0.0.0:8001, 0.0.0.0:8444 ssl
+    restart: always
+    ports:
+      - 8000:8000
+      - 8443:8443
+      - 8001:8001
+      - 8444:8444
+    links:
+      - postgres
+    depends_on:
+      - kong-migrations
+
+  konga:
+    image: pantsel/konga
+    container_name: ${APP_NAME}-konga
+    ports:
+      - "${APP_HTTP_PORT}:1337"
+    links:
+      - kong
+    restart: always
+    environment:
+      - NODE_ENV=production
+
+  kong-migrations:
+    image: kong
+    environment:
+      - KONG_DATABASE=postgres
+      - KONG_PG_HOST=postgres
+      - KONG_PG_USER=${DB_POSTGRES_USER}
+      - KONG_PG_PASSWORD=${DB_POSTGRES_PASSWORD}
+    command: kong migrations bootstrap
+    restart: on-failure
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:${DB_POSTGRES_VERSION}
+    restart: always
+    container_name: ${APP_NAME}-postgres
+    ports:
+      - "${DB_POSTGRES_PORT}:5432"
+    environment:
+      - POSTGRES_USER=${DB_POSTGRES_USER}
+      - POSTGRES_DB=${DB_POSTGRES_NAME}
+      - POSTGRES_PASSWORD=${DB_POSTGRES_PASSWORD}
+    volumes:
+      - "postgres:/var/lib/postgresql/data"
+
+
+volumes:
+  postgres:
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true

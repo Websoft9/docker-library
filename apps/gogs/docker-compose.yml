@@ -1,0 +1,40 @@
+# from: https://github.com/gogs/gogs/tree/main/docker
+
+version: '3.8'
+
+services:
+  gogs:
+    image: gogs/gogs:${APP_VERSION}
+    container_name: ${APP_NAME}
+    ports:
+      - ${APP_HTTP_PORT}:3000
+      - ${APP_SSH_PORT}:22
+    volumes:
+      - gogs:/data
+    environment:
+      -  BACKUP_INTERVAL=7d
+      -  BACKUP_RETENTION=7d
+      -  RUN_CROND=true
+    restart: always
+
+  mysql:
+    image: mysql:${DB_MYSQL_VERSION}
+    container_name: ${APP_NAME}-db
+    restart: always
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${DB_MYSQL_NAME}
+      MYSQL_USER: ${DB_MYSQL_USER}
+      MYSQL_PASSWORD: ${DB_MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_MYSQL_PASSWORD}
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  gogs:
+  mysql:

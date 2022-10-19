@@ -1,0 +1,67 @@
+# The default username is guacadmin with password guacadmin.
+
+version: '3.8'
+
+services:
+  guacd:
+    container_name: ${APP_CONTAINER_NAME}-guacd
+    image: guacamole/guacd
+    restart: always
+    depends_on:
+      - guacamole-preparation
+    volumes:
+      - drive:/drive:rw
+      - record:/record:rw
+      
+  guacamole-preparation:
+    image: guacamole/guacamole:${APP_VERSION}
+    entrypoint: [ "bash", "-c", "chmod -R +x /opt/guacamole/init && /opt/guacamole/bin/initdb.sh --postgres > /opt/guacamole/init/initdb.sql"]
+    user: root
+    privileged: true
+    volumes:
+      - ./init:/opt/guacamole/init
+    restart: on-failure
+    
+  postgres:
+    image: postgres:${DB_POSTGRES_VERSION}
+    restart: always
+    container_name: ${APP_CONTAINER_NAME}-postgres
+    depends_on:
+      - guacamole-preparation
+    environment:
+      - PGDATA=/var/lib/postgresql/data/guacamole
+      - POSTGRES_DB=${DB_POSTGRES_NAME}
+      - POSTGRES_PASSWORD=${DB_POSTGRES_PASSWORD}
+      - POSTGRES_USER=${DB_POSTGRES_USER}
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d:ro
+      - postgres:/var/lib/postgresql/data:rw
+    ports:
+      - 5432:5432
+      
+  guacamole:
+    image: guacamole/guacamole:${APP_VERSION}
+    container_name: ${APP_CONTAINER_NAME}
+    restart: always
+    depends_on:
+     - guacd
+     - postgres
+     - guacamole-preparation
+    environment:
+      - GUACD_HOSTNAME=guacd
+      - POSTGRES_DATABASE=${DB_POSTGRES_NAME}
+      - POSTGRES_HOSTNAME=${DB_POSTGRES_HOST}
+      - POSTGRES_PASSWORD=${DB_POSTGRES_PASSWORD}
+      - POSTGRES_USER=${DB_POSTGRES_USER}
+    ports:
+      - ${APP_HTTP_PORT}:8080
+    
+volumes:
+  postgres:
+  record:
+  drive:
+  
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
