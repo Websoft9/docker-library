@@ -1,0 +1,22 @@
+{
+  "name": "activemq",
+  "trademark": "ActiveMQ",
+  "installpath": "/data/apps/activemq",
+  "compose_file": "docker-compose.yml",
+  "fork_url": "https://github.com/apache/activemq-artemis/tree/main/artemis-docker",
+  "env_file": ".env",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64",
+    "cpu": "1",
+    "memory": "1",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://github.com/apache/activemq-artemis/tree/main/artemis-docker"
+  },
+
+  "user": {
+    "username": "admin",
+    "password": "12345678"
+  }
+
+}

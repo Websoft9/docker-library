@@ -1,0 +1,55 @@
+# classic image: https://hub.docker.com/r/alfresco/alfresco-activemq
+# classic docs: https://github.com/Alfresco/alfresco-docker-activemq
+# artemis repo: https://github.com/ls1intum/activemq-broker-docker/pkgs/container/activemq-broker-docker-centos
+# Multiply version: docker-compose --profile classic up -d
+
+version: '3.8'
+
+services:
+  activemq-classic:
+    image: alfresco/alfresco-activemq:$APP_CLASSIC_VERSION
+    container_name: $APP_NAME
+    restart: always
+    ports:
+      - "$APP_HTTP_PORT:8161" # Web Console
+      - "$APP_AMQP_PORT:5672" # AMQP
+      - "$APP_OPENWIRE_PORT:61616" # OpenWire
+      - "$APP_STOMP_PORT:61613" # STOMP
+    environment:
+      - ACTIVEMQ_BROKER_NAME=localhost
+      - ACTIVEMQ_ADMIN_LOGIN=$APP_USER
+      - ACTIVEMQ_ADMIN_PASSWORD=$APP_PASSWORD
+
+    volumes:
+      - activemq_root:/opt/activemq
+      - activemq_logs:/var/log/activemq
+    profiles:
+      - classic
+
+  activemq-artemis:
+    image: ghcr.io/ls1intum/activemq-broker-docker-centos:$APP_ARTEMIS_VERSION
+    container_name: $APP_NAME
+    restart: always
+    ports:
+      - "$APP_HTTP_PORT:8161" # Web Console
+      - "$APP_AMQP_PORT:5672" # AMQP
+      - "$APP_OPENWIRE_PORT:61616" # OpenWire
+      - "$APP_STOMP_PORT:61613" # STOMP
+    environment:
+      - EXTRA_ARGS=--http-host 0.0.0.0 --relax-jolokia
+      - ARTEMIS_USER=$APP_USER
+      - ARTEMIS_PASSWORD=$APP_PASSWORD
+
+    volumes:
+      - activemq_root:/var/lib/artemis-instance
+    profiles:
+      - artemis
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  activemq_root:
+  activemq_logs:
