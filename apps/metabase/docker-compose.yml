@@ -1,0 +1,52 @@
+# docs: https://www.metabase.com/docs/latest/operations-guide/running-metabase-on-docker.html
+# image: https://hub.docker.com/r/metabase/metabase
+
+version: '3.8'
+services:
+  metabase:
+    image: metabase/metabase:$APP_VERSION
+    restart: always
+    container_name: $APP_NAME
+    hostname: $APP_NAME
+    volumes: 
+     - /dev/urandom:/dev/random:ro
+     - metabase-data:/metabase-data
+     - metabase-plugins:/plugins
+    ports:
+      - $APP_HTTP_PORT:3000
+    privileged: true
+    environment: 
+      MB_DB_FILE: "/metabase-data/metabase.db"
+      JAVA_TIMEZONE: $APP_TIMEZONE
+      MB_DB_TYPE: $MB_DB_TYPE
+      MB_DB_DBNAME: $DB_MYSQL_NAME
+      MB_DB_USER: $DB_MYSQL_USER
+      MB_DB_PASS: $DB_MYSQL_PASSWORD
+      MB_DB_HOST: mysql
+    depends_on: 
+      - mysql
+
+  mysql:
+    image: mysql:$DB_MYSQL_VERSION
+    container_name: $APP_NAME-db
+    restart: always
+    ports:
+     - $DB_MYSQL_PORT:3306
+    volumes:
+     - mysql:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-time-zone=+8:00 --lower-case-table-names=1 --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: $DB_MYSQL_PASSWORD
+      MYSQL_DATABASE: $DB_MYSQL_NAME
+      MYSQL_USERNAME: $DB_MYSQL_USER
+      MYSQL_PASSWORD: $DB_MYSQL_PASSWORD
+
+volumes:
+  mysql:
+  metabase-data:
+  metabase-plugins:
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true

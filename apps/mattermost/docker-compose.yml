@@ -1,0 +1,66 @@
+# docker-compose: https://github.com/mattermost/mattermost-docker/blob/master/docker-compose.yml
+# image: https://hub.docker.com/r/mattermost/mattermost-team-edition
+
+version: '3.8'
+
+services:
+  mattermost:
+    image: mattermost/mattermost-team-edition:$APP_VERSION
+    container_name: $APP_NAME
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 200
+    tmpfs:
+      - /tmp
+    ports:
+      - ${APP_HTTP_PORT}:8065
+    volumes:
+      - mattermost_config:/mattermost/config:rw
+      - mattermost_data:/mattermost/data:rw
+      - mattermost_logs:/mattermost/logs:rw
+      - mattermost_plugins:/mattermost/plugins:rw
+      - mattermost_client_plugins:/mattermost/client/plugins:rw
+      - mattermost_bleve-indexes:/mattermost/bleve-indexes:rw
+    environment:
+      - TZ
+      - MM_SQLSETTINGS_DRIVERNAME
+      - MM_SQLSETTINGS_DATASOURCE=postgres://${DB_POSTGRES_USER}:${DB_POSTGRES_PASSWORD}@postgres:5432/${DB_POSTGRES_DB}?sslmode=disable&connect_timeout=10
+      - MM_SERVICESETTINGS_SITEURL=http://${APP_URL}
+      # necessary for bleve
+      - MM_BLEVESETTINGS_INDEXDIR
+    depends_on: 
+      - db
+
+  postgres:
+    container_name: $APP_NAME-db
+    image: postgres:${DB_POSTGRES_VERSION}
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 100
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    environment:
+      - TZ
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  mattermost_config:
+  mattermost_data:
+  mattermost_logs:
+  mattermost_plugins:
+  mattermost_client_plugins:
+  mattermost_bleve-indexes:
+  postgres:

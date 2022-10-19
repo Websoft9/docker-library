@@ -1,0 +1,62 @@
+# image: https://hub.docker.com/r/bitnami/magento
+
+version: '3.8'
+
+services:
+  magento:
+    image: docker.io/bitnami/magento:$APP_VERSION
+    container_name: $APP_NAME
+    restart: always
+    ports:
+      - '$APP_HTTP_PORT:8080'
+    environment:
+      - MAGENTO_USERNAME=$APP_USER
+      - MAGENTO_PASSWORD=$APP_PASSWORD
+      - MAGENTO_HOST=$APP_URL
+      - MAGENTO_EMAIL
+      - MAGENTO_MODE
+      - MAGENTO_ADMIN_URL_PREFIX
+      - MAGENTO_DEPLOY_STATIC_CONTENT
+      - PHP_MEMORY_LIMIT
+      - MAGENTO_DATABASE_HOST=mariadb
+      - MAGENTO_DATABASE_PORT_NUMBER=3306
+      - MAGENTO_DATABASE_USER=$DB_MARIADB_USER
+      - MAGENTO_DATABASE_NAME=$DB_MARIADB_NAME
+      - MAGENTO_DATABASE_PASSWORD=$DB_MARIADB_PASSWORD
+      - ELASTICSEARCH_HOST=elasticsearch
+      - ELASTICSEARCH_PORT_NUMBER=9200
+    volumes:
+      - 'magento_data:/bitnami/magento'
+    depends_on:
+      - mariadb
+      - elasticsearch
+
+  mariadb:
+    image: docker.io/bitnami/mariadb:$DB_MARIADB_VERSION
+    container_name: $APP_NAME-db
+    environment:
+      - MARIADB_USER=$DB_MARIADB_USER
+      - MARIADB_DATABASE=$DB_MARIADB_NAME
+      - MARIADB_PASSWORD=$DB_MARIADB_PASSWORD
+      - MARIADB_ROOT_PASSWORD=$DB_MARIADB_PASSWORD
+    volumes:
+      - 'mariadb_data:/bitnami/mariadb'
+
+  elasticsearch:
+    image: docker.io/bitnami/elasticsearch:7
+    container_name: $APP_NAME-elasticsearch
+    volumes:
+      - 'elasticsearch_data:/bitnami/elasticsearch/data'
+
+volumes:
+  mariadb_data:
+    driver: local
+  magento_data:
+    driver: local
+  elasticsearch_data:
+    driver: local
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true

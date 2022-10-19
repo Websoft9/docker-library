@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  mingdao-doc:
+    container_name: ${APP_NAME}-doc
+    image: registry.cn-hangzhou.aliyuncs.com/mdpublic/mingdaoyun-doc:1.2.0
+    user: root
+    restart: always
+     
+  mingdao:
+    container_name: ${APP_NAME}
+    image: registry.cn-hangzhou.aliyuncs.com/mdpublic/mingdaoyun-community:3.1.1
+    environment:
+      ENV_MINGDAO_PROTO: "http"
+      ENV_MINGDAO_HOST: ${APP_HTTP_HOST}
+      ENV_MINGDAO_PORT: "8880"
+      COMPlus_ThreadPool_ForceMinWorkerThreads: 100
+      COMPlus_ThreadPool_ForceMaxWorkerThreads: 500
+    restart: always
+    ports:
+      - ${APP_HTTP_PORT}:8880
+    volumes:
+      - appdata:/data/
+      - tmp:/usr/local/MDPrivateDeployment/wwwapi/tmp/
+      - /usr/share/zoneinfo/Etc/GMT-8:/etc/localtime
+      - mingdaodata:/data/mingdao/data
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  appdata:
+  tmp:
+  mingdaodata:

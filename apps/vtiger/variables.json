@@ -1,0 +1,25 @@
+{
+  "name": "vtiger",
+  "trademark": "Vtiger",
+  "installpath": "/data/apps/vtiger",
+  "compose_file": "docker-compose.yml",
+  "env_file": ".env",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, x86/i686",
+    "cpu": "1",
+    "memory": "4",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://community.vtiger.com/help/vtigercrm/administrators/installation.html"
+  },
+
+  "services":[
+    {
+      "name": "Vtiger",
+      "port": "9001",
+      "description_cn": "浏览器访问 Vtiger",
+      "description_en": "HTTP access to Vtiger",
+      "required": "Y"
+    }
+  ]
+}

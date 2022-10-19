@@ -1,0 +1,16 @@
+{
+  "name": "magento",
+  "trademark": "Adobe Commerce (Magento)",
+  "compose_file": "docker-compose.yml",
+  "installpath": "/data/apps/magento",
+  "fork_url": "https://hub.docker.com/r/bitnami/magento",
+  "env_file": ".env",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
+    "cpu": "2",
+    "memory": "6",
+    "disk": "20",
+    "swap": "1",
+    "url": "https://devdocs.magento.com/cloud/docker/docker-development.html#prerequisites"
+  }
+}

@@ -1,0 +1,24 @@
+# image: https://hub.docker.com/_/mariadb
+
+version: '3.8'
+services:
+  mariadb:
+    image: $APP_REPO:$APP_VERSION
+    container_name: $APP_NAME
+    restart: always
+    environment:
+     - MARIADB_ROOT_PASSWORD=$DB_MARIADB_PASSWORD
+     - MYSQL_ROOT_PASSWORD=$DB_MARIADB_PASSWORD
+    ports:
+     - $APP_DB_PORT:3306
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+     - mariadb_data:/var/lib/mysql
+     - ./src/conf.d/:/etc/mysql/conf.d
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  mariadb_data:

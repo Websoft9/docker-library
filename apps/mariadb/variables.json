@@ -1,0 +1,16 @@
+{
+  "name": "mariadb",
+  "trademark": "MariaDB",
+  "installpath": "/data/apps/mariadb",
+  "compose_file": "docker-compose.yml",
+  "env_file": ".env",
+  "fork_url": "https://github.com/MariaDB/mariadb-docker",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
+    "cpu": "1",
+    "memory": "1",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://mariadb.org/documentation/"
+  }
+}

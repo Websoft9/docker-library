@@ -1,0 +1,26 @@
+{
+  "name": "mysql",
+  "trademark": "MySQL",
+  "installpath": "/data/db/mysql",
+  "compose_file": "docker-compose.yml",
+  "env_file": ".env",
+  "fork_url": "https://github.com/docker-library/mysql",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
+    "cpu": "1",
+    "memory": "1",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://dev.mysql.com/doc/refman/8.0/en/platform-support.html"
+  },
+  "services":[
+    {
+      "name": "mysql",
+      "port": "3306",
+      "description_cn": "TCP 访问MySQL数据库",
+      "description_en": "Accessing MySQL database with TCP",
+      "required": "Y"
+    }
+  ]
+
+}

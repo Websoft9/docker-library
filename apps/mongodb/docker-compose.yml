@@ -1,0 +1,27 @@
+# refer to: https://github.com/docker-library/docs/blob/master/mongo/stack.yml
+# image: https://hub.docker.com/_/mongo
+
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:${APP_VERSION}
+    restart: always
+    container_name: ${APP_NAME}
+    ports:
+      - ${APP_DB_PORT}:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${APP_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${APP_PASSWORD}
+    command: ${APP_COMMAND}
+    volumes:
+      - mongo_data:/data/db
+      - ./src/mongod.conf:/etc/mongod.conf
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+    
+volumes:
+  mongo_data:

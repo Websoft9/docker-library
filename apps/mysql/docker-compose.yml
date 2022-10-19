@@ -1,0 +1,29 @@
+# refer to: https://github.com/docker-library/docs/blob/master/mongo/stack.yml
+# image: https://hub.docker.com/_/mysql
+
+version: '3.8'
+
+services:
+
+  mysql:
+    image: mysql:${APP_VERSION}
+    container_name: ${APP_NAME}
+    restart: always
+    ports:
+     - ${APP_DB_PORT}:3306
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+     - mysql_data:/var/lib/mysql
+     - ./src/conf.d/:/etc/mysql/conf.d
+     - ./src/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: ${APP_PASSWORD}
+
+volumes:
+  mysql_data:
+  mysql_conf:
+  
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true

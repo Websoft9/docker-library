@@ -1,0 +1,26 @@
+# image: https://hub.docker.com/r/minio/minio
+
+version: '3.8'
+services:
+  minio:
+    container_name: ${APP_CONTAINER_NAME}
+    image: minio/minio:${APP_VERSION}
+    ports:
+      - ${APP_API_PORT}:9000
+      - ${APP_HTTP_PORT}:9001
+    restart: always
+    volumes:
+     - data:/data
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${APP_USER}
+      MINIO_ROOT_PASSWORD: ${APP_PASSWORD}
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+    
+volumes:
+  data:
+    driver: local

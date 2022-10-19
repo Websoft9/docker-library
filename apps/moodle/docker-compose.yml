@@ -1,0 +1,53 @@
+# refer to: https://github.com/bitnami/bitnami-docker-moodle
+# image: https://hub.docker.com/r/bitnami/moodle
+
+version: "3.8"
+
+services:
+  mariadb:
+    image: docker.io/bitnami/mariadb:${DB_MARIADB_VERSION}
+    container_name: ${APP_NAME}-db
+    restart: always
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MARIADB_USER=${DB_MARIADB_USER}
+      - MARIADB_PASSWORD=${DB_MARIADB_PASSWORD}
+      - MARIADB_DATABASE=${DB_MARIADB_NAME}
+      - MARIADB_CHARACTER_SET=utf8mb4
+      - MARIADB_COLLATE=utf8mb4_unicode_ci
+    ports:
+      - ${DB_MARIADB_PORT}:3306
+    volumes:
+      - 'mariadb_data:/bitnami/mariadb'
+      
+  moodle:
+    image: docker.io/bitnami/moodle:${APP_VERSION}
+    container_name: ${APP_NAME}
+    restart: always
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MOODLE_DATABASE_HOST=${DB_MARIADB_HOST}
+      - MOODLE_DATABASE_PORT_NUMBER=${DB_MARIADB_PORT}
+      - MOODLE_DATABASE_USER=${DB_MARIADB_USER}
+      - MOODLE_DATABASE_PASSWORD=${DB_MARIADB_PASSWORD}
+      - MOODLE_DATABASE_NAME=${DB_MARIADB_NAME}
+      - MOODLE_USERNAME=${APP_USER}
+      - MOODLE_PASSWORD=${APP_PASSWORD}
+      - MOODLE_EMAIL=${EMAIL}
+    ports:
+      - '${APP_HTTP_PORT}:8080'
+    volumes:
+      - 'moodle_data:/bitnami/moodle'
+      - 'moodledata_data:/bitnami/moodledata'
+    depends_on:
+      - mariadb
+
+volumes:
+  mariadb_data:
+  moodle_data:
+  moodledata_data:
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
