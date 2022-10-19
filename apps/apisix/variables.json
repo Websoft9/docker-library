@@ -1,0 +1,31 @@
+{
+  "name": "apisix",
+  "trademark": "Apisix",
+  "installpath": "/data/wwwroot/apisix",
+  "compose_file": "docker-compose.yml",
+  "fork_url": "https://github.com/apache/apisix-docker",
+  "env_file": ".env",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, IBM POWER8, x86/i686",
+    "cpu": "2",
+    "memory": "4",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://github.com/apache/apisix-docker"
+  },
+
+  "user": {
+    "username": "admin",
+    "password": "admin"
+  },
+
+  "services":[
+    {
+      "name": "Apisix-dashboard",
+      "port": "9001",
+      "description_cn": "浏览器访问 Apisix 可视化控制台",
+      "description_en": "Web-GUI management for Apisix",
+      "required": "Y"
+    }
+  ]
+}

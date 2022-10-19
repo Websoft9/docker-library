@@ -1,0 +1,20 @@
+# image: https://hub.docker.com/r/bitnami/suitecrm
+# docs: https://github.com/bitnami/bitnami-docker-suitecrm
+
+version: '3.8'
+
+services:
+  ansible:
+    image: $APP_REPO:$APP_VERSION
+    container_name: $APP_NAME
+    restart: always
+    volumes: 
+      - ansible:/ansible/project
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  ansible:

@@ -1,0 +1,64 @@
+{
+  "name": "apex",
+  "trademark": "Oracle APEX",
+  "installpath": "/data/wwwroot/apex",
+  "compose_file": "docker-compose.yml",
+  "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
+  "env_file": ".env_all",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
+    "cpu": "2",
+    "memory": "8",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://github.com/onlyoffice/docker#recommended-system-requirements"
+  },
+
+  "user": {
+    "username": "admin",
+    "password": "UGz0IARz117ssO%"
+  },
+
+  "services":[
+    {
+      "name": "APEX",
+      "port": "9001",
+      "description_cn": "浏览器访问 Apex(http://ip:9001/ords)",
+      "description_en": "Web-GUI Access Apex",
+      "required": "Y"
+    },
+
+    {
+      "name": "SQL Develop Web",
+      "port": "9001",
+      "description_cn": "浏览器访问 SQL Develop Web(http://ip:9001/ords/sql-developer)",
+      "description_en": "Web-GUI Accesss SQL Develop Web",
+      "required": "Y"
+    },
+    {
+      "name": "EM",
+      "port": "5500",
+      "description_cn": "数据库可视化管理工具(https://ip:5500/em)",
+      "description_en": "Web-GUI database management tool",
+      "required": "Y"
+    }
+  ],
+  "command_extra":[
+    {
+      "cmd": "# if your run Oracle Enterprise, you shoule login by your Oracle Account and password"
+    },
+    {
+      "cmd": "docker login container-registry.oracle.com"
+    }
+  ],
+  "faqs": [
+    {
+      "question_cn": "如何才能访问SQL Develop Web",
+      "answer_cn": "容器正常启动后，通过`http://ip:port/ords/sql-developer`可以进入SQL Develop Web，为了正常运行，需要按顺序运行如下脚本： `1.docker cp src/ords/sqldevelopweb.sql apex-oracledb:/home/oracle 2.docker exec -it apex-oracledb sqlplus sys/123456@xepdb1 as sysdba 3.GRANT CREATE SESSION, CREATE TABLE, CREATE PROCEDURE,DBA, PDB_DBA TO pdbadmin; 4.@sqldevelopweb.sql`",
+      "question_en": "How can I access SQL develop web",
+      "answer_en": "After the container starts normally, it passes through `http://ip:port/ords/sql-developer` can enter SQL develop web. In order to run normally, you need to run the following script:`docker cp src/ords/sqldevelopweb.sql apex-oracledb:/home/oracle` `docker exec -it apex-oracledb sqlplus sys/123456@xepdb1 as sysdba` `GRANT CREATE SESSION, CREATE TABLE, CREATE PROCEDURE,DBA, PDB_DBA TO pdbadmin;` `@sqldevelopweb.sql`"
+    }
+
+  ]
+
+}

@@ -1,0 +1,16 @@
+{
+  "name": "algolia",
+  "trademark": "Algolia",
+  "installpath": "/data/wwwroot/onlyoffice",
+  "compose_file": "docker-compose.yml",
+  "fork_url": "https://hub.docker.com/r/algolia/docsearch-scraper/tags",
+  "env_file": ".env",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, x86/i686",
+    "cpu": "2",
+    "memory": "4",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://docsearch.algolia.com/docs/legacy/run-your-own"
+  }
+}
