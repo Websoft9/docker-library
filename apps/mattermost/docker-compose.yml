@@ -25,7 +25,7 @@ services:
     environment:
       - TZ
       - MM_SQLSETTINGS_DRIVERNAME
-      - MM_SQLSETTINGS_DATASOURCE=postgres://${DB_POSTGRES_USER}:${DB_POSTGRES_PASSWORD}@postgres:5432/${DB_POSTGRES_DB}?sslmode=disable&connect_timeout=10
+      - MM_SQLSETTINGS_DATASOURCE
       - MM_SERVICESETTINGS_SITEURL=http://${APP_URL}
       # necessary for bleve
       - MM_BLEVESETTINGS_INDEXDIR
