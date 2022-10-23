@@ -1,6 +1,7 @@
 ---
 name: Bug report
 about: Report a bug encountered while using websoft9's product
+title: 'Bug title for [appname]'
 labels: bug
 ---
 
