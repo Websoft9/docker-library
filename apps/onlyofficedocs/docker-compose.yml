@@ -22,6 +22,8 @@ services:
     volumes:
        - document_data:/var/www/onlyoffice/Data
        - document_log:/var/log/onlyoffice
+       - document_db:/var/lib/postgresql
+       - document_cache:/var/lib/onlyoffice
        - document_fonts:/usr/share/fonts/truetype/custom
        - document_forgotten:/var/lib/onlyoffice/documentserver/App_Data/cache/files/forgotten
 
@@ -33,5 +35,7 @@ networks:
 volumes:
   document_data:
   document_log:
+  document_db:
+  document_cache:
   document_fonts:
   document_forgotten:
