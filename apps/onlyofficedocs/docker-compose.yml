@@ -6,7 +6,7 @@ version: '3.8'
 services:     
   onlyofficedocs:
     container_name: ${APP_NAME}
-    image: onlyoffice/documentserver:${APP_VERSION}
+    image: onlyoffice/${APP_REPO}:${APP_VERSION}
     stdin_open: true
     tty: true
     restart: always
