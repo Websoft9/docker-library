@@ -1,7 +1,9 @@
 #!/bin/bash
 
-JAVA_ROOT_PATH=/data/apps
-JAVA_APP_NAME=spring
+cp /opt/config/php/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+chmod +x /etc/supervisor/conf.d/supervisord.conf
 
-
+# start by supervisord
+/usr/bin/supervisord
+supervisorctl start $JAVA_APP
 tail -f /dev/null
