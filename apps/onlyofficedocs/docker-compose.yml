@@ -11,9 +11,12 @@ services:
     tty: true
     restart: always
     environment:
-     - JWT_ENABLED=flase
-     - JWT_SECRET=jwt_secret
-     - JWT_HEADER=AuthorizationJwt
+     - JWT_ENABLED
+     - JWT_SECRET
+     - JWT_HEADER
+     - JWT_IN_BODY
+     - REDIS_SERVER_HOST
+     - REDIS_SERVER_PORT
     ports:
      - '${APP_HTTP_PORT}:80'
     expose:
