@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cp /opt/config/php/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+cp /opt/config/java/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 chmod +x /etc/supervisor/conf.d/supervisord.conf
 
 # start by supervisord
