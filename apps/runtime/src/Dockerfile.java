@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends lsb-release  wg
 
 RUN mkdir -p /data/apps;
 
-COPY --from=tomcat:${TOMCAT_VERSION} /usr/local/tomcat /data/apps
+COPY --from=tomcat /usr/local/tomcat /data/apps
 
 # install supervisord
 RUN apt install -y supervisor
