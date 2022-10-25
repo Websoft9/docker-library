@@ -9,28 +9,6 @@ x-java-defaults: &java_defaults
       
 services:
 
-  java19:
-    container_name: java19
-    build:
-      context: src
-      dockerfile: Dockerfile.java
-      args:
-        - JDK_VERSION=19
-    volumes: 
-      - java19:/data/apps
-    <<: *java_defaults
-
-  java18:
-    container_name: java18
-    build:
-      context: src
-      dockerfile: Dockerfile.java
-      args:
-        - JDK_VERSION=18
-    volumes: 
-      - java18:/data/apps
-    <<: *java_defaults
-
   java17:
     container_name: java17
     build:
@@ -40,61 +18,6 @@ services:
         - JDK_VERSION=17
     volumes: 
       - java17:/data/apps
-    <<: *java_defaults
-
-  java15:
-    container_name: java15
-    build:
-      context: src
-      dockerfile: Dockerfile.java
-      args:
-        - JDK_VERSION=15
-    volumes: 
-      - java15:/data/apps
-    <<: *java_defaults
-
-  java14:
-    container_name: java14
-    build:
-      context: src
-      dockerfile: Dockerfile.java
-      args:
-        - JDK_VERSION=14
-    volumes: 
-      - java14:/data/apps
-    <<: *java_defaults
-
-  java13:
-    container_name: java13
-    build:
-      context: src
-      dockerfile: Dockerfile.java
-      args:
-        - JDK_VERSION=13
-    volumes: 
-      - java13:/data/apps
-    <<: *java_defaults
-
-  java11:
-    container_name: java11
-    build:
-      context: src
-      dockerfile: Dockerfile.java
-      args:
-        - JDK_VERSION=11
-    volumes: 
-      - java11:/data/apps
-    <<: *java_defaults
-
-  java8:
-    container_name: java8
-    build:
-      context: src
-      dockerfile: Dockerfile.java
-      args:
-        - JDK_VERSION=8
-    volumes: 
-      - java8:/data/apps
     <<: *java_defaults
 
 volumes:
