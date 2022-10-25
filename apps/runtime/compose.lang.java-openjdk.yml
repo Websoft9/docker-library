@@ -21,14 +21,7 @@ services:
     <<: *java_defaults
 
 volumes:
-  java19:
-  java18:
   java17:
-  java15:
-  java14:
-  java13:
-  java11:
-  java8:
 
 networks:
   default:
