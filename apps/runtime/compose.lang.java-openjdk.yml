@@ -8,17 +8,7 @@ x-java-defaults: &java_defaults
       - JAVA_APP=${JAVA_APP}
       
 services:
-  java20:
-    container_name: java20
-    build:
-      context: src
-      dockerfile: Dockerfile.java
-      args:
-        - JDK_VERSION=20
-    volumes: 
-      - java20:/data/apps
-    <<: *java_defaults
-    
+
   java19:
     container_name: java19
     build:
@@ -74,6 +64,17 @@ services:
       - java14:/data/apps
     <<: *java_defaults
 
+  java13:
+    container_name: java13
+    build:
+      context: src
+      dockerfile: Dockerfile.java
+      args:
+        - JDK_VERSION=13
+    volumes: 
+      - java13:/data/apps
+    <<: *java_defaults
+
   java11:
     container_name: java11
     build:
@@ -97,12 +98,12 @@ services:
     <<: *java_defaults
 
 volumes:
-  java20:
   java19:
   java18:
   java17:
   java15:
   java14:
+  java13:
   java11:
   java8:
 
