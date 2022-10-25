@@ -8,7 +8,7 @@ LABEL description="JAVA runtime for ${JDK_VERSION}"
   
 RUN apt update && apt install -y --no-install-recommends lsb-release  wget openssl git
 
-RUN mkdir -p /data/apps;
+RUN mkdir -p /data/apps/tomcat;
 
 COPY --from=tomcat /usr/local/tomcat /data/apps/tomcat
 
