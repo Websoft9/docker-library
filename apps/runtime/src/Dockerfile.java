@@ -1,6 +1,6 @@
 ARG JDK_VERSION=${JDK_VERSION}
 
-FROM openjdk:${JDK_VERSION}-bullseye
+FROM openjdk:${JDK_VERSION}-buster
 
 LABEL maintainer="help@websoft9.com"
 LABEL version="${JDK_VERSION}"
