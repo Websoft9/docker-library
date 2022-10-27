@@ -13,5 +13,3 @@ docker restart nginx-proxy-manager
 echo "nginx_proxy_port: 9001" >> /credentials/password.txt
 echo "nginx_proxy_user: Admin@example.com" >> /credentials/password.txt
 echo "nginx_proxy_password: changeme" >> /credentials/password.txt
-
-
