@@ -8,7 +8,7 @@ cp /data/apps/runtime/src/nginx/1.conf /var/lib/docker/volumes/runtime_nginx_dat
 
 # update db record
 cd /data/apps/runtime/src/nginx && echo "update proxy_host set domain_names='[\"$public_ip\"]';" | sqlite3 database.sqlite
-cp /data/apps/runtime/src/nginx/database.sqlite /var/lib/docker/volumes/runtime_nginx_data
+cp /data/apps/runtime/src/nginx/database.sqlite /var/lib/docker/volumes/runtime_nginx_data/_data
 
 docker restart nginx-proxy-manager
 
