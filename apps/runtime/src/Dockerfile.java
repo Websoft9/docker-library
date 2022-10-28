@@ -9,8 +9,15 @@ LABEL description="JAVA runtime for ${JDK_VERSION}"
 RUN apt update && apt install -y --no-install-recommends lsb-release  wget openssl git
 
 RUN mkdir -p /data/apps/jenkins
-RUN cd /data/apps/jenkins && wget https://mirrors.jenkins.io/war-stable/latest/jenkins.war
 
+RUN if [ ${JDK_VERSION} == 17 ]; \
+    then \
+        echo "start downloading jenkins"; \
+        cd /data/apps/jenkins && wget https://mirrors.jenkins.io/war-stable/latest/jenkins.war ;\
+    else  \
+        echo "do nothing"; \
+    fi \
+    && echo "install jenkins suucess"
+          
 # install supervisord
 RUN apt install -y supervisor
-
