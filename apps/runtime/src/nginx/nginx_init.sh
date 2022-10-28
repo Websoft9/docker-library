@@ -14,5 +14,5 @@ cp /data/apps/runtime/src/nginx/database.sqlite /var/lib/docker/volumes/runtime_
 docker restart nginx-proxy-manager
 
 echo "nginx_proxy_port: 9001" >> /credentials/password.txt
-echo "nginx_proxy_user: Admin@example.com" >> /credentials/password.txt
+echo "nginx_proxy_user: admin@example.com" >> /credentials/password.txt
 echo "nginx_proxy_password: changeme" >> /credentials/password.txt
