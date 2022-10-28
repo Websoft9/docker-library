@@ -1,9 +1,7 @@
 ARG JDK_VERSION=${JDK_VERSION}
-
 FROM openjdk:${JDK_VERSION}-buster
 
 ARG JDK_VERSION=${JDK_VERSION}
-
 LABEL maintainer="help@websoft9.com"
 LABEL version="${JDK_VERSION}"
 LABEL description="JAVA runtime for ${JDK_VERSION}"
