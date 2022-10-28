@@ -1,8 +1,6 @@
 x-java-defaults: &java_defaults
   entrypoint: bash -c "cat /opt/config/java/service.sh > /cmd.sh && chmod +x /cmd.sh && /cmd.sh"
   working_dir: /data/apps
-  volumes: 
-      - ./config/java:/opt/config/java
   environment:
       - JAVA_APP=${JAVA_APP}
       
@@ -18,6 +16,7 @@ services:
         - JDK_VERSION=19
     volumes: 
       - java19:/data/apps
+      - ./config/java:/opt/config/java      
     <<: *java_defaults
 
   java18:
@@ -30,6 +29,7 @@ services:
         - JDK_VERSION=18
     volumes: 
       - java18:/data/apps
+      - ./config/java:/opt/config/java
     <<: *java_defaults
 
   java17:
@@ -42,6 +42,7 @@ services:
         - JDK_VERSION=17
     volumes: 
       - java17:/data/apps
+      - ./config/java:/opt/config/java
     <<: *java_defaults
 
   java15:
@@ -54,6 +55,7 @@ services:
         - JDK_VERSION=15
     volumes: 
       - java15:/data/apps
+      - ./config/java:/opt/config/java
     <<: *java_defaults
 
   java14:
@@ -66,6 +68,7 @@ services:
         - JDK_VERSION=14
     volumes: 
       - java14:/data/apps
+      - ./config/java:/opt/config/java
     <<: *java_defaults
 
   java13:
@@ -78,6 +81,7 @@ services:
         - JDK_VERSION=13
     volumes: 
       - java13:/data/apps
+      - ./config/java:/opt/config/java
     <<: *java_defaults
 
   java11:
@@ -90,6 +94,7 @@ services:
         - JDK_VERSION=11
     volumes: 
       - java11:/data/apps
+      - ./config/java:/opt/config/java
     <<: *java_defaults
 
   java8:
@@ -102,6 +107,7 @@ services:
         - JDK_VERSION=8
     volumes: 
       - java8:/data/apps
+      - ./config/java:/opt/config/java
     <<: *java_defaults
 
 volumes:
