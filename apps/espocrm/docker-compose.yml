@@ -23,7 +23,7 @@ services:
     image: espocrm/espocrm
     container_name: ${APP_NAME}
     environment:
-      ESPOCRM_DATABASE_HOST: ${APP_NAME}-mysql
+      ESPOCRM_DATABASE_HOST: ${APP_NAME}-db
       ESPOCRM_DATABASE_USER: ${DB_MYSQL_USER}
       ESPOCRM_DATABASE_PASSWORD: ${DB_MYSQL_PASSWORD}
       ESPOCRM_ADMIN_USERNAME: ${APP_USER}
