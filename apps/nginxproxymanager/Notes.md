@@ -19,3 +19,7 @@ https://nginxproxymanager.com
 #### IP 地址是否可以增加 HTTPS？
 
 不可以，Nginxproxymanager 申请证书的时候会报错
+
+#### Advanced 设置作用域？
+
+server 级作用域，非 / location
