@@ -7,7 +7,7 @@ https://nginxproxymanager.com
 
 #### 如何额外给 Location 增加指令？
 
-直接把指令复制到设置框（通过 location 【设置】图标打开）
+直接把指令复制到设置框（通过 location 【齿轮】图标打开）
 
 ![image](https://user-images.githubusercontent.com/16741975/198959861-cf09f148-2b7a-42bc-8a43-35882668e974.png)
 
