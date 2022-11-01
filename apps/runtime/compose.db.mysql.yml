@@ -10,17 +10,6 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=$DB_PASSWORD
 
-  phpmyadmin:
-      image: phpmyadmin:latest
-      container_name: ${APP_NAME}-phpmyadmin
-      environment:
-       - PMA_ARBITRARY=1
-       - PMA_ABSOLUTE_URI=$APP_URL
-       - UPLOAD_LIMIT=$APP_UPLOAD_LIMIT
-      restart: always
-      ports:
-       - 9091:80
-
 volumes:
   mysql_data:
   mysql_conf:
