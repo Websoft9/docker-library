@@ -6,7 +6,7 @@ LABEL maintainer="help@websoft9.com"
 LABEL version="${JDK_VERSION}"
 LABEL description="JAVA runtime for ${JDK_VERSION}"
   
-RUN apt update && apt install -y  wget 
+RUN apt update && apt install -y --no-install-recommends lsb-release  wget openssl git
 
 RUN mkdir -p /data/apps/jenkins
 
