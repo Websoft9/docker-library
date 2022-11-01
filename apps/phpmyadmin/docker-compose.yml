@@ -6,6 +6,8 @@ services:
   phpmyadmin:
       image: phpmyadmin:$APP_VERSION
       container_name: $APP_NAME
+      volumes:
+       - ./src/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
       environment:
        - PMA_ARBITRARY=1
        - PMA_ABSOLUTE_URI=$APP_URL
