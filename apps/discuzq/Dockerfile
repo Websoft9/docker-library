@@ -1,7 +1,7 @@
 # image: https://hub.docker.com/r/websoft9dev/discuzq
 # DiscuzQ image is search from TecentCloud image service center publicimage
 
-FROM ccr.ccs.tencentyun.com/discuzq/dzq:v3.0.220211
+FROM ccr.ccs.tencentyun.com/discuzq/dzq:v3.0.220723
 
 LABEL maintainer="help@websoft9.com"
 LABEL version="latest"
