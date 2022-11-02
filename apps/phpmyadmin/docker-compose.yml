@@ -9,7 +9,9 @@ services:
       volumes:
        - ./src/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
       environment:
-       - PMA_ARBITRARY=1
+       - PMA_HOST
+       - PMA_PORT
+       - PMA_ARBITRARY
        - PMA_ABSOLUTE_URI=$APP_URL
        - UPLOAD_LIMIT=$APP_UPLOAD_LIMIT
       restart: always
