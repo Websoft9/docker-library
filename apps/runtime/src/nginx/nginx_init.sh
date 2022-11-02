@@ -4,6 +4,7 @@ public_ip=`wget -O - https://download.websoft9.com/ansible/get_ip.sh | bash`
 # add nginx.conf
 sudo sed -i "s/example.domain.com/$public_ip/g" /data/apps/runtime/src/nginx/cockpit-proxy.conf
 cp /data/apps/runtime/src/nginx/cockpit-proxy.conf /var/lib/docker/volumes/runtime_nginx_data/_data/nginx/proxy_host/1.conf
+cp /data/apps/runtime/src/nginx/demo-proxy.conf /var/lib/docker/volumes/runtime_nginx_data/_data/nginx/proxy_host/2.conf
 
 # update db record
 cd /data/apps/runtime/src/nginx && echo "update proxy_host set domain_names='[\"$public_ip\"]';" | sqlite3 database.sqlite
