@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# from: https://github.com/Websoft9/StackHub/blob/main/scripts/get_ip.sh
+# The same with: https://github.com/Websoft9/StackHub/blob/main/scripts/get_ip.sh
 
 url_list=(
   api.ipify.org
