@@ -1,6 +1,5 @@
 #!/bin/bash
-sudo chmod +x /data/apps/runtime/src/nginx/get_ip.sh
-public_ip=$(bash /data/apps/runtime/src/nginx/gitip.sh)
+public_ip=`wget -O - https://download.websoft9.com/ansible/get_ip.sh | bash`
 
 # add nginx.conf
 sudo sed -i "s/example.domain.com/$public_ip/g" /data/apps/runtime/src/nginx/cockpit-proxy.conf
