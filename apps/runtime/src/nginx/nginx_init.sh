@@ -1,5 +1,5 @@
 #!/bin/bash
-sudo chmod +x /data/apps/runtime/src/nginx/gitip.sh
+sudo chmod +x /data/apps/runtime/src/nginx/get_ip.sh
 public_ip=$(bash /data/apps/runtime/src/nginx/gitip.sh)
 
 # add nginx.conf
