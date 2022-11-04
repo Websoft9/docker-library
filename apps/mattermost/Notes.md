@@ -7,7 +7,7 @@ tag master 是每日更新版本
 
 ### 注意
 
-* 容器默认为 PostgreSQL 数据库，使用MySQL数据库需要非常完整的数据库连接
+* 容器默认为 PostgreSQL 数据库，使用 MySQL 数据库需要非常完整的数据库连接
 
 ## FAQ
 
