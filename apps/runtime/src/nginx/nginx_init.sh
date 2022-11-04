@@ -8,7 +8,7 @@ cp /data/apps/runtime/src/nginx/demo-proxy.conf /var/lib/docker/volumes/runtime_
 
 # update db record
 cd /data/apps/runtime/src/nginx 
-echo "update proxy_host set domain_names='[\"$public_ip\"]' and id=9;" | sqlite3 database.sqlite
+echo "update proxy_host set domain_names='[\"$public_ip\"]'" | sqlite3 database.sqlite
 echo "update user set email=\"admin@example.com\";" | sqlite3 database.sqlite
 echo "update auth set secret=\"\$2b\$13\$C9mJYK7Gf7sVgCCYw84HhOvOIpnyhkdGqwIp0PPj/s9.q0bxkoMZe\";" | sqlite3 database.sqlite
 rm -f /var/lib/docker/volumes/runtime_nginx_data/_data/database.sqlite
