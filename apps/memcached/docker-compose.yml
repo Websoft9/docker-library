@@ -21,8 +21,6 @@ services:
      - '$APP_PANEL_PORT:80'
     environment: 
      - 'MEMCACHED_HOST=memcached'
-    profiles: 
-      - panel 
 
 networks:
   default:
