@@ -1,0 +1,15 @@
+{
+  "name": "tooljet",
+  "trademark": "TooleJet",
+  "compose_file": "docker-compose.yml",
+  "fork_url": "https://github.com/ToolJet/ToolJet",
+  "env_file": ".env_all",
+  "requirements":{
+    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64",
+    "cpu": "2",
+    "memory": "4",
+    "disk": "20",
+    "swap": "2",
+    "url": "https://github.com/ToolJet/ToolJet"
+  }
+}
