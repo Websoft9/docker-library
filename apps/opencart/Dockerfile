@@ -1,8 +1,12 @@
 FROM php:8.1-apache
 
-LABEL maintainer="help@websoft9.com"
-LABEL version="4.0.1.1"
-LABEL description="OpenCart"
+LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
+      org.opencontainers.image.description="Application packaged by Websoft9" \
+      org.opencontainers.image.ref.name="4.0.1.1-p1-debian:bullseye-slim" \
+      org.opencontainers.image.source="https://github.com/Websoft9/docker-library/tree/main/apps/opencart" \
+      org.opencontainers.image.title="OpenCart" \
+      org.opencontainers.image.vendor="Websoft9 Inc." \
+      org.opencontainers.image.version="4.0.1.1"
 
 ARG OC_VERSION='4.0.1.1'
 
