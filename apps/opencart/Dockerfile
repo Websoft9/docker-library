@@ -11,7 +11,7 @@ ENV INSTALL_DIR /var/www/html
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
 RUN apt-get update && apt-get upgrade -y; \
-    apt-get install -y --no-install-recommends wget unzip zip zlib1g-dev libpng-dev libzip-dev libc-client-dev libkrb5-dev ghostscript ; \
+    apt-get install -y wget unzip zip zlib1g-dev libpng-dev libjpeg-dev libfreetype6-dev libwebp-dev libzip-dev libc-client-dev imagemagick libkrb5-dev ghostscript ; \
     docker-php-ext-configure imap --with-kerberos --with-imap-ssl ; \
     docker-php-ext-configure gd --with-freetype --with-jpeg=/usr --with-webp ; \
     docker-php-ext-install -j "$(nproc)"  imap gd zip bcmath opcache exif mysqli ; \

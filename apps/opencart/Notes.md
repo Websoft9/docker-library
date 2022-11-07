@@ -5,10 +5,15 @@
 ## 常见问题
 
 #### Dashboard 要求转移 storage 文件夹，可以吗？
+
 不可以，会导致 storage 权限发生变化，从而出现代码错误
 
 #### 可以将 /var/www 设置为 volume 吗？
 不可以，会导致代码错误
+
+#### 为什么 libjpeg-dev 没有安装上？
+
+apt install --no-install-recommends 会导致安装不完整，所以去掉 --no-install-recommends 
 
 ## Bitnami 归档
 
