@@ -4,7 +4,7 @@ services:
   proxy:
     image: jc21/nginx-proxy-manager:${APP_VERSION}
     restart: always
-    container_name: nginx-proxy-manager
+    container_name: nginxproxymanager
     ports:
       - '80:80'
       - '9001:81'
