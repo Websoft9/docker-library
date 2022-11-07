@@ -4,9 +4,9 @@ on:
   push:
     branches: [ main ]
     paths: 
-      - 'Dockerfile'
-      - 'cmd.sh'
-      - 'entrypoint.sh'
+      - 'apps/*/Dockerfile'
+      - 'apps/*/cmd.sh'
+      - 'apps/*/entrypoint.sh'
     tags:
       - v**
 jobs:
