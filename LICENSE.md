@@ -1,5 +1,5 @@
 This program is released under LGPL-3.0 and with the additional Terms: 
-Without authorization from Websoft9, it is not allowed to publish free or paid image based on this program in any Cloud platform's Marketplace.  
+Without authorization, it is not allowed to publish free or paid image based on this program in any Cloud platform's Marketplace.  
 
                    GNU LESSER GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
