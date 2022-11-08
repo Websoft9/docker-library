@@ -9,7 +9,7 @@ services:
     container_name: rethinkdb
     restart: always
     ports:
-     #- 8080:8080
+     - 9090:8080
      - ${APP_CLIENT_PORT}:28015
      - ${APP_CLUSTER_PORT}:29015
     command:
