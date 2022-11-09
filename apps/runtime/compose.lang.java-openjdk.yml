@@ -1,8 +1,6 @@
 x-java-defaults: &java_defaults
   entrypoint: bash -c "cat /opt/config/java/service.sh > /cmd.sh && chmod +x /cmd.sh && /cmd.sh"
   working_dir: /data/apps
-  environment:
-      - JAVA_APP=${JAVA_APP}
       
 services:
 
