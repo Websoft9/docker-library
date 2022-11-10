@@ -7,8 +7,7 @@ on:
       - 'apps/*/Dockerfile'
       - 'apps/*/cmd.sh'
       - 'apps/*/entrypoint.sh'
-    tags:
-      - v**
+
 jobs:
   build:
     name: Build Docker image
