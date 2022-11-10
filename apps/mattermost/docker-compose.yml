@@ -30,7 +30,7 @@ services:
       # necessary for bleve
       - MM_BLEVESETTINGS_INDEXDIR
     depends_on: 
-      - db
+      - postgres
 
   postgres:
     container_name: $APP_NAME-db
