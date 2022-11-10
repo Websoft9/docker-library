@@ -19,20 +19,44 @@ jobs:
       - uses: actions/checkout@v2
         name: Check out code
 
-      - name: Set appname
-        run: |
-          repo=${{github.event.repository.name}}
-          arrayrepo=(${repo//-/ })
-          APP_NAME=${arrayrepo[1]}
-          echo "APP_NAME=${APP_NAME}" >> $GITHUB_ENV
-        
-      - name: Get all tags when release a tag
-        if: contains(github.ref_name, 'v')
-        run: |
-         tmptag=${{ github.ref_name}}
-         arraytag=(${tmptag//./ })
-         TAGS=${arraytag[0]},${arraytag[0]}.${arraytag[1]},${{ github.ref_name}},latest
-         echo "TAGS=${TAGS}" >> $GITHUB_ENV
+      - name: set appname 
+        run: | 
+         changefile=$(curl \
+                        -H "Accept: application/vnd.github+json" \
+                        -H "Authorization: Bearer ${{github.token}}" \
+                        https://api.github.com/repos/xyt52/docker-library/compare/${{github.event.before}}...${{github.event.after}} | jq '.files[].filename' | sed 's/\"//g')
+         first="true"
+         for name in ${changefile};do
+             echo ${name}
+             app=$(echo ${name} | cut -d "/" -f 2)
+             file=$(echo ${name} | cut -d "/" -f 3)
+             if [[ ${file} == "Dockerfile" ]] || [[ ${file} == "cmd.sh" ]] || [[ ${file} == "entrypoint.sh" ]];then
+                 if [ ${first} == "true" ];then
+                      echo "set appname";
+                      appname=${app};
+                      first="false";
+                    else
+                      echo "compare name";
+                      if [ ${appname} != ${app} ];then
+                           echo "stop update image on github";
+                           exit 1
+                      fi
+                 fi 
+              else
+                 echo "affect nothing";
+             fi
+         done
+         echo ${appname}
+         echo "APP_NAME=${appname}" >> $GITHUB_ENV
+         
+      - name: set tags 
+        run: | 
+         tag=$(cat apps/${{env.APP_NAME}}/variables.json | jq '.version' | sed 's/\"//g')
+         echo ${tag}
+         if [ ${tag} != "null" ];then
+            echo "set tags"
+            echo "TAGS=${tag}" >> $GITHUB_ENV
+         fi
          
       - uses: mr-smithers-excellent/docker-build-push@v5
         name: Build & push Docker image
@@ -40,6 +64,6 @@ jobs:
           image: websoft9dev/${{env.APP_NAME}}
           tags: ${{env.TAGS}}
           registry: docker.io
-          dockerfile: Dockerfile
+          dockerfile: apps/${{env.APP_NAME}}/Dockerfile
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
