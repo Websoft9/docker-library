@@ -5,7 +5,7 @@ version: '3.8'
 
 services:
  zabbix-server:
-  image: zabbix/zabbix-server-mysql:centos-${APP_VERSION}-latest
+  image: zabbix/zabbix-server-mysql:ubuntu-${APP_VERSION}-latest
   container_name: ${APP_NAME}-server
   restart: always
   ports:
@@ -45,7 +45,6 @@ services:
    - MYSQL_PASSWORD=${DB_MYSQL_PASSWORD}
    - MYSQL_DATABASE=${DB_MYSQL_NAME}
    - APP_PASSWORD=${APP_PASSWORD}
-   - APP_ENCRYPT_PASSWORD=${APP_ENCRYPT_PASSWORD}
   depends_on:
    - mysql
   stop_grace_period: 30s
@@ -59,7 +58,7 @@ services:
    com.zabbix.company: "Zabbix LLC"
    com.zabbix.component: "zabbix-server"
    com.zabbix.dbtype: "mysql"
-   com.zabbix.os: "centos"
+   com.zabbix.os: "ubuntu"
   user: root
   entrypoint:
     - bash
@@ -69,7 +68,7 @@ services:
     - source: my_cmd
  
  zabbix-web-apache-mysql:
-  image: zabbix/zabbix-web-apache-mysql:centos-${APP_VERSION}-latest
+  image: zabbix/zabbix-web-apache-mysql:ubuntu-${APP_VERSION}-latest
   container_name: ${APP_NAME}-web
   restart: always
   ports:
@@ -113,10 +112,10 @@ services:
    com.zabbix.component: "zabbix-frontend"
    com.zabbix.webserver: "apache2"
    com.zabbix.dbtype: "mysql"
-   com.zabbix.os: "centos"
+   com.zabbix.os: "ubuntu"
 
  zabbix-agent:
-  image: zabbix/zabbix-agent:centos-${APP_VERSION}-latest
+  image: zabbix/zabbix-agent:ubuntu-${APP_VERSION}-latest
   container_name: ${APP_NAME}-agent
   restart: always
   ports:
@@ -147,10 +146,10 @@ services:
    com.zabbix.description: "Zabbix agent"
    com.zabbix.company: "Zabbix LLC"
    com.zabbix.component: "zabbix-agentd"
-   com.zabbix.os: "centos"
+   com.zabbix.os: "ubuntu"
 
  zabbix-java-gateway:
-  image: zabbix/zabbix-java-gateway:centos-${APP_VERSION}-latest
+  image: zabbix/zabbix-java-gateway:ubuntu-${APP_VERSION}-latest
   container_name: ${APP_NAME}-java
   restart: always
   ports:
@@ -168,10 +167,10 @@ services:
    com.zabbix.description: "Zabbix Java Gateway"
    com.zabbix.company: "Zabbix LLC"
    com.zabbix.component: "java-gateway"
-   com.zabbix.os: "centos"
+   com.zabbix.os: "ubuntu"
 
  zabbix-snmptraps:
-  image: zabbix/zabbix-snmptraps:centos-${APP_VERSION}-latest
+  image: zabbix/zabbix-snmptraps:ubuntu-${APP_VERSION}-latest
   container_name: ${APP_NAME}-snmptraps
   restart: always
   ports:
@@ -189,7 +188,7 @@ services:
    com.zabbix.description: "Zabbix snmptraps"
    com.zabbix.company: "Zabbix LLC"
    com.zabbix.component: "snmptraps"
-   com.zabbix.os: "centos"
+   com.zabbix.os: "ubuntu"
 
  mysql:
   image: mysql:${DB_MYSQL_VERSION}
