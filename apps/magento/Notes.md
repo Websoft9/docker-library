@@ -10,11 +10,17 @@
 
 Magento host domain or IP address. Default: localhost
 
-例如： 47.243.184.40:9001
+例如： MAGENTO_HOST=47.243.184.40
 
 也可以运行命令修改 URL
 ```
-magento config:set web/unsecure/base_url  http://47.243.184.40:9001/
+magento config:set web/unsecure/base_url  http://47.243.184.40/
+```
+
+Nginx Proxy 之后，必须将默认的 8080 改到 80
+
+```
+APACHE_HTTP_PORT_NUMBER=80
 ```
 
 #### CLI in docker image?

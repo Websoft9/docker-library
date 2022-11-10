@@ -9,22 +9,13 @@ services:
     restart: always
     ports:
       - '$APP_HTTP_PORT:8080'
+    env_file:
+      - .env
     environment:
-      - MAGENTO_USERNAME=$APP_USER
-      - MAGENTO_PASSWORD=$APP_PASSWORD
       - MAGENTO_HOST=$APP_URL
-      - MAGENTO_EMAIL
-      - MAGENTO_MODE
-      - MAGENTO_ADMIN_URL_PREFIX
-      - MAGENTO_DEPLOY_STATIC_CONTENT
-      - PHP_MEMORY_LIMIT
-      - MAGENTO_DATABASE_HOST=mariadb
-      - MAGENTO_DATABASE_PORT_NUMBER=3306
       - MAGENTO_DATABASE_USER=$DB_MARIADB_USER
       - MAGENTO_DATABASE_NAME=$DB_MARIADB_NAME
       - MAGENTO_DATABASE_PASSWORD=$DB_MARIADB_PASSWORD
-      - ELASTICSEARCH_HOST=elasticsearch
-      - ELASTICSEARCH_PORT_NUMBER=9200
     volumes:
       - 'magento_data:/bitnami/magento'
     depends_on:
