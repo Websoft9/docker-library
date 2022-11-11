@@ -1,5 +1,5 @@
 #!/bin/bash
-# customrized cmd.sh powered by websoft9
+# customrized cmd powered by websoft9
 
 if [ ! -f "/var/www/html/install/controller/install/step_3.php" ];then
   echo "The initialization file does not exist，The initialization action is no longer performed!"
