@@ -64,10 +64,10 @@ jobs:
             echo "$arraytag1 $arraytag2"
             if [ ${arraytag3}x != x ];then
                 TAGS=v${arraytag1},v${arraytag1}.${arraytag2},v${tag},latest
-              else
+            else
                 TAGS=v${arraytag1},v${tag},latest
             fi
-           else
+         else
             TAGS="latest"
          fi
          echo "123$TAGS"
