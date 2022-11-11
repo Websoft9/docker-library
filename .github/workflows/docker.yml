@@ -48,13 +48,24 @@ jobs:
          echo ${appname}
          echo "APP_NAME=${appname}" >> $GITHUB_ENV
          
+    
       - name: set tags 
         run: | 
          tag=$(cat apps/${{env.APP_NAME}}/variables.json | jq '.version' | sed 's/\"//g')
          echo ${tag}
          if [ ${tag} != "null" ];then
             echo "set tags"
-            echo "TAGS=${tag}" >> $GITHUB_ENV
+            arraytag1=$(echo ${tag} | cut -d "." -f 1)
+            arraytag2=$(echo ${tag} | cut -d "." -f 2)
+            arraytag3=$(echo ${tag} | cut -d "." -f 3)
+            echo "$arraytag1 $arraytag2"
+            if [ ${arraytag3}x != x ];then
+                TAGS=v${arraytag1},v${arraytag1}.${arraytag2},v${tag},latest
+              else
+                TAGS=v${arraytag1},v${tag},latest
+            fi
+            echo "$TAGS"
+            echo "TAGS=${TAGS}" >> $GITHUB_ENV
          fi
          
       - uses: mr-smithers-excellent/docker-build-push@v5
