@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# create by websoft9
+# create by Websoft9
 # Replace DB connetion
 if [[ -f /var/www/discuz/config/config.php ]]; then
    echo "Initialization has been completed before this time!"
