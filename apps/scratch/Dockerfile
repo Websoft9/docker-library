@@ -13,3 +13,4 @@ RUN cd usr/app/Scratch3 && npm install && npm run build
 
 FROM nginx:1.15-alpine
 COPY --from=builder /usr/app/Scratch3/build /usr/share/nginx/html
+VOLUME /usr/share/nginx/html
