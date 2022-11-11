@@ -25,6 +25,7 @@ jobs:
                         -H "Authorization: Bearer ${{github.token}}" \
                         https://api.github.com/repos/Websoft9/docker-library/compare/${{github.event.before}}...${{github.event.after}} | jq '.files[].filename' | sed 's/\"//g')
          first="true"
+         pass="false"
          for name in ${changefile};do
              echo ${name}
              app=$(echo ${name} | cut -d "/" -f 2)
@@ -38,7 +39,7 @@ jobs:
                       echo "compare name";
                       if [ ${appname} != ${app} ];then
                            echo "stop update image on github";
-                           exit 1
+                           pass="true"
                       fi
                  fi 
               else
@@ -47,9 +48,11 @@ jobs:
          done
          echo ${appname}
          echo "APP_NAME=${appname}" >> $GITHUB_ENV
+         echo "PASS_STEP=${pass}" >> $GITHUB_ENV
          
     
       - name: set tags 
+        if: env.PASS_STEP=='false'
         run: | 
          tag=$(cat apps/${{env.APP_NAME}}/variables.json | jq '.version' | sed 's/\"//g')
          echo ${tag}
@@ -70,6 +73,7 @@ jobs:
          
       - uses: mr-smithers-excellent/docker-build-push@v5
         name: Build & push Docker image
+        if: env.PASS_STEP=='false'
         with:
           image: websoft9dev/${{env.APP_NAME}}
           tags: ${{env.TAGS}}
