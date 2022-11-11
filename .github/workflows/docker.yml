@@ -67,9 +67,11 @@ jobs:
               else
                 TAGS=v${arraytag1},v${tag},latest
             fi
-            echo "$TAGS"
-            echo "TAGS=${TAGS}" >> $GITHUB_ENV
+           else
+            TAGS="latest"
          fi
+         echo "123$TAGS"
+         echo "TAGS=${TAGS}" >> $GITHUB_ENV
          
       - uses: mr-smithers-excellent/docker-build-push@v5
         name: Build & push Docker image
