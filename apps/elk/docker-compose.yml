@@ -15,8 +15,7 @@ services:
       - ./src/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
     environment:
       ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
-      ELASTICSEARCH_USERNAME: ${APP_USER}
-      ELASTICSEARCH_PASSWORD: ${APP_PASSWORD}
+      ELASTICSEARCH_SERVICEACCOUNTTOKEN: AAEAAWVsYXN0aWMva2liYW5hL3Rlc3Q6bU5CMTVuNEZTdG1BaHBvSWFjVXlHZw
       SERVER_HOST: "0.0.0.0"
       SERVER_NAME: "kibana"
     ports:
@@ -30,6 +29,7 @@ services:
     restart: always
     volumes:
       - ./src/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./src/elasticsearch/config/service_tokens:/usr/share/elasticsearch/config/service_tokens
       - elasticsearch:/usr/share/elasticsearch/data
     ports:
       - ${DB_ES_HTTP_PORT}:9200
