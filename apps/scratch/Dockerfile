@@ -1,6 +1,6 @@
 # fork from : https://github.com/DarkMaguz/scratch3-docker/blob/master/Dockerfile
 
-FROM node:10-alpine as builder
+FROM node:14-alpine as builder
 LABEL maintainer="help@websoft9.com"
 LABEL version="latest"
 LABEL description="Scratch"
