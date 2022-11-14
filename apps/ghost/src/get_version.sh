@@ -1,1 +1,1 @@
-sudo echo "ghost_version:" $(docker exec -it $1 ls versions) |sudo tee -a /data/logs/install_version.txt
+sudo echo "ghost_version:" $(ls /data/apps/ghost/data/ghost/versions) |sudo tee -a /data/logs/install_version.txt
