@@ -17,7 +17,7 @@ Magento host domain or IP address. Default: localhost
 magento config:set web/unsecure/base_url  http://47.243.184.40/
 ```
 
-Nginx Proxy 之后，必须将默认的 8080 改到 80
+如果使用 Nginx Proxy 访问 Magento，必须将默认的 8080 改到 80
 
 ```
 APACHE_HTTP_PORT_NUMBER=80
