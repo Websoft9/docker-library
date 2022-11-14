@@ -4,6 +4,10 @@
 
 ## FAQ
 
+#### Wireguard 端口是什么协议？
+
+UDP
+
 #### 客户端用什么？
 
 [TunSafe](https://tunsafe.com/)
