@@ -34,7 +34,7 @@ services:
     container_name: $APP_NAME-cmak
     restart: always
     ports:
-      - "$APP_HTTP_PORT:9000"
+      - "$KAFKA_CMAK_PORT:9000"
     environment:
       ZK_HOSTS: "zookeeper:2181"
       APPLICATION_SECRET: "random-secret"
