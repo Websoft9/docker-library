@@ -12,7 +12,6 @@ services:
    - "10051:10051"
   volumes:
    - /etc/localtime:/etc/localtime:ro
-   - /etc/timezone:/etc/timezone:ro 
    - zabbix_alertscripts:/usr/lib/zabbix/alertscripts:ro
    - zabbix_externalscripts:/usr/lib/zabbix/externalscripts:ro
    - zabbix_export:/var/lib/zabbix/export:rw
@@ -75,7 +74,6 @@ services:
    - "${APP_HTTP_PORT}:8080"
   volumes:
    - /etc/localtime:/etc/localtime:ro
-   - /etc/timezone:/etc/timezone:ro
    - apache2:/etc/ssl/apache2:ro
    - zabbix_modules:/usr/share/zabbix/modules:ro
   links:
@@ -122,7 +120,6 @@ services:
    - "10050:10050"
   volumes:
    - /etc/localtime:/etc/localtime:ro
-   - /etc/timezone:/etc/timezone:ro
    - zabbix_agentd.d:/etc/zabbix/zabbix_agentd.d:ro
    - zabbix_modules:/var/lib/zabbix/modules:ro
    - zabbix_enc:/var/lib/zabbix/enc:ro
