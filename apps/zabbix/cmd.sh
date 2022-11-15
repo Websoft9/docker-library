@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "##########################################start set init password#################################################################"
-apt-get install apache2-utils -y 1>/dev/null 2>&1
+apt-get update && apt-get install apache2-utils -y 1>/dev/null 2>&1
 
 # for CentOS image
 # yum install httpd-tools -y 1>/dev/null 2>&1
