@@ -80,7 +80,7 @@ jobs:
           image: websoft9dev/${{env.APP_NAME}}
           tags: ${{env.TAGS}}
           registry: docker.io
-          directory: apps/${{env.APP_NAME}}
+          directory: ./apps/${{env.APP_NAME}}
           dockerfile: Dockerfile
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
