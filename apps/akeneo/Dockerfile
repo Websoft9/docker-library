@@ -1,6 +1,4 @@
 # refer to: https://github.com/chandrantwins/akeneo-docker/blob/master/Dockerfile
-
-
 FROM akeneo/pim-php-dev:master
 
 LABEL maintainer="help@websoft9.com"
