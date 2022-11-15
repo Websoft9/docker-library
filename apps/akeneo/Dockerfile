@@ -33,7 +33,6 @@ RUN COMPOSER_MEMORY_LIMIT=-1 composer create-project akeneo/pim-community-standa
 
 WORKDIR /var/www/html
 RUN chown -R www-data:www-data /var/www/html
-# install module on image
 RUN yarn install
 
 EXPOSE 80
