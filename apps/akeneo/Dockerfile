@@ -32,6 +32,7 @@ RUN COMPOSER_MEMORY_LIMIT=-1 composer create-project akeneo/pim-community-standa
 WORKDIR /var/www/html
 RUN chown -R www-data:www-data /var/www/html
 RUN yarn install
+RUN PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1 yarnpkg packages:build
 
 EXPOSE 80
 
