@@ -2,6 +2,10 @@
 
 ## FAQ
 
+#### 管理员账号是什么？
+
+可以通过初始化向导中设置，也可以之后注册第一个账号
+
 #### gitea:-rootless 镜像有什么特征？
 
 The rootless image use Gitea internal SSH to provide Git protocol and doesn’t support OpenSSH.
