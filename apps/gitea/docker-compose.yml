@@ -1,5 +1,5 @@
-# image: https://hub.docker.com/r/bitnami/suitecrm
-# docs: https://github.com/bitnami/bitnami-docker-suitecrm
+# image: https://hub.docker.com/r/gitea/gitea
+# docs: https://docs.gitea.io/zh-cn/install-with-docker
 
 
 version: '3.8'
