@@ -1,12 +1,11 @@
-# image: https://hub.docker.com/r/javanile/vtiger
-# src: https://www.github.com/javanile/vtiger
+# image: https://hub.docker.com/r/websoft9dev/vtiger/tags
 
 version: '3.8'
 
 services:
 
   vtiger:
-    image: javanile/vtiger:${APP_VERSION}
+    image: websoft9dev/vtiger:${APP_VERSION}
     container_name: ${APP_NAME}
     restart: always
     ports:
