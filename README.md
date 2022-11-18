@@ -60,9 +60,7 @@ Websoft9 submit some issue with "¥50 - ¥1000", hope you can close it and obtai
 
 ## Support
 
-If you want to get our Enterprise Support to ensure high availability of applications, you can subscribe our [Theia Enterprise Support](https://www.websoft9.com/apps)   
-
-What you get with a Enterprise Support subscription?
+You can subscribe our [Websoft9 Enterprise Support](https://www.websoft9.com/apps) to ensure high availability of applications and more:  
 
 * Knowledge: Answers and guidance from product experts
 * Support: Everything you need for technical support, e.g Enable HTTPS, Upgrade guide
