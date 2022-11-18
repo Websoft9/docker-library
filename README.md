@@ -60,7 +60,7 @@ Websoft9 submit some issue with "¥50 - ¥1000", hope you can close it and obtai
 
 ## Support
 
-You can subscribe our [Websoft9 Enterprise Support](https://www.websoft9.com/apps) to ensure high availability of applications and more:  
+You can subscribe [Websoft9 Enterprise Support](https://www.websoft9.com/apps) to ensure high availability of applications and more:  
 
 * Knowledge: Answers and guidance from product experts
 * Support: Everything you need for technical support, e.g Enable HTTPS, Upgrade guide
@@ -68,4 +68,4 @@ You can subscribe our [Websoft9 Enterprise Support](https://www.websoft9.com/app
 
 ## License
 
-[LGPL-3.0](/License.md), Additional Terms: It is not allowed to publish free or paid image based on this repository in any Cloud platform's Marketplace.
+[LGPL-3.0](/License.md), Additional Terms: It is not allowed to publish free or paid image based on this repository in any Cloud platform's Marketplace without authorization (未经授权许可，不允许将基于本项目创建的镜像到云平台市场上售卖)
