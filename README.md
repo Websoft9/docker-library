@@ -52,3 +52,21 @@ Our specifications is very simple, you just only add the environments begin with
 
 We will certainly encounter difficult problems in our work, but it may be very simple for you. 
 Websoft9 submit some issue with "¥50 - ¥1000", hope you can close it and obtain the reward
+
+## Documentation
+
+[Websoft9 Administrator Guide](https://support.websoft9.com/docs)
+
+## Support
+
+If you want to get our Enterprise Support to ensure high availability of applications, you can subscribe our [Theia Enterprise Support](https://www.websoft9.com/apps)   
+
+What you get with a Enterprise Support subscription?
+
+* Knowledge: Answers and guidance from product experts
+* Support: Everything you need for technical support, e.g Enable HTTPS, Upgrade guide
+* Security: Security services and tools to protect your software
+
+## License
+
+[LGPL-3.0](/License.md), Additional Terms: It is not allowed to publish free or paid image based on this repository in any Cloud platform's Marketplace.
