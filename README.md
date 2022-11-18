@@ -50,4 +50,5 @@ Our specifications is very simple, you just only add the environments begin with
 
 ## Issue reward
 
-We will certainly encounter difficult problems in our work, but it may be very simple for you. So, Websoft9 will pay for some important issue, you can see these issue with "¥50 - ¥1000" . Hope you can close it and obtain the reward
+We will certainly encounter difficult problems in our work, but it may be very simple for you. 
+Websoft9 submit some issue with "¥50 - ¥1000", hope you can close it and obtain the reward
