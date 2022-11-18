@@ -4,7 +4,6 @@ If you can use docker, you already know how to use and develop an app for Websof
 
 ## How to use it?
 
-Just need docker compose, you can use them very easy
 
 1. Make sure you have install the Docker latest or you can install Docker by below script
 
