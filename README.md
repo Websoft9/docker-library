@@ -48,6 +48,6 @@ The development for this repository have below field:
 
 Our specifications is very simple, you just only add the environments begin with **APP_** reference from template
 
-## Paid Issue
+## Issue reward
 
 We will certainly encounter difficult problems in our work, but it may be very simple for you. So, Websoft9 will pay for some important issue, you can see these issue with "¥50 - ¥1000" . Hope you can close it and obtain the reward
