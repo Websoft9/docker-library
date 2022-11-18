@@ -12,7 +12,7 @@ Just need docker compose, you can use them very easy
    curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh && sudo systemctl start docker
    ```
 
-2. Download this repository to your Linux system and list all applications
+2. Download this repository to your Linux and list all applications
 
    ```
    git clone https://github.com/Websoft9/docker-library
@@ -24,7 +24,7 @@ Just need docker compose, you can use them very easy
    ```
    # e.g install wordpress
    cd apps/wordpress
-   sudo docker compose up -d
+   sudo docker network create websoft9 &&  sudo docker compose up -d
    ```
 
 ## Environments
