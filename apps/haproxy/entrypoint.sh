@@ -1,6 +1,7 @@
-# replace password
-sudo sed -i "s/admin:.*/admin:$APP_PASSWORD/g" /data/apps/haproxy/src/haproxy.cfg
+# replace password at /usr/local/etc/haproxy/haproxy.cfg, to do
+# target line: stats auth admin:uQ8E1wVTzG8SOk3!
 
 # up the native entrypoint.sh and cmd
 exec "$@"
-/docker-entrypoint.sh haproxy -f /usr/local/etc/haproxy/haproxy.cfg
+
+/usr/local/bin/docker-entrypoint.sh haproxy -f /usr/local/etc/haproxy/haproxy.cfg

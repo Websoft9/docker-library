@@ -1,5 +1,7 @@
 ## HAProxy
 
+to do:  init password
+
 ### 注意
 
 * 2.4 版本之后容器用户为 haproxy，之前为 root
