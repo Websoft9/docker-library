@@ -1,1 +1,1 @@
-
+sudo echo "vtiger version:" $(docker inspect websoft9dev/vtiger:$(docker images | grep vtiger |awk '{print $2}') | jq .[].ContainerConfig.Labels.version |sed 's/\"//g') |sudo tee -a /data/logs/install_version.txt
