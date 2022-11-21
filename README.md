@@ -1,6 +1,6 @@
 # Websoft9 Docker applications
 
-This repository include 200+ applications with docker compose, e.g [WordPress, MySQL, Odoo, MongoDB...](https://github.com/Websoft9/docker-library/tree/main/apps)  
+This repository include 200+ applications based on docker compose, e.g [WordPress, MySQL, Odoo, MongoDB...](https://github.com/Websoft9/docker-library/tree/main/apps) 
 
 If you can use docker, you already know how to use and develop an application for [Websoft9](https://www.websoft9.com). 
 
