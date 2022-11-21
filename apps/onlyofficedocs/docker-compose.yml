@@ -10,7 +10,7 @@ services:
     image: onlyoffice/${APP_REPO}:${APP_VERSION}
     stdin_open: true
     tty: true
-    restart: unless-stopped
+    restart: always
     environment:
      - JWT_ENABLED
      - JWT_SECRET

@@ -15,7 +15,7 @@ services:
       - ${APP_DB_PORT}:1433
     volumes:
       - mssql_data:/var/opt/mssql
-    restart: unless-stopped
+    restart: always
 
 networks:
   default:

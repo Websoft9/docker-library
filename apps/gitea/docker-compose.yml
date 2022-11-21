@@ -11,7 +11,7 @@ services:
     environment:
       - USER_UID=1000
       - USER_GID=1000
-    restart: unless-stopped
+    restart: always
     env_file:
       - .env
     volumes:
@@ -35,7 +35,7 @@ services:
       MYSQL_PASSWORD: ${DB_MYSQL_PASSWORD}
     volumes:
       - mysql:/var/lib/mysql
-    restart: unless-stopped
+    restart: always
 
 networks:
   default:

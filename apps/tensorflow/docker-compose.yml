@@ -7,7 +7,7 @@ services:
   tensorflow:
     image: tensorflow/tensorflow:${APP_VERSION}
     container_name: ${APP_NAME}
-    restart: unless-stopped
+    restart: always
     ports:
       # tensorboard port is 6006, but you need to start it on container by yourself 
       - '${APP_HTTP_PORT}:8888'

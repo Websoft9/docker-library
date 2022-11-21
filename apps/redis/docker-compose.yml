@@ -7,19 +7,19 @@ services:
   redis:
     image: redis:${APP_VERSION}
     container_name: ${APP_NAME}
-    restart: unless-stopped
+    restart: always
     ports: 
       - ${APP_DB_PORT}:6379
     volumes:
       - ./src/redis.conf:/etc/redis.conf:ro
       - redis_data:/data
     entrypoint: ["redis-server", "/etc/redis.conf"] 
-    restart: unless-stopped
+    restart: always
 
   redisinsight:
     image: redislabs/redisinsight:${APP_GUI_VERSION}
     container_name: redis-gui
-    restart: unless-stopped
+    restart: always
     ports:
       - "${APP_GUI_PORT}:8001"
 

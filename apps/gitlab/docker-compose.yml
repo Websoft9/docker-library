@@ -18,7 +18,7 @@ services:
         # Add any other gitlab.rb configuration here, each on its own line
         # other
     shm_size: '256m'
-    restart: unless-stopped
+    restart: always
     ports:
       - '${APP_HTTP_PORT}:80'
       - '23:22'
@@ -30,7 +30,7 @@ services:
   runner:
     image: gitlab/gitlab-runner:latest
     container_name: $APP_NAME-runner
-    restart: unless-stopped
+    restart: always
     volumes:
       - gitlab_runner:/etc/gitlab-runner
       - /var/run/docker.sock:/var/run/docker.sock

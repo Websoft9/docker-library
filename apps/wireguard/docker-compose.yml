@@ -26,7 +26,7 @@ services:
       - $APP_UDP_PORT:51820/udp
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
-    restart: unless-stopped
+    restart: always
 
 volumes:
   wireguard:

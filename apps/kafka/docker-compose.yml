@@ -7,7 +7,7 @@ services:
   kafka:
     image: $APP_REPO:$APP_VERSION
     container_name: $APP_NAME
-    restart: unless-stopped
+    restart: always
     ports:
       - "$DB_KAFKA_PORT:9092"
     volumes:
@@ -21,7 +21,7 @@ services:
   zookeeper:
     image: $KAFKA_ZOOMKEEPER_REPO:$KAFKA_ZOOMKEEPER_VERSION
     container_name: $APP_NAME-zookeeper
-    restart: unless-stopped
+    restart: always
     ports:
       - "$KAFKA_ZOOMKEEPER_PORT:2181"
     volumes:
@@ -32,7 +32,7 @@ services:
   cmak:
     image: $KAFKA_CMAK_REPO:$KAFKA_CMAK_VERSION
     container_name: $APP_NAME-cmak
-    restart: unless-stopped
+    restart: always
     ports:
       - "$KAFKA_CMAK_PORT:9000"
     environment:

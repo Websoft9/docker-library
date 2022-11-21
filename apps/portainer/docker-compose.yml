@@ -6,7 +6,7 @@ services:
   portainer:
     image: portainer/portainer-${APP_DISTRIBUTION}:${APP_VERSION}
     container_name: ${APP_NAME}
-    restart: unless-stopped
+    restart: always
     ports:
       - ${APP_HTTP_PORT}:9000
     volumes:

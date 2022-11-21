@@ -15,7 +15,7 @@ services:
       - "8081:8081"
       - "8082:8082"
       - "8083:8083"
-    restart: unless-stopped
+    restart: always
     environment:
       NC_DB: "pg://${APP_CONTAINER_NAME}-postgre:5432?u=${DB_POSTGRE_USER}&p=${DB_POSTGRE_PASSWORD}&d=${DB_POSTGRE_NAME}"
 
@@ -23,7 +23,7 @@ services:
     image: postgres:${DB_POSTGRE_VERSION}
     container_name: ${APP_CONTAINER_NAME}-postgre
     hostname: ${APP_CONTAINER_NAME}-postgre
-    restart: unless-stopped
+    restart: always
     volumes:
       - db_data:/var/lib/postgresql/data
     environment:

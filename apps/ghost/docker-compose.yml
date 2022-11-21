@@ -6,7 +6,7 @@ services:
   ghost:
     image: ghost:$APP_VERSION
     container_name: $APP_NAME
-    restart: unless-stopped
+    restart: always
     ports:
       - $APP_HTTP_PORT:2368
     environment:
@@ -27,7 +27,7 @@ services:
   db:
     image: mysql:$DB_MYSQL_VERSION
     container_name: $APP_NAME-db
-    restart: unless-stopped
+    restart: always
     ports:
      - $DB_MYSQL_PORT:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci

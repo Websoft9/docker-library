@@ -4,7 +4,7 @@ services:
     container_name: ${APP_NAME}-doc
     image: registry.cn-hangzhou.aliyuncs.com/mdpublic/mingdaoyun-doc:1.2.0
     user: root
-    restart: unless-stopped
+    restart: always
      
   mingdao:
     container_name: ${APP_NAME}
@@ -15,7 +15,7 @@ services:
       ENV_MINGDAO_PORT: "8880"
       COMPlus_ThreadPool_ForceMinWorkerThreads: 100
       COMPlus_ThreadPool_ForceMaxWorkerThreads: 500
-    restart: unless-stopped
+    restart: always
     ports:
       - ${APP_HTTP_PORT}:8880
     volumes:

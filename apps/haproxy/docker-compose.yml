@@ -11,7 +11,7 @@ services:
       - ${APP_STATS_PORT}:80
     volumes:    
       - ./src/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
-    restart: unless-stopped
+    restart: always
     user: root
 
 networks:

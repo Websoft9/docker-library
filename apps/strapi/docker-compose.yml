@@ -20,12 +20,12 @@ services:
       DATABASE_PASSWORD: ${DB_MYSQL_PASSWORD}
     links: 
       - mysql
-    restart: unless-stopped
+    restart: always
 
   mysql:
     image: mysql:${DB_MYSQL_VERSION}
     container_name: strapi-mysql
-    restart: unless-stopped
+    restart: always
     stdin_open: true
     tty: true
     ports:

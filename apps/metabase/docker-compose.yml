@@ -5,7 +5,7 @@ version: '3.8'
 services:
   metabase:
     image: metabase/metabase:$APP_VERSION
-    restart: unless-stopped
+    restart: always
     container_name: $APP_NAME
     hostname: $APP_NAME
     volumes: 
@@ -29,7 +29,7 @@ services:
   mysql:
     image: mysql:$DB_MYSQL_VERSION
     container_name: $APP_NAME-db
-    restart: unless-stopped
+    restart: always
     ports:
      - $DB_MYSQL_PORT:3306
     volumes:

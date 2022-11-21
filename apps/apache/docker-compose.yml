@@ -5,7 +5,7 @@ services:
   apache:
     container_name: ${APP_NAME}
     image: httpd:${APP_VERSION}
-    restart: unless-stopped
+    restart: always
     ports:
      - ${APP_HTTP_PORT}:80
     volumes:

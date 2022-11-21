@@ -19,7 +19,7 @@ services:
     ports:
       -  ${DB_ORACLE_PORT}:1521
       -  ${DB_MANAGE_PORT}:5500
-    restart: unless-stopped
+    restart: always
 
   apex:
     image: container-registry.oracle.com/database/ords:${APP_VERSION}
@@ -35,7 +35,7 @@ services:
         bash /entrypoint.sh
     ports:
       -  ${APP_HTTP_PORT}:8181
-    restart: unless-stopped
+    restart: always
     
 networks:
   default:

@@ -23,12 +23,12 @@ services:
       - SSCMS_DATABASE_TYPE=MySQL
     depends_on: 
       - mysql
-    restart: unless-stopped
+    restart: always
 
   mysql:
     image: mysql:${DB_MYSQL_VERSION}
     container_name: ${APP_NAME}-mysql
-    restart: unless-stopped
+    restart: always
     ports:
      - ${DB_MYSQL_PORT}:3306
     volumes:

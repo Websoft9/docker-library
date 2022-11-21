@@ -13,7 +13,7 @@ networks:
 services:
   rabbitmq:
     image: rabbitmq:3.9-management
-    restart: unless-stopped
+    restart: always
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     networks:

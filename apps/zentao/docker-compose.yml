@@ -21,7 +21,7 @@ services:
       MYSQL_HOST: ${DB_MYSQL_HOST}  
     links: 
       - mysql
-    restart: unless-stopped
+    restart: always
     entrypoint: bash -c "cat /my_cmd > /cmd.sh && chmod +x /cmd.sh && /cmd.sh"
     configs:
       - source: my_cmd
@@ -29,7 +29,7 @@ services:
   mysql:
     image: mysql:${DB_MYSQL_VERSION}
     container_name: ${APP_NAME}-db
-    restart: unless-stopped
+    restart: always
     #ports:
     # - ${DB_MYSQL_PORT}:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci

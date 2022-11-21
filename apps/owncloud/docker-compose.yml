@@ -32,14 +32,14 @@ services:
     depends_on: 
       - mysql
       - redis
-    restart: unless-stopped
+    restart: always
     stdin_open: true
     tty: true
 
   mysql:
     image: mysql:${DB_MYSQL_VERSION}
     container_name: ${APP_NAME}-db
-    restart: unless-stopped
+    restart: always
     stdin_open: true
     tty: true
     ports:
@@ -61,7 +61,7 @@ services:
   redis:
     image: redis:6
     container_name: ${APP_NAME}-redis
-    restart: unless-stopped
+    restart: always
     command: ["--databases", "1"]
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]

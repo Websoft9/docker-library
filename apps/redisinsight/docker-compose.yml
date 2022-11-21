@@ -12,7 +12,7 @@ services:
       - ${APP_HTTP_PORT}:8001
     volumes:
       - redisinsight:/db
-    restart: unless-stopped
+    restart: always
 
 networks:
   default:

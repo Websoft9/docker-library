@@ -8,7 +8,7 @@ services:
     ports:
       - ${APP_API_PORT}:9000
       - ${APP_HTTP_PORT}:9001
-    restart: unless-stopped
+    restart: always
     volumes:
      - data:/data
     command: server /data --console-address ":9001"

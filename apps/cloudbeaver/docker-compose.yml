@@ -7,7 +7,7 @@ services:
   cloudbeaver:
       image: dbeaver/cloudbeaver:${APP_VERSION}
       container_name: "${APP_NAME}"
-      restart: unless-stopped
+      restart: always
       ports:
        - '$APP_HTTP_PORT:8978'
       volumes: 

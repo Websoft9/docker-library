@@ -6,7 +6,7 @@ version: '3.8'
 services:
   mongo:
     image: mongo:${APP_VERSION}
-    restart: unless-stopped
+    restart: always
     container_name: ${APP_NAME}
     ports:
       - ${APP_DB_PORT}:27017

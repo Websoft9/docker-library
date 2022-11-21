@@ -4,7 +4,7 @@ services:
   core:
     image: jumpserver/core:${VERSION}
     container_name: jms_core
-    restart: unless-stopped
+    restart: always
     tty: true
     command: start web
     env_file:
@@ -23,7 +23,7 @@ services:
   luna:
     image: jumpserver/luna:${VERSION}
     container_name: jms_luna
-    restart: unless-stopped
+    restart: always
     depends_on:
       core:
         condition: service_healthy
@@ -37,7 +37,7 @@ services:
   lina:
     image: jumpserver/lina:${VERSION}
     container_name: jms_lina
-    restart: unless-stopped
+    restart: always
     depends_on:
       core:
         condition: service_healthy
@@ -54,7 +54,7 @@ services:
     container_name: jms_guacamole
     env_file:
       - ${CONFIG_FILE}
-    restart: unless-stopped
+    restart: always
     volumes:
       - ${VOLUME_DIR}/guacamole/data:/config/guacamole/data
     depends_on:

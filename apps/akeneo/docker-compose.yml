@@ -9,7 +9,7 @@ services:
     volumes:
       - akeneo:/var/www/html
       - ./000-default.conf:/etc/apache2/sites-available/000-default.conf
-    restart: unless-stopped
+    restart: always
     environment:
       AKENEO_MYSQL_DATABASE: ${DB_MYSQL_NAME}
       AKENEO_MYSQL_USER: ${DB_MYSQL_USER}
@@ -22,7 +22,7 @@ services:
   mysql:
     image: mysql:${DB_MYSQL_VERSION}
     container_name: ${APP_NAME}-mysql
-    restart: unless-stopped
+    restart: always
     ports:
      - ${DB_MYSQL_PORT}:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
@@ -37,7 +37,7 @@ services:
   elasticsearch:
     image: 'docker.elastic.co/elasticsearch/elasticsearch-oss:${DB_ES_VERSION}'
     container_name: ${APP_NAME}-elasticsearch
-    restart: unless-stopped
+    restart: always
     environment:
       ES_JAVA_OPTS: '${ES_JAVA_OPTS:--Xms512m -Xmx512m}'
       discovery.type: 'single-node'

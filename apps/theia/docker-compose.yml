@@ -10,7 +10,7 @@ services:
       - ${APP_HTTP_PORT}:3000
     volumes:
       - theia:/home/project
-    restart: unless-stopped
+    restart: always
 
 networks:
   default:

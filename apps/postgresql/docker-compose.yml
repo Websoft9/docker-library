@@ -5,7 +5,7 @@ services:
   postgres:
     image: postgres:${APP_VERSION}
     container_name: ${APP_NAME}
-    restart: unless-stopped
+    restart: always
     ports:
      - ${APP_DB_PORT}:5432
     volumes:

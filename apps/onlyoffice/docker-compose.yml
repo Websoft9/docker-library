@@ -15,7 +15,7 @@ services:
      - MYSQL_ROOT_PASSWORD=${DB_MYSQL_PASSWORD}
     stdin_open: true
     tty: true
-    restart: unless-stopped
+    restart: always
     volumes:
      - ./src/config/mysql/conf.d:/etc/mysql/conf.d
      - mysql_data:/var/lib/mysql
@@ -45,7 +45,7 @@ services:
      - '5222:5222'
     stdin_open: true
     tty: true
-    restart: unless-stopped
+    restart: always
     privileged: true
     volumes:
      - community_data:/var/www/onlyoffice/Data
@@ -60,7 +60,7 @@ services:
     image: onlyoffice/documentserver:7.0
     stdin_open: true
     tty: true
-    restart: unless-stopped
+    restart: always
     environment:
      - JWT_ENABLED=false
      - JWT_SECRET=jwt_secret
@@ -87,7 +87,7 @@ services:
     expose:
       - '80'
       - '443'
-    restart: unless-stopped
+    restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - controlpanel_data:/var/www/onlyoffice/Data

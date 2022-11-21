@@ -7,7 +7,7 @@ services:
   mattermost:
     image: mattermost/mattermost-team-edition:$APP_VERSION
     container_name: $APP_NAME
-    restart: unless-stopped
+    restart: always
     security_opt:
       - no-new-privileges:true
     pids_limit: 200
@@ -35,7 +35,7 @@ services:
   postgres:
     container_name: $APP_NAME-db
     image: postgres:${DB_POSTGRES_VERSION}
-    restart: unless-stopped
+    restart: always
     security_opt:
       - no-new-privileges:true
     pids_limit: 100

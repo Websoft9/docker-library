@@ -9,7 +9,7 @@ services:
       dockerfile: ./Dockerfile
       args:
         STATIC_URL: "/static/"
-    restart: unless-stopped
+    restart: always
     networks:
       - saleor-backend-tier
     depends_on:
@@ -35,7 +35,7 @@ services:
       dockerfile: ./Dockerfile.dev
     ports:
       - 3000:3000
-    restart: unless-stopped
+    restart: always
     volumes:
       - ./saleor-storefront/:/app:cached
       - /app/node_modules/
@@ -47,7 +47,7 @@ services:
       dockerfile: ./Dockerfile.dev
     ports:
       - 9000:9000
-    restart: unless-stopped
+    restart: always
     volumes:
       - ./saleor-dashboard/:/app:cached
       - /app/node_modules/
@@ -57,7 +57,7 @@ services:
     image: library/postgres:11.1-alpine
     ports:
       - 5432:5432
-    restart: unless-stopped
+    restart: always
     networks:
       - saleor-backend-tier
     volumes:
@@ -70,7 +70,7 @@ services:
     image: library/redis:5.0-alpine
     ports:
       - 6379:6379
-    restart: unless-stopped
+    restart: always
     networks:
       - saleor-backend-tier
     volumes:
@@ -83,7 +83,7 @@ services:
       args:
         STATIC_URL: "/static/"
     command: celery -A saleor --app=saleor.celeryconf:app worker --loglevel=info
-    restart: unless-stopped
+    restart: always
     networks:
       - saleor-backend-tier
     env_file: common.env
@@ -106,7 +106,7 @@ services:
       - "16686:16686"
       - "14268:14268"
       - "9411:9411"
-    restart: unless-stopped
+    restart: always
     networks:
       - saleor-backend-tier
 
@@ -115,7 +115,7 @@ services:
     ports:
       - 1025:1025 # smtp server
       - 8025:8025 # web ui. Visit http://localhost:8025/ to check emails
-    restart: unless-stopped
+    restart: always
     networks:
       - saleor-backend-tier
 

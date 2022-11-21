@@ -5,7 +5,7 @@ services:
   tomcat:
     container_name: ${APP_NAME}
     image: tomcat:${APP_VERSION}
-    restart: unless-stopped
+    restart: always
     ports:
       - '${APP_HTTP_PORT}:8080'
     volumes:

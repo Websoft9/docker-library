@@ -12,7 +12,7 @@ services:
     stdin_open: true
     user: root
     tty: true
-    restart: unless-stopped
+    restart: always
     volumes:
      - ${VOLUMES_PATH_PREFIX}/config/mysql/conf.d:/etc/mysql/conf.d
      - ${VOLUMES_PATH_PREFIX}/config/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
@@ -43,7 +43,7 @@ services:
      - '5222:5222'
     stdin_open: true
     tty: true
-    restart: unless-stopped
+    restart: always
     privileged: true
     volumes:
      - ${VOLUMES_PATH_PREFIX}/community_data:/var/www/onlyoffice/Data
@@ -58,7 +58,7 @@ services:
     image: onlyoffice/documentserver:6.0.2
     stdin_open: true
     tty: true
-    restart: unless-stopped
+    restart: always
     environment:
      - JWT_ENABLED=true
      - JWT_SECRET=jwt_secret
@@ -85,7 +85,7 @@ services:
     expose:
       - '80'
       - '443'
-    restart: unless-stopped
+    restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${VOLUMES_PATH_PREFIX}/controlpanel_data:/var/www/onlyoffice/Data

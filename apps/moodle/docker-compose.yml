@@ -7,7 +7,7 @@ services:
   mariadb:
     image: docker.io/bitnami/mariadb:${DB_MARIADB_VERSION}
     container_name: ${APP_NAME}-db
-    restart: unless-stopped
+    restart: always
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
       - MARIADB_USER=${DB_MARIADB_USER}
@@ -23,7 +23,7 @@ services:
   moodle:
     image: docker.io/bitnami/moodle:${APP_VERSION}
     container_name: ${APP_NAME}
-    restart: unless-stopped
+    restart: always
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
       - MOODLE_DATABASE_HOST=${DB_MARIADB_HOST}
