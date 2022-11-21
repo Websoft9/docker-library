@@ -6,7 +6,7 @@ version: "3.8"
 services:
   pgadmin:
     image: dpage/pgadmin4:${APP_VERSION}
-    restart: always
+    restart: unless-stopped
     container_name: ${APP_NAME}
     ports:
       - "${APP_HTTP_PORT}:80"
@@ -17,7 +17,7 @@ services:
 
   postgres:
     image: postgres
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_PASSWORD: example
     profiles:

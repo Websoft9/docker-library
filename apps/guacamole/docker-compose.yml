@@ -6,7 +6,7 @@ services:
   guacd:
     container_name: ${APP_CONTAINER_NAME}-guacd
     image: guacamole/guacd
-    restart: always
+    restart: unless-stopped
     depends_on:
       - guacamole-preparation
     volumes:
@@ -24,7 +24,7 @@ services:
     
   postgres:
     image: postgres:${DB_POSTGRES_VERSION}
-    restart: always
+    restart: unless-stopped
     container_name: ${APP_CONTAINER_NAME}-postgres
     depends_on:
       - guacamole-preparation
@@ -42,7 +42,7 @@ services:
   guacamole:
     image: guacamole/guacamole:${APP_VERSION}
     container_name: ${APP_CONTAINER_NAME}
-    restart: always
+    restart: unless-stopped
     depends_on:
      - guacd
      - postgres

@@ -8,7 +8,7 @@ services:
   alfresco:
     image: alfresco/alfresco-content-repository-community:$APP_VERSION
     container_name: $APP_NAME
-    restart: always
+    restart: unless-stopped
     deploy:
       resources:
         limits:
@@ -54,7 +54,7 @@ services:
   transform-core-aio:
     image: alfresco/alfresco-transform-core-aio:2.5.7
     container_name: $APP_NAME-transform
-    restart: always
+    restart: unless-stopped
     deploy:
       resources:
         limits:
@@ -67,7 +67,7 @@ services:
   share:
     image: alfresco/alfresco-share:$APP_VERSION
     container_name: $APP_NAME-share
-    restart: always
+    restart: unless-stopped
     deploy:
       resources:
         limits:
@@ -87,7 +87,7 @@ services:
   postgres:
     image: postgres:$DB_POSTGRESQL_VERSION
     container_name: $APP_NAME-db
-    restart: always
+    restart: unless-stopped
     deploy:
       resources:
         limits:
@@ -106,7 +106,7 @@ services:
   solr6:
     image: alfresco/alfresco-search-services:2.0.3
     container_name: $APP_NAME-solr
-    restart: always
+    restart: unless-stopped
     deploy:
       resources:
         limits:
@@ -132,7 +132,7 @@ services:
   activemq:
     image: alfresco/alfresco-activemq:$MQ_ACTIVEMQ_VERSION
     container_name: $APP_NAME-activemq
-    restart: always
+    restart: unless-stopped
     deploy:
       resources:
         limits:
@@ -146,7 +146,7 @@ services:
   proxy:
     image: alfresco/alfresco-acs-nginx:3.2.0
     container_name: $APP_NAME-proxy
-    restart: always
+    restart: unless-stopped
     deploy:
       resources:
         limits:

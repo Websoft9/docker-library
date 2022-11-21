@@ -6,7 +6,7 @@ services:
   magento:
     image: docker.io/bitnami/magento:$APP_VERSION
     container_name: $APP_NAME
-    restart: always
+    restart: unless-stopped
     ports:
       - '$APP_HTTP_PORT:80'
     env_file:

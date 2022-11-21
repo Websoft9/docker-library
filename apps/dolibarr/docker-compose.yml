@@ -7,7 +7,7 @@ services:
     mariadb:
         image: mariadb:${DB_MARIADB_VERSION}
         container_name: ${APP_NAME}-db
-        restart: always
+        restart: unless-stopped
         environment:
             MYSQL_ROOT_PASSWORD: ${DB_MARIADB_PASSWORD}
             MYSQL_DATABASE: ${DB_MARIADB_NAME}
@@ -19,7 +19,7 @@ services:
     dolibarr:
         image: tuxgasy/dolibarr:${APP_VERSION}
         container_name: ${APP_NAME}
-        restart: always
+        restart: unless-stopped
         environment:
             DOLI_DB_HOST: mariadb
             DOLI_DB_USER: ${DB_MARIADB_USER}

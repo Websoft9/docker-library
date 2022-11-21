@@ -7,7 +7,7 @@ services:
   btpanel:
     image: btpanel/baota:$APP_VERSION
     container_name: ${APP_NAME}
-    restart: always
+    restart: unless-stopped
     ports:
       - "${APP_FTP_PORT}:21"
       - "${APP_SSH_PORT}:22"
@@ -29,7 +29,7 @@ services:
   aapanel:
     image: aapanel/aapanel:$APP_VERSION
     container_name: ${APP_NAME}
-    restart: always
+    restart: unless-stopped
     ports:
       - "${APP_FTP_PORT}:21"
       - "${APP_SSH_PORT}:22"

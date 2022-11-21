@@ -10,7 +10,7 @@ services:
     build: .
     image: cmak
     container_name: "${APP_NAME}"
-    restart: always
+    restart: unless-stopped
     ports:
       - "${APP_HTTP_PORT}:9000"
     environment:

@@ -7,7 +7,7 @@ services:
   ansible:
     image: $APP_REPO:$APP_VERSION
     container_name: $APP_NAME
-    restart: always
+    restart: unless-stopped
     volumes: 
       - ansible:/ansible/project
 

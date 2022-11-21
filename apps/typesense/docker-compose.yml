@@ -9,7 +9,7 @@ services:
   typesense:
     image: typesense/typesense:${APP_VERSION}
     container_name: ${APP_NAME}
-    restart: always
+    restart: unless-stopped
     ports:
       - "${APP_HTTP_PORT}:8108"
     environment:
@@ -22,7 +22,7 @@ services:
   docsearch-scraper:
     image: typesense/docsearch-scraper:latest
     container_name: ${APP_NAME}-scraper
-    restart: always
+    restart: unless-stopped
     environment:
       - TYPESENSE_API_KEY=${APP_KEY}
       - TYPESENSE_HOST=${APP_HOST}

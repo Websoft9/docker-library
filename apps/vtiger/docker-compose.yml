@@ -7,7 +7,7 @@ services:
   vtiger:
     image: websoft9dev/vtiger:${APP_VERSION}
     container_name: ${APP_NAME}
-    restart: always
+    restart: unless-stopped
     ports:
       - ${APP_HTTP_PORT}:80
     environment:
@@ -25,7 +25,7 @@ services:
   mysql:
     image: mysql:${DB_MYSQL_VERSION}
     container_name: ${APP_NAME}-db
-    restart: always
+    restart: unless-stopped
     environment:
       - MYSQL_DATABASE=${DB_MYSQL_NAME}
       - MYSQL_ROOT_PASSWORD=${DB_MYSQL_PASSWORD}

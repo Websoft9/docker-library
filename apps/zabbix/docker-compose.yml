@@ -7,7 +7,7 @@ services:
  zabbix-server:
   image: zabbix/zabbix-server-mysql:ubuntu-${APP_VERSION}-latest
   container_name: ${APP_NAME}-server
-  restart: always
+  restart: unless-stopped
   ports:
    - "10051:10051"
   volumes:
@@ -69,7 +69,7 @@ services:
  zabbix-web-apache-mysql:
   image: zabbix/zabbix-web-apache-mysql:ubuntu-${APP_VERSION}-latest
   container_name: ${APP_NAME}-web
-  restart: always
+  restart: unless-stopped
   ports:
    - "${APP_HTTP_PORT}:8080"
   volumes:
@@ -115,7 +115,7 @@ services:
  zabbix-agent:
   image: zabbix/zabbix-agent:ubuntu-${APP_VERSION}-latest
   container_name: ${APP_NAME}-agent
-  restart: always
+  restart: unless-stopped
   ports:
    - "10050:10050"
   volumes:
@@ -148,7 +148,7 @@ services:
  zabbix-java-gateway:
   image: zabbix/zabbix-java-gateway:ubuntu-${APP_VERSION}-latest
   container_name: ${APP_NAME}-java
-  restart: always
+  restart: unless-stopped
   ports:
    - "10052:10052"
   deploy:
@@ -169,7 +169,7 @@ services:
  zabbix-snmptraps:
   image: zabbix/zabbix-snmptraps:ubuntu-${APP_VERSION}-latest
   container_name: ${APP_NAME}-snmptraps
-  restart: always
+  restart: unless-stopped
   ports:
    - "162:1162/udp"
   volumes:
@@ -190,7 +190,7 @@ services:
  mysql:
   image: mysql:${DB_MYSQL_VERSION}
   container_name: ${APP_NAME}-db
-  restart: always
+  restart: unless-stopped
   ports: 
    - ${DB_MYSQL_PORT}:3306
   command:

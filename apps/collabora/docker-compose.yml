@@ -16,7 +16,7 @@ services:
     ports:
       - ${APP_HTTP_PORT}:9980
     tty: true
-    restart: always
+    restart: unless-stopped
      
     
 networks:

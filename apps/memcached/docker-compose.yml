@@ -6,7 +6,7 @@ services:
   memcached:
     image: memcached:${APP_VERSION}
     container_name: ${APP_NAME}
-    restart: always
+    restart: unless-stopped
     ports:
      - '${APP_DB_PORT}:11211'
     command:
@@ -16,7 +16,7 @@ services:
   memadmin:
     image: hatamiarash7/memcached-admin:latest
     container_name: $APP_NAME-panel
-    restart: always
+    restart: unless-stopped
     ports:
      - '$APP_PANEL_PORT:80'
     environment: 

@@ -7,7 +7,7 @@ services:
   rabbitmq:
     image: rabbitmq:${APP_VERSION}
     container_name: ${APP_NAME}
-    restart: always
+    restart: unless-stopped
     ports:
       # EXPOSE 4369 5671 5672 15691 15692 25672
       - '${APP_ER_PORT}:4369'

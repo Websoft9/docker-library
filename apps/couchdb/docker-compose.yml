@@ -9,7 +9,7 @@ services:
   couchdb:
     image: couchdb:${APP_VERSION}
     container_name: ${APP_NAME}
-    restart: always
+    restart: unless-stopped
     ports:
      - ${APP_HTTP_PORT}:5984
     volumes:

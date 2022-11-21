@@ -33,7 +33,7 @@ services:
       MYSQL_PASSWORD: ${DB_MYSQL_PASSWORD}
     volumes:
       - mysql:/var/lib/mysql
-    restart: always
+    restart: unless-stopped
 
 networks:
   default:

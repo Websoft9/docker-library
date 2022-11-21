@@ -15,12 +15,12 @@ services:
       -  BACKUP_INTERVAL=7d
       -  BACKUP_RETENTION=7d
       -  RUN_CROND=true
-    restart: always
+    restart: unless-stopped
 
   mysql:
     image: mysql:${DB_MYSQL_VERSION}
     container_name: ${APP_NAME}-db
-    restart: always
+    restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - mysql:/var/lib/mysql
