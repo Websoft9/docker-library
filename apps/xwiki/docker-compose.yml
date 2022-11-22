@@ -19,7 +19,6 @@ services:
       - DB_HOST=mysql
     links: 
       - mysql
-      - solr
     restart: always
 
   mysql:
