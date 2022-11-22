@@ -1,0 +1,15 @@
+# This is the minimal configuration to directly start a pre-configured server in sandbox mode
+# Adapt to your convenience and report to the documentation to explore further possibilities.
+# Environment variables are defined in .env file and injected at runtime.
+
+# WebUI Admin definition
+frontendlogin: {$APP_USER}
+frontendpassword: {$APP_PASSWORD}
+
+# DB connection
+dbconnectiontype: tcp
+dbtcphostname: mysql
+dbtcpport: 3306
+dbtcpname: cells
+dbtcpuser: {$DB_MYSQL_USER}
+dbtcppassword: {$DB_MYSQL_PASSWORD}
