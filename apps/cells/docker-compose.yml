@@ -1,14 +1,23 @@
 # image and compose: https://hub.docker.com/r/pydio/cells
+# more compose: https://github.com/pydio/cells/tree/main/tools/docker
 
 version: '3.8'
 
 services:
   cells:
-    image: pydio/cells:${APP_VERSION}
-    container_name: ${APP_NAME}
+    image: pydio/cells:$APP_VERSION
+    container_name: $APP_NAME
     ports:
-      - ${APP_HTTP_PORT}:8080
+      - $APP_HTTP_PORT:8080
+      - $APP_GRPC_PORT:33060
     volumes:
+<<<<<<< HEAD
+      - cells:/var/cells
+      - ./src/install-conf.yml:/pydio/config/install.yml:ro
+    env_file:
+      - .env
+    restart: always
+=======
       - pydio:/var/cells
     environment:
       - CELLS_LOG_LEVEL=production
@@ -16,29 +25,36 @@ services:
       - CELLS_NO_TLS=1
       - CELLS_EXTERNAL=$APP_URL
     restart: unless-stopped
+>>>>>>> bff35de55e430625c0ba5425f1c73b8776bdcd05
 
   mysql:
+<<<<<<< HEAD
+    image: mysql:$DB_MYSQL_VERSION
+    container_name: $APP_NAME-db
+    restart: always
+=======
     image: mysql:${DB_MYSQL_VERSION}
     container_name: ${APP_NAME}-mysql
     restart: unless-stopped
+>>>>>>> bff35de55e430625c0ba5425f1c73b8776bdcd05
     command: [mysqld, --character-set-server=utf8mb4, --collation-server=utf8mb4_unicode_ci]
     ports:
-     - ${DB_MYSQL_PORT}:3306
+     - $DB_MYSQL_PORT:3306
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: ${DB_MYSQL_NAME}
-      MYSQL_USER: ${DB_MYSQL_USER}
-      MYSQL_PASSWORD: ${DB_MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${DB_MYSQL_PASSWORD}
+      MYSQL_DATABASE: $DB_MYSQL_NAME
+      MYSQL_USER: $DB_MYSQL_USER
+      MYSQL_PASSWORD: $DB_MYSQL_PASSWORD
+      MYSQL_ROOT_PASSWORD: $DB_MYSQL_PASSWORD
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: $APP_NETWORK
     external: true
 
 volumes:
-  pydio:
+  cells:
     driver: local
   mysql:
     driver: local
