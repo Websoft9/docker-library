@@ -15,13 +15,11 @@ services:
     env_file:
       - .env
     environment:
-      # The belows vars is need, otherwise container error
+      # MAUTIC_DB_USER must root, otherwise container error
       - MAUTIC_DB_HOST=mysql
-      - MAUTIC_DB_USER=${APP_DB_MYSQL_USER}
+      - MAUTIC_DB_USER=root
       - MAUTIC_DB_PASSWORD=${APP_DB_MYSQL_PASSWORD}
       - MAUTIC_DB_NAME=${APP_DB_MYSQL_NAME}
-    links: 
-      - mysql
     depends_on:
       - mysql
     restart: always
