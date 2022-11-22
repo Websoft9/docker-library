@@ -11,32 +11,16 @@ services:
       - $APP_HTTP_PORT:8080
       - $APP_GRPC_PORT:33060
     volumes:
-<<<<<<< HEAD
       - cells:/var/cells
       - ./src/install-conf.yml:/pydio/config/install.yml:ro
     env_file:
       - .env
     restart: always
-=======
-      - pydio:/var/cells
-    environment:
-      - CELLS_LOG_LEVEL=production
-      - CELLS_BIND=:8080
-      - CELLS_NO_TLS=1
-      - CELLS_EXTERNAL=$APP_URL
-    restart: unless-stopped
->>>>>>> bff35de55e430625c0ba5425f1c73b8776bdcd05
 
   mysql:
-<<<<<<< HEAD
     image: mysql:$DB_MYSQL_VERSION
     container_name: $APP_NAME-db
     restart: always
-=======
-    image: mysql:${DB_MYSQL_VERSION}
-    container_name: ${APP_NAME}-mysql
-    restart: unless-stopped
->>>>>>> bff35de55e430625c0ba5425f1c73b8776bdcd05
     command: [mysqld, --character-set-server=utf8mb4, --collation-server=utf8mb4_unicode_ci]
     ports:
      - $DB_MYSQL_PORT:3306
