@@ -12,22 +12,14 @@ services:
       - ${APP_HTTP_PORT}:80
     volumes:
       - mautic:/var/www/html
+    env_file:
+      - .env
     environment:
       # The belows vars is need, otherwise container error
       - MAUTIC_DB_HOST=mysql
-      - MAUTIC_DB_USER=${DB_MYSQL_USER}
-      - MAUTIC_DB_PASSWORD=${DB_MYSQL_PASSWORD}
-      - MAUTIC_DB_NAME=${DB_MYSQL_NAME}
-      - MAUTIC_RUN_CRON_JOBS=true
-      - MAUTIC_TRUSTED_PROXIES=0.0.0.0/0
-      - MAUTIC_RUN_CRON_JOBS=
-      - MAUTIC_CRON_HUBSPOT=
-      - MAUTIC_CRON_SALESFORCE=
-      - MAUTIC_CRON_PIPEDRIVE=
-      - MAUTIC_CRON_ZOHO=
-      - MAUTIC_CRON_SUGARCRM=
-      - MAUTIC_CRON_DYNAMICS=
-      - MAUTIC_TESTER=
+      - MAUTIC_DB_USER=${APP_DB_MYSQL_USER}
+      - MAUTIC_DB_PASSWORD=${APP_DB_MYSQL_PASSWORD}
+      - MAUTIC_DB_NAME=${APP_DB_MYSQL_NAME}
     links: 
       - mysql
     depends_on:
@@ -36,19 +28,19 @@ services:
 
 
   mysql:
-    image: mysql:${DB_MYSQL_VERSION}
+    image: mysql:${APP_DB_MYSQL_VERSION}
     container_name: ${APP_NAME}-db
     restart: always
     ports:
-     - ${DB_MYSQL_PORT}:3306
+     - ${APP_DB_MYSQL_PORT}:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: ${DB_MYSQL_NAME}
-      MYSQL_USER: ${DB_MYSQL_USER}
-      MYSQL_PASSWORD: ${DB_MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${DB_MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${APP_DB_MYSQL_NAME}
+      MYSQL_USER: ${APP_DB_MYSQL_USER}
+      MYSQL_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
 
 networks:
   default:
@@ -57,4 +49,4 @@ networks:
 
 volumes:
   mautic:
-  mysql_data:
+  mysql:
