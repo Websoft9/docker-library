@@ -21,13 +21,5 @@ mysql> show grants for xwiki@'%';
 
 2. Solr service
 
-By default XWiki ships with an embedded Solr. 但推荐使用外部 solr
-
-本部署方案已经使用 solr 容器，但暂没验证是否连接成功。  
-
-日志中有一段：  
-
-```
-Caused by: org.apache.http.conn.HttpHostConnectException: Connect to localhost:8983 [localhost/127.0.0.1] failed: Connection refused (Connection refused)
-```
+By default XWiki ships with an embedded Solr. 但推荐使用外部 solr。官方方案配置外部 solr 还需要挂载一个配置文件，并更改权限，考虑复杂性，暂时不做
 
