@@ -13,7 +13,7 @@ services:
       - GRAYLOG_ROOT_PASSWORD_SHA2=${APP_ENCRYPT_PASSWORD}
       - GRAYLOG_HTTP_BIND_ADDRESS=0.0.0.0:9000
     entrypoint: /usr/bin/tini -- wait-for-it elasticsearch:9200 --  /docker-entrypoint.sh
-    restart: always
+    restart: unless-stopped
     depends_on:
       - mongo
       - elasticsearch
@@ -35,7 +35,7 @@ services:
   mongo:
     image: mongo:${DB_MONGO_VERSION}
     container_name: ${APP_NAME}-mongo
-    restart: always
+    restart: unless-stopped
     volumes: 
       - mongo:/data/db
 
@@ -55,7 +55,7 @@ services:
       resources:
         limits:
           memory: 1g
-    restart: always
+    restart: unless-stopped
     volumes: 
       - elasticsearch:/usr/share/elasticsearch/data
 

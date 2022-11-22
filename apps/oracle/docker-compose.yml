@@ -17,7 +17,7 @@ services:
     ports:
       -  ${APP_DB_PORT}:1521
       -  ${APP_EM_PORT}:5500
-    restart: always
+    restart: unless-stopped
     profiles:
       - express
 
@@ -40,7 +40,7 @@ services:
     ports:
       -  ${APP_DB_PORT}:1521
       -  ${APP_EM_PORT}:5500
-    restart: always
+    restart: unless-stopped
     profiles:
       - enterprise
       - standard

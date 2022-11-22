@@ -19,12 +19,12 @@ services:
       PASSWORD: ${DB_POSTGRES_PASSWORD}
     depends_on:
       - db
-    restart: always
+    restart: unless-stopped
 
   db:
     image: postgres:${DB_POSTGRES_VERSION}
     container_name: ${APP_NAME}-db
-    restart: always
+    restart: unless-stopped
     ports:
      - ${DB_POSTGRES_PORT}:5432
     volumes:

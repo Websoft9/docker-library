@@ -9,7 +9,7 @@ version: '3.6'
 x-html5-backend: &html5backend
   build: mod/html5
   image: bbb-html5
-  restart: always
+  restart: unless-stopped
   depends_on:
     - redis
     - mongodb
@@ -40,7 +40,7 @@ x-html5-frontend: &html5frontend
 services:
   bbb-web:
     build: mod/bbb-web
-    restart: always
+    restart: unless-stopped
     depends_on:
         - redis
     healthcheck:
@@ -93,7 +93,7 @@ services:
 
   freeswitch:
     build: mod/freeswitch
-    restart: always
+    restart: unless-stopped
     cap_add:
       - IPC_LOCK
       - NET_ADMIN
@@ -118,7 +118,7 @@ services:
   
   nginx:
     build: mod/nginx
-    restart: always
+    restart: unless-stopped
     depends_on:
       - etherpad
       - webrtc-sfu
@@ -137,7 +137,7 @@ services:
 
   etherpad:
     build: mod/etherpad
-    restart: always
+    restart: unless-stopped
     depends_on:
       - redis
     environment:
@@ -148,7 +148,7 @@ services:
 
   redis:
     image: redis:6.0-alpine
-    restart: always
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 1s
@@ -160,7 +160,7 @@ services:
 
   mongodb:
     image: mongo:4.4
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./mod/mongo/mongod.conf:/etc/mongod.conf
       - ./mod/mongo/init-replica.sh:/docker-entrypoint-initdb.d/init-replica.sh
@@ -176,7 +176,7 @@ services:
 
   kurento:
     image: kurento/kurento-media-server:6.15
-    restart: always
+    restart: unless-stopped
     environment: 
       KMS_STUN_IP: ${STUN_IP}
       KMS_STUN_PORT: ${STUN_PORT}
@@ -191,7 +191,7 @@ services:
   
   webrtc-sfu:
     build:  mod/webrtc-sfu
-    restart: always
+    restart: unless-stopped
     depends_on:
       - redis
       - kurento
@@ -238,7 +238,7 @@ services:
 
   jodconverter:
     image: eugenmayer/jodconverter:rest
-    restart: always
+    restart: unless-stopped
     deploy:
       resources:
         limits:
@@ -249,7 +249,7 @@ services:
   
   periodic:
     build: mod/periodic
-    restart: always
+    restart: unless-stopped
     depends_on:
       - mongodb
     volumes:
@@ -263,7 +263,7 @@ services:
   # recordings
   recordings:
     build: mod/recordings
-    restart: always
+    restart: unless-stopped
     depends_on:
       - redis
     environment:
@@ -284,7 +284,7 @@ services:
   # webhooks
   webhooks:
     build: mod/webhooks
-    restart: always
+    restart: unless-stopped
     environment:
       DOMAIN: ${DOMAIN}
       SHARED_SECRET: ${SHARED_SECRET}
@@ -299,7 +299,7 @@ services:
   # https
   https_proxy:
     image: valian/docker-nginx-auto-ssl
-    restart: always
+    restart: unless-stopped
     volumes:
       - ssl_data:/etc/resty-auto-ssl
     {{ if .Env.EXTERNAL_IPv6 }}
@@ -320,7 +320,7 @@ services:
   # greenlight
   greenlight:
     image: bigbluebutton/greenlight:v2
-    restart: always
+    restart: unless-stopped
     env_file: .env
     environment:
       DB_ADAPTER: postgresql
@@ -339,7 +339,7 @@ services:
       - 10.7.7.1:5000:80
   postgres:
     image: postgres:12-alpine
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_DB: greenlight
       POSTGRES_USER: postgres
@@ -357,7 +357,7 @@ services:
   # prometheus
   prometheus-exporter:
     image: greenstatic/bigbluebutton-exporter:v0.7.0-preview2
-    restart: always
+    restart: unless-stopped
     environment: 
       API_BASE_URL: http://10.7.7.1:8080/bigbluebutton/api/
       API_SECRET: ${SHARED_SECRET}

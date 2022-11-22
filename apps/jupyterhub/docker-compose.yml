@@ -14,14 +14,14 @@ services:
       jupyterhub_DB_PASSWORD: ${DB_MYSQL_PASSWORD}
     links: 
       - mysql
-    restart: always
+    restart: unless-stopped
     stdin_open: true
     tty: true
 
   mysql:
     image: mysql:${DB_MYSQL_VERSION}
     container_name: jupyterhub-mysql
-    restart: always
+    restart: unless-stopped
     stdin_open: true
     tty: true
     ports:

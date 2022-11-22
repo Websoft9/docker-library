@@ -19,12 +19,12 @@ services:
       - DB_HOST=mysql
     links: 
       - mysql
-    restart: always
+    restart: unless-stopped
 
   mysql:
     image: mysql:${APP_DB_MYSQL_VERSION}
     container_name: $APP_NAME-mysql
-    restart: always
+    restart: unless-stopped
     ports:
      - $APP_DB_MYSQL_PORT:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci

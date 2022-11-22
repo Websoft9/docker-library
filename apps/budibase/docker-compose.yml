@@ -5,7 +5,7 @@ version: "3.8"
 
 services:
   app-service:
-    restart: always
+    restart: unless-stopped
     image: budibase.docker.scarf.sh/budibase/apps
     container_name: $APP_NAME
     environment:
@@ -29,7 +29,7 @@ services:
       - redis-service
 
   worker-service:
-    restart: always
+    restart: unless-stopped
     image: budibase.docker.scarf.sh/budibase/worker
     container_name: $APP_NAME-bbworker
     environment:
@@ -54,7 +54,7 @@ services:
       - couch-init
 
   minio-service:
-    restart: always
+    restart: unless-stopped
     image: minio/minio
     container_name: $APP_NAME-minio
     volumes:
@@ -72,7 +72,7 @@ services:
 
   proxy-service:
     container_name: $APP_NAME-proxy
-    restart: always
+    restart: unless-stopped
     ports:
       - "${MAIN_PORT}:10000"
     image: budibase/proxy
@@ -83,7 +83,7 @@ services:
       - couchdb-service
 
   couchdb-service:
-    restart: always
+    restart: unless-stopped
     image: ibmcom/couchdb3
     container_name: $APP_NAME-couchdb
     environment:
@@ -101,7 +101,7 @@ services:
     command: ["sh","-c","sleep 10 && $${PUT_CALL}/_users && $${PUT_CALL}/_replicator; fg;"]
 
   redis-service:
-    restart: always
+    restart: unless-stopped
     container_name: $APP_NAME-redis
     image: redis
     command: redis-server --requirepass ${REDIS_PASSWORD}
@@ -109,7 +109,7 @@ services:
       - redis_data:/data
 
   watchtower-service:
-    restart: always
+    restart: unless-stopped
     image: containrrr/watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

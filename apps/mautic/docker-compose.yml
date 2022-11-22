@@ -22,13 +22,13 @@ services:
       - MAUTIC_DB_NAME=${APP_DB_MYSQL_NAME}
     depends_on:
       - mysql
-    restart: always
+    restart: unless-stopped
 
 
   mysql:
     image: mysql:${APP_DB_MYSQL_VERSION}
     container_name: ${APP_NAME}-db
-    restart: always
+    restart: unless-stopped
     ports:
      - ${APP_DB_MYSQL_PORT}:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci

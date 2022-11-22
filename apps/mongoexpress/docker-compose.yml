@@ -4,7 +4,7 @@ version: "3.8"
 services:
   mongo-express:
     image: mongo-express:${APP_VERSION}
-    restart: always
+    restart: unless-stopped
     container_name: ${APP_NAME}
     ports:
       - "${APP_HTTP_PORT}:8081"
@@ -17,7 +17,7 @@ services:
 
   mongo:
     image: mongo
-    restart: always
+    restart: unless-stopped
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example

@@ -4,7 +4,7 @@ services:
   memadmin:
     image: hatamiarash7/memcached-admin:${APP_VERSION}
     container_name: ${APP_NAME}
-    restart: always
+    restart: unless-stopped
     ports:
      - '${APP_HTTP_PORT}:80'
     environment: 

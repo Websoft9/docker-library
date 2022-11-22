@@ -6,7 +6,7 @@ services:
   apisix:
     image: "apache/apisix:${APP_VERSION}"
     container_name: ${APP_CONTAINER_NAME}
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./src/config/apisix_log:/usr/local/apisix/logs
       - ./src/config/apisix_conf/config.yaml:/usr/local/apisix/conf/config.yaml:ro
@@ -20,7 +20,7 @@ services:
   dashboard:
     image: "apache/apisix-dashboard:${APP_DASHBOARD_VERSION}"
     container_name: ${APP_CONTAINER_NAME}-dashboard
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./src/config/dashboard_conf/conf.yaml:/usr/local/apisix-dashboard/conf/conf.yaml:ro
     depends_on:
@@ -32,7 +32,7 @@ services:
     image: bitnami/etcd:${DB_ETCD_VERSION}
     container_name: ${APP_CONTAINER_NAME}-etcd
     user: root
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./src/config/etcd_data:/etcd_data
     environment:

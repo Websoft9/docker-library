@@ -7,7 +7,7 @@ services:
   rethinkdb:
     image: rethinkdb:${APP_VERSION}
     container_name: rethinkdb
-    restart: always
+    restart: unless-stopped
     ports:
      - 9090:8080
      - ${APP_CLIENT_PORT}:28015

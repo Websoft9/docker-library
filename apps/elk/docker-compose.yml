@@ -10,7 +10,7 @@ services:
   kibana:
     image: kibana:${APP_VERSION}
     container_name: ${APP_NAME}-kibana
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./src/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
     environment:
@@ -26,7 +26,7 @@ services:
   elasticsearch:
     image: elasticsearch:${APP_VERSION}
     container_name: ${APP_NAME}
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./src/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - ./src/elasticsearch/config/service_tokens:/usr/share/elasticsearch/config/service_tokens
@@ -46,7 +46,7 @@ services:
   logstash:
     image: logstash:${APP_VERSION}
     container_name: ${APP_NAME}-logstash
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./src/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./src/logstash/pipeline:/usr/share/logstash/pipeline

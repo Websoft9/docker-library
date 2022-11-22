@@ -6,7 +6,7 @@ services:
   knowage:
     container_name: $APP_NAME
     image: knowagelabs/knowage-server-docker:$APP_VERSION
-    restart: always
+    restart: unless-stopped
     depends_on:
       - knowagedb
       - knowagecache
@@ -37,7 +37,7 @@ services:
   knowagepython:
     container_name: $APP_NAME-python
     image: knowagelabs/knowage-python-docker:$APP_VERSION
-    restart: always
+    restart: unless-stopped
     environment:
       - HMAC_KEY=$APP_HMAC_KEY
       - KNOWAGE_PUBLIC_ADDRESS=knowage
@@ -46,14 +46,14 @@ services:
   knowager:
     container_name: $APP_NAME-r
     image: knowagelabs/knowage-r-docker:$APP_VERSION
-    restart: always
+    restart: unless-stopped
     environment:
       - HMAC_KEY=$APP_HMAC_KEY
 
   knowagedb:
     image: mariadb:$DB_MARIADB_VERSION
     container_name: $APP_NAME-db
-    restart: always
+    restart: unless-stopped
     environment:
       - MYSQL_USER=$DB_MARIADB_USER
       - MYSQL_PASSWORD=$DB_MARIADB_PASSWORD
@@ -67,7 +67,7 @@ services:
   knowagecache:
     image: mariadb:$DB_MARIADB_VERSION
     container_name: $APP_NAME-cache
-    restart: always
+    restart: unless-stopped
     environment:
       - MYSQL_USER=$DB_MARIADB_CACHE_USER
       - MYSQL_PASSWORD=$DB_MARIADB_PASSWORD

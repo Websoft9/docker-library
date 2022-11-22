@@ -10,7 +10,7 @@ services:
     stdin_open: true
     image: tooljet/tooljet-ce:$APP_VERSION
     container_name: $APP_NAME
-    restart: always
+    restart: unless-stopped
     ports:
       - $APP_HTTP_PORT:80
     environment:
@@ -23,7 +23,7 @@ services:
   postgres:
     image: postgres:${APP_VERSION}
     container_name: ${APP_NAME}-db
-    restart: always
+    restart: unless-stopped
     ports:
      - ${APP_DB_PORT}:5432
     volumes:

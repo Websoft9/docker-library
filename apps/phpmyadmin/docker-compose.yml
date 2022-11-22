@@ -14,14 +14,14 @@ services:
        - PMA_ARBITRARY
        - PMA_ABSOLUTE_URI=$APP_URL
        - UPLOAD_LIMIT=$APP_UPLOAD_LIMIT
-      restart: always
+      restart: unless-stopped
       ports:
        - ${APP_HTTP_PORT}:80
 
   db:
     image: mariadb:10.3
     container_name: $APP_NAME-db
-    restart: always
+    restart: unless-stopped
     volumes:
       - type: volume
         source: db

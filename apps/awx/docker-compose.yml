@@ -11,7 +11,7 @@ services:
       - redis
     hostname: awxweb
     user: root
-    restart: always
+    restart: unless-stopped
     volumes:
       - supervisor-socket:/var/run/supervisor
       - rsyslog-socket:/var/run/awx-rsyslog/
@@ -35,7 +35,7 @@ services:
     command: /usr/bin/launch_awx_task.sh
     hostname: awx
     user: root
-    restart: always
+    restart: unless-stopped
     volumes:
       - supervisor-socket:/var/run/supervisor
       - rsyslog-socket:/var/run/awx-rsyslog/
@@ -53,7 +53,7 @@ services:
   redis:
     image: redis
     container_name: awx_redis
-    restart: always
+    restart: unless-stopped
     environment:
       http_proxy: 
       https_proxy: 
@@ -66,7 +66,7 @@ services:
   postgres:
     image: postgres:12
     container_name: awx_postgres
-    restart: always
+    restart: unless-stopped
     volumes:
       - postgres_new-data:/var/lib/postgresql/data/pgdata/
     environment:
@@ -81,7 +81,7 @@ services:
   nginx:
     image: nginx
     container_name: awx_nginx
-    restart: always
+    restart: unless-stopped
     depends_on: 
       - redis
       - postgres

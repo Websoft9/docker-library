@@ -12,7 +12,7 @@ services:
       - "$APP_HTTP_PORT:80"
     volumes:
       - appsmith:/appsmith-stacks
-    restart: always
+    restart: unless-stopped
 
 networks:
   default:

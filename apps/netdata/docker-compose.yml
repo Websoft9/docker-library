@@ -10,7 +10,7 @@ services:
     hostname: ${APP_SITE_URL}
     ports:
       - ${APP_HTTP_PORT}:19999
-    restart: always
+    restart: unless-stopped
     cap_add:
       - SYS_PTRACE
     security_opt:

@@ -18,12 +18,12 @@ services:
       - MYSQL_HOST=mysql
     links:
       - mysql
-    restart: always
+    restart: unless-stopped
 
   mysql:
     image: mysql:${DB_MYSQL_VERSION}
     container_name: ${APP_NAME}-db
-    restart: always
+    restart: unless-stopped
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     ports:
      - ${DB_MYSQL_PORT}:3306
