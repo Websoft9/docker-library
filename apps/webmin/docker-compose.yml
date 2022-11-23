@@ -11,6 +11,7 @@ services:
       - WEBMIN_PASSWORD=${APP_PASSWORD}
     ports:
       - '${APP_HTTP_PORT}:10000'
+    restart: unless-stopped
 
 networks:
   default:
