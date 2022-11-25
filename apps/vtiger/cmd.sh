@@ -16,7 +16,7 @@ else
 
     db_user=$(grep -n DB_USER Step4.tpl |cut -d ":" -f1)
     sed -i "$db_user s/text/hidden/g" Step4.tpl
-    sed -i "s/{\$DB_USER}/$VTIGER_DB_USER/g" Step4.tpl
+    sed -i "s/{\$DB_USERNAME}/$VTIGER_DB_USER/g" Step4.tpl
     sed -i "s/db_username.*/db_username\">$VTIGER_DB_USER<\/td>/g" Step4.tpl
 
     db_password=$(grep -n DB_PASSWORD Step4.tpl |cut -d ":" -f1)
