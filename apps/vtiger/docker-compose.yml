@@ -22,7 +22,7 @@ services:
     volumes:
       - vtiger:/var/www/html
     depends_on:
-      - mysqli
+      - mysql
     command: bash -c "cat /my_cmd > /mycmd.sh && chmod +x /mycmd.sh && /mycmd.sh"
     configs:
       - source: my_cmd
