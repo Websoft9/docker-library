@@ -3,5 +3,4 @@
 
 # up the native entrypoint.sh and cmd
 exec "$@"
-
 /usr/local/bin/docker-entrypoint.sh haproxy -f /usr/local/etc/haproxy/haproxy.cfg
