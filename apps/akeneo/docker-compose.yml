@@ -14,14 +14,14 @@ services:
       AKENEO_MYSQL_DATABASE: ${DB_MYSQL_NAME}
       AKENEO_MYSQL_USER: ${DB_MYSQL_USER}
       AKENEO_MYSQL_PASSWORD: ${DB_MYSQL_PASSWORD}
-      AKENEO_MYSQL_HOST: ${DB_MYSQL_HOST}
+      AKENEO_MYSQL_HOST: $APP_NAME-db
       AKENEO_SITENAME: ${APP_SITENAME}
       AKENEO_ADMIN_USER: ${APP_ADMIN_NAME}
       AKENEO_ADMIN_PASSWORD: ${APP_ADMIN_PASSWORD}
       
   mysql:
     image: mysql:${DB_MYSQL_VERSION}
-    container_name: ${APP_NAME}-mysql
+    container_name: $APP_NAME-db
     restart: unless-stopped
     ports:
      - ${DB_MYSQL_PORT}:3306
