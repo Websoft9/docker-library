@@ -35,7 +35,7 @@ All environment is at `.env` file for each application, You should read it and m
 These environments is frequently used:  
 
 * POWER_PASSWORD: It can be used for Database password or Administrator password, you should reset it
-* APP_URL: You must reset it for you real DND or IP if APP_URL_REPLACE=true
+* APP_URL: You must reset it for you real DNS or IP if APP_URL_REPLACE=true
 * APP_HTTP_PORT
 * APP_ENCRYPT_PASSWORD: This value is from encrypt APP_PASSWOR, some image use encrypted environment
 * APP_AUTH_NEED
