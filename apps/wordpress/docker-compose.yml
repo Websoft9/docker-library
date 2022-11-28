@@ -23,7 +23,7 @@ services:
       WORDPRESS_DEBUG: 1
     volumes:
       - wordpress:/var/www/html
-      - ./src/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
 
   mysql:
     image: mariadb:$DB_MYSQL_VERSION
