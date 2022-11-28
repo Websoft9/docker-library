@@ -74,9 +74,11 @@ docker compose  up -d
 ### FAQ
 
 #### Do I need to change the password before docker-compose up?
+
 Yes, you should modify all database password and application password at docker-compose file for production
 
 #### Docker runing failed for the reason that port conflict?
+
 You should modify ports at [docker-compose file](docker-compose-production.yml) and docker-compose again
 
 ### Usage instructions

@@ -73,3 +73,26 @@ You can subscribe [Websoft9 Enterprise Support](https://www.websoft9.com/apps) t
 ## License
 
 [LGPL-3.0](/License.md), Additional Terms: It is not allowed to publish free or paid image based on this repository in any Cloud platform's Marketplace without authorization (未经授权许可，不允许将基于本项目创建的镜像到云平台市场上售卖)
+
+## FAQ
+
+#### Do I need to change the password before docker-compose up?
+
+Yes, you should modify **POWER_PASSWORD** at .env file for production
+
+#### Docker runing failed for the reason that port conflict?
+
+You should modify **APP_*_PORT** at .env file 
+
+#### What the credentials for application?
+
+APP_USER, APP_PASSWORD
+
+#### Is there any infrastructure limit?
+
+No, you can use lots of infrastructure, e.g.  
+
+* **OS**: Red Hat, CentOS, Debian, Ubuntu or other's Linux OS ...
+* **Public Cloud**: More than 20+ major Cloud such as AWS, Azure, Google Cloud, Alibaba Cloud, HUAWEIClOUD, Tencent Cloud, Oracle Cloud ...
+* **Private Cloud**: KVM, VMware, VirtualBox, OpenStack ...
+* **ARCH**:  Linux x86-64, ARM 32/64, x86/i686 ...
