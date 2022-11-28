@@ -20,7 +20,7 @@ If you can use docker, you already know how to use and develop an application fo
    cd docker-library && ls apps
    ```
 
-3. Go to the target app directory, then run it
+3. Go to the target app directory, check the .env, then run it
 
    ```
    # e.g install wordpress
