@@ -11,9 +11,9 @@ services:
       - ./000-default.conf:/etc/apache2/sites-available/000-default.conf
     restart: unless-stopped
     environment:
-      AKENEO_MYSQL_DATABASE: ${DB_MYSQL_NAME}
-      AKENEO_MYSQL_USER: ${DB_MYSQL_USER}
-      AKENEO_MYSQL_PASSWORD: ${DB_MYSQL_PASSWORD}
+      AKENEO_MYSQL_DATABASE: ${APP_DB_MYSQL_NAME}
+      AKENEO_MYSQL_USER: ${APP_DB_MYSQL_USER}
+      AKENEO_MYSQL_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
       AKENEO_MYSQL_HOST: $APP_NAME-db
       AKENEO_SITENAME: ${APP_SITENAME}
       AKENEO_ADMIN_USER: ${APP_ADMIN_NAME}
@@ -29,20 +29,20 @@ services:
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: ${DB_MYSQL_NAME}
-      MYSQL_USER: ${DB_MYSQL_USER}
-      MYSQL_PASSWORD: ${DB_MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${DB_MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${APP_DB_MYSQL_NAME}
+      MYSQL_USER: ${APP_DB_MYSQL_USER}
+      MYSQL_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
 
   elasticsearch:
-    image: 'docker.elastic.co/elasticsearch/elasticsearch-oss:${DB_ES_VERSION}'
+    image: 'docker.elastic.co/elasticsearch/elasticsearch-oss:${APP_DB_ES_VERSION}'
     container_name: ${APP_NAME}-elasticsearch
     restart: unless-stopped
     environment:
       ES_JAVA_OPTS: '${ES_JAVA_OPTS:--Xms512m -Xmx512m}'
       discovery.type: 'single-node'
     ports:
-      - '${DB_ES_PORT}:9200'
+      - '${APP_DB_ES_PORT}:9200'
 
 
 networks:
