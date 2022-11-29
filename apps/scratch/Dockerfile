@@ -11,6 +11,7 @@ RUN mkdir -p /data/scratch-gui ;\
     mkdir -p /data/scratch-desktop ;\
     git clone --depth=1 https://github.com/LLK/scratch-gui /data/scratch-gui ;\
     git clone --depth=1 https://github.com/LLK/scratch-desktop /data/scratch-desktop ;\
+    cd /data/scratch-desktop ;\
     npm install ;\
     npm run fetch ;\
     cp -r /data/scratch-desktop/static/assets/* /data/scratch-gui/static/assets/* ;\
