@@ -20,17 +20,15 @@ services:
         image: tuxgasy/dolibarr:${APP_VERSION}
         container_name: ${APP_NAME}
         restart: unless-stopped
+        env_file:
+          - .env
         environment:
-            DOLI_DB_HOST: mariadb
+            DOLI_DB_HOST: ${APP_NAME}-db
             DOLI_DB_USER: ${DB_MARIADB_USER}
             DOLI_DB_PASSWORD: ${DB_MARIADB_PASSWORD}
             DOLI_DB_NAME: ${DB_MARIADB_NAME}
             DOLI_ADMIN_LOGIN: ${APP_USER}
             DOLI_ADMIN_PASSWORD: ${APP_PASSWORD}
-            DOLI_URL_ROOT: 'http://0.0.0.0'
-            PHP_INI_DATE_TIMEZONE: 'Europe/Paris'
-            PHP_INI_MEMORY_LIMIT: 512M
-            DOLI_AUTH: dolibarr
         ports:
             - "${APP_HTTP_PORT}:80"
         volumes:
