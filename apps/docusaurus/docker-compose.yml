@@ -3,7 +3,7 @@
 version: '3.8'
 
 services:
-  suitecrm:
+  docusaurus:
     image: awesometic/docusaurus:${APP_VERSION}
     container_name: ${APP_NAME}
     ports:
@@ -15,7 +15,7 @@ services:
 
 networks:
   default:
-    name: ${APP_NAME}
+    name: ${APP_NETWORK}
     external: true
 
 volumes:
