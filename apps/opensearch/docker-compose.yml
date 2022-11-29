@@ -1,60 +1,69 @@
-# image: https://hub.docker.com/r/bitnami/suitecrm
-# docs: https://github.com/bitnami/bitnami-docker-suitecrm
-
-
-version: '3.8'
-
+version: '3'
 services:
-  suitecrm:
-    image: docker.io/bitnami/suitecrm:${APP_VERSION}
-    container_name: ${APP_NAME}
-    ports:
-      - '${APP_HTTP_PORT}:8080'
-      - '${APP_HTTPS_PORT}:8443'
+  opensearch-node1:
+    image: opensearchproject/opensearch:$APP_VERSION
+    container_name: $APP_NAME-node1
+    env_file:
+      - .env
     environment:
-      - SUITECRM_DATABASE_HOST=mysql
-      - SUITECRM_DATABASE_PORT_NUMBER=${DB_MYSQL_PORT}
-      - SUITECRM_DATABASE_USER=${DB_MYSQL_USER}
-      - SUITECRM_DATABASE_NAME=${DB_MYSQL_NAME}
-      - SUITECRM_DATABASE_PASSWORD=${DB_MYSQL_PASSWORD}
-      - SUITECRM_USERNAME=${APP_USER}
-      - SUITECRM_PASSWORD=${APP_PASSWORD}
-      - SUITECRM_EMAIL=${APP_EMAIL}
-      - SUITECRM_SKIP_BOOTSTRAP=no
-      - ALLOW_EMPTY_PASSWORD=no
+      - cluster.name=opensearch-cluster
+      - node.name=opensearch-node1
+      - discovery.seed_hosts=opensearch-node1,opensearch-node2
+      - cluster.initial_cluster_manager_nodes=opensearch-node1,opensearch-node2
+      - bootstrap.memory_lock=true # along with the memlock settings below, disables swapping
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m" # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536 # maximum number of open files for the OpenSearch user, set to at least 65536 on modern systems
+        hard: 65536
     volumes:
-      - 'suitecrm:/bitnami/suitecrm'
-    depends_on:
-      - mysql
-
-  mysql:
-    image: mysql:${DB_MYSQL_VERSION}
-    container_name: ${APP_NAME}-mysql
-    command: --default-authentication-plugin=mysql_native_password    
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_MYSQL_PASSWORD}
-      MYSQL_DATABASE: ${DB_MYSQL_NAME}
-      MYSQL_USER: ${DB_MYSQL_USER}
-      MYSQL_PASSWORD: ${DB_MYSQL_PASSWORD}
-    volumes:
-      - mysql:/var/lib/mysql
-    restart: unless-stopped
-
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:${DB_ES_VERSION}
-    container_name: ${APP_NAME}-elasticsearch
-    restart: unless-stopped
+      - opensearch-data1:/usr/share/opensearch/data
     ports:
-        - ${DB_ES_HTTP_PORT}:9200
-        - ${DB_ES_TCP_PORT}:9300
+      - 9200:9200
+      - 9600:9600 # required for Performance Analyzer
+
+  opensearch-node2:
+    image: opensearchproject/opensearch:$APP_VERSION
+    container_name: $APP_NAME-node2
+    env_file:
+      - .env
     environment:
-        - discovery.type=single-node
-        - xpack.security.enabled=false
-        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-networks:
-  default:
-      name: ${APP_NAME}
+      - cluster.name=opensearch-cluster
+      - node.name=opensearch-node2
+      - discovery.seed_hosts=opensearch-node1,opensearch-node2
+      - cluster.initial_cluster_manager_nodes=opensearch-node1,opensearch-node2
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - opensearch-data2:/usr/share/opensearch/data
+
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:$APP_VERSION
+    container_name: $APP_NAME-dashboards
+    env_file:
+      - .env
+    ports:
+      - 5601:5601
+    expose:
+      - "5601"
+    environment:
+      OPENSEARCH_HOSTS: '["https://opensearch-node1:9200","https://opensearch-node2:9200"]'
 
 volumes:
-  mysql:
-  suitecrm:
+  opensearch-data1:
+  opensearch-data2:
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
