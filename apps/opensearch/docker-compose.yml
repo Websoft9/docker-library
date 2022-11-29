@@ -1,3 +1,7 @@
+# image: https://hub.docker.com/r/opensearchproject/opensearch
+# image: https://hub.docker.com/r/opensearchproject/opensearch-dashboards
+# doc: https://opensearch.org/downloads.html
+
 version: '3'
 services:
   opensearch-node1:
