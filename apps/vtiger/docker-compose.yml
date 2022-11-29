@@ -21,6 +21,7 @@ services:
       - VTIGER_DB_PASSWORD=${DB_MYSQL_PASSWORD}
     volumes:
       - vtiger:/var/www/html
+      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
     depends_on:
       - mysql
     command: bash -c "cat /my_cmd > /mycmd.sh && chmod +x /mycmd.sh && /mycmd.sh"
