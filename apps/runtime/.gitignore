@@ -1,4 +1,0 @@
-*.retry
-/.vscode
-/appdata/nginx
-/appdata/letsencrypt
