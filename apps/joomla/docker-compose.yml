@@ -11,10 +11,12 @@ services:
       - ${APP_HTTP_PORT}:8080
     volumes:
       - joomla:/bitnami/joomla
+    env_file:
+      - .env
     environment:
       - JOOMLA_USERNAME=$APP_USER	
       - JOOMLA_PASSWORD=$APP_PASSWORD
-      - JOOMLA_DATABASE_HOST=mariadb
+      - JOOMLA_DATABASE_HOST=$APP_NAME-db
       - JOOMLA_DATABASE_PORT_NUMBER=3306
       - JOOMLA_DATABASE_NAME=$DB_MARIADB_NAME
       - JOOMLA_DATABASE_USER=$DB_MARIADB_USER
