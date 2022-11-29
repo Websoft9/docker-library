@@ -3,7 +3,7 @@ name: Template README by variables.json
 on: 
   repository_dispatch:
   push:
-    paths: [variables.json, Notes.md, docker-compose.yml, CHANGELOG.md, .env]
+    paths: [template/README.jinja2, apps/appname/variables.json]
 
 jobs:
   build:
