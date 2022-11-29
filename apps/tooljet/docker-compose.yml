@@ -1,5 +1,4 @@
-# image: https://hub.docker.com/r/bitnami/suitecrm
-# docs: https://github.com/bitnami/bitnami-docker-suitecrm
+# docs: https://github.com/ToolJet/ToolJet
 
 
 version: '3.8'
