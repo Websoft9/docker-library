@@ -4,6 +4,30 @@
 version: "3.8"
 
 services:
+     
+  moodle:
+    image: docker.io/bitnami/moodle:${APP_VERSION}
+    container_name: ${APP_NAME}
+    restart: unless-stopped
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MOODLE_DATABASE_HOST=${APP_NAME}-db
+      - MOODLE_DATABASE_PORT_NUMBER=${DB_MARIADB_PORT}
+      - MOODLE_DATABASE_USER=${DB_MARIADB_USER}
+      - MOODLE_DATABASE_PASSWORD=${DB_MARIADB_PASSWORD}
+      - MOODLE_DATABASE_NAME=${DB_MARIADB_NAME}
+      - MOODLE_USERNAME=${APP_USER}
+      - MOODLE_PASSWORD=${APP_PASSWORD}
+    ports:
+      - '${APP_HTTP_PORT}:8080'
+    env_file:
+      - .env
+    volumes:
+      - 'moodle_data:/bitnami/moodle'
+      - 'moodledata_data:/bitnami/moodledata'
+    depends_on:
+      - mariadb
+
   mariadb:
     image: docker.io/bitnami/mariadb:${DB_MARIADB_VERSION}
     container_name: ${APP_NAME}-db
@@ -19,28 +43,6 @@ services:
       - ${DB_MARIADB_PORT}:3306
     volumes:
       - 'mariadb_data:/bitnami/mariadb'
-      
-  moodle:
-    image: docker.io/bitnami/moodle:${APP_VERSION}
-    container_name: ${APP_NAME}
-    restart: unless-stopped
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
-      - MOODLE_DATABASE_HOST=${DB_MARIADB_HOST}
-      - MOODLE_DATABASE_PORT_NUMBER=${DB_MARIADB_PORT}
-      - MOODLE_DATABASE_USER=${DB_MARIADB_USER}
-      - MOODLE_DATABASE_PASSWORD=${DB_MARIADB_PASSWORD}
-      - MOODLE_DATABASE_NAME=${DB_MARIADB_NAME}
-      - MOODLE_USERNAME=${APP_USER}
-      - MOODLE_PASSWORD=${APP_PASSWORD}
-      - MOODLE_EMAIL=${EMAIL}
-    ports:
-      - '${APP_HTTP_PORT}:8080'
-    volumes:
-      - 'moodle_data:/bitnami/moodle'
-      - 'moodledata_data:/bitnami/moodledata'
-    depends_on:
-      - mariadb
 
 volumes:
   mariadb_data:
