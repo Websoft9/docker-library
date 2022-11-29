@@ -1,3 +1,5 @@
+# doc: https://support.count.ly/hc/en-us/articles/360037814511-Docker-and-Kubernetes 
+
 version: "3.7"
 
 volumes:
@@ -50,13 +52,3 @@ services:
         delay: 5s
         max_attempts: 3
         window: 120s
-
-  nginx:
-    image: 'bitnami/nginx'
-    ports:
-      - '80:8080'
-    volumes:
-      - './bin/docker/nginx.server.conf:/opt/bitnami/nginx/conf/server_blocks/countly.conf:ro'
-    depends_on:
-      - countly-api
-      - countly-frontend
