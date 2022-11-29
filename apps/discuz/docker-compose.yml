@@ -21,6 +21,7 @@ services:
       - cat /my_cmd > cmd.sh && chmod +x /var/www/html/cmd.sh && /var/www/html/cmd.sh
     volumes:
       - discuz:/var/www/html
+      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
     depends_on:
       - db
     configs:
