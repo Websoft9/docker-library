@@ -14,7 +14,7 @@ RUN mkdir -p /data/scratch-gui ;\
     cd /data/scratch-desktop ;\
     npm install ;\
     npm run fetch ;\
-    cp -r /data/scratch-desktop/static/assets/* /data/scratch-gui/static/assets/* ;\
+    cp -r /data/scratch-desktop/static/assets/* /data/scratch-gui/static/assets/ ;\
     sed -i "s/'process.env.GA_ID'.*//g" /data/scratch-gui/webpack.config.js ;\
     sed -i 's/`https.*/`.\/static\/asset\/\${iconMd5}` :/g' /data/scratch-gui/src/containers/library-item.jsx ;\
     sed -i 's/${this.assetHost}\/internalapi.*/.\/static\/asset\/\${asset.assetId}.\${asset.dataFormat}`;/g' /data/scratch-gui/src/lib/storage.js
