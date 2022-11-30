@@ -13,8 +13,8 @@ Express and Enterprise have different environments,
 官方文档中没有这个环境变量，但设置下面的值没有问题
 
 ```
-DB_ORACLE_SID=xe
-DB_ORACLE_PDB=xepdb1
+APP_DB_ORACLE_SID=xe
+APP_DB_ORACLE_PDB=xepdb1
 ```
 
 而设置成下面的值会导致数据库无法启动

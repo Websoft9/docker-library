@@ -4,20 +4,20 @@ version: '3.8'
 
 services:
   oracledb:
-    image: container-registry.oracle.com/database/${DB_ORACLE_EDITION}:${DB_ORACLE_VERSION}
+    image: container-registry.oracle.com/database/${APP_DB_ORACLE_EDITION}:${APP_DB_ORACLE_VERSION}
     container_name: ${APP_NAME}-db  
     environment:
       ORACLE_CHARACTERSET: ${DB_CHARACTERSET}
-      ORACLE_PWD: ${DB_ORACLE_PASSWORD}
-      ORACLE_SID: ${DB_ORACLE_SID}
-      ORACLE_PDB: ${DB_ORACLE_PDB}
-      INIT_SGA_SIZE: ${DB_ORACLE_SGA}
-      INIT_PGA_SIZE: ${DB_ORACLE_PGA}
+      ORACLE_PWD: ${APP_DB_ORACLE_PASSWORD}
+      ORACLE_SID: ${APP_DB_ORACLE_SID}
+      ORACLE_PDB: ${APP_DB_ORACLE_PDB}
+      INIT_SGA_SIZE: ${APP_DB_ORACLE_SGA}
+      INIT_PGA_SIZE: ${APP_DB_ORACLE_PGA}
       ENABLE_ARCHIVELOG: true
     volumes:
       - oracledb:/opt/oracle/oradata
     ports:
-      -  ${DB_ORACLE_PORT}:1521
+      -  ${APP_DB_ORACLE_PORT}:1521
       -  ${DB_MANAGE_PORT}:5500
     restart: unless-stopped
 
@@ -30,7 +30,7 @@ services:
       - /bin/bash
       - -c
       - |
-        echo 'CONN_STRING=sys/$DB_ORACLE_PASSWORD@oracledb:$DB_ORACLE_PORT/${DB_ORACLE_PDB}' > /opt/oracle/variables/conn_string.txt
+        echo 'CONN_STRING=sys/$APP_DB_ORACLE_PASSWORD@oracledb:$APP_DB_ORACLE_PORT/${APP_DB_ORACLE_PDB}' > /opt/oracle/variables/conn_string.txt
         sed -i 's/Welcome_1/${APP_PASSWORD}/g' /opt/oracle/apex/setapexadmin.sql
         bash /entrypoint.sh
     ports:
