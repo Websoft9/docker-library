@@ -1,5 +1,5 @@
 {
-  "name": "collabora tt",
+  "name": "collabora",
   "trademark": "Collabora",
   "installpath": "/data/wwwroot/collabora",
   "compose_file": "docker-compose.yml",
