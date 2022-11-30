@@ -1,30 +1,12 @@
 {
   "name": "erpnext",
   "trademark": "ERPNext",
-  "compose_file": "docker-compose.yml",
-  "env_file": ".env",
+  "version": "14",
   "fork_url": "https://github.com/frappe/frappe_docker.git",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
     "cpu": "2",
     "memory": "8",
     "disk": "20",
-    "swap": "2",
     "url": "https://github.com/frappe/bench"
-  },
-
-  "user": {
-    "username": "Administrator",
-    "password": "admin"
-  },
-  "command_extra":[
-    {
-      "cmd": "public_ip=`wget -O - https://download.websoft9.com/ansible/get_ip.sh | bash`"
-    },
-    {
-      "cmd": "sudo sed -i s/erp.example.com/$public_ip/g ./.env"
-    }
-  ]
-
-
+  }
 }

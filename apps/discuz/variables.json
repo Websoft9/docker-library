@@ -1,16 +1,12 @@
 {
   "name": "discuz",
   "trademark": "Discuz",
-  "installpath": "/data/apps/discuz",
-  "compose_file": "docker-compose.yml",
-  "fork_url": "https://github.com/joomla-docker/docker-joomla",
-  "env_file": ".env_all",
+  "fork_url": "",
+  "version": "3.4.0",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, x86/i686",
     "cpu": "1",
     "memory": "1",
     "disk": "20",
-    "swap": "2",
     "url": "https://github.com/joomla-docker/docker-joomla"
   }
 }

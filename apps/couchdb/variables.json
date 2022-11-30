@@ -1,26 +1,13 @@
   {
     "name": "couchdb",
     "trademark": "CouchDB",
-    "compose_file": "docker-compose-production.yml",
     "fork_url": "https://github.com/apache/couchdb-docker",
-    "env_file": ".env",
+    "version": "",
     "requirements":{
-      "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
       "cpu": "1",
       "memory": "1",
       "disk": "20",
-      "swap": "2",
       "url": "https://docs.couchdb.org/en/latest/install/index.html"
-    },
-  
-    "services":[
-      {
-        "name": "couchdb",
-        "port": "5984",
-        "description_cn": "TCP 访问CouchDB数据库",
-        "description_en": "Accessing CouchDB database with TCP",
-        "required": "Y"
-      }
-    ]
+    }
   
   }

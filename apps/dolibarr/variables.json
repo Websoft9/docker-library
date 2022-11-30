@@ -1,31 +1,12 @@
 {
   "name": "dolibarr",
   "trademark": "Dolibarr",
-  "installpath": "/data/apps/dolibarr",
-  "compose_file": "docker-compose.yml",
   "fork_url": "https://github.com/tuxgasy/docker-dolibarr",
-  "env_file": ".env_all",
+  "version": "",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64,  x86/i686",
-    "cpu": "2",
-    "memory": "4",
+    "cpu": "1",
+    "memory": "2",
     "disk": "20",
-    "swap": "2",
     "url": "https://github.com/tuxgasy/docker-dolibarr"
-  },
-
-  "user": {
-    "username": "admin",
-    "password": "admin"
-  },
-
-  "services":[
-    {
-      "name": "onlyoffice-server",
-      "port": "9001",
-      "description_cn": "浏览器访问 Dolibarr",
-      "description_en": "Access to Dolibarr",
-      "required": "Y"
-    }
-  ]
+  }
 }

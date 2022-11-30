@@ -1,25 +1,12 @@
 {
   "name": "cmak",
   "trademark": "Cmak",
-  "compose_file": "docker-compose.yml",
-  "installpath": "/data/apps/cmak",
   "fork_url": "https://github.com/hleb-albau/kafka-manager-docker",
+  "version": "3.0",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
     "cpu": "1",
     "memory": "1",
     "disk": "20",
-    "swap": "2",
     "url": "https://github.com/yahoo/CMAK"
-  },
-
-  "services":[
-    {
-      "name": "cmak",
-      "port": "9001",
-      "description_cn": "浏览器访问 Kafka",
-      "description_en": "Web-GUI Kafka management tool",
-      "required": "Y"
-    }
-  ]
+  }
 }

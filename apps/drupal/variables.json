@@ -1,36 +1,12 @@
 {
   "name": "drupal",
   "trademark": "Drupal",
-  "installpath": "/data/wwwroot/drupal",
-  "compose_file": "docker-compose.yml",
   "fork_url": "https://hub.docker.com/r/bitnami/drupal",
-  "env_file": ".env",
+  "version": "",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, x86/i686",
     "cpu": "1",
-    "memory": "1",
+    "memory": "2",
     "disk": "20",
-    "swap": "2",
     "url": "https://www.drupal.org/docs/user_guide/en/install-requirements.html"
-  },
-
-  "services":[
-    {
-      "name": "drupal-server",
-      "port": "9001",
-      "description_cn": "浏览器访问 Drupal",
-      "description_en": "Browser access to Drupal Document by http",
-      "required": "Y"
-    }
-  ],
-
-  "faqs": [
-    {
-      "question_cn": "为什么总是提示数据库连接错误？",
-      "answer_cn": "![](https://libs.websoft9.com/Websoft9/DocsPicture/zh/drupal/drupal-install-db-docker-websoft9.png)",
-      "question_en": "Why database connection failed?",
-      "answer_en": "![](https://libs.websoft9.com/Websoft9/DocsPicture/zh/drupal/drupal-install-db-docker-websoft9.png)"
-    }
-  ]
-
+  }
 }

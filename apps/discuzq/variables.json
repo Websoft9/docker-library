@@ -1,31 +1,12 @@
 {
   "name": "discuzq",
   "trademark": "DiscuzQ",
-  "installpath": "/data/wwwroot/discuzq",
-  "compose_file": "docker-compose.yml",
   "fork_url": "https://discuz.com/docs",
-  "env_file": ".env",
+  "version": "3.0.0",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, x86/i686",
     "cpu": "1",
-    "memory": "1",
+    "memory": "2",
     "disk": "20",
-    "swap": "2",
     "url": "https://discuz.com/docs"
-  },
-
-  "faqs": [
-    {
-      "question_cn": "首次访问 DiscuzQ 显示错误信息正常吗？",
-      "answer_cn": "正常，您需要先完成安装向导,http://公网IP:9001/install",
-      "question_en": "Error when I access DiscuzQ index page first time?",
-      "answer_en": "Yes, you must complete the installation wizard,http://Internet IP:9001/install"
-    },
-    {
-      "question_cn": "初始化向导中 MySQL Host 怎么填？",
-      "answer_cn": "填写 mysql 即可",
-      "question_en": "What value of MySQL Host item at DiscuzQ install wizard?",
-      "answer_en": "mysql"
-    }
-  ]
+  }
 }

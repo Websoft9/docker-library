@@ -1,16 +1,12 @@
 {
   "name": "cloudbeaver",
   "trademark": "CloudBeaver",
-  "compose_file": "docker-compose.yml",
-  "installpath": "/data/apps/cloudbeaver",
-  "env_file": ".env",
+  "version": "22.2.2",
   "fork_url": "https://github.com/dbeaver/cloudbeaver",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, x86/i686",
     "cpu": "2",
     "memory": "4",
     "disk": "20",
-    "swap": "2",
     "url": "https://github.com/dbeaver/cloudbeaver/wiki"
   }
 }
