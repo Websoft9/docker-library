@@ -1,10 +1,10 @@
 {
   "name": "opensearch",
-  "trademark": "Opensearch",
+  "trademark": "OpenSearch",
   "installpath": "/data/apps/opensearch",
   "compose_file": "docker-compose.yml",
   "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
-  "env_file": ".env_all",
+  "env_file": ".env",
   "version": "3.1.1",
   "requirements":{
     "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
