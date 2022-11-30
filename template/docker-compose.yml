@@ -13,10 +13,10 @@ services:
       - '${APP_HTTPS_PORT}:8443'
     environment:
       - SUITECRM_DATABASE_HOST=mysql
-      - SUITECRM_DATABASE_PORT_NUMBER=${DB_MYSQL_PORT}
-      - SUITECRM_DATABASE_USER=${DB_MYSQL_USER}
-      - SUITECRM_DATABASE_NAME=${DB_MYSQL_NAME}
-      - SUITECRM_DATABASE_PASSWORD=${DB_MYSQL_PASSWORD}
+      - SUITECRM_DATABASE_PORT_NUMBER=${APP_DB_MYSQL_PORT}
+      - SUITECRM_DATABASE_USER=${APP_DB_MYSQL_USER}
+      - SUITECRM_DATABASE_NAME=${APP_DB_MYSQL_NAME}
+      - SUITECRM_DATABASE_PASSWORD=${APP_DB_MYSQL_PASSWORD}
       - SUITECRM_USERNAME=${APP_USER}
       - SUITECRM_PASSWORD=${APP_PASSWORD}
       - SUITECRM_EMAIL=${APP_EMAIL}
@@ -28,25 +28,25 @@ services:
       - mysql
 
   mysql:
-    image: mysql:${DB_MYSQL_VERSION}
+    image: mysql:${APP_DB_MYSQL_VERSION}
     container_name: ${APP_NAME}-mysql
     command: --default-authentication-plugin=mysql_native_password    
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_MYSQL_PASSWORD}
-      MYSQL_DATABASE: ${DB_MYSQL_NAME}
-      MYSQL_USER: ${DB_MYSQL_USER}
-      MYSQL_PASSWORD: ${DB_MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${APP_DB_MYSQL_NAME}
+      MYSQL_USER: ${APP_DB_MYSQL_USER}
+      MYSQL_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
     volumes:
       - mysql:/var/lib/mysql
     restart: always
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:${DB_ES_VERSION}
+    image: docker.elastic.co/elasticsearch/elasticsearch:${APP_DB_ES_VERSION}
     container_name: ${APP_NAME}-elasticsearch
     restart: unless-stopped
     ports:
-        - ${DB_ES_HTTP_PORT}:9200
-        - ${DB_ES_TCP_PORT}:9300
+        - ${APP_DB_ES_HTTP_PORT}:9200
+        - ${APP_DB_ES_TCP_PORT}:9300
     environment:
         - discovery.type=single-node
         - xpack.security.enabled=false

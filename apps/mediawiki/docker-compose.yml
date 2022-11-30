@@ -12,10 +12,10 @@ services:
       - .env
     environment:
       - MEDIAWIKI_DATABASE_HOST=$APP_NAME-db
-      - MEDIAWIKI_DATABASE_PORT_NUMBER=$DB_MYSQL_PORT
-      - MEDIAWIKI_DATABASE_USER=$DB_MYSQL_USER
-      - MEDIAWIKI_DATABASE_NAME=$DB_MYSQL_NAME
-      - MEDIAWIKI_DATABASE_PASSWORD=$DB_MYSQL_PASSWORD
+      - MEDIAWIKI_DATABASE_PORT_NUMBER=$APP_DB_MYSQL_PORT
+      - MEDIAWIKI_DATABASE_USER=$APP_DB_MYSQL_USER
+      - MEDIAWIKI_DATABASE_NAME=$APP_DB_MYSQL_NAME
+      - MEDIAWIKI_DATABASE_PASSWORD=$APP_DB_MYSQL_PASSWORD
       - MEDIAWIKI_USERNAME=$APP_USER
       - MEDIAWIKI_PASSWORD=$APP_PASSWORD
       - MEDIAWIKI_EMAIL=$APP_EMAIL
@@ -29,19 +29,19 @@ services:
     restart: unless-stopped
 
   db:
-    image: mysql:$DB_MYSQL_VERSION
+    image: mysql:$APP_DB_MYSQL_VERSION
     container_name: $APP_NAME-db
     restart: unless-stopped
     #ports:
-    # - $DB_MYSQL_PORT:3306
+    # - $APP_DB_MYSQL_PORT:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: $DB_MYSQL_NAME
-      MYSQL_USER: $DB_MYSQL_USER
-      MYSQL_PASSWORD: $DB_MYSQL_PASSWORD
-      MYSQL_ROOT_PASSWORD: $DB_MYSQL_PASSWORD
+      MYSQL_DATABASE: $APP_DB_MYSQL_NAME
+      MYSQL_USER: $APP_DB_MYSQL_USER
+      MYSQL_PASSWORD: $APP_DB_MYSQL_PASSWORD
+      MYSQL_ROOT_PASSWORD: $APP_DB_MYSQL_PASSWORD
 
 networks:
   default:

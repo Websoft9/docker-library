@@ -14,23 +14,23 @@ services:
       - MATOMO_DATABASE_HOST=mysql
       - MATOMO_DATABASE_ADAPTER=mysql
       - MATOMO_DATABASE_TABLES_PREFIX=matomo_
-      - MATOMO_DATABASE_USERNAME=${DB_MYSQL_USER}
-      - MATOMO_DATABASE_PASSWORD=${DB_MYSQL_PASSWORD}
-      - MATOMO_DATABASE_DBNAME=${DB_MYSQL_NAME}
+      - MATOMO_DATABASE_USERNAME=${APP_DB_MYSQL_USER}
+      - MATOMO_DATABASE_PASSWORD=${APP_DB_MYSQL_PASSWORD}
+      - MATOMO_DATABASE_DBNAME=${APP_DB_MYSQL_NAME}
     volumes:
       - 'matomo:/var/www/html'
     depends_on:
       - mysql
 
   mysql:
-    image: mysql:${DB_MYSQL_VERSION}
+    image: mysql:${APP_DB_MYSQL_VERSION}
     container_name: ${APP_NAME}-db
     command: --default-authentication-plugin=mysql_native_password    
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_MYSQL_PASSWORD}
-      MYSQL_DATABASE: ${DB_MYSQL_NAME}
-      MYSQL_USER: ${DB_MYSQL_USER}
-      MYSQL_PASSWORD: ${DB_MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${APP_DB_MYSQL_NAME}
+      MYSQL_USER: ${APP_DB_MYSQL_USER}
+      MYSQL_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
     volumes:
       - mysql:/var/lib/mysql
     restart: unless-stopped

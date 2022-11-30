@@ -24,19 +24,19 @@ services:
       - GF_LOG_MODE
       - GF_SECURITY_ADMIN_USER=${APP_USER}
       - GF_SECURITY_ADMIN_PASSWORD=${APP_PASSWORD}
-      - GF_DATABASE_URL=mysql://$DB_MYSQL_USER:$DB_MYSQL_PASSWORD@db:3306/$DB_MYSQL_NAME
+      - GF_DATABASE_URL=mysql://$APP_DB_MYSQL_USER:$APP_DB_MYSQL_PASSWORD@db:3306/$APP_DB_MYSQL_NAME
   db:
-    image: mysql:${DB_MYSQL_VERSION}
+    image: mysql:${APP_DB_MYSQL_VERSION}
     container_name: ${APP_NAME}-db
     restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: $DB_MYSQL_NAME
-      MYSQL_USER: $DB_MYSQL_USER
-      MYSQL_PASSWORD: $DB_MYSQL_PASSWORD
-      MYSQL_ROOT_PASSWORD: $DB_MYSQL_PASSWORD
+      MYSQL_DATABASE: $APP_DB_MYSQL_NAME
+      MYSQL_USER: $APP_DB_MYSQL_USER
+      MYSQL_PASSWORD: $APP_DB_MYSQL_PASSWORD
+      MYSQL_ROOT_PASSWORD: $APP_DB_MYSQL_PASSWORD
 
   loki:
     image: grafana/loki:main

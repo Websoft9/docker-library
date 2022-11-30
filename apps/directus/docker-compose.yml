@@ -14,9 +14,9 @@ services:
       DB_CLIENT: 'pg'
       DB_HOST: ${APP_CONTAINER_NAME}-postgres
       DB_PORT: '5432'
-      DB_DATABASE: ${DB_POSTGRE_NAME}
-      DB_USER: ${DB_POSTGRE_USER}
-      DB_PASSWORD: ${DB_POSTGRE_PASSWORD}
+      DB_DATABASE: ${APP_DB_POSTGRESQL_NAME}
+      DB_USER: ${APP_DB_POSTGRESQL_USER}
+      DB_PASSWORD: ${APP_DB_POSTGRESQL_PASSWORD}
 
       CACHE_ENABLED: 'true'
       CACHE_STORE: 'redis'
@@ -38,18 +38,18 @@ services:
     restart: on-failure:3
 
   db:
-    image: postgres:${DB_POSTGRE_VERSION}
+    image: postgres:${APP_DB_POSTGRESQL_VERSION}
     container_name: ${APP_CONTAINER_NAME}-postgres
     restart: on-failure:3
     volumes:
       - ${VOLUMES_PATH_PREFIX}/postgres/data:/var/lib/postgresql/data
     environment:
-      POSTGRE_DB: ${DB_POSTGRE_NAME}
-      POSTGRE_USER: ${DB_POSTGRE_USER}
-      POSTGRE_PASSWORD: ${DB_POSTGRE_PASSWORD}
+      POSTGRE_DB: ${APP_DB_POSTGRESQL_NAME}
+      POSTGRE_USER: ${APP_DB_POSTGRESQL_USER}
+      POSTGRE_PASSWORD: ${APP_DB_POSTGRESQL_PASSWORD}
 
   cache:
-    image: redis:${DB_REDIS_VERSION}
+    image: redis:${APP_DB_REDIS_VERSION}
     container_name: ${APP_CONTAINER_NAME}-redis
 
 networks:

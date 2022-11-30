@@ -17,19 +17,19 @@ services:
       - "8083:8083"
     restart: unless-stopped
     environment:
-      NC_DB: "pg://${APP_CONTAINER_NAME}-postgre:5432?u=${DB_POSTGRE_USER}&p=${DB_POSTGRE_PASSWORD}&d=${DB_POSTGRE_NAME}"
+      NC_DB: "pg://${APP_CONTAINER_NAME}-postgre:5432?u=${APP_DB_POSTGRESQL_USER}&p=${APP_DB_POSTGRESQL_PASSWORD}&d=${APP_DB_POSTGRESQL_NAME}"
 
   db:
-    image: postgres:${DB_POSTGRE_VERSION}
+    image: postgres:${APP_DB_POSTGRESQL_VERSION}
     container_name: ${APP_CONTAINER_NAME}-postgre
     hostname: ${APP_CONTAINER_NAME}-postgre
     restart: unless-stopped
     volumes:
       - db_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_PASSWORD: ${DB_POSTGRE_PASSWORD}
-      POSTGRES_USER: ${DB_POSTGRE_USER}
-      POSTGRES_DB: ${DB_POSTGRE_NAME}
+      POSTGRES_PASSWORD: ${APP_DB_POSTGRESQL_PASSWORD}
+      POSTGRES_USER: ${APP_DB_POSTGRESQL_USER}
+      POSTGRES_DB: ${APP_DB_POSTGRESQL_NAME}
     healthcheck:
       test: pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"
       interval: 10s

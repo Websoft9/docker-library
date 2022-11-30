@@ -15,9 +15,9 @@ services:
     environment:
       - SUITECRM_DATABASE_HOST=${APP_NAME}-db 
       - SUITECRM_DATABASE_PORT_NUMBER=3306
-      - SUITECRM_DATABASE_USER=${DB_MYSQL_USER}
-      - SUITECRM_DATABASE_NAME=${DB_MYSQL_NAME}
-      - SUITECRM_DATABASE_PASSWORD=${DB_MYSQL_PASSWORD}
+      - SUITECRM_DATABASE_USER=${APP_DB_MYSQL_USER}
+      - SUITECRM_DATABASE_NAME=${APP_DB_MYSQL_NAME}
+      - SUITECRM_DATABASE_PASSWORD=${APP_DB_MYSQL_PASSWORD}
       - SUITECRM_USERNAME=${APP_USER}
       - SUITECRM_PASSWORD=${APP_PASSWORD}
     volumes:
@@ -26,15 +26,15 @@ services:
       - mariadb
 
   mariadb:
-    image: mariadb:${DB_MYSQL_VERSION}
+    image: mariadb:${APP_DB_MYSQL_VERSION}
     container_name: ${APP_NAME}-db 
     environment:
-      - MARIADB_ROOT_PASSWORD=${DB_MYSQL_PASSWORD}
-      - MARIADB_DATABASE=${DB_MYSQL_NAME}
-      - MARIADB_USER=${DB_MYSQL_USER}
-      - MARIADB_PASSWORD=${DB_MYSQL_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${APP_DB_MYSQL_PASSWORD}
+      - MARIADB_DATABASE=${APP_DB_MYSQL_NAME}
+      - MARIADB_USER=${APP_DB_MYSQL_USER}
+      - MARIADB_PASSWORD=${APP_DB_MYSQL_PASSWORD}
     ports:
-      - '${DB_MYSQL_PORT}:3306'
+      - '${APP_DB_MYSQL_PORT}:3306'
     volumes:
       - mysql_data:/var/lib/mysql
     restart: unless-stopped

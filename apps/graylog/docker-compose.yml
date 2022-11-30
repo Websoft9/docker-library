@@ -33,14 +33,14 @@ services:
       - graylog_plugin:/usr/share/graylog/plugin
 
   mongo:
-    image: mongo:${DB_MONGO_VERSION}
+    image: mongo:${APP_DB_MONGODB_VERSION}
     container_name: ${APP_NAME}-mongo
     restart: unless-stopped
     volumes: 
       - mongo:/data/db
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:$DB_ES_VERSION
+    image: docker.elastic.co/elasticsearch/elasticsearch:$APP_DB_ES_VERSION
     container_name: ${APP_NAME}-elasticsearch
     environment:
       - http.host=0.0.0.0

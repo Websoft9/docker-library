@@ -38,11 +38,11 @@ services:
   env_file:
    - ./src/env_vars/.env_srv
   environment:
-   - DB_SERVER_HOST=${DB_MYSQL_HOST}
-   - DB_SERVER_PORT=${DB_MYSQL_PORT}
-   - MYSQL_ROOT_PASSWORD=${DB_MYSQL_PASSWORD}
-   - MYSQL_PASSWORD=${DB_MYSQL_PASSWORD}
-   - MYSQL_DATABASE=${DB_MYSQL_NAME}
+   - DB_SERVER_HOST=${APP_DB_MYSQL_HOST}
+   - DB_SERVER_PORT=${APP_DB_MYSQL_PORT}
+   - MYSQL_ROOT_PASSWORD=${APP_DB_MYSQL_PASSWORD}
+   - MYSQL_PASSWORD=${APP_DB_MYSQL_PASSWORD}
+   - MYSQL_DATABASE=${APP_DB_MYSQL_NAME}
    - APP_PASSWORD=${APP_PASSWORD}
   depends_on:
    - mysql
@@ -86,10 +86,10 @@ services:
     reservations:
       memory: 256M
   environment:
-   - DB_SERVER_HOST=${DB_MYSQL_HOST}
-   - DB_SERVER_PORT=${DB_MYSQL_PORT}
-   - MYSQL_ROOT_PASSWORD=${DB_MYSQL_PASSWORD}
-   - MYSQL_PASSWORD=${DB_MYSQL_PASSWORD}
+   - DB_SERVER_HOST=${APP_DB_MYSQL_HOST}
+   - DB_SERVER_PORT=${APP_DB_MYSQL_PORT}
+   - MYSQL_ROOT_PASSWORD=${APP_DB_MYSQL_PASSWORD}
+   - MYSQL_PASSWORD=${APP_DB_MYSQL_PASSWORD}
   env_file:
    - ./src/env_vars/.env_web
   depends_on:
@@ -188,11 +188,11 @@ services:
    com.zabbix.os: "ubuntu"
 
  mysql:
-  image: mysql:${DB_MYSQL_VERSION}
+  image: mysql:${APP_DB_MYSQL_VERSION}
   container_name: ${APP_NAME}-db
   restart: unless-stopped
   ports: 
-   - ${DB_MYSQL_PORT}:3306
+   - ${APP_DB_MYSQL_PORT}:3306
   command:
    - mysqld
    - --character-set-server=utf8mb4
@@ -201,11 +201,11 @@ services:
   volumes:
    - mysql:/var/lib/mysql:rw
   environment: 
-   - DB_SERVER_HOST=${DB_MYSQL_HOST}
-   - MYSQL_ROOT_PASSWORD=${DB_MYSQL_PASSWORD}
-   - DB_SERVER_PORT=${DB_MYSQL_PORT}
-   - MYSQL_USER=${DB_MYSQL_USER}
-   - MYSQL_PASSWORD=${DB_MYSQL_PASSWORD}
+   - DB_SERVER_HOST=${APP_DB_MYSQL_HOST}
+   - MYSQL_ROOT_PASSWORD=${APP_DB_MYSQL_PASSWORD}
+   - DB_SERVER_PORT=${APP_DB_MYSQL_PORT}
+   - MYSQL_USER=${APP_DB_MYSQL_USER}
+   - MYSQL_PASSWORD=${APP_DB_MYSQL_PASSWORD}
   security_opt:
    - seccomp:unconfined
   stop_grace_period: 1m

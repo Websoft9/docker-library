@@ -13,32 +13,32 @@ services:
       - strapi:/srv/app
     environment:
       DATABASE_CLIENT: mysql
-      DATABASE_HOST: ${DB_MYSQL_HOST}
+      DATABASE_HOST: ${APP_DB_MYSQL_HOST}
       DATABASE_PORT: 3306
-      DATABASE_NAME: ${DB_MYSQL_NAME}
-      DATABASE_USERNAME: ${DB_MYSQL_USER}
-      DATABASE_PASSWORD: ${DB_MYSQL_PASSWORD}
+      DATABASE_NAME: ${APP_DB_MYSQL_NAME}
+      DATABASE_USERNAME: ${APP_DB_MYSQL_USER}
+      DATABASE_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
     links: 
       - mysql
     restart: unless-stopped
 
   mysql:
-    image: mysql:${DB_MYSQL_VERSION}
+    image: mysql:${APP_DB_MYSQL_VERSION}
     container_name: strapi-mysql
     restart: unless-stopped
     stdin_open: true
     tty: true
     ports:
-     - ${DB_MYSQL_PORT}:3306
+     - ${APP_DB_MYSQL_PORT}:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - ${VOLUMES_PATH_PREFIX}/mysql/mysql_config/conf.d:/etc/mysql/conf.d
       - ${VOLUMES_PATH_PREFIX}/mysql/mysql_data:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: ${DB_MYSQL_NAME}
-      MYSQL_USER: ${DB_MYSQL_USER}
-      MYSQL_PASSWORD: ${DB_MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${DB_MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${APP_DB_MYSQL_NAME}
+      MYSQL_USER: ${APP_DB_MYSQL_USER}
+      MYSQL_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
 
 networks:
   default:

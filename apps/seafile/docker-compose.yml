@@ -1,13 +1,13 @@
 version: '3.8'
 services:
   db:
-    image: mariadb:$DB_MARIADB_VERSION
+    image: mariadb:$APP_DB_MARIADB_VERSION
     container_name: $APP_NAME-db
     restart: unless-stopped
     ports:
-      - $DB_MARIADB_PORT:3306
+      - $APP_DB_MARIADB_PORT:3306
     environment:
-      - MYSQL_ROOT_PASSWORD=$DB_MARIADB_PASSWORD
+      - MYSQL_ROOT_PASSWORD=$APP_DB_MARIADB_PASSWORD
       - MYSQL_LOG_CONSOLE=true
     volumes:
       - mysql_data:/var/lib/mysql
@@ -50,7 +50,7 @@ services:
       - seafile_data:/shared   # Requested, specifies the path to Seafile data persistent store.
     environment:
       - DB_HOST=db
-      - DB_ROOT_PASSWD=$DB_MARIADB_PASSWORD
+      - DB_ROOT_PASSWD=$APP_DB_MARIADB_PASSWORD
       - TIME_ZONE=$APP_TIME_ZONE
       - SEAFILE_ADMIN_EMAIL=$APP_USER
       - SEAFILE_ADMIN_PASSWORD=$APP_PASSWORD    
@@ -74,7 +74,7 @@ services:
       - seafile_data:/shared   # Requested, specifies the path to Seafile data persistent store.
     environment:
       - DB_HOST=db
-      - DB_ROOT_PASSWD=$DB_MARIADB_PASSWORD
+      - DB_ROOT_PASSWD=$APP_DB_MARIADB_PASSWORD
       - TIME_ZONE=$APP_TIME_ZONE
       - SEAFILE_ADMIN_EMAIL=$APP_USER
       - SEAFILE_ADMIN_PASSWORD=$APP_PASSWORD    

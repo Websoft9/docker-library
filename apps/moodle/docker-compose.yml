@@ -12,10 +12,10 @@ services:
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
       - MOODLE_DATABASE_HOST=${APP_NAME}-db
-      - MOODLE_DATABASE_PORT_NUMBER=${DB_MARIADB_PORT}
-      - MOODLE_DATABASE_USER=${DB_MARIADB_USER}
-      - MOODLE_DATABASE_PASSWORD=${DB_MARIADB_PASSWORD}
-      - MOODLE_DATABASE_NAME=${DB_MARIADB_NAME}
+      - MOODLE_DATABASE_PORT_NUMBER=${APP_DB_MARIADB_PORT}
+      - MOODLE_DATABASE_USER=${APP_DB_MARIADB_USER}
+      - MOODLE_DATABASE_PASSWORD=${APP_DB_MARIADB_PASSWORD}
+      - MOODLE_DATABASE_NAME=${APP_DB_MARIADB_NAME}
       - MOODLE_USERNAME=${APP_USER}
       - MOODLE_PASSWORD=${APP_PASSWORD}
     ports:
@@ -29,18 +29,18 @@ services:
       - mariadb
 
   mariadb:
-    image: docker.io/bitnami/mariadb:${DB_MARIADB_VERSION}
+    image: docker.io/bitnami/mariadb:${APP_DB_MARIADB_VERSION}
     container_name: ${APP_NAME}-db
     restart: unless-stopped
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
-      - MARIADB_USER=${DB_MARIADB_USER}
-      - MARIADB_PASSWORD=${DB_MARIADB_PASSWORD}
-      - MARIADB_DATABASE=${DB_MARIADB_NAME}
+      - MARIADB_USER=${APP_DB_MARIADB_USER}
+      - MARIADB_PASSWORD=${APP_DB_MARIADB_PASSWORD}
+      - MARIADB_DATABASE=${APP_DB_MARIADB_NAME}
       - MARIADB_CHARACTER_SET=utf8mb4
       - MARIADB_COLLATE=utf8mb4_unicode_ci
     ports:
-      - ${DB_MARIADB_PORT}:3306
+      - ${APP_DB_MARIADB_PORT}:3306
     volumes:
       - 'mariadb_data:/bitnami/mariadb'
 

@@ -10,8 +10,8 @@ services:
       - jupyterhub:/var/www/html
     environment:
       # The belows vars is need, otherwise container error
-      jupyterhub_DB_HOST: ${DB_MYSQL_HOST}
-      jupyterhub_DB_PASSWORD: ${DB_MYSQL_PASSWORD}
+      jupyterhub_DB_HOST: ${APP_DB_MYSQL_HOST}
+      jupyterhub_DB_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
     links: 
       - mysql
     restart: unless-stopped
@@ -19,22 +19,22 @@ services:
     tty: true
 
   mysql:
-    image: mysql:${DB_MYSQL_VERSION}
+    image: mysql:${APP_DB_MYSQL_VERSION}
     container_name: jupyterhub-mysql
     restart: unless-stopped
     stdin_open: true
     tty: true
     ports:
-     - ${DB_MYSQL_PORT}:3306
+     - ${APP_DB_MYSQL_PORT}:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - ${VOLUMES_PATH_PREFIX}/mysql/mysql_config/conf.d:/etc/mysql/conf.d
       - ${VOLUMES_PATH_PREFIX}/mysql/mysql_data:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: ${DB_MYSQL_NAME}
-      MYSQL_USER: ${DB_MYSQL_USER}
-      MYSQL_PASSWORD: ${DB_MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${DB_MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${APP_DB_MYSQL_NAME}
+      MYSQL_USER: ${APP_DB_MYSQL_USER}
+      MYSQL_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
 
 networks:
   default:

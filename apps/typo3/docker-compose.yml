@@ -15,27 +15,27 @@ services:
       - typo3temp:/var/www/html/typo3temp
     restart: unless-stopped
     environment:
-      TYPO3_DB_USER: ${DB_MYSQL_USER}
-      TYPO3_DB_PASSWORD: ${DB_MYSQL_PASSWORD}
+      TYPO3_DB_USER: ${APP_DB_MYSQL_USER}
+      TYPO3_DB_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
       TYPO3_DB_HOST: mysql
     command: bash -c "cat /my_cmd > /cmd.sh && chmod +x /cmd.sh && /cmd.sh"
     configs:
       - source: my_cmd
       
   mysql:
-    image: mysql:${DB_MYSQL_VERSION}
+    image: mysql:${APP_DB_MYSQL_VERSION}
     container_name: ${APP_NAME}-db
     restart: unless-stopped
     command: [mysqld, --character-set-server=utf8mb4, --collation-server=utf8mb4_unicode_ci]
     ports:
-     - ${DB_MYSQL_PORT}:3306
+     - ${APP_DB_MYSQL_PORT}:3306
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: ${DB_MYSQL_NAME}
-      MYSQL_USER: ${DB_MYSQL_USER}
-      MYSQL_PASSWORD: ${DB_MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${DB_MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${APP_DB_MYSQL_NAME}
+      MYSQL_USER: ${APP_DB_MYSQL_USER}
+      MYSQL_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
 
 networks:
   default:

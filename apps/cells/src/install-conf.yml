@@ -12,5 +12,5 @@ dbconnectiontype: tcp
 dbtcphostname: mysql
 dbtcpport: 3306
 dbtcpname: cells
-dbtcpuser: {$DB_MYSQL_USER}
-dbtcppassword: {$DB_MYSQL_PASSWORD}
+dbtcpuser: {$APP_DB_MYSQL_USER}
+dbtcppassword: {$APP_DB_MYSQL_PASSWORD}

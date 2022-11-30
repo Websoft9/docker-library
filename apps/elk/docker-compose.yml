@@ -32,8 +32,8 @@ services:
       - ./src/elasticsearch/config/service_tokens:/usr/share/elasticsearch/config/service_tokens
       - elasticsearch:/usr/share/elasticsearch/data
     ports:
-      - ${DB_ES_HTTP_PORT}:9200
-      - ${DB_ES_TCP_PORT}:9300
+      - ${APP_DB_ES_HTTP_PORT}:9200
+      - ${APP_DB_ES_TCP_PORT}:9300
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
       ELASTIC_USERNAME: ${APP_USER}

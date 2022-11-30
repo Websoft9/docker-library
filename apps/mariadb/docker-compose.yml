@@ -7,8 +7,8 @@ services:
     container_name: $APP_NAME
     restart: unless-stopped
     environment:
-     - MARIADB_ROOT_PASSWORD=$DB_MARIADB_PASSWORD
-     - MYSQL_ROOT_PASSWORD=$DB_MARIADB_PASSWORD
+     - MARIADB_ROOT_PASSWORD=$APP_DB_MARIADB_PASSWORD
+     - MYSQL_ROOT_PASSWORD=$APP_DB_MARIADB_PASSWORD
     ports:
      - $APP_DB_PORT:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci

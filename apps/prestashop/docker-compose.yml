@@ -19,8 +19,8 @@ services:
       - PS_COUNTRY=GB
       - PS_LANGUAGE=en
       - DB_SERVER=mysql
-      - DB_USER=${DB_MYSQL_USER}
-      - DB_PASSWD=${DB_MYSQL_PASSWORD}
+      - DB_USER=${APP_DB_MYSQL_USER}
+      - DB_PASSWD=${APP_DB_MYSQL_PASSWORD}
       - DB_PREFIX=ps_
       - ADMIN_MAIL=${APP_USER}
       - ADMIN_PASSWD=${APP_PASSWORD}
@@ -29,19 +29,19 @@ services:
     restart: unless-stopped
 
   mysql:
-    image: mysql:${DB_MYSQL_VERSION}
+    image: mysql:${APP_DB_MYSQL_VERSION}
     container_name: ${APP_NAME}-db
     restart: unless-stopped
     ports:
-     - ${DB_MYSQL_PORT}:3306
+     - ${APP_DB_MYSQL_PORT}:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - mysql_data:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: ${DB_MYSQL_NAME}
-      MYSQL_USER: ${DB_MYSQL_USER}
-      MYSQL_PASSWORD: ${DB_MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${DB_MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${APP_DB_MYSQL_NAME}
+      MYSQL_USER: ${APP_DB_MYSQL_USER}
+      MYSQL_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
 
 networks:
   default:

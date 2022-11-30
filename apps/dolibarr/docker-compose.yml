@@ -5,14 +5,14 @@ version: '3.8'
 
 services:
     mariadb:
-        image: mariadb:${DB_MARIADB_VERSION}
+        image: mariadb:${APP_DB_MARIADB_VERSION}
         container_name: ${APP_NAME}-db
         restart: unless-stopped
         environment:
-            MYSQL_ROOT_PASSWORD: ${DB_MARIADB_PASSWORD}
-            MYSQL_DATABASE: ${DB_MARIADB_NAME}
-            MYSQL_USER: ${DB_MARIADB_USER}
-            MARIADB_PASSWORD: ${DB_MARIADB_PASSWORD}
+            MYSQL_ROOT_PASSWORD: ${APP_DB_MARIADB_PASSWORD}
+            MYSQL_DATABASE: ${APP_DB_MARIADB_NAME}
+            MYSQL_USER: ${APP_DB_MARIADB_USER}
+            MARIADB_PASSWORD: ${APP_DB_MARIADB_PASSWORD}
         volumes:
             - mariadb:/var/lib/mysql
 
@@ -24,9 +24,9 @@ services:
           - .env
         environment:
             DOLI_DB_HOST: ${APP_NAME}-db
-            DOLI_DB_USER: ${DB_MARIADB_USER}
-            DOLI_DB_PASSWORD: ${DB_MARIADB_PASSWORD}
-            DOLI_DB_NAME: ${DB_MARIADB_NAME}
+            DOLI_DB_USER: ${APP_DB_MARIADB_USER}
+            DOLI_DB_PASSWORD: ${APP_DB_MARIADB_PASSWORD}
+            DOLI_DB_NAME: ${APP_DB_MARIADB_NAME}
             DOLI_ADMIN_LOGIN: ${APP_USER}
             DOLI_ADMIN_PASSWORD: ${APP_PASSWORD}
         ports:

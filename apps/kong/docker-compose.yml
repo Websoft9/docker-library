@@ -12,8 +12,8 @@ services:
       - LC_ALL=en_US.UTF-8
       - KONG_DATABASE=postgres
       - KONG_PG_HOST=postgres
-      - KONG_PG_USER=${DB_POSTGRES_USER}
-      - KONG_PG_PASSWORD=${DB_POSTGRES_PASSWORD}
+      - KONG_PG_USER=${APP_DB_POSTGRESQL_USER}
+      - KONG_PG_PASSWORD=${APP_DB_POSTGRESQL_PASSWORD}
       - KONG_PROXY_ACCESS_LOG=/dev/stdout
       - KONG_ADMIN_ACCESS_LOG=/dev/stdout
       - KONG_PROXY_ERROR_LOG=/dev/stderr
@@ -46,23 +46,23 @@ services:
     environment:
       - KONG_DATABASE=postgres
       - KONG_PG_HOST=postgres
-      - KONG_PG_USER=${DB_POSTGRES_USER}
-      - KONG_PG_PASSWORD=${DB_POSTGRES_PASSWORD}
+      - KONG_PG_USER=${APP_DB_POSTGRESQL_USER}
+      - KONG_PG_PASSWORD=${APP_DB_POSTGRESQL_PASSWORD}
     command: kong migrations bootstrap
     restart: on-failure
     depends_on:
       - postgres
 
   postgres:
-    image: postgres:${DB_POSTGRES_VERSION}
+    image: postgres:${APP_DB_POSTGRESQL_VERSION}
     restart: unless-stopped
     container_name: ${APP_NAME}-postgres
     ports:
-      - "${DB_POSTGRES_PORT}:5432"
+      - "${APP_DB_POSTGRESQL_PORT}:5432"
     environment:
-      - POSTGRES_USER=${DB_POSTGRES_USER}
-      - POSTGRES_DB=${DB_POSTGRES_NAME}
-      - POSTGRES_PASSWORD=${DB_POSTGRES_PASSWORD}
+      - POSTGRES_USER=${APP_DB_POSTGRESQL_USER}
+      - POSTGRES_DB=${APP_DB_POSTGRESQL_NAME}
+      - POSTGRES_PASSWORD=${APP_DB_POSTGRESQL_PASSWORD}
     volumes:
       - "postgres:/var/lib/postgresql/data"
 

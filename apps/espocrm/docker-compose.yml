@@ -7,14 +7,14 @@ version: '3.8'
 services:
 
   mysql:
-    image: mysql:${DB_MYSQL_VERSION}
+    image: mysql:${APP_DB_MYSQL_VERSION}
     container_name: ${APP_NAME}-db
     command: --default-authentication-plugin=mysql_native_password    
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_MYSQL_PASSWORD}
-      MYSQL_DATABASE: ${DB_MYSQL_NAME}
-      MYSQL_USER: ${DB_MYSQL_USER}
-      MYSQL_PASSWORD: ${DB_MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${APP_DB_MYSQL_NAME}
+      MYSQL_USER: ${APP_DB_MYSQL_USER}
+      MYSQL_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
     volumes:
       - mysql:/var/lib/mysql
     restart: unless-stopped
@@ -24,8 +24,8 @@ services:
     container_name: ${APP_NAME}
     environment:
       ESPOCRM_DATABASE_HOST: ${APP_NAME}-db
-      ESPOCRM_DATABASE_USER: ${DB_MYSQL_USER}
-      ESPOCRM_DATABASE_PASSWORD: ${DB_MYSQL_PASSWORD}
+      ESPOCRM_DATABASE_USER: ${APP_DB_MYSQL_USER}
+      ESPOCRM_DATABASE_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
       ESPOCRM_ADMIN_USERNAME: ${APP_USER}
       ESPOCRM_ADMIN_PASSWORD: ${APP_PASSWORD}
       ESPOCRM_SITE_URL: "http://localhost:${APP_HTTP_PORT}"

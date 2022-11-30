@@ -13,29 +13,29 @@ services:
       - discuzq:/var/www/discuz
     restart: unless-stopped
     environment:
-      DISCUZQ_MYSQL_DATABASE: ${DB_MYSQL_NAME}
-      DISCUZQ_MYSQL_USER: ${DB_MYSQL_USER}
-      DISCUZQ_MYSQL_PASSWORD: ${DB_MYSQL_PASSWORD}
+      DISCUZQ_MYSQL_DATABASE: ${APP_DB_MYSQL_NAME}
+      DISCUZQ_MYSQL_USER: ${APP_DB_MYSQL_USER}
+      DISCUZQ_MYSQL_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
       DISCUZQ_MYSQL_HOST: $APP_NAME-db
       DISCUZQ_SITENAME: ${APP_SITENAME}
     depends_on:
       - db
      
   db:
-    image: mysql:${DB_MYSQL_VERSION}
+    image: mysql:${APP_DB_MYSQL_VERSION}
     container_name: ${APP_NAME}-db
     hostname: db
     restart: unless-stopped
     ports:
-     - ${DB_MYSQL_PORT}:3306
+     - ${APP_DB_MYSQL_PORT}:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: ${DB_MYSQL_NAME}
-      MYSQL_USER: ${DB_MYSQL_USER}
-      MYSQL_PASSWORD: ${DB_MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${DB_MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${APP_DB_MYSQL_NAME}
+      MYSQL_USER: ${APP_DB_MYSQL_USER}
+      MYSQL_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
 
 volumes:
   discuzq:

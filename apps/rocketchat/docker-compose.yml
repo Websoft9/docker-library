@@ -13,14 +13,14 @@ services:
       - rocketchat:/app
     environment:
       - ROOT_URL=http://localhost
-      - MONGO_URL=mongodb://mongo:${DB_MONGO_PORT}/rocketchat?replicaSet=rs01
-      - MONGO_OPLOG_URL=mongodb://mongo:${DB_MONGO_PORT}/local?replicaSet=rs01
+      - MONGO_URL=mongodb://mongo:${APP_DB_MONGODB_PORT}/rocketchat?replicaSet=rs01
+      - MONGO_OPLOG_URL=mongodb://mongo:${APP_DB_MONGODB_PORT}/local?replicaSet=rs01
     depends_on:
       - mongo
     restart: unless-stopped
 
   mongo:
-    image: mongo:${DB_MONGO_VERSION}
+    image: mongo:${APP_DB_MONGODB_VERSION}
     container_name: ${APP_NAME}-db
     restart: unless-stopped
     volumes:
@@ -28,7 +28,7 @@ services:
     command: mongod --smallfiles --oplogSize 128 --replSet rs01
 
   mongo-init-replica:
-    image: mongo:${DB_MONGO_VERSION}
+    image: mongo:${APP_DB_MONGODB_VERSION}
     command: 'mongo mongo/rocketchat --eval "rs.initiate({ _id: ''rs01'', members: [ { _id: 0, host: ''mongo:27017'' } ]})"'
     depends_on:
       - mongo

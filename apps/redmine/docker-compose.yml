@@ -13,8 +13,8 @@ services:
     volumes: 
      - redmine:/usr/src/redmine
     environment:
-      REDMINE_DB_MYSQL: $DB_MYSQL_HOST
-      REDMINE_DB_PASSWORD: $DB_MYSQL_PASSWORD
+      REDMINE_DB_MYSQL: $APP_DB_MYSQL_HOST
+      REDMINE_DB_PASSWORD: $APP_DB_MYSQL_PASSWORD
       REDMINE_SECRET_KEY_BASE: supersecretkey
       REDMINE_PLUGINS_MIGRATE: "true"
       REDMINE_PASSWORD: $APP_PASSWORD
@@ -28,17 +28,17 @@ services:
       - source: my_cmd
 
   db:
-    image: mysql:$DB_MYSQL_VERSION
+    image: mysql:$APP_DB_MYSQL_VERSION
     container_name: $APP_NAME-db
     restart: unless-stopped
     ports:
-     - $DB_MYSQL_PORT:3306
+     - $APP_DB_MYSQL_PORT:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
      - mysql:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: $DB_MYSQL_PASSWORD
-      MYSQL_DATABASE: $DB_MYSQL_NAME
+      MYSQL_ROOT_PASSWORD: $APP_DB_MYSQL_PASSWORD
+      MYSQL_DATABASE: $APP_DB_MYSQL_NAME
       
 volumes:
   mysql:

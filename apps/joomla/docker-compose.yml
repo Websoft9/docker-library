@@ -18,26 +18,26 @@ services:
       - JOOMLA_PASSWORD=$APP_PASSWORD
       - JOOMLA_DATABASE_HOST=$APP_NAME-db
       - JOOMLA_DATABASE_PORT_NUMBER=3306
-      - JOOMLA_DATABASE_NAME=$DB_MARIADB_NAME
-      - JOOMLA_DATABASE_USER=$DB_MARIADB_USER
-      - JOOMLA_DATABASE_PASSWORD=$DB_MARIADB_PASSWORD
+      - JOOMLA_DATABASE_NAME=$APP_DB_MARIADB_NAME
+      - JOOMLA_DATABASE_USER=$APP_DB_MARIADB_USER
+      - JOOMLA_DATABASE_PASSWORD=$APP_DB_MARIADB_PASSWORD
     depends_on:
       - mariadb
 
   mariadb:
-    image: mariadb:$DB_MARIADB_VERSION
+    image: mariadb:$APP_DB_MARIADB_VERSION
     container_name: $APP_NAME-db
     restart: unless-stopped
     ports:
-     - ${DB_MARIADB_PORT}:3306
+     - ${APP_DB_MARIADB_PORT}:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - mariadb:/var/lib/mysql
     environment:
-      - MARIADB_DATABASE=$DB_MARIADB_NAME
-      - MARIADB_USER=$DB_MARIADB_USER
-      - MARIADB_PASSWORD=$DB_MARIADB_PASSWORD
-      - MARIADB_ROOT_PASSWORD=$DB_MARIADB_PASSWORD
+      - MARIADB_DATABASE=$APP_DB_MARIADB_NAME
+      - MARIADB_USER=$APP_DB_MARIADB_USER
+      - MARIADB_PASSWORD=$APP_DB_MARIADB_PASSWORD
+      - MARIADB_ROOT_PASSWORD=$APP_DB_MARIADB_PASSWORD
 networks:
   default:
     name: ${APP_NETWORK}
