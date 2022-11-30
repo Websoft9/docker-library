@@ -17,9 +17,10 @@ RUN mkdir -p /data/scratch-gui ;\
     npm run fetch ;\
     cp -r /data/scratch-desktop/static/assets/* /data/scratch-gui/static/assets/ ;\
     sed -i "s/'process.env.GA_ID'.*//g" /data/scratch-gui/webpack.config.js ;\
+    sed -i "s/process.env.DEBUG.*/process.env.DEBUG\': Boolean(process.env.DEBUG)/g" /data/scratch-gui/webpack.config.js ;\
     sed -i 's/`https.*/`.\/static\/asset\/\${iconMd5}` :/g' /data/scratch-gui/src/containers/library-item.jsx ;\
     sed -i 's/${this.assetHost}\/internalapi.*/.\/static\/asset\/\${asset.assetId}.\${asset.dataFormat}`;/g' /data/scratch-gui/src/lib/storage.js
 
 FROM nginx:1.15-alpine
-COPY --from=builder /data/scratch-gui/build /usr/share/nginx/html
+COPY --from=builder /data/scratch-gui /usr/share/nginx/html
 VOLUME /usr/share/nginx/html
