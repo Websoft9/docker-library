@@ -14,13 +14,17 @@ ELK 即 Elastic Stack， 它是官方标准的名称。
 
 ## 账号密码
 
-ES 和 Kibana 可以通过env 设置密码。 Logstash 需手工到 pipeline 中设置密码
+ES 和 Kibana 可以通过env 设置密码。 Logstash 可以通过 **ES容器名:password** 的方式传入米米
 
 ## 环境变量
 
 通过配置文件或容器运行时带入均可，配置项与容器环境变量参数的对应关系[参考](https://www.elastic.co/guide/en/logstash/current/docker-config.html#docker-env-config)
 
 ## FAQ
+
+#### 本应用支持在同一个网络安装2个吗？
+
+不支持。因为部分连接采用的是服务名称
 
 #### 启动时间多久？
 
