@@ -21,6 +21,7 @@ services:
       WORDPRESS_DB_PASSWORD: $DB_MYSQL_PASSWORD
       WORDPRESS_DB_NAME: $DB_MYSQL_NAME
       WORDPRESS_DEBUG: 1
+      WP_CLI_ALLOW_ROOT: 1
     volumes:
       - wordpress:/var/www/html
       - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
