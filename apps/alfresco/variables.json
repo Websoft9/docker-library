@@ -2,7 +2,7 @@
   "name": "alfresco",
   "trademark": "Alfresco",
   "compose_file": "docker-compose.yml",
-  "installpath": "/data/wwwroot/alfresco",
+  "installpath": "/data/apps/alfresco",
   "env_file": ".env",
   "fork_url": "https://docs.alfresco.com/content-services/latest/install/containers/docker-compose",
   "requirements":{
