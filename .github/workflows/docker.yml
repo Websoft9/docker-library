@@ -84,3 +84,22 @@ jobs:
           dockerfile: Dockerfile
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+          
+      - name: add readme file
+        run: | 
+          cd apps/${{env.APP_NAME}}
+          touch myread.md
+          echo "This repository is the easiest ${{env.APP_NAME}} deployment on GitHub and DockerHub  "' 
+          ```  
+             git clone https://github.com/Websoft9/docker-library.git  
+             cd docker-library/apps/${{env.APP_NAME}}  
+             sudo docker network create websoft9 &&  sudo docker compose up -d  
+          ```' > myread.md
+          
+      - name: Docker Hub Description
+        uses: peter-evans/dockerhub-description@v3
+        with:
+         username: ${{ secrets.DOCKER_USERNAME }}
+         password: ${{ secrets.DOCKER_PASSWORD }}
+         repository: websoft9dev/${{env.APP_NAME}}
+         readme-filepath: apps/${{env.APP_NAME}}/myread.md
