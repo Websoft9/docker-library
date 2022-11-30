@@ -1,33 +1,13 @@
 {
   "name": "akeneo",
   "trademark": "Akeneo",
-  "installpath": "/data/wwwroot/akeneo",
-  "compose_file": "docker-compose.yml",
   "fork_url": "https://github.com/akeneo/pim-community-dev.git",
-  "env_file": ".env",
   "version": "6.0.53",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, x86/i686",
     "cpu": "2",
     "memory": "4",
     "disk": "20",
-    "swap": "2",
     "url": "https://github.com/akeneo/docker#recommended-system-requirements"
-  },
-
-  "user": {
-    "username": "admin",
-    "password": "admin"
-  },
-
-  "services":[
-    {
-      "name": "akeneo",
-      "port": "9001",
-      "description_cn": "浏览器访问 Akeneo",
-      "description_en": "Browser access to Akeneo",
-      "required": "Y"
-    }
-  ]
+  }
 
 }

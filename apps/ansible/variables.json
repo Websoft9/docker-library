@@ -1,15 +1,12 @@
 {
   "name": "ansible",
   "trademark": "Ansible",
-  "installpath": "/data/apps/ansible",
-  "compose_file": "docker-compose.yml",
-  "env_file": ".env",
+  "fork_url": "",
+  "version": "2.9.0",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, x86/i686",
     "cpu": "1",
     "memory": "1",
     "disk": "20",
-    "swap": "2",
     "url": "https://docs.ansible.com/ansible/latest/installation_guide"
   }
 }

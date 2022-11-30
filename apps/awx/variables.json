@@ -1,16 +1,12 @@
 {
   "name": "awx",
   "trademark": "AWX",
-  "installpath": "/data/apps/awx",
-  "compose_file": "docker-compose",
   "fork_url": "https://github.com/ansible/awx",
-  "env_file": ".env",
+  "version": "",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
     "cpu": "2",
     "memory": "4",
     "disk": "20",
-    "swap": "2",
     "url": "https://github.com/awx/docker#recommended-system-requirements"
   }
 

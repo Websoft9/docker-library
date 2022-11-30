@@ -1,47 +1,13 @@
 {
   "name": "alfresco",
   "trademark": "Alfresco",
-  "compose_file": "docker-compose.yml",
-  "installpath": "/data/apps/alfresco",
-  "env_file": ".env",
+  "version": "7.0.0",
   "fork_url": "https://docs.alfresco.com/content-services/latest/install/containers/docker-compose",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
     "cpu": "2",
     "memory": "4",
     "disk": "20",
-    "swap": "2",
     "url": "https://docs.alfresco.com/content-services/latest/install/containers/docker-compose"
-  },
-
-  "user": {
-    "username": "admin",
-    "password": "admin"
-  },
-  "command_extra":[
-    {
-      "cmd": "public_ip=`wget -O - https://download.websoft9.com/ansible/get_ip.sh | bash`"
-    },
-    {
-      "cmd": "sudo sed -i 's/APP_SITE_URL=.*/APP_SITE_URL='$public_ip'/g' .env"
-    }
-  ],
-  "services":[
-    {
-      "name": "alfresco",
-      "port": "8080",
-      "description_cn": "浏览器访问 Alfresco",
-      "description_en": "Browser access to Drupal Document by http",
-      "required": "Y"
-    },
-
-    {
-      "name": "postgres",
-      "port": "5432",
-      "description_cn": "TCP 访问Postgres数据库",
-      "description_en": "Accessing Postgres database with TCP",
-      "required": "Y"
-    }
-  ]
+  }
 
 }

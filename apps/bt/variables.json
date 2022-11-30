@@ -1,26 +1,13 @@
 {
   "name": "bt",
   "trademark": "BT",
-  "installpath": "/data/apps/aapanel",
-  "compose_file": "docker-compose.yml",
   "fork_url": "https://github.com/aaPanel/BaoTa",
-  "env_file": ".env",
+  "version": "",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64",
     "cpu": "1",
     "memory": "1",
     "disk": "20",
-    "swap": "2",
     "url": "https://github.com/aaPanel/BaoTa"
-  },
-
-  "command_extra":[
-    {
-      "cmd": "docker compose --profile aapanel up -d"
-    },
-    {
-      "cmd": "docker compose --profile btpanel up -d"
-    }
-  ]
+  }
 
 }
