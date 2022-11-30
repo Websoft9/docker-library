@@ -51,12 +51,35 @@ services:
       - ./src/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./src/logstash/pipeline:/usr/share/logstash/pipeline
     ports:
-      - ${MQ_LOGSTASH_API_PORT}:9600
-      - ${MQ_LOGSTASH_TCP_PORT}:5000/tcp
-      - ${MQ_LOGSTASH_TCP_PORT}:5000/udp
-      - ${MQ_LOGSTASH_BEATS_PORT}:5044
+      - ${APP_LOGSTASH_API_PORT}:9600
+      - ${APP_LOGSTASH_TCP_PORT}:5000/tcp
+      - ${APP_LOGSTASH_UDP_PORT}:5000/udp
+      - ${APP_LOGSTASH_BEATS_PORT}:5044
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    user: root
+    depends_on:
+      - elasticsearch
+
+  agent:
+    image: elastic-agent-complete:${APP_VERSION}
+    container_name: ${APP_NAME}-agent
+    restart: unless-stopped
+    volumes:
+      - ./src/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./src/logstash/pipeline:/usr/share/logstash/pipeline
+    ports:
+      - ${APP_LOGSTASH_API_PORT}:9600
+      - ${APP_LOGSTASH_TCP_PORT}:5000/tcp
+      - ${APP_LOGSTASH_UDP_PORT}:5000/udp
+      - ${APP_LOGSTASH_BEATS_PORT}:5044
+    environment:
+      - FLEET_ENROLLMENT_TOKEN=<enrollment-token>
+      - FLEET_ENROLL=1
+      - FLEET_URL=<fleet-server-url>
+      - FLEET_SERVER_ENABLE=true
+      - FLEET_SERVER_ELASTICSEARCH_HOST=<elasticsearch-host>
+      - FLEET_SERVER_SERVICE_TOKEN=<service-token>
     user: root
     depends_on:
       - elasticsearch
@@ -65,6 +88,7 @@ volumes:
   logstash:
   kibana:
   elasticsearch:
+  agent:
 
 networks:
   default:
