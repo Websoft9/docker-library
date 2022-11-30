@@ -18,27 +18,27 @@ services:
     env_file: .env
     environment:
       WORDPRESS_DB_HOST: $APP_NAME-db
-      WORDPRESS_DB_USER: $DB_MYSQL_USER
-      WORDPRESS_DB_PASSWORD: $DB_MYSQL_PASSWORD
-      WORDPRESS_DB_NAME: $DB_MYSQL_NAME
+      WORDPRESS_DB_USER: $APP_DB_MYSQL_USER
+      WORDPRESS_DB_PASSWORD: $APP_DB_MYSQL_PASSWORD
+      WORDPRESS_DB_NAME: $APP_DB_MYSQL_NAME
     volumes:
       - wordpress:/var/www/html
       - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
 
   mysql:
-    image: mariadb:$DB_MYSQL_VERSION
+    image: mariadb:$APP_DB_MYSQL_VERSION
     container_name: $APP_NAME-db
     restart: unless-stopped
     ports:
-     - ${DB_MYSQL_PORT}:3306
+     - ${APP_DB_MYSQL_PORT}:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - mysql_data:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: $DB_MYSQL_NAME
-      MYSQL_USER: $DB_MYSQL_USER
-      MYSQL_PASSWORD: $DB_MYSQL_PASSWORD
-      MYSQL_ROOT_PASSWORD: $DB_MYSQL_PASSWORD
+      MYSQL_DATABASE: $APP_DB_MYSQL_NAME
+      MYSQL_USER: $APP_DB_MYSQL_USER
+      MYSQL_PASSWORD: $APP_DB_MYSQL_PASSWORD
+      MYSQL_ROOT_PASSWORD: $APP_DB_MYSQL_PASSWORD
 
 
 volumes:
