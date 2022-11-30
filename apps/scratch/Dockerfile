@@ -21,5 +21,5 @@ RUN mkdir -p /data/scratch-gui ;\
     sed -i 's/${this.assetHost}\/internalapi.*/.\/static\/asset\/\${asset.assetId}.\${asset.dataFormat}`;/g' /data/scratch-gui/src/lib/storage.js
 
 FROM nginx:1.15-alpine
-COPY --from=builder /data/scratch-gui /usr/share/nginx/html
+COPY --from=builder /data/scratch-gui/build /usr/share/nginx/html
 VOLUME /usr/share/nginx/html
