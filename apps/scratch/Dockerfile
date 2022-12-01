@@ -12,7 +12,6 @@ RUN mkdir -p /data/scratch-gui ;\
     git clone --depth=1 https://github.com/LLK/scratch-gui /data/scratch-gui ;\
     git clone --depth=1 https://github.com/LLK/scratch-desktop /data/scratch-desktop ;\
     mkdir -p /data/scratch-gui/static/assets ;\
-    mkdir -p /data/scratch-gui/build ;\
     cd /data/scratch-desktop ;\
     npm config set electron_mirror "https://npm.taobao.org/mirrors/electron/" ;\
     npm install ;\
@@ -25,5 +24,5 @@ RUN mkdir -p /data/scratch-gui ;\
     cd /data/scratch-gui
 
 FROM nginx:1.15-alpine
-COPY --from=builder /data/scratch-gui/build /usr/share/nginx/html
+COPY --from=builder /data/scratch-gui /usr/share/nginx/html
 VOLUME /usr/share/nginx/html
