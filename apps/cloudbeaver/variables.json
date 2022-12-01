@@ -4,8 +4,8 @@
   "version": "22.2.2",
   "fork_url": "https://github.com/dbeaver/cloudbeaver",
   "requirements":{
-    "cpu": "2",
-    "memory": "4",
+    "cpu": "1",
+    "memory": "2",
     "disk": "20",
     "url": "https://github.com/dbeaver/cloudbeaver/wiki"
   }

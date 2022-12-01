@@ -5,7 +5,7 @@
   "version": "",
   "requirements":{
     "cpu": "1",
-    "memory": "2",
+    "memory": "1",
     "disk": "20",
     "url": "https://www.drupal.org/docs/user_guide/en/install-requirements.html"
   }
