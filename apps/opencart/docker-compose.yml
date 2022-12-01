@@ -17,7 +17,7 @@ services:
       MYSQL_USER: ${APP_DB_MYSQL_USER}
       MYSQL_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
-      MYSQL_HOST: ${APP_DB_MYSQL_HOST}
+      MYSQL_HOST: ${APP_NAME}-db
     links: 
       - mysql
     command: bash -c "cat /my_cmd > /cmd.sh && chmod +x /cmd.sh && /cmd.sh"

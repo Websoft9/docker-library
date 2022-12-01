@@ -38,7 +38,7 @@ services:
   env_file:
    - ./src/env_vars/.env_srv
   environment:
-   - DB_SERVER_HOST=${APP_DB_MYSQL_HOST}
+   - DB_SERVER_HOST=$APP_NAME-db
    - DB_SERVER_PORT=${APP_DB_MYSQL_PORT}
    - MYSQL_ROOT_PASSWORD=${APP_DB_MYSQL_PASSWORD}
    - MYSQL_PASSWORD=${APP_DB_MYSQL_PASSWORD}
@@ -86,7 +86,7 @@ services:
     reservations:
       memory: 256M
   environment:
-   - DB_SERVER_HOST=${APP_DB_MYSQL_HOST}
+   - DB_SERVER_HOST=$APP_NAME-db
    - DB_SERVER_PORT=${APP_DB_MYSQL_PORT}
    - MYSQL_ROOT_PASSWORD=${APP_DB_MYSQL_PASSWORD}
    - MYSQL_PASSWORD=${APP_DB_MYSQL_PASSWORD}
@@ -201,7 +201,7 @@ services:
   volumes:
    - mysql:/var/lib/mysql:rw
   environment: 
-   - DB_SERVER_HOST=${APP_DB_MYSQL_HOST}
+   - DB_SERVER_HOST=$APP_NAME-db
    - MYSQL_ROOT_PASSWORD=${APP_DB_MYSQL_PASSWORD}
    - DB_SERVER_PORT=${APP_DB_MYSQL_PORT}
    - MYSQL_USER=${APP_DB_MYSQL_USER}

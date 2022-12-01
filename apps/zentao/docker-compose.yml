@@ -13,12 +13,12 @@ services:
       - zentao:/www/zentaopms
     environment:
       # The belows vars is need, otherwise container error
-      zentao_DB_HOST: ${APP_DB_MYSQL_HOST}
+      zentao_DB_HOST: ${APP_NAME}-db
       zentao_DB_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
       MYSQL_USER: ${APP_DB_MYSQL_USER}
       MYSQL_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
       MYSQL_DB: ${APP_DB_MYSQL_NAME}
-      MYSQL_HOST: ${APP_DB_MYSQL_HOST}  
+      MYSQL_HOST: ${APP_NAME}-db  
     links: 
       - mysql
     restart: unless-stopped

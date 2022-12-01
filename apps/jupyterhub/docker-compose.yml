@@ -3,14 +3,14 @@ version: '3.8'
 services:
   jupyterhub:
     image: jupyterhub:${APP_VERSION}
-    container_name: ${APP_CONTAINER_NAME}
+    container_name: ${APP_NAME}
     ports:
       - ${APP_HTTP_PORT}:80
     volumes:
       - jupyterhub:/var/www/html
     environment:
       # The belows vars is need, otherwise container error
-      jupyterhub_DB_HOST: ${APP_DB_MYSQL_HOST}
+      jupyterhub_DB_HOST: ${APP_NAME}-db
       jupyterhub_DB_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
     links: 
       - mysql
@@ -20,7 +20,7 @@ services:
 
   mysql:
     image: mysql:${APP_DB_MYSQL_VERSION}
-    container_name: jupyterhub-mysql
+    container_name: ${APP_NAME}-db
     restart: unless-stopped
     stdin_open: true
     tty: true
