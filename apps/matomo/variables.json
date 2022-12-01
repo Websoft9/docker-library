@@ -1,16 +1,12 @@
 {
   "name": "matomo",
   "trademark": "Matomo",
-  "installpath": "/data/apps/matomo",
-  "compose_file": "docker-compose.yml",
   "fork_url": "https://matomo.org/faq/on-premise/installing-matomo/",
-  "env_file": ".env_all",
+  "version": "",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64",
     "cpu": "1",
     "memory": "1",
     "disk": "20",
-    "swap": "2",
     "url": "https://matomo.org/faq/on-premise/installing-matomo/"
   }
 

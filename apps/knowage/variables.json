@@ -1,21 +1,12 @@
 {
   "name": "knowage",
   "trademark": "Knowage",
-  "compose_file": "docker-compose.yml",
-  "installpath": "/data/wwwroot/knowage",
-  "env_file": ".env",
-  "fork_url": "https://github.com/KnowageLabs/Knowage-Server-Docker",
+  "fork_url": "https://knowage-suite.readthedocs.io/en/7.4/installation-guide/knowage-ce-installer.html#server-side-requirements",
+  "version": "",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
     "cpu": "1",
     "memory": "4",
     "disk": "20",
-    "swap": "2",
     "url": "https://knowage-suite.readthedocs.io/en/7.4/installation-guide/knowage-ce-installer.html#server-side-requirements"
-  },
-
-  "user": {
-    "username": "biadmin",
-    "password": "biadmin"
   }
 }

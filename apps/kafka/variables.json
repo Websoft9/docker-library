@@ -8,7 +8,7 @@
   "requirements":{
     "cpu_arch": "Linux x86-64, ARM 32/64, IBM POWER8, x86/i686",
     "cpu": "1",
-    "memory": "1",
+    "memory": "2",
     "disk": "20",
     "swap": "2",
     "url": "http://kafka.apache.org/quickstart"

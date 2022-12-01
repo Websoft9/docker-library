@@ -1,16 +1,12 @@
 {
   "name": "joomla",
   "trademark": "Joomla",
-  "installpath": "/data/wwwroot/joomla",
-  "compose_file": "docker-compose.yml",
   "fork_url": "https://github.com/joomla-docker/docker-joomla",
-  "env_file": ".env",
+  "version": "",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
     "cpu": "1",
     "memory": "1",
     "disk": "20",
-    "swap": "2",
     "url": "https://www.joomla.org/docs/user_guide/en/install-requirements.html"
   }
 

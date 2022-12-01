@@ -1,26 +1,12 @@
 {
   "name": "mediawiki",
   "trademark": "MediaWiki",
-  "installpath": "/data/wwwroot/mediawiki",
-  "compose_file": "docker-compose.yml",
-  "env_file": ".env",
+  "version": "",
   "fork_url": "https://registry.hub.docker.com/r/bitnami/mediawiki",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, x86/i686",
     "cpu": "1",
-    "memory": "2",
+    "memory": "1",
     "disk": "20",
-    "swap": "2",
     "url": "https://registry.hub.docker.com/r/bitnami/mediawiki"
-  },
-
-  "faqs": [
-    {
-      "question_cn": "首次访问 Mediawiki 打不开？",
-      "answer_cn": "确保 APP_URL 是您的公网IP或域名",
-      "question_en": "Error when I access Mediawiki index page first time?",
-      "answer_en": "environment APP_URL need set to your Domain or Internet IP"
-    }
-  ]
-
+  }
 }
