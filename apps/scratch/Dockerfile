@@ -15,7 +15,6 @@ RUN mkdir -p /data/scratch-gui ;\
     cd /data/scratch-gui ;\
     npm install ;\
     npm run build ;\
-    cp -r /data/scratch-desktop/static/assets/* /data/scratch-gui/static/assets/ ;\
     sed -i "s/'process.env.GA_ID'.*//g" /data/scratch-gui/webpack.config.js ;\
     sed -i "s/process.env.DEBUG.*/process.env.DEBUG\': Boolean(process.env.DEBUG)/g" /data/scratch-gui/webpack.config.js ;\
     sed -i 's/`https.*/`.\/static\/asset\/\${iconMd5}` :/g' /data/scratch-gui/src/containers/library-item.jsx ;\
