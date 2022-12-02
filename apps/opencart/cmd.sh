@@ -4,7 +4,7 @@
 if [ ! -f "/var/www/html/install/controller/install/step_3.php" ];then
   echo "The initialization file does not exist，The initialization action is no longer performed!"
 else
-  echo "The initialization file  exists，Perform an initialization action"
+  echo "The initialization file  exists，Perform an initialization action..."
   cd /var/www/html/install/controller/install
 
   db_hostname=$(grep -nw '$data\['\''db_hostname'\''\] = '\''localhost'\' step_3.php| awk -F ":" '{print $1}')
