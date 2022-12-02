@@ -1,6 +1,6 @@
 {
   "name": "espocrm",
-  "trademark": "EspoCRM",,
+  "trademark": "EspoCRM",
   "fork_url": "https://github.com/espocrm/espocrm-docker",
   "version": "",
   "requirements":{
