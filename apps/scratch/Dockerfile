@@ -13,7 +13,7 @@ RUN mkdir -p /data/scratch-gui ;\
     git clone --depth=1 https://github.com/LLK/scratch-desktop.git /data/scratch-desktop ;\
     mkdir -p /data/scratch-gui/static/assets ;\
     mkdir -p /data/scratch-gui/build ;\
-    cd /data/scratch-desktop ;\
+    cd /data/scratch-gui ;\
     npm config set electron_mirror "https://npm.taobao.org/mirrors/electron/" ;\
     npm install ;\
     npm run build ;\
