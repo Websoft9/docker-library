@@ -11,13 +11,11 @@ RUN mkdir -p /data/scratch-gui ;\
     mkdir -p /data/scratch-desktop ;\
     git clone --depth=1 https://github.com/LLK/scratch-gui.git /data/scratch-gui ;\
     git clone --depth=1 https://github.com/LLK/scratch-desktop.git /data/scratch-desktop ;\
-    mkdir -p /data/scratch-gui/static/assets ;\
     mkdir -p /data/scratch-gui/build ;\
     cd /data/scratch-gui ;\
     npm config set electron_mirror "https://npm.taobao.org/mirrors/electron/" ;\
     npm install ;\
-    npm run build ;\
-    cp -r /data/scratch-desktop/static/assets/* /data/scratch-gui/static/assets/ ;\
+    npm run fetch ;\
     sed -i "s/'process.env.GA_ID'.*//g" /data/scratch-gui/webpack.config.js ;\
     sed -i "s/process.env.DEBUG.*/process.env.DEBUG\': Boolean(process.env.DEBUG)/g" /data/scratch-gui/webpack.config.js ;\
     sed -i 's/`https.*/`.\/static\/asset\/\${iconMd5}` :/g' /data/scratch-gui/src/containers/library-item.jsx ;\
