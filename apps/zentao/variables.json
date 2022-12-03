@@ -1,27 +1,12 @@
 {
   "name": "zentao",
   "trademark": "ZenTao",
-  "installpath": "/data/apps/zentao",
-  "compose_file": "docker-compose.yml",
   "fork_url": "",
-  "env_file": ".env",
+  "version": "",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, IBM POWER8, x86/i686",
     "cpu": "1",
     "memory": "1",
     "disk": "20",
-    "swap": "2",
     "url": "https://hub.docker.com/r/easysoft/zentao"
-  },
-
-  "services":[
-    {
-      "name": "ZenTao",
-      "port": "9001",
-      "description_cn": "浏览器访问 ZenTao",
-      "description_en": "HTTP access to ZenTao",
-      "required": "Y"
-    }
-  ]
-
+  }
 }

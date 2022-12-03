@@ -1,39 +1,12 @@
 {
   "name": "superset",
   "trademark": "Superset",
-  "compose_file": "docker-compose.yml",
-  "installpath": "/data/wwwroot/superset",
-  "env_file": ".env",
+  "version": "",
   "fork_url": "https://github.com/apache/superset.git",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
     "cpu": "2",
     "memory": "4",
     "disk": "20",
-    "swap": "2",
     "url": "https://superset.apache.org/docs/installation/installing-superset-using-docker-compose"
-  },
-
-  "user": {
-    "username": "admin",
-    "password": "admin"
-  },
-
-  "services":[
-    {
-      "name": "superset",
-      "port": "9001",
-      "description_cn": "浏览器访问 Superset",
-      "description_en": "Browser access to Superset by http",
-      "required": "Y"
-    },
-    {
-      "name": "postgresql",
-      "port": "5432",
-      "description_cn": "TCP 访问PostgreSQL数据库",
-      "description_en": "Accessing PostgreSQL database with TCP",
-      "required": "Y"
-    }
-  ]
-
+  }
 }

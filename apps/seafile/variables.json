@@ -1,46 +1,12 @@
 {
   "name": "seafile",
   "trademark": "Seafile",
-  "compose_file": "docker-compose.yml",
-  "env_file": ".env",
-  "installpath": "/data/apps/seafile",
+  "version": "",
   "fork_url": "https://github.com/haiwen/seafile-docker.git",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
-    "cpu": "1",
-    "memory": "4",
+    "cpu": "2",
+    "memory": "6",
     "disk": "20",
-    "swap": "2",
     "url": "https://cloud.seafile.com/published/seafile-manual-cn/docker/"
-  },
-
-  "user": {
-    "username": "me@example.com",
-    "password": "admin123"
-  },
-
-  "services":[
-    {
-      "name": "seafile",
-      "port": "9100",
-      "description_cn": "浏览器访问Seafile",
-      "description_en": "Browser access to Seafile by http",
-      "required": "Y"
-    },
-    {
-      "name": "onlyoffice-document-server",
-      "port": "9002",
-      "description_cn": "浏览器访问ONLYOFFICE Document",
-      "description_en": "Browser access to ONLYOFFICE Document by http",
-      "required": "N"
-    },
-    {
-      "name": "mariadb",
-      "port": "3306",
-      "description_cn": "TCP 访问MariaDB数据库",
-      "description_en": "Accessing MySQL database with TCP",
-      "required": "Y"
-    }
-  ]
-
+  }
 }

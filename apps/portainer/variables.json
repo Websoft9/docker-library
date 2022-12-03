@@ -1,26 +1,12 @@
 {
   "name": "portainer",
   "trademark": "Portainer",
-  "installpath": "/data/apps/portainer",
-  "compose_file": "docker-compose.yml",
-  "env_file": ".env",
+  "version": "",
   "fork_url": "https://github.com/portainer/portainer-compose.git",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
-    "cpu": "2",
-    "memory": "4",
+    "cpu": "1",
+    "memory": "1",
     "disk": "20",
-    "swap": "2",
     "url": "https://documentation.portainer.io/v2.0-be/deploy/requirements/"
-  },
-
-  "services":[
-    {
-      "name": "portainer",
-      "port": "9091",
-      "description_cn": "浏览器访问 Portainer",
-      "description_en": "Visit Portainer through browser",
-      "required": "Y"
-    }
-  ]
+  }
 }

@@ -1,27 +1,12 @@
 {
   "name": "redis",
   "trademark": "Redis",
-  "installpath": "/data/db/redis",
-  "compose_file": "docker-compose.yml",
-  "env_file": ".env",
+  "version": "6.0",
   "fork_url": "https://github.com/docker-library/redis",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
     "cpu": "2",
     "memory": "4",
     "disk": "20",
-    "swap": "2",
     "url": "https://redis.io/topics/config"
-  },
-
-  "services":[
-    {
-      "name": "redis",
-      "port": "6379",
-      "description_cn": "TCP 访问Redis数据库",
-      "description_en": "Accessing Redis database with TCP",
-      "required": "Y"
-    }
-  ]
-
+  }
 }

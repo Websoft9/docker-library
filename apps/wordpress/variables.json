@@ -1,36 +1,12 @@
 {
   "name": "wordpress",
   "trademark": "WordPress",
-  "installpath": "/data/wwwroot/wordpress",
-  "compose_file": "docker-compose.yml",
   "fork_url": "https://github.com/docker-library/wordpress",
-  "env_file": ".env",
+  "version": "6.1.1",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, Windows x86-64, IBM POWER8, x86/i686",
     "cpu": "1",
     "memory": "1",
     "disk": "20",
-    "swap": "2",
     "url": "https://www.wordpress.org/docs/user_guide/en/install-requirements.html"
   },
-
-  "services":[
-    {
-      "name": "Wordpress",
-      "port": "9001",
-      "description_cn": "浏览器访问 wordpress",
-      "description_en": "Browser access to wordpress Document by http",
-      "required": "Y"
-    }
-  ],
-
-  "faqs": [
-    {
-      "question_cn": "本项目运行后还有安装向导吗？",
-      "answer_cn": "有，且数据库连接仍然需配置",
-      "question_en": "Does installation wizard exist?",
-      "answer_en": "Yes, you always need to configure database"
-    }
-  ]
-
 }
