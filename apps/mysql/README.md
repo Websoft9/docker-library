@@ -1,12 +1,12 @@
 # MySQL on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for MySQL v
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for MySQL v8.0
 
 ## System Requirements
 
 The following are the minimal [recommended requirements](https://dev.mysql.com/doc/refman/8.0/en/platform-support.html):
 
-* **RAM**: 1 GB or more
+* **RAM**: 2 GB or more
 * **CPU**: 1 cores or higher
 * **Disk**: at least 20 GB of free space
 * **bandwidth**: more fluent experience over 100M  

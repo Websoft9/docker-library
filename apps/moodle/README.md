@@ -6,8 +6,8 @@ This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.
 
 The following are the minimal [recommended requirements](https://github.com/moodle/docker#recommended-system-requirements):
 
-* **RAM**: 4 GB or more
-* **CPU**: 2 cores or higher
+* **RAM**: 1 GB or more
+* **CPU**: 1 cores or higher
 * **Disk**: at least 20 GB of free space
 * **bandwidth**: more fluent experience over 100M  
 

@@ -1,6 +1,6 @@
 # Mingdao on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Mingdao v
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Mingdao v3.7.0
 
 ## System Requirements
 
@@ -8,7 +8,7 @@ The following are the minimal [recommended requirements](https://github.com/ming
 
 * **RAM**: 20 GB or more
 * **CPU**: 8 cores or higher
-* **Disk**: at least 20 GB of free space
+* **Disk**: at least 40 GB of free space
 * **bandwidth**: more fluent experience over 100M  
 
 ## Install
