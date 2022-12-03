@@ -1,0 +1,22 @@
+# TooleJet on Docker  
+
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for TooleJet v
+
+## System Requirements
+
+The following are the minimal [recommended requirements](https://github.com/ToolJet/ToolJet):
+
+* **RAM**: 4 GB or more
+* **CPU**: 2 cores or higher
+* **Disk**: at least 20 GB of free space
+* **bandwidth**: more fluent experience over 100M  
+
+## Install
+
+You can install this TooleJet by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+
+If you want use TooleJet with **Websoft9 Business Support** free, you can [subscribe TooleJet](https://www.websoft9.com/apps) on Cloud platform
+
+## Documentation
+
+[TooleJet Administrator Guide](https://support.websoft9.com/docs/tooljet) powered by Websoft9
