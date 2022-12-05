@@ -10,7 +10,6 @@ RUN apk add --no-cache nano git
 RUN mkdir -p /data/scratch-gui ;\
     mkdir -p /data/scratch-desktop ;\
     git clone --depth=1 https://github.com/LLK/scratch-gui.git /data/scratch-gui ;\
-    git clone --depth=1 https://github.com/LLK/scratch-desktop.git /data/scratch-desktop ;\
     mkdir -p /data/scratch-gui/build ;\
     cd /data/scratch-gui ;\
     npm install ;\
