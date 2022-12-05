@@ -7,8 +7,8 @@ LABEL description="Scratch"
 
 RUN apk add --no-cache nano git
 
-RUN mkdir -p /data/scratch-gui/build ;\
-    git clone --depth=1 https://github.com/LLK/scratch-gui.git /data/scratch-gui ;\
+RUN git clone --depth=1 https://github.com/LLK/scratch-gui.git /data/scratch-gui ;\
+    mkdir -p /data/scratch-gui/build ;\
     cd /data/scratch-gui ;\
     npm install ;\
     npm run build ;\
