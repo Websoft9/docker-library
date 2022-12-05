@@ -1,5 +1,6 @@
 #!/bin/bash
 status="000"
+sleep 600s
 while [ $status == "000" ]
 do
         echo 'starting.....'
