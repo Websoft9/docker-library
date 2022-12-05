@@ -1,6 +1,8 @@
 #!/bin/bash
 status="000"
+echo "sleep start" >> /tmp/debug.txt
 sleep 600s
+echo "sleep end" >> /tmp/debug.txt
 while [ $status == "000" ]
 do
         echo 'starting.....'
