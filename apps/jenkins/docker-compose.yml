@@ -4,8 +4,7 @@ services:
   jenkins:
     container_name: ${APP_NAME}
     image: jenkins/jenkins:${APP_VERSION}
-    environment:
-      JAVA_OPTS: "-Djava.awt.headless=true"
+    env_file: .env
     user: root
     restart: unless-stopped
     ports:

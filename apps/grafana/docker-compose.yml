@@ -18,13 +18,13 @@ services:
       - grafana_config:/etc/grafana
       - grafana_logs:/var/log/grafana
       - grafana_plugins:/var/lib/grafana/plugins
+    env_file: .env
     environment:
       # You can use any environment from grafana.ini. format: GF_[group]_item
-      - GF_INSTALL_PLUGINS
-      - GF_LOG_MODE
       - GF_SECURITY_ADMIN_USER=${APP_USER}
       - GF_SECURITY_ADMIN_PASSWORD=${APP_PASSWORD}
       - GF_DATABASE_URL=mysql://$APP_DB_MYSQL_USER:$APP_DB_MYSQL_PASSWORD@db:3306/$APP_DB_MYSQL_NAME
+
   db:
     image: mysql:${APP_DB_MYSQL_VERSION}
     container_name: ${APP_NAME}-db

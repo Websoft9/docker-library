@@ -9,6 +9,7 @@ services:
     restart: unless-stopped
     ports:
       - '${APP_HTTP_PORT}:6901'
+    env_file: .env
     environment:
       - VNC_PW=$APP_PASSWORD
 

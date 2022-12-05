@@ -12,6 +12,7 @@ services:
     hostname: awxweb
     user: root
     restart: unless-stopped
+    env_file: .env
     volumes:
       - supervisor-socket:/var/run/supervisor
       - rsyslog-socket:/var/run/awx-rsyslog/

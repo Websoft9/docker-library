@@ -58,13 +58,13 @@ services:
           fi
         done;
         echo "common_site_config.json found";
-        bench new-site frontend --admin-password=${APP_PASSWORD} --${APP_DB_PARAM}-root-password=${DB_MARIA_PASSWORD} --install-app erpnext;
+        bench new-site frontend --admin-password=${APP_PASSWORD} --${APP_DB_PARAM}-root-password=${APP_DB_MARIADB_PASSWORD} --install-app erpnext;
 
   db:
     image: mariadb:10.6
     container_name: ${APP_NAME}-db
     healthcheck:
-      test: mysqladmin ping -h localhost --password=${DB_MARIA_PASSWORD}
+      test: mysqladmin ping -h localhost --password=${APP_DB_MARIADB_PASSWORD}
       interval: 1s
       retries: 15
     deploy:
@@ -76,11 +76,11 @@ services:
       - --skip-character-set-client-handshake
       - --skip-innodb-read-only-compressed # Temporary fix for MariaDB 10.6
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_MARIA_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${APP_DB_MARIADB_PASSWORD}
     volumes:
       - db-data:/var/lib/mysql
     ports:
-      - "${DB_MARIA_PORT}:3306"
+      - "${APP_DB_MARIADB_PORT}:3306"
       
   frontend:
     image: frappe/erpnext-nginx:${APP_VERSION}

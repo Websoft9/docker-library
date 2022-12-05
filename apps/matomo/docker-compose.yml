@@ -10,10 +10,9 @@ services:
     container_name: ${APP_NAME}
     ports:
       - '${APP_HTTP_PORT}:80'
+    env_file: .env
     environment:
-      - MATOMO_DATABASE_HOST=mysql
-      - MATOMO_DATABASE_ADAPTER=mysql
-      - MATOMO_DATABASE_TABLES_PREFIX=matomo_
+      - MATOMO_DATABASE_HOST=${APP_NAME}-db
       - MATOMO_DATABASE_USERNAME=${APP_DB_MYSQL_USER}
       - MATOMO_DATABASE_PASSWORD=${APP_DB_MYSQL_PASSWORD}
       - MATOMO_DATABASE_DBNAME=${APP_DB_MYSQL_NAME}

@@ -16,6 +16,7 @@ services:
      - mysql_data:/var/lib/mysql
      - ./src/conf.d/:/etc/mysql/conf.d
      - ./src/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    env_file: .env
     environment:
       MYSQL_ROOT_PASSWORD: ${APP_PASSWORD}
 

@@ -26,6 +26,7 @@ services:
     container_name: ${APP_NAME} 
     depends_on:
       - oracledb
+    env_file: .env
     entrypoint:
       - /bin/bash
       - -c

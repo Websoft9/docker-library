@@ -10,6 +10,7 @@ services:
     container_name: ${APP_NAME}
     ports:
       - ${APP_DB_PORT}:27017
+    env_file: .env
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${APP_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${APP_PASSWORD}

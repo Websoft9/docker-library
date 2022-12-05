@@ -12,6 +12,7 @@ services:
     volumes:
       - discuzq:/var/www/discuz
     restart: unless-stopped
+    env_file: .env
     environment:
       DISCUZQ_MYSQL_DATABASE: ${APP_DB_MYSQL_NAME}
       DISCUZQ_MYSQL_USER: ${APP_DB_MYSQL_USER}

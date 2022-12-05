@@ -11,12 +11,10 @@ services:
     image: cmak
     container_name: "${APP_NAME}"
     restart: unless-stopped
+    env_file: .env
     ports:
       - "${APP_HTTP_PORT}:9000"
     environment:
-      ZK_HOSTS: "${ZK_HOST}"
-      APPLICATION_SECRET: "random-secret"
-      KAFKA_MANAGER_AUTH_ENABLED: "true"
       KAFKA_MANAGER_USERNAME: ${APP_USER}
       KAFKA_MANAGER_PASSWORD: ${APP_PASSWORD}
 

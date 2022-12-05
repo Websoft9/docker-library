@@ -10,7 +10,6 @@ services:
     container_name: ${APP_NAME}
     restart: unless-stopped
     environment:
-      - ALLOW_EMPTY_PASSWORD=yes
       - MOODLE_DATABASE_HOST=${APP_NAME}-db
       - MOODLE_DATABASE_PORT_NUMBER=${APP_DB_MARIADB_PORT}
       - MOODLE_DATABASE_USER=${APP_DB_MARIADB_USER}

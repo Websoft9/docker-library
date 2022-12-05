@@ -9,6 +9,7 @@ services:
     image: alfresco/alfresco-content-repository-community:$APP_VERSION
     container_name: $APP_NAME
     restart: unless-stopped
+    env_file: .env
     deploy:
       resources:
         limits:

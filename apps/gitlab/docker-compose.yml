@@ -10,6 +10,7 @@ services:
     image: gitlab/gitlab-$APP_EDITION:$APP_VERSION
     container_name: "$APP_NAME"
     hostname: "$APP_URL"
+    env_file: .env
     environment:
       GITLAB_OMNIBUS_CONFIG: |
         # external_url rule: the protocol must be http://, can not use https://

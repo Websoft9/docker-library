@@ -6,6 +6,7 @@ services:
     image: $APP_REPO:$APP_VERSION
     container_name: $APP_NAME
     restart: unless-stopped
+    env_file: .env
     environment:
      - MARIADB_ROOT_PASSWORD=$APP_DB_MARIADB_PASSWORD
      - MYSQL_ROOT_PASSWORD=$APP_DB_MARIADB_PASSWORD

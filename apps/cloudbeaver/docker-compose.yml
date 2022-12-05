@@ -8,6 +8,7 @@ services:
       image: dbeaver/cloudbeaver:${APP_VERSION}
       container_name: "${APP_NAME}"
       restart: unless-stopped
+      env_file: .env
       ports:
        - '$APP_HTTP_PORT:8978'
       volumes: 

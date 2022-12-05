@@ -20,8 +20,7 @@ services:
         image: tuxgasy/dolibarr:${APP_VERSION}
         container_name: ${APP_NAME}
         restart: unless-stopped
-        env_file:
-          - .env
+        env_file: .env
         environment:
             DOLI_DB_HOST: ${APP_NAME}-db
             DOLI_DB_USER: ${APP_DB_MARIADB_USER}

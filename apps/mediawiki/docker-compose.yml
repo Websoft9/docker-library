@@ -21,7 +21,6 @@ services:
       - MEDIAWIKI_EMAIL=$APP_EMAIL
       - MEDIAWIKI_HOST=$APP_URL
       - MEDIAWIKI_WIKI_NAME=$APP_SITENAME
-      - PHP_MEMORY_LIMIT=512M
     volumes:
       - mediawiki:/bitnami/mediawiki
     depends_on:

@@ -22,13 +22,9 @@ services:
       - mattermost_plugins:/mattermost/plugins:rw
       - mattermost_client_plugins:/mattermost/client/plugins:rw
       - mattermost_bleve-indexes:/mattermost/bleve-indexes:rw
+    env_file: .env
     environment:
-      - TZ
-      - MM_SQLSETTINGS_DRIVERNAME
-      - MM_SQLSETTINGS_DATASOURCE
       - MM_SERVICESETTINGS_SITEURL=http://${APP_URL}
-      # necessary for bleve
-      - MM_BLEVESETTINGS_INDEXDIR
     depends_on: 
       - postgres
 

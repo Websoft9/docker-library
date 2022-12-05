@@ -13,8 +13,7 @@ services:
       - ./src/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
     restart: unless-stopped
     user: root
-    env_file:
-      - .env
+    env_file: .env
     entrypoint: bash -c "cat /my_cmd > /myentrypoint.sh && chmod +x /myentrypoint.sh && /myentrypoint.sh"
     configs:
       - source: my_cmd

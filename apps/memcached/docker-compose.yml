@@ -9,6 +9,7 @@ services:
     restart: unless-stopped
     ports:
      - '${APP_DB_PORT}:11211'
+    env_file: .env
     command:
      - '-m ${APP_MEMORY}'
      - '-c ${APP_MEMORY}'

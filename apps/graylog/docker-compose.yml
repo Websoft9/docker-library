@@ -6,12 +6,10 @@ services:
   graylog:
     image: graylog/graylog:${APP_VERSION}
     container_name: ${APP_NAME}
+    env_file: .env
     environment:
-      # CHANGE ME (must be at least 16 characters)!
-      - GRAYLOG_PASSWORD_SECRET=somepasswordpepper
       # echo -n admin | shasum -a 256, default password is admin
       - GRAYLOG_ROOT_PASSWORD_SHA2=${APP_ENCRYPT_PASSWORD}
-      - GRAYLOG_HTTP_BIND_ADDRESS=0.0.0.0:9000
     entrypoint: /usr/bin/tini -- wait-for-it elasticsearch:9200 --  /docker-entrypoint.sh
     restart: unless-stopped
     depends_on:

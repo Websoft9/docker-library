@@ -11,15 +11,14 @@ services:
     volumes:
       - drupal:/bitnami/drupal
     restart: unless-stopped
+    env_file: .env
     environment:
       - DRUPAL_DATABASE_HOST=$APP_NAME-db
-      - DRUPAL_DATABASE_PORT_NUMBER=3306
       - DRUPAL_DATABASE_USER=$APP_DB_MYSQL_USER
       - DRUPAL_DATABASE_PASSWORD=$APP_DB_MYSQL_PASSWORD
       - DRUPAL_DATABASE_NAME=$APP_DB_MYSQL_NAME
       - DRUPAL_USERNAME=$APP_USER
       - DRUPAL_PASSWORD=$APP_PASSWORD
-      - PHP_MEMORY_LIMIT=512M
     depends_on:
       - db
 

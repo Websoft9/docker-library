@@ -10,8 +10,9 @@ services:
     restart: unless-stopped
     ports:
       - '${APP_HTTP_PORT}:80'
+    env_file: .env
     environment:
-      - DISCUZ_DB_HOST=mysql
+      - DISCUZ_DB_HOST=$APP_NAME-db
       - DISCUZ_DB_USER=$APP_DB_MYSQL_USER
       - DISCUZ_DB_DATABASE=$APP_DB_MYSQL_NAME
       - DISCUZ_DB_PASSWORD=$APP_DB_MYSQL_PASSWORD

@@ -3,14 +3,11 @@ services:
   code-server:
     image: ghcr.io/linuxserver/code-server:$APP_VERSION
     container_name: $APP_NAME
+    env_file: .env
     environment:
       - PASSWORD=$APP_PASSWORD
       - SUDO_PASSWORD=$APP_PASSWORD
       - PROXY_DOMAIN=$APP_URL
-      - PUID
-      - PGID
-      - TZ
-      - DEFAULT_WORKSPACE
     volumes:
       - "code:/config"
     ports:
