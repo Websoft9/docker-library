@@ -16,6 +16,7 @@ services:
     stdin_open: true
     tty: true
     restart: unless-stopped
+    env_file: .env
     volumes:
      - ./src/config/mysql/conf.d:/etc/mysql/conf.d
      - mysql_data:/var/lib/mysql

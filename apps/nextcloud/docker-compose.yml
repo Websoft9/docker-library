@@ -11,11 +11,12 @@ services:
     volumes:
       - nextcloud:/var/www/html
       - nextcloud-data:/var/www/html/data
+    env_file: .env
     environment:
       - MYSQL_PASSWORD=${APP_DB_MYSQL_PASSWORD}
       - MYSQL_DATABASE=${APP_DB_MYSQL_NAME}
       - MYSQL_USER=${APP_DB_MYSQL_USER}
-      - MYSQL_HOST=mysql
+      - MYSQL_HOST=${APP_NAME}-db
     links:
       - mysql
     restart: unless-stopped

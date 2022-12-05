@@ -10,6 +10,7 @@ services:
     restart: unless-stopped
     ports:
       - ${APP_HTTP_PORT}:80
+    env_file: .env
     environment:
       - MYSQL_DATABASE=${APP_DB_MYSQL_NAME}
       - MYSQL_ROOT_PASSWORD=${APP_DB_MYSQL_PASSWORD}

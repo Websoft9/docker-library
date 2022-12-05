@@ -13,6 +13,7 @@ services:
       - '${APP_ER_PORT}:4369'
       - '${APP_MQ_PORT}:5672'
       - '${APP_GUI_PORT}:15672'
+    env_file: .env
     environment:
       - RABBITMQ_DEFAULT_USER=${APP_USER}
       - RABBITMQ_DEFAULT_PASS=${APP_PASSWORD}

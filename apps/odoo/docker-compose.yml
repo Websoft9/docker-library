@@ -13,8 +13,9 @@ services:
       - odoo_web:/var/lib/odoo
       - odoo_config:/etc/odoo
       - odoo_addons:/mnt/extra-addons
+    env_file: .env
     environment:
-      HOST: db
+      HOST: ${APP_NAME}-db
       USER: ${APP_DB_POSTGRESQL_USER}
       PASSWORD: ${APP_DB_POSTGRESQL_PASSWORD}
     depends_on:

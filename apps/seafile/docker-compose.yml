@@ -48,8 +48,9 @@ services:
 #     - "443:443"  # If https is enabled, cancel the comment.
     volumes:
       - seafile_data:/shared   # Requested, specifies the path to Seafile data persistent store.
+    env_file: .env
     environment:
-      - DB_HOST=db
+      - DB_HOST=$APP_NAME-db
       - DB_ROOT_PASSWD=$APP_DB_MARIADB_PASSWORD
       - TIME_ZONE=$APP_TIME_ZONE
       - SEAFILE_ADMIN_EMAIL=$APP_USER
@@ -72,8 +73,9 @@ services:
 #     - "443:443"  # If https is enabled, cancel the comment.
     volumes:
       - seafile_data:/shared   # Requested, specifies the path to Seafile data persistent store.
+    env_file: .env
     environment:
-      - DB_HOST=db
+      - DB_HOST=$APP_NAME-db
       - DB_ROOT_PASSWD=$APP_DB_MARIADB_PASSWORD
       - TIME_ZONE=$APP_TIME_ZONE
       - SEAFILE_ADMIN_EMAIL=$APP_USER

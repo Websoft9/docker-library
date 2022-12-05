@@ -7,6 +7,7 @@ services:
   neo4j:
     container_name: ${APP_NAME}
     image: neo4j:${DB_NEO4J_VERSION}
+    env_file: .env
     environment:
     #   SECURE_FILE_PERMISSIONS=yes
      - NEO4J_AUTH=${DB_NEO4J_USER}/${DB_NEO4J_PASSWORD}

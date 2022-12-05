@@ -24,6 +24,7 @@ services:
       - OWNCLOUD_MYSQL_UTF8MB4=true
       - OWNCLOUD_REDIS_ENABLED=true
       - OWNCLOUD_REDIS_HOST=redis
+    env_file: .env
     healthcheck:
       test: ["CMD", "/usr/bin/healthcheck"]
       interval: 30s

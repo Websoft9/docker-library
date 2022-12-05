@@ -11,6 +11,7 @@ services:
       - ${APP_HTTP_PORT}:80
     volumes:
       - zentao:/www/zentaopms
+    env_file: .env
     environment:
       # The belows vars is need, otherwise container error
       zentao_DB_HOST: ${APP_NAME}-db

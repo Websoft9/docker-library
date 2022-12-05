@@ -12,6 +12,7 @@ services:
      - 9090:8080
      - ${APP_CLIENT_PORT}:28015
      - ${APP_CLUSTER_PORT}:29015
+    env_file: .env
     command:
       - /bin/bash
       - -c

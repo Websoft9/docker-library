@@ -8,10 +8,8 @@ services:
       container_name: $APP_NAME
       volumes:
        - ./src/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+      env_file: .env
       environment:
-       - PMA_HOST
-       - PMA_PORT
-       - PMA_ARBITRARY
        - PMA_ABSOLUTE_URI=$APP_URL
        - UPLOAD_LIMIT=$APP_UPLOAD_LIMIT
       restart: unless-stopped

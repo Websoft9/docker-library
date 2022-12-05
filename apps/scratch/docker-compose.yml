@@ -8,6 +8,7 @@ services:
     image: websoft9dev/scratch:${APP_VERSION}
     container_name: ${APP_NAME}
     restart: unless-stopped
+    env_file: .env
     ports:
       - '${APP_HTTP_PORT}:80'
     volumes:

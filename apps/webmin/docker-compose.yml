@@ -7,6 +7,7 @@ services:
   webmin:
     image: websoft9dev/webmin:${APP_VERSION}
     container_name: ${APP_NAME}
+    env_file: .env
     environment:
       - WEBMIN_PASSWORD=${APP_PASSWORD}
     ports:
