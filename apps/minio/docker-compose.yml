@@ -3,7 +3,7 @@
 version: '3.8'
 services:
   minio:
-    container_name: ${APP_CONTAINER_NAME}
+    container_name: ${APP_NAME}
     image: minio/minio:${APP_VERSION}
     ports:
       - ${APP_API_PORT}:9000
