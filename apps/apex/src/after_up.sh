@@ -1,14 +1,21 @@
 #!/bin/bash
 status="000"
+echo "starting......" >> /tmp/debug.txt
 while [ $status == "000" ]
 do
-        echo 'starting.....' >> /tmp/debug.txt
         status=$(curl -IL -m 5 -s -w "%{http_code}\n" -o /dev/null "localhost:9001")
         sleep 15
 done
 echo "$status" >> /tmp/debug.txt
 echo "startup complete" >> /tmp/debug.txt
-grep "apex_db_oracle_password" /credentials/password.txt|awk -F ": " '{print $2}' >> /tmp/password.txt
+echo "getting password..." >> /tmp/debug.txt
+password=$(grep "apex_db_oracle_password" /credentials/password.txt|awk -F ": " '{print $2}')
+while [$password == ""]
+do
+        sleep 5
+        password=$(grep "apex_db_oracle_password" /credentials/password.txt|awk -F ": " '{print $2}')
+done
+echo $password >> /tmp/password.txt
 docker cp /tmp/password.txt apex:/tmp/password.txt
 echo "begin to load chinese..." >> /tmp/debug.txt
 sudo docker exec -it apex /bin/bash -c "
