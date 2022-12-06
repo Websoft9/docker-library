@@ -1,40 +1,12 @@
 {
   "name": "minio",
   "trademark": "Minio",
-  "installpath": "/data/wwwroot/minio",
-  "compose_file": "docker-compose-production.yml",
   "fork_url": "",
-  "env_file": ".env_all",
+  "version": "",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, IBM POWER8, x86/i686",
     "cpu": "1",
     "memory": "2",
     "disk": "20",
-    "swap": "2",
     "url": "https://hub.docker.com/r/minio/minio"
-  },
-
-  "user": {
-    "username": "minioadmin",
-    "password": "minioadmin"
-  },
-
-  "services":[
-    {
-      "name": "Minio-Server",
-      "port": "9000",
-      "description_cn": "Minio API",
-      "description_en": "Minio API",
-      "required": "Y"
-    },
-
-    {
-      "name": "Minio-Console",
-      "port": "9001",
-      "description_cn": "Minio 控制台",
-      "description_en": "Minio Console",
-      "required": "Y"
-    }
-  ]
-
+  }
 }
