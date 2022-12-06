@@ -1,6 +1,6 @@
 #!/bin/bash
 status="000"
-while [ $status == "" ]
+while [ $status == "000" ]
 do
         echo 'starting.....' >> /tmp/debug.txt
         status=$(curl -IL -m 5 -s -w "%{http_code}\n" -o /dev/null "localhost:9001")
