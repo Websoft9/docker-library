@@ -14,9 +14,6 @@ sleep 10
 echo "begin to load chinese..." >> /tmp/debug.txt
 export $1
 sudo docker exec -it apex /bin/bash -c "
-echo $1 >> /tmp/debug.txt
-cd /opt/oracle/apex/*/builder/zh-cn
-NLS_LANG=Chinese_Chinese.AL32UTF8 
-echo exit | /opt/oracle/sqlcl/bin/sql sys/"$1"@apex-db:1521/xepdb1 as sysdba @load_zh-cn.sql >> /tmp/debug.txt
+echo $1 >> /tmp/debug.txt && cd /opt/oracle/apex/*/builder/zh-cn && NLS_LANG=Chinese_Chinese.AL32UTF8 && echo exit | /opt/oracle/sqlcl/bin/sql sys/"$1"@apex-db:1521/xepdb1 as sysdba @load_zh-cn.sql >> /tmp/debug.txt
 "
 echo "finished" >> /tmp/debug.txt
