@@ -17,7 +17,7 @@ RUN git clone --depth=1 https://github.com/LLK/scratch-gui.git /data/scratch-gui
     sed -i "s/process.env.DEBUG.*/process.env.DEBUG\': Boolean(process.env.DEBUG)/g" webpack.config.js ;\
     sed -i 's/`https.*/`.\/static\/assets\/\${iconMd5}` :/g' src/containers/library-item.jsx ;\
     sed -i 's/${this.assetHost}\/internalapi.*/.\/static\/assets\/\${asset.assetId}.\${asset.dataFormat}`;/g' src/lib/storage.js ;\
-    cp -r /data/scratch-desktop/static/asset/* /data/scratch-gui/build/static/assets/
+    cp -r /data/scratch-desktop/static/assets/* /data/scratch-gui/build/static/assets/
 
 FROM nginx:1.15-alpine
 COPY --from=builder /data/scratch-gui/build /usr/share/nginx/html
