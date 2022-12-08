@@ -6,9 +6,7 @@ do
         status=$(curl -IL -m 5 -s -w "%{http_code}\n" -o /dev/null "localhost:9001")
         sleep 20
 done
-sleep 10
-status=$(curl -IL -m 5 -s -w "%{http_code}\n" -o /dev/null "localhost:9001")
-echo "$status"
+
 echo "startup complete"
 echo "begin to load chinese..."
 password=$1
