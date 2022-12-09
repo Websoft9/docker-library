@@ -20,5 +20,5 @@ RUN git clone --depth=1 https://github.com/LLK/scratch-gui.git /data/scratch-gui
     npm install && npm run build 
 
 FROM nginx:1.15-alpine
-COPY --from=builder /data/scratch-gui/build /usr/share/nginx/html
+COPY --from=builder /data/scratch－gui /usr/share/nginx/html
 VOLUME /usr/share/nginx/html
