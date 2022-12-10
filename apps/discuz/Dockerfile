@@ -1,7 +1,7 @@
 FROM joomla:php7.4-apache
 
 LABEL maintainer="help@websoft9.com"
-LABEL version="Discuz_X3.4_SC_UTF8_20220518"
+LABEL version="Discuz_X3.4_SC_UTF8_20220810"
 LABEL description="Discuz"
 
 ENV DISCUZ_DB_HOST=mysql
