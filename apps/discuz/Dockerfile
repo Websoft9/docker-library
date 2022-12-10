@@ -12,7 +12,7 @@ ENV DISCUZ_DB_DATABASE=discuz
 RUN apt-get update && apt-get upgrade -y && apt install unzip zip -y; \
     rm -rf /var/lib/apt/lists/* ; 
 
-COPY  ./src/Discuz_X3.4_SC_UTF8_20220811.zip /tmp
+COPY  ./src/Discuz_X3.4_SC_UTF8_20221111.zip /tmp
 
 COPY entrypoint.sh /entrypoint.sh
 
