@@ -1,15 +1,25 @@
-# fork from: https://github.com/DarkMaguz/scratch3-docker/blob/master/Dockerfile
+# fork from : https://github.com/DarkMaguz/scratch3-docker/blob/master/Dockerfile
 
-FROM node:10-alpine as builder
+FROM node:14-alpine as builder
 LABEL maintainer="help@websoft9.com"
 LABEL version="latest"
 LABEL description="Scratch"
 
 RUN apk add --no-cache nano git
 
-RUN mkdir -p /usr/app/Scratch3
-RUN git clone --depth=1 https://github.com/LLK/scratch-gui.git /usr/app/Scratch3
-RUN cd usr/app/Scratch3 && npm install && npm run build
+RUN git clone --depth=1 https://github.com/LLK/scratch-gui.git /data/scratch-gui ;\
+    git clone --depth=1 https://github.com/LLK/scratch-desktop.git  /data/scratch-desktop;\
+    cd /data/scratch-desktop;\
+    npm install && npm run fetch ;\
+    mkdir -p /data/scratch-gui/build ;\
+    cd /data/scratch-gui ;\
+    sed -i "s/'process.env.GA_ID'.*//g" /data/scratch-gui/webpack.config.js ;\
+    sed -i "s/process.env.DEBUG.*/process.env.DEBUG\': Boolean(process.env.DEBUG)/g" /data/scratch-gui/webpack.config.js ;\
+    sed -i 's/`https.*/`.\/static\/asset\/\${iconMd5}` :/g' /data/scratch-gui/src/containers/library-item.jsx ;\
+    sed -i 's/${this.assetHost}\/internalapi.*/.\/static\/asset\/\${asset.assetId}.\${asset.dataFormat}`;/g' /data/scratch-gui/src/lib/storage.js ;\
+    npm install && npm run build ;\
+    cp -r /data/scratch-desktop/static/assets/*  /data/scratch-gui/static/assets/
 
 FROM nginx:1.15-alpine
-COPY --from=builder /usr/app/Scratch3/build /usr/share/nginx/html
+COPY --from=builder /data/scratch-gui /usr/share/nginx/html
+VOLUME /usr/share/nginx/html
