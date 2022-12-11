@@ -18,8 +18,8 @@ RUN git clone --depth=1 https://github.com/LLK/scratch-gui.git /data/scratch-gui
     sed -i 's/`https.*/`.\/static\/asset\/\${iconMd5}` :/g' /data/scratch-gui/src/containers/library-item.jsx ;\
     sed -i 's/${this.assetHost}\/internalapi.*/.\/static\/asset\/\${asset.assetId}.\${asset.dataFormat}`;/g' /data/scratch-gui/src/lib/storage.js ;\
     npm install && npm run build ;\
-    cp -r /data/scratch-desktop/static/assets/*  /data/scratch-gui/static/assets/
+    cp -r /data/scratch-desktop/static/assets/*  /data/scratch-gui/build/static/assets/
 
 FROM nginx:1.15-alpine
-COPY --from=builder /data/scratch-gui /usr/share/nginx/html
+COPY --from=builder /data/scratch-gui/build /usr/share/nginx/html
 VOLUME /usr/share/nginx/html
