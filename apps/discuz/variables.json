@@ -1,6 +1,7 @@
 {
   "name": "discuz",
   "trademark": "Discuz",
+  "version": "3.4.0",
   "fork_url": "",
   "requirements":{
     "cpu": "1",
