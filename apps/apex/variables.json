@@ -2,7 +2,7 @@
   "name": "apex",
   "trademark": "Oracle APEX",
   "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
-  "version": "",
+  "version": "22.1.0",
   "requirements":{
     "cpu": "2",
     "memory": "8",
