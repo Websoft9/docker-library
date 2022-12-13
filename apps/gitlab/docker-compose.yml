@@ -7,7 +7,7 @@ version: '3.8'
 services:
 
   gitlab:
-    image: gitlab/gitlab-$APP_EDITION:$APP_VERSION
+    image: $APP_IMAGEURL:$APP_VERSION
     container_name: "$APP_NAME"
     hostname: "$APP_URL"
     env_file: .env
