@@ -2,7 +2,7 @@
   "name": "bt",
   "trademark": "BT",
   "fork_url": "https://github.com/aaPanel/BaoTa",
-  "version": "",
+  "version": "7.9.6",
   "requirements":{
     "cpu": "1",
     "memory": "1",
