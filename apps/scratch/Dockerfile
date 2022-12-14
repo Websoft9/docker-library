@@ -7,10 +7,17 @@ LABEL description="Scratch"
 
 RUN apk add --no-cache nano git
 
-RUN mkdir -p /usr/app/Scratch3
-RUN git clone --depth=1 https://github.com/LLK/scratch-gui.git /usr/app/Scratch3
-RUN cd usr/app/Scratch3 && npm install && npm run build
+RUN git clone --depth=1 https://github.com/LLK/scratch-desktop.git /data/scratch-desktop;\
+    cd /data/scratch-desktop;\
+    npm install && npm run fetch;\
+    git clone --depth=1 https://github.com/LLK/scratch-gui.git /data/scratch-gui;\
+    cp -r /data/scratch-desktop/static/assets/* /data/scratch-gui/static/assets;\
+    sed -i "s/'process.env.GA_ID'.*//g" /data/scratch-gui/webpack.config.js ;\
+    sed -i "s/process.env.DEBUG.*/process.env.DEBUG\': Boolean(process.env.DEBUG)/g" /data/scratch-gui/webpack.config.js ;\
+    sed -i 's/`https.*/`.\/static\/assets\/\${iconMd5}` :/g' /data/scratch-gui/src/containers/library-item.jsx ;\
+    sed -i 's/${this.assetHost}\/internalapi.*/.\/static\/assets\/\${asset.assetId}.\${asset.dataFormat}`;/g' /data/scratch-gui/src/lib/storage.js ;\
+    npm install && npm run build
 
 FROM nginx:1.15-alpine
-COPY --from=builder /usr/app/Scratch3/build /usr/share/nginx/html
+COPY --from=builder /data/scratch-gui/build /usr/share/nginx/html
 VOLUME /usr/share/nginx/html
