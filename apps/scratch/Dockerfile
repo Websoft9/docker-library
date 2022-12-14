@@ -11,7 +11,7 @@ RUN git clone --depth=1 https://github.com/LLK/scratch-desktop.git /data/scratch
     cd /data/scratch-desktop;\
     npm install && npm run fetch;\
     git clone --depth=1 https://github.com/LLK/scratch-gui.git /data/scratch-gui;\
-    cp -r /data/scratch-desktop/static/assets/* /data/scratch-gui/static/assets;\
+    cp -r /data/scratch-desktop/static/assets /data/scratch-gui/static;\
     sed -i "s/'process.env.GA_ID'.*//g" /data/scratch-gui/webpack.config.js ;\
     sed -i "s/process.env.DEBUG.*/process.env.DEBUG\': Boolean(process.env.DEBUG)/g" /data/scratch-gui/webpack.config.js ;\
     sed -i 's/`https.*/`.\/static\/assets\/\${iconMd5}` :/g' /data/scratch-gui/src/containers/library-item.jsx ;\
