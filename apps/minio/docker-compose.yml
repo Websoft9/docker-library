@@ -16,6 +16,7 @@ services:
     environment:
       MINIO_ROOT_USER: ${APP_USER}
       MINIO_ROOT_PASSWORD: ${APP_PASSWORD}
+      MINIO_SERVER_URL: http://${APP_URL}
 
 networks:
   default:
