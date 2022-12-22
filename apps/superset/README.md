@@ -1,6 +1,6 @@
 # Superset on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Superset v
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Superset v1.5.2
 
 ## System Requirements
 
