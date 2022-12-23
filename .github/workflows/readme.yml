@@ -47,6 +47,9 @@ jobs:
         jinja2 template_README.jinja2 apps/$app/variables.json > apps/$app/README.md
         done
         
+    - name: delete template md
+      run: rm template_README.jinja2
+        
     - name: push README  
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
