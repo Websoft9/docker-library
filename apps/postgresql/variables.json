@@ -2,7 +2,7 @@
   "name": "postgresql",
   "trademark": "PostgreSQL",
   "fork_url": "https://github.com/docker-library/postgres",
-  "version": "15",
+  "version": "15.1",
   "requirements":{
     "cpu": "1",
     "memory": "2",
