@@ -22,15 +22,15 @@ jobs:
     - name: update all variables.json
       run: |
         files=$(ls apps/)
-        keys=$(jq "keys[]" template_variables.json | sed 's/"//g')
+        keys=$(jq "keys[]" template_variables.json )
         for key in $keys;do
             num=$(jq .$key template_variables.json | wc -l)
             if [ $num != 1 ];then
-                rkeys=$(jq .$key template_variables.json | jq "keys[]" | sed 's/"//g')
+                rkeys=$(jq .$key template_variables.json | jq "keys[]")
                 for rkey in $rkeys;do
                    num=$(jq .$key.$rkey template_variables.json | wc -l)
                    if [ $num != 1 ];then 
-                       tkeys=$(jq .$key.$rkey template_variables.json | jq "keys[]" | sed 's/"//g')
+                       tkeys=$(jq .$key.$rkey template_variables.json | jq "keys[]")
                        for tkey in $tkeys;do
                            flag=0
                            for file in $files;do
@@ -43,6 +43,9 @@ jobs:
                            if [ $flag = 1 ];then
                                template_content=$(jq .$key.$rkey.$tkey template_variables.json | sed 's/"//g' | sed 's/\///g')
                                knum=$(grep -n $tkey template_variables.json | grep $template_content | cut -d ":" -f 1)
+                               key=$(echo $key | sed 's/"//g')
+                               rkey=$(echo $rkey | sed 's/"//g')
+                               tkey=$(echo $tkey | sed 's/"//g')
                                sed -i "$knum s/\///g" template_variables.json
                                sed -i "$knum s/$template_content/{{$key.$rkey.$tkey}}/g" template_variables.json
                            fi
@@ -59,6 +62,8 @@ jobs:
                        if [ $flag = 1 ];then
                            template_content=$(jq .$key.$rkey template_variables.json | sed 's/"//g' | sed 's/\///g')
                            knum=$(grep -n $rkey template_variables.json | grep $template_content | cut -d ":" -f 1)
+                           key=$(echo $key | sed 's/"//g')
+                           rkey=$(echo $rkey | sed 's/"//g')
                            sed -i "$knum s/\///g" template_variables.json
                            sed -i "$knum s/$template_content/{{$key.$rkey}}/g" template_variables.json
                        fi
@@ -76,6 +81,7 @@ jobs:
                if [ $flag = 1 ];then
                    template_content=$(jq .$key template_variables.json | sed 's/"//g' | sed 's/\///g')
                    knum=$(grep -n $key template_variables.json | grep $template_content | cut -d ":" -f 1)
+                   key=$(echo $key | sed 's/"//g')
                    sed -i "$knum s/\///g" template_variables.json
                    sed -i "$knum s/$template_content/{{$key}}/g" template_variables.json
                fi
