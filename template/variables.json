@@ -3,7 +3,7 @@
   "trademark": "AppName",
   "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
   "version": "1.2.5",
-  "version1": "1.2.5",
+  "version1": "1.2.7",
   "requirements":{
     "cpu": "2",
     "cpu2": "2",
