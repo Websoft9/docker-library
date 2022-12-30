@@ -1,28 +1,14 @@
 {
   "name": "dgraph",
   "trademark": "Dgraph",
-  "official_url": "https://github.com/dgraph-io/dgraph",
-  "installpath": "/data/dgraph",
-  "compose_file": "docker-compose.yml",
   "fork_url": "",
-  "env_file": ".env",
+  "version": "",
+  "version1": "1.2.7",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, IBM POWER8, x86/i686",
     "cpu": "1",
+    "cpu2": "2",
     "memory": "1",
     "disk": "20",
-    "swap": "2",
     "url": "https://hub.docker.com/r/dgraph/dgraph/"
-  },
-
-  "services":[
-    {
-      "name": "Dgraph",
-      "port": "8000",
-      "description_cn": "HTTP 访问 Dgraph GUI 控制台",
-      "description_en": "Accessing Dgraph web console by HTTP",
-      "required": "Y"
-    }
-  ]
-
+  }
 }

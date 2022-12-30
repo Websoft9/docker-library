@@ -3,11 +3,12 @@
   "trademark": "BT",
   "fork_url": "https://github.com/aaPanel/BaoTa",
   "version": "7.9.6",
+  "version1": "1.2.7",
   "requirements":{
     "cpu": "1",
+    "cpu2": "2",
     "memory": "1",
     "disk": "20",
     "url": "https://github.com/aaPanel/BaoTa"
   }
-
 }

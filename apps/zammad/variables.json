@@ -1,27 +1,14 @@
 {
   "name": "zammad",
   "trademark": "Zammad",
-  "installpath": "/data/wwwroot/zammad",
-  "compose_file": "docker-compose.yml",
   "fork_url": "https://github.com/zammad/zammad-docker-compose",
-  "env_file": ".env",
+  "version": "",
+  "version1": "1.2.7",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, IBM POWER8, x86/i686",
     "cpu": "1",
+    "cpu2": "2",
     "memory": "2",
     "disk": "20",
-    "swap": "2",
     "url": "https://github.com/zammad-contrib/docker-zammad/blob/master/README.md"
-  },
-
-  "services":[
-    {
-      "name": "Zammad",
-      "port": "9001",
-      "description_cn": "浏览器访问 Zammad",
-      "description_en": "Browser access to Zammad",
-      "required": "Y"
-    }
-  ]
-
+  }
 }

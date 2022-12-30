@@ -1,16 +1,14 @@
 {
   "name": "gogs",
   "trademark": "Gogs",
-  "installpath": "/data/apps/gogs",
-  "compose_file": "docker-compose.yml",
   "fork_url": "https://github.com/gogs/gogs",
-  "env_file": ".env",
+  "version": "",
+  "version1": "1.2.7",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, IBM POWER8, x86/i686",
     "cpu": "1",
+    "cpu2": "2",
     "memory": "2",
     "disk": "20",
-    "swap": "2",
     "url": "https://github.com/gogs/gogs"
   }
 }

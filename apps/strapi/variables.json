@@ -1,36 +1,14 @@
 {
   "name": "strapi",
   "trademark": "Strapi",
-  "installpath": "/data/wwwroot/strapi",
-  "compose_file": "docker-compose.yml",
   "fork_url": "https://github.com/strapi/strapi-docker",
-  "env_file": ".env",
+  "version": "",
+  "version1": "1.2.7",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, IBM POWER8, x86/i686",
     "cpu": "1",
+    "cpu2": "2",
     "memory": "1",
     "disk": "20",
-    "swap": "2",
     "url": "https://hub.docker.com/r/strapi/strapi"
-  },
-
-  "services":[
-    {
-      "name": "Strapi",
-      "port": "9001",
-      "description_cn": "浏览器访问 Strapi",
-      "description_en": "HTTP to access Strapi",
-      "required": "Y"
-    }
-  ],
-
-  "faqs": [
-    {
-      "question_cn": "Strapi 运行后为什么打不开？",
-      "answer_cn": "Strapi 运行后会有一个5-10分钟的项目创建过程，需耐心等待",
-      "question_en": "Why Strapi 500 error when the first time access it?",
-      "answer_en": "I need 5-10 mins to install dependencies"
-    }
-  ]
-
+  }
 }

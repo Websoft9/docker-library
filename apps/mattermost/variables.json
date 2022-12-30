@@ -3,8 +3,10 @@
   "trademark": "Mattermost",
   "fork_url": "https://github.com/mattermost/docker",
   "version": "",
+  "version1": "1.2.7",
   "requirements":{
     "cpu": "1",
+    "cpu2": "2",
     "memory": "2",
     "disk": "20",
     "url": "https://docs.mattermost.com/install/install-docker.html"

@@ -1,27 +1,14 @@
 {
   "name": "nocodb",
   "trademark": "Nocodb",
-  "installpath": "/data/wwwroot/nocodb",
-  "compose_file": "docker-compose.yml",
   "fork_url": "https://github.com/Websoft9/docker-template",
-  "env_file": ".env",
+  "version": "",
+  "version1": "1.2.7",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, IBM POWER8, x86/i686",
     "cpu": "2",
+    "cpu2": "2",
     "memory": "4",
     "disk": "20",
-    "swap": "2",
     "url": "https://github.com/nocodb"
-  },
-
-  "services":[
-    {
-      "name": "Nocodb",
-      "port": "9001",
-      "description_cn": "浏览器访问 Nocodb",
-      "description_en": "Access to Nocodb by HTTP",
-      "required": "Y"
-    }
-  ]
-
+  }
 }

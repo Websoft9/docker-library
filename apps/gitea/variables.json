@@ -1,16 +1,14 @@
 {
   "name": "gitea",
   "trademark": "Gitea",
-  "compose_file": "docker-compose.yml",
   "fork_url": "https://github.com/go-gitea/gitea",
-  "env_file": ".env_all",
   "version": "1.2.5",
+  "version1": "1.2.7",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64",
     "cpu": "2",
+    "cpu2": "2",
     "memory": "4",
     "disk": "20",
-    "swap": "2",
     "url": "https://docs.gitea.io/zh-cn/install-with-docker-rootless"
   }
 }

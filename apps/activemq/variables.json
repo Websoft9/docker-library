@@ -3,12 +3,12 @@
   "trademark": "ActiveMQ",
   "fork_url": "https://github.com/apache/activemq-artemis/tree/main/artemis-docker",
   "version": "5.17.1",
+  "version1": "1.2.7",
   "requirements":{
     "cpu": "1",
+    "cpu2": "2",
     "memory": "1",
     "disk": "20",
-    "swap": "2",
     "url": "https://github.com/apache/activemq-artemis/tree/main/artemis-docker"
   }
-
 }

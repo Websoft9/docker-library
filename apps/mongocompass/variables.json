@@ -3,11 +3,12 @@
   "trademark": "MongoDB Compass",
   "fork_url": "",
   "version": "",
+  "version1": "1.2.7",
   "requirements":{
     "cpu": "1",
+    "cpu2": "2",
     "memory": "2",
     "disk": "20",
-    "swap": "2",
     "url": "https://github.com/Websoft9/docker-mongocompass"
   }
 }

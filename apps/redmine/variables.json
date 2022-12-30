@@ -1,10 +1,12 @@
 {
   "name": "redmine",
   "trademark": "Redmine",
-  "version": "5.0.4",
   "fork_url": "https://github.com/docker-library/redmine",
+  "version": "5.0.4",
+  "version1": "1.2.7",
   "requirements":{
     "cpu": "1",
+    "cpu2": "2",
     "memory": "2",
     "disk": "20",
     "url": "https://www.redmine.org/projects/redmine/wiki/RedmineInstall#Requirements"

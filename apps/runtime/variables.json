@@ -1,15 +1,14 @@
 {
   "name": "runtime",
   "trademark": "Web Runtime",
-  "installpath": "/data/wwwroot/runtime",
-  "compose_file": "docker-compose.yml",
-  "env_file": ".env",
+  "fork_url": "",
+  "version": "",
+  "version1": "1.2.7",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, x86/i686",
     "cpu": "2",
+    "cpu2": "2",
     "memory": "4",
     "disk": "20",
-    "swap": "2",
     "url": "https://github.com/Websoft9/docker-runtime"
   }
 }

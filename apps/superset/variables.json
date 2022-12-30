@@ -1,10 +1,12 @@
 {
   "name": "superset",
   "trademark": "Superset",
-  "version": "1.5.2",
   "fork_url": "https://github.com/apache/superset.git",
+  "version": "1.5.2",
+  "version1": "1.2.7",
   "requirements":{
     "cpu": "2",
+    "cpu2": "2",
     "memory": "4",
     "disk": "20",
     "url": "https://superset.apache.org/docs/installation/installing-superset-using-docker-compose"

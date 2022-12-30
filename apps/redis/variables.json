@@ -1,10 +1,12 @@
 {
   "name": "redis",
   "trademark": "Redis",
-  "version": "6.0",
   "fork_url": "https://github.com/docker-library/redis",
+  "version": "6.0",
+  "version1": "1.2.7",
   "requirements":{
     "cpu": "2",
+    "cpu2": "2",
     "memory": "4",
     "disk": "20",
     "url": "https://redis.io/topics/config"

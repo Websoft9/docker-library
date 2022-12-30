@@ -1,10 +1,12 @@
 {
   "name": "metabase",
   "trademark": "Metabase",
-  "version": "",
   "fork_url": "https://github.com/metabase/metabase",
+  "version": "",
+  "version1": "1.2.7",
   "requirements":{
     "cpu": "1",
+    "cpu2": "2",
     "memory": "1",
     "disk": "20",
     "url": "https://www.metabase.com/docs/latest/operations-guide/running-metabase-on-docker.html"

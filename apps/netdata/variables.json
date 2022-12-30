@@ -1,26 +1,14 @@
 {
   "name": "netadata",
   "trademark": "Netadata",
-  "installpath": "/data/wwwroot/netadata",
-  "compose_file": "docker-compose.yml",
   "fork_url": "",
-  "env_file": ".env",
+  "version": "",
+  "version1": "1.2.7",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, IBM POWER8, x86/i686",
     "cpu": "1",
+    "cpu2": "2",
     "memory": "1",
     "disk": "20",
-    "swap": "2",
     "url": "https://learn.netdata.cloud/docs/agent/packaging/docker"
-  },
-
-  "services":[
-    {
-      "name": "Netadata",
-      "port": "9001",
-      "description_cn": "浏览器访问 Netadata",
-      "description_en": "Browser access to Netadata by HTTP",
-      "required": "Y"
-    }
-  ]
+  }
 }

@@ -1,10 +1,12 @@
 {
   "name": "phpmyadmin",
   "trademark": "phpMyAdmin",
-  "version": "",
   "fork_url": "https://github.com/phpmyadmin/docker",
+  "version": "",
+  "version1": "1.2.7",
   "requirements":{
     "cpu": "1",
+    "cpu2": "2",
     "memory": "2",
     "disk": "20",
     "url": "https://github.com/phpmyadmin/docker"

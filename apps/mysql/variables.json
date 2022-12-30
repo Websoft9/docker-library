@@ -1,10 +1,12 @@
 {
   "name": "mysql",
   "trademark": "MySQL",
-  "version": "8.0",
   "fork_url": "https://github.com/docker-library/mysql",
+  "version": "8.0",
+  "version1": "1.2.7",
   "requirements":{
     "cpu": "1",
+    "cpu2": "2",
     "memory": "2",
     "disk": "20",
     "url": "https://dev.mysql.com/doc/refman/8.0/en/platform-support.html"

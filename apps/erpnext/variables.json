@@ -1,10 +1,12 @@
 {
   "name": "erpnext",
   "trademark": "ERPNext",
-  "version": "14",
   "fork_url": "https://github.com/frappe/frappe_docker.git",
+  "version": "14",
+  "version1": "1.2.7",
   "requirements":{
     "cpu": "2",
+    "cpu2": "2",
     "memory": "8",
     "disk": "20",
     "url": "https://github.com/frappe/bench"

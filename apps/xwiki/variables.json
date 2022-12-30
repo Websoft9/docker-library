@@ -1,27 +1,14 @@
 {
   "name": "xwiki",
   "trademark": "XWiki",
-  "installpath": "/data/wwwroot/xwiki",
-  "compose_file": "docker-compose.yml",
   "fork_url": "https://github.com/xwiki/xwiki-docker",
-  "env_file": ".env",
+  "version": "",
+  "version1": "1.2.7",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, IBM POWER8, x86/i686",
     "cpu": "1",
+    "cpu2": "2",
     "memory": "2",
     "disk": "20",
-    "swap": "2",
     "url": "https://github.com/xwiki-contrib/docker-xwiki/blob/master/README.md"
-  },
-
-  "services":[
-    {
-      "name": "XWiki",
-      "port": "9001",
-      "description_cn": "浏览器访问 XWiki",
-      "description_en": "Browser access to XWiki",
-      "required": "Y"
-    }
-  ]
-
+  }
 }

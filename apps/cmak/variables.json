@@ -3,8 +3,10 @@
   "trademark": "Cmak",
   "fork_url": "https://github.com/hleb-albau/kafka-manager-docker",
   "version": "3.0",
+  "version1": "1.2.7",
   "requirements":{
     "cpu": "1",
+    "cpu2": "2",
     "memory": "1",
     "disk": "20",
     "url": "https://github.com/yahoo/CMAK"

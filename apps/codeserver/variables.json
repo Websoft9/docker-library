@@ -3,8 +3,10 @@
   "trademark": "CodeServer",
   "fork_url": "https://github.com/linuxserver/docker-code-server",
   "version": "4.2.0",
+  "version1": "1.2.7",
   "requirements":{
     "cpu": "1",
+    "cpu2": "2",
     "memory": "2",
     "disk": "20",
     "url": "https://github.com/cdr/code-server/blob/main/docs/guide.md#requirements"

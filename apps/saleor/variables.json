@@ -1,36 +1,14 @@
 {
   "name": "saleor",
   "trademark": "Saleor",
-  "installpath": "/data/wwwroot/saleor",
-  "compose_file": "docker-compose.yml",
   "fork_url": "https://github.com/saleor/saleor-platform",
-  "env_file": ".env",
+  "version": "",
+  "version1": "1.2.7",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, IBM POWER8, x86/i686",
     "cpu": "1",
+    "cpu2": "2",
     "memory": "2",
     "disk": "20",
-    "swap": "2",
     "url": "https://docs.saleor.io/docs/developer/installation/"
-  },
-
-  "services":[
-    {
-      "name": "Saleor",
-      "port": "9001",
-      "description_cn": "浏览器访问 Saleor",
-      "description_en": "Browser access to Saleor by HTTP",
-      "required": "Y"
-    }
-  ],
-
-  "faqs": [
-    {
-      "question_cn": "本项目运行后还有安装向导吗？",
-      "answer_cn": "有，且数据库连接仍然需配置",
-      "question_en": "Does installation wizard exist?",
-      "answer_en": "Yes, you always need to configure database"
-    }
-  ]
-
+  }
 }

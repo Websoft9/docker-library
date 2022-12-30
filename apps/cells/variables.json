@@ -1,12 +1,14 @@
 {
   "name": "cells",
   "trademark": "Pydio Cells",
+  "fork_url": "",
   "version": "",
+  "version1": "1.2.7",
   "requirements":{
     "cpu": "2",
+    "cpu2": "2",
     "memory": "4",
     "disk": "20",
     "url": "https://hub.docker.com/r/pydio/cells"
   }
-
 }

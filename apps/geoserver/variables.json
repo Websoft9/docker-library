@@ -1,36 +1,14 @@
 {
   "name": "geoserver",
   "trademark": "GeoServer",
-  "installpath": "/data/wwwroot/geoserver",
   "fork_url": "https://github.com/geoserver/geoserver-cloud",
-  "compose_file": "docker-compose.yml",
-  "env_file": ".env",
+  "version": "",
+  "version1": "1.2.7",
   "requirements":{
-    "cpu_arch": "Linux x86-64, ARM 32/64, IBM POWER8, x86/i686",
     "cpu": "1",
+    "cpu2": "2",
     "memory": "2",
     "disk": "20",
-    "swap": "2",
     "url": "https://github.com/geoserver/geoserver-cloud"
-  },
-
-  "services":[
-    {
-      "name": "GeoServer",
-      "port": "9001",
-      "description_cn": "浏览器访问 GeoServer",
-      "description_en": "Browser access to GeoServer by HTTP",
-      "required": "Y"
-    }
-  ],
-
-  "faqs": [
-    {
-      "question_cn": "本项目运行后还有安装向导吗？",
-      "answer_cn": "有，且数据库连接仍然需配置",
-      "question_en": "Does installation wizard exist?",
-      "answer_en": "Yes, you always need to configure database"
-    }
-  ]
-
+  }
 }
