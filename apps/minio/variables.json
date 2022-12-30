@@ -3,10 +3,8 @@
   "trademark": "Minio",
   "fork_url": "",
   "version": "RELEASE.2022-12-12T19-27-27Z",
-  "version1": "1.2.7",
   "requirements":{
     "cpu": "1",
-    "cpu2": "2",
     "memory": "2",
     "disk": "20",
     "url": "https://hub.docker.com/r/minio/minio"

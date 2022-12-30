@@ -3,10 +3,8 @@
   "trademark": "Typesense",
   "fork_url": "https://github.com/typesense/typesense",
   "version": "",
-  "version1": "1.2.7",
   "requirements":{
     "cpu": "2",
-    "cpu2": "2",
     "memory": "4",
     "disk": "20",
     "url": "https://typesense.org/docs/guide/install-typesense.html"

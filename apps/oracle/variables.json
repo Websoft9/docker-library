@@ -3,10 +3,8 @@
   "trademark": "Oracle Database",
   "fork_url": "https://container-registry.oracle.com/database/express",
   "version": "",
-  "version1": "1.2.7",
   "requirements":{
     "cpu": "2",
-    "cpu2": "2",
     "memory": "8",
     "disk": "40",
     "url": "https://container-registry.oracle.com/"

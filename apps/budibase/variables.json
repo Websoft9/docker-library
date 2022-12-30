@@ -3,10 +3,8 @@
   "trademark": "Budibase",
   "fork_url": "https://github.com/Budibase/budibase/tree/develop/hosting",
   "version": "",
-  "version1": "1.2.7",
   "requirements":{
     "cpu": "2",
-    "cpu2": "2",
     "memory": "6",
     "disk": "20",
     "url": "https://github.com/Budibase/budibase/tree/develop/hosting"

@@ -3,10 +3,8 @@
   "trademark": "Prestashop",
   "fork_url": "https://github.com/PrestaShop/docker",
   "version": "",
-  "version1": "1.2.7",
   "requirements":{
     "cpu": "1",
-    "cpu2": "2",
     "memory": "2",
     "disk": "20",
     "url": "https://www.prestashop.org/docs/user_guide/en/install-requirements.html"

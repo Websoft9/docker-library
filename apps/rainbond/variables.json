@@ -3,10 +3,8 @@
   "trademark": "Rainbond",
   "fork_url": "https://www.rainbond.com/docs/installation/install-with-dind",
   "version": "",
-  "version1": "1.2.7",
   "requirements":{
     "cpu": "2",
-    "cpu2": "2",
     "memory": "4",
     "disk": "50",
     "url": "https://www.rainbond.com/docs/installation/install-with-dind"

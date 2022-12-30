@@ -3,10 +3,8 @@
   "trademark": "MediaWiki",
   "fork_url": "https://registry.hub.docker.com/r/bitnami/mediawiki",
   "version": "",
-  "version1": "1.2.7",
   "requirements":{
     "cpu": "1",
-    "cpu2": "2",
     "memory": "1",
     "disk": "20",
     "url": "https://registry.hub.docker.com/r/bitnami/mediawiki"

@@ -3,10 +3,8 @@
   "trademark": "Squid",
   "fork_url": "",
   "version": "",
-  "version1": "1.2.7",
   "requirements":{
     "cpu": "1",
-    "cpu2": "2",
     "memory": "1",
     "disk": "20",
     "url": "https://hub.docker.com/r/datadog/squid"

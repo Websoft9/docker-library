@@ -3,10 +3,8 @@
   "trademark": "Nocodb",
   "fork_url": "https://github.com/Websoft9/docker-template",
   "version": "",
-  "version1": "1.2.7",
   "requirements":{
     "cpu": "2",
-    "cpu2": "2",
     "memory": "4",
     "disk": "20",
     "url": "https://github.com/nocodb"

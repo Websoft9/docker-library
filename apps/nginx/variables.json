@@ -3,10 +3,8 @@
   "trademark": "Nginx",
   "fork_url": "https://github.com/nginxinc/docker-nginx",
   "version": "",
-  "version1": "1.2.7",
   "requirements":{
     "cpu": "2",
-    "cpu2": "2",
     "memory": "4",
     "disk": "20",
     "url": "https://github.com/nginx/docker#recommended-system-requirements"

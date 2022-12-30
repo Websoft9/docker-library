@@ -3,10 +3,8 @@
   "trademark": "Collabora",
   "fork_url": "  https://github.com/CollaboraOnline/online",
   "version": "",
-  "version1": "1.2.7",
   "requirements":{
     "cpu": "1",
-    "cpu2": "2",
     "memory": "2",
     "disk": "20",
     "url": "https://sdk.collaboraonline.com/docs/installation/index.html"

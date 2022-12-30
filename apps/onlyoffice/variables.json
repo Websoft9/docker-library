@@ -3,10 +3,8 @@
   "trademark": "ONLYOFFICE",
   "fork_url": "https://github.com/ONLYOFFICE/Docker-CommunityServer.git",
   "version": "",
-  "version1": "1.2.7",
   "requirements":{
     "cpu": "2",
-    "cpu2": "2",
     "memory": "8",
     "disk": "20",
     "url": "https://github.com/ONLYOFFICE/Docker-CommunityServer"

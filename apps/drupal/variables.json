@@ -3,10 +3,8 @@
   "trademark": "Drupal",
   "fork_url": "https://hub.docker.com/r/bitnami/drupal",
   "version": "",
-  "version1": "1.2.7",
   "requirements":{
     "cpu": "1",
-    "cpu2": "2",
     "memory": "1",
     "disk": "20",
     "url": "https://www.drupal.org/docs/user_guide/en/install-requirements.html"

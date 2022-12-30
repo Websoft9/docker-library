@@ -3,10 +3,8 @@
   "trademark": "Jitsi",
   "fork_url": "",
   "version": "",
-  "version1": "1.2.7",
   "requirements":{
     "cpu": "2",
-    "cpu2": "2",
     "memory": "4",
     "disk": "20",
     "url": "https://github.com/jitsi/docker#recommended-system-requirements"

@@ -3,10 +3,8 @@
   "trademark": "SSCMS",
   "fork_url": "https://github.com/siteserver/cms",
   "version": "",
-  "version1": "1.2.7",
   "requirements":{
     "cpu": "1",
-    "cpu2": "2",
     "memory": "1",
     "disk": "20",
     "url": "https://github.com/siteserver/cms"

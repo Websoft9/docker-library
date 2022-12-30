@@ -3,10 +3,8 @@
   "trademark": "pgAdmin",
   "fork_url": "https://github.com/postgres/pgadmin4",
   "version": "",
-  "version1": "1.2.7",
   "requirements":{
     "cpu": "1",
-    "cpu2": "2",
     "memory": "1",
     "disk": "20",
     "url": "https://github.com/postgres/pgadmin4/blob/master/requirements.txt"

@@ -3,10 +3,8 @@
   "trademark": "nopCommerce",
   "fork_url": "https://github.com/nopSolutions/nopCommerce",
   "version": "",
-  "version1": "1.2.7",
   "requirements":{
     "cpu": "1",
-    "cpu2": "2",
     "memory": "1",
     "disk": "20",
     "url": "https://docs.nopcommerce.com/en/installation-and-upgrading/technology-and-system-requirements.html"

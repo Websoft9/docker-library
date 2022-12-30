@@ -3,10 +3,8 @@
   "trademark": "RocketChat",
   "fork_url": "https://github.com/RocketChat/Docker.Official.Image",
   "version": "",
-  "version1": "1.2.7",
   "requirements":{
     "cpu": "1",
-    "cpu2": "2",
     "memory": "2",
     "disk": "20",
     "url": "https://docs.rocket.chat/installing-and-updating/docker-containers"

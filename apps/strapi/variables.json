@@ -3,10 +3,8 @@
   "trademark": "Strapi",
   "fork_url": "https://github.com/strapi/strapi-docker",
   "version": "",
-  "version1": "1.2.7",
   "requirements":{
     "cpu": "1",
-    "cpu2": "2",
     "memory": "1",
     "disk": "20",
     "url": "https://hub.docker.com/r/strapi/strapi"

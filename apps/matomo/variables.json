@@ -3,10 +3,8 @@
   "trademark": "Matomo",
   "fork_url": "https://matomo.org/faq/on-premise/installing-matomo/",
   "version": "",
-  "version1": "1.2.7",
   "requirements":{
     "cpu": "1",
-    "cpu2": "2",
     "memory": "1",
     "disk": "20",
     "url": "https://matomo.org/faq/on-premise/installing-matomo/"

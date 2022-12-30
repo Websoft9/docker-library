@@ -3,10 +3,8 @@
   "trademark": "ClamAV",
   "fork_url": "https://hub.docker.com/r/clamav/clamav",
   "version": "",
-  "version1": "1.2.7",
   "requirements":{
     "cpu": "1",
-    "cpu2": "2",
     "memory": "2",
     "disk": "20",
     "url": "https://docs.clamav.net/manual/Installing/Docker.html"

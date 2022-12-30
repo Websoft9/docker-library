@@ -3,10 +3,8 @@
   "trademark": "Discuz",
   "fork_url": "",
   "version": "3.4.0",
-  "version1": "1.2.7",
   "requirements":{
     "cpu": "1",
-    "cpu2": "2",
     "memory": "1",
     "disk": "20",
     "url": "https://github.com/joomla-docker/docker-joomla"

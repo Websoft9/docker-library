@@ -3,10 +3,8 @@
   "trademark": "Typo3",
   "fork_url": "",
   "version": "",
-  "version1": "1.2.7",
   "requirements":{
     "cpu": "2",
-    "cpu2": "2",
     "memory": "4",
     "disk": "20",
     "url": "https://docs.typo3.org/m/typo3/tutorial-getting-started/11.5/en-us/Installation/Index.html"
