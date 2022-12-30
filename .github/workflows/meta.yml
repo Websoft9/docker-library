@@ -1,1 +1,98 @@
+name: Template README by variables.json
 
+on: 
+# repository_dispatch:
+  push:
+    branches: [ main ]
+    paths: 
+      - 'template/variables.json'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+      name: Check out code  
+      
+    - name: npm install jinjia2-cli
+      run: |
+       wget -N https://raw.githubusercontent.com/Websoft9/docker-library/main/template/variables.json -O template_variables.json
+       pip install jinja2-cli
+       
+    - name: update all variables.json
+      run: |
+        files=$(ls apps/)
+        keys=$(jq "keys[]" template_variables.json | sed 's/"//g')
+        for key in $keys;do
+            num=$(jq .$key template_variables.json | wc -l)
+            if [ $num != 1 ];then
+                rkeys=$(jq .$key template_variables.json | jq "keys[]" | sed 's/"//g')
+                for rkey in $rkeys;do
+                   num=$(jq .$key.$rkey template_variables.json | wc -l)
+                   if [ $num != 1 ];then 
+                       tkeys=$(jq .$key.$rkey template_variables.json | jq "keys[]" | sed 's/"//g')
+                       for tkey in $tkeys;do
+                           flag=0
+                           for file in $files;do
+                               content=$(jq .$key.$rkey.$tkey apps/$file/variables.json)
+                               if [ $content != null ];then
+                                   flag=1
+                                   break
+                               fi  
+                           done
+                           if [ $flag = 1 ];then
+                               template_content=$(jq .$key.$rkey.$tkey template_variables.json | sed 's/"//g' | sed 's/\///g')
+                               knum=$(grep -n $tkey template_variables.json | grep $template_content | cut -d ":" -f 1)
+                               sed -i "$knum s/\///g" template_variables.json
+                               sed -i "$knum s/$template_content/{{$key.$rkey.$tkey}}/g" template_variables.json
+                           fi
+                       done
+                   else
+                       flag=0
+                       for file in $files;do
+                           content=$(jq .$key.$rkey apps/$file/variables.json)
+                           if [ $content != null ];then
+                               flag=1
+                               break
+                           fi  
+                       done
+                       if [ $flag = 1 ];then
+                           template_content=$(jq .$key.$rkey template_variables.json | sed 's/"//g' | sed 's/\///g')
+                           knum=$(grep -n $rkey template_variables.json | grep $template_content | cut -d ":" -f 1)
+                           sed -i "$knum s/\///g" template_variables.json
+                           sed -i "$knum s/$template_content/{{$key.$rkey}}/g" template_variables.json
+                       fi
+                   fi
+               done      
+            else         
+               flag=0
+               for file in $files;do
+                   content=$(jq .$key apps/$file/variables.json)
+                   if [ $content != null ];then
+                       flag=1
+                       break
+                   fi
+               done
+               if [ $flag = 1 ];then
+                   template_content=$(jq .$key template_variables.json | sed 's/"//g' | sed 's/\///g')
+                   knum=$(grep -n $key template_variables.json | grep $template_content | cut -d ":" -f 1)
+                   sed -i "$knum s/\///g" template_variables.json
+                   sed -i "$knum s/$template_content/{{$key}}/g" template_variables.json
+               fi
+            fi  
+        done
+        cat template_variables.json
+        for file in $files;do
+            echo $file
+            cp -r apps/$file/variables.json  variables.json
+            jinja2 template_variables.json variables.json > apps/$file/variables.json
+        done  
+        
+    - name: delete template_variables.json
+      run: |
+        rm -fr template_variables.json variables.json
+       
+    - name: push variables.json  
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Templating variables.json
