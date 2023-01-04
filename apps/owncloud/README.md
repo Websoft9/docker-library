@@ -1,13 +1,13 @@
 # Owncloud on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Owncloud v
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Owncloud v10.11.0
 
 ## System Requirements
 
 The following are the minimal [recommended requirements](https://doc.owncloud.com/server/10.8/admin_manual/installation/docker/):
 
-* **RAM**: 2 GB or more
-* **CPU**: 1 cores or higher
+* **RAM**: 4 GB or more
+* **CPU**: 2 cores or higher
 * **Disk**: at least 20 GB of free space
 * **bandwidth**: more fluent experience over 100M  
 
