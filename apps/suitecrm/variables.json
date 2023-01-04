@@ -2,7 +2,7 @@
   "name": "suitecrm",
   "trademark": "SuiteCRM",
   "fork_url": "https://github.com/bitnami/bitnami-docker-suitecrm",
-  "version": "",
+  "version": "8.2.1",
   "requirements":{
     "cpu": "1",
     "memory": "1",
