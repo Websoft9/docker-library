@@ -2,7 +2,7 @@
   "name": "mattermost",
   "trademark": "Mattermost",
   "fork_url": "https://github.com/mattermost/docker",
-  "version": "",
+  "version": "7.5.2",
   "requirements":{
     "cpu": "1",
     "memory": "2",
