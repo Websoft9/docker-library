@@ -1,12 +1,12 @@
 # Vtiger on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Vtiger v7.0.0
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Vtiger v7.4.0
 
 ## System Requirements
 
 The following are the minimal [recommended requirements](https://community.vtiger.com/help/vtigercrm/administrators/installation.html):
 
-* **RAM**: 4 GB or more
+* **RAM**: 1 GB or more
 * **CPU**: 1 cores or higher
 * **Disk**: at least 20 GB of free space
 * **bandwidth**: more fluent experience over 100M  
