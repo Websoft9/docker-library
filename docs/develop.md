@@ -1,5 +1,9 @@
 # Develop
 
+## env_file
+
+Try to add **env_file** item at docker-compose.yml for important container which includes lots of environments
+
 ## Credentials
 
 ## Logs limit
@@ -26,4 +30,4 @@ Some application have lots of logs which will need storages. If you want to limi
 
 ## variables.json
 
-* version format  x.x.x
+* version format: x.x.x
