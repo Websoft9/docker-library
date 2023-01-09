@@ -2,7 +2,7 @@
   "name": "codeserver",
   "trademark": "CodeServer",
   "fork_url": "https://github.com/linuxserver/docker-code-server",
-  "version": "4.2.0",
+  "version": "4.9.1",
   "requirements":{
     "cpu": "1",
     "memory": "2",
