@@ -74,6 +74,10 @@ You can subscribe [Websoft9 Enterprise Support](https://www.websoft9.com/apps) t
 
 [LGPL-3.0](/License.md), Additional Terms: It is not allowed to publish free or paid image based on this repository in any Cloud platform's Marketplace without authorization (未经授权许可，不允许将基于本项目创建的镜像到云平台市场上售卖)
 
+## Disclaimer
+
+We can't guarantee the open source software does not have vulnerability or the security risks which is the responsibility of user according to the open source licenses.
+
 ## FAQ
 
 #### Do I need to change the password before docker-compose up?
