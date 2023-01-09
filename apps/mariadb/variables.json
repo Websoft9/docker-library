@@ -2,7 +2,7 @@
   "name": "mariadb",
   "trademark": "MariaDB",
   "fork_url": "https://github.com/MariaDB/mariadb-docker",
-  "version": "",
+  "version": "10.8.6",
   "requirements":{
     "cpu": "1",
     "memory": "1",
