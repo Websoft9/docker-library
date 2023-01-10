@@ -9,6 +9,7 @@ services:
     restart: unless-stopped
     ports:
       - $APP_HTTP_PORT:2368
+    env_file: .env
     environment:
       - database__connection__user=$APP_DB_MYSQL_USER
       - database__connection__password="$APP_DB_MYSQL_PASSWORD"
