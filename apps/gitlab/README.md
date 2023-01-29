@@ -1,6 +1,6 @@
 # Gitlab on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Gitlab v15.7.0
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Gitlab v15.8.0
 
 ## System Requirements
 
