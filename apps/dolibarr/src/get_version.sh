@@ -1,1 +1,1 @@
-sudo echo "dolibarr version:" $(docker images |grep tuxgasy/dolibarr |awk '{print $2}')  1>> /data/logs/install_version.txt
+sudo echo "dolibarr version:" $(docker image  inspect tuxgasy/dolibarr | grep DOLI_VERSION  | cut -d "=" -f 2 | sed 's/",//')  1>> /data/logs/install_version.txt
