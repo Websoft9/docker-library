@@ -2,7 +2,7 @@
   "name": "drupal",
   "trademark": "Drupal",
   "fork_url": "https://hub.docker.com/r/bitnami/drupal",
-  "version": "",
+  "version": "10.0.2",
   "requirements":{
     "cpu": "1",
     "memory": "1",
