@@ -2,7 +2,7 @@
   "name": "alfresco",
   "trademark": "Alfresco",
   "fork_url": "https://docs.alfresco.com/content-services/latest/install/containers/docker-compose",
-  "version": "7.0.0",
+  "version": "7.4.0",
   "requirements":{
     "cpu": "2",
     "memory": "4",
