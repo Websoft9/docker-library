@@ -1,0 +1,12 @@
+{
+  "name": "cadvisor",
+  "trademark": "Cadvisor",
+  "fork_url": "https://github.com/google/cadvisor.git",
+  "version": "",
+  "requirements":{
+    "cpu": "1",
+    "memory": "1",
+    "disk": "20",
+    "url": "https://github.com/google/cadvisor.git"
+  }
+}
