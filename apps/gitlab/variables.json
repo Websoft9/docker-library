@@ -5,7 +5,7 @@
   "version": "15.8.0",
   "requirements":{
     "cpu": "2",
-    "memory": "4",
+    "memory": "4(jh is 8)",
     "disk": "20",
     "url": "https://github.com/gitlab/docker#recommended-system-requirements"
   }
