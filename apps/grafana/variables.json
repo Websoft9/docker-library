@@ -2,7 +2,7 @@
   "name": "grafana",
   "trademark": "Grafana",
   "fork_url": "",
-  "version": "9.3.21",
+  "version": "9.3.61",
   "requirements":{
     "cpu": "1",
     "memory": "2",
