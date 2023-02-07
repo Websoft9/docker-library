@@ -5,7 +5,7 @@ version: '3.8'
 
 services:
   odoo:
-    image: odoo:${APP_VERSION}
+    image: arm64v8/odoo:${APP_VERSION}
     container_name: ${APP_NAME}
     ports:
       - ${APP_HTTP_PORT}:8069
