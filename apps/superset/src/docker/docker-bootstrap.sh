@@ -30,7 +30,7 @@ function pipInstall() {
     https://pypi.hustunique.com/
     https://pypi.sdutlinux.org/
     https://pypi.douban.com/simple/
-	https://repo.huaweicloud.com/repository/pypi/simple/
+    https://repo.huaweicloud.com/repository/pypi/simple/
   )
   time=-1
   fastMirror=""
