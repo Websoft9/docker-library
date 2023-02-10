@@ -77,7 +77,7 @@ fi
 #
 if [ -f "${REQUIREMENTS_LOCAL}" ]; then
   echo "Installing local overrides at ${REQUIREMENTS_LOCAL}"
-  retry 3 pipInstall requirements.txt
+  retry 3 pipInstall "${REQUIREMENTS_LOCAL}"
 else
   echo "Skipping local overrides"
 fi
