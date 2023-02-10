@@ -19,6 +19,52 @@
 set -eo pipefail
 
 REQUIREMENTS_LOCAL="/app/docker/requirements-local.txt"
+
+function pipInstall() {
+  requirementsFile=$1
+  declare -a mirrors=(
+    https://pypi.org
+    https://pypi.tuna.tsinghua.edu.cn/simple/
+    https://pypi.mirrors.ustc.edu.cn/simple/
+    https://mirrors.aliyun.com/pypi/simple/
+    https://pypi.hustunique.com/
+    https://pypi.sdutlinux.org/
+    https://pypi.douban.com/simple/
+	https://repo.huaweicloud.com/repository/pypi/simple/
+  )
+  time=-1
+  fastMirror=""
+  for url in "${mirrors[@]}"; do
+    SPEED_DOWNLOAD=$(curl --location --range 0-102400 --max-time 8 --silent --write-out %{speed_download} --output /dev/null "${url}")
+    if [ $(echo "${SPEED_DOWNLOAD} > ${time}" | bc) -ne 0 ]; then
+      time=${SPEED_DOWNLOAD}
+      fastMirror=${url}
+    fi
+  done
+  echo "choose the url: ${fastMirror}"
+  pip install -r ${requirementsFile} -i ${fastMirror}
+}
+
+function retry {
+  local retries=$1
+  shift
+
+  local count=0
+  until "$@"; do
+    exit=$?
+    wait=$((2 ** $count))
+    count=$(($count + 1))
+    if [ $count -lt $retries ]; then
+      echo "Retry $count/$retries exited $exit, retrying in $wait seconds..."
+      sleep $wait
+    else
+      echo "Retry $count/$retries exited $exit, no more retries left."
+      return $exit
+    fi
+  done
+  return 0
+}
+
 # If Cypress run – overwrite the password for admin and export env variables
 if [ "$CYPRESS_CONFIG" == "true" ]; then
     export SUPERSET_CONFIG=tests.integration_tests.superset_test_config
@@ -31,7 +77,7 @@ fi
 #
 if [ -f "${REQUIREMENTS_LOCAL}" ]; then
   echo "Installing local overrides at ${REQUIREMENTS_LOCAL}"
-  pip install -r "${REQUIREMENTS_LOCAL}"
+  retry 3 pipInstall requirements.txt
 else
   echo "Skipping local overrides"
 fi
