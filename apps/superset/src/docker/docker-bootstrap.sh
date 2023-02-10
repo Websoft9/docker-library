@@ -36,7 +36,8 @@ function pipInstall() {
   fastMirror=""
   for url in "${mirrors[@]}"; do
     SPEED_DOWNLOAD=$(curl --location --range 0-102400 --max-time 8 --silent --write-out %{speed_download} --output /dev/null "${url}")
-    if [ $(echo "${SPEED_DOWNLOAD} > ${time}" | bc) -ne 0 ]; then
+    tempReult=$(echo "${SPEED_DOWNLOAD} ${time}" | awk '{if ($1 > $2) print 1; else print 0}')
+    if [ "${tempReult}" -ne 0 ]; then
       time=${SPEED_DOWNLOAD}
       fastMirror=${url}
     fi
@@ -45,7 +46,7 @@ function pipInstall() {
   pip install -r ${requirementsFile} -i ${fastMirror}
 }
 
-function retry {
+function retry() {
   local retries=$1
   shift
 
