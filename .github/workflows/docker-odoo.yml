@@ -1,1 +1,26 @@
+name: docker-odoo
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+      name: Check out code  
+      
+    - name: configure the environment
+      run: |
+       curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh && sudo systemctl start docker
+       
+    - name: compile images to multiple platforms
+      run: |
+       git clone https://github.com/odoo/docker.git 
+       cd docker/16.0
+       sed -i 's/wkhtmltopdf\/releases\/download\/0.12.5\/wkhtmltox_0.12.5-1.buster_amd64.deb/packaging\/releases\/download\/0.12.6-1\/wkhtmltox_0.12.6-1.buster_arm64.deb/g' Dockerfile
+       sed -i 's/ea8277df4297afc507c61122f3c349af142f31e5/43d0db99ab0e6b5f60b465a49c764c50d6b31337/g' Dockerfile
+       docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+       docker buildx create --name odoo --use
+       docker buildx build --platform linux/arm64 -t xuyueting52/odoo --push .
 
