@@ -5,7 +5,7 @@ version: '3.8'
 
 services:
   odoo:
-    image: websoft9dev/odoo:latest
+    image: websoft9dev/odoo:${APP_VERSION}
     container_name: ${APP_NAME}
     ports:
       - ${APP_HTTP_PORT}:8069
