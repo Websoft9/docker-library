@@ -1,5 +1,11 @@
 # App Wishlist
 
+
+## 运行环境
+
+* [MERN Stack](https://www.mongodb.com/mern-stack)  
+* [MEVN Stack](https://signoz.io/blog/mevn-stack-tutorial/) 
+
 ## 客户360
 
 * https://www.chatwoot.com/  开源客户参与系统/CRM
@@ -151,6 +157,8 @@
 
 * CoCalc  教学包
 * https://github.com/open-scratch/teaching-open  Scratch 解决方案
+* [blockpy](https://github.com/blockpy-edu/blockpy) 青少年Python图形化编程工具 
+* [Hydro](https://github.com/hydro-dev/Hydro) 新一代高效强大的信息学在线测评系统
 
 ## 行业软件
 
