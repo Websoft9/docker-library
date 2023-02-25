@@ -78,6 +78,10 @@ You can subscribe [Websoft9 Enterprise Support](https://www.websoft9.com/apps) t
 
 We can't guarantee the open source software does not have vulnerability or the security risks which is the responsibility of user according to the open source licenses.
 
+## App Wishlist
+
+Propose and vote for [apps](wishlist.md) to be packaged
+
 ## FAQ
 
 #### Do I need to change the password before docker-compose up?
