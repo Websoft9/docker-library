@@ -12,13 +12,14 @@ services:
       - PUID=0
       - PGID=0
       - TZ=Europe/London
-      - SERVERURL=${APP_URL} #public IP of Server
-      - SERVERPORT=51820 #optional
+      - SERVERURL=auto #public IP of Server
+      - SERVERPORT=$APP_UDP_PORT #optional
       - PEERS=10 #optional
       - PEERDNS=auto #optional
       - INTERNAL_SUBNET=192.168.2.1 #your intranet gateway
       - ALLOWEDIPS=0.0.0.0/0 #optional
-      - LOG_CONFS=true #optional
+      - LOG_CONFS=false #optional
+      - PERSISTENTKEEPALIVE_PEERS=all
     volumes:
       - wireguard:/config
       - /lib/modules:/lib/modules
