@@ -18,6 +18,7 @@ services:
       - MATOMO_DATABASE_DBNAME=${APP_DB_MYSQL_NAME}
     volumes:
       - 'matomo:/var/www/html'
+    restart: unless-stopped
     depends_on:
       - mysql
 
