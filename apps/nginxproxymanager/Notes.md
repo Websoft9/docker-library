@@ -23,3 +23,7 @@ https://nginxproxymanager.com
 #### Advanced 设置作用域？
 
 server 级作用域，非 / location
+
+#### Nginx proxy Manger 如何支持静态网站？
+
+可以支持，具体参考：[Host a Static Site on NGINX Proxy Manager (NPM)](https://dimensionquest.net/2021/02/host-static-site-on-npm/)
