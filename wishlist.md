@@ -1,5 +1,8 @@
 # App Wishlist
 
+## 直播
+
+[OBS](https://obsproject.com/)Open Broadcaster Software是一个免费的开源的视频录制和视频实时交流软件。其有多种功能并广泛使用在视频采集，直播等领域。
 
 ## 运行环境
 
