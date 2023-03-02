@@ -1,0 +1,12 @@
+{
+  "name": "teleport",
+  "trademark": "Teleport",
+  "fork_url": "https://gallery.ecr.aws/gravitational/teleport",
+  "version": "11.3",
+  "requirements":{
+    "cpu": "1",
+    "memory": "2",
+    "disk": "20",
+    "url": "https://gallery.ecr.aws/gravitational/teleport"
+  }
+}
