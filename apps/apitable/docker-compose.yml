@@ -70,6 +70,7 @@ services:
     image: ${IMAGE_REGISTRY}/${IMAGE_GATEWAY}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
     restart: unless-stopped
+    container_name: $APP_NAME
     ports:
       - ${APP_HTTP_PORT}:80
     environment:
