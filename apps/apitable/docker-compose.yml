@@ -11,7 +11,6 @@ services:
     expose:
       - "8080"
     env_file: .env
-      - apitable
 
   imageproxy-server:
     image: ${IMAGE_REGISTRY}/${IMAGE_IMAGEPROXY_SERVER}
