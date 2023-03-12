@@ -1,0 +1,12 @@
+{
+  "name": "apitable ",
+  "trademark": "APITable",
+  "fork_url": "https://github.com/apitable/apitable/blob/develop/docker-compose.yaml",
+  "version": "0.18",
+  "requirements":{
+    "cpu": "2",
+    "memory": "8",
+    "disk": "20",
+    "url": "https://github.com/apitable/apitable/blob/develop/docker-compose.yaml"
+  }
+}
