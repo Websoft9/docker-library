@@ -2,7 +2,7 @@
   "name": "mingdao",
   "trademark": "Mingdao",
   "fork_url": "",
-  "version": "3.7.0",
+  "version": "3.9.1",
   "requirements":{
     "cpu": "8",
     "memory": "20",
