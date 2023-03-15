@@ -7,7 +7,7 @@ services:
     image: haproxy:${APP_VERSION}
     container_name: ${APP_NAME}
     ports:
-      - 1080:1080
+      - ${APP_HTTP_PORT}:1080
       - ${APP_STATS_PORT}:80
     volumes:    
       - ./src/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
