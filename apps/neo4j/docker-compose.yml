@@ -6,13 +6,13 @@ services:
 
   neo4j:
     container_name: ${APP_NAME}
-    image: neo4j:${DB_NEO4J_VERSION}
+    image: neo4j:${APP_VERSION}
     env_file: .env
     environment:
     #   SECURE_FILE_PERMISSIONS=yes
-     - NEO4J_AUTH=${DB_NEO4J_USER}/${DB_NEO4J_PASSWORD}
+     - NEO4J_AUTH=${APP_DB_NEO4J_USER}/${APP_DB_NEO4J_PASSWORD}
     ports:
-     - ${DB_NEO4J_PORT}:7687
+     - ${APP_DB_NEO4J_PORT}:7687
      - ${APP_HTTP_PORT}:7474
     restart: unless-stopped
     volumes:
