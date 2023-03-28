@@ -146,7 +146,7 @@
 
 * Machine Box
 * Dash（https://plotly.com/dash/）是用于构建ML和数据科学Web应用程序的最受下载，最受信任的框架。
-* Stable Diffusion AI制图工具 [stable-diffusion-webui on github](https://github.com/AUTOMATIC1111/stable-diffusion-webui)  [计算巢方案](https://github.com/aliyun/ros-templates/tree/master/ComputeNestBestPractice/opensource/stablediffusion)  [百家号](https://baijiahao.baidu.com/s?id=1748830848626124306&wfr=spider&for=pc)
+* Stable Diffusion AI制图工具 [stable-diffusion-webui on github](https://github.com/AUTOMATIC1111/stable-diffusion-webui) | [计算巢方案](https://github.com/aliyun/ros-templates/tree/master/ComputeNestBestPractice/opensource/stablediffusion) | [百家号](https://baijiahao.baidu.com/s?id=1748830848626124306&wfr=spider&for=pc) | [机器学习PAI](https://help.aliyun.com/product/30347.html) | [计算巢试用](https://computenest.console.aliyun.com/user/cn-hangzhou/serviceInstanceCreate?ServiceId=service-7c7e05fc6d2b42929821&ServiceVersion=16)
 
 ## 电商软件
 
