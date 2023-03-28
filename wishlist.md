@@ -142,10 +142,11 @@
 * https://github.com/FreeCAD/FreeCAD  开源 CAD
 * 开源物流软件 https://www.amiue.com/p/10867/
 
-## 机器学习
+## 机器学习 / AI
 
 * Machine Box
 * Dash（https://plotly.com/dash/）是用于构建ML和数据科学Web应用程序的最受下载，最受信任的框架。
+* Stable Diffusion AI制图工具 [stable-diffusion-webui on github](https://github.com/AUTOMATIC1111/stable-diffusion-webui)  [计算巢方案](https://github.com/aliyun/ros-templates/tree/master/ComputeNestBestPractice/opensource/stablediffusion)  [百家号](https://baijiahao.baidu.com/s?id=1748830848626124306&wfr=spider&for=pc)
 
 ## 电商软件
 
