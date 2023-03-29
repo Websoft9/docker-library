@@ -1,4 +1,4 @@
-# image: https://hub.docker.com/r/websoft9dev/discuzq
+# image:https://hub.docker.com/r/websoft9dev/discuzq
 # DiscuzQ image is search from TecentCloud image service center publicimage
 
 FROM ccr.ccs.tencentyun.com/discuzq/dzq:latest
