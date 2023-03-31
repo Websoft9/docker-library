@@ -1,0 +1,86 @@
+name: Update APP Requirement to Contentful
+
+on: 
+  push:
+    branches: [ main ]
+    paths: 
+      - 'apps/*/variables.json'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+      name: Check out code  
+      
+    - name: get app name
+      run: |
+        file_path=$(curl \
+                -H "Accept: application/vnd.github+json" \
+                -H "Authorization: Bearer ${{github.token}}" \
+                https://api.github.com/repos/Websoft9/docker-library/compare/${{github.event.before}}...${{github.event.after}} | jq '.files[].filename' | sed 's/\"//g' | tr '\n' ' ')
+        for file in ${file_path};do
+          if [[ ! $file =~ ^apps/.*/variables.json$ ]];then
+            continue
+          fi
+        app=$(echo ${file} | cut -d "/" -f 2)
+        echo "app=${app}" >> $GITHUB_ENV
+        
+    - name: contentful entry get the id and version
+      run: |
+        entry=$(curl --include \
+             --request GET \
+             --header 'Authorization: Bearer ${{secrets.CONTENTFUL_TOKEN}}' \
+             https://api.contentful.com/spaces/ffrhttfighww/environments/master/entries?content_type=product\&fields.key=${{env.app}} | tail -n 1)
+        id=$(echo $entry | jq -r '.items[0].sys.id')
+        version=$(echo $entry | jq -r '.items[0].sys.version')
+        newVersion=$(($version+1))
+        echo "id=${id}" >> $GITHUB_ENV
+        echo "version=${version}" >> $GITHUB_ENV
+        echo "newVersion=${newVersion}" >> $GITHUB_ENV
+           
+    - name: contentful update
+      run: |
+        cpu=$(cat apps/${{env.app}}/variables.json | jq '.requirements.cpu')
+        memory=$(cat apps/${{env.app}}/variables.json | jq '.requirements.memory')
+        disk=$(cat apps/${{env.app}}/variables.json | jq '.requirements.disk')
+        
+        #1、更新数据
+        echo '[{
+                  "op": "add",
+                  "path": "/fields/vCpu",
+                  "value": {
+                    "en-US": '${cpu}',
+                    "zh-CN": '${cpu}'
+                  }
+                }, {
+                  "op": "add",
+                  "path": "/fields/memory",
+                  "value": {
+                    "en-US": '${memory}',
+                    "zh-CN": '${memory}'
+                  }
+                }, {
+                  "op": "add",
+                  "path": "/fields/storage",
+                  "value": {
+                    "en-US": '${disk}',
+                    "zh-CN": '${disk}'
+                  }
+                }]' > data.json
+        curl --include \
+             --request PATCH \
+             --header 'Authorization: Bearer ${{secrets.CONTENTFUL_TOKEN}}' \
+             --header 'Content-Type: application/json-patch+json' \
+             -H 'X-Contentful-Version: ${{env.version}}' \
+             -d '@data.json' \
+             https://api.contentful.com/spaces/ffrhttfighww/environments/master/entries/${{env.id}}
+         
+         #2、发布
+         newVersion=$(($entryVersion+1))
+         echo $newVersion
+         curl --include \
+               --request PUT \
+               --header 'Authorization: Bearer ${{secrets.CONTENTFUL_TOKEN}}' \
+               --header 'X-Contentful-Version: ${{env.newVersion}}' \
+               https://api.contentful.com/spaces/ffrhttfighww/environments/master/entries/${{env.id}}/published
+
