@@ -45,9 +45,9 @@ jobs:
            
     - name: contentful update
       run: |
-        cpu=$(cat apps/${{env.app}}/variables.json | jq '.requirements.cpu')
-        memory=$(cat apps/${{env.app}}/variables.json | jq '.requirements.memory')
-        disk=$(cat apps/${{env.app}}/variables.json | jq '.requirements.disk')
+        cpu=$(cat apps/${{env.app}}/variables.json | jq -r '.requirements.cpu')
+        memory=$(cat apps/${{env.app}}/variables.json | jq -r '.requirements.memory')
+        disk=$(cat apps/${{env.app}}/variables.json | jq -r '.requirements.disk')
         
         #1、更新数据
         echo '[{
