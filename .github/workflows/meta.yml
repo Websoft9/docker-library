@@ -24,11 +24,11 @@ jobs:
         files=$(ls apps/)
         keys=$(jq "keys[]" template_variables.json )
         for key in $keys;do
-            num=1$(jq .$key template_variables.json | wc -l)
+            num=$(jq .$key template_variables.json | wc -l)
             if [ $num != 1 ];then
                 rkeys=$(jq .$key template_variables.json | jq "keys[]")
                 for rkey in $rkeys;do
-                   num=1$(jq .$key.$rkey template_variables.json | wc -l)
+                   num=$(jq .$key.$rkey template_variables.json | wc -l)
                    if [ $num != 1 ];then 
                        tkeys=$(jq .$key.$rkey template_variables.json | jq "keys[]")
                        for tkey in $tkeys;do
