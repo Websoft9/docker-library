@@ -52,7 +52,7 @@ jobs:
         #1、更新数据
         echo '[{
                   "op": "add",
-                  "path": "/fields/vCpu",
+                  "path": "/fields/vcpu",
                   "value": {
                     "en-US": '${cpu}',
                     "zh-CN": '${cpu}'
