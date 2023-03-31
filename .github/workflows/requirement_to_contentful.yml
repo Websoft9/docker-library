@@ -12,18 +12,23 @@ jobs:
     - uses: actions/checkout@master
       name: Check out code  
       
-    - name: get app name
+    - name: get triggered file
       run: |
         file_path=$(curl \
                 -H "Accept: application/vnd.github+json" \
                 -H "Authorization: Bearer ${{github.token}}" \
                 https://api.github.com/repos/Websoft9/docker-library/compare/${{github.event.before}}...${{github.event.after}} | jq '.files[].filename' | sed 's/\"//g' | tr '\n' ' ')
-        for file in ${file_path};do
+        echo "file_path=${file_path}" >> $GITHUB_ENV
+        
+    - name: get app name
+      run: |
+        for file in ${{env.file_path}};do
           if [[ ! $file =~ ^apps/.*/variables.json$ ]];then
             continue
           fi
         app=$(echo ${file} | cut -d "/" -f 2)
         echo "app=${app}" >> $GITHUB_ENV
+        done    
         
     - name: contentful entry get the id and version
       run: |
