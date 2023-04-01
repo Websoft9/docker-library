@@ -15,7 +15,6 @@ services:
       - ./src/redis.conf:/etc/redis.conf:ro
       - redis_data:/data
     entrypoint: ["redis-server", "/etc/redis.conf"] 
-    restart: unless-stopped
 
   redisinsight:
     image: redislabs/redisinsight:${APP_GUI_VERSION}
