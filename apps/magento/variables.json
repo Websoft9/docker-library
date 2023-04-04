@@ -5,7 +5,7 @@
   "version": "",
   "requirements":{
     "cpu": "2",
-    "memory": "6",
+    "memory": "8",
     "disk": "20",
     "url": "https://devdocs.magento.com/cloud/docker/docker-development.html#prerequisites"
   }
