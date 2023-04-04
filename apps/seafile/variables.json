@@ -5,7 +5,7 @@
   "version": "9.0.13",
   "requirements":{
     "cpu": "2",
-    "memory": "6",
+    "memory": "8",
     "disk": "20",
     "url": "https://cloud.seafile.com/published/seafile-manual-cn/docker/"
   }
