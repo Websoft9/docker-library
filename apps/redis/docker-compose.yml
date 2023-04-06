@@ -18,7 +18,7 @@ services:
 
   redisinsight:
     image: redislabs/redisinsight:${APP_GUI_VERSION}
-    container_name: redis-gui
+    container_name: ${APP_NAME}-gui
     restart: unless-stopped
     ports:
       - "${APP_GUI_PORT}:8001"
