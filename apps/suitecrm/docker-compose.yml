@@ -8,8 +8,6 @@ services:
     image: docker.io/bitnami/suitecrm:${APP_VERSION}
     container_name: ${APP_NAME}
     restart: unless-stopped
-    env_file:
-      - .env
     ports:
       - '${APP_HTTP_PORT}:8080'
     env_file: .env
