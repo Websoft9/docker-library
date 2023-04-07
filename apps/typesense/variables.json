@@ -2,7 +2,7 @@
   "name": "typesense",
   "trademark": "Typesense",
   "fork_url": "https://github.com/typesense/typesense",
-  "version": "",
+  "version": "0.24.1",
   "requirements":{
     "cpu": "2",
     "memory": "4",
