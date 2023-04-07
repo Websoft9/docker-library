@@ -10,12 +10,17 @@ services:
     image: typesense/typesense:${APP_VERSION}
     container_name: ${APP_NAME}
     restart: unless-stopped
-    ports:
-      - "${APP_HTTP_PORT}:8108"
+    logging:
+      driver: "json-file"
+      options:
+          max-file: "5"
+          max-size: 10m
     environment:
       - TYPESENSE_API_KEY=${APP_KEY}
       - TYPESENSE_DATA_DIR=${APP_DATA_PATH}
       - TYPESENSE_ENABLE_CORS=true
+    ports:
+      - "${APP_HTTP_PORT}:8108"
     volumes:
       - typesense:/data
 
@@ -23,6 +28,11 @@ services:
     image: typesense/docsearch-scraper:latest
     container_name: ${APP_NAME}-scraper
     restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+          max-file: "5"
+          max-size: 10m
     environment:
       - TYPESENSE_API_KEY=${APP_KEY}
       - TYPESENSE_HOST=${APP_HOST}
