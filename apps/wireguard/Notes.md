@@ -3,6 +3,8 @@
 操作系统内核最低5.6。 目前已知 Ubuntu 22.04 内核为5.15
 本软件需经常更换端口，才能正常使用，其具体原因无法得知  
 
+快捷运行：bash getkeys.sh，会将 keys 拷贝到 /data/keys
+
 ## FAQ
 
 #### Wireguard 端口是什么协议？
