@@ -8,6 +8,7 @@ services:
     image: ${IMAGE_REGISTRY}/${IMAGE_WEB_SERVER}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
     restart: unless-stopped
+    container_name: $APP_NAME-webserver
     expose:
       - "8080"
     env_file: .env
@@ -16,6 +17,7 @@ services:
     image: ${IMAGE_REGISTRY}/${IMAGE_IMAGEPROXY_SERVER}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
     restart: unless-stopped
+    container_name: $APP_NAME-imageproxyserver
     env_file: .env
     expose:
       - "8080"
@@ -27,6 +29,7 @@ services:
     image: apitable/backend-server:${APP_VERSION}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
     restart: unless-stopped
+    container_name: $APP_NAME-backendserver
     env_file: .env
     expose:
       - "8081"
@@ -45,6 +48,7 @@ services:
   room-server:
     image: ${IMAGE_REGISTRY}/${IMAGE_ROOM_SERVER}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
+    container_name: $APP_NAME-roomserver
     restart: unless-stopped
     expose:
       - "3333"
@@ -92,6 +96,7 @@ services:
     image: ${IMAGE_MINIO}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
     restart: unless-stopped
+    container_name: $APP_NAME-minio
     command: server /data
     env_file: .env
     expose:
@@ -113,6 +118,7 @@ services:
     image: ${IMAGE_REDIS}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
     restart: unless-stopped
+    container_name: $APP_NAME-redis
     env_file: .env
     command:
       [
@@ -133,6 +139,7 @@ services:
     image: ${IMAGE_MYSQL}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
     restart: unless-stopped
+    container_name: $APP_NAME-db
     env_file: .env
     volumes:
       - mysql:/var/lib/mysql
@@ -158,6 +165,7 @@ services:
     image: ${IMAGE_RABBITMQ}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
     restart: unless-stopped
+    container_name: $APP_NAME-rabbitmq
     env_file: .env
     volumes:
       - rabbitmq:/var/lib/rabbitmq
@@ -174,6 +182,7 @@ services:
     image: ${IMAGE_REGISTRY}/${IMAGE_INIT_DB}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
     env_file: .env
+    container_name: $APP_NAME-preinitdb
     environment:
       - TZ=${TIMEZONE}
       - DB_HOST=${MYSQL_HOST}
@@ -191,6 +200,7 @@ services:
     image: ${IMAGE_REGISTRY}/${IMAGE_INIT_DB}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
     env_file: .env
+    container_name: $APP_NAME-initdb
     environment:
       - TZ=${TIMEZONE}
       - DB_HOST=${MYSQL_HOST}
@@ -208,6 +218,7 @@ services:
   init-appdata:
     image: ${IMAGE_REGISTRY}/${IMAGE_INIT_APPDATA}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
+    container_name: $APP_NAME-initappdata
     env_file: .env
     depends_on:
       mysql:
