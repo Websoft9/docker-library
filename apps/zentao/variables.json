@@ -2,7 +2,7 @@
   "name": "zentao",
   "trademark": "ZenTao",
   "fork_url": "",
-  "version": "",
+  "version": "18.3",
   "requirements":{
     "cpu": "1",
     "memory": "1",
