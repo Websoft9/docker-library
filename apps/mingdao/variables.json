@@ -6,7 +6,7 @@
   "requirements":{
     "cpu": "8",
     "memory": "20",
-    "disk": "40",
+    "disk":"1",
     "url": "https://github.com/mingdao/docker#recommended-system-requirements"
   }
 }

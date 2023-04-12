@@ -6,7 +6,7 @@
   "requirements":{
     "cpu": "2",
     "memory": "4",
-    "disk": "20",
+    "disk":"1",
     "url": "https://neo4j.com/docs/operations-manual/current/installation/requirements/"
   }
 }

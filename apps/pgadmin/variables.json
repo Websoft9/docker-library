@@ -6,7 +6,7 @@
   "requirements":{
     "cpu": "1",
     "memory": "1",
-    "disk": "20",
+    "disk":"1",
     "url": "https://github.com/postgres/pgadmin4/blob/master/requirements.txt"
   }
 }

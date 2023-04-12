@@ -6,7 +6,7 @@
   "requirements":{
     "cpu": "1",
     "memory": "2",
-    "disk": "20",
+    "disk":"1",
     "url": "https://docs.rocket.chat/installing-and-updating/docker-containers"
   }
 }

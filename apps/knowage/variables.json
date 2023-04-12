@@ -6,7 +6,7 @@
   "requirements":{
     "cpu": "1",
     "memory": "4",
-    "disk": "20",
+    "disk":"1",
     "url": "https://knowage-suite.readthedocs.io/en/7.4/installation-guide/knowage-ce-installer.html#server-side-requirements"
   }
 }

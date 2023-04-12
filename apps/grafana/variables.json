@@ -6,7 +6,7 @@
   "requirements":{
     "cpu": "1",
     "memory": "2",
-    "disk": "20",
+    "disk":"1",
     "url": "https://grafana.com/docs/grafana/latest/installation/requirements/#grafana-requirements"
   }
 }

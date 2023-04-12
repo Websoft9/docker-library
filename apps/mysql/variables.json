@@ -6,7 +6,7 @@
   "requirements":{
     "cpu": "1",
     "memory": "2",
-    "disk": "20",
+    "disk":"1",
     "url": "https://dev.mysql.com/doc/refman/8.0/en/platform-support.html"
   }
 }

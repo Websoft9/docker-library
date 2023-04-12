@@ -6,7 +6,7 @@
   "requirements":{
     "cpu": "1",
     "memory": "1",
-    "disk": "20",
+    "disk":"1",
     "url": "https://www.metabase.com/docs/latest/operations-guide/running-metabase-on-docker.html"
   }
 }
