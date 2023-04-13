@@ -1,6 +1,6 @@
-# Vtiger on Docker  
+# V2Ray on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Vtiger v7.4.0
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for V2Ray v5.4.1
 
 ## System Requirements
 
@@ -8,15 +8,15 @@ The following are the minimal [recommended requirements](https://community.vtige
 
 * **RAM**: 1 GB or more
 * **CPU**: 1 cores or higher
-* **Disk**: at least 20 GB of free space
+* **Disk**: at least 1 GB of free space
 * **bandwidth**: more fluent experience over 100M  
 
 ## Install
 
-You can install this Vtiger by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this V2Ray by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use Vtiger with **Websoft9 Business Support** free, you can [subscribe Vtiger](https://www.websoft9.com/apps) on Cloud platform
+If you want use V2Ray with **Websoft9 Business Support** free, you can [subscribe V2Ray](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[Vtiger Administrator Guide](https://support.websoft9.com/docs/vtiger) powered by Websoft9
+[V2Ray Administrator Guide](https://support.websoft9.com/docs/v2ray) powered by Websoft9
