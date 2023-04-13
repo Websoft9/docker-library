@@ -1,0 +1,24 @@
+# image: https://hub.docker.com/r/websoft9dev/vtiger/tags
+
+version: '3.8'
+
+services:
+
+  v2ray:
+    image: teddysun/v2ray:${APP_VERSION}
+    container_name: ${APP_NAME}
+    restart: unless-stopped
+    ports:
+      - ${APP_HTTP_PORT}:9000
+    env_file: .env
+    volumes:
+      - v2ray:/etc/v2ray
+      - ./src/config.json:/etc/v2ray/config.json
+
+volumes:
+  v2ray:
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
