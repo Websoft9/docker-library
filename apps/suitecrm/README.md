@@ -1,6 +1,6 @@
 # SuiteCRM on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for SuiteCRM v8.2.1
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for SuiteCRM v8.2.4
 
 ## System Requirements
 
@@ -8,7 +8,7 @@ The following are the minimal [recommended requirements](https://docs.suitecrm.c
 
 * **RAM**: 1 GB or more
 * **CPU**: 1 cores or higher
-* **Disk**: at least 20 GB of free space
+* **Disk**: at least 1 GB of free space
 * **bandwidth**: more fluent experience over 100M  
 
 ## Install
