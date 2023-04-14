@@ -1,3 +1,6 @@
-## Vtiger
+## V2ray
 
-本项目由 Websoft9 维护 Vtiger Dockerfile => 利用 docker-hub 的镜像 javanile/vtiger
+本项目仅是 V2ray 的运行方案，供内部技术研究之用途。
+
+> 私自搭建 VPN 甚至制售 VPN 有可能涉嫌为非法犯罪。使用未经许可的VPN服务访问被屏蔽的网络资源是违法行为，可能会面临相应的处罚。您可以选择合法注册的VPN服务提供商，并遵守中国的网络法规。
+
