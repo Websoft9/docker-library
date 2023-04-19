@@ -12,7 +12,7 @@ If you can use docker, you already know how to use and develop an application fo
 1. Make sure you have install the Docker latest or you can install Docker by below script
 
    ```
-   curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh && sudo systemctl start docker
+   curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh && sudo systemctl enable docker && sudo systemctl start docker
    ```
 
 2. Download this repository to your Linux and list all applications
