@@ -43,18 +43,12 @@ jobs:
         echo "id=${id}" >> $GITHUB_ENV
         echo "version=${version}" >> $GITHUB_ENV
         echo "newVersion=${newVersion}" >> $GITHUB_ENV
-        echo $(echo $entry | jq '.items[0].fields.distribution') > distribution.json
         
     - name: contentful update
       run: |
         cpu=$(cat apps/${{env.app}}/variables.json | jq -r '.requirements.cpu')
         memory=$(cat apps/${{env.app}}/variables.json | jq -r '.requirements.memory')
         disk=$(cat apps/${{env.app}}/variables.json | jq -r '.requirements.disk')
-        version=$(cat apps/${{env.app}}/variables.json | jq '.version')
-        
-        distribution=$(cat distribution.json)
-        newDistribution=$(echo $distribution | sed '0,/\"value\": \"[^\"]*\"/{s/\"value\": \"[^\"]*\"/\"value\": '${version}'/}')
-        echo $newDistribution
         
         #1、更新数据
         echo '[{
@@ -78,10 +72,6 @@ jobs:
                     "en-US": '${disk}',
                     "zh-CN": '${disk}'
                   }
-                },{
-                  "op": "add",
-                  "path": "/fields/distribution",
-                  "value": '${newDistribution}'
                 }]' > data.json
         curl --include \
              --request PATCH \
