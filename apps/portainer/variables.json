@@ -2,7 +2,7 @@
   "name": "portainer",
   "trademark": "Portainer",
   "fork_url": "https://github.com/portainer/portainer-compose.git",
-  "version": "",
+  "version": "2.18.1",
   "requirements":{
     "cpu": "1",
     "memory": "1",
