@@ -2,7 +2,7 @@
   "name": "wordpress",
   "trademark": "WordPress",
   "fork_url": "https://github.com/docker-library/wordpress",
-  "version": "6.2test",
+  "version": "6.2",
   "requirements":{
     "cpu": "1",
     "memory": "1",
