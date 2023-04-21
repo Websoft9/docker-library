@@ -1,14 +1,14 @@
 # Portainer on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Portainer v
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Portainer v2.18.1
 
 ## System Requirements
 
 The following are the minimal [recommended requirements](https://documentation.portainer.io/v2.0-be/deploy/requirements/):
 
-* **RAM**: 4 GB or more
-* **CPU**: 2 cores or higher
-* **Disk**: at least 20 GB of free space
+* **RAM**: 1 GB or more
+* **CPU**: 1 cores or higher
+* **Disk**: at least 1 GB of free space
 * **bandwidth**: more fluent experience over 100M  
 
 ## Install
