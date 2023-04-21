@@ -1,6 +1,6 @@
 # APITable on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for APITable v0.18
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for APITable v0.19.0
 
 ## System Requirements
 
@@ -8,7 +8,7 @@ The following are the minimal [recommended requirements](https://github.com/apit
 
 * **RAM**: 8 GB or more
 * **CPU**: 2 cores or higher
-* **Disk**: at least 20 GB of free space
+* **Disk**: at least 1 GB of free space
 * **bandwidth**: more fluent experience over 100M  
 
 ## Install
