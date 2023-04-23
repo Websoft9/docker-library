@@ -8,7 +8,7 @@ The following are the minimal [recommended requirements](https://docs.clamav.net
 
 * **RAM**: 2 GB or more
 * **CPU**: 1 cores or higher
-* **Disk**: at least 20 GB of free space
+* **Disk**: at least 1 GB of free space
 * **bandwidth**: more fluent experience over 100M  
 
 ## Install
