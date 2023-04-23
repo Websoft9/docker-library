@@ -1,15 +1,14 @@
 {
-  "name": "appname",
-  "trademark": "AppName",
+  "name": "kasmweb",
+  "trademark": "Kasm Workspaces",
   "url": "-",
   "admin_url": "-",  
-  "trademark": "AppName",
-  "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
+  "fork_url": "https://hub.docker.com/r/kasmweb",
   "version": "1.2.5",
   "requirements":{
-    "cpu": "2",
-    "memory": "4",
+    "cpu": "1",
+    "memory": "1",
     "disk": "1",
-    "url": "https://github.com/onlyoffice/docker#recommended-system-requirements"
+    "url": "https://www.kasmweb.com/docs/latest/install/system_requirements.html"
   }
 }
