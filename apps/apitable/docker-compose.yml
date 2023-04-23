@@ -26,7 +26,7 @@ services:
       - BASEURL=${AWS_ENDPOINT}
 
   backend-server:
-    image: apitable/backend-server:${APP_VERSION}
+    image: ${IMAGE_REGISTRY}/${IMAGE_BACKEND_SERVER}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
     restart: unless-stopped
     container_name: $APP_NAME-backendserver
