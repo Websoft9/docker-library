@@ -1,14 +1,14 @@
 # Kasm Workspaces on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Kasm Workspaces v1.2.5
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Kasm Workspaces v1.13.0
 
 ## System Requirements
 
 The following are the minimal [recommended requirements](https://www.kasmweb.com/docs/latest/install/system_requirements.html):
 
-* **RAM**: 1 GB or more
-* **CPU**: 1 cores or higher
-* **Disk**: at least 1 GB of free space
+* **RAM**: 4 GB or more
+* **CPU**: 2 cores or higher
+* **Disk**: at least 5 GB of free space
 * **bandwidth**: more fluent experience over 100M  
 
 ## Install
