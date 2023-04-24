@@ -498,7 +498,7 @@ cal、PhotoPrism、supabase、OpenMemex、Odoo、Listmonk、twake、Chaskiq、Gr
 * SaltStack
 * CloudFormation
 * Terraform
-* https://hub.docker.com/r/linuxserver/taisun  可视化docker管理
+* [Webtop](https://github.com/linuxserver/docker-webtop) 容器虚拟化桌面
 * Devops 包管理工具：https://www.jfrogchina.com/   93%的五百强企业都在用
 * 手机APP模拟器
 * https://www.mirantis.com/  全面的容器解决方案
