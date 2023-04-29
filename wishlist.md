@@ -248,6 +248,11 @@
 
 
 ## 大数据
+* Excel生态：Excel、VBA、PowerQuery、PowerPivot、Power View、Power Map
+* 数理统计工具：SAS、SPSS、Stata、Minitab、Eviews、Statistica、MATLAB、Mathematica
+* BI工具：PowerBI、Tableau、Qlikview、SAP BI、Oracel BI、FineBI、Yonghong BI
+* 数据库工具：MySQL、PostgreSQL、Oracle、SQLServer、MongoDB、Hive
+* 编程工具：Python、R、Julia、Scala、Spark、Java、Hadoop​
 * https://github.com/Kanaries/Rath/blob/master/docs/README-zh.md  开源数据分析工具
 * ClickHouse 海量数据分析（比如日志处理）
 * trino  数据查询与分析引擎
