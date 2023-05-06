@@ -356,7 +356,7 @@
 * https://www.harpoon.io/blog  可视化k8s，以及拖拽编排应用
 * render
 * Jelastic PaaS Lite Edition 是一个专用的平台即服务，自动安装在 DigitalOcean 之上，以加快应用程序部署、简化基础设施管理并降低托管成本。
-* https://elest.io/
+* https://elest.io/ 可以将200+应用部署到指定的云平台（同时创建服务器）
 * https://www.virtuozzo.com/  
 * https://docs.porter.run/self-hosted/setup/local/    基于k8s的以应用为中心的 PaaS
 * https://github.com/Yelp/paasta
