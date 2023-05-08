@@ -2,6 +2,13 @@ name: docker-odoo
 
 on: 
   workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths: 
+      - 'apps/odoo/Dockerfile'
+      - 'apps/odoo/entrypoint.sh'
+      - 'apps/odoo/odoo.conf'
+      - 'apps/odoo/wait-for-psql.py'
 
 jobs:
   build:
@@ -16,10 +23,7 @@ jobs:
        
     - name: compile images to multiple platforms
       run: |
-       git clone https://github.com/odoo/docker.git 
-       cd docker/16.0
-       sed -i 's/wkhtmltopdf\/releases\/download\/0.12.5\/wkhtmltox_0.12.5-1.buster_amd64.deb/packaging\/releases\/download\/0.12.6-1\/wkhtmltox_0.12.6-1.buster_arm64.deb/g' Dockerfile
-       sed -i 's/ea8277df4297afc507c61122f3c349af142f31e5/43d0db99ab0e6b5f60b465a49c764c50d6b31337/g' Dockerfile
+       cd apps/odoo
        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
        docker buildx create --name odoo --use
        docker buildx build --platform linux/arm64 -t websoft9dev/odoo --push .
