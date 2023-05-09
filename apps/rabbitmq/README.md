@@ -1,6 +1,6 @@
 # RabbitQM on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for RabbitQM v3.11.4
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for RabbitQM v3.11
 
 ## System Requirements
 
