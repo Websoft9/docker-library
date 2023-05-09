@@ -2,7 +2,7 @@
   "name": "nextcloud",
   "trademark": "Nextcloud",
   "fork_url": "https://github.com/nextcloud/docker",
-  "version": "25.0.3",
+  "version": "26.0",
   "requirements":{
     "cpu": "1",
     "memory": "2",
