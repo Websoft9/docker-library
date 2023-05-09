@@ -2,7 +2,7 @@
   "name": "matomo",
   "trademark": "Matomo",
   "fork_url": "https://matomo.org/faq/on-premise/installing-matomo/",
-  "version": "",
+  "version": "4.14",
   "requirements":{
     "cpu": "1",
     "memory": "1",
