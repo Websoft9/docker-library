@@ -2,7 +2,7 @@
   "name": "redis",
   "trademark": "Redis",
   "fork_url": "https://github.com/docker-library/redis",
-  "version": "7.0.8",
+  "version": "7.0",
   "requirements":{
     "cpu": "2",
     "memory": "4",
