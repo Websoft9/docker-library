@@ -2,7 +2,7 @@
   "name": "espocrm",
   "trademark": "EspoCRM",
   "fork_url": "https://github.com/espocrm/espocrm-docker",
-  "version": "7.2.7",
+  "version": "7.4",
   "requirements":{
     "cpu": "1",
     "memory": "2",
