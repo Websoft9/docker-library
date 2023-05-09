@@ -2,7 +2,7 @@
   "name": "haproxy",
   "trademark": "HAProxy",
   "fork_url": "",
-  "version": "2.7.2",
+  "version": "2.8",
   "requirements":{
     "cpu": "1",
     "memory": "1",
