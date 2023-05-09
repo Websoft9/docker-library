@@ -5,7 +5,7 @@ version: '3.8'
 
 services:
   rabbitmq:
-    image: rabbitmq:${APP_VERSION}
+    image: rabbitmq:${APP_VERSION}-management
     container_name: ${APP_NAME}
     restart: unless-stopped
     ports:
