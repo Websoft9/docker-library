@@ -2,7 +2,7 @@
   "name": "prestashop",
   "trademark": "Prestashop",
   "fork_url": "https://github.com/PrestaShop/docker",
-  "version": "",
+  "version": "1.7",
   "requirements":{
     "cpu": "1",
     "memory": "2",
