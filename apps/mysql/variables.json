@@ -1,7 +1,7 @@
 {
   "name": "mysql",
   "trademark": "MySQL",
-  "fork_url": "https://github.com/docker-library/mysql",
+  "fork_url": "https://github.com/docker-library/mysql/",
   "version": "8.0",
   "requirements":{
     "cpu": "1",
