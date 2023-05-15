@@ -30,6 +30,7 @@
 
 * https://www.chatwoot.com/  开源客户参与系统/CRM
 * Mautic  电子邮件群发
+* listmonk.app  电子邮件群发 & Marketing
 * https://www.walnut.io/  销售体验软件 （产品演示）为 B2B 销售团队提供更多以客户为中心和数据驱动的销售体验
 * https://upswot.com/data-sources/ 订阅软件
 * https://syncari.com/solutions/workflow-automation/  数据与流程自动化
