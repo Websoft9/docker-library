@@ -4,6 +4,7 @@
 ## AIGC
 
 * [AI应用集 AITools](http://www.aitools100.com/)
+* [AI工具集导航](https://ai.nancheng.fun/)
 
 ![lQDPJxeRb5GGgfrNBaTNBDiwWk_xim8kD-QETWbSjcAMAA_1080_1444](https://user-images.githubusercontent.com/62225175/236597764-221c9c3c-4946-44d4-acaa-16f1d63ae7c2.jpg)
 
