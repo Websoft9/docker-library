@@ -299,6 +299,7 @@
 * splunk
 * databuff.com
 * Telegraf、Influxdb、Grafana三者一起共同组成性能监控的三驾马车；数据采集、数据存储、数据展示。
+* https://plausible.io/  网站分析
 
 ## Serverless
 
@@ -427,6 +428,9 @@
 * triggermesh
 * https://pipedream.com/ 
 * https://hevodata.com/integrations/pipeline/
+* https://github.com/n8n-io/n8n
+* https://www.activepieces.com/
+* 
 
 ## ui-integration 用户界面集成
 
