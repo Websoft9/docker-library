@@ -1,11 +1,11 @@
 # image: https://hub.docker.com/_/microsoft-mssql-server
 # docs: https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker
 
-version: '3.8'
+version: "3.8"
 
 services:
   db:
-    image: mcr.microsoft.com/mssql/server:${APP_VERSION}
+    image: mcr.microsoft.com/mssql/server:${APP_VERSION}-latest
     container_name: ${APP_NAME}
     env_file: .env
     environment:
