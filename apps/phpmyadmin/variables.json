@@ -2,7 +2,7 @@
   "name": "phpmyadmin",
   "trademark": "phpMyAdmin",
   "fork_url": "https://github.com/phpmyadmin/docker",
-  "version": "5.2.1",
+  "version": "5.2.1.1",
   "requirements":{
     "cpu": "1",
     "memory": "2",
