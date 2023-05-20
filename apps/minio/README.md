@@ -1,6 +1,6 @@
 # Minio on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Minio vRELEASE.2022-12-12T19-27-27Z
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Minio vRELEASE.2023-05-18T00-05-36Z
 
 ## System Requirements
 
