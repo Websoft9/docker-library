@@ -1,11 +1,11 @@
 # image: https://hub.docker.com/_/odoo
 # docs: https://github.com/odoo/docker
 
-version: '3.8'
+version: "3.8"
 
 services:
   odoo:
-    image: websoft9dev/odoo:${APP_VERSION}
+    image: odoo:${APP_VERSION}
     container_name: ${APP_NAME}
     ports:
       - ${APP_HTTP_PORT}:8069
@@ -27,7 +27,7 @@ services:
     container_name: ${APP_NAME}-db
     restart: unless-stopped
     ports:
-     - ${APP_DB_POSTGRESQL_PORT}:5432
+      - ${APP_DB_POSTGRESQL_PORT}:5432
     volumes:
       - postgres:/var/lib/postgresql/data
     environment:
