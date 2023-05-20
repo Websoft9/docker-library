@@ -2,7 +2,7 @@
   "name": "discuzq",
   "trademark": "DiscuzQ",
   "fork_url": "https://discuz.com/docs",
-  "version": "3.0.0",
+  "version": "v3.0",
   "requirements":{
     "cpu": "1",
     "memory": "2",
