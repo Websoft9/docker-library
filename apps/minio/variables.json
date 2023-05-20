@@ -2,7 +2,7 @@
   "name": "minio",
   "trademark": "Minio",
   "fork_url": "",
-  "version": "RELEASE.2022-12-12T19-27-27Z",
+  "version": "RELEASE.2023-05-18T00-05-36Z",
   "requirements":{
     "cpu": "1",
     "memory": "2",
