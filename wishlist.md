@@ -6,8 +6,6 @@
 * [AI应用集 AITools](http://www.aitools100.com/)
 * [AI工具集导航](https://ai.nancheng.fun/)
 
-![lQDPJxeRb5GGgfrNBaTNBDiwWk_xim8kD-QETWbSjcAMAA_1080_1444](https://user-images.githubusercontent.com/62225175/236597764-221c9c3c-4946-44d4-acaa-16f1d63ae7c2.jpg)
-
 
 ## 虚拟人物
 
@@ -424,6 +422,8 @@
 
 ## iPaaS
 
+Gartner® Magic Quadrant™ for iPaaS
+
 * https://blog.hubspot.com/marketing/ipaas-vendors  22个主流的 iPaaS 产品
 * https://unito.io/features/
 * Zapier 
@@ -432,7 +432,21 @@
 * https://hevodata.com/integrations/pipeline/
 * https://github.com/n8n-io/n8n
 * https://www.activepieces.com/
-* 
+* Automate.io
+* Integromat
+* Power Automate
+* IFTTT
+* Kissflow
+* Tallyfy Workflow, Task & Process Automation Software
+* https://tray.io/
+* https://boomi.com/
+* https://www.workato.com/
+* https://www.snaplogic.com/
+* https://www.celigo.com/
+* https://www.softwareag.com/
+* https://www.talend.com/ Modern data management that drives real value
+* https://frends.com/ 
+* https://www.jitterbit.com/ Message from Jitterbit
 
 ## ui-integration 用户界面集成
 
