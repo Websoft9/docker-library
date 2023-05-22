@@ -334,6 +334,7 @@
 
 ## 网络与安全
 
+* https://wazuh.com/install/  含Web界面的安全管理软件
 * https://github.com/ehang-io/nps/  内网穿透服务器
 * Ceryx 是一个快得离谱的反向代理
 * goteleport 开源堡垒机
