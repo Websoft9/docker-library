@@ -290,6 +290,7 @@
 * https://gephi.org/  数据分析的 photoshop
 * https://github.com/plausible/analytics  网站统计软件（Google 统计的替代品）
 * ClickHouse 是一个开源 OLAP 数据库
+* https://www.bright.cn/  网络数据采集，一网打尽全球公开在线数据。（商业级爬虫）
 
 ## 日志汇总与分析
 
