@@ -4,7 +4,7 @@
   "url": "",
   "admin_url": "",
   "fork_url": "https://docs.n8n.io/hosting/installation/docker/",
-  "version": "1.2.5",
+  "version": "0.227.1",
   "requirements":{
     "cpu": "1",
     "memory": "1",
