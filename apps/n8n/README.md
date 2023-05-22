@@ -1,6 +1,6 @@
 # n8n on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for n8n v1.2.5
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for n8n v0.227.1
 
 ## System Requirements
 
