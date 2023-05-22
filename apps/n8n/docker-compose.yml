@@ -1,0 +1,24 @@
+# docs: https://docs.n8n.io/hosting/installation/docker
+
+
+version: '3.8'
+
+services:
+  n8n:
+    image: $APP_REPO:$APP_VERSION
+    container_name: $APP_NAME
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - '${APP_HTTP_PORT}:5678'
+    volumes:
+      - 'n8n:/home/node/.n8n'
+
+networks:
+  default:
+    name: $APP_NETWORK
+    external: true
+
+volumes:
+  n8n:
