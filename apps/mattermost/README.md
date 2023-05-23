@@ -4,7 +4,7 @@ This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://docs.mattermost.com/install/install-docker.html):
+The following are the minimal [recommended requirements](https://docs.mattermost.com/install/install-docker.html/):
 
 * **RAM**: 2 GB or more
 * **CPU**: 1 cores or higher
