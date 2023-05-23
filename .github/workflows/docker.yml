@@ -2,11 +2,11 @@ name: Docker Build And Push To Docker Hub
 
 on:
   push:
-    branches: [ main ]
-    paths: 
-      - 'apps/*/Dockerfile'
-      - 'apps/*/cmd.sh'
-      - 'apps/*/entrypoint.sh'
+    branches: [main]
+    paths:
+      - "apps/*/Dockerfile"
+      - "apps/*/cmd.sh"
+      - "apps/*/entrypoint.sh"
 
 jobs:
   build:
@@ -18,62 +18,61 @@ jobs:
       - uses: actions/checkout@v2
         name: Check out code
 
-      - name: set appname 
-        run: | 
-         changefile=$(curl \
-                        -H "Accept: application/vnd.github+json" \
-                        -H "Authorization: Bearer ${{github.token}}" \
-                        https://api.github.com/repos/Websoft9/docker-library/compare/${{github.event.before}}...${{github.event.after}} | jq '.files[].filename' | sed 's/\"//g')
-         first="true"
-         pass="false"
-         for name in ${changefile};do
-             echo ${name}
-             app=$(echo ${name} | cut -d "/" -f 2)
-             file=$(echo ${name} | cut -d "/" -f 3)
-             if [[ ${file} == "Dockerfile" ]] || [[ ${file} == "cmd.sh" ]] || [[ ${file} == "entrypoint.sh" ]];then
-                 if [ ${first} == "true" ];then
-                      echo "set appname";
-                      appname=${app};
-                      first="false";
-                    else
-                      echo "compare name";
-                      if [ ${appname} != ${app} ];then
-                           echo "stop update image on github";
-                           pass="true"
-                      fi
-                 fi 
-              else
-                 echo "affect nothing";
-             fi
-         done
-         echo ${appname}
-         echo "APP_NAME=${appname}" >> $GITHUB_ENV
-         echo "PASS_STEP=${pass}" >> $GITHUB_ENV
-         cp -r apps/${appname}/* .
-         
-    
-      - name: set tags 
+      - name: set appname
+        run: |
+          changefile=$(curl \
+                         -H "Accept: application/vnd.github+json" \
+                         -H "Authorization: Bearer ${{github.token}}" \
+                         https://api.github.com/repos/Websoft9/docker-library/compare/${{github.event.before}}...${{github.event.after}} | jq '.files[].filename' | sed 's/\"//g')
+          first="true"
+          pass="false"
+          for name in ${changefile};do
+              echo ${name}
+              app=$(echo ${name} | cut -d "/" -f 2)
+              file=$(echo ${name} | cut -d "/" -f 3)
+              if [[ ${file} == "Dockerfile" ]] || [[ ${file} == "cmd.sh" ]] || [[ ${file} == "entrypoint.sh" ]];then
+                  if [ ${first} == "true" ];then
+                       echo "set appname";
+                       appname=${app};
+                       first="false";
+                     else
+                       echo "compare name";
+                       if [ ${appname} != ${app} ];then
+                            echo "stop update image on github";
+                            pass="true"
+                       fi
+                  fi 
+               else
+                  echo "affect nothing";
+              fi
+          done
+          echo ${appname}
+          echo "APP_NAME=${appname}" >> $GITHUB_ENV
+          echo "PASS_STEP=${pass}" >> $GITHUB_ENV
+          cp -r apps/${appname}/* .
+
+      - name: set tags
         if: env.PASS_STEP=='false'
-        run: | 
-         tag=$(cat apps/${{env.APP_NAME}}/variables.json | jq '.version' | sed 's/\"//g')
-         echo ${tag}
-         if [ ${tag} != "null" ];then
-            echo "set tags"
-            arraytag1=$(echo ${tag} | cut -d "." -f 1)
-            arraytag2=$(echo ${tag} | cut -d "." -f 2)
-            arraytag3=$(echo ${tag} | cut -d "." -f 3)
-            echo "$arraytag1 $arraytag2"
-            if [ ${arraytag3}x != x ];then
-                TAGS=v${arraytag1},v${arraytag1}.${arraytag2},v${tag},latest
-            else
-                TAGS=v${arraytag1},v${tag},latest
-            fi
-         else
-            TAGS="latest"
-         fi
-         echo "123$TAGS"
-         echo "TAGS=${TAGS}" >> $GITHUB_ENV
-         
+        run: |
+          tag=$(cat apps/${{env.APP_NAME}}/variables.json | jq '.version' | sed 's/\"//g')
+          echo ${tag}
+          if [ ${tag} != "null" ];then
+             echo "set tags"
+             arraytag1=$(echo ${tag} | cut -d "." -f 1)
+             arraytag2=$(echo ${tag} | cut -d "." -f 2)
+             arraytag3=$(echo ${tag} | cut -d "." -f 3)
+             echo "$arraytag1 $arraytag2"
+             if [ ${arraytag3}x != x ];then
+                 TAGS=${arraytag1},${arraytag1}.${arraytag2},${tag},latest
+             else
+                 TAGS=${arraytag1},${tag},latest
+             fi
+          else
+             TAGS="latest"
+          fi
+          echo "123$TAGS"
+          echo "TAGS=${TAGS}" >> $GITHUB_ENV
+
       - uses: mr-smithers-excellent/docker-build-push@v5
         name: Build & push Docker image
         if: env.PASS_STEP=='false'
@@ -84,9 +83,9 @@ jobs:
           dockerfile: Dockerfile
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          
+
       - name: add readme file
-        run: | 
+        run: |
           cd apps/${{env.APP_NAME}}
           touch myread.md
           echo "This repository is the easiest ${{env.APP_NAME}} deployment on GitHub and DockerHub  "' 
@@ -95,11 +94,11 @@ jobs:
              cd docker-library/apps/${{env.APP_NAME}}  
              sudo docker network create websoft9 &&  sudo docker compose up -d  
           ```' > myread.md
-          
+
       - name: Docker Hub Description
         uses: peter-evans/dockerhub-description@v3
         with:
-         username: ${{ secrets.DOCKER_USERNAME }}
-         password: ${{ secrets.DOCKER_PASSWORD }}
-         repository: websoft9dev/${{env.APP_NAME}}
-         readme-filepath: apps/${{env.APP_NAME}}/myread.md
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: websoft9dev/${{env.APP_NAME}}
+          readme-filepath: apps/${{env.APP_NAME}}/myread.md
