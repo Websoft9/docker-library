@@ -2,7 +2,7 @@
   "name": "vtiger",
   "trademark": "Vtiger",
   "fork_url": "",
-  "version": "v7.4",
+  "version": "7.4.0",
   "requirements":{
     "cpu": "1",
     "memory": "1",
