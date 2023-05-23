@@ -1,6 +1,6 @@
 # Scratch on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Scratch v3.0
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Scratch vv3.0
 
 ## System Requirements
 
