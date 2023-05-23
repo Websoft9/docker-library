@@ -5,7 +5,8 @@ Vault 是hashicorp旗下的密码管理方案，支出多用户户、API和LDAP�
 ## 安装
 
 如果是手动安装，安装完成后有一个**启封（unseal）**的动作。  
-但如果是 Docker 安装，只需要通过日志查看启封后的结果。  
+但如果是 Docker 安装，只需要通过 Vault 容器日志查看启封后的结果 **Root Token**。
+
 
 ## GUI
 
