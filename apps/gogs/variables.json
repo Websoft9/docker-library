@@ -2,7 +2,7 @@
   "name": "gogs",
   "trademark": "Gogs",
   "fork_url": "https://github.com/gogs/gogs",
-  "version": "0.14.0",
+  "version": "0.13",
   "requirements":{
     "cpu": "1",
     "memory": "2",
