@@ -11,6 +11,8 @@ services:
       - IPC_LOCK
     ports:
       - '${APP_HTTP_PORT}:8200'
+    env_file:
+      - .env
     environment:
       - VAULT_LOCAL_CONFIG={}
     volumes:
