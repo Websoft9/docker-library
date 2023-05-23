@@ -2,7 +2,7 @@
   "name": "redisinsight",
   "trademark": "RedisInsight",
   "fork_url": "",
-  "version": "",
+  "version": "latest",
   "requirements":{
     "cpu": "1",
     "memory": "1",
