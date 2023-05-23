@@ -1,6 +1,6 @@
 # RedisInsight on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for RedisInsight v
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for RedisInsight vlatest
 
 ## System Requirements
 
