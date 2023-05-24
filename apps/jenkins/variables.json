@@ -2,7 +2,7 @@
   "name": "jenkins",
   "trademark": "Jenkins",
   "fork_url": "https://github.com/jenkinsci/docker.git",
-  "version": "2.387.2",
+  "version": "2.406",
   "requirements":{
     "cpu": "1",
     "memory": "2",
