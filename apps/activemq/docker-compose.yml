@@ -7,7 +7,7 @@ version: "3.8"
 
 services:
   activemq-classic:
-    image: alfresco/alfresco-activemq:$APP_CLASSIC_VERSION-jre17-centos7
+    image: alfresco/alfresco-activemq:$APP_CLASSIC_VERSION-jre11-centos7
     container_name: $APP_NAME
     restart: unless-stopped
     env_file: .env
@@ -17,9 +17,9 @@ services:
       - "$APP_OPENWIRE_PORT:61616" # OpenWire
       - "$APP_STOMP_PORT:61613" # STOMP
     environment:
+      - ACTIVEMQ_BROKER_NAME=localhost
       - ACTIVEMQ_ADMIN_LOGIN=$APP_USER
       - ACTIVEMQ_ADMIN_PASSWORD=$APP_PASSWORD
-
     volumes:
       - activemq_root:/opt/activemq
       - activemq_logs:/var/log/activemq
@@ -35,6 +35,7 @@ services:
       - "$APP_OPENWIRE_PORT:61616" # OpenWire
       - "$APP_STOMP_PORT:61613" # STOMP
     environment:
+      - EXTRA_ARGS=--http-host 0.0.0.0 --relax-jolokia
       - ARTEMIS_USER=$APP_USER
       - ARTEMIS_PASSWORD=$APP_PASSWORD
 
