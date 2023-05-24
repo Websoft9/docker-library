@@ -7,6 +7,6 @@
     "cpu": "1",
     "memory": "1",
     "disk":"1",
-    "url": "https://github.com/apache/activemq-artemis/tree/main/artemis-docker"
+    "url": "https://github.com/apache/activemq-artemis"
   }
 }
