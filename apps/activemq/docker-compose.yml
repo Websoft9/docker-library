@@ -3,11 +3,11 @@
 # artemis repo: https://github.com/ls1intum/activemq-broker-docker/pkgs/container/activemq-broker-docker-centos
 # Multiply version: docker-compose --profile classic up -d
 
-version: '3.8'
+version: "3.8"
 
 services:
   activemq-classic:
-    image: alfresco/alfresco-activemq:$APP_CLASSIC_VERSION
+    image: alfresco/alfresco-activemq:$APP_CLASSIC_VERSION-jre17-centos7
     container_name: $APP_NAME
     restart: unless-stopped
     env_file: .env
@@ -23,8 +23,6 @@ services:
     volumes:
       - activemq_root:/opt/activemq
       - activemq_logs:/var/log/activemq
-    profiles:
-      - classic
 
   activemq-artemis:
     image: ghcr.io/ls1intum/activemq-broker-docker-centos:$APP_ARTEMIS_VERSION
