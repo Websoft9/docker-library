@@ -2,7 +2,7 @@
   "name": "gitlab",
   "trademark": "Gitlab",
   "fork_url": "https://github.com/gitlabhq/omnibus-gitlab",
-  "version": "15.9.1",
+  "version": "15.11.5-ce.0",
   "requirements":{
     "cpu": "2",
     "memory": "8",
