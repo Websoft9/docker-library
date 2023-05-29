@@ -24,7 +24,7 @@ jobs:
           SOURCE_REPO: "https://github.com/${{ github.repository }}.git"
           # DESTINATION_REPO: 'git@gitee.com:mgithubTestOrg/giteeMirror.git'
           # DESTINATION_REPO: 'git@gitee.com:${{ github.repository }}.git'
-          DESTINATION_REPO: "git@gitee.com:websoft9_pub/${{ github.event.repository.name }}.git"
+          DESTINATION_REPO: "git@gitee.com:websoft9/${{ github.event.repository.name }}.git"
           BASE_REPO: "https://github.com/${{ github.repository }}"
         run: |
           git clone "$SOURCE_REPO" && cd `basename "$BASE_REPO"`
@@ -32,25 +32,4 @@ jobs:
           git config --global user.email "xxx@websoft9.com"
 
           git remote set-url --push origin "$DESTINATION_REPO"
-          git push origin main --force
-
-          git checkout dev
-          if [ -f "requirements.yml" ];then
-            sed -i 's/github/gitee/g' requirements.yml
-            git add requirements.yml
-            git commit -m "Make requirements.yml compatible with gitee"
-          fi
-          git push origin dev --force
-
-          git checkout main
-
-          git fetch -p origin
-          git for-each-ref --format 'delete %(refname)' refs/pull | git update-ref --stdin
-          git push origin main --force
-
-          if [ -f "requirements.yml" ];then
-            sed -i 's/github/gitee/g' requirements.yml
-            git add requirements.yml
-            git commit -m "Make requirements.yml compatible with gitee"
-          fi
           git push origin main --force
