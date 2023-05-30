@@ -4,109 +4,25 @@
 
 version: '3.8'
 services:
-  onlyoffice-mysql-server:
-    container_name: ${APP_CONTAINER_NAME}-mysql
-    image: mysql:${APP_DB_MYSQL_VERSION}
-    environment:
-     - MYSQL_ROOT_PASSWORD=${APP_DB_MYSQL_PASSWORD}
-    stdin_open: true
-    user: root
-    tty: true
+  caddy:
+    image: caddy:$APP_VERSION
+    container_name: $APP_NAME
+    env_file:
+      - .env
     restart: unless-stopped
-    volumes:
-     - ${VOLUMES_PATH_PREFIX}/config/mysql/conf.d:/etc/mysql/conf.d
-     - ${VOLUMES_PATH_PREFIX}/config/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-     - ${VOLUMES_PATH_PREFIX}/mysql_data:/var/lib/mysql
-     
-  onlyoffice-community-server:
-    container_name: ${APP_CONTAINER_NAME}
-    image: onlyoffice/communityserver:11.0.0.1458
-    depends_on:
-     - onlyoffice-mysql-server
-     - onlyoffice-document-server
-    environment:
-     - ONLYOFFICE_CORE_MACHINEKEY=core_secret
-     - CONTROL_PANEL_PORT_80_TCP=80
-     - CONTROL_PANEL_PORT_80_TCP_ADDR=onlyoffice-control-panel
-     - DOCUMENT_SERVER_PORT_80_TCP_ADDR=onlyoffice-document-server
-     - DOCUMENT_SERVER_JWT_ENABLED=true
-     - DOCUMENT_SERVER_JWT_SECRET=jwt_secret
-     - DOCUMENT_SERVER_JWT_HEADER=AuthorizationJwt
-     - MYSQL_SERVER_ROOT_PASSWORD=123456
-     - MYSQL_SERVER_DB_NAME=onlyoffice
-     - MYSQL_SERVER_HOST=onlyoffice-mysql-server
-     - MYSQL_SERVER_USER=onlyoffice
-     - MYSQL_SERVER_PASS=123456
     ports:
-     - '${APP_HTTP_PORT}:80'
-     - '443'
-     - '5222:5222'
-    stdin_open: true
-    tty: true
-    restart: unless-stopped
-    privileged: true
+      - "$APP_HTTP_PORT:80"
+      - "$APP_HTTPS_PORT:443"
     volumes:
-     - ${VOLUMES_PATH_PREFIX}/community_data:/var/www/onlyoffice/Data
-     - ${VOLUMES_PATH_PREFIX}/community_log:/var/log/onlyoffice
-     - ${VOLUMES_PATH_PREFIX}/community_letsencrypt:/etc/letsencrypt
-     - ${VOLUMES_PATH_PREFIX}/document_data:/var/www/onlyoffice/DocumentServerData
-     - /sys/fs/cgroup:/sys/fs/cgroup:ro
-     - ${VOLUMES_PATH_PREFIX}/certs:/var/www/onlyoffice/Data/certs
-     
-  onlyoffice-document-server:
-    container_name:  ${APP_CONTAINER_NAME}-document-server
-    image: onlyoffice/documentserver:6.0.2
-    stdin_open: true
-    tty: true
-    restart: unless-stopped
-    environment:
-     - JWT_ENABLED=true
-     - JWT_SECRET=jwt_secret
-     - JWT_HEADER=AuthorizationJwt
-    ports:
-     - '9002:80'
-    expose:
-      - '80'
-      - '443'
-    volumes:
-       - ${VOLUMES_PATH_PREFIX}/document_data:/var/www/onlyoffice/Data
-       - ${VOLUMES_PATH_PREFIX}/document_log:/var/log/onlyoffice
-       - ${VOLUMES_PATH_PREFIX}/document_fonts:/usr/share/fonts/truetype/custom
-       - .document_forgotten:/var/lib/onlyoffice/documentserver/App_Data/cache/files/forgotten
-
-  onlyoffice-control-panel:
-    container_name:  ${APP_CONTAINER_NAME}-control-panel
-    depends_on:
-     - onlyoffice-document-server
-     - onlyoffice-community-server
-    image: onlyoffice/controlpanel:2.9.0.351
-    environment:
-     - ONLYOFFICE_CORE_MACHINEKEY=core_secret
-    expose:
-      - '80'
-      - '443'
-    restart: unless-stopped
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ${VOLUMES_PATH_PREFIX}/controlpanel_data:/var/www/onlyoffice/Data
-      - ${VOLUMES_PATH_PREFIX}/controlpanel_log:/var/log/onlyoffice
-    stdin_open: true
-    tty: true
+      - ./src/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
     
 networks:
   default:
-      name: ${APP_NETWORK}
+    name: ${APP_NETWORK}
+    external: true
     
 volumes:
-  document_data:
-    driver: local
-  document_log:
-    driver: local
-  document_forgotten:
-  community_mysql:
-  community_data:
-  community_log:
-  community_letsencrypt:
-  controlpanel_data:
-  controlpanel_log:
-  mysql_data:
+  caddy_data:
+  caddy_config:
