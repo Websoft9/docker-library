@@ -6,7 +6,7 @@ This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.
 
 The following are the minimal [recommended requirements](https://docs.clamav.net/manual/Installing/Docker.html):
 
-* **RAM**: 2 GB or more
+* **RAM**: 1 GB or more
 * **CPU**: 1 cores or higher
 * **Disk**: at least 1 GB of free space
 * **bandwidth**: more fluent experience over 100M  
