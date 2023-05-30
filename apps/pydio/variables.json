@@ -4,9 +4,9 @@
   "fork_url": "https://hub.docker.com/r/pydio/cells",
   "version": "latest",
   "requirements":{
-    "cpu": "2",
-    "memory": "4",
-    "disk":"1",
+    "cpu": "1",
+    "memory": "2",
+    "disk":"10",
     "url": "https://hub.docker.com/r/pydio/cells"
   }
 }
