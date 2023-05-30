@@ -559,6 +559,7 @@ cal、PhotoPrism、supabase、OpenMemex、Odoo、Listmonk、twake、Chaskiq、Gr
 * Sidekiq 消息队列
 * https://www.pulumi.com/  多云开发包
 * Apache Pulsar 消息队列
+* https://redpanda.com/  兼容kafka的MQ，同时提供 web gui
 
 ## 邮件服务器
 
