@@ -4,23 +4,23 @@
 version: '3.8'
 
 services:
-  cells:
+  pydio:
     image: pydio/cells:$APP_VERSION
     container_name: $APP_NAME
     ports:
       - $APP_HTTP_PORT:8080
       - $APP_GRPC_PORT:33060
     volumes:
-      - cells:/var/cells
+      - pydio:/var/cells
       - ./src/install-conf.yml:/pydio/config/install.yml:ro
     env_file:
       - .env
-    restart: always
+    restart: unless-stopped
 
   mysql:
     image: mysql:$APP_DB_MYSQL_VERSION
     container_name: $APP_NAME-db
-    restart: always
+    restart: unless-stopped
     command: [mysqld, --character-set-server=utf8mb4, --collation-server=utf8mb4_unicode_ci]
     ports:
      - $APP_DB_MYSQL_PORT:3306
@@ -38,7 +38,7 @@ networks:
     external: true
 
 volumes:
-  cells:
+  pydio:
     driver: local
   mysql:
     driver: local

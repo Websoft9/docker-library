@@ -299,6 +299,7 @@
 * databuff.com
 * Telegraf、Influxdb、Grafana三者一起共同组成性能监控的三驾马车；数据采集、数据存储、数据展示。
 * https://plausible.io/  网站分析
+* Canal 阿里的开源 MySQL binlog 日志备份与回复方案
 
 ## Serverless
 
