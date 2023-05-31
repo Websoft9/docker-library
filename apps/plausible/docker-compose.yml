@@ -7,7 +7,7 @@ version: '3.8'
 services:
 
   plausible:
-    image: $APP_REPO:v$APP_VERSION
+    image: $APP_REPO:$APP_VERSION
     container_name: $APP_NAME
     restart: unless-stopped
     command: sh -c "sleep 10 && /entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh run"
