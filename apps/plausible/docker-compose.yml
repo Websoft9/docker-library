@@ -18,7 +18,7 @@ services:
     ports:
       - $APP_HTTP_PORT:8000
     env_file:
-      - plausible-conf.env
+      - .env
 
   mail:
     image: bytemark/smtp
