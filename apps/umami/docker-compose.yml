@@ -1,0 +1,40 @@
+# image: https://github.com/plausible/hosting
+# docs: https://umami.is/docs/install
+# compose: https://github.com/umami-software/umami/blob/master/docker-compose.yml
+
+
+version: '3.8'
+services:
+  umami:
+    image: $APP_REPO:$APP_VERSION
+    container_name: $APP_NAME
+    env_file:
+      - .env
+    ports:
+      - $APP_HTTP_PORT:3000
+    environment:
+      DATABASE_URL: postgresql://umami:umami@db:5432/umami
+      DATABASE_TYPE: postgresql
+      APP_SECRET: replace-me-with-a-random-string
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: umami
+      POSTGRES_USER: umami
+      POSTGRES_PASSWORD: umami
+    volumes:
+      - ./src/schema.postgresql.sql:/docker-entrypoint-initdb.d/schema.postgresql.sql:ro
+      - postgresql:/var/lib/postgresql/data
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  postgresql:
+    driver: local
