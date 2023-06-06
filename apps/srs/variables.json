@@ -2,7 +2,7 @@
   "name": "srs",
   "trademark": "SRS",
   "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
-  "version": "",
+  "version": "6.0.45",
   "requirements":{
     "cpu": "2",
     "memory": "4",
