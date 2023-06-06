@@ -1,0 +1,14 @@
+{
+  "name": "discourse",
+  "trademark": "Discourse",
+  "url": "-",
+  "admin_url": "-",
+  "fork_url": "https://github.com/discourse/discourse_docker",
+  "version": "latest",
+  "requirements":{
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1",
+    "url": "https://github.com/discourse/discourse_docker"
+  }
+}

@@ -1,0 +1,16 @@
+# image: https://hub.docker.com/r/bitnami/discourse
+# docs: https://github.com/discourse/discourse_docker
+
+
+version: '3.8'
+
+services:
+  discource:
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  discourse:

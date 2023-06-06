@@ -1,0 +1,28 @@
+# docs: https://www.arangodb.com/docs/stable/install-with-docker.html
+
+
+version: '3.8'
+
+services:
+  arangodb:
+    image: $APP_REPO:$APP_VERSION
+    container_name: $APP_NAME
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - '${APP_HTTP_PORT}:8529'
+    environment:
+      - ARANGO_ROOT_PASSWORD=$APP_PASSWORD
+    volumes:
+      - 'db:/var/lib/arangodb3'
+      - 'apps:/var/lib/arangodb3-apps'
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  db:
+  apps:
