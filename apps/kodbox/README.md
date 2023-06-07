@@ -1,10 +1,10 @@
-# Kong on Docker  
+# Kodbox on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Kong v
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Kodbox vv1.3902
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://konghq.com/install/#kong-community):
+The following are the minimal [recommended requirements](http://kodcloud.com):
 
 * **RAM**: 2 GB or more
 * **CPU**: 1 cores or higher
@@ -13,10 +13,10 @@ The following are the minimal [recommended requirements](https://konghq.com/inst
 
 ## Install
 
-You can install this Kong by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this Kodbox by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use Kong with **Websoft9 Business Support** free, you can [subscribe Kong](https://www.websoft9.com/apps) on Cloud platform
+If you want use Kodbox with **Websoft9 Business Support** free, you can [subscribe Kodbox](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[Kong Administrator Guide](https://support.websoft9.com/docs/kong) powered by Websoft9
+[Kodbox Administrator Guide](https://support.websoft9.com/docs/kodbox) powered by Websoft9
