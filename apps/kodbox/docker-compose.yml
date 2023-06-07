@@ -1,0 +1,51 @@
+# image: https://hub.docker.com/r/kodcloud/kodbox
+
+version: "3.8"
+
+services:
+  mariadb:
+    image: mariadb:$APP_DB_MARIADB_VERSION
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    container_name: $APP_NAME-db
+    environment:
+      - "TZ=Asia/Shanghai"
+      - "MYSQL_DATABASE=$APP_DB_MARIADB_DATABASE"
+      - "MYSQL_USER=$APP_DB_MARIADB_USER"
+      - "MYSQL_PASSWORD=$APP_DB_MARIADB_PASSWORD"
+      - "MYSQL_ROOT_PASSWORD=$APP_DB_MARIADB_PASSWORD"
+    restart: always
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  kodbox:
+    image: kodcloud/kodbox:$APP_VERSION
+    container_name: $APP_NAME
+    ports:
+      - $APP_HTTP_PORT:80
+    volumes:
+      - kodbox:/var/www/html
+    environment:
+      - "MYSQL_SERVER=mariadb"
+      - "MYSQL_DATABASE=$APP_DB_MARIADB_DATABASE"
+      - "MYSQL_USER=$APP_DB_MARIADB_USER"
+      - "MYSQL_PASSWORD=$APP_DB_MARIADB_PASSWORD"
+      - "SESSION_HOST=redis"
+      - "PUID=1050"
+      - "PGID=1051"
+    env_file: .env
+    restart: always
+
+  redis:
+    image: redis:alpine
+    environment:
+      - "TZ=Asia/Shanghai"
+    restart: always
+
+volumes:
+  kodbox:
+  mysql_data:
+
+networks:
+  default:
+    name: $APP_NETWORK
+    external: true

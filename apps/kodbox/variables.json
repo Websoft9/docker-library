@@ -1,0 +1,12 @@
+{
+  "name": "kodbox",
+  "trademark": "Kodbox",
+  "fork_url": "https://github.com/KodCloud-dev/docker/blob/master/compose/docker-compose.yml",
+  "version": "v1.3902",
+  "requirements":{
+    "cpu": "1",
+    "memory": "2",
+    "disk":"1",
+    "url": "http://kodcloud.com"
+  }
+}
