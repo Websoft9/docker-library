@@ -1,0 +1,21 @@
+# docker-compose file from: https://setup.mailu.io/2.0
+# docs: https://mailu.io/2.0/compose/setup.html
+
+
+version: '3.8'
+
+services:
+  suitecrm:
+    image: $APP_REPO:${APP_VERSION}
+    container_name: ${APP_NAME}
+    restart: unless-stopped
+    env_file:
+      - .env
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  data:
