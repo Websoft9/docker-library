@@ -1,8 +1,8 @@
 {
   "name": "akeneo",
   "trademark": "Akeneo",
-  "fork_url": "https://github.com/akeneo/pim-community-dev.git",
-  "version": "6.0.53",
+  "fork_url": "https://github.com/akeneo/pim-community-dev",
+  "version": "v6.0.53",
   "requirements":{
     "cpu": "2",
     "memory": "4",
