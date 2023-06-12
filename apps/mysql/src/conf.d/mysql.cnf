@@ -1,4 +1,4 @@
-# This file need 0644 permission, otherwise mysql docker can't read for the reason Permission denied
+# This file and its parent directory need read permission for other user, e.g 0644, otherwise mysql docker can't read for the reason Permission denied
 
 [mysqld]
 
