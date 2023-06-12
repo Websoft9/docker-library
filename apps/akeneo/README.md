@@ -1,6 +1,6 @@
 # Akeneo on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Akeneo v6.0.53
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Akeneo vv6.0.53
 
 ## System Requirements
 
