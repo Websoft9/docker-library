@@ -1,3 +1,5 @@
+# This file need 0644 permission, otherwise mysql docker can't read for the reason Permission denied
+
 [mysqld]
 
 #log_error=/var/log/mysql/error.log
