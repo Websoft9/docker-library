@@ -1,12 +1,14 @@
 {
   "name": "gitlab",
   "trademark": "Gitlab",
+  "url": "-",
+  "release": false,
   "fork_url": "https://github.com/gitlabhq/omnibus-gitlab",
   "version": "15.11.5-ce.0",
-  "requirements":{
+  "requirements": {
     "cpu": "2",
     "memory": "8",
-    "disk":"1",
+    "disk": "1",
     "url": "https://github.com/gitlab/docker#recommended-system-requirements"
   }
 }

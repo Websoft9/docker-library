@@ -1,12 +1,14 @@
 {
   "name": "rethinkdb",
   "trademark": "RethinkDB",
+  "url": "-",
+  "release": false,
   "fork_url": "https://github.com/rethinkdb/rethinkdb-dockerfiles",
   "version": "2.4",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk":"1",
+    "disk": "1",
     "url": "https://www.rethinkdb.org/docs/user_guide/en/install-requirements.html"
   }
 }

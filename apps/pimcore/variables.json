@@ -1,12 +1,14 @@
 {
   "name": "pimcore",
   "trademark": "Pimcore ",
+  "url": "",
+  "release": false,
   "fork_url": "https://github.com/pimcore/docker",
   "version": "",
-  "requirements":{
+  "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk":"1",
+    "disk": "1",
     "url": "https://github.com/pimcore/docker#recommended-system-requirements"
   }
 }

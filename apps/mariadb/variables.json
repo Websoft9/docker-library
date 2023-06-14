@@ -1,12 +1,14 @@
 {
   "name": "mariadb",
   "trademark": "MariaDB",
+  "url": "-",
+  "release": false,
   "fork_url": "https://github.com/MariaDB/mariadb-docker",
   "version": "10.11,10.10,10.9,10.8,10.7,10.6,10.5,10.4,10.3",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk":"1",
+    "disk": "1",
     "url": "https://mariadb.org/documentation"
   }
 }

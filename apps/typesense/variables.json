@@ -1,12 +1,14 @@
 {
   "name": "typesense",
   "trademark": "Typesense",
+  "url": "-",
+  "release": false,
   "fork_url": "https://github.com/typesense/typesense",
   "version": "0.24.1",
-  "requirements":{
+  "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk":"1",
+    "disk": "1",
     "url": "https://typesense.org/docs/guide/install-typesense.html"
   }
 }

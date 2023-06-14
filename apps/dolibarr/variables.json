@@ -1,12 +1,14 @@
 {
   "name": "dolibarr",
   "trademark": "Dolibarr",
+  "url": "-",
+  "release": false,
   "fork_url": "https://github.com/tuxgasy/docker-dolibarr",
   "version": "16.0.3",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk":"1",
+    "disk": "1",
     "url": "https://github.com/tuxgasy/docker-dolibarr"
   }
 }

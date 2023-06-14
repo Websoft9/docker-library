@@ -1,12 +1,14 @@
 {
   "name": "grafana",
   "trademark": "Grafana",
+  "url": "-",
+  "release": false,
   "fork_url": "",
   "version": "9.5.1",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk":"1",
+    "disk": "1",
     "url": "https://grafana.com/docs/grafana/latest/installation/requirements/#grafana-requirements"
   }
 }

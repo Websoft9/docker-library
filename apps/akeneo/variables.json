@@ -1,12 +1,14 @@
 {
   "name": "akeneo",
   "trademark": "Akeneo",
+  "url": "-",
+  "release": false,
   "fork_url": "https://github.com/akeneo/pim-community-dev",
   "version": "v6.0.53",
-  "requirements":{
+  "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk":"1",
+    "disk": "1",
     "url": "https://github.com/akeneo/docker#recommended-system-requirements"
   }
 }

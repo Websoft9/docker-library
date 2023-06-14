@@ -2,10 +2,10 @@
   "name": "n8n",
   "trademark": "n8n",
   "url": "",
-  "admin_url": "",
+  "release": false,
   "fork_url": "https://docs.n8n.io/hosting/installation/docker/",
   "version": "0.227.1",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "1",

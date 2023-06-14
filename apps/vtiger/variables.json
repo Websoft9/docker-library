@@ -1,12 +1,14 @@
 {
   "name": "vtiger",
   "trademark": "Vtiger",
+  "url": "-",
+  "release": false,
   "fork_url": "",
   "version": "7.4.0",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk":"1",
+    "disk": "1",
     "url": "https://community.vtiger.com/help/vtigercrm/administrators/installation.html"
   }
 }

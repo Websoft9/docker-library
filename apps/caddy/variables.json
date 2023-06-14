@@ -1,12 +1,14 @@
 {
   "name": "caddy",
   "trademark": "Caddy",
+  "url": "-",
+  "release": false,
   "fork_url": "https://github.com/caddyserver/caddy-docker",
   "version": "",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk":"1",
+    "disk": "1",
     "url": "https://github.com/caddy/docker#recommended-system-requirements"
   }
 }

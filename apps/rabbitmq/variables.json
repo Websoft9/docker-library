@@ -1,12 +1,14 @@
 {
   "name": "rabbitmq",
   "trademark": "RabbitQM",
+  "url": "-",
+  "release": false,
   "fork_url": "https://github.com/docker-library/rabbitmq",
   "version": "3.11",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk":"1",
+    "disk": "1",
     "url": "https://github.com/rabbitmq/docker#recommended-system-requirements"
   }
 }

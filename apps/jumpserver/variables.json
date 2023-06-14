@@ -1,12 +1,14 @@
 {
   "name": "jumpserver",
   "trademark": "JumpServer",
+  "url": "-",
+  "release": false,
   "fork_url": "https://github.com/jumpserver/installer",
   "version": "",
-  "requirements":{
+  "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk":"1",
+    "disk": "1",
     "url": "https://github.com/jumpserver/docker#recommended-system-requirements"
   }
 }

@@ -1,12 +1,14 @@
 {
   "name": "postgresql",
   "trademark": "PostgreSQL",
+  "url": "-",
+  "release": false,
   "fork_url": "https://github.com/docker-library/postgres",
   "version": "15,14,13,12,11,9.6",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk":"1",
+    "disk": "1",
     "url": "https://github.com/postgresql/docker#recommended-system-requirements"
   }
 }

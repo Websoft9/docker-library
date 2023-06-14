@@ -1,12 +1,14 @@
 {
   "name": "couchdb",
   "trademark": "CouchDB",
+  "url": "-",
+  "release": false,
   "fork_url": "https://github.com/apache/couchdb-docker",
   "version": "3.3.1",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk":"1",
+    "disk": "1",
     "url": "https://docs.couchdb.org/en/latest/install/index.html"
   }
 }

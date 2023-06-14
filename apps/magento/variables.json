@@ -1,12 +1,14 @@
 {
   "name": "magento",
   "trademark": "Adobe Commerce (Magento)",
+  "url": "-",
+  "release": false,
   "fork_url": "https://hub.docker.com/r/bitnami/magento",
   "version": "",
-  "requirements":{
+  "requirements": {
     "cpu": "2",
     "memory": "8",
-    "disk":"1",
+    "disk": "1",
     "url": "https://devdocs.magento.com/cloud/docker/docker-development.html#prerequisites"
   }
 }

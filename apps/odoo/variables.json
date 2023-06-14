@@ -1,12 +1,14 @@
 {
   "name": "odoo",
   "trademark": "Odoo",
+  "url": "",
+  "release": false,
   "fork_url": "https://github.com/odoo/docker",
   "version": "16.0,15.0,14.0",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk":"1",
+    "disk": "1",
     "url": "https://github.com/odoo/docker"
   }
 }

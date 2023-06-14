@@ -1,12 +1,14 @@
 {
   "name": "nocodb",
   "trademark": "Nocodb",
+  "url": "",
+  "release": false,
   "fork_url": "https://github.com/Websoft9/docker-template",
   "version": "",
-  "requirements":{
+  "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk":"1",
+    "disk": "1",
     "url": "https://github.com/nocodb"
   }
 }

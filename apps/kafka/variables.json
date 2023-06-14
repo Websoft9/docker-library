@@ -1,12 +1,14 @@
 {
   "name": "kafka",
   "trademark": "Kafka",
+  "url": "-",
+  "release": false,
   "fork_url": "https://github.com/bitnami/bitnami-docker-kafka",
   "version": "",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk":"1",
+    "disk": "1",
     "url": "http://kafka.apache.org/quickstart"
   }
 }

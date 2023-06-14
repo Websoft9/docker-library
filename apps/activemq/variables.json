@@ -1,12 +1,14 @@
 {
   "name": "activemq",
   "trademark": "ActiveMQ",
+  "url": "-",
+  "release": false,
   "fork_url": "https://github.com/apache/activemq-artemis/tree/main/artemis-docker",
   "version": "5.16.4",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk":"1",
+    "disk": "1",
     "url": "https://github.com/apache/activemq-artemis"
   }
 }

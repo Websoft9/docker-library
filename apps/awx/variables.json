@@ -1,12 +1,14 @@
 {
   "name": "awx",
   "trademark": "AWX",
+  "url": "-",
+  "release": false,
   "fork_url": "https://github.com/ansible/awx",
   "version": "",
-  "requirements":{
+  "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk":"1",
+    "disk": "1",
     "url": "https://github.com/awx/docker#recommended-system-requirements"
   }
 }

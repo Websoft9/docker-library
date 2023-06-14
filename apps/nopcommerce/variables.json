@@ -1,12 +1,14 @@
 {
   "name": "nopcommerce",
   "trademark": "nopCommerce",
+  "url": "",
+  "release": false,
   "fork_url": "https://github.com/nopSolutions/nopCommerce",
   "version": "",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk":"1",
+    "disk": "1",
     "url": "https://docs.nopcommerce.com/en/installation-and-upgrading/technology-and-system-requirements.html"
   }
 }

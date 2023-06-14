@@ -2,10 +2,10 @@
   "name": "kasmweb",
   "trademark": "Kasm Workspaces",
   "url": "-",
-  "admin_url": "-",  
+  "release": false,
   "fork_url": "https://hub.docker.com/r/kasmweb",
   "version": "1.13.0",
-  "requirements":{
+  "requirements": {
     "cpu": "2",
     "memory": "4",
     "disk": "5",

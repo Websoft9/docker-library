@@ -2,10 +2,10 @@
   "name": "plausible",
   "trademark": "Plausible",
   "url": "-",
-  "admin_url": "-",
+  "release": false,
   "fork_url": "https://github.com/plausible/hosting",
   "version": "latest",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "1",

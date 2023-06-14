@@ -1,12 +1,14 @@
 {
   "name": "mingdao",
   "trademark": "Mingdao",
+  "url": "-",
+  "release": false,
   "fork_url": "",
   "version": "3.9.1",
-  "requirements":{
+  "requirements": {
     "cpu": "8",
     "memory": "20",
-    "disk":"1",
+    "disk": "1",
     "url": "https://github.com/mingdao/docker#recommended-system-requirements"
   }
 }

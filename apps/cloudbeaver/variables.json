@@ -1,12 +1,14 @@
 {
   "name": "cloudbeaver",
   "trademark": "CloudBeaver",
+  "url": "-",
+  "release": false,
   "fork_url": "https://github.com/dbeaver/cloudbeaver",
   "version": "23.0.2",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk":"1",
+    "disk": "1",
     "url": "https://github.com/dbeaver/cloudbeaver/wiki"
   }
 }

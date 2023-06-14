@@ -1,12 +1,14 @@
 {
   "name": "pgadmin",
   "trademark": "pgAdmin",
+  "url": "",
+  "release": false,
   "fork_url": "https://github.com/postgres/pgadmin4",
   "version": "",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk":"1",
+    "disk": "1",
     "url": "https://github.com/postgres/pgadmin4/blob/master/requirements.txt"
   }
 }

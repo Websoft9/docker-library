@@ -1,12 +1,14 @@
 {
   "name": "v2ray",
   "trademark": "V2Ray",
+  "url": "-",
+  "release": false,
   "fork_url": "",
   "version": "5.4.1",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk":"1",
+    "disk": "1",
     "url": "https://community.vtiger.com/help/vtigercrm/administrators/installation.html"
   }
 }

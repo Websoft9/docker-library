@@ -1,12 +1,14 @@
 {
   "name": "moodle",
   "trademark": "Moodle",
+  "url": "-",
+  "release": false,
   "fork_url": "https://github.com/moodlehq/moodle-docker",
   "version": "4.2",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk":"1",
+    "disk": "1",
     "url": "https://github.com/moodle/docker#recommended-system-requirements"
   }
 }

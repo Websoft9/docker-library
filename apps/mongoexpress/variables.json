@@ -1,12 +1,14 @@
 {
   "name": "mongoexpress",
   "trademark": "mongo-express",
+  "url": "-",
+  "release": false,
   "fork_url": "https://github.com/mongo-express/mongo-express.git",
   "version": "",
-  "requirements":{
+  "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk":"1",
+    "disk": "1",
     "url": "https://github.com/mongoexpress/docker#recommended-system-requirements"
   }
 }

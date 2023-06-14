@@ -1,12 +1,14 @@
 {
   "name": "opencart",
   "trademark": "OpenCart",
+  "url": "",
+  "release": false,
   "fork_url": "",
   "version": "4.0.1.1",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk":"1",
+    "disk": "1",
     "url": "https://www.opencart.org/docs/user_guide/en/install-requirements.html"
   }
 }

@@ -1,12 +1,14 @@
 {
   "name": "tensorflow",
   "trademark": "Tensorflow",
+  "url": "-",
+  "release": false,
   "fork_url": "https://github.com/tensorflow/tensorflow",
   "version": "2.11.0",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk":"1",
+    "disk": "1",
     "url": "https://github.com/onlyoffice/docker#recommended-system-requirements"
   }
 }

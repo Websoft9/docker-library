@@ -1,12 +1,14 @@
 {
   "name": "discuz",
   "trademark": "Discuz",
+  "url": "-",
+  "release": false,
   "fork_url": "",
   "version": "v3.4.0",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk":"1",
+    "disk": "1",
     "url": "https://github.com/joomla-docker/docker-joomla"
   }
 }

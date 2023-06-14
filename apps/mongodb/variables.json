@@ -1,12 +1,14 @@
 {
   "name": "mongodb",
   "trademark": "MongoDB",
+  "url": "-",
+  "release": false,
   "fork_url": "https://github.com/docker-library/mongo",
   "version": "6.0,5.0,4.4,3.7",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk":"1",
+    "disk": "1",
     "url": "https://github.com/mongodb/docker#recommended-system-requirements"
   }
 }

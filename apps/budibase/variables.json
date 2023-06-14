@@ -1,12 +1,14 @@
 {
   "name": "budibase",
   "trademark": "Budibase",
+  "url": "-",
+  "release": false,
   "fork_url": "https://github.com/Budibase/budibase/tree/develop/hosting",
   "version": "",
-  "requirements":{
+  "requirements": {
     "cpu": "2",
     "memory": "6",
-    "disk":"1",
+    "disk": "1",
     "url": "https://github.com/Budibase/budibase/tree/develop/hosting"
   }
 }

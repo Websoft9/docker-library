@@ -1,12 +1,14 @@
 {
   "name": "typo3",
   "trademark": "Typo3",
+  "url": "-",
+  "release": false,
   "fork_url": "",
   "version": "",
-  "requirements":{
+  "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk":"1",
+    "disk": "1",
     "url": "https://docs.typo3.org/m/typo3/tutorial-getting-started/11.5/en-us/Installation/Index.html"
   }
 }

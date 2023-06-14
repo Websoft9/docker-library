@@ -2,10 +2,10 @@
   "name": "discourse",
   "trademark": "Discourse",
   "url": "-",
-  "admin_url": "-",
+  "release": false,
   "fork_url": "https://github.com/discourse/discourse_docker",
   "version": "latest",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "1",

@@ -1,12 +1,14 @@
 {
   "name": "nextcloud",
   "trademark": "Nextcloud",
+  "url": "",
+  "release": false,
   "fork_url": "https://github.com/nextcloud/docker",
   "version": "26.0.1",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk":"1",
+    "disk": "1",
     "url": "https://github.com/nextcloud/docker"
   }
 }

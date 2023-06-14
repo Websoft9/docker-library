@@ -1,12 +1,14 @@
 {
   "name": "portainer",
   "trademark": "Portainer",
+  "url": "-",
+  "release": false,
   "fork_url": "https://github.com/portainer/portainer-compose.git",
   "version": "2.18.3",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk":"1",
+    "disk": "1",
     "url": "https://documentation.portainer.io/v2.0-be/deploy/requirements/"
   }
 }

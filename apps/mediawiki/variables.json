@@ -1,12 +1,14 @@
 {
   "name": "mediawiki",
   "trademark": "MediaWiki",
+  "url": "-",
+  "release": false,
   "fork_url": "https://registry.hub.docker.com/r/bitnami/mediawiki",
   "version": "1.39.1",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk":"1",
+    "disk": "1",
     "url": "https://registry.hub.docker.com/r/bitnami/mediawiki"
   }
 }

@@ -1,12 +1,14 @@
 {
   "name": "collabora",
   "trademark": "Collabora",
+  "url": "-",
+  "release": false,
   "fork_url": "  https://github.com/CollaboraOnline/online",
   "version": "",
-  "requirements":{
+  "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk":"1",
+    "disk": "1",
     "url": "https://sdk.collaboraonline.com/docs/installation/index.html"
   }
 }

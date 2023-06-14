@@ -1,12 +1,14 @@
 {
   "name": "opensearch",
   "trademark": "OpenSearch",
+  "url": "",
+  "release": false,
   "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
   "version": "3.1.1",
-  "requirements":{
+  "requirements": {
     "cpu": "2",
     "memory": "8",
-    "disk":"1",
+    "disk": "1",
     "url": "https://github.com/onlyoffice/docker#recommended-system-requirements"
   }
 }
