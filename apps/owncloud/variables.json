@@ -1,7 +1,7 @@
 {
   "name": "owncloud",
   "trademark": "Owncloud",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/owncloud-docker/server",
   "version": "10.11",
   "requirements": {
