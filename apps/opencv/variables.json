@@ -1,7 +1,6 @@
 {
   "name": "template",
   "trademark": "ONLYOFFICE",
-  "url": "",
   "release": false,
   "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
   "version": "",

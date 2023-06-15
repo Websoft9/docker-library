@@ -1,7 +1,6 @@
 {
   "name": "wordpress",
   "trademark": "WordPress",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/docker-library/wordpress",
   "version": "6.2",

@@ -1,7 +1,6 @@
 {
   "name": "onlyoffice",
   "trademark": "ONLYOFFICE",
-  "url": "",
   "release": false,
   "fork_url": "https://github.com/ONLYOFFICE/Docker-CommunityServer.git",
   "version": "12.1.0.1760",

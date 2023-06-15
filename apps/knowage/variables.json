@@ -1,7 +1,6 @@
 {
   "name": "knowage",
   "trademark": "Knowage",
-  "url": "-",
   "release": false,
   "fork_url": "https://knowage-suite.readthedocs.io/en/7.4/installation-guide/knowage-ce-installer.html#server-side-requirements",
   "version": "7.4.18",

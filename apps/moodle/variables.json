@@ -1,7 +1,6 @@
 {
   "name": "moodle",
   "trademark": "Moodle",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/moodlehq/moodle-docker",
   "version": "4.2",

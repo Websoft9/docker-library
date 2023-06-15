@@ -1,7 +1,6 @@
 {
   "name": "ghost",
   "trademark": "Ghost",
-  "url": "-",
   "release": false,
   "fork_url": "https://hub.docker.com/_/ghost",
   "version": "5.47",

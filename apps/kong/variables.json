@@ -1,7 +1,6 @@
 {
   "name": "kong",
   "trademark": "Kong",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/Kuari/kong-konga-docker-compose.git",
   "version": "",

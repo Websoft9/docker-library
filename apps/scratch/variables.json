@@ -1,7 +1,6 @@
 {
   "name": "scratch",
   "trademark": "Scratch",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/DarkMaguz/scratch3-docker",
   "version": "v3.0",

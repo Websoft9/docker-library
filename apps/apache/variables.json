@@ -1,7 +1,6 @@
 {
   "name": "apache",
   "trademark": "Apache",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/docker-library/httpd",
   "version": "",

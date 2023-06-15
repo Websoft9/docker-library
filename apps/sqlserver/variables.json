@@ -1,7 +1,6 @@
 {
   "name": "sqlserver",
   "trademark": "SQL Server",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/twright-msft/mssql-node-docker-demo-app",
   "version": "2022,2019,2017",

@@ -1,7 +1,6 @@
 {
   "name": "vanish",
   "trademark": "Vanish ",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/varnish/docker-varnish",
   "version": "",

@@ -1,7 +1,6 @@
 {
   "name": "guacamole",
   "trademark": "Guacamole",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/boschkundendienst/guacamole-docker-compose",
   "version": "",

@@ -1,7 +1,6 @@
 {
   "name": "memcached",
   "trademark": "Memcached",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/docker-library/memcached",
   "version": "",

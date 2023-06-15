@@ -1,7 +1,6 @@
 {
   "name": "mongoexpress",
   "trademark": "mongo-express",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/mongo-express/mongo-express.git",
   "version": "",

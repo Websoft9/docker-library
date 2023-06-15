@@ -1,7 +1,6 @@
 {
   "name": "graylog",
   "trademark": "Graylog",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/Graylog2/graylog-docker",
   "version": "5.0.7",

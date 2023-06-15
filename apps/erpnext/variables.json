@@ -1,7 +1,6 @@
 {
   "name": "erpnext",
   "trademark": "ERPNext",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/frappe/frappe_docker.git",
   "version": "v13,v14",

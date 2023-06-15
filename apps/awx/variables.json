@@ -1,7 +1,6 @@
 {
   "name": "awx",
   "trademark": "AWX",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/ansible/awx",
   "version": "",

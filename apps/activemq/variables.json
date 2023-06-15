@@ -1,7 +1,6 @@
 {
   "name": "activemq",
   "trademark": "ActiveMQ",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/apache/activemq-artemis/tree/main/artemis-docker",
   "version": "5.16.4",

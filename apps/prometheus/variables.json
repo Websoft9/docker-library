@@ -1,7 +1,6 @@
 {
   "name": "appname",
   "trademark": "AppName",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
   "version": "1.2.5",

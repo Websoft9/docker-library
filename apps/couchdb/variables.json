@@ -1,7 +1,6 @@
 {
   "name": "couchdb",
   "trademark": "CouchDB",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/apache/couchdb-docker",
   "version": "3.3.1",

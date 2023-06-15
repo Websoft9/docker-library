@@ -1,7 +1,6 @@
 {
   "name": "discourse",
   "trademark": "Discourse",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/discourse/discourse_docker",
   "version": "latest",

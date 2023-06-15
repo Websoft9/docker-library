@@ -1,7 +1,6 @@
 {
   "name": "apisix",
   "trademark": "Apisix",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/apache/apisix-docker",
   "version": "",

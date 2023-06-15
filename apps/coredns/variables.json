@@ -1,7 +1,6 @@
 {
   "name": "coredns",
   "trademark": "CoreDNS",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/coredns",
   "version": "",

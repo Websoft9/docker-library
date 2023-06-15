@@ -1,7 +1,6 @@
 {
   "name": "pimcore",
   "trademark": "Pimcore ",
-  "url": "",
   "release": false,
   "fork_url": "https://github.com/pimcore/docker",
   "version": "",

@@ -1,7 +1,6 @@
 {
   "name": "gitlab",
   "trademark": "Gitlab",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/gitlabhq/omnibus-gitlab",
   "version": "15.11.5-ce.0",

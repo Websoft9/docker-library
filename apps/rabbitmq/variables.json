@@ -1,7 +1,6 @@
 {
   "name": "rabbitmq",
   "trademark": "RabbitQM",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/docker-library/rabbitmq",
   "version": "3.11",

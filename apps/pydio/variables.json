@@ -1,7 +1,6 @@
 {
   "name": "pydio",
   "trademark": "Pydio Cells",
-  "url": "-",
   "release": false,
   "fork_url": "https://hub.docker.com/r/pydio/cells",
   "version": "latest",

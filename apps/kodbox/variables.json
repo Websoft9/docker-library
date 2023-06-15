@@ -1,7 +1,6 @@
 {
   "name": "kodbox",
   "trademark": "Kodbox",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/KodCloud-dev/docker/blob/master/compose/docker-compose.yml",
   "version": "v1.3902",

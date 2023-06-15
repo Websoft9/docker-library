@@ -1,7 +1,6 @@
 {
   "name": "zabbix",
   "trademark": "Zabbix",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/zabbix/zabbix-docker",
   "version": "6.2.0",

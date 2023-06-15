@@ -1,7 +1,6 @@
 {
   "name": "gogs",
   "trademark": "Gogs",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/gogs/gogs",
   "version": "0.13",

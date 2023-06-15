@@ -1,7 +1,6 @@
 {
   "name": "redmine",
   "trademark": "Redmine",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/docker-library/redmine",
   "version": "5.0",

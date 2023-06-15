@@ -1,7 +1,6 @@
 {
   "name": "nginx",
   "trademark": "Nginx",
-  "url": "",
   "release": false,
   "fork_url": "https://github.com/nginxinc/docker-nginx",
   "version": "",

@@ -1,7 +1,6 @@
 {
   "name": "joomla",
   "trademark": "Joomla",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/joomla-docker/docker-joomla",
   "version": "4.3.1",

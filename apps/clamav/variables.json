@@ -1,7 +1,6 @@
 {
   "name": "clamav",
   "trademark": "ClamAV",
-  "url": "-",
   "release": false,
   "fork_url": "https://hub.docker.com/r/clamav/clamav",
   "version": "",

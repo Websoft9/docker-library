@@ -1,7 +1,6 @@
 {
   "name": "typesense",
   "trademark": "Typesense",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/typesense/typesense",
   "version": "0.24.1",

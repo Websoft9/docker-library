@@ -1,7 +1,6 @@
 {
   "name": "xwiki",
   "trademark": "XWiki",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/xwiki/xwiki-docker",
   "version": "",

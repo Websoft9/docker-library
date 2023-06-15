@@ -1,7 +1,6 @@
 {
   "name": "wireguard",
   "trademark": "Wireguard",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/linuxserver/docker-wireguard",
   "version": "",

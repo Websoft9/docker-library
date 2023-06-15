@@ -1,7 +1,6 @@
 {
   "name": "ansible",
   "trademark": "Ansible",
-  "url": "-",
   "release": false,
   "fork_url": "",
   "version": "2.9.0",

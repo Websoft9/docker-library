@@ -1,7 +1,6 @@
 {
   "name": "strapi",
   "trademark": "Strapi",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/strapi/strapi-docker",
   "version": "",

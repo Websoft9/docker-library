@@ -1,7 +1,6 @@
 {
   "name": "nginxmanager",
   "trademark": "Nginx Proxy Manager",
-  "url": "",
   "release": false,
   "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
   "version": "",

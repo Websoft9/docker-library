@@ -1,7 +1,6 @@
 {
   "name": "gitea",
   "trademark": "Gitea",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/go-gitea/gitea",
   "version": "1.2.5",

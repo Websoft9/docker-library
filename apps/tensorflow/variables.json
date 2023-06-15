@@ -1,7 +1,6 @@
 {
   "name": "tensorflow",
   "trademark": "Tensorflow",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/tensorflow/tensorflow",
   "version": "2.11.0",

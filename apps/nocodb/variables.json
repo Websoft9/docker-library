@@ -1,7 +1,6 @@
 {
   "name": "nocodb",
   "trademark": "Nocodb",
-  "url": "",
   "release": false,
   "fork_url": "https://github.com/Websoft9/docker-template",
   "version": "",

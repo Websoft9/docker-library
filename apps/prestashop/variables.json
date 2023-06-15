@@ -1,7 +1,6 @@
 {
   "name": "prestashop",
   "trademark": "Prestashop",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/PrestaShop/docker",
   "version": "1.7",

@@ -1,7 +1,6 @@
 {
   "name": "vault",
   "trademark": "Vault",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/hashicorp/docker-vault",
   "version": "",

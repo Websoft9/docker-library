@@ -1,7 +1,6 @@
 {
   "name": "magento",
   "trademark": "Adobe Commerce (Magento)",
-  "url": "-",
   "release": false,
   "fork_url": "https://hub.docker.com/r/bitnami/magento",
   "version": "",

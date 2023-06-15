@@ -1,7 +1,6 @@
 {
   "name": "cadvisor",
   "trademark": "Cadvisor",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/google/cadvisor.git",
   "version": "",

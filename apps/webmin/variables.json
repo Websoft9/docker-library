@@ -1,7 +1,6 @@
 {
   "name": "webmin",
   "trademark": "Webmin",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/arimal199/alpine-webmin",
   "version": "",

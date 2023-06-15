@@ -1,7 +1,6 @@
 {
   "name": "codeserver",
   "trademark": "CodeServer",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/linuxserver/docker-code-server",
   "version": "4.9.1",

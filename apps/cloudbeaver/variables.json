@@ -1,7 +1,6 @@
 {
   "name": "cloudbeaver",
   "trademark": "CloudBeaver",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/dbeaver/cloudbeaver",
   "version": "23.0.2",

@@ -1,7 +1,6 @@
 {
   "name": "postgresql",
   "trademark": "PostgreSQL",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/docker-library/postgres",
   "version": "15,14,13,12,11,9.6",

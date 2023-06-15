@@ -1,7 +1,6 @@
 {
   "name": "elasticsearch",
   "trademark": "Elasticsearch",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/elastic/elasticsearch",
   "version": "",

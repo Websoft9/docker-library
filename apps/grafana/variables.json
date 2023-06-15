@@ -1,7 +1,6 @@
 {
   "name": "grafana",
   "trademark": "Grafana",
-  "url": "-",
   "release": false,
   "fork_url": "",
   "version": "9.5.1",

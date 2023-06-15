@@ -1,7 +1,6 @@
 {
   "name": "mattermost",
   "trademark": "Mattermost",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/mattermost/docker",
   "version": "7.10",

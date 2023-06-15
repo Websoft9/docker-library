@@ -1,7 +1,6 @@
 {
   "name": "onlyofficedocs",
   "trademark": "ONLYOFFICEDocs",
-  "url": "",
   "release": false,
   "fork_url": "https://github.com/ONLYOFFICE/Docker-DocumentServer",
   "version": "7.3",

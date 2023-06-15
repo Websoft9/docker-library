@@ -1,7 +1,6 @@
 {
   "name": "rethinkdb",
   "trademark": "RethinkDB",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/rethinkdb/rethinkdb-dockerfiles",
   "version": "2.4",

@@ -1,7 +1,6 @@
 {
   "name": "alfresco",
   "trademark": "Alfresco",
-  "url": "-",
   "release": false,
   "fork_url": "https://docs.alfresco.com/content-services/latest/install/containers/docker-compose",
   "version": "7.4.0",

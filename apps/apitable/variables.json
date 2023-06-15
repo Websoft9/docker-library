@@ -1,7 +1,6 @@
 {
   "name": "apitable ",
   "trademark": "APITable",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/apitable/apitable/blob/develop/docker-compose.yaml",
   "version": "0.20.0",

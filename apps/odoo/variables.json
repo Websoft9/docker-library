@@ -1,7 +1,6 @@
 {
   "name": "odoo",
   "trademark": "Odoo",
-  "url": "",
   "release": false,
   "fork_url": "https://github.com/odoo/docker",
   "version": "16.0,15.0,14.0",

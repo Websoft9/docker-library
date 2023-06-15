@@ -1,7 +1,6 @@
 {
   "name": "bigbluebutton",
   "trademark": "BigBlueButton",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/bigbluebutton/docker",
   "version": "",

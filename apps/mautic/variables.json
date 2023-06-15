@@ -1,7 +1,6 @@
 {
   "name": "mautic",
   "trademark": "Mautic",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/mautic/docker-mautic",
   "version": "",

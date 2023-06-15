@@ -1,7 +1,6 @@
 {
   "name": "geoserver",
   "trademark": "GeoServer",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/geoserver/geoserver-cloud",
   "version": "",

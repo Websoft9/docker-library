@@ -1,7 +1,6 @@
 {
   "name": "redis",
   "trademark": "Redis",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/docker-library/redis",
   "version": "7.0,6.0,5.0,4.0",

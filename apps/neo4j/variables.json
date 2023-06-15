@@ -1,7 +1,6 @@
 {
   "name": "neo4j",
   "trademark": "Neo4j",
-  "url": "",
   "release": false,
   "fork_url": "https://github.com/neo4j/docker-neo4j",
   "version": "5.7,4.4",

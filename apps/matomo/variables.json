@@ -1,7 +1,6 @@
 {
   "name": "matomo",
   "trademark": "Matomo",
-  "url": "-",
   "release": false,
   "fork_url": "https://matomo.org/faq/on-premise/installing-matomo/",
   "version": "4.14",

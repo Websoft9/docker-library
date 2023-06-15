@@ -1,7 +1,6 @@
 {
   "name": "cmak",
   "trademark": "Cmak",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/hleb-albau/kafka-manager-docker",
   "version": "3.0",

@@ -1,7 +1,6 @@
 {
   "name": "zammad",
   "trademark": "Zammad",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/zammad/zammad-docker-compose",
   "version": "",

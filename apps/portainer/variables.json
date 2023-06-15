@@ -1,7 +1,6 @@
 {
   "name": "portainer",
   "trademark": "Portainer",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/portainer/portainer-compose.git",
   "version": "2.18.3",

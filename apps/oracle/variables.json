@@ -1,7 +1,6 @@
 {
   "name": "oracle",
   "trademark": "Oracle Database",
-  "url": "",
   "release": false,
   "fork_url": "https://container-registry.oracle.com/database/express",
   "version": "",

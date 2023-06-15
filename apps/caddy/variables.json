@@ -1,7 +1,6 @@
 {
   "name": "caddy",
   "trademark": "Caddy",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/caddyserver/caddy-docker",
   "version": "",

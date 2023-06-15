@@ -1,7 +1,6 @@
 {
   "name": "kafka",
   "trademark": "Kafka",
-  "url": "-",
   "release": false,
   "fork_url": "https://github.com/bitnami/bitnami-docker-kafka",
   "version": "",
