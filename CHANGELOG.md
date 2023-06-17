@@ -1,9 +1,9 @@
 ## 0.2.2 release on 2023-06-17
 
-上架wordpress
-下架moodle
-修改redmine
-升级discuzq，zabbix
+上架wordpress  
+下架moodle  
+修改redmine  
+升级discuzq，zabbix  
 
 ## 0.2.1 release on 2023-06-16
 
