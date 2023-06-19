@@ -3,6 +3,7 @@
 ## Awesome
 
 * [awesome-selfhosted](https://github.com/awesome-selfhosted/awesome-selfhosted): a list of Free Software, 136k star
+* [awesome-go](https://github.com/hackstoic/golang-open-source-projects)： 10.5k
 
 ## AIGC
 
