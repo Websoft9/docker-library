@@ -1,5 +1,8 @@
 # App Wishlist
 
+## Awesome
+
+* [awesome-selfhosted](https://github.com/awesome-selfhosted/awesome-selfhosted): a list of Free Software, 136k star
 
 ## AIGC
 
