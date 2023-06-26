@@ -1,6 +1,6 @@
 ## 0.2.3 release on 2023-06-26
 
-Appstore page image update: onlyoffice, mingdao
+Appstore page image update: onlyoffice, mingdao  
 Appstore add new apps:appsmith, focalboard, affine
 
 ## 0.2.2 release on 2023-06-17
