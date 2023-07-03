@@ -1,6 +1,6 @@
 # Seafile on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Seafile v9.0.13
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Seafile v10.0.1
 
 ## System Requirements
 
