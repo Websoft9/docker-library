@@ -3,7 +3,7 @@
   "trademark": "Seafile",
   "release": false,
   "fork_url": "https://github.com/haiwen/seafile-docker.git",
-  "version": "9.0.13",
+  "version": "10.0.1",
   "requirements": {
     "cpu": "2",
     "memory": "8",
