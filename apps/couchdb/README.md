@@ -1,6 +1,6 @@
 # CouchDB on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for CouchDB v3.3.1
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for CouchDB v3.3.2
 
 ## System Requirements
 
