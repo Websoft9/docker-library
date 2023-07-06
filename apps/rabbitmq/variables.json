@@ -3,7 +3,7 @@
   "trademark": "RabbitQM",
   "release": false,
   "fork_url": "https://github.com/docker-library/rabbitmq",
-  "version": "3.11",
+  "version": "3.12",
   "requirements": {
     "cpu": "1",
     "memory": "1",
