@@ -3,7 +3,7 @@
   "trademark": "Graylog",
   "release": false,
   "fork_url": "https://github.com/Graylog2/graylog-docker",
-  "version": "5.0.7",
+  "version": "5.1.3",
   "requirements": {
     "cpu": "2",
     "memory": "4",

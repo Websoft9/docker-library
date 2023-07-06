@@ -3,7 +3,7 @@
   "trademark": "Grafana",
   "release": false,
   "fork_url": "",
-  "version": "9.5.1",
+  "version": "10.0.1",
   "requirements": {
     "cpu": "1",
     "memory": "2",
