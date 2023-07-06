@@ -3,7 +3,7 @@
   "trademark": "Kodbox",
   "release": false,
   "fork_url": "https://github.com/KodCloud-dev/docker/blob/master/compose/docker-compose.yml",
-  "version": "v1.3902",
+  "version": "v1.4104",
   "requirements": {
     "cpu": "1",
     "memory": "2",
