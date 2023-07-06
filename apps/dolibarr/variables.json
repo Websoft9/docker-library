@@ -3,7 +3,7 @@
   "trademark": "Dolibarr",
   "release": false,
   "fork_url": "https://github.com/tuxgasy/docker-dolibarr",
-  "version": "16.0.3",
+  "version": "17.0.2",
   "requirements": {
     "cpu": "1",
     "memory": "1",

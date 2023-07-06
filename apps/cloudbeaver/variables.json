@@ -3,7 +3,7 @@
   "trademark": "CloudBeaver",
   "release": false,
   "fork_url": "https://github.com/dbeaver/cloudbeaver",
-  "version": "23.0.2",
+  "version": "23.1.1",
   "requirements": {
     "cpu": "1",
     "memory": "2",
