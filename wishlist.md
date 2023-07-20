@@ -293,6 +293,7 @@
 * https://github.com/plausible/analytics  网站统计软件（Google 统计的替代品）
 * ClickHouse 是一个开源 OLAP 数据库
 * https://www.bright.cn/  网络数据采集，一网打尽全球公开在线数据。（商业级爬虫）
+* https://github.com/datahub-project/datahub  DataHub is an extensible metadata platform, enabling data discovery, data observability, and federated governance to help you tame the complexity of your data stack
 
 ## 日志汇总与分析
 
