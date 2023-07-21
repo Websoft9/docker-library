@@ -23,7 +23,7 @@ jobs:
           echo "VERSION=$version" >> $GITHUB_ENV
           mkdir library
           cp -r apps library
-          zip -r library-${{ env.VERSION }}.zip library
+          zip -r library-$version.zip library
           ls
 
       - name: Upload To Azure Blob
