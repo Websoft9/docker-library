@@ -29,7 +29,7 @@ on:
         with:
           connection_string: ${{ secrets.AZURE_STORAGE_ARTIFACT }}
           container_name: release
-          source_folder: appstore-${{ env.VERSION }}.zip
+          source_folder: library-${{ env.VERSION }}.zip
           destination_folder: ./websoft9/plugin
           delete_if_exists: true
           fail_if_source_empty: true
