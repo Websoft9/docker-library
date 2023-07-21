@@ -1,0 +1,35 @@
+name: upload_artifact
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "library.json"
+
+  upload_artifact:
+    name: Build Docker image
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        name: Check out code
+
+      - name: Read Plugin Version
+        run: |
+          version=$(jq -r '.Version' library.json)
+          echo version=$version
+          echo "VERSION=$version" >> $GITHUB_ENV
+          mkdir library
+          cp -r apps library
+          zip -r library-${{ env.VERSION }}.zip library
+
+      - name: Upload To Azure Blob
+        uses: LanceMcCarthy/Action-AzureBlobUpload@v2
+        with:
+          connection_string: ${{ secrets.AZURE_STORAGE_ARTIFACT }}
+          container_name: release
+          source_folder: appstore-${{ env.VERSION }}.zip
+          destination_folder: ./websoft9/plugin
+          delete_if_exists: true
+          fail_if_source_empty: true

@@ -1,0 +1,12 @@
+{
+  "Plugin Name": "library",
+  "Repository": "https://github.com/Websoft9/docker-library",
+  "Update URI": "https://example.com/my-plugin/",
+  "Description": "200 application template for you installation.",
+  "Version": "0.2.3",
+  "Requires at least": "0.7.2",
+  "Author": "Websoft9 Inc",
+  "Author URI": "https://www.websoft9.com/",
+  "License": "GPL v2 or later",
+  "License URI": "https://www.gnu.org/licenses/gpl-2.0.html"
+}
