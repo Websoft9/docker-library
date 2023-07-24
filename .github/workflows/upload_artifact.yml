@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - "library.json"
+      - "CHANGELOG.md"
 
 jobs:
   upload_artifact:
@@ -23,6 +24,8 @@ jobs:
           echo "VERSION=$version" >> $GITHUB_ENV
           mkdir library
           cp -r apps library
+          cp CHANGELOG.md library
+          cp library.json library
           zip -r library-$version.zip library
           ls
 
