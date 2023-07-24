@@ -1,0 +1,13 @@
+{
+  "name": "datahub",
+  "trademark": "DataHub",
+  "release": false,
+  "fork_url": "https://github.com/datahub-project/datahub",
+  "version": "0.10.4",
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1",
+    "url": "https://github.com/datahub-project/datahub"
+  }
+}

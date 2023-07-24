@@ -1,0 +1,17 @@
+# image: https://hub.docker.com/r/linuxserver/mastodon
+# docs: https://docs.linuxserver.io/images/docker-mastodon
+
+
+version: '3.8'
+
+services:
+
+
+networks:
+  default:
+    name: $APP_NETWORK
+    external: true
+
+volumes:
+  postgres:
+  redis:

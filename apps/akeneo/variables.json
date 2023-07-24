@@ -3,7 +3,7 @@
   "trademark": "Akeneo",
   "release": false,
   "fork_url": "https://github.com/akeneo/pim-community-dev",
-  "version": "v6.0.53",
+  "version": "v7.0.22",
   "requirements": {
     "cpu": "2",
     "memory": "4",

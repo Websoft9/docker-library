@@ -1,5 +1,8 @@
 # refer to: https://github.com/chandrantwins/akeneo-docker/blob/master/Dockerfile
-FROM akeneo/pim-php-dev:master
+# akeneo version: https://packagist.org/packages/akeneo/pim-community-standard
+# upgrade to: 7.0.22
+
+FROM akeneo/pim-php-dev:8.1
 
 LABEL maintainer="help@websoft9.com"
 LABEL version="latest"
