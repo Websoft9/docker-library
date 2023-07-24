@@ -28,7 +28,7 @@ jobs:
           cp library.json library
           zip -r library-$version.zip library
           cp library-$version.zip artifacts
-          cd artifacts && cp "library-$version.zip" "library-latest.zip"
+          cp artifacts/library-$version.zip artifacts/library-latest.zip
 
       - name: Upload To Azure Blob
         uses: LanceMcCarthy/Action-AzureBlobUpload@v2
