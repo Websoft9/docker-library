@@ -1,0 +1,13 @@
+{
+  "name": "mastodon",
+  "trademark": "Mastodon",
+  "release": false,
+  "fork_url": "https://github.com/linuxserver/docker-mastodon",
+  "version": "4.1.5",
+  "requirements": {
+    "cpu": "1",
+    "memory": "2",
+    "disk": "1",
+    "url": "https://docs.joinmastodon.org/admin/install/#pre-requisites"
+  }
+}
