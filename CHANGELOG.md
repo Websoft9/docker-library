@@ -1,6 +1,6 @@
 ## 0.5.2 release on 2023-07-24
 
-library install by artifact
+library install by artifacts
 
 ## 0.2.3 release on 2023-06-26
 

@@ -22,19 +22,20 @@ jobs:
           version=$(jq -r '.Version' library.json)
           echo version=$version
           echo "VERSION=$version" >> $GITHUB_ENV
-          mkdir library
+          mkdir library artifacts
           cp -r apps library
           cp CHANGELOG.md library
           cp library.json library
           zip -r library-$version.zip library
-          ls
+          cp library-$version.zip artifacts
+          cd artifacts && cp "library-$version.zip" "library-latest.zip"
 
       - name: Upload To Azure Blob
         uses: LanceMcCarthy/Action-AzureBlobUpload@v2
         with:
           connection_string: ${{ secrets.AZURE_STORAGE_ARTIFACT }}
           container_name: release
-          source_folder: library-${{ env.VERSION }}.zip
+          source_folder: artifacts/
           destination_folder: ./websoft9/plugin
           delete_if_exists: true
           fail_if_source_empty: true
