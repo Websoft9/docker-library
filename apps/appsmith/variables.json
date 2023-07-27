@@ -1,9 +1,9 @@
 {
   "name": "appsmith",
   "trademark": "Appsmith",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/appsmithorg/appsmith",
-  "version": "",
+  "version": "v1.9.29,latest",
   "requirements": {
     "cpu": "2",
     "memory": "4",

@@ -1,0 +1,28 @@
+# image: https://hub.docker.com/r/chat2db/chat2db
+# docs: https://github.com/chat2db/Chat2DB#-docker-installation
+
+
+version: '3.8'
+
+services:
+  suitecrm:
+    image: $APP_REPO:$APP_VERSION
+    container_name: $APP_NAME
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - '$APP_HTTP_PORT:10824'
+    environment:
+      - SUITECRM_DATABASE_HOST=mysql
+      - SUITECRM_DATABASE_PORT_NUMBER=${APP_DB_MYSQL_PORT}
+    volumes:
+      - 'chat2db:/root/.chat2db'
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  chat2db:
