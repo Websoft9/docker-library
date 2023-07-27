@@ -1,6 +1,6 @@
 # Moodle on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Moodle v
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Moodle v4.2
 
 ## System Requirements
 

@@ -1,6 +1,6 @@
 # Redmine on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Redmine v5.0.4
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Redmine v5.0
 
 ## System Requirements
 
