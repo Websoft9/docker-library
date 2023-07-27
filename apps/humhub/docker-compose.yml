@@ -1,0 +1,61 @@
+# image: https://hub.docker.com/r/mriedmann/humhub
+# compose file: https://github.com/mriedmann/humhub-docker/blob/master/docker-compose.yml
+
+version: '3.8'
+
+services:
+  huginn:
+    image: $APP_REPO:$APP_VERSION
+    container_name: $APP_NAME
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - '$APP_HTTP_PORT:80'
+    volumes:
+      - "humhub-cconfig:/var/www/localhost/htdocs/protected/config"
+      - "humhub-cuploads:/var/www/localhost/htdocs/uploads"
+      - "humhub-cmodules:/var/www/localhost/htdocs/protected/modules"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  db:
+    image: mariadb:$APP_DB_MARIADB_VERSION
+    container_name: $APP_NAME-db
+    restart: unless-stopped
+    ports:
+     - ${APP_DB_MARIADB_PORT}:3306
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: $APP_DB_MARIADB_NAME
+      MYSQL_USER: $APP_DB_MARIADB_USER
+      MYSQL_PASSWORD: $APP_DB_MARIADB_PASSWORD
+      MYSQL_ROOT_PASSWORD: $APP_DB_MARIADB_PASSWORD
+
+  redis:
+    image: redis:5.0-alpine
+    expose:
+      - '6379'
+    volumes:
+      - /srv/humhub/redis:/data
+    environment:
+      - REDIS_PASSWORD=redis_password
+      - ALLOW_EMPTY_PASSWORD=yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  humhub-config:
+  humhub-uploads:
+  humhub-modules:
+  mysql:

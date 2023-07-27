@@ -1,23 +1,21 @@
-# image: https://hub.docker.com/r/chat2db/chat2db
-# docs: https://github.com/chat2db/Chat2DB#-docker-installation
+# image: https://github.com/huginn/huginn/pkgs/container/huginn
+# docs1: https://github.com/huginn/huginn/blob/master/doc/docker/install.md
+# docs2: https://hub.docker.com/r/huginn/huginn
 
 
 version: '3.8'
 
 services:
-  suitecrm:
+  huginn:
     image: $APP_REPO:$APP_VERSION
     container_name: $APP_NAME
     restart: unless-stopped
     env_file:
       - .env
     ports:
-      - '$APP_HTTP_PORT:10824'
-    environment:
-      - SUITECRM_DATABASE_HOST=mysql
-      - SUITECRM_DATABASE_PORT_NUMBER=${APP_DB_MYSQL_PORT}
+      - '$APP_HTTP_PORT:3000'
     volumes:
-      - 'chat2db:/root/.chat2db'
+      - 'huginn-mysql:/var/lib/mysql'
 
 networks:
   default:
@@ -25,4 +23,4 @@ networks:
     external: true
 
 volumes:
-  chat2db:
+  huginn-mysql:
