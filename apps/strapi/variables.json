@@ -1,9 +1,9 @@
 {
   "name": "strapi",
   "trademark": "Strapi",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/strapi/strapi-docker",
-  "version": "",
+  "version": "latest",
   "requirements": {
     "cpu": "1",
     "memory": "1",

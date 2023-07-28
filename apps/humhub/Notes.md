@@ -1,5 +1,5 @@
-# Huginn
+# Humhub
 
-Huginn docker image support inner db or external db
+It have settings of url, smtp at console. So when complete installation, administrator should modify URL and SMTP at console.
 
 ## FAQ

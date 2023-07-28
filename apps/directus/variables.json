@@ -1,9 +1,9 @@
 {
   "name": "directus",
   "trademark": "Directus",
-  "release": false,
-  "fork_url": "",
-  "version": "",
+  "release": true,
+  "fork_url": "https://github.com/directus/directus",
+  "version": "10.5,latest",
   "requirements": {
     "cpu": "1",
     "memory": "2",

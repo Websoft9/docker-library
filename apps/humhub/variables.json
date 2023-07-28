@@ -1,13 +1,13 @@
 {
-  "name": "huginn",
-  "trademark": "huginn",
-  "release": false,
-  "fork_url": "https://github.com/huginn/huginn",
-  "version": "latest",
+  "name": "humhub",
+  "trademark": "HumHub",
+  "release": true,
+  "fork_url": "https://hub.docker.com/r/mriedmann/humhub",
+  "version": "1.6,latest",
   "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "1",
-    "url": "https://github.com/huginn/huginn"
+    "url": "https://docs.humhub.org/docs/admin/requirements"
   }
 }

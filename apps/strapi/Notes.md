@@ -1,13 +1,28 @@
 ## Strapi
 
-Strapi 支持多种数据库连接
+Strapi can use MySQL, PostgreSQL...
 
 
-### 安装
+### Install
 
-Strapi 第一次启动时，需要较长的时间 Installing dependencies。请耐心等待
+Strapi fist time starting will install dependencies below
 
-### 快速入门
+* Install nodes
+* Download files from Github
+
+```
+$ docker logs strapi
+
+...
+> sharp@0.28.1 install /srv/app/node_modules/sharp
+> (node install/libvips && node install/dll-copy && prebuild-install) || (node-gyp rebuild && node install/dll-copy)
+
+sharp: Downloading https://github.com/lovell/sharp-libvips/releases/download/v8.10.6/libvips-8.10.6-linux-x64.tar.br
+```
+
+This cause packages can not install and container failed
+
+### Quick Start
 
 1. 增加一个数据集，假如名为为：dockers
 
