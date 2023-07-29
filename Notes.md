@@ -1,6 +1,6 @@
 ## docker-compose
 
-restart:
+restart:sss
 
 | restart参数 |    重启前容器状态 -stop                                     | 重启前容器状态 -start |
 | ------ | --------------------------------------------- | ------ |
