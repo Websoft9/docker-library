@@ -4,8 +4,8 @@
 version: "3.8"
 services:
   web:
-    image: quay.io/ansible/awx:22.5.0
-    container_name: awx_web
+    image: quay.io/ansible/awx:${APP_VERSION}
+    container_name: ${APP_WEB_NAME}
     depends_on:
       - redis
     hostname: awxweb
@@ -32,11 +32,11 @@ services:
       https_proxy:
       no_proxy:
     ports:
-      - "8052:8052"
+      - "${APP_HTTP_PORT}:8052"
 
   task:
-    image: quay.io/ansible/awx:22.5.0
-    container_name: awx_task
+    image: quay.io/ansible/awx:${APP_VERSION}
+    container_name: ${APP_TASK_NAME}
     depends_on:
       - redis
       - web
@@ -67,8 +67,8 @@ services:
       no_proxy:
 
   receptor:
-    image: quay.io/ansible/receptor:v1.4.1
-    container_name: awx_receptor
+    image: quay.io/ansible/receptor:${APP_RECEPTOR_VERSION}
+    container_name: ${APP_RECEPTOR_NAME}
     hostname: receptor
     user: root
     restart: unless-stopped
@@ -87,8 +87,9 @@ services:
 
   redis:
     image: redis
-    container_name: awx_redis
+    container_name: ${APP_REDIS_NAME}
     restart: unless-stopped
+    env_file: .env
     environment:
       http_proxy:
       https_proxy:
@@ -100,8 +101,8 @@ services:
       - "./src/config/redis.conf:/usr/local/etc/redis/redis.conf"
 
   postgres:
-    image: postgres:12
-    container_name: awx_postgres
+    image: postgres:${APP_DB_VERSION}
+    container_name: ${APP_POSTGRED_NAME}
     restart: unless-stopped
     env_file: .env
     volumes:
