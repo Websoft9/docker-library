@@ -29,6 +29,9 @@ services:
       - redis-socket:/var/run/redis/
       - "~/.kube/config:/var/lib/awx/.kube/config"
       - "/sys/fs/cgroup:/sys/fs/cgroup"
+      - shared:/var/lib/shared
+    privileged: true
+    tty: true
     environment:
       http_proxy:
       https_proxy:
@@ -37,13 +40,15 @@ services:
       - "${APP_HTTP_PORT}:8052"
 
   awx:
-    image: quay.io/ansible/awx:${APP_VERSION}
+    # image: quay.io/ansible/awx:${APP_VERSION}
+    build:
+      context: ./
+      dockerfile: Dockerfile
     container_name: ${APP_TASK_NAME}
     depends_on:
       - redis
       - web
       - postgres
-      - task_ee
       - task_rsyslog
     command: sh /usr/bin/launch_awx_task.sh
     hostname: awx_1
@@ -51,6 +56,7 @@ services:
     restart: unless-stopped
     env_file: .env
     volumes:
+      - "./src/config/supervisord_task.conf:/etc/supervisord_task.conf"
       - projects:/var/lib/awx/projects/
       - "./src/config/launch_awx_task.sh:/usr/bin/launch_awx_task.sh"
       - rsyslog-socket:/var/run/awx-rsyslog/
@@ -66,6 +72,9 @@ services:
       - redis-socket:/var/run/redis/
       - "~/.kube/config:/var/lib/awx/.kube/config"
       - "/sys/fs/cgroup:/sys/fs/cgroup"
+      - shared:/var/lib/shared
+    privileged: true
+    tty: true
     environment:
       http_proxy:
       https_proxy:
@@ -95,34 +104,8 @@ services:
       - redis-socket:/var/run/redis/
       - "~/.kube/config:/var/lib/awx/.kube/config"
       - "/sys/fs/cgroup:/sys/fs/cgroup"
-    environment:
-      http_proxy:
-      https_proxy:
-      no_proxy:
-
-  task_ee:
-    image: quay.io/ansible/awx-ee:${APP_VERSION}
-    container_name: ${APP_TASE_EE_NAME}
-    command: receptor --config /etc/receptor/receptor.conf
-    hostname: awx-ee
-    user: root
-    restart: unless-stopped
-    env_file: .env
-    volumes:
-      - projects:/var/lib/awx/projects/
-      - rsyslog-socket:/var/run/awx-rsyslog/
-      - awx-receptor:/var/run/awx-receptor/
-      - "./src/config/SECRET_KEY:/etc/tower/SECRET_KEY"
-      - "./src/config/settings.py:/etc/tower/settings.py"
-      - "./src/config/local_settings.py:/etc/tower/local_settings.py"
-      - "./src/config/websocket_secret.py:/etc/tower/websocket_secret.py"
-      - "./src/config/nginx.conf:/etc/nginx/nginx.conf"
-      - "./src/config/credentials.py:/etc/tower/conf.d/credentials.py"
-      - "./src/config/receptor/receptor-awx.conf:/etc/receptor/receptor.conf"
-      - "./src/config/receptor/receptor-awx-1.conf.lock:/etc/receptor/receptor.conf.lock"
-      - redis-socket:/var/run/redis/
-      - "~/.kube/config:/var/lib/awx/.kube/config"
-      - "/sys/fs/cgroup:/sys/fs/cgroup"
+    privileged: true
+    tty: true
     environment:
       http_proxy:
       https_proxy:
@@ -162,6 +145,7 @@ volumes:
   postgres_new-data:
   awx-receptor:
   projects:
+  shared:
 
 networks:
   default:

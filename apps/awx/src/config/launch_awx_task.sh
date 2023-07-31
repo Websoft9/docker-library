@@ -33,7 +33,7 @@ echo "Admin password: ${DJANGO_SUPERUSER_PASSWORD}"
 awx-manage create_preload_data
 awx-manage register_default_execution_environments
 
-awx-manage provision_instance --hostname="$(hostname)" --node_type="$MAIN_NODE_TYPE"
+awx-manage provision_instance --hostname="awx_1" --node_type="$MAIN_NODE_TYPE"
 awx-manage register_queue --queuename=controlplane --instance_percent=100
 awx-manage register_queue --queuename=default --instance_percent=100
 
