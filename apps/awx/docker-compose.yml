@@ -14,6 +14,7 @@ services:
     env_file: .env
     command: /usr/bin/launch_awx_web.sh
     volumes:
+      - projects:/var/lib/awx/projects/
       - rsyslog-socket:/var/run/awx-rsyslog/
       - awx-receptor:/var/run/awx-receptor/
       - "./src/config/SECRET_KEY:/etc/tower/SECRET_KEY"
@@ -48,6 +49,7 @@ services:
     restart: unless-stopped
     env_file: .env
     volumes:
+      - projects:/var/lib/awx/projects/
       - "./src/config/launch_awx_task.sh:/usr/bin/launch_awx_task.sh"
       - rsyslog-socket:/var/run/awx-rsyslog/
       - awx-receptor:/var/run/awx-receptor/
@@ -68,13 +70,14 @@ services:
       no_proxy:
   task_ee:
     image: quay.io/ansible/awx-ee:${APP_VERSION}
-    container_name: awx_task_ee
+    container_name: ${APP_TASE_EE_NAME}
     command: receptor --config /etc/receptor/receptor.conf
-    hostname: awx
+    hostname: awx-ee
     user: root
     restart: unless-stopped
     env_file: .env
     volumes:
+      - projects:/var/lib/awx/projects/
       - rsyslog-socket:/var/run/awx-rsyslog/
       - awx-receptor:/var/run/awx-receptor/
       - "./src/config/SECRET_KEY:/etc/tower/SECRET_KEY"
@@ -126,6 +129,7 @@ volumes:
   redis-socket:
   postgres_new-data:
   awx-receptor:
+  projects:
 
 networks:
   default:
