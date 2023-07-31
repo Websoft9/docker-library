@@ -1,4 +1,4 @@
-name: Update APP Requirement to Contentful
+name: Update related items of variables.json to Contentful
 
 on: 
   push:
