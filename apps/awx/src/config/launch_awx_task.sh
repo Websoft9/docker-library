@@ -15,12 +15,11 @@ fi
 
 set -e
 
+# 迁移数据库
+awx-manage migrate
 wait-for-migrations
 
 export PATH=$PATH:/var/lib/awx/venv/awx/bin
-
-# 迁移数据库
-awx-manage migrate
 
 awx-manage create_preload_data
 awx-manage register_default_execution_environments
