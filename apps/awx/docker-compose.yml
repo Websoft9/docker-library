@@ -41,7 +41,6 @@ services:
       - redis
       - web
       - postgres
-      - receptor
     command: sh /usr/bin/launch_awx_task.sh
     hostname: awx
     user: root
@@ -50,6 +49,7 @@ services:
     volumes:
       - "./src/config/supervisord_task.conf:/etc/supervisord_task.conf"
       - "./src/config/launch_awx_task.sh:/usr/bin/launch_awx_task.sh"
+      - "./src/receptor-cmd:/usr/bin/receptor"
       - rsyslog-socket:/var/run/awx-rsyslog/
       - awx-receptor:/var/run/awx-receptor/
       - "./src/config/SECRET_KEY:/etc/tower/SECRET_KEY"
