@@ -24,16 +24,9 @@ services:
       DB_USER: $APP_DB_POSTGRESQL_USER
       DB_PASSWORD: $APP_DB_POSTGRESQL_PASSWORD
 
-      CACHE_ENABLED: true
-      CACHE_STORE: redis
-      CACHE_REDIS: $APP_NAME-redis://cache:6379
-
       # Make sure to set this in production
       # (see https://docs.directus.io/reference/environment-variables/#general)
       # PUBLIC_URL: 'https://directus.example.com'
-    depends_on:
-      - redis
-      - db
     restart: unless-stopped
 
   db:
