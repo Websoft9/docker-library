@@ -1,5 +1,5 @@
 # This file and entrypoint.sh, odoo.conf, wait-for-psql.py from: https://github.com/odoo/docker/tree/master/16.0 and change it for ARM
-# modify line37, curl wkhtmltox.deb of ARM
+# modify line37, curl wkhtmltox.deb of ARM. entrypoint.sh, odoo.conf, wait-for-psql.py only copy here, no changes
 
 FROM debian:bullseye-slim
 MAINTAINER Odoo S.A. <info@odoo.com>
