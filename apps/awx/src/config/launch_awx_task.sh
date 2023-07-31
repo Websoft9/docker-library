@@ -34,4 +34,9 @@ awx-manage provision_instance
 awx-manage register_queue --queuename=controlplane --instance_percent=100
 awx-manage register_queue --queuename=default --instance_percent=100
 
+awx-manage provision_instance --hostname="receptor-hop" --node_type="hop"
+awx-manage register_peers "receptor-hop" --peers "awx_ee"
+awx-manage provision_instance --hostname="receptor-1" --node_type="execution"
+awx-manage register_peers "receptor-1" --peers "receptor-hop"
+
 exec supervisord -c /etc/supervisord_task.conf
