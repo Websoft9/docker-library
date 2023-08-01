@@ -42,6 +42,7 @@ services:
 networks:
   default:
       name: ${APP_NETWORK}
+      external: true
     
 volumes:
   pimcore:
