@@ -1,6 +1,6 @@
-## 0.5.2 release on 2023-07-24
+## 0.5.2 release on 2023-08-01
 
-add latest version
+release when upload artifacts
 
 ## 0.2.3 release on 2023-06-26
 
