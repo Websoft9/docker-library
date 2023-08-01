@@ -44,7 +44,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    container_name: ${APP_TASK_NAME}
+    container_name: ${APP_NAME}
     depends_on:
       - redis
       - web
