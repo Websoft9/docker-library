@@ -1,8 +1,9 @@
 # Discourse
 
-- 官方方案：https://github.com/discourse/discourse/blob/main/docs/INSTALL-cloud.md
-- Bitnami 方案：https://hub.docker.com/r/bitnami/discourse
-
-待进一步研究
+Discourse [official repo](https://github.com/discourse/discourse/blob/main/docs/INSTALL-cloud.md) is not simple docker compose install solution, so use [Bitnami install](https://hub.docker.com/r/bitnami/discourse)
 
 ## FAQ
+
+#### Can I set SMTP on console?
+
+No

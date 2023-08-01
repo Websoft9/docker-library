@@ -1,9 +1,9 @@
 {
   "name": "nopcommerce",
   "trademark": "nopCommerce",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/nopSolutions/nopCommerce",
-  "version": "",
+  "version": "4.60.4,latest",
   "requirements": {
     "cpu": "1",
     "memory": "1",

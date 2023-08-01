@@ -1,9 +1,9 @@
 {
   "name": "joomla",
   "trademark": "Joomla",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/joomla-docker/docker-joomla",
-  "version": "4.3.2",
+  "version": "4.3,latest",
   "requirements": {
     "cpu": "1",
     "memory": "1",
