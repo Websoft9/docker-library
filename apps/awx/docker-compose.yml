@@ -1,101 +1,152 @@
-# AWX default user: admin password: 123456 port：80   
+# AWX default user: admin password: 123456 port：80
 # postgres user: awx password: 123456
 
-version: '3.8'
+version: "3.8"
 services:
-
   web:
-    image: ansible/awx:latest
-    container_name: awx_web
+    image: quay.io/ansible/awx:${APP_VERSION}
+    container_name: ${APP_WEB_NAME}
     depends_on:
       - redis
+      - rsyslog
     hostname: awxweb
     user: root
     restart: unless-stopped
     env_file: .env
+    command: /usr/bin/launch_awx_web.sh
     volumes:
-      - supervisor-socket:/var/run/supervisor
+      - projects:/var/lib/awx/projects/
       - rsyslog-socket:/var/run/awx-rsyslog/
+      - awx-receptor:/var/run/awx-receptor/
       - "./src/config/SECRET_KEY:/etc/tower/SECRET_KEY"
-      - "./src/config/environment.sh:/etc/tower/conf.d/environment.sh"
+      - "./src/config/settings.py:/etc/tower/settings.py"
+      - "./src/config/local_settings.py:/etc/tower/local_settings.py"
+      - "./src/config/websocket_secret.py:/etc/tower/websocket_secret.py"
       - "./src/config/nginx.conf:/etc/nginx/nginx.conf"
       - "./src/config/credentials.py:/etc/tower/conf.d/credentials.py"
+      - "./src/config/receptor/receptor-awx.conf:/etc/receptor/receptor.conf"
+      - "./src/config/receptor/receptor-awx-1.conf.lock:/etc/receptor/receptor.conf.lock"
       - redis-socket:/var/run/redis/
+      - "~/.kube/config:/var/lib/awx/.kube/config"
+      - "/sys/fs/cgroup:/sys/fs/cgroup"
+      - shared:/var/lib/shared
+    privileged: true
+    tty: true
     environment:
-      http_proxy: 
-      https_proxy: 
-      no_proxy: 
+      http_proxy:
+      https_proxy:
+      no_proxy:
+    ports:
+      - "${APP_HTTP_PORT}:8052"
 
-  task:
-    image: ansible/awx:latest
-    container_name: awx_task
+  awx:
+    # image: quay.io/ansible/awx:${APP_VERSION}
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: ${APP_NAME}
     depends_on:
       - redis
       - web
       - postgres
-    command: /usr/bin/launch_awx_task.sh
-    hostname: awx
+      - rsyslog
+    command: sh /usr/bin/launch_awx_task.sh
+    hostname: awx_1
     user: root
     restart: unless-stopped
+    env_file: .env
     volumes:
-      - supervisor-socket:/var/run/supervisor
+      - "./src/config/supervisord_task.conf:/etc/supervisord_task.conf"
+      - projects:/var/lib/awx/projects/
+      - "./src/config/launch_awx_task.sh:/usr/bin/launch_awx_task.sh"
       - rsyslog-socket:/var/run/awx-rsyslog/
+      - awx-receptor:/var/run/awx-receptor/
       - "./src/config/SECRET_KEY:/etc/tower/SECRET_KEY"
-      - "./src/config/environment.sh:/etc/tower/conf.d/environment.sh"
+      - "./src/config/settings.py:/etc/tower/settings.py"
+      - "./src/config/local_settings.py:/etc/tower/local_settings.py"
+      - "./src/config/websocket_secret.py:/etc/tower/websocket_secret.py"
       - "./src/config/nginx.conf:/etc/nginx/nginx.conf"
       - "./src/config/credentials.py:/etc/tower/conf.d/credentials.py"
+      - "./src/config/receptor/receptor-awx.conf:/etc/receptor/receptor.conf"
+      - "./src/config/receptor/receptor-awx-1.conf.lock:/etc/receptor/receptor.conf.lock"
       - redis-socket:/var/run/redis/
+      - "~/.kube/config:/var/lib/awx/.kube/config"
+      - "/sys/fs/cgroup:/sys/fs/cgroup"
+      - shared:/var/lib/shared
+    privileged: true
+    tty: true
     environment:
-      http_proxy: 
-      https_proxy: 
-      no_proxy: 
-      SUPERVISOR_WEB_CONFIG_PATH: '/etc/supervisord.conf'
+      http_proxy:
+      https_proxy:
+      no_proxy:
+
+  rsyslog:
+    image: quay.io/ansible/awx:${APP_VERSION}
+    container_name: awx_rsyslog
+    command: /usr/bin/launch_awx_rsyslog.sh
+    hostname: awx_rsyslog
+    user: root
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - projects:/var/lib/awx/projects/
+      - "./src/config/launch_awx_task.sh:/usr/bin/launch_awx_task.sh"
+      - rsyslog-socket:/var/run/awx-rsyslog/
+      - awx-receptor:/var/run/awx-receptor/
+      - "./src/config/SECRET_KEY:/etc/tower/SECRET_KEY"
+      - "./src/config/settings.py:/etc/tower/settings.py"
+      - "./src/config/local_settings.py:/etc/tower/local_settings.py"
+      - "./src/config/websocket_secret.py:/etc/tower/websocket_secret.py"
+      - "./src/config/nginx.conf:/etc/nginx/nginx.conf"
+      - "./src/config/credentials.py:/etc/tower/conf.d/credentials.py"
+      - "./src/config/receptor/receptor-awx.conf:/etc/receptor/receptor.conf"
+      - "./src/config/receptor/receptor-awx-1.conf.lock:/etc/receptor/receptor.conf.lock"
+      - redis-socket:/var/run/redis/
+      - "~/.kube/config:/var/lib/awx/.kube/config"
+      - "/sys/fs/cgroup:/sys/fs/cgroup"
+    privileged: true
+    tty: true
+    environment:
+      http_proxy:
+      https_proxy:
+      no_proxy:
 
   redis:
     image: redis
     container_name: awx_redis
     restart: unless-stopped
+    env_file: .env
     environment:
-      http_proxy: 
-      https_proxy: 
-      no_proxy: 
+      http_proxy:
+      https_proxy:
+      no_proxy:
+    entrypoint: ["redis-server"]
     command: ["/usr/local/etc/redis/redis.conf"]
     volumes:
-      - redis-socket:/var/run/redis/
-      - "./redis/redis.conf:/usr/local/etc/redis/redis.conf"
+      - redis-socket:/var/run/redis/:rw
+      - "./src/config/redis.conf:/usr/local/etc/redis/redis.conf"
 
   postgres:
     image: postgres:12
     container_name: awx_postgres
     restart: unless-stopped
+    env_file: .env
     volumes:
       - postgres_new-data:/var/lib/postgresql/data/pgdata/
     environment:
-      POSTGRES_USER: awx
-      POSTGRES_PASSWORD: 123456
-      POSTGRES_DB: awx
-      PGDATA: /var/lib/postgresql/data/pgdata
-      http_proxy: 
-      https_proxy: 
-      no_proxy: 
-
-  nginx:
-    image: nginx
-    container_name: awx_nginx
-    restart: unless-stopped
-    depends_on: 
-      - redis
-      - postgres
-    volumes:
-      - "./src/config/default.conf:/etc/nginx/conf.d/default.conf"
-    ports:
-      - "9003:80"
+      POSTGRES_PASSWORD: ${PASSWORD}
+      http_proxy:
+      https_proxy:
+      no_proxy:
 
 volumes:
   supervisor-socket:
   rsyslog-socket:
   redis-socket:
   postgres_new-data:
+  awx-receptor:
+  projects:
+  shared:
 
 networks:
   default:
