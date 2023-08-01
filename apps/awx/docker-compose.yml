@@ -84,7 +84,7 @@ services:
     image: quay.io/ansible/awx:${APP_VERSION}
     container_name: ${APP_TASK_RSYSLOG_NAME}
     command: /usr/bin/launch_awx_rsyslog.sh
-    hostname: task_rsyslog
+    hostname: awx_rsyslog
     user: root
     restart: unless-stopped
     env_file: .env
