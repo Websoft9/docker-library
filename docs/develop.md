@@ -4,7 +4,7 @@
 
 All of the apps must include an. env file: add **env_file** item at docker-compose.yml for important container which includes lots of environments
 
-### How to include in docker-compose.yml
+### How to include
 
 It is included in container's propert env_file, like this:
   ```
