@@ -80,11 +80,11 @@ services:
       https_proxy:
       no_proxy:
 
-  task_rsyslog:
+  rsyslog:
     image: quay.io/ansible/awx:${APP_VERSION}
     container_name: ${APP_TASK_RSYSLOG_NAME}
     command: /usr/bin/launch_awx_rsyslog.sh
-    hostname: awx_1
+    hostname: task_rsyslog
     user: root
     restart: unless-stopped
     env_file: .env

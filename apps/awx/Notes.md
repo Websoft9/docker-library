@@ -17,6 +17,6 @@ AWX 官方为了用户更灵活的部署，提供了个性化比较强的 [docke
 
 
 
-启动时记得修改 `.evn`中的DJANGO_SUPERUSER_PASSWORD的值，会自动生成admin管理员的账号密码！
+启动时记得修改 `.evn`中的PASSWORD的值，会自动生成admin管理员的账号密码和postgres的密码！
 
 ![image-20230801003911132](https://img-1251935913.cos.ap-beijing.myqcloud.com/to/image-20230801003911132.png)
