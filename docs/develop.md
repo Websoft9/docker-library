@@ -2,7 +2,20 @@
 
 ## env_file
 
-Try to add **env_file** item at docker-compose.yml for important container which includes lots of environments
+All of the apps must include an. env file: add **env_file** item at docker-compose.yml for important container which includes lots of environments
+
+### How to include in docker-compose.yml
+
+It is included in container's propert env_file, like this:
+  ```
+  services:
+    suitecrm:
+      image: docker.io/bitnami/suitecrm:${APP_VERSION}
+      container_name: ${APP_NAME}
+      restart: unless-stopped
+      env_file:
+        - .env
+  ```
 
 ## Credentials
 
