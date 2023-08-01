@@ -2,7 +2,7 @@
 
 ## env_file
 
-All of the apps must include an. env file: add **env_file** item at docker-compose.yml for important container which includes lots of environments
+All of the apps must include an .env file, add **env_file** item at [docker-compose.yml](./template/docker-compose.yml) for important container which includes lots of environments
 
 ### How to include
 
