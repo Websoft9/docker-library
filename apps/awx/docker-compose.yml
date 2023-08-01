@@ -134,6 +134,7 @@ services:
     volumes:
       - postgres_new-data:/var/lib/postgresql/data/pgdata/
     environment:
+      POSTGRES_PASSWORD: ${PASSWORD}
       http_proxy:
       https_proxy:
       no_proxy:
