@@ -1,7 +1,7 @@
 {
   "name": "opensearch",
   "trademark": "OpenSearch",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
   "version": "3.1.1",
   "requirements": {

@@ -53,7 +53,7 @@ services:
 
   opensearch-dashboards:
     image: opensearchproject/opensearch-dashboards:$APP_VERSION
-    container_name: $APP_NAME-dashboards
+    container_name: $APP_NAME
     env_file:
       - .env
     ports:

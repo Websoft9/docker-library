@@ -15,8 +15,8 @@ services:
       - ./src/elasticsearch/config/service_tokens:/usr/share/elasticsearch/config/service_tokens
       - elasticsearch:/usr/share/elasticsearch/data
     ports:
-      - ${APP_DB_ES_HTTP_PORT}:9200
-      - ${APP_DB_ES_TCP_PORT}:9300
+      - ${APP_HTTP_PORT}:9200
+      - ${APP_TCP_PORT}:9300
     env_file: .env
     environment:
       ELASTIC_USERNAME: ${APP_USER}
