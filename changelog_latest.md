@@ -1,1 +1,1 @@
-release when upload artifacts
+release when upload library artifact

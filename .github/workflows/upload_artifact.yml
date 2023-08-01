@@ -18,6 +18,7 @@ jobs:
         name: Check out code
 
       - name: Read Plugin Version
+        id: update_data
         run: |
           version=$(jq -r '.Version' library.json)
           echo version=$version
