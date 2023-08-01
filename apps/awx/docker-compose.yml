@@ -82,7 +82,7 @@ services:
 
   rsyslog:
     image: quay.io/ansible/awx:${APP_VERSION}
-    container_name: ${APP_TASK_RSYSLOG_NAME}
+    container_name: awx_rsyslog
     command: /usr/bin/launch_awx_rsyslog.sh
     hostname: awx_rsyslog
     user: root
@@ -113,7 +113,7 @@ services:
 
   redis:
     image: redis
-    container_name: ${APP_REDIS_NAME}
+    container_name: awx_redis
     restart: unless-stopped
     env_file: .env
     environment:
@@ -127,8 +127,8 @@ services:
       - "./src/config/redis.conf:/usr/local/etc/redis/redis.conf"
 
   postgres:
-    image: postgres:${APP_DB_VERSION}
-    container_name: ${APP_POSTGRED_NAME}
+    image: postgres:12
+    container_name: awx_postgres
     restart: unless-stopped
     env_file: .env
     volumes:
