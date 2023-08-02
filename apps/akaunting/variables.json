@@ -1,0 +1,13 @@
+{
+  "name": "akaunting",
+  "trademark": "Akaunting",
+  "release": true,
+  "fork_url": "https://github.com/akaunting/docker",
+  "version": "latest",
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1",
+    "url": "https://github.com/akaunting/docker"
+  }
+}

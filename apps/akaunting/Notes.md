@@ -1,0 +1,3 @@
+# Akaunting
+
+## FAQ

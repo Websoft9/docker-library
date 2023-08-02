@@ -3,7 +3,7 @@
   "trademark": "Redash",
   "release": false,
   "fork_url": "https://github.com/getredash/redash",
-  "version": "",
+  "version": "latest",
   "requirements": {
     "cpu": "2",
     "memory": "4",

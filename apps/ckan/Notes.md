@@ -1,5 +1,5 @@
-## Ckan
+# Ckan
 
-## 安装
+## Install
 
-官方提供的是基于 build 的编排文件，目前仅合并，没有测试，有待进一步研究.
+Ckan contain three service: Ckan, Solr, Postgres, datapusher, redis

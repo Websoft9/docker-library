@@ -1,9 +1,9 @@
 {
   "name": "rocketchat",
   "trademark": "RocketChat",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/RocketChat/Docker.Official.Image",
-  "version": "",
+  "version": "4.8",
   "requirements": {
     "cpu": "1",
     "memory": "2",
