@@ -3,7 +3,7 @@
   "trademark": "APITable",
   "release": false,
   "fork_url": "https://github.com/apitable/apitable/blob/develop/docker-compose.yaml",
-  "version": "0.20.0",
+  "version": "v0.99.0-alpha_1575",
   "requirements": {
     "cpu": "2",
     "memory": "8",
