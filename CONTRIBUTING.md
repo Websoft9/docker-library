@@ -6,7 +6,7 @@ If you're planning to implement a new feature or change the api please [create a
 
 ## Not Sure Architecture?
 
-It's important to figure out the design [architecture of Websoft9](docs/develop.md)
+It's important to figure out the design [architecture of library](docs/develop.md)
 
 ## Fork
 
