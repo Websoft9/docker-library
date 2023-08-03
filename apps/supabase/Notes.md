@@ -9,4 +9,6 @@ Supabase includes these open source stacks:
 - Storage
 - Kong
 
+Have tested the official docker compose, it running ok. 
+
 ## FAQ

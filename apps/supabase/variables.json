@@ -1,13 +1,13 @@
 {
-  "name": "appname",
-  "trademark": "AppName",
+  "name": "supabase",
+  "trademark": "Supabase",
   "release": false,
-  "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
+  "fork_url": "https://github.com/supabase/supabase",
   "version": "1.2.5",
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "1",
-    "url": "https://github.com/onlyoffice/docker#recommended-system-requirements"
+    "disk": "2",
+    "url": "https://supabase.com/docs/guides/self-hosting/docker"
   }
 }
