@@ -1,7 +1,7 @@
 {
   "name": "excalidraw",
   "trademark": "Excalidraw",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/toeverything/AFFiNE",
   "version": "latest",
   "requirements": {

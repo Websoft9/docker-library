@@ -11,9 +11,6 @@ services:
     env_file: .env
     ports:
         - "${APP_HTTP_PORT}:80"
-    volumes:
-        - excalidraw:/var/www/html
-
 
 networks:
   default:
