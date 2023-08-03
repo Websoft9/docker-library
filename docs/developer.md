@@ -1,6 +1,8 @@
 # Develop
 
-## [Docker-compose](../template/docker-compose.yml)
+## Docker-compose
+
+You can learn a lot of key information through the [Docker Compose template file](../template/docker-compose.yml), The following points will help you quickly integrate into library project.
 
 ### Use official docker image
 
@@ -20,23 +22,11 @@ Do not use absolute paths, reference by defining volumes.
 
 ## Env_file
 
-All of the apps must include an .env file, add **env_file** item at [docker-compose.yml](../template/docker-compose.yml) for important container which includes lots of environments
-
-### How to include
-
-It is included in container's propert env_file, like this:
-
-```
-services:
-  suitecrm:
-    image: docker.io/bitnami/suitecrm:${APP_VERSION}
-    container_name: ${APP_NAME}
-    restart: unless-stopped
-    env_file:
-      - .env
-```
+You can learn a lot of key information through the [.env template file](../template/.env), we forcibly name it .env, do not use other names.
 
 ### Generic variable
+
+Variables included in all app:
 
 - APP_NAME: It is required in .env file, main container is setted with APP_NAME.
 
@@ -45,6 +35,8 @@ services:
 - APP_VERSION: It is required in .env file, the app's version.
 
 - APP_NETWORK: It is required in .env file, We uniformly place all apps under the network named APP_NETWORK to facilitate connections before the container
+
+### Important variable
 
 - POWER_PASSWORD: If app or db have password, init password is POWER_PASSWORD. APP_PASSWORD and DB_PASSWORD uses it to assign values and maintain the same password for one app
 
