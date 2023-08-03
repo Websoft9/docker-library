@@ -72,9 +72,9 @@ APP_DB_MYSQL_USER=$APP_NAME
 
 Compilation related files are all placed in two directories:
 
-- App's root: Dockerfile, cmd.sh, entrypoint.sh
+- App's root directory: Dockerfile, cmd.sh, entrypoint.sh
 
-- App's src: config files or need to edit executable files
+- App's src directory: config files or need to edit executable files
 
 ### Maintainability
 
