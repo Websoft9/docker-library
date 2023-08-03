@@ -1,4 +1,8 @@
-# Develop
+# Developer Guide
+
+## Architecture
+
+The architecture of the library is relatively simple, which is a collection of a large number of apps that are uniformly placed in the apps director. Each folder under apps is an independent and runnable Docker Compose project.
 
 ## Docker-compose
 
@@ -61,6 +65,20 @@ APP_DB_MYSQL_PASSWORD=$APP_PASSWORD
 APP_DB_MYSQL_NAME=$APP_NAME
 APP_DB_MYSQL_USER=$APP_NAME
 ```
+
+## Dockerfile
+
+### Files structure
+
+Compilation related files are all placed in two directories:
+
+- App's root: Dockerfile, cmd.sh, entrypoint.sh
+
+- App's src: config files or need to edit executable files
+
+### Maintainability
+
+Version, username, and password should be set as environment variables as much as possible to facilitate user changes or subsequent upgrades.
 
 ## Credentials
 
