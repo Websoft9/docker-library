@@ -1,6 +1,7 @@
-## 0.5.2 release on 2023-08-01
+## 0.5.3 release on 2023-08-03
 
-release when upload library artifact
+1. library artifacts directory: websoft9/plugin/library
+2. add init apps: nocobase, affine
 
 ## 0.2.3 release on 2023-06-26
 

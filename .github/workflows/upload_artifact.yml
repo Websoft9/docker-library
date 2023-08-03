@@ -43,7 +43,7 @@ jobs:
           connection_string: ${{ secrets.AZURE_STORAGE_ARTIFACT }}
           container_name: release
           source_folder: artifacts/
-          destination_folder: ./websoft9/plugin
+          destination_folder: ./websoft9/plugin/library
           delete_if_exists: true
           fail_if_source_empty: true
 
