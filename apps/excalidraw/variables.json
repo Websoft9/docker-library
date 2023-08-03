@@ -1,0 +1,13 @@
+{
+  "name": "excalidraw",
+  "trademark": "Excalidraw",
+  "release": false,
+  "fork_url": "https://github.com/toeverything/AFFiNE",
+  "version": "latest",
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1",
+    "url": "https://github.com/toeverything/AFFiNE"
+  }
+}

@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  affine:
+
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  akeneo:

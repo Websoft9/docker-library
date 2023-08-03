@@ -1,5 +1,5 @@
 # compose: https://github.com/nocodb/nocodb/blob/master/docker-compose/pg/docker-compose.yml
-
+# docs: https://docs.nocodb.com/getting-started/installation
 
 version: '3.8'
 
@@ -9,23 +9,22 @@ services:
       db:
         condition: service_healthy
     image: nocodb/nocodb:${APP_VERSION}
-    container_name: ${APP_CONTAINER_NAME}
+    container_name: ${APP_NAME}
     ports:
       - "${APP_HTTP_PORT}:8080"
-      - "8081:8081"
-      - "8082:8082"
-      - "8083:8083"
     restart: unless-stopped
+    volumes: 
+      - "nocodb:/usr/app/data"
     environment:
-      NC_DB: "pg://${APP_CONTAINER_NAME}-postgre:5432?u=${APP_DB_POSTGRESQL_USER}&p=${APP_DB_POSTGRESQL_PASSWORD}&d=${APP_DB_POSTGRESQL_NAME}"
+      NC_DB: "pg://${APP_NAME}-postgre:5432?u=${APP_DB_POSTGRESQL_USER}&p=${APP_DB_POSTGRESQL_PASSWORD}&d=${APP_DB_POSTGRESQL_NAME}"
 
   db:
     image: postgres:${APP_DB_POSTGRESQL_VERSION}
-    container_name: ${APP_CONTAINER_NAME}-postgre
-    hostname: ${APP_CONTAINER_NAME}-postgre
+    container_name: ${APP_NAME}-postgre
+    hostname: ${APP_NAME}-postgre
     restart: unless-stopped
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: ${APP_DB_POSTGRESQL_PASSWORD}
       POSTGRES_USER: ${APP_DB_POSTGRESQL_USER}
@@ -42,5 +41,7 @@ networks:
     external: true
     
 volumes:
-  db_data:
+  postgres:
+    driver: local
+  nocodb:
     driver: local
