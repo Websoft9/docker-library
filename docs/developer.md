@@ -1,5 +1,11 @@
 # Developer Guide
 
+- Write the dockerfile if there no suitale image for the application
+- Write the docker-compose file and .env as per specifications
+- Test it and pull request
+
+Our specifications is very simple, you just only add the environments begin with **APP\_** reference from template
+
 ## Architecture
 
 The architecture of the library is relatively simple, which is a collection of a large number of apps that are uniformly placed in the apps director. Each folder under apps is an independent and runnable Docker Compose project.
@@ -26,6 +32,7 @@ Do not use absolute paths, reference by defining volumes.
 
 ## Env_file
 
+表格罗列说明
 You can learn a lot of key information through the [.env template file](../template/.env), we forcibly name it .env, do not use other names.
 
 ### Generic variable
@@ -81,6 +88,8 @@ Compilation related files are all placed in two directories:
 Version, username, and password should be set as environment variables as much as possible to facilitate user changes or subsequent upgrades.
 
 ## Credentials
+
+## Health check
 
 ## Logs limit
 

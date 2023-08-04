@@ -51,13 +51,9 @@ These environments is frequently used:
 ## How to contribute it?
 
 The [contributing](CONTRBUTING.md) for this repository have below field:
+参照 portainer 贡献 3 点：
 
-
-## Issue reward
-
-We will certainly encounter difficult problems in our work, but it may be very simple for you.
-
-Websoft9 submit some issue with "¥50 - ¥1000", hope you can close it and obtain the reward
+> We will certainly encounter difficult problems in our work, but it may be very simple for you.Websoft9 submit some issue with "¥50 - ¥1000", hope you can close it and obtain the reward
 
 ## Documentation
 

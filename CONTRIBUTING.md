@@ -4,6 +4,10 @@ From opening a bug report to creating a pull request: every contribution is appr
 
 If you're planning to implement a new feature or change the api please [create an issue](https://github.com/websoft9/docker-library/issues/new/choose) first. This way we can ensure that your precious work is not in vain.
 
+## Contribution process
+
+流程图
+
 ## Not Sure Architecture?
 
 It's important to figure out the [developer documentation](docs/developer.md)
@@ -63,3 +67,5 @@ Websoft9 use below [Artifact](https://jfrog.com/devops-tools/article/what-is-a-s
 Websoft9 use the [Production branch with GitLab flow](https://cm-gitlab.stanford.edu/help/workflow/gitlab_flow.md#production-branch-with-gitlab-flow) for development collaboration
 
 > [gitlab workflow](https://docs.gitlab.com/ee/topics/gitlab_flow.html) is improvement model for git
+
+## licensing
