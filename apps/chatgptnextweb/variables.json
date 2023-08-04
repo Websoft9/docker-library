@@ -1,0 +1,13 @@
+{
+  "name": "chatgptnextweb",
+  "trademark": "ChatGPT-Next-Web",
+  "release": false,
+  "fork_url": "https://github.com/Yidadaa/ChatGPT-Next-Web",
+  "version": "latest",
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1",
+    "url": "https://github.com/Yidadaa/ChatGPT-Next-Web"
+  }
+}

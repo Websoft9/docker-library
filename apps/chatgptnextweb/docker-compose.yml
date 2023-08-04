@@ -1,0 +1,17 @@
+# compose: https://github.com/Yidadaa/ChatGPT-Next-Web/blob/main/docker-compose.yml
+
+version: '3.8'
+
+services:
+  chatgpt-next-web: 
+    image: yidadaa/chatgpt-next-web:${APP_VERSION}
+    container_name: ${APP_NAME}
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - $APP_HTTP_PORT:3000
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
