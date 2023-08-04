@@ -3,7 +3,7 @@
   "trademark": "BigBlueButton",
   "release": false,
   "fork_url": "https://github.com/bigbluebutton/docker",
-  "version": "",
+  "version": "latest",
   "requirements": {
     "cpu": "2",
     "memory": "4",
