@@ -6,9 +6,9 @@
 
 # Docker Compose applications
 
-This repository include 200+ applications based on docker compose, e.g [WordPress, MySQL, Odoo, MongoDB...](https://github.com/Websoft9/docker-library/tree/main/apps)
+This repository include 200+ applications based on docker compose, e.g [WordPress, MySQL, Odoo, MongoDB...](https://github.com/Websoft9/docker-library/tree/main/apps), including multiple categories such as enterprise management, content management, data analysis, codeless development, DevOps, etc. We expect to expand the open-source app to over 1000+ in the next 2 years, so that most people think of us the first time they want to install an application.
 
-If you can use docker, you already know how to use and develop an application for [Websoft9](https://www.websoft9.com).
+We will try our best to use official images and will not intentionally maintain Docker images for each app on Docker Hub, focusing on the arrangement and connection between containers. If you can use docker, you already know how to use and develop an application for [Websoft9](https://www.websoft9.com).
 
 ## How to use it?
 
@@ -37,16 +37,7 @@ If you can use docker, you already know how to use and develop an application fo
 
 ### Environments
 
-All environment is at `.env` file for each application, You should read it and modify it if you need.
-
-These environments is frequently used:
-
-- POWER_PASSWORD: It can be used for Database password or Administrator password, you should reset it
-- APP_USER: The username of this app
-- APP_HTTP_PORT: port of this app, you can access app by ip:port
-- APP_URL: You must reset it for you real DNS or IP if APP_URL_REPLACE=true
-- APP_ENCRYPT_PASSWORD: This value is from encrypt APP_PASSWOR, some image use encrypted environment
-- APP_AUTH_NEED
+All environment is at `.env` file for each application, You should read [Env Guide]() when you start a app.
 
 ## How to contribute it?
 
@@ -62,7 +53,7 @@ We greatly welcome community contributions to provide suggestions and improvemen
 3. Contributing to the Library codebase
    Please follow our [build instructions](./docs/developer.md) and [contribution guidelines](CONTRBUTING.md) when making a contribution.T
 
-> We will certainly encounter difficult problems in our work, but it may be very simple for you. Websoft9 submit some issue with "¥50 - ¥1000", hope you can close it and obtain the reward
+> We will certainly encounter difficult problems in our work, but it may be very simple for you. Websoft9 submit some issue with "¥50 - ¥1000", hope you can close it and obtain the reward.
 
 ## Documentation
 
