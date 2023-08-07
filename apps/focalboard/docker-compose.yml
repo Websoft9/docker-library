@@ -1,0 +1,25 @@
+# image: https://hub.docker.com/r/mattermost/focalboard
+# compose: https://github.com/mattermost/focalboard/blob/main/docker/docker-compose.yml
+# docs: https://docs.mattermost.com/guides/deployment.html#server-deployment
+
+version: '3.8'
+
+services:
+  focalboard:
+    container_name: $APP_NAME
+    image: $APP_REPO:$APP_VERSION
+    env_file: .env
+    restart: unless-stopped
+    ports:
+      - "$APP_HTTP_PORT:8000"
+    volumes:
+      - fbdata:/opt/focalboard/data
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  fbdata:
+    driver: local

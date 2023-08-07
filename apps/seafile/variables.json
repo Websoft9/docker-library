@@ -1,12 +1,12 @@
 {
   "name": "seafile",
   "trademark": "Seafile",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/haiwen/seafile-docker.git",
-  "version": "10.0.1",
+  "version": "10.0.1,latest",
   "requirements": {
-    "cpu": "2",
-    "memory": "8",
+    "cpu": "1",
+    "memory": "2",
     "disk": "1",
     "url": "https://cloud.seafile.com/published/seafile-manual-cn/docker/"
   }

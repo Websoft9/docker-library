@@ -6,9 +6,14 @@
 
 # Docker Compose applications
 
-This repository include 200+ applications based on docker compose, e.g [WordPress, MySQL, Odoo, MongoDB...](https://github.com/Websoft9/docker-library/tree/main/apps), including multiple categories such as enterprise management, content management, data analysis, codeless development, DevOps, etc. We expect to expand the open-source app to over 1000+ in the next 2 years, so that most people think of us the first time they want to install an application.
+This repository include 200+ applications based on docker compose, e.g [WordPress, MySQL, Odoo, MongoDB, GitLab, Elastic, Ghost, Grafana, Graylog, Kafka, n8n, Moodle, Nextcloud, ONLYOFFICE, phpMyAdmin...](https://github.com/Websoft9/docker-library/tree/main/apps).  
+
+All these applications integrated to [Websoft9](https://github.com/Websoft9/websoft9) which is web-based PaaS platform.
+
+You can use them for bussiness management, content management, data analysis, development, DevOps and any things you want to do.  
 
 We will try our best to use official images and will not intentionally maintain Docker images for each app on Docker Hub, focusing on the arrangement and connection between containers. If you can use docker, you already know how to use and develop an application for [Websoft9](https://www.websoft9.com).
+
 
 ## How to use it?
 
