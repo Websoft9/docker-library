@@ -1,7 +1,7 @@
 {
   "name": "kasmweb",
   "trademark": "Kasm Workspaces",
-  "release": false,
+  "release": true,
   "fork_url": "https://hub.docker.com/r/kasmweb",
   "version": "1.13.0",
   "requirements": {
