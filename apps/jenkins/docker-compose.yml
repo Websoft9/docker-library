@@ -1,3 +1,5 @@
+# image: https://hub.docker.com/r/jenkins/jenkins
+
 version: '3.8'
 
 services:

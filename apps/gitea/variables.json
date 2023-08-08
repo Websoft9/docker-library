@@ -1,9 +1,9 @@
 {
   "name": "gitea",
   "trademark": "Gitea",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/go-gitea/gitea",
-  "version": "1.2.5",
+  "version": "1.2.5,latest",
   "requirements": {
     "cpu": "2",
     "memory": "4",

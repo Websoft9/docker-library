@@ -1,3 +1,5 @@
+# compose: https://github.com/geoserver/geoserver-cloud
+
 version: "3.8"
 
 volumes:

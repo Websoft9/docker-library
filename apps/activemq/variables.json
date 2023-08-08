@@ -1,7 +1,7 @@
 {
   "name": "activemq",
   "trademark": "ActiveMQ",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/apache/activemq-artemis/tree/main/artemis-docker",
   "version": "5.18.2-jre17-rockylinux8",
   "requirements": {

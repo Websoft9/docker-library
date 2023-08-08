@@ -1,12 +1,12 @@
 {
   "name": "apache",
   "trademark": "Apache",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/docker-library/httpd",
-  "version": "",
+  "version": "latest",
   "requirements": {
-    "cpu": "2",
-    "memory": "4",
+    "cpu": "1",
+    "memory": "1",
     "disk": "1",
     "url": "https://github.com/apache/docker#recommended-system-requirements"
   }
