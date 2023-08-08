@@ -16,7 +16,12 @@ You can learn a lot of key information through the [Docker Compose template file
 
 ### Use official docker image
 
-Try to use the official image as much as possible, unless there is no maintenance or updates have been stopped.
+Try to use the official image as much as possible, unless there is no maintenance or updates have been stopped.   
+
+And you can also get image from public image hub:  
+
+* [DockerHub](https://hub.docker.com/)
+* [Amazon ECR Public Gallery](https://gallery.ecr.aws)
 
 ### Microservices
 

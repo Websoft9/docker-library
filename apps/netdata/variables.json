@@ -1,9 +1,9 @@
 {
   "name": "netadata",
   "trademark": "Netadata",
-  "release": false,
-  "fork_url": "",
-  "version": "",
+  "release": true,
+  "fork_url": "https://learn.netdata.cloud/docs/agent/packaging/docker",
+  "version": "latest",
   "requirements": {
     "cpu": "1",
     "memory": "1",

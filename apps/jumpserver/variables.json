@@ -8,6 +8,6 @@
     "cpu": "2",
     "memory": "4",
     "disk": "1",
-    "url": "https://github.com/jumpserver/docker#recommended-system-requirements"
+    "url": ""
   }
 }

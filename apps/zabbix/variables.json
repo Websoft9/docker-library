@@ -1,9 +1,9 @@
 {
   "name": "zabbix",
   "trademark": "Zabbix",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/zabbix/zabbix-docker",
-  "version": "6.2.0",
+  "version": "6.2,6.0,5.4",
   "requirements": {
     "cpu": "2",
     "memory": "4",

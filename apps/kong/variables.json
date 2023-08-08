@@ -1,9 +1,9 @@
 {
   "name": "kong",
   "trademark": "Kong",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/Kuari/kong-konga-docker-compose.git",
-  "version": "",
+  "version": "latest",
   "requirements": {
     "cpu": "1",
     "memory": "2",

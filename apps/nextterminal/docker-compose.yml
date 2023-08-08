@@ -10,10 +10,10 @@ services:
     volumes:
       - guacd:/usr/local/next-terminal/data
     restart:
-          always
+      always
           
   next-terminal:
-    image: dushixiang/next-terminal:latest
+    image: dushixiang/next-terminal:$APP_VERSION
     container_name: ${APP_NAME}
     environment:
       DB: sqlite
