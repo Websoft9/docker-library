@@ -1,9 +1,9 @@
 {
   "name": "pgadmin",
   "trademark": "pgAdmin",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/postgres/pgadmin4",
-  "version": "",
+  "version": "latest",
   "requirements": {
     "cpu": "1",
     "memory": "1",

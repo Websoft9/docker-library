@@ -1,9 +1,9 @@
 {
   "name": "influxdb",
   "trademark": "InfluxDB",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/influxdata/influxdata-docker",
-  "version": "",
+  "version": "latest",
   "requirements": {
     "cpu": "1",
     "memory": "1",

@@ -1,9 +1,9 @@
 {
   "name": "redis",
   "trademark": "Redis",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/docker-library/redis",
-  "version": "7.0,6.0,5.0,4.0",
+  "version": "7.0,6.0,5.0,4.0,latest",
   "requirements": {
     "cpu": "2",
     "memory": "4",

@@ -1,8 +1,8 @@
 {
   "name": "redisinsight",
   "trademark": "RedisInsight",
-  "release": false,
-  "fork_url": "",
+  "release": true,
+  "fork_url": "https://docs.redis.com/latest/ri/installing/install-docker/",
   "version": "latest",
   "requirements": {
     "cpu": "1",

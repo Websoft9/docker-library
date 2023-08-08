@@ -1,9 +1,9 @@
 {
   "name": "oracle",
   "trademark": "Oracle Database",
-  "release": false,
+  "release": true,
   "fork_url": "https://container-registry.oracle.com/database/express",
-  "version": "",
+  "version": "latest,21.3.0-xe,18.4.0-xe",
   "requirements": {
     "cpu": "2",
     "memory": "8",

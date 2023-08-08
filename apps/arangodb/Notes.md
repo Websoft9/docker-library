@@ -1,5 +1,1 @@
-# ArangoDB
-
-Not test
-
-## FAQ
+# Notes

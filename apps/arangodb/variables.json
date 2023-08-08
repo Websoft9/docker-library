@@ -1,7 +1,7 @@
 {
   "name": "arangodb",
   "trademark": "ArangoDB",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/arangodb/arangodb",
   "version": "latest",
   "requirements": {

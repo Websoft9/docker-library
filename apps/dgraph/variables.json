@@ -1,9 +1,9 @@
 {
   "name": "dgraph",
   "trademark": "Dgraph",
-  "release": false,
-  "fork_url": "",
-  "version": "",
+  "release": true,
+  "fork_url": "https://hub.docker.com/r/dgraph/dgraph/",
+  "version": "latest",
   "requirements": {
     "cpu": "1",
     "memory": "1",
