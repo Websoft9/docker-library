@@ -1,16 +1,18 @@
-# Contributing Guidelines
+# Contributing
 
 From opening a bug report to creating a pull request: every contribution is appreciated and welcome.
 
 If you're planning to implement a new feature or change the api please [create an issue](https://github.com/websoft9/docker-library/issues/new/choose) first. This way we can ensure that your precious work is not in vain.
 
-## Contribution process
+## Process
 
-流程图
+[Bug report flow](https://www.canva.cn/design/DAFrBuGNCNs/-WGd-D0mQHBu1eZM07d8vQ/edit)
 
-## Not Sure Architecture?
+[Feature request flow](https://www.canva.cn/design/DAFrBuGNCNs/-WGd-D0mQHBu1eZM07d8vQ/edit)
 
-It's important to figure out the [developer documentation](docs/developer.md)
+## Development
+
+If you want to contribute code, it is very useful for you to read [the develop documentation](docs/develop.md)
 
 ## Fork
 
