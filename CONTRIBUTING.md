@@ -8,7 +8,7 @@ If you're planning to implement a new feature or change the api please [create a
 
 [Bug report flow](https://www.canva.cn/design/DAFrBuGNCNs/-WGd-D0mQHBu1eZM07d8vQ/edit) as following:
 
-![Alt text](./docs/image/bug_flow.png)
+![Alt text](./docs/image/bug_report_flow.png)
 
 [Feature request flow](https://www.canva.cn/design/DAFrBuGNCNs/-WGd-D0mQHBu1eZM07d8vQ/edit) as following:
 
