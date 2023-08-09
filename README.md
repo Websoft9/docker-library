@@ -1,19 +1,17 @@
-[![](https://lab.frogg.it/lydra/yunohost/ansible-yunohost/badges/main/pipeline.svg)](https://lab.frogg.it/lydra/yunohost/ansible-yunohost/-/pipelines)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
-[![GitHub last commit](https://img.shields.io/github/last-commit/LydraFr/ansible-yunohost)](https://github.com/LydraFr/ansible-yunohost)
-[![GitHub Release Date](https://img.shields.io/github/release-date/LydraFr/ansible-yunohost)](https://github.com/LydraFr/ansible-yunohost)
-[![GitHub Repo stars](https://img.shields.io/github/stars/LydraFr/ansible-yunohost?style=social)](https://github.com/LydraFr/ansible-yunohost)
+[![GitHub last commit](https://img.shields.io/github/last-commit/Websoft9/docker-library)](https://github.com/Websoft9/docker-library)
+[![GitHub Release Date](https://img.shields.io/github/release-date/Websoft9/docker-library)](https://github.com/Websoft9/docker-library)
+[![GitHub Repo stars](https://img.shields.io/github/stars/Websoft9/docker-library?style=social)](https://github.com/Websoft9/docker-library)
 
 # Docker Compose applications
 
-This repository include 200+ applications based on docker compose, e.g [WordPress, MySQL, Odoo, MongoDB, GitLab, Elastic, Ghost, Grafana, Graylog, Kafka, n8n, Moodle, Nextcloud, ONLYOFFICE, phpMyAdmin...](https://github.com/Websoft9/docker-library/tree/main/apps).  
+This repository include 200+ applications based on docker compose, e.g [WordPress, MySQL, Odoo, MongoDB, GitLab, Elastic, Ghost, Grafana, Graylog, Kafka, n8n, Moodle, Nextcloud, ONLYOFFICE, phpMyAdmin...](https://github.com/Websoft9/docker-library/tree/main/apps).
 
 All these applications integrated to [Websoft9](https://github.com/Websoft9/websoft9) which is web-based PaaS platform.
 
-You can use them for bussiness management, content management, data analysis, development, DevOps and any things you want to do.  
+You can use them for bussiness management, content management, data analysis, development, DevOps and any things you want to do.
 
 We will try our best to use official images and will not intentionally maintain Docker images for each app on Docker Hub, focusing on the arrangement and connection between containers. If you can use docker, you already know how to use and develop an application for [Websoft9](https://www.websoft9.com).
-
 
 ## How to use it?
 
@@ -49,14 +47,13 @@ All environment is at `.env` file for each application, You should read [Env Gui
 We greatly welcome community contributions to provide suggestions and improvements to our project:
 
 1. Reporting bugs
-   If you find a bug, please tell us so we can triage it. All bugs are managed in this [GitHub repo](https://github.com/Websoft9/docker-library/issues/new/choose). When you click through, our template makes it easy to record all of the details. Before you report a bug, please check our list of open bugs in case someone else has already reported it.
+   If you find a bug, please tell us so we can triage it. All bugs are managed in this [GitHub repo](https://github.com/Websoft9/docker-library/issues/new/choose).
 
 2. Feature requests
-   You can request new features in this [GitHub repo](https://github.com/Websoft9/docker-library/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=enhancement+title+for+%5Bappname%5D). We also publish a list of open feature requests in GitHub. Check to see if someone has already requested the feature you want, and give it a thumbs up.
-   Learn how we prioritize feature development in this knowledge base article.
+   You can request new features in this [GitHub repo](https://github.com/Websoft9/docker-library/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=enhancement+title+for+%5Bappname%5D).
 
 3. Contributing to the Library codebase
-   Please follow our [build instructions](./docs/developer.md) and [contribution guidelines](CONTRBUTING.md) when making a contribution.T
+   Please follow our [contribution guidelines](CONTRIBUTING.md) when making a contribution.
 
 > We will certainly encounter difficult problems in our work, but it may be very simple for you. Websoft9 submit some issue with "¥50 - ¥1000", hope you can close it and obtain the reward.
 
