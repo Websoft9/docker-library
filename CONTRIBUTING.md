@@ -12,6 +12,8 @@ If you're planning to implement a new feature or change the api please [create a
 
 [Feature request flow](https://www.canva.cn/design/DAFrBuGNCNs/-WGd-D0mQHBu1eZM07d8vQ/edit) as following:
 
+![Alt text](./docs/image/feature_request_flow.png)
+
 ## Development
 
 If you want to contribute code, it is very useful for you to read [the develop documentation](docs/develop.md)
