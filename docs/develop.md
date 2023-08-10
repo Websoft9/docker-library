@@ -42,9 +42,12 @@ The environment variables of the container is the interface between the containe
 The environments begin with **APP\_** is core environment variables. Generally speaking, developers only define and use them.
 We will list and explain commonly used environmental variables as following table:
 
-| Variable name  | Description                                                                                                         | Necessity |
-| -------------- | ------------------------------------------------------------------------------------------------------------------- | --------- |
-| POWER_PASSWORD | Original Password, all containers in the Docker Compose set to this password, make all container passwords the same | no        |
+| Variable name  | Description                                                                                                                                                         | Necessity |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| POWER_PASSWORD | Original Password, all containers password in the Docker Compose are setted to this password, make all container passwords the same                                 | no        |
+| APP_NAME       | The name of this application, main container also named by **APP_NAME's** value                                                                                     | yes       |
+| APP_VERSION    | The version of this application, the image's tag of main container                                                                                                  | yes       |
+| APP_NETWORK    | We have uniformly created a network named constant **websoft9**, which ensures that multiple applications can easily access it through the container name if needed | yes       |
 
 ### Generic variable
 
