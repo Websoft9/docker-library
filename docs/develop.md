@@ -48,6 +48,7 @@ We will list and explain commonly used environmental variables as following tabl
 | APP_NAME       | The name of this application, main container also named by **APP_NAME's** value                                                                                     | yes       |
 | APP_VERSION    | The version of this application, the image's tag of main container                                                                                                  | yes       |
 | APP_NETWORK    | We have uniformly created a network named constant **websoft9**, which ensures that multiple applications can easily access it through the container name if needed | yes       |
+| APP_HTTP_PORT  | The main port of this application, you can access this application by http://ip:APP_HTTP_PORT                                                                       | no        |
 
 ### Generic variable
 
