@@ -42,29 +42,20 @@ The environment variables of the container is the interface between the containe
 The environments begin with **APP\_** is core environment variables. Generally speaking, developers only define and use them.
 We will list and explain commonly used environmental variables as following table:
 
-| Variable name  | Description                                                                                                                                                         | Necessity |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| POWER_PASSWORD | Original Password, all containers password in the Docker Compose are setted to this password, make all container passwords the same                                 | no        |
-| APP_NAME       | The name of this application, main container also named by **APP_NAME's** value                                                                                     | yes       |
-| APP_VERSION    | The version of this application, the image's tag of main container                                                                                                  | yes       |
-| APP_NETWORK    | We have uniformly created a network named constant **websoft9**, which ensures that multiple applications can easily access it through the container name if needed | yes       |
-| APP_HTTP_PORT  | The main port of this application, you can access this application by http://ip:APP_HTTP_PORT                                                                       | no        |
+| Variable name    | Description                                                                                                                                                         | Necessity |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| POWER_PASSWORD   | Original Password, all containers password in the Docker Compose are setted to this password, make all container passwords the same                                 | no        |
+| APP_NAME         | The name of this application, main container also named by **APP_NAME's** value                                                                                     | yes       |
+| APP_VERSION      | The version of this application, the image's tag of main container                                                                                                  | yes       |
+| APP_NETWORK      | We have uniformly created a network named constant **websoft9**, which ensures that multiple applications can easily access it through the container name if needed | yes       |
+| APP_HTTP_PORT    | The main port of this application, you can access this application by http://ip:APP_HTTP_PORT                                                                       | no        |
+| APP_URL_REPLACE  | You must modify APP_URL on init when it is true                                                                                                                     | no        |
+| APP_URL          | It is used when the application APP needs to set an external URL, which can be IP(or domain), IP:PORT, http(s)://IP:POR                                             |
+| APP_HTTPS_ACCESS | Some application (e.g teleport) need HTTPS access, you need to set it to **True**                                                                                   | no        |
+| APP_ADMIN_PATH   | Aapplication's background access address is main url and this suffix                                                                                                |
+| no               |
 
-### Generic variable
-
-Variables included in all app:
-
-- APP_NAME: It is required in .env file, main container is setted with APP_NAME.
-
-> When the container has web pages, the corresponding container of the page is the main container; When a container has no pages, the corresponding container for the core application is usually the main container
-
-- APP_VERSION: It is required in .env file, the app's version.
-
-- APP_NETWORK: It is required in .env file, We uniformly place all apps under the network named APP_NETWORK to facilitate connections before the container
-
-### Important variable
-
-- POWER_PASSWORD: If app or db have password, init password is POWER_PASSWORD. APP_PASSWORD and DB_PASSWORD uses it to assign values and maintain the same password for one app
+> main container: When the container has web pages, the corresponding container of the page is the main container; When a container has no pages, the corresponding container for the core application is usually the main container
 
 - APP_HTTP_PORT: When the container has web pages, use it to map to an external network port for internet access.
 
