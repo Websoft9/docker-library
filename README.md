@@ -40,7 +40,7 @@ We will try our best to use official images and will not intentionally maintain 
 
 ### Environments
 
-All environment is in the `.env` file, you should read [Env Guide](https://github.com/Websoft9/docker-library/blob/main/docs/develop.md#environment-variables) when you start a application.
+All environments is in the `.env` file, you should read [Env Guide](https://github.com/Websoft9/docker-library/blob/main/docs/develop.md#environment-variables) when you run a app by docker compose.
 
 ## How to contribute it?
 
@@ -52,7 +52,7 @@ We greatly welcome community contributions to provide suggestions and improvemen
 2. Feature requests
    You can request new features in this [GitHub repo](https://github.com/Websoft9/docker-library/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=enhancement+title+for+%5Bappname%5D).
 
-3. Contributing to the Library codebase
+3. Contributing to the docker-library repository
    Please follow our [contribution guidelines](CONTRIBUTING.md) when making a contribution.
 
 > We will certainly encounter difficult problems in our work, but it may be very simple for you. Websoft9 submit some issue with "¥50 - ¥1000", hope you can close it and obtain the reward.
