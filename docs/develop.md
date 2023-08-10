@@ -50,10 +50,9 @@ We will list and explain commonly used environmental variables as following tabl
 | APP_NETWORK      | We have uniformly created a network named constant **websoft9**, which ensures that multiple applications can easily access it through the container name if needed | yes       |
 | APP_HTTP_PORT    | The main port of this application, you can access this application by http://ip:APP_HTTP_PORT                                                                       | no        |
 | APP_URL_REPLACE  | You must modify APP_URL on init when it is true                                                                                                                     | no        |
-| APP_URL          | It is used when the application APP needs to set an external URL, which can be IP(or domain), IP:PORT, http(s)://IP:POR                                             |
+| APP_URL          | It is used when the application APP needs to set an external URL, which can be IP(or domain), IP:PORT, http(s)://IP:POR                                             | no        |
 | APP_HTTPS_ACCESS | Some application (e.g teleport) need HTTPS access, you need to set it to **True**                                                                                   | no        |
-| APP_ADMIN_PATH   | Aapplication's background access address is main url and this suffix                                                                                                |
-| no               |
+| APP_ADMIN_PATH   | Aapplication's background access address is main url and this suffix                                                                                                | no        |
 
 > main container: When the container has web pages, the corresponding container of the page is the main container; When a container has no pages, the corresponding container for the core application is usually the main container
 
