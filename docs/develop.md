@@ -33,7 +33,29 @@ All containers are placed on the network named **websoft9**, making them accessi
 
 ### Volumes
 
-Do not use absolute paths, reference by defining volumes.
+We define all the names that need to be mounted at the end of docker-compose.yml and use them through references in different container.
+
+### Credentials
+
+### Health check
+
+Whether the container starts normally through [Health check](https://docs.docker.com/engine/reference/builder/#healthcheck)
+
+### Logs limit
+
+Some application have lots of logs which will need storages. If you want to limit it, below is referance
+
+```
+  wordpress:
+    image: wordpress:$APP_VERSION
+    container_name: $APP_NAME
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+          max-file: "5"
+          max-size: 10m
+```
 
 ## Environment variables
 
@@ -62,44 +84,37 @@ We will list and explain commonly used environmental variables as following tabl
 | APP_DB_DBTPYE_PORT     | The port of this database if you want to connect db by host                                                                                                         | no        |
 | APP_DB_DBTPYE_PASSWORD | The password of **APP_DB_DBTPYE_USER** on this database                                                                                                             | no        |
 | APP_DB_DBTPYE_NAME     | The database name                                                                                                                                                   | no        |
+| APP_SITE_NAME          | Some application must set sitename, this is a init sitename                                                                                                         | no        |
+| APP_EMAIL              | Some application must set email, this is a default email                                                                                                            | no        |
 
-> main container: When the container has web pages, the corresponding container of the page is the main container; When a container has no pages, the corresponding container for the core application is usually the main container
+> main container: When the container has web pages, the corresponding container of the page is the main container; When a container has no pages, the corresponding container for the core application is usually the main container.
 
-## Dockerfile
+## Build docker image of websoft9
 
-### Files structure
+When we cannot find a suitable image, we have to compile the image by Dockerfile,We make a requirement in the following aspects.
 
-Compilation related files are all placed in two directories:
+## Parent Image
 
-- App's root directory: Dockerfile, cmd.sh, entrypoint.sh
+The parent image needs to follow the following point:
 
-- App's src directory: config files or need to edit executable files
+- The preferred image is the one provided by the official, as the official image has undergone extensive testing and verification, and has good stability and reliability.
+- Select the smallest possible base image to reduce the size of the image and potential security vulnerabilities.
+- Select images that have undergone security review and frequent updates.
+
+### Structure
+
+Main related files are all placed in two directories:
+
+- root directory: Dockerfile, cmd.sh, entrypoint.sh
+- src directory: config files or need to edit executable files
 
 ### Maintainability
 
-Version, username, and password should be set as environment variables as much as possible to facilitate user changes or subsequent upgrades.
+Sufficient external interfaces need to be provided through environment variables, such as username,passowrd,port.
 
-## Credentials
+### LABEL
 
-## Health check
-
-Whether the container starts normally through [Health check](https://docs.docker.com/engine/reference/builder/#healthcheck)
-
-## Logs limit
-
-Some application have lots of logs which will need storages. If you want to limit it, below is referance
-
-```
-  wordpress:
-    image: wordpress:$APP_VERSION
-    container_name: $APP_NAME
-    restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-          max-file: "5"
-          max-size: 10m
-```
+The elements of label are necessary: such as version,vendor,description.
 
 ## PHP configuration
 
@@ -109,4 +124,4 @@ Some application have lots of logs which will need storages. If you want to limi
 
 ## variables.json
 
-- version format: x.x.x
+Every application must contain a variables.json, which contains information such as version, trademark, document reference address, and running environment requirements.
