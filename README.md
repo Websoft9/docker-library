@@ -40,7 +40,7 @@ We will try our best to use official images and will not intentionally maintain 
 
 ### Environments
 
-All environment is at `.env` file for each application, You should read [Env Guide]() when you start a app.
+All environment is at `.env` file for each application, You should read [Env Guide](https://github.com/Websoft9/docker-library/blob/main/docs/develop.md#environment-variables) when you start a app.
 
 ## How to contribute it?
 
