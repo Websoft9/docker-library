@@ -10,9 +10,9 @@ Our specifications is very simple, you just only add the environments begin with
 
 The architecture of the library is relatively simple, which is a collection of a large number of apps that are uniformly placed in the apps director. Each folder under apps is an independent and runnable Docker Compose project.
 
-## Docker-compose
+## Docker compose
 
-You can learn a lot of key information through the [Docker Compose template file](../template/docker-compose.yml), The following points will help you quickly integrate into library project.
+You can understand the basic composition and specifications through the [Docker Compose template file](../template/docker-compose.yml), The following points will help you quickly integrate into library project.
 
 ### Use official docker image
 
@@ -29,16 +29,15 @@ The images used should be componentized as much as possible, with app main image
 
 ### Networks
 
-All containers are placed on the same network, making them accessible to each other through container names.
+All containers are placed on the network named **websoft9**, making them accessible to each other through container names.
 
 ### Volumes
 
 Do not use absolute paths, reference by defining volumes.
 
-## Env_file
+## Environment variables
 
-表格罗列说明
-You can learn a lot of key information through the [.env template file](../template/.env), we forcibly name it .env, do not use other names.
+The environment variables of the container is the interface between the container and external interactions, the library all of the apps's environment variables are imported through **.env** file and cannot be directly defined in the docker-compose.yml, you can understand the basic composition and specifications through the [.env template file](../template/.env).
 
 ### Generic variable
 

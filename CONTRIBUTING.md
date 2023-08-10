@@ -16,7 +16,7 @@ If you're planning to implement a new feature or change the api please [create a
 
 ## Development
 
-If you want to contribute code, it is very useful for you to read [the develop documentation](docs/develop.md)
+If you want to start to develop this repository, it is very useful for you to read [the develop documentation](docs/develop.md)
 
 ## Fork
 
@@ -75,3 +75,7 @@ Websoft9 use the [Production branch with GitLab flow](https://cm-gitlab.stanford
 > [gitlab workflow](https://docs.gitlab.com/ee/topics/gitlab_flow.html) is improvement model for git
 
 ## licensing
+
+See the [LICENSE](https://github.com/Websoft9/docker-library/blob/main/LICENSE.md) file for our project's licensing. We will ask you to confirm the licensing of your contribution.
+
+We may ask you to sign a [Contributor License Agreement (CLA)](http://en.wikipedia.org/wiki/Contributor_License_Agreement) for larger changes.
