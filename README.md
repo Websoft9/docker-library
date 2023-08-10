@@ -40,7 +40,7 @@ We will try our best to use official images and will not intentionally maintain 
 
 ### Environments
 
-All environment is at `.env` file for each application, You should read [Env Guide](https://github.com/Websoft9/docker-library/blob/main/docs/develop.md#environment-variables) when you start a app.
+All environment is in the `.env` file, you should read [Env Guide](https://github.com/Websoft9/docker-library/blob/main/docs/develop.md#environment-variables) when you start a application.
 
 ## How to contribute it?
 
@@ -71,7 +71,7 @@ You can subscribe [Websoft9 Enterprise Support](https://www.websoft9.com/apps) t
 
 ## License
 
-[LGPL-3.0](/License.md), Additional Terms: It is not allowed to publish free or paid image based on this repository in any Cloud platform's Marketplace without authorization (未经授权许可，不允许将基于本项目创建的镜像到云平台市场上售卖)
+[LGPL-3.0](LICENSE.md), Additional Terms: It is not allowed to publish free or paid image based on this repository in any Cloud platform's Marketplace without authorization.
 
 ## Disclaimer
 
