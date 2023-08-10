@@ -39,6 +39,13 @@ Do not use absolute paths, reference by defining volumes.
 
 The environment variables of the container is the interface between the container and external interactions, the library all of the apps's environment variables are imported through **.env** file and cannot be directly defined in the docker-compose.yml, you can understand the basic composition and specifications through the [.env template file](../template/.env).
 
+The environments begin with **APP\_** is core environment variables. Generally speaking, developers only define and use them.
+We will list and explain commonly used environmental variables as following table:
+
+| Variable name  | Description                                                                                                         | Necessity |
+| -------------- | ------------------------------------------------------------------------------------------------------------------- | --------- |
+| POWER_PASSWORD | Original Password, all containers in the Docker Compose set to this password, make all container passwords the same | no        |
+
 ### Generic variable
 
 Variables included in all app:
