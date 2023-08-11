@@ -35,8 +35,6 @@ All containers are placed on the network named **websoft9**, making them accessi
 
 We define all the names that need to be mounted at the end of docker-compose.yml and use them through references in different container.
 
-### Credentials
-
 ### Health check
 
 Whether the container starts normally through [Health check](https://docs.docker.com/engine/reference/builder/#healthcheck)
