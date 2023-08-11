@@ -55,7 +55,7 @@ We greatly welcome community contributions to provide suggestions and improvemen
 3. Contributing to the docker-library repository
    Please follow our [contribution guidelines](CONTRIBUTING.md) when making a contribution.
 
-> We will certainly encounter difficult problems in our work, but it may be very simple for you. Websoft9 submit some issue with "¥50 - ¥1000", hope you can close it and obtain the reward.
+> We will certainly encounter difficult problems in our work, but it may be very simple for you. Websoft9 submit some issue with "¥50 - ¥500", hope you can close it and obtain the reward.
 
 ## Documentation
 
