@@ -69,6 +69,10 @@ You can subscribe [Websoft9 Enterprise Support](https://www.websoft9.com/apps) t
 - Support: Everything you need for technical support, e.g Enable HTTPS, Upgrade guide
 - Security: Security services and tools to protect your software
 
+## Partner
+
+[Our partners](https://support.websoft9.com/en/docs/partner) include integrators, cloud platforms, ISV, reseller.
+
 ## License
 
 [LGPL-3.0](LICENSE.md), Additional Terms: It is not allowed to publish free or paid image based on this repository in any Cloud platform's Marketplace without authorization.
