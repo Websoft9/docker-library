@@ -7,7 +7,7 @@
 
 This repository include 200+ applications based on docker compose, e.g [WordPress, MySQL, Odoo, MongoDB, GitLab, Elastic, Ghost, Grafana, Graylog, Kafka, n8n, Moodle, Nextcloud, ONLYOFFICE, phpMyAdmin...](https://github.com/Websoft9/docker-library/tree/main/apps).
 
-All these applications integrated to [Websoft9](https://github.com/Websoft9/websoft9) which is web-based PaaS platform.
+All these applications integrated to [Websoft9](https://github.com/Websoft9/websoft9) which is a web-based PaaS platform on single machine.
 
 You can use them for bussiness management, content management, data analysis, development, DevOps and any things you want to do.
 
