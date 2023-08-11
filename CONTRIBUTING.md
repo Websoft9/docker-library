@@ -2,7 +2,7 @@
 
 From opening a bug report to creating a pull request: every contribution is appreciated and welcome.
 
-If you're planning to implement a new feature or change the api please [create an issue](https://github.com/websoft9/docker-library/issues/new/choose) first. This way we can ensure that your precious work is not in vain.
+If you're planning to implement a new feature or change the docker-library repository, please [create an issue](https://github.com/websoft9/docker-library/issues/new/choose) first. This way we can ensure that your precious work is not in vain.
 
 ## Process
 
