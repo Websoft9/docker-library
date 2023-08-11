@@ -53,7 +53,7 @@ We greatly welcome community contributions to provide suggestions and improvemen
    You can request new features in this [GitHub repo](https://github.com/Websoft9/docker-library/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=enhancement+title+for+%5Bappname%5D).
 
 3. Discussions and provide suggestions
-   In the [opened issues](https://github.com/Websoft9/docker-library/issues)), you can give comments, provide better methods to solve the problem.
+   In the [opened issues](https://github.com/Websoft9/docker-library/issues), you can give comments, provide better methods to solve the problem.
 
 4. Contributing to the docker-library repository
    Please follow our [contribution guidelines](CONTRIBUTING.md) when making a contribution.
