@@ -7,13 +7,16 @@
 
 This repository include 200+ applications based on docker compose, e.g [WordPress, MySQL, Odoo, MongoDB, GitLab, Elastic, Ghost, Grafana, Graylog, Kafka, n8n, Moodle, Nextcloud, ONLYOFFICE, phpMyAdmin...](https://github.com/Websoft9/docker-library/tree/main/apps).
 
-All these applications integrated to [Websoft9](https://github.com/Websoft9/websoft9) which is a web-based PaaS platform on single machine.
-
 You can use them for bussiness management, content management, data analysis, development, DevOps and any things you want to do.
 
 We will try our best to use official images and will not intentionally maintain Docker images for each app on Docker Hub, focusing on the arrangement and connection between containers. If you can use docker, you already know how to use and develop an application for [Websoft9](https://www.websoft9.com).
 
 ## How to use it?
+
+All these applications integrated to [Websoft9](https://github.com/Websoft9/websoft9) which is a web-based PaaS platform on single machine.
+The appstore menu will display all of applications in the library, you can click **Install** to use the application you want.
+
+If you don't want to use the **Websoft9**, you can also quickly install it through scripts.
 
 ### Quickstart
 
@@ -40,25 +43,18 @@ We will try our best to use official images and will not intentionally maintain 
 
 ### Environments
 
-All environments is in the `.env` file, you should read [Env Guide](https://github.com/Websoft9/docker-library/blob/main/docs/develop.md#environment-variables) when you run a app by docker compose.
+All environments is in the `.env` file, you should read [Env Guide](https://github.com/Websoft9/docker-library/blob/main/docs/code_owner.md#environment-variables) when you run a app by docker compose.
 
 ## How to contribute it?
 
 We greatly welcome community contributions to provide suggestions and improvements to our project:
 
-1. Reporting bugs
-   If you find a bug, please tell us so we can triage it. All bugs are managed in this [GitHub repo](https://github.com/Websoft9/docker-library/issues/new/choose).
+1. Participate this repository through [issue](https://github.com/Websoft9/docker-library/issues)
 
-2. Feature requests
-   You can request new features in this [GitHub repo](https://github.com/Websoft9/docker-library/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=enhancement+title+for+%5Bappname%5D).
+   If you find a bug, request new features or provide better methods to solve the problem, you can promote your ideas through issues.
 
-3. Discussions and provide suggestions
-   In the [opened issues](https://github.com/Websoft9/docker-library/issues), you can give comments, provide better methods to solve the problem.
-
-4. Contributing to the docker-library repository
+2. Contributing to the docker-library repository, some times will have [reward]() for it.
    Please follow our [contribution guidelines](CONTRIBUTING.md) when making a contribution.
-
-> We will certainly encounter difficult problems in our work, but it may be very simple for you. Websoft9 submit some issue with "¥50 - ¥500", hope you can close it and obtain the reward.
 
 ## Documentation
 
@@ -72,9 +68,9 @@ You can subscribe [Websoft9 Enterprise Support](https://www.websoft9.com/apps) t
 - Support: Everything you need for technical support, e.g Enable HTTPS, Upgrade guide
 - Security: Security services and tools to protect your software
 
-## Partner
+## Sponsor
 
-[Our partners](https://support.websoft9.com/en/docs/partner) include integrators, cloud platforms, ISV, reseller.
+The following corporate organizations have provided us with sponsorship, which has greatly helped the repository: APITable(https://apitable.com/), Mingdao(https://www.mingdao.com/), HUAWEI CLOUD(https://www.huaweicloud.com/intl/en-us/).
 
 ## License
 

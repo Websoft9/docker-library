@@ -16,7 +16,7 @@ If you're planning to implement a new feature or change the docker-library repos
 
 ## Development
 
-If you want to start to develop this repository, it is very useful for you to read [the develop documentation](docs/develop.md)
+If you want to start to develop this repository, it is very useful for you to read [the develop documentation](docs/code_owner.md)
 
 ## Fork
 
