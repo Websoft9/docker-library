@@ -62,28 +62,29 @@ The environment variables of the container is the interface between the containe
 The environments begin with **APP\_** is core environment variables. Generally speaking, developers only define and use them.
 We will list and explain commonly used environmental variables as following table:
 
-| Variable name          | Description                                                                                                                                                         | Necessity |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| POWER_PASSWORD         | Original Password, all containers password in the Docker Compose are setted to this password, make all container passwords the same                                 | no        |
-| APP_NAME               | The name of this application, main container also named by **APP_NAME's** value                                                                                     | yes       |
-| APP_VERSION            | The version of this application, the image's tag of main container                                                                                                  | yes       |
-| APP_NETWORK            | We have uniformly created a network named constant **websoft9**, which ensures that multiple applications can easily access it through the container name if needed | yes       |
-| APP_HTTP_PORT          | The main port of this application, you can access this application by http://ip:APP_HTTP_PORT                                                                       | no        |
-| APP_URL_REPLACE        | You must modify APP_URL on init when it is true                                                                                                                     | no        |
-| APP_URL                | It is used when the application APP needs to set an external URL, which can be IP(or domain), IP:PORT, http(s)://IP:POR                                             | no        |
-| APP_HTTPS_ACCESS       | Some application (e.g teleport) need HTTPS access, you need to set it to **True**                                                                                   | no        |
-| APP_ADMIN_PATH         | Application's background access address is main url and this suffix                                                                                                 | no        |
-| APP_USER               | Application's login username                                                                                                                                        | no        |
-| APP_PASSWORD           | Application's login password                                                                                                                                        | no        |
-| APP_AUTH_NEED          | You must set APP_ENCRYPT_PASSWORD when it is true                                                                                                                   | no        |
-| APP_ENCRYPT_PASSWORD   | Some application must use password with encryption                                                                                                                  | no        |
-| APP_DB_DBTPYE_VERSION  | The version of this database.(DBTPYE is kind of database, such as MYSQL)                                                                                            | no        |
-| APP_DB_DBTPYE_USER     | The username of this container database                                                                                                                             | no        |
-| APP_DB_DBTPYE_PORT     | The port of this database if you want to connect db by host                                                                                                         | no        |
-| APP_DB_DBTPYE_PASSWORD | The password of **APP_DB_DBTPYE_USER** on this database                                                                                                             | no        |
-| APP_DB_DBTPYE_NAME     | The database name                                                                                                                                                   | no        |
-| APP_SITE_NAME          | Some application must set sitename, this is a init sitename                                                                                                         | no        |
-| APP_EMAIL              | Some application must set email, this is a default email                                                                                                            | no        |
+| Variable name          | Description                                                                                                                                                          | Necessity |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| POWER_PASSWORD         | Original Password, all containers password in the Docker Compose are setted to this password, make all container passwords the same                                  | no        |
+| APP_NAME               | The name of this application, main container also named by **APP_NAME's** value                                                                                      | yes       |
+| APP_VERSION            | The version of this application, the image's tag of main container                                                                                                   | yes       |
+| APP_NETWORK            | We have uniformly created a network named constant **websoft9**, which ensures that multiple applications can easily access it through the container name if needed  | yes       |
+| APP_HTTP_PORT          | The main port of this application, you can access this application by http://ip:APP_HTTP_PORT                                                                        | no        |
+| APP\_\*\_PORT          | Depending on the functionality, some applications may also provide external access ports such as API ports or SSH ports. You can named APP_API_PORT or API_SSH_PORT. | no        |
+| APP_URL_REPLACE        | You must modify APP_URL on init when it is true                                                                                                                      | no        |
+| APP_URL                | It is used when the application APP needs to set an external URL, which can be IP(or domain), IP:PORT, http(s)://IP:POR                                              | no        |
+| APP_HTTPS_ACCESS       | Some application (e.g teleport) need HTTPS access, you need to set it to **True**                                                                                    | no        |
+| APP_ADMIN_PATH         | Application's background access address is main url and this suffix                                                                                                  | no        |
+| APP_USER               | Application's login username                                                                                                                                         | no        |
+| APP_PASSWORD           | Application's login password                                                                                                                                         | no        |
+| APP_AUTH_NEED          | You must set APP_ENCRYPT_PASSWORD when it is true                                                                                                                    | no        |
+| APP_ENCRYPT_PASSWORD   | Some application must use password with encryption                                                                                                                   | no        |
+| APP_DB_DBTPYE_VERSION  | The version of this database.(DBTPYE is kind of database, such as MYSQL)                                                                                             | no        |
+| APP_DB_DBTPYE_USER     | The username of this container database                                                                                                                              | no        |
+| APP_DB_DBTPYE_PORT     | The port of this database if you want to connect db by host                                                                                                          | no        |
+| APP_DB_DBTPYE_PASSWORD | The password of **APP_DB_DBTPYE_USER** on this database                                                                                                              | no        |
+| APP_DB_DBTPYE_NAME     | The database name                                                                                                                                                    | no        |
+| APP_SITE_NAME          | Some application must set sitename, this is a init sitename                                                                                                          | no        |
+| APP_EMAIL              | Some application must set email, this is a default email                                                                                                             | no        |
 
 > main container: When the container has web pages, the corresponding container of the page is the main container; When a container has no pages, the corresponding container for the core application is usually the main container.
 

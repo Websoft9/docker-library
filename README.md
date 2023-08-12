@@ -53,8 +53,10 @@ We greatly welcome community contributions to provide suggestions and improvemen
 
    If you find a bug, request new features or provide better methods to solve the problem, you can promote your ideas through issues.
 
-2. Contributing to the docker-library repository, some times will have [reward]() for it.
+2. Contributing to the docker-library repository, some times will have reward for it.
    Please follow our [contribution guidelines](CONTRIBUTING.md) when making a contribution.
+
+> [this repository reward detail](./docs/paid.md)
 
 ## Documentation
 
@@ -70,7 +72,7 @@ You can subscribe [Websoft9 Enterprise Support](https://www.websoft9.com/apps) t
 
 ## Sponsor
 
-The following corporate organizations have provided us with sponsorship, which has greatly helped the repository: APITable(https://apitable.com/), Mingdao(https://www.mingdao.com/), HUAWEI CLOUD(https://www.huaweicloud.com/intl/en-us/).
+The following corporate organizations have provided us with sponsorship, which has greatly helped the repository: [APITable](https://apitable.com/), [Mingdao](https://www.mingdao.com/), [HUAWEI CLOUD](https://www.huaweicloud.com/intl/en-us/).
 
 ## License
 
