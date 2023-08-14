@@ -43,11 +43,22 @@ For the convenience of calculation, the workload completed within a unit size is
 
 #### Requirement Change
 
-When issue main requirement change, close the **problem issue**, give the reward to contributors. We will create a new issue.
+When a issue main requirement change, close the **problem issue**, give the reward to contributors. We will create a new issue.
 
 ### Monthly performance
 
-When the completed issues exceed 10, an additional ¥ 300 will be give to contributors as reward; 20 or more, ¥ 800 will be give to contributors as reward. Communicated through the phone and sent 4th pull_requests cannot close the issue, will reduce the reward by ￥ 200.
+Monthly performance is related to two factors: Quantity and Quality
+
+| Quantity | reward | reduce |
+| -------- | ------ | ------ |
+| 0~9      | -      | -      |
+| 10~19    | ￥ 300 | -      |
+| 20~      | ￥ 800 | -      |
+
+| Quality                                                                          | reward        | reduce         |
+| -------------------------------------------------------------------------------- | ------------- | -------------- |
+| Communicated through the phone and sent 4th pull_requests cannot close the issue | -             | ￥ 100\*issues |
+| First pull_request and close the issue                                           | ￥ 50\*issues | -              |
 
 ## Extra rewords
 
@@ -55,7 +66,7 @@ We will also carry out various forms of communication activities:
 
 1. Regularly organize salons to provide transportation and accommodation fees for contributions from other area
 2. Invite contributors to participate in tourism, and websoft9 is responsible for tourism expenses
-3. Hold an annual meeting, we will select outstanding contributors of the year and give rewards ranging from ¥ 1000 to ¥ 5000
+3. Hold an annual meeting, we will select outstanding contributors of the year and give rewards ranging from ¥ 1000 to ¥ 3000
 
 ## Payment
 
