@@ -14,7 +14,7 @@ There are two main criteria for measuring an issue: workload and difficulty.
 
 #### Workload
 
-For the convenience of calculation, the workload completed within a unit size is considered as a **work-point**.
+For the convenience of calculation, the workload completed within a unit size is considered as a **work-point**, a work-point's price is ￥ 30.
 
 | Content            | Detail                                        | work-point | Necessity |
 | ------------------ | --------------------------------------------- | ---------- | --------- |
@@ -25,6 +25,8 @@ For the convenience of calculation, the workload completed within a unit size is
 | docker-compose.yml | container                                     | 1-2        | no        |
 | .env               | standard                                      | 1          | yes       |
 | .env               | other than APP\_\*, can not use default value | 1          | no        |
+
+a issue max work-point：(1+1+1+2+2+1+1)=9
 
 #### Difficulty
 
@@ -41,6 +43,9 @@ For the convenience of calculation, the workload completed within a unit size is
 | Well-documented           | middle                                | 2                     |
 | Well-documented           | high                                  | 3                     |
 
+a issue highest average weighted difficulty：(3+3+3)/3=3
+a issue lowest average weighted difficulty：(1+1+0.6)/3=0.86
+
 #### Requirement Change
 
 When a issue main requirement change, close the **problem issue**, give the reward to contributors. We will create a new issue.
@@ -49,13 +54,13 @@ When a issue main requirement change, close the **problem issue**, give the rewa
 
 Monthly performance is related to two factors: Quantity and Quality
 
-| Quantity | reward | reduce |
-| -------- | ------ | ------ |
-| 0~9      | -      | -      |
-| 10~19    | ￥ 300 | -      |
-| 20~      | ￥ 800 | -      |
+| Close issue quantity | reward | reduce |
+| -------------------- | ------ | ------ |
+| 0~9                  | -      | -      |
+| 10~19                | ￥ 300 | -      |
+| 20~                  | ￥ 800 | -      |
 
-| Quality                                                                          | reward        | reduce         |
+| Close issue quality                                                              | reward        | reduce         |
 | -------------------------------------------------------------------------------- | ------------- | -------------- |
 | Communicated through the phone and sent 4th pull_requests cannot close the issue | -             | ￥ 100\*issues |
 | First pull_request and close the issue                                           | ￥ 50\*issues | -              |
