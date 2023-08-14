@@ -10,7 +10,7 @@ Contributors get rewards by completing issues. The amount of completed the total
 
 There are two main criteria for measuring an issue: workload and difficulty.
 
-> issue reward=workload \* weighted difficulty
+> issue reward=workload \* average weighted difficulty
 
 #### Workload
 
@@ -26,23 +26,28 @@ For the convenience of calculation, the workload completed within a unit size is
 | .env               | standard                                      | 1          | yes       |
 | .env               | other than APP\_\*, can not use default value | 1          | no        |
 
-#### difficulty
+#### Difficulty
 
-| difficulty classification | Detail               | Weighting coefficient |
-| ------------------------- | -------------------- | --------------------- |
-| Technical deviation       | Popular Techniques   | 1                     |
-| Technical deviation       | Common Techniques    | 2                     |
-| Technical deviation       | Deviation Techniques | 3                     |
-| Developer skill           | low                  | 1                     |
-| Developer skill           | middle               | 2                     |
-| Developer skill           | high                 | 3                     |
-| document guidance level   | low                  | 1                     |
-| document guidance level   | middle               | 2                     |
-| document guidance level   | high                 | 3                     |
+| difficulty classification | Detail                                | Weighting coefficient |
+| ------------------------- | ------------------------------------- | --------------------- |
+| Technical popularity      | Popular Techniques                    | 1                     |
+| Technical popularity      | Common Techniques                     | 2                     |
+| Technical popularity      | Deviation Techniques                  | 3                     |
+| Developer skill           | low                                   | 1                     |
+| Developer skill           | middle                                | 2                     |
+| Developer skill           | high                                  | 3                     |
+| Well-documented           | can run by example docker-compose.yml | 0.6                   |
+| Well-documented           | low                                   | 1                     |
+| Well-documented           | middle                                | 2                     |
+| Well-documented           | high                                  | 3                     |
+
+#### Requirement Change
+
+When issue main requirement change, close the **problem issue**, give the reward to contributors. We will create a new issue.
 
 ### Monthly performance
 
-When the completed issues exceed 10, an additional ¥ 300 will be give to contributors as reward; 20 or more, ¥ 800 will be give to contributors as reward.
+When the completed issues exceed 10, an additional ¥ 300 will be give to contributors as reward; 20 or more, ¥ 800 will be give to contributors as reward. Communicated through the phone and sent 4th pull_requests cannot close the issue, will reduce the reward by ￥ 200.
 
 ## Extra rewords
 
