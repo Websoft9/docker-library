@@ -1,10 +1,10 @@
 # Paid
 
-we will give various forms of rewardss to the contributors, recognize their contribution to the repository.
+We will give various rewards to the contributors in different situations.
 
 ## Work mode & count rewards
 
-Overall, contributors receive rewards by completing issues. For contributors easy to choose a suitable way of working, we have designed two Work mode.
+Contributors get rewards by completing issues. For contributors easy to choose a suitable way of working, we have designed two Work mode.
 
 ### issue contribution
 

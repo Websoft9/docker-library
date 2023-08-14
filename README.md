@@ -13,8 +13,8 @@ We will try our best to use official images and will not intentionally maintain 
 
 ## How to use it?
 
-All these applications integrated to [Websoft9](https://github.com/Websoft9/websoft9) which is a web-based PaaS platform on single machine.
-The appstore menu will display all of applications in the library, you can click **Install** to use the application you want.
+All these applications integrated to [Websoft9](https://github.com/Websoft9/websoft9) which is a web-based PaaS platform on single machine,
+you can get all of applications by **Websoft9**.
 
 If you don't want to use the **Websoft9**, you can also quickly install it through scripts.
 
