@@ -3,7 +3,7 @@
   "trademark": "Adobe Commerce (Magento)",
   "release": false,
   "fork_url": "https://hub.docker.com/r/bitnami/magento",
-  "version": "2.6,latest",
+  "version": "2.4.6,latest",
   "requirements": {
     "cpu": "2",
     "memory": "8",
