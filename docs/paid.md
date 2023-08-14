@@ -2,17 +2,25 @@
 
 We will give various rewards to the contributors in different situations.
 
-## Work mode & count rewards
+## Work mode
 
-Contributors get rewards by completing issues. For contributors easy to choose a suitable way of working, we have designed two Work mode.
+Contributors get rewards by completing issues. The amount of completed the total issue is reward of this month.
 
-### issue contribution
+### How to fix issue price
 
-The allocated issue will indicate the reward amount, the amount of completing the total issue is reward of this month. When the completed issues exceed 10, an additional ¥ 300 will be earned; 20 or more, earn an additional ¥ 800.
+There are two main criteria for measuring an issue: workload and difficulty.
 
-### stable contribution
+> issue reward=workload \* weighted difficulty
 
-The allocated issue will not indicate the reward amount, you must complete at least 20 issues monthly, and will get ￥ 3000 reward. For more than 20 parts, each issue will receive ¥ 200.
+#### Workload
+
+For the convenience of calculation, the workload completed within a unit size is considered as a **work-point**.
+
+#### difficulty
+
+### Monthly performance
+
+When the completed issues exceed 10, an additional ¥ 300 will be give to contributors as reward; 20 or more, ¥ 800 will be give to contributors as reward.
 
 ## Extra rewords
 

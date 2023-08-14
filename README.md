@@ -69,7 +69,7 @@ You can subscribe [Websoft9 Enterprise Support](https://www.websoft9.com/apps) t
 
 The following corporate organizations have provided us with sponsorship, which has greatly helped this repository.
 
-![image](https://libs.websoft9.com/Websoft9/logo/marketplace/huaweiyun-logo.png) ![image](https://libs.websoft9.com/Websoft9/logo/product/apitable-websoft9.png) ![image](https://libs.websoft9.com/Websoft9/logo/product/mingdao-websoft9.png)
+![image](https://libs.websoft9.com/Websoft9/logo/sponser/sponser-huawei-logo.png) ![image](https://libs.websoft9.com/Websoft9/logo/sponser/sponser-mingdaoyun-logo.png) ![image](https://libs.websoft9.com/Websoft9/logo/sponser/sponser-apitable-logo.png)
 
 ## License
 
