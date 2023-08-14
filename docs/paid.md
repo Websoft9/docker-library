@@ -16,6 +16,16 @@ There are two main criteria for measuring an issue: workload and difficulty.
 
 For the convenience of calculation, the workload completed within a unit size is considered as a **work-point**.
 
+| Content            | Detail                                        | work-point | Necessity |
+| ------------------ | --------------------------------------------- | ---------- | --------- |
+| Dockerfile         | standard                                      | 1          | yes       |
+| Dockerfile         | multi-process                                 | 1          | no        |
+| docker-compose.yml | standard                                      | 1          | yes       |
+| docker-compose.yml | cmd.sh                                        | 1-2        | no        |
+| docker-compose.yml | container                                     | 1-2        | no        |
+| .env               | standard                                      | 1          | yes       |
+| .env               | other than APP\_\*, can not use default value | 1          | no        |
+
 #### difficulty
 
 ### Monthly performance
