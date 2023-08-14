@@ -28,6 +28,18 @@ For the convenience of calculation, the workload completed within a unit size is
 
 #### difficulty
 
+| difficulty classification | Detail               | Weighting coefficient |
+| ------------------------- | -------------------- | --------------------- |
+| Technical deviation       | Popular Techniques   | 1                     |
+| Technical deviation       | Common Techniques    | 2                     |
+| Technical deviation       | Deviation Techniques | 3                     |
+| Developer skill           | low                  | 1                     |
+| Developer skill           | middle               | 2                     |
+| Developer skill           | high                 | 3                     |
+| document guidance level   | low                  | 1                     |
+| document guidance level   | middle               | 2                     |
+| document guidance level   | high                 | 3                     |
+
 ### Monthly performance
 
 When the completed issues exceed 10, an additional ¥ 300 will be give to contributors as reward; 20 or more, ¥ 800 will be give to contributors as reward.
