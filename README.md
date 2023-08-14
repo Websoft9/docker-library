@@ -49,14 +49,9 @@ All environments is in the `.env` file, you should read [Env Guide](https://gith
 
 We greatly welcome community contributions to provide suggestions and improvements to our project:
 
-1. Participate this repository through [issue](https://github.com/Websoft9/docker-library/issues)
+1. Find a bug, request features and provide better methods, you can promote your ideas through [issue](https://github.com/Websoft9/docker-library/issues).
 
-   If you find a bug, request new features or provide better methods to solve the problem, you can promote your ideas through issues.
-
-2. Contributing to the docker-library repository, some times will have reward for it.
-   Please follow our [contribution guidelines](CONTRIBUTING.md) when making a contribution.
-
-> [this repository reward detail](./docs/paid.md)
+2. Contributing to this repository, please follow our [contribution guidelines](CONTRIBUTING.md). Some times will have [reward](./docs/paid.md) for it.
 
 ## Documentation
 
@@ -72,7 +67,9 @@ You can subscribe [Websoft9 Enterprise Support](https://www.websoft9.com/apps) t
 
 ## Sponsor
 
-The following corporate organizations have provided us with sponsorship, which has greatly helped the repository: [APITable](https://apitable.com/), [Mingdao](https://www.mingdao.com/), [HUAWEI CLOUD](https://www.huaweicloud.com/intl/en-us/).
+The following corporate organizations have provided us with sponsorship, which has greatly helped this repository.
+
+| ![image](https://libs.websoft9.com/Websoft9/logo/marketplace/huaweiyun-logo.png) | ![image](https://libs.websoft9.com/Websoft9/logo/product/mingdao-websoft9.png) | ![image](https://libs.websoft9.com/Websoft9/logo/product/mingdao-websoft9.png)
 
 ## License
 
