@@ -51,7 +51,7 @@ We greatly welcome community contributions to provide suggestions and improvemen
 
 1. Find a bug, request features and provide better methods, you can promote your ideas through [issue](https://github.com/Websoft9/docker-library/issues).
 
-2. Contributing to this repository, please follow our [contribution guidelines](CONTRIBUTING.md). Some times will have [reward](./docs/paid.md) for it.
+2. Contributing to this repository, please follow our [contribution guidelines](CONTRIBUTING.md). Some times will have [reward](./docs/reward.md) for it.
 
 ## Documentation
 
