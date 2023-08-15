@@ -1,10 +1,8 @@
 # Rewards
 
-We will give various rewards to the contributors in different situations.
+As an open source repository, we reward contributors who solved our issues and ensure better progress for this repository in the future.
 
-Contributors get rewards by completing issues. The amount of completed the total issue is reward of this month.
-
-We will also carry out various forms of communication activities:
+We will also carry out various of communication activities:
 
 1. Regularly organize salons to provide transportation and accommodation fees for contributions from other area
 2. Invite contributors to participate in tourism, and websoft9 is responsible for tourism expenses
@@ -13,8 +11,6 @@ We will also carry out various forms of communication activities:
 ## How to pricing an issue?
 
 There are two rules for measuring an issue: workload and difficulty.
-
-> issue reward=workload \* average weighted difficulty
 
 - An issue total reward = Research reward + Implementation reward
 - For the convenience of calculation, the workload completed within a unit size is considered as a **work-point**, a work-point's price is ￥ 30.
@@ -29,21 +25,25 @@ There are two rules for measuring an issue: workload and difficulty.
 |                | docker-compose.yml       | service, exra cmd.sh or entrypoint.sh         | M     | 1-3        |
 |                | .env                     | environments ammount that can not use default | M     | 1-2        |
 
-An issue max work-point：(1+1+1+2+2+1+1)=9
-
 ## How to pay for issues?
 
-We will pay to contributor before tenth for every month for the previous month's rewards.
+### Monthly rewards
 
-Monthly performance is related to two factors: Quantity and Quality
+Monthly rewards= monthly issues reward + monthly performance
 
-| Close issue quantity | reward | reduce |
-| -------------------- | ------ | ------ |
-| 0~9                  | -      | -      |
-| 10~19                | ￥ 300 | -      |
-| 20~                  | ￥ 800 | -      |
+monthly performance refer to two tables as following:
 
-| Close issue quality                                                              | reward        | reduce         |
-| -------------------------------------------------------------------------------- | ------------- | -------------- |
-| Communicated through the phone and sent 4th pull_requests cannot close the issue | -             | ￥ 100\*issues |
-| First pull_request and close the issue                                           | ￥ 50\*issues | -              |
+| Issues quantity | reward | reduce |
+| --------------- | ------ | ------ |
+| 0~9             | -      | -      |
+| 10~19           | ￥ 300 | -      |
+| 20~             | ￥ 800 | -      |
+
+| Issues review times | reward        | reduce         |
+| ------------------- | ------------- | -------------- |
+| 4~                  | -             | ￥ 100\*issues |
+| 1                   | ￥ 50\*issues | -              |
+
+### Payment
+
+We will pay to contributors before tenth for next month for the monthly rewards.
