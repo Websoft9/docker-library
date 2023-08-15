@@ -5,20 +5,18 @@
 
 # Docker Compose applications
 
-This repository include 200+ applications based on docker compose, e.g [WordPress, MySQL, Odoo, MongoDB, GitLab, Elastic, Ghost, Grafana, Graylog, Kafka, n8n, Moodle, Nextcloud, ONLYOFFICE, phpMyAdmin...](https://github.com/Websoft9/docker-library/tree/main/apps).
+This repository include 200+ applications based on [Docker compose](https://docs.docker.com/compose/), e.g [WordPress, MySQL, Odoo, MongoDB, GitLab, Elastic, Ghost, Grafana, Graylog, Kafka, n8n, Moodle, Nextcloud, ONLYOFFICE, phpMyAdmin...](https://github.com/Websoft9/docker-library/tree/main/apps)
 
-You can use them for bussiness management, content management, data analysis, development, DevOps and any things you want to do.
+You can use them for bussiness management, content management, data analysis, development, DevOps and any things you want to do.  
 
-We will try our best to use official images and will not intentionally maintain Docker images for each app on Docker Hub, focusing on the arrangement and connection between containers. If you can use docker, you already know how to use and develop an application for [Websoft9](https://www.websoft9.com).
 
 ## How to use it?
 
-All these applications integrated to [Websoft9](https://github.com/Websoft9/websoft9) which is a web-based PaaS platform on single machine,
-you can get all of applications by **Websoft9**.
+The easiest way to use this repository is [install Websoft9](https://github.com/Websoft9/websoft9), then you can running these applications on Websoft9's web-based console.  
 
-If you don't want to use the **Websoft9**, you can also quickly install it through scripts.
+Of course, you can also use docker compose to running these application
 
-### Quickstart
+### Running by docker compose
 
 1. Make sure you have install the Docker latest or you can install Docker by below script
 
@@ -41,9 +39,9 @@ If you don't want to use the **Websoft9**, you can also quickly install it throu
    sudo docker network create websoft9 &&  sudo docker compose up -d
    ```
 
-### Environments
+### Change environments if need
 
-All environments is in the `.env` file, you should read [Env Guide](https://github.com/Websoft9/docker-library/blob/main/docs/code_owner.md#environment-variables) when you run a app by docker compose.
+All environments is in the `.env` file of application directory, you should read [Env Guide](https://github.com/Websoft9/docker-library/blob/main/docs/code_owner.md#environment-variables) when you run a app by docker compose.
 
 ## How to contribute it?
 
@@ -51,11 +49,11 @@ We greatly welcome community contributions to provide suggestions and improvemen
 
 1. Find a bug, request features and provide better methods, you can promote your ideas through [issue](https://github.com/Websoft9/docker-library/issues).
 
-2. Contributing to this repository, please follow our [contribution guidelines](CONTRIBUTING.md). Some times will have [reward](./docs/reward.md) for it.
+2. Contributing to this repository, please follow our [contribution guidelines](CONTRIBUTING.md). We try our best to provide [reward](./docs/reward.md) for some important task.
 
 ## Documentation
 
-[Websoft9 Administrator Guide](https://support.websoft9.com/docs)
+[Websoft9 Administrator Guide](https://support.websoft9.com/docs/apps)
 
 ## Support
 
