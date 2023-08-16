@@ -12,8 +12,10 @@ We will also carry out various of communication activities:
 
 There are two processes refer to an issue: research and coding to implementation.
 
+The following noun explanations can help you better understand the price of an issue:
+
 - An issue total reward = Research reward + Implementation reward
-- For the convenience of calculation, the workload completed within a unit size is considered as a **work-point**, a work-point's price is ￥ 30.
+- The workload completed within a unit size is considered as a **work-point**, a work-point's price is ￥ 30.
 - work-point refer to Technical popularity, Developer stacks, Document reading ability
 - Level of Developer Capability: High, Middle, Low are replaced with L, M, and H respectively
 
