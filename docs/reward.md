@@ -1,6 +1,6 @@
 # Rewards
 
-As an open source repository, we reward contributors who solved our issues and ensure better progress for this repository in the future.
+Many contributors voluntarily contribute to open source projects for free, but we reward contributors monthly who solved our issues and ensure better progress for this repository in the future.
 
 We will also carry out various of communication activities:
 
@@ -10,12 +10,12 @@ We will also carry out various of communication activities:
 
 ## How to pricing an issue?
 
-There are two rules for measuring an issue: workload and difficulty.
+There are two processes refer to an issue: research and coding to implementation.
 
 - An issue total reward = Research reward + Implementation reward
 - For the convenience of calculation, the workload completed within a unit size is considered as a **work-point**, a work-point's price is ￥ 30.
 - work-point refer to Technical popularity, Developer stacks, Document reading ability
-- High, Middle, Low
+- Level of Developer Capability: High, Middle, Low are replaced with L, M, and H respectively
 
 | Item Group     | Item                     | Item workload                                 | Skill | work-point |
 | -------------- | ------------------------ | --------------------------------------------- | ----- | ---------- |
