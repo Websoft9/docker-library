@@ -6,7 +6,7 @@ We will also carry out various of communication activities:
 
 1. Regularly organize salons to provide transportation and accommodation fees for contributions from other area
 2. Invite contributors to participate in tourism, and websoft9 is responsible for tourism expenses
-3. Hold an annual meeting, we will select outstanding contributors of the year and give rewards ranging from ¥ 1000 to ¥ 3000
+3. Hold an annual meeting, we will select outstanding contributors of the year and give rewards ranging from ¥1000 to ¥3000
 
 ## How to pricing an issue?
 
@@ -15,7 +15,7 @@ There are two processes refer to an issue: research and coding to implementation
 The following noun explanations can help you better understand the price of an issue:
 
 - An issue total reward = Research reward + Implementation reward
-- The workload completed within a unit size is considered as a **work-point**, a work-point's price is ￥ 30.
+- The workload completed within a unit size is considered as a **work-point**, a work-point's price is ¥50.
 - work-point refer to Technical popularity, Developer stacks, Document reading ability
 - Level of Developer Capability: High, Middle, Low are replaced with L, M, and H respectively
 

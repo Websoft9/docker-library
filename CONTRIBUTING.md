@@ -28,9 +28,8 @@ This repository have these branchs:
 
 - **Contributor's branch**: Develpoer can fork main branch as their delelopment branch anytime
 - **main branch**: The only branch that accepts PR from Contributors's branch
-- **production branch**: For version release and don't permit modify directly, only merge PR from **main branch**
 
-Flow: Contributor's branch → main branch → production branch
+Flow: Contributor's branch → main branch
 
 ## Pull request
 
@@ -39,7 +38,6 @@ Flow: Contributor's branch → main branch → production branch
 #### When is PR produced?
 
 - Contributor commit to main branch
-- main branch commit to production branch
 
 #### How to deal with PR?
 
@@ -70,9 +68,7 @@ Websoft9 use below [Artifact](https://jfrog.com/devops-tools/article/what-is-a-s
 
 ### WorkFlow
 
-Websoft9 use the [Production branch with GitLab flow](https://cm-gitlab.stanford.edu/help/workflow/gitlab_flow.md#production-branch-with-gitlab-flow) for development collaboration
-
-> [gitlab workflow](https://docs.gitlab.com/ee/topics/gitlab_flow.html) is improvement model for git
+Websoft9 use the [Github flow](https://docs.github.com/en/get-started/quickstart/github-flow) for development collaboration
 
 ## licensing
 
