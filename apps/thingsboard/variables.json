@@ -1,0 +1,13 @@
+{
+  "name": "thingsboard",
+  "trademark": "ThingsBoard",
+  "release": true,
+  "fork_url": "https://github.com/thingsboard/thingsboard",
+  "version": "latest",
+  "requirements": {
+    "cpu": "1",
+    "memory": "2",
+    "disk": "1",
+    "url": "https://thingsboard.io/docs/user-guide/install/docker"
+  }
+}
