@@ -1,0 +1,29 @@
+# image: https://hub.docker.com/r/bitnami/suitecrm
+# docs: https://github.com/bitnami/bitnami-docker-suitecrm
+
+
+version: '3.8'
+
+services:
+  mosquitto:
+    container_name: $APP_NAME
+    image: APP_REPO:APP_VERSION
+    ports:
+      - $APP_MQTT_PORT:1883
+      - $APP_WS_PORT:9001
+    volumes:
+      - data:/mosquitto/data
+      - config:/mosquitto/config
+      - log:/mosquitto/log
+    restart: unless-stopped
+
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  data:
+  config:
+  log:

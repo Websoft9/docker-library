@@ -12,7 +12,7 @@ services:
     env_file:
       - .env
     ports:
-      - '${APP_HTTP_PORT}:8080'
+      - '${APP_HTTP_PORT}:9090'
       - '${APP_MQTT_PORT}:1883'
       - '${APP_RPC_PORT}:7070'
       - '${APP_UDP_PORT}:5683-5688/udp'
@@ -30,7 +30,7 @@ services:
     image: "zookeeper:3.5"
     container_name: $APP_NAME-zookeeper
     ports:
-      - "2181:2181"
+      - "$APP_ZK_PORT:2181"
     environment:
       ZOO_MY_ID: 1
       ZOO_SERVERS: server.1=zookeeper:2888:3888;zookeeper:2181
@@ -42,7 +42,7 @@ services:
     depends_on:
       - zookeeper
     ports:
-      - "9092:9092"
+      - "$APP_KAFKA_PORT:9092"
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENERS: INSIDE://:9093,OUTSIDE://:9092

@@ -1,0 +1,13 @@
+{
+  "name": "mosquitto",
+  "trademark": "Eclipse Mosquitto",
+  "release": false,
+  "fork_url": "https://github.com/eclipse/mosquitto",
+  "version": "latest",
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1",
+    "url": "https://registry.hub.docker.com/_/eclipse-mosquitto"
+  }
+}
