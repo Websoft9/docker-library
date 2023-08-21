@@ -120,6 +120,7 @@ The elements of label are necessary: such as version,vendor,description.
 1. Docker official image or Bitnami image have different method for php configuration
 2. Docker official image need mount php_exra.ini to container
 3. Bitnami image have envs of php configuration
+4. As a reference, other php application should check if php conf.d directoy exist in container, mount php_exra.ini to this path
 
 ## variables.json
 
