@@ -27,7 +27,7 @@ Of course, you can also use docker compose to running these application
 2. Download this repository to your Linux and list all applications
 
    ```
-   git clone https://github.com/Websoft9/docker-library
+   git clone --depth=1 https://github.com/Websoft9/docker-library
    cd docker-library && ls apps
    ```
 
