@@ -22,7 +22,7 @@ RUN apt clean && rm -rf /var/lib/apt/lists/*
 RUN a2enmod rewrite proxy_fcgi actions alias expires headers ssl
 ADD 000-default.conf /etc/apache2/sites-available/000-default.conf
 ADD entrypoint.sh /entrypoint.sh
-RUN chmod +x entrypoint.sh
+RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 
