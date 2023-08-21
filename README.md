@@ -12,7 +12,7 @@ You can use them for bussiness management, content management, data analysis, de
 
 ## How to use it?
 
-The easiest way to use this repository is [install Websoft9](https://github.com/Websoft9/websoft9), then you can running these applications on Websoft9's web-based console.  
+The easiest way is install [ Websoft9](https://github.com/Websoft9/websoft9) which can help you running these applications on web-based console.  
 
 Of course, you can also use docker compose to running these application
 
