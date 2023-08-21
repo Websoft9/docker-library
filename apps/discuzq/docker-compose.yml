@@ -1,7 +1,7 @@
 # image: ccr.ccs.tencentyun.com/discuzq/dzq
 # docs: https://discuz.com/docs/Linux%20%E4%B8%BB%E6%9C%BA.html#%E5%9F%BA%E4%BA%8E-docker-%E5%AE%B9%E5%99%A8-%E6%8E%A8%E8%8D%90
 
-version: '3.8'
+version: "3.8"
 
 services:
   discuzq:
@@ -11,6 +11,8 @@ services:
       - ${APP_HTTP_PORT}:80
     volumes:
       - discuzq:/var/www/discuz
+      - ./src/php_exra.ini:/etc/php/7.2/cli/conf.d/php_exra.ini
+      - ./src/php_exra.ini:/etc/php/7.2/fpm/conf.d/php_exra.ini
     restart: unless-stopped
     env_file: .env
     environment:
@@ -21,14 +23,14 @@ services:
       DISCUZQ_SITENAME: ${APP_SITENAME}
     depends_on:
       - db
-     
+
   db:
     image: mysql:${APP_DB_MYSQL_VERSION}
     container_name: ${APP_NAME}-db
     hostname: db
     restart: unless-stopped
     ports:
-     - ${APP_DB_MYSQL_PORT}:3306
+      - ${APP_DB_MYSQL_PORT}:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - mysql:/var/lib/mysql
