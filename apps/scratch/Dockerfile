@@ -2,7 +2,7 @@
 
 FROM node:14-alpine as builder
 LABEL maintainer="help@websoft9.com"
-LABEL version="latest"
+LABEL version="v2.3.9"
 LABEL description="Scratch"
 
 RUN apk add --no-cache nano git
