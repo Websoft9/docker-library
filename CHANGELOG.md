@@ -1,3 +1,7 @@
+## 0.5.4 release on 2023-08-23
+
+1. new apps online
+
 ## 0.5.3 release on 2023-08-03
 
 1. library artifacts directory: websoft9/plugin/library

@@ -46,14 +46,3 @@ jobs:
           destination_folder: ./websoft9/plugin/library
           delete_if_exists: true
           fail_if_source_empty: true
-
-      - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: /*
-          tag_name: v${{ env.VERSION }}-dev
-          title: Release-v${{ env.VERSION }}-dev
-          body: ${{ steps.update_data.outputs.CHANGELOG }}
-          draft: false
-          prerelease: true
