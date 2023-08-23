@@ -42,11 +42,11 @@ The issues are managed through the [github projects](https://github.com/orgs/Web
 
 Before Team discussion, issue manager should put issues into **github projects Todo item** considering the following priorities:
 
-1. issue which label is [bug]
+1. issue which label is [bug]  
    priority: bugs causing the product to fail to run > bugs causing some functional abnormalities > others
-2. issue need to upgrade
+2. issue need to upgrade  
    priority: orders of application > the needs of major customers > others
-3. issue about a new application
+3. issue about a new application  
    priority: popularity of application > easy to develop > hard to develop
 
 ## Release process
