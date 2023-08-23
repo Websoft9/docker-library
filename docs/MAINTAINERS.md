@@ -38,14 +38,14 @@ This documentaion is from [jenkins MAINTAINERS](https://github.com/jenkinsci/jen
 
 ### Issue manage
 
-The issues are managed through the [Docker panel](https://github.com/orgs/Websoft9/projects/13).
+The issues are managed through the [github projects](https://github.com/orgs/Websoft9/projects/13).
 
-Before Team discussion, issue manager should put issues into **docker panel Todo item** considering the following priorities:
+Before Team discussion, issue manager should put issues into **github projects Todo item** considering the following priorities:
 
 1. issue which label is [bug]
    priority: bugs causing the product to fail to run > bugs causing some functional abnormalities > others
 2. issue need to upgrade
-   priority: sales volume of application > the needs of major customers > others
+   priority: orders of application > the needs of major customers > others
 3. issue about a new application
    priority: popularity of application > easy to develop > hard to develop
 
