@@ -3,7 +3,7 @@
   "trademark": "Scratch",
   "release": false,
   "fork_url": "https://github.com/DarkMaguz/scratch3-docker",
-  "version": "v2.3.9",
+  "version": "v2.3.13",
   "requirements": {
     "cpu": "1",
     "memory": "1",
