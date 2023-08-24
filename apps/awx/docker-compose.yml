@@ -131,6 +131,7 @@ services:
     volumes:
       - postgres_new-data:/var/lib/postgresql/data/pgdata/
     environment:
+      POSTGRES_PASSWORD: ${POWER_PASSWORD}
       POSTGRES_DB: ${APP_DB_POSTGRESQL_NAME}
       POSTGRES_USER: ${APP_DB_POSTGRESQL_USER}
       POSTGRES_PASSWORD: ${APP_DB_POSTGRESQL_PASSWORD}

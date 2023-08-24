@@ -5,7 +5,7 @@ DATABASES = {
         'ENGINE': 'awx.main.db.profiled_pg',
         'NAME': os.getenv('POSTGRES_USER'),
         'USER': os.getenv('POSTGRES_DB'),
-        'PASSWORD': os.getenv('PASSWORD'),
+        'PASSWORD': os.getenv('POWER_PASSWORD'),
         'HOST': "postgres",
         'PORT': "5432",
     }
