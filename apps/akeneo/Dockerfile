@@ -5,7 +5,7 @@
 FROM akeneo/pim-php-dev:8.1
 
 LABEL maintainer="help@websoft9.com"
-LABEL version="latest"
+LABEL version="7.0.22"
 LABEL description="Akeneo"
 
 ENV AKENEO_MYSQL_HOST=mysql
