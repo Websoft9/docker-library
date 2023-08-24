@@ -1,7 +1,7 @@
 {
   "name": "dolibarr",
   "trademark": "Dolibarr",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/tuxgasy/docker-dolibarr",
   "version": "17.0.2",
   "requirements": {

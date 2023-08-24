@@ -1,12 +1,22 @@
-# Contributing to library
+# Contributing
 
 From opening a bug report to creating a pull request: every contribution is appreciated and welcome.
 
-If you're planning to implement a new feature or change the api please [create an issue](https://github.com/websoft9/websoft9/issues/new/choose) first. This way we can ensure that your precious work is not in vain.
+If you're planning to implement a new feature or change the docker-library repository, please [create an issue](https://github.com/websoft9/docker-library/issues/new/choose) first. This way we can ensure that your precious work is not in vain.
 
-## Not Sure Architecture?
+## Process
 
-It's important to figure out the design [architecture of Websoft9](docs/develop.md)
+[Bug report flow](https://www.canva.cn/design/DAFrBuGNCNs/-WGd-D0mQHBu1eZM07d8vQ/edit) as following:
+
+![Alt text](./docs/image/bug_report_flow.png)
+
+[Feature request flow](https://www.canva.cn/design/DAFrBuGNCNs/-WGd-D0mQHBu1eZM07d8vQ/edit) as following:
+
+![Alt text](./docs/image/feature_request_flow.png)
+
+## Development
+
+If you want to start to develop this repository, it is very useful for you to read [the develop documentation](docs/code_owner.md)
 
 ## Fork
 
@@ -18,9 +28,8 @@ This repository have these branchs:
 
 - **Contributor's branch**: Develpoer can fork main branch as their delelopment branch anytime
 - **main branch**: The only branch that accepts PR from Contributors's branch
-- **production branch**: For version release and don't permit modify directly, only merge PR from **main branch**
 
-Flow: Contributor's branch → main branch → production branch
+Flow: Contributor's branch → main branch
 
 ## Pull request
 
@@ -29,7 +38,6 @@ Flow: Contributor's branch → main branch → production branch
 #### When is PR produced?
 
 - Contributor commit to main branch
-- main branch commit to production branch
 
 #### How to deal with PR?
 
@@ -60,6 +68,10 @@ Websoft9 use below [Artifact](https://jfrog.com/devops-tools/article/what-is-a-s
 
 ### WorkFlow
 
-Websoft9 use the [Production branch with GitLab flow](https://cm-gitlab.stanford.edu/help/workflow/gitlab_flow.md#production-branch-with-gitlab-flow) for development collaboration
+Websoft9 use the [Github flow](https://docs.github.com/en/get-started/quickstart/github-flow) for development collaboration
 
-> [gitlab workflow](https://docs.gitlab.com/ee/topics/gitlab_flow.html) is improvement model for git
+## licensing
+
+See the [LICENSE](https://github.com/Websoft9/docker-library/blob/main/LICENSE.md) file for our project's licensing. We will ask you to confirm the licensing of your contribution.
+
+We may ask you to sign a [Contributor License Agreement (CLA)](http://en.wikipedia.org/wiki/Contributor_License_Agreement) for larger changes.

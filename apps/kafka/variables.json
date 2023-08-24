@@ -1,9 +1,9 @@
 {
   "name": "kafka",
   "trademark": "Kafka",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/bitnami/bitnami-docker-kafka",
-  "version": "",
+  "version": "latest",
   "requirements": {
     "cpu": "1",
     "memory": "2",

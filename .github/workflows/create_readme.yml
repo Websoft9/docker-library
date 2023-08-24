@@ -1,0 +1,56 @@
+name: Template README for app by variables.json
+
+on: 
+#   repository_dispatch:
+  push:
+    branches: [ main ]
+    paths: 
+      - 'template/README.jinja2'
+      - 'apps/*/variables.json'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+      name: Check out code  
+      
+    - name: npm install jinjia2-cli
+      run: |
+       wget -N https://raw.githubusercontent.com/Websoft9/docker-library/main/template/README.jinja2 -O template_README.jinja2
+       pip install jinja2-cli
+       
+    - name: get triggered file
+      run: |
+        file_path=$(curl \
+                -H "Accept: application/vnd.github+json" \
+                -H "Authorization: Bearer ${{github.token}}" \
+                https://api.github.com/repos/Websoft9/docker-library/compare/${{github.event.before}}...${{github.event.after}} | jq '.files[].filename' | sed 's/\"//g' | tr '\n' ' ')
+        echo "file_path=${file_path}" >> $GITHUB_ENV
+
+    - name: triggered by template/README.jinja2
+      if: contains(env.file_path,'template')
+      run: |
+        files=$(ls apps/)
+        for file in $files;do
+          jinja2 template_README.jinja2 apps/$file/variables.json > apps/$file/README.md
+        done
+        
+    - name: triggered by apps/*/variables.json
+      if: contains(env.file_path,'apps') && !contains(env.file_path,'template')
+      run: |
+        for file in ${{env.file_path}};do
+          if [[ ! $file =~ ^apps/.*/variables.json$ ]];then
+            continue
+          fi
+        app=$(echo ${file} | cut -d "/" -f 2)
+        jinja2 template_README.jinja2 apps/$app/variables.json > apps/$app/README.md
+        done
+        
+    - name: delete template md
+      run: rm template_README.jinja2
+        
+    - name: push README  
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Templating README

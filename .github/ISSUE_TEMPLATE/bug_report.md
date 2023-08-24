@@ -9,14 +9,6 @@ labels: bug
 
 A clear and concise description of what the bug is.
 
-## Deployment method
-
-- [ ] subscription image from MarketPlace of Cloud
-- [ ] All-in-one Installer
-- [ ] ansible-playbook cli
-- [ ] mcloud
-- [ ] create instance from private image
-
 ## Bug source
 
 - [ ] Bugs from installation 
@@ -29,28 +21,11 @@ A clear and concise description of what the bug is.
 
 e.g v4.5
 
-**OS**
+**CPU**
 
-- [ ] Ubuntu18.x
-- [ ] Ubuntu20.x
-- [ ] CentOS7.x
-- [ ] CentOS8.x
-- [ ] AmazonLinux2
-- [ ] OracleLinux7.8
-- [ ] OracleLinux8.2
-- [ ] Other (You should describe it) 
-
-**Cloud PlatForm**
-
-- [ ] Azure
-- [ ] Aws
-- [ ] 阿里云
-- [ ] 腾讯云
-- [ ] 华为云
-- [ ] AlibabaCloud
-- [ ] HUWEICloud
-- [ ] Other (You should describe it) 
-
+- [ ] amd64, x86 
+- [ ] arm64
+- [ ] Other (You should describe it)   
 
 ## Bug reproduce
 

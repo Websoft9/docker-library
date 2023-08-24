@@ -1,7 +1,7 @@
 {
   "name": "vtiger",
   "trademark": "Vtiger",
-  "release": false,
+  "release": true,
   "fork_url": "",
   "version": "7.4.0",
   "requirements": {

@@ -1,12 +1,12 @@
 {
   "name": "gitea",
   "trademark": "Gitea",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/go-gitea/gitea",
-  "version": "1.2.5",
+  "version": "1.2.5,latest",
   "requirements": {
-    "cpu": "2",
-    "memory": "4",
+    "cpu": "1",
+    "memory": "1",
     "disk": "1",
     "url": "https://docs.gitea.io/zh-cn/install-with-docker-rootless"
   }

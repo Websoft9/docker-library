@@ -2,8 +2,8 @@
   "name": "collabora",
   "trademark": "Collabora",
   "release": false,
-  "fork_url": "  https://github.com/CollaboraOnline/online",
-  "version": "",
+  "fork_url": "https://github.com/CollaboraOnline/online",
+  "version": "latest",
   "requirements": {
     "cpu": "1",
     "memory": "2",

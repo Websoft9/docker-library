@@ -1,9 +1,9 @@
 {
   "name": "superset",
   "trademark": "Superset",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/apache/superset.git",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "requirements": {
     "cpu": "2",
     "memory": "8",

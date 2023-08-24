@@ -18,13 +18,20 @@ jobs:
         name: Check out code
 
       - name: Read Plugin Version
+        id: update_data
         run: |
           version=$(jq -r '.Version' library.json)
           echo version=$version
           echo "VERSION=$version" >> $GITHUB_ENV
           mkdir library artifacts
+          changelog=$(cat changelog_latest.md)
+          echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT 
+          echo "$changelog" >> $GITHUB_OUTPUT 
+          echo "EOF" >> $GITHUB_OUTPUT
           cp -r apps library
-          cp CHANGELOG.md library
+          cp -r docs library
+          cp -r template library
+          cp *.md library
           cp library.json library
           zip -r library-$version.zip library
           cp library-$version.zip artifacts
@@ -36,6 +43,17 @@ jobs:
           connection_string: ${{ secrets.AZURE_STORAGE_ARTIFACT }}
           container_name: release
           source_folder: artifacts/
-          destination_folder: ./websoft9/plugin
+          destination_folder: ./websoft9/plugin/library
           delete_if_exists: true
           fail_if_source_empty: true
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: /*
+          tag_name: v${{ env.VERSION }}
+          title: Release-v${{ env.VERSION }}
+          body: ${{ steps.update_data.outputs.CHANGELOG }}
+          draft: false
+          prerelease: false

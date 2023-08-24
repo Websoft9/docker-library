@@ -3,7 +3,7 @@
   "trademark": "Moodle",
   "release": false,
   "fork_url": "https://github.com/moodlehq/moodle-docker",
-  "version": "4.2",
+  "version": "4.2,latest",
   "requirements": {
     "cpu": "1",
     "memory": "1",

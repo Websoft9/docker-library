@@ -1,13 +1,13 @@
 {
   "name": "discourse",
   "trademark": "Discourse",
-  "release": false,
-  "fork_url": "https://github.com/discourse/discourse_docker",
-  "version": "latest",
+  "release": true,
+  "fork_url": "https://hub.docker.com/r/bitnami/discourse",
+  "version": "3,latest",
   "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "1",
-    "url": "https://github.com/discourse/discourse_docker"
+    "url": "https://hub.docker.com/r/bitnami/discourse"
   }
 }

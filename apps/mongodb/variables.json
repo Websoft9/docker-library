@@ -1,9 +1,9 @@
 {
   "name": "mongodb",
   "trademark": "MongoDB",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/docker-library/mongo",
-  "version": "6.0,5.0,4.4,3.7",
+  "version": "6.0,5.0,4.4,3.7,latest",
   "requirements": {
     "cpu": "1",
     "memory": "1",

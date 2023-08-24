@@ -1,9 +1,9 @@
 {
   "name": "cloudbeaver",
   "trademark": "CloudBeaver",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/dbeaver/cloudbeaver",
-  "version": "23.1.1",
+  "version": "23.1.1,latest",
   "requirements": {
     "cpu": "1",
     "memory": "2",

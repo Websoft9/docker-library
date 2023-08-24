@@ -1,9 +1,9 @@
 {
   "name": "couchdb",
   "trademark": "CouchDB",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/apache/couchdb-docker",
-  "version": "3.3.2",
+  "version": "3.3.2,latest",
   "requirements": {
     "cpu": "1",
     "memory": "1",

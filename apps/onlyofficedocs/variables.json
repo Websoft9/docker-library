@@ -1,9 +1,9 @@
 {
   "name": "onlyofficedocs",
   "trademark": "ONLYOFFICEDocs",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/ONLYOFFICE/Docker-DocumentServer",
-  "version": "7.3",
+  "version": "7.4,latest",
   "requirements": {
     "cpu": "1",
     "memory": "2",

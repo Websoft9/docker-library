@@ -1,9 +1,9 @@
 {
   "name": "vault",
   "trademark": "Vault",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/hashicorp/docker-vault",
-  "version": "",
+  "version": "latest",
   "requirements": {
     "cpu": "1",
     "memory": "1",

@@ -5,11 +5,11 @@ version: '3.8'
 
 services:
   netdata:
-    image: netdata/netdata:${APP_VERSION}
-    container_name: ${APP_CONTAINER_NAME}
-    hostname: ${APP_SITE_URL}
+    image: netdata/netdata:$APP_VERSION
+    container_name: $APP_NAME
+    hostname: $APP_URL
     ports:
-      - ${APP_HTTP_PORT}:19999
+      - $APP_HTTP_PORT:19999
     restart: unless-stopped
     cap_add:
       - SYS_PTRACE

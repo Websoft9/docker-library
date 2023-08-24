@@ -3,7 +3,7 @@
   "trademark": "Ckan",
   "release": false,
   "fork_url": "https://github.com/ckan/ckan",
-  "version": "",
+  "version": "latest",
   "requirements": {
     "cpu": "2",
     "memory": "4",

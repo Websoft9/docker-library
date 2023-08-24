@@ -1,24 +1,21 @@
-# image: https://hub.docker.com/r/dbeaver/cloudbeaver
-# config docs: https://github.com/dbeaver/cloudbeaver/wiki/Server-configuration#automatic-server-configuration
-
-version: "3.8"
+version: "3.9"
 
 services:
   web-server:
+    container_name: $APP_NAME-webserver
     image: ${IMAGE_REGISTRY}/${IMAGE_WEB_SERVER}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
-    restart: unless-stopped
-    container_name: $APP_NAME-webserver
+    restart: always
     expose:
       - "8080"
-    env_file: .env
+    env_file:
+      - "${ENV_FILE:-.env}"
 
   imageproxy-server:
+    container_name: $APP_NAME-imageproxyserver
     image: ${IMAGE_REGISTRY}/${IMAGE_IMAGEPROXY_SERVER}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
-    restart: unless-stopped
-    container_name: $APP_NAME-imageproxyserver
-    env_file: .env
+    restart: always
     expose:
       - "8080"
     environment:
@@ -26,15 +23,17 @@ services:
       - BASEURL=${AWS_ENDPOINT}
 
   backend-server:
+    container_name: $APP_NAME-backendserver
     image: ${IMAGE_REGISTRY}/${IMAGE_BACKEND_SERVER}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
-    restart: unless-stopped
-    container_name: $APP_NAME-backendserver
-    env_file: .env
+    restart: always
+    env_file:
+      - "${ENV_FILE:-.env}"
     expose:
       - "8081"
     environment:
       - TZ=${TIMEZONE}
+      - DEFAULT_TIME_ZONE=${TIMEZONE}
     depends_on:
       init-db:
         condition: service_completed_successfully
@@ -46,10 +45,10 @@ services:
       retries: 60
 
   room-server:
+    container_name: $APP_NAME-roomserver
     image: ${IMAGE_REGISTRY}/${IMAGE_ROOM_SERVER}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
-    container_name: $APP_NAME-roomserver
-    restart: unless-stopped
+    restart: always
     expose:
       - "3333"
       - "3334"
@@ -58,8 +57,10 @@ services:
       - "3006"
       - "3005"
       - "3007"
-    env_file: .env
+    env_file:
+      - "${ENV_FILE:-.env}"
     environment:
+      - TZ=${TIMEZONE}
       - NODE_ENV=${ENV}
       - NODE_OPTIONS=--max-old-space-size=2048 --max-http-header-size=80000
       - API_MAX_MODIFY_RECORD_COUNTS=${API_MAX_MODIFY_RECORD_COUNTS:-30}
@@ -71,15 +72,14 @@ services:
 
   # Third Party Dockers
   gateway:
+    container_name: $APP_NAME
     image: ${IMAGE_REGISTRY}/${IMAGE_GATEWAY}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
-    restart: unless-stopped
-    container_name: $APP_NAME
+    restart: always
     ports:
       - ${APP_HTTP_PORT}:80
     environment:
       - TZ=${TIMEZONE}
-    env_file: .env
     depends_on:
       web-server:
         condition: service_started
@@ -93,20 +93,22 @@ services:
         condition: service_completed_successfully
 
   minio:
+    container_name: minio
     image: ${IMAGE_MINIO}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
-    restart: unless-stopped
-    container_name: $APP_NAME-minio
-    command: server /data
-    env_file: .env
+    restart: always
+    command: server --console-address ":9001" /data
     expose:
       - "9000"
+      - "9001"
     volumes:
-      - minio_data:/data
-      - minio_config:/root/.minio
+      - ${DATA_PATH}/.data/minio/data:/data
+      - ${DATA_PATH}/.data/minio/config:/root/.minio
     environment:
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
       - TZ=${TIMEZONE}
     healthcheck:
       test: ["CMD-SHELL", "curl -sS 'http://localhost:9000' || exit 1"]
@@ -115,34 +117,32 @@ services:
       retries: 30
 
   redis:
+    container_name: $APP_NAME-redis
     image: ${IMAGE_REDIS}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
-    restart: unless-stopped
-    container_name: $APP_NAME-redis
-    env_file: .env
+    restart: always
     command:
       [
-          "redis-server",
-          "--appendonly",
-          "yes",
-          "--requirepass",
-          "${REDIS_PASSWORD}",
+        "redis-server",
+        "--appendonly",
+        "yes",
+        "--requirepass",
+        "${REDIS_PASSWORD}",
       ]
     expose:
       - "6379"
     volumes:
-      - redis:/data
+      - ${DATA_PATH}/.data/redis:/data
     environment:
       - TZ=${TIMEZONE}
 
   mysql:
+    container_name: $APP_NAME-db
     image: ${IMAGE_MYSQL}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
-    restart: unless-stopped
-    container_name: $APP_NAME-db
-    env_file: .env
+    restart: always
     volumes:
-      - mysql:/var/lib/mysql
+      - ${DATA_PATH}/.data/mysql:/var/lib/mysql
     expose:
       - "3306"
     environment:
@@ -164,11 +164,10 @@ services:
   rabbitmq:
     image: ${IMAGE_RABBITMQ}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
-    restart: unless-stopped
+    restart: always
     container_name: $APP_NAME-rabbitmq
-    env_file: .env
     volumes:
-      - rabbitmq:/var/lib/rabbitmq
+      - ${DATA_PATH}/.data/rabbitmq:/var/lib/rabbitmq
     expose:
       - "5671"
       - "5672"
@@ -178,28 +177,9 @@ services:
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
 
   # init data
-  pre-init-db:
-    image: ${IMAGE_REGISTRY}/${IMAGE_INIT_DB}
-    pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
-    env_file: .env
-    container_name: $APP_NAME-preinitdb
-    environment:
-      - TZ=${TIMEZONE}
-      - DB_HOST=${MYSQL_HOST}
-      - DB_PORT=${MYSQL_PORT}
-      - DB_NAME=${MYSQL_DATABASE}
-      - DB_USERNAME=${MYSQL_USERNAME}
-      - DB_PASSWORD=${MYSQL_PASSWORD}
-      - DATABASE_TABLE_PREFIX=${DATABASE_TABLE_PREFIX}
-      - ACTION=releaseLocks
-    depends_on:
-      mysql:
-        condition: service_healthy
-  
   init-db:
     image: ${IMAGE_REGISTRY}/${IMAGE_INIT_DB}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
-    env_file: .env
     container_name: $APP_NAME-initdb
     environment:
       - TZ=${TIMEZONE}
@@ -211,15 +191,16 @@ services:
       - DATABASE_TABLE_PREFIX=${DATABASE_TABLE_PREFIX}
       - ACTION=update
     depends_on:
-      pre-init-db:
-        condition: service_completed_successfully
+      mysql:
+        condition: service_healthy
 
   # init-appdata
   init-appdata:
     image: ${IMAGE_REGISTRY}/${IMAGE_INIT_APPDATA}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
     container_name: $APP_NAME-initappdata
-    env_file: .env
+    env_file:
+      - "${ENV_FILE:-.env}"
     depends_on:
       mysql:
         condition: service_healthy
@@ -230,10 +211,3 @@ networks:
   default:
     name: ${APP_NETWORK}
     external: true
-
-volumes:
-  mysql:
-  redis:
-  rabbitmq:
-  minio_data:
-  minio_config:

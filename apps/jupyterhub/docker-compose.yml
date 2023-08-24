@@ -2,39 +2,14 @@ version: '3.8'
 
 services:
   jupyterhub:
-    image: jupyterhub:${APP_VERSION}
+    image: $APP_REPO:$APP_VERSION
     container_name: ${APP_NAME}
+    env_file: .env
     ports:
-      - ${APP_HTTP_PORT}:80
+      - ${APP_HTTP_PORT}:8000
     volumes:
       - jupyterhub:/var/www/html
-    environment:
-      # The belows vars is need, otherwise container error
-      jupyterhub_DB_HOST: ${APP_NAME}-db
-      jupyterhub_DB_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
-    links: 
-      - mysql
     restart: unless-stopped
-    stdin_open: true
-    tty: true
-
-  mysql:
-    image: mysql:${APP_DB_MYSQL_VERSION}
-    container_name: ${APP_NAME}-db
-    restart: unless-stopped
-    stdin_open: true
-    tty: true
-    ports:
-     - ${APP_DB_MYSQL_PORT}:3306
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-    volumes:
-      - ${VOLUMES_PATH_PREFIX}/mysql/mysql_config/conf.d:/etc/mysql/conf.d
-      - ${VOLUMES_PATH_PREFIX}/mysql/mysql_data:/var/lib/mysql
-    environment:
-      MYSQL_DATABASE: ${APP_DB_MYSQL_NAME}
-      MYSQL_USER: ${APP_DB_MYSQL_USER}
-      MYSQL_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
 
 networks:
   default:

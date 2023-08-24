@@ -1,0 +1,48 @@
+# compose: https://github.com/nocobase/nocobase/blob/main/docker/app-mysql/docker-compose.yml
+# docs: https://docs-cn.nocobase.com/welcome/getting-started/installation/docker-compose
+
+
+version: '3.8'
+
+services:
+  app:
+    image: nocobase/nocobase:$APP_VERSION
+    container_name: $APP_NAME
+    restart: unless-stopped
+    depends_on:
+      - mysql
+    environment:
+      - DB_DIALECT=mysql
+      - DB_HOST=$APP_NAME-db
+      - DB_DATABASE=$APP_DB_MYSQL_NAME
+      - DB_USER=$APP_DB_MYSQL_USER
+      - DB_PASSWORD=$APP_DB_MYSQL_PASSWORD
+      - LOCAL_STORAGE_BASE_URL=/storage/uploads
+    volumes:
+      - nocobase:/app/nocobase/storage
+    ports:
+      - "$APP_HTTP_PORT:80"
+
+  mysql:
+    image: mysql:8
+    container_name: $APP_NAME-db
+    environment:
+      MYSQL_DATABASE: $APP_DB_MYSQL_NAME
+      MYSQL_USER: $APP_DB_MYSQL_USER
+      MYSQL_PASSWORD: $APP_DB_MYSQL_PASSWORD
+      MYSQL_ROOT_PASSWORD: $APP_DB_MYSQL_PASSWORD
+    restart: unless-stopped
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+     - mysql:/var/lib/mysql
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+    
+volumes:
+  mysql:
+    driver: local
+  nocobase:
+    driver: local

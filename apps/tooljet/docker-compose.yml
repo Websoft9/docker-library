@@ -1,42 +1,53 @@
-# docs: https://github.com/ToolJet/ToolJet
-
+# docs: https://docs.tooljet.com/docs/setup/docker/
+# image: https://hub.docker.com/r/tooljet/tooljet-ce
 
 version: '3.8'
 
 services:
-  server:
-    tty: true
-    stdin_open: true
+  tooljet:
     image: tooljet/tooljet-ce:$APP_VERSION
     container_name: $APP_NAME
     restart: unless-stopped
+    env_file: .env
     ports:
       - $APP_HTTP_PORT:80
     environment:
       SERVE_CLIENT: "true"
       PORT: "80"
     command: npm run start:prod
-    depends_on:
-      - postgres
 
   postgres:
-    image: postgres:${APP_VERSION}
-    container_name: ${APP_NAME}-db
-    restart: unless-stopped
+    image: postgres:13
+    restart: always
     ports:
-     - ${APP_DB_PORT}:5432
+      - 5432:5432
     volumes:
       - postgres:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: ${APP_DB_NAME}
-      POSTGRES_USER: ${APP_USER}
-      POSTGRES_PASSWORD: ${APP_PASSWORD}
+      - POSTGRES_PASSWORD=postgres
+
+# Uncomment if ENABLE_TOOLJET_DB=true
+  # postgrest:
+  #   image: postgrest/postgrest:v10.1.1.20221215
+  #   restart: always
+  #   depends_on:
+  #     - postgres
+  #   env_file: .env
+  #   environment:
+  #     - PGRST_SERVER_PORT=80
+
+volumes:
+  postgres:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${PWD}/postgres_data
+  certs:
+  logs:
+  fallbackcerts:
     
 networks:
   default:
     name: ${APP_NETWORK}
     external: true
-
-volumes:
-  mysql:
-  suitecrm:

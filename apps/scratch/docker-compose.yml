@@ -1,7 +1,7 @@
 # image: https://registry.hub.docker.com/r/darkmagus/scratch3
 # docs: https://github.com/DarkMaguz/scratch3-docker
 
-version: '3.8'
+version: "3.8"
 
 services:
   scratch:
@@ -10,7 +10,7 @@ services:
     restart: unless-stopped
     env_file: .env
     ports:
-      - '${APP_HTTP_PORT}:80'
+      - "${APP_HTTP_PORT}:80"
     volumes:
       - scratch:/usr/share/nginx/html
 networks:

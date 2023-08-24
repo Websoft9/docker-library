@@ -1,0 +1,108 @@
+name: Update related items of variables.json to Contentful
+
+on: 
+  push:
+    branches: [ main ]
+    paths: 
+      - 'apps/*/variables.json'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+      name: Check out code  
+      
+    - name: get triggered file
+      run: |
+        file_path=$(curl \
+                -H "Accept: application/vnd.github+json" \
+                -H "Authorization: Bearer ${{github.token}}" \
+                https://api.github.com/repos/Websoft9/docker-library/compare/${{github.event.before}}...${{github.event.after}} | jq '.files[].filename' | sed 's/\"//g' | tr '\n' ' ')
+        echo "file_path=${file_path}" >> $GITHUB_ENV
+        
+    - name: get app name
+      run: |
+        for file in ${{env.file_path}};do
+          if [[ ! $file =~ ^apps/.*/variables.json$ ]];then
+            continue
+          fi
+        app=$(echo ${file} | cut -d "/" -f 2)
+        echo "app=${app}" >> $GITHUB_ENV
+        done    
+        
+    - name: contentful entry get the id and version
+      run: |
+        entry=$(curl --include \
+             --request GET \
+             --header 'Authorization: Bearer ${{secrets.CONTENTFUL_TOKEN}}' \
+             https://api.contentful.com/spaces/ffrhttfighww/environments/master/entries?content_type=product\&fields.key=${{env.app}} | tail -n 1)
+        id=$(echo $entry | jq -r '.items[0].sys.id')
+        version=$(echo $entry | jq -r '.items[0].sys.version')
+        newVersion=$(($version+1))
+        
+        echo "id=${id}" >> $GITHUB_ENV
+        echo "version=${version}" >> $GITHUB_ENV
+        echo "newVersion=${newVersion}" >> $GITHUB_ENV
+        echo $(echo $entry | jq '.items[0].fields.distribution') > distribution.json
+        
+    - name: contentful update
+      run: |
+        cpu=$(cat apps/${{env.app}}/variables.json | jq -r '.requirements.cpu')
+        memory=$(cat apps/${{env.app}}/variables.json | jq -r '.requirements.memory')
+        disk=$(cat apps/${{env.app}}/variables.json | jq -r '.requirements.disk')
+        version=$(cat apps/${{env.app}}/variables.json | jq '.version')
+        
+        #判断是否存在commmunity version,若有，默认改变第一个
+        distribution=$(cat distribution.json)
+        result=$(echo $distribution | grep "Community")
+        if [[ "$result" != "" ]]
+        then
+            newDistribution=$(echo $distribution | sed '0,/\"value\": \"[^\"]*\"/{s/\"value\": \"[^\"]*\"/\"value\": '${version}'/}')
+        else
+            newDistribution=$(echo $distribution)
+        fi
+        
+        #1、更新数据
+        echo '[{
+                  "op": "add",
+                  "path": "/fields/vcpu",
+                  "value": {
+                    "en-US": '${cpu}',
+                    "zh-CN": '${cpu}'
+                  }
+                }, {
+                  "op": "add",
+                  "path": "/fields/memory",
+                  "value": {
+                    "en-US": '${memory}',
+                    "zh-CN": '${memory}'
+                  }
+                }, {
+                  "op": "add",
+                  "path": "/fields/storage",
+                  "value": {
+                    "en-US": '${disk}',
+                    "zh-CN": '${disk}'
+                  }
+                }, {
+                      "op": "add",
+                      "path": "/fields/distribution",
+                      "value": '${newDistribution}'
+                }]' > data.json
+        curl --include \
+             --request PATCH \
+             --header 'Authorization: Bearer ${{secrets.CONTENTFUL_TOKEN}}' \
+             --header 'Content-Type: application/json-patch+json' \
+             -H 'X-Contentful-Version: ${{env.version}}' \
+             -d '@data.json' \
+             https://api.contentful.com/spaces/ffrhttfighww/environments/master/entries/${{env.id}}
+         
+         #2、发布
+         newVersion=$(($entryVersion+1))
+         echo $newVersion
+         curl --include \
+               --request PUT \
+               --header 'Authorization: Bearer ${{secrets.CONTENTFUL_TOKEN}}' \
+               --header 'X-Contentful-Version: ${{env.newVersion}}' \
+               https://api.contentful.com/spaces/ffrhttfighww/environments/master/entries/${{env.id}}/published
+

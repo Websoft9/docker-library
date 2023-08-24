@@ -1,0 +1,13 @@
+{
+  "name": "Focalboard",
+  "trademark": "focalboard",
+  "release": true,
+  "fork_url": "https://hub.docker.com/r/mattermost/focalboard",
+  "version": "latest",
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1",
+    "url": "https://hub.docker.com/r/mattermost/focalboard"
+  }
+}

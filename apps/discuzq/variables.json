@@ -1,7 +1,7 @@
 {
   "name": "discuzq",
   "trademark": "DiscuzQ",
-  "release": false,
+  "release": true,
   "fork_url": "https://discuz.com/docs",
   "version": "v3.0",
   "requirements": {

@@ -1,9 +1,9 @@
 {
   "name": "sscms",
   "trademark": "SSCMS",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/siteserver/cms",
-  "version": "",
+  "version": "latest",
   "requirements": {
     "cpu": "1",
     "memory": "1",

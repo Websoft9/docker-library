@@ -1,7 +1,7 @@
 {
   "name": "elastic",
   "trademark": "elastic Stack",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/deviantony/docker-elk.git",
   "version": "8.5.0",
   "requirements": {

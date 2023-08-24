@@ -3,7 +3,7 @@
   "trademark": "Ghost",
   "release": false,
   "fork_url": "https://hub.docker.com/_/ghost",
-  "version": "5.47",
+  "version": "5.58,latest",
   "requirements": {
     "cpu": "1",
     "memory": "1",

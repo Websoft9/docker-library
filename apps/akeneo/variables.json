@@ -1,7 +1,7 @@
 {
   "name": "akeneo",
   "trademark": "Akeneo",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/akeneo/pim-community-dev",
   "version": "v7.0.22",
   "requirements": {

@@ -1,0 +1,13 @@
+{
+  "name": "rowy",
+  "trademark": "Rowy",
+  "release": false,
+  "fork_url": "",
+  "version": "latest",
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1",
+    "url": ""
+  }
+}

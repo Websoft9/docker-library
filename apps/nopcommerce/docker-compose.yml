@@ -1,3 +1,6 @@
+# compose: https://github.com/nopSolutions/nopCommerce/blob/develop/docker-compose.yml
+# image: https://hub.docker.com/r/nopcommerceteam/nopcommerce/tags
+
 version: '3.8'
 
 services:

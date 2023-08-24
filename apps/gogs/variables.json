@@ -1,12 +1,12 @@
 {
   "name": "gogs",
   "trademark": "Gogs",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/gogs/gogs",
-  "version": "0.13",
+  "version": "0.13,latest",
   "requirements": {
     "cpu": "1",
-    "memory": "2",
+    "memory": "1",
     "disk": "1",
     "url": "https://github.com/gogs/gogs"
   }

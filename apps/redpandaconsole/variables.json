@@ -1,7 +1,7 @@
 {
   "name": "redpandaconsole",
   "trademark": "Redpanda Console",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/redpanda-data/console",
   "version": "latest",
   "requirements": {

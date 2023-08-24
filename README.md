@@ -1,16 +1,22 @@
-[![](https://lab.frogg.it/lydra/yunohost/ansible-yunohost/badges/main/pipeline.svg)](https://lab.frogg.it/lydra/yunohost/ansible-yunohost/-/pipelines)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
-[![GitHub last commit](https://img.shields.io/github/last-commit/LydraFr/ansible-yunohost)](https://github.com/LydraFr/ansible-yunohost)
-[![GitHub Release Date](https://img.shields.io/github/release-date/LydraFr/ansible-yunohost)](https://github.com/LydraFr/ansible-yunohost)
-[![GitHub Repo stars](https://img.shields.io/github/stars/LydraFr/ansible-yunohost?style=social)](https://github.com/LydraFr/ansible-yunohost)
+[![GitHub last commit](https://img.shields.io/github/last-commit/Websoft9/docker-library)](https://github.com/Websoft9/docker-library)
+[![GitHub Release Date](https://img.shields.io/github/release-date/Websoft9/docker-library)](https://github.com/Websoft9/docker-library)
+[![GitHub Repo stars](https://img.shields.io/github/stars/Websoft9/docker-library?style=social)](https://github.com/Websoft9/docker-library)
 
 # Docker Compose applications
 
-This repository include 200+ applications based on docker compose, e.g [WordPress, MySQL, Odoo, MongoDB...](https://github.com/Websoft9/docker-library/tree/main/apps)
+This repository include 200+ applications based on [Docker compose](https://docs.docker.com/compose/), e.g [WordPress, MySQL, Odoo, MongoDB, GitLab, Elastic, Ghost, Grafana, Graylog, Kafka, n8n, Moodle, Nextcloud, ONLYOFFICE, phpMyAdmin...](https://github.com/Websoft9/docker-library/tree/main/apps)
 
-If you can use docker, you already know how to use and develop an application for [Websoft9](https://www.websoft9.com).
+You can use them for bussiness management, content management, data analysis, development, DevOps and any things you want to do.  
+
 
 ## How to use it?
+
+The easiest way is install [ Websoft9](https://github.com/Websoft9/websoft9) which can help you running these applications on web-based console.  
+
+Of course, you can also use docker compose to running these application
+
+### Running by docker compose
 
 1. Make sure you have install the Docker latest or you can install Docker by below script
 
@@ -21,7 +27,7 @@ If you can use docker, you already know how to use and develop an application fo
 2. Download this repository to your Linux and list all applications
 
    ```
-   git clone https://github.com/Websoft9/docker-library
+   git clone --depth=1 https://github.com/Websoft9/docker-library
    cd docker-library && ls apps
    ```
 
@@ -33,37 +39,21 @@ If you can use docker, you already know how to use and develop an application fo
    sudo docker network create websoft9 &&  sudo docker compose up -d
    ```
 
-## Environments
+### Change environments if need
 
-All environment is at `.env` file for each application, You should read it and modify it if you need.
+All environments is in the `.env` file of application directory, you should read [Env Guide](https://github.com/Websoft9/docker-library/blob/main/docs/code_owner.md#environment-variables) when you run a app by docker compose.
 
-These environments is frequently used:
+## How to contribute it?
 
-- POWER_PASSWORD: It can be used for Database password or Administrator password, you should reset it
-- APP_URL: You must reset it for you real DNS or IP if APP_URL_REPLACE=true
-- APP_HTTP_PORT
-- APP_ENCRYPT_PASSWORD: This value is from encrypt APP_PASSWOR, some image use encrypted environment
-- APP_AUTH_NEED
+We greatly welcome community contributions to provide suggestions and improvements to our project:
 
-## Develop for it
+1. Find a bug, request features and provide better methods, you can promote your ideas through [issue](https://github.com/Websoft9/docker-library/issues).
 
-The [development](docs/develop.md) for this repository have below field:
-
-- Write the dockerfile if there no suitale image for the application
-- Write the docker-compose file and .env as per specifications
-- Test it and pull request
-
-Our specifications is very simple, you just only add the environments begin with **APP\_** reference from template
-
-## Issue reward
-
-We will certainly encounter difficult problems in our work, but it may be very simple for you.
-
-Websoft9 submit some issue with "¥50 - ¥1000", hope you can close it and obtain the reward
+2. Contributing to this repository, please follow our [contribution guidelines](CONTRIBUTING.md). We try our best to provide [reward](./docs/reward.md) for some important task.
 
 ## Documentation
 
-[Websoft9 Administrator Guide](https://support.websoft9.com/docs)
+[Websoft9 Administrator Guide](https://support.websoft9.com/docs/apps)
 
 ## Support
 
@@ -73,9 +63,15 @@ You can subscribe [Websoft9 Enterprise Support](https://www.websoft9.com/apps) t
 - Support: Everything you need for technical support, e.g Enable HTTPS, Upgrade guide
 - Security: Security services and tools to protect your software
 
+## Sponsor
+
+The following corporate organizations have provided us with sponsorship, which has greatly helped this repository.
+
+![image](https://libs.websoft9.com/Websoft9/logo/sponser/50sponser-huawei-logo.png) ![image](https://libs.websoft9.com/Websoft9/logo/sponser/50sponser-mingdaoyun-logo.png) ![image](https://libs.websoft9.com/Websoft9/logo/sponser/50sponser-apitable-logo.png)
+
 ## License
 
-[LGPL-3.0](/License.md), Additional Terms: It is not allowed to publish free or paid image based on this repository in any Cloud platform's Marketplace without authorization (未经授权许可，不允许将基于本项目创建的镜像到云平台市场上售卖)
+[LGPL-3.0](LICENSE.md), Additional Terms: It is not allowed to publish free or paid image based on this repository in any Cloud platform's Marketplace without authorization.
 
 ## Disclaimer
 
@@ -104,6 +100,6 @@ APP_USER, APP_PASSWORD
 No, you can use lots of infrastructure, e.g.
 
 - **OS**: Red Hat, CentOS, Debian, Ubuntu or other's Linux OS ...
-- **Public Cloud**: More than 20+ major Cloud such as AWS, Azure, Google Cloud, Alibaba Cloud, HUAWEIClOUD, Tencent Cloud, Oracle Cloud ...
+- **Public Cloud**: More than 20+ major Cloud such as AWS, Azure, Google Cloud, Alibaba Cloud, HUAWEIClOUD, Oracle Cloud ...
 - **Private Cloud**: KVM, VMware, VirtualBox, OpenStack ...
 - **ARCH**: Linux x86-64, ARM 32/64, x86/i686 ...

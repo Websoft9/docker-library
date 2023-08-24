@@ -3,7 +3,7 @@
   "trademark": "AWX",
   "release": false,
   "fork_url": "https://github.com/ansible/awx",
-  "version": "",
+  "version": "22.5.0",
   "requirements": {
     "cpu": "2",
     "memory": "4",

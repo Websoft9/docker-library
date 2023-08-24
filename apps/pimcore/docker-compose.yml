@@ -1,5 +1,5 @@
-# docs: https://pimcore.com/docs/platform/Pimcore/Getting_Started/Installation/Docker_Based_Installation/
-
+# docs1: https://pimcore.com/docs/platform/Pimcore/Getting_Started/Installation/Docker_Based_Installation/
+# docs2: https://github.com/pimcore/docker
 
 version: '3.8'
 services:    
@@ -7,6 +7,7 @@ services:
     image: $APP_REPO:$APP_VERSION
     container_name: $APP_NAME
     restart: unless-stopped
+    env_file: .env
     ports:
       - $APP_HTTP_PORT:80
     logging:
@@ -23,8 +24,29 @@ services:
       MYSQL_USER: $APP_DB_MYSQL_USER
       MYSQL_PASSWORD: $APP_DB_MYSQL_PASSWORD
 
+  supervisord:
+    #user: '1000:1000' # set to your uid:gid
+    image: pimcore/pimcore:php8.2-supervisord-latest
+    container_name: $APP_NAME-supervisord
+    depends_on:
+      db:
+          condition: service_healthy
+    volumes:
+      - .:/var/www/html
+      - ./src/supervisord.conf:/etc/supervisor/conf.d/pimcore.conf:ro
+
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - "$APP_HTTP_PORT:80"
+    volumes:
+      - .:/var/www/html:ro
+      - ./src/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - php
+
   mysql:
-    image: mariadb:$APP_DB_MYSQL_VERSION
+    image: mysql:$APP_DB_MYSQL_VERSION
     container_name: $APP_NAME-db
     restart: unless-stopped
     ports:
@@ -38,13 +60,20 @@ services:
       MYSQL_PASSWORD: $APP_DB_MYSQL_PASSWORD
       MYSQL_ROOT_PASSWORD: $APP_DB_MYSQL_PASSWORD
 
-    
+  redis:
+    image: redis:alpine
+    container_name: $APP_NAME-redis
+    command: [ redis-server, --maxmemory 128mb, --maxmemory-policy volatile-lru, --save "" ]
+
+  
+
 networks:
   default:
       name: ${APP_NETWORK}
+      external: true
     
 volumes:
   pimcore:
     driver: local
-  db:
+  mysql_data:
     driver: local

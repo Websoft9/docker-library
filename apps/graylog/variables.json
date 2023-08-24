@@ -1,9 +1,9 @@
 {
   "name": "graylog",
   "trademark": "Graylog",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/Graylog2/graylog-docker",
-  "version": "5.1.3",
+  "version": "5.1",
   "requirements": {
     "cpu": "2",
     "memory": "4",

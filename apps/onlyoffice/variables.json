@@ -1,9 +1,9 @@
 {
   "name": "onlyoffice",
   "trademark": "ONLYOFFICE",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/ONLYOFFICE/Docker-CommunityServer.git",
-  "version": "12.1.0.1760",
+  "version": "12.1.0.1760,latest",
   "requirements": {
     "cpu": "2",
     "memory": "8",

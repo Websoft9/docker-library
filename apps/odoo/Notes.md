@@ -1,6 +1,6 @@
 ## Odoo
 
-This repository fork Odoo official project.
+This repository fork Odoo official project and add Dockerfile for ARM
 
 ### 要点
 

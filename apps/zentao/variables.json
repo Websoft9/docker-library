@@ -1,9 +1,9 @@
 {
   "name": "zentao",
   "trademark": "ZenTao",
-  "release": false,
-  "fork_url": "",
-  "version": "18.4",
+  "release": true,
+  "fork_url": "https://hub.docker.com/r/easysoft/zentao",
+  "version": "18.4,latest",
   "requirements": {
     "cpu": "1",
     "memory": "1",

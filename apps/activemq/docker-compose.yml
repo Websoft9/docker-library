@@ -7,7 +7,7 @@ version: "3.8"
 
 services:
   activemq-classic:
-    image: alfresco/alfresco-activemq:$APP_CLASSIC_VERSION-jre11-centos7
+    image: alfresco/alfresco-activemq:$APP_CLASSIC_VERSION
     container_name: $APP_NAME
     restart: unless-stopped
     env_file: .env
