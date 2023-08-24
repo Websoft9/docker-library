@@ -14,7 +14,7 @@ if [ -n "${AWX_KUBE_DEVEL}" ]; then
 fi
 
 set -e
-export DJANGO_SUPERUSER_PASSWORD=$PASSWORD
+export DJANGO_SUPERUSER_PASSWORD=$APP_PASSWORD
 # 迁移数据库
 awx-manage migrate
 
