@@ -19,6 +19,7 @@ services:
       - rsyslog-socket:/var/run/awx-rsyslog/
       - awx-receptor:/var/run/awx-receptor/
       - "./src/config/SECRET_KEY:/etc/tower/SECRET_KEY"
+      - "./src/config/supervisord_web.conf:/etc/supervisord_web.conf"
       - "./src/config/settings.py:/etc/tower/settings.py"
       - "./src/config/local_settings.py:/etc/tower/local_settings.py"
       - "./src/config/websocket_secret.py:/etc/tower/websocket_secret.py"
