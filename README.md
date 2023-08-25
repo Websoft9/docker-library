@@ -5,7 +5,7 @@
 
 # Docker Compose applications
 
-This repository include 200+ applications based on [Docker compose](https://docs.docker.com/compose/), e.g [WordPress, MySQL, Odoo, MongoDB, GitLab, Elastic, Ghost, Grafana, Graylog, Kafka, n8n, Moodle, Nextcloud, ONLYOFFICE, phpMyAdmin...](https://github.com/Websoft9/docker-library/tree/main/apps)
+This repository include [200+ applications](https://github.com/Websoft9/docker-library/tree/main/apps) based on [Docker compose](https://docs.docker.com/compose/), e.g WordPress, MySQL, Odoo, MongoDB, GitLab, Elastic, Ghost, Grafana, Graylog, Kafka, n8n, Moodle, Nextcloud, ONLYOFFICE, phpMyAdmin...
 
 You can use them for bussiness management, content management, data analysis, development, DevOps and any things you want to do.  
 
@@ -14,9 +14,7 @@ You can use them for bussiness management, content management, data analysis, de
 
 The easiest way is install [ Websoft9](https://github.com/Websoft9/websoft9) which can help you running these applications on web-based console.  
 
-Of course, you can also use docker compose to running these application
-
-### Running by docker compose
+Of course, you can also use Docker compose to running these application: 
 
 1. Make sure you have install the Docker latest or you can install Docker by below script
 
@@ -31,17 +29,13 @@ Of course, you can also use docker compose to running these application
    cd docker-library && ls apps
    ```
 
-3. Go to the target app directory, check the .env, then run it
+3. Go to the target app directory, check or modify the [.env]((https://github.com/Websoft9/docker-library/blob/main/docs/code_owner.md#environment-variables)), then run it
 
    ```
    # e.g install wordpress
    cd apps/wordpress
    sudo docker network create websoft9 &&  sudo docker compose up -d
    ```
-
-### Change environments if need
-
-All environments is in the `.env` file of application directory, you should read [Env Guide](https://github.com/Websoft9/docker-library/blob/main/docs/code_owner.md#environment-variables) when you run a app by docker compose.
 
 ## How to contribute it?
 
