@@ -29,7 +29,7 @@ Of course, you can also use Docker compose to running these application:
    cd docker-library && ls apps
    ```
 
-3. Go to the target app directory, check or modify the [.env]((https://github.com/Websoft9/docker-library/blob/main/docs/code_owner.md#environment-variables)), then run it
+3. Go to the target app directory, check or modify the [.env]((https://github.com/Websoft9/docker-library/blob/main/docs/code_owner.md#environment-variables), then run it
 
    ```
    # e.g install wordpress
