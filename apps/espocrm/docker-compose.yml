@@ -20,7 +20,7 @@ services:
     restart: unless-stopped
 
   espocrm:
-    image: espocrm/espocrm
+    image: espocrm/espocrm:$APP_VERSION
     container_name: ${APP_NAME}
     env_file: .env
     environment:
