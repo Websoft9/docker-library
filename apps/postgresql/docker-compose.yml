@@ -7,14 +7,14 @@ services:
     container_name: ${APP_NAME}
     restart: unless-stopped
     ports:
-     - ${APP_DB_PORT}:5432
+     - ${APP_DB_POSTGRES_PORT}:5432
     volumes:
       - postgres:/var/lib/postgresql/data
     env_file: .env
     environment:
-      POSTGRES_DB: ${APP_DB_NAME}
-      POSTGRES_USER: ${APP_USER}
-      POSTGRES_PASSWORD: ${APP_PASSWORD}
+      POSTGRES_DB: ${APP_DB_POSTGRES_NAME}
+      POSTGRES_USER: ${APP_DB_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${APP_DB_POSTGRES_PASSWORD}
     
 volumes:
   postgres:
