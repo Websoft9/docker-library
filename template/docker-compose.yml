@@ -29,6 +29,11 @@ services:
       - 'suitecrm:/bitnami/suitecrm'
     depends_on:
       - mysql
+    labels:
+      com.docker.compose.w9_http.port: 8080
+      com.docker.compose.w9_https.port: 8443
+      com.docker.compose.w9_ssh.port: 22
+    
 
   mysql:
     image: mysql:${APP_DB_MYSQL_VERSION}
