@@ -25,6 +25,7 @@ services:
   mariadb:
     image: docker.io/bitnami/mariadb:$APP_DB_MARIADB_VERSION
     container_name: $APP_NAME-db
+    restart: unless-stopped
     environment:
       - MARIADB_USER=$APP_DB_MARIADB_USER
       - MARIADB_DATABASE=$APP_DB_MARIADB_NAME
@@ -35,6 +36,7 @@ services:
 
   elasticsearch:
     image: docker.io/bitnami/elasticsearch:7
+    restart: unless-stopped
     container_name: $APP_NAME-elasticsearch
     volumes:
       - 'elasticsearch_data:/bitnami/elasticsearch/data'
