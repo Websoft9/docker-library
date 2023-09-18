@@ -18,25 +18,29 @@ services:
     env_file: .env
     environment:
       WORDPRESS_DB_HOST: $APP_NAME-db
-      WORDPRESS_DB_USER: $APP_DB_MYSQL_USER
-      WORDPRESS_DB_PASSWORD: $APP_DB_MYSQL_PASSWORD
-      WORDPRESS_DB_NAME: $APP_DB_MYSQL_NAME
+      WORDPRESS_DB_USER: $APP_NAME
+      WORDPRESS_DB_PASSWORD: $POWER_PASSWORD
+      WORDPRESS_DB_NAME: $APP_NAME
     volumes:
       - wordpress:/var/www/html
       - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
+    labels:
+      com.docker.compose.websoft9.http.port: 80
 
   mysql:
-    image: mariadb:$APP_DB_MYSQL_VERSION
+    image: mariadb:10.4
     container_name: $APP_NAME-db
     restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
     volumes:
       - mysql_data:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: $APP_DB_MYSQL_NAME
-      MYSQL_USER: $APP_DB_MYSQL_USER
-      MYSQL_PASSWORD: $APP_DB_MYSQL_PASSWORD
-      MYSQL_ROOT_PASSWORD: $APP_DB_MYSQL_PASSWORD
+      MYSQL_DATABASE: $APP_NAME
+      MYSQL_USER: $APP_NAME
+      MYSQL_PASSWORD: $POWER_PASSWORD
+      MYSQL_ROOT_PASSWORD: $POWER_PASSWORD
+    labels:
+      com.docker.compose.websoft9.db.connection: true
 
 volumes:
   wordpress:

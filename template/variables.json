@@ -3,7 +3,16 @@
   "trademark": "AppName",
   "release": false,
   "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
-  "version": "1.2.5",
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["latest", "2.2"]
+    },
+    {
+      "dist": "enterprise",
+      "version": ["latest", "1.8.2"]
+    }
+  ],
   "requirements": {
     "cpu": "2",
     "memory": "4",

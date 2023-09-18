@@ -47,6 +47,8 @@ services:
     volumes:
       - mysql:/var/lib/mysql
     restart: always
+    labels:
+      com.docker.compose.websoft9.db.connection: true
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:${APP_DB_ES_VERSION}
