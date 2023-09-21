@@ -25,7 +25,7 @@ services:
       - wordpress:/var/www/html
       - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
     labels:
-      com.docker.compose.websoft9.http.port: 80
+      com.docker.compose.websoft9.http.port: $APP_HTTP_PORT
 
   mysql:
     image: mariadb:10.4
