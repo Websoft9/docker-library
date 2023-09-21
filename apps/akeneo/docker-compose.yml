@@ -36,7 +36,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
 
   elasticsearch:
-    image: 'docker.elastic.co/elasticsearch/elasticsearch-oss:${APP_DB_ES_VERSION}'
+    image: 'elasticsearch:${APP_DB_ES_VERSION}'
     container_name: ${APP_NAME}-elasticsearch
     restart: unless-stopped
     environment:
