@@ -6,7 +6,7 @@ version: '3.8'
 services:
   zentao:
     image: easysoft/zentao:${APP_VERSION}
-    container_name: ${APP_NAME}
+    container_name: $APP_ID
     ports:
       - 9001-9999:80
     volumes:
@@ -14,12 +14,12 @@ services:
     env_file: .env
     environment:
       # The belows vars is need, otherwise container error
-      zentao_DB_HOST: $APP_NAME-db
+      zentao_DB_HOST: $APP_ID-db
       zentao_DB_PASSWORD: $POWER_PASSWORD
-      MYSQL_USER:  $APP_NAME
+      MYSQL_USER:  $APP_ID
       MYSQL_PASSWORD: $POWER_PASSWORD
-      MYSQL_DB: $APP_NAME
-      MYSQL_HOST: $APP_NAME-db  
+      MYSQL_DB: $APP_ID
+      MYSQL_HOST: $APP_ID-db  
     links: 
       - mysql
     restart: unless-stopped
@@ -32,15 +32,15 @@ services:
       
   mysql:
     image: mysql:5.7
-    container_name: ${APP_NAME}-db
+    container_name: $APP_ID-db
     restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     env_file: .env
     volumes:
       - mysql_data:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: $APP_NAME
-      MYSQL_USER:  $APP_NAME
+      MYSQL_DATABASE: $APP_ID
+      MYSQL_USER:  $APP_ID
       MYSQL_PASSWORD: $POWER_PASSWORD
       MYSQL_ROOT_PASSWORD: $POWER_PASSWORD
     labels:

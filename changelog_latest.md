@@ -1,1 +1,1 @@
-1. add magento for new template
+1. 1. add edition and app_name->app_id

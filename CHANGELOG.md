@@ -1,3 +1,7 @@
+## 0.5.7 release on 2023-09-27
+
+1. add edition and app_name->app_id
+
 ## 0.5.4 release on 2023-08-23
 
 1. new apps online

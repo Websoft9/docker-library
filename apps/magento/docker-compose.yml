@@ -5,7 +5,7 @@ version: '3.8'
 services:
   magento:
     image: docker.io/bitnami/magento:$APP_VERSION
-    container_name: $APP_NAME
+    container_name: $APP_ID
     restart: unless-stopped
     ports:
       - '9001-9999:80'
@@ -13,8 +13,8 @@ services:
       - .env
     environment:
       - MAGENTO_HOST=$APP_URL
-      - MAGENTO_DATABASE_USER=$APP_NAME
-      - MAGENTO_DATABASE_NAME=$APP_NAME
+      - MAGENTO_DATABASE_USER=$APP_ID
+      - MAGENTO_DATABASE_NAME=$APP_ID
       - MAGENTO_DATABASE_PASSWORD=$POWER_PASSWORD
     volumes:
       - 'magento_data:/bitnami/magento'
@@ -26,13 +26,13 @@ services:
 
   mariadb:
     image: docker.io/bitnami/mariadb:10.4
-    container_name: $APP_NAME-db
+    container_name: $APP_ID-db
     restart: unless-stopped
     env_file:
       - .env
     environment:
-      - MARIADB_USER=$APP_NAME
-      - MARIADB_DATABASE=$APP_NAME
+      - MARIADB_USER=$APP_ID
+      - MARIADB_DATABASE=$APP_ID
       - MARIADB_PASSWORD=$POWER_PASSWORD
       - MARIADB_ROOT_PASSWORD=$POWER_PASSWORD
     volumes:
@@ -43,7 +43,7 @@ services:
   elasticsearch:
     image: docker.io/bitnami/elasticsearch:7
     restart: unless-stopped
-    container_name: $APP_NAME-elasticsearch
+    container_name: $APP_ID-elasticsearch
     volumes:
       - 'elasticsearch_data:/bitnami/elasticsearch/data'
 
