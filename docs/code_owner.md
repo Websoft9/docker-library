@@ -88,6 +88,15 @@ We will list and explain commonly used environmental variables as following tabl
 
 > main container: When the container has web pages, the corresponding container of the page is the main container; When a container has no pages, the corresponding container for the core application is usually the main container.
 
+## src folder
+
+src is the directory which include config or script files for creating/modify application.
+
+| file name          | Description                                                                                                                                                          | Necessity |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| nginx_proxy.conf         | nginx config code section which will insert to server{} by websoft9 api, and it can override the exist location                                 | no        |
+| php_exra.ini         | extra php.ini for PHP application, you can add it to docker-compose.yml if you want to use it                    | no        |
+
 ## Build docker image of websoft9
 
 When we cannot find a suitable image, we have to compile the image by Dockerfile,We make a requirement in the following aspects.
