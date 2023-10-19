@@ -204,6 +204,7 @@
 * * https://www.home-assistant.io/ 开源家庭自动化
 * Node-Red - 最适合物联网应用
 * https://github.com/flowforge/flowforge Node-Red的devops平台
+* 企业级 MQTT 物联网接入平台：轻量级消息队列服务[EMQX](https://www.emqx.com/en/products/emqx) [开源](https://github.com/emqx/emqx)+ 客户端 [MQTTX](https://github.com/emqx/MQTTX)
 
 ## 低代码
 
