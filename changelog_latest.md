@@ -1,1 +1,1 @@
-1. 1. add edition and app_name->app_id
+1. add new application

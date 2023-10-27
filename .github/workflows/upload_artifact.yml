@@ -21,8 +21,16 @@ jobs:
         id: update_data
         run: |
           version=$(jq -r '.Version' library.json)
-          echo version=$version
-          echo "VERSION=$version" >> $GITHUB_ENV
+          real_version=${version%%-*}
+          echo "VERSION=$real_version" >> $GITHUB_ENV
+          echo "RC_VERSION=$version" >> $GITHUB_ENV
+          if [[ $version == *-* ]]; then
+            echo "release version"
+            echo "::set-output name=release::false"
+          else
+            echo "rc release version"
+            echo "::set-output name=release::true"
+          fi
           mkdir library artifacts
           changelog=$(cat changelog_latest.md)
           echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT 
@@ -39,6 +47,29 @@ jobs:
 
       - name: Upload To Azure Blob
         uses: LanceMcCarthy/Action-AzureBlobUpload@v2
+        if: ${{ steps.update_data.outputs.release == 'false' }}
+        with:
+          connection_string: ${{ secrets.AZURE_STORAGE_ARTIFACT }}
+          container_name: dev
+          source_folder: artifacts/
+          destination_folder: ./websoft9/plugin/library
+          delete_if_exists: true
+          fail_if_source_empty: true
+
+      - name: Create Release
+        if: ${{ steps.update_data.outputs.release == 'false' }}
+        uses: softprops/action-gh-release@v1
+        with:
+          files: /*
+          tag_name: v${{ env.RC_VERSION }}
+          title: Release-v${{ env.RC_VERSION }}
+          body: ${{ steps.update_data.outputs.CHANGELOG }}
+          draft: false
+          prerelease: false
+
+      - name: Upload To Azure Blob
+        uses: LanceMcCarthy/Action-AzureBlobUpload@v2
+        if: ${{ steps.update_data.outputs.release == 'true' }}
         with:
           connection_string: ${{ secrets.AZURE_STORAGE_ARTIFACT }}
           container_name: release
@@ -48,7 +79,7 @@ jobs:
           fail_if_source_empty: true
 
       - name: Create Release
-        id: create_release
+        if: ${{ steps.update_data.outputs.release == 'true' }}
         uses: softprops/action-gh-release@v1
         with:
           files: /*
