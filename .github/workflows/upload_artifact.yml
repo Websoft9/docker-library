@@ -79,11 +79,6 @@ jobs:
           destination_folder: ./websoft9/plugin/library
           delete_if_exists: true
           fail_if_source_empty: true
-
-      - name: Commit and push changes
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Build Plugin For Release
           
       - name: Create Release
         if: ${{ steps.update_data.outputs.release == 'true' }}
