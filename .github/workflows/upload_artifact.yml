@@ -32,10 +32,12 @@ jobs:
             echo "::set-output name=release::true"
           fi
           mkdir library artifacts
-          changelog=$(cat changelog_latest.md)
           echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT 
           echo "$changelog" >> $GITHUB_OUTPUT 
           echo "EOF" >> $GITHUB_OUTPUT
+          current_date=$(date +%Y-%m-%d)
+          printf "## ${{ steps.convert_version.outputs.VERSION }} release on $current_date\n$changelog\n$(cat CHANGELOG.md)" > temp.txt
+          mv temp.txt CHANGELOG.md
           cp -r apps library
           cp -r docs library
           cp -r template library
@@ -61,8 +63,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: /*
-          tag_name: v${{ env.RC_VERSION }}
-          title: Release-v${{ env.RC_VERSION }}
+          tag_name: ${{ env.RC_VERSION }}
+          title: Release-${{ env.RC_VERSION }}
           body: ${{ steps.update_data.outputs.CHANGELOG }}
           draft: false
           prerelease: false
@@ -83,8 +85,13 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: /*
-          tag_name: v${{ env.VERSION }}
-          title: Release-v${{ env.VERSION }}
+          tag_name: ${{ env.VERSION }}
+          title: Release-${{ env.VERSION }}
           body: ${{ steps.update_data.outputs.CHANGELOG }}
           draft: false
           prerelease: false
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Build Plugin For Release-${{ env.VERSION }}
