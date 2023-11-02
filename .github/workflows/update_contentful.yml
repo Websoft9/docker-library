@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
     paths: 
-      - 'apps/*/variables.json'
+      - 'apps/*/variables1.json'
 jobs:
   build:
     runs-on: ubuntu-latest
