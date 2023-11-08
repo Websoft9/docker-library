@@ -10,25 +10,18 @@ services:
     ports:
       - 9001-9999:80
     volumes:
-      - zentao:/www/zentaopms
+      - zentao:/data
     env_file: .env
     environment:
       # The belows vars is need, otherwise container error
-      zentao_DB_HOST: $APP_ID-db
-      zentao_DB_PASSWORD: $POWER_PASSWORD
-      MYSQL_USER:  $APP_ID
-      MYSQL_PASSWORD: $POWER_PASSWORD
-      MYSQL_DB: $APP_ID
-      MYSQL_HOST: $APP_ID-db  
-    links: 
-      - mysql
+      ZT_MYSQL_HOST: $APP_ID-db
+      ZT_MYSQL_PORT: 3306
+      ZT_MYSQL_USER: root
+      ZT_MYSQL_PASSWORD: $POWER_PASSWORD
+      ZT_MYSQL_DB: $APP_ID
     restart: unless-stopped
-    entrypoint: bash -c "cat /my_cmd > /cmd.sh && chmod +x /cmd.sh && /cmd.sh"
-    configs:
-      - source: my_cmd
     labels:
       com.docker.compose.w9_http.port: 80
-    
       
   mysql:
     image: mysql:5.7
@@ -54,7 +47,3 @@ networks:
 volumes:
   zentao:
   mysql_data:
-
-configs:
-  my_cmd:
-    file: ./cmd.sh
