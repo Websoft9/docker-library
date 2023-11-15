@@ -1,0 +1,41 @@
+# image: https://hub.docker.com/r/jetbrains/teamcity-server
+# docs: https://www.jetbrains.com/help/teamcity/teamcity-documentation.html
+# https://github.com/JetBrains/teamcity-docker-server
+# https://github.com/egregors/teamcity-docker-compose
+
+version: '3.8'
+services:
+  teamcity-server:
+    image: jetbrains/teamcity-server:${APP_VERSION}
+    container_name: ${APP_NAME}
+    restart: unless-stopped
+    depends_on:
+      - teamcity-db
+    env_file: .env
+    ports:
+      - "${APP_HTTP_PORT}:8111"
+    volumes:
+      - data:/data/teamcity_server/datadir
+      - logs:/opt/teamcity/logs
+
+  teamcity-db:
+    image: mysql:8.0
+    container_name: ${APP_NAME}-db 
+    environment:
+      - MYSQL_ROOT_PASSWORD=${POWER_PASSWORD}
+      - MYSQL_DATABASE=${APP_NAME}
+      - MYSQL_USER=${APP_NAME}
+      - MYSQL_PASSWORD=${POWER_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: unless-stopped
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  logs:
+  data:
+  mysql_data:

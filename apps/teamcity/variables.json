@@ -1,0 +1,13 @@
+{
+  "name": "teamcity",
+  "trademark": "TeamCity",
+  "release": true,
+  "fork_url": "https://hub.docker.com/r/jetbrains/teamcity-server",
+  "version": "latest",
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "1",
+    "url": "https://github.com/JetBrains/teamcity-docker-server"
+  }
+}
