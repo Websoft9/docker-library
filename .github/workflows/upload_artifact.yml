@@ -58,9 +58,10 @@ jobs:
           cp -r template ${{ env.appname }}
           cp *.md ${{ env.appname }}
           cp ${{ env.appname }}.json ${{ env.appname }}
+          cp ${{ env.appname }}.json CHANGELOG.md artifacts
           zip -r ${{ env.appname }}-${{ steps.convert_version.outputs.VERSION_CORE }}.zip ${{ env.appname }}
           cp ${{ env.appname }}-${{ steps.convert_version.outputs.VERSION_CORE }}.zip artifacts
-          cp ${{ env.appname }}/${{ env.appname }}-${{ steps.convert_version.outputs.VERSION_CORE }}.zip ${{ env.appname }}/${{ env.appname }}-latest.zip
+          cp artifacts/${{ env.appname }}-${{ steps.convert_version.outputs.VERSION_CORE }}.zip artifacts/${{ env.appname }}-latest.zip
 
       - name: Upload To Azure Blob
         uses: LanceMcCarthy/Action-AzureBlobUpload@v2
