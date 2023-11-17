@@ -3,7 +3,12 @@
   "trademark": "pgAdmin",
   "release": true,
   "fork_url": "https://github.com/postgres/pgadmin4",
-  "version": "latest",
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["latest"]
+    }
+  ],
   "requirements": {
     "cpu": "1",
     "memory": "1",

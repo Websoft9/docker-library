@@ -4,26 +4,20 @@
 version: "3.8"
 services:
   phpmyadmin:
-      image: phpmyadmin:$APP_VERSION
-      container_name: $APP_NAME
+      image: $APP_REPO:$APP_VERSION
+      container_name: $APP_ID
       volumes:
        - ./src/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
       env_file: .env
-      environment:
-       - PMA_ABSOLUTE_URI=$APP_URL
-       - UPLOAD_LIMIT=$APP_UPLOAD_LIMIT
       restart: unless-stopped
       ports:
-       - ${APP_HTTP_PORT}:80
+       - $APP_HTTP_PORT_SET:80
 
   db:
     image: mariadb:10.3
-    container_name: $APP_NAME-db
+    container_name: $APP_ID-mariadb
     restart: unless-stopped
-    volumes:
-      - type: volume
-        source: db
-        target: /var/lib/mysql
+    env_file: .env
     environment:
       MYSQL_ROOT_PASSWORD: notSecureChangeMe
     profiles:
@@ -31,8 +25,5 @@ services:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: $APP_NETWORK
     external: true
-
-volumes:
-  db:

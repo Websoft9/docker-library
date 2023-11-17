@@ -14,22 +14,15 @@ services:
           max-file: "5"
           max-size: 10m
     ports:
-      - 9001-9999:80
+      - $APP_HTTP_PORT_SET:80
     env_file: .env
-    environment:
-      WORDPRESS_DB_HOST: $APP_ID-db
-      WORDPRESS_DB_USER: $APP_ID
-      WORDPRESS_DB_PASSWORD: $POWER_PASSWORD
-      WORDPRESS_DB_NAME: $APP_ID
     volumes:
       - wordpress:/var/www/html
       - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
-    labels:
-      com.docker.compose.websoft9.http.port: $APP_HTTP_PORT
 
-  mysql:
+  mariadb:
     image: mariadb:10.4
-    container_name: $APP_ID-db
+    container_name: $APP_ID-mariadb
     restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
     env_file: .env
@@ -40,8 +33,6 @@ services:
       MYSQL_USER: $APP_ID
       MYSQL_PASSWORD: $POWER_PASSWORD
       MYSQL_ROOT_PASSWORD: $POWER_PASSWORD
-    labels:
-      com.docker.compose.websoft9.db.connection: true
 
 volumes:
   wordpress:

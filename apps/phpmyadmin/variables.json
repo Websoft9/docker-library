@@ -3,6 +3,12 @@
   "trademark": "phpMyAdmin",
   "release": false,
   "fork_url": "https://github.com/phpmyadmin/docker",
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["latest"]
+    }
+  ],
   "version": "5.2.1",
   "requirements": {
     "cpu": "1",

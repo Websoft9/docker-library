@@ -5,30 +5,23 @@ version: '3.8'
 
 services:
   zentao:
-    image: easysoft/zentao:${APP_VERSION}
+    image: $APP_REPO:$APP_VERSION
     container_name: $APP_ID
     ports:
-      - 9001-9999:80
+      - $APP_HTTP_PORT_SET:80
     volumes:
       - zentao:/data
-    env_file: .env
-    environment:
-      # The belows vars is need, otherwise container error
-      ZT_MYSQL_HOST: $APP_ID-db
-      ZT_MYSQL_PORT: 3306
-      ZT_MYSQL_USER: root
-      ZT_MYSQL_PASSWORD: $POWER_PASSWORD
-      ZT_MYSQL_DB: $APP_ID
+    env_file:
+      - .env
     restart: unless-stopped
-    labels:
-      com.docker.compose.w9_http.port: 80
       
   mysql:
     image: mysql:5.7
-    container_name: $APP_ID-db
+    container_name: $APP_ID-mysql
     restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-    env_file: .env
+    env_file:
+      - .env
     volumes:
       - mysql_data:/var/lib/mysql
     environment:
@@ -36,12 +29,10 @@ services:
       MYSQL_USER:  $APP_ID
       MYSQL_PASSWORD: $POWER_PASSWORD
       MYSQL_ROOT_PASSWORD: $POWER_PASSWORD
-    labels:
-      com.docker.compose.websoft9.db.connection: true
       
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: $APP_NETWORK
     external: true
 
 volumes:
