@@ -1,0 +1,21 @@
+# This fields is for app environments. e.g  APP_http_port_SET, APP_mq_address_SET
+# i18n for translation
+
+http
+https
+mq
+db
+ftp
+sftp
+key
+token
+timezone
+smtp
+path
+address
+mysql
+mariadb
+postgresql
+mongodb
+kafka
+redis
