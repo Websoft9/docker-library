@@ -16,7 +16,8 @@ jobs:
       
     - name: Create tranlation files
       run: |
-        python3 i18n/build.py
+        cd i18n
+        python3 build.py
         
     - name: push i18n  
       uses: stefanzweifel/git-auto-commit-action@v4
