@@ -12,7 +12,7 @@
     "token": "",
     "timezone": "",
     "smtp": "",
-    "path": "",
+    "path": "路径",
     "address": "",
     "mysql": "",
     "mariadb": "",
