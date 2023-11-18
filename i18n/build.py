@@ -2,7 +2,7 @@ import json
 import os
 
 # 从文件中读取单词
-with open('i18n/itemname_fields', 'r', encoding='utf-8') as f:
+with open('itemname_fields', 'r', encoding='utf-8') as f:
     words = [line.strip() for line in f]
 
 # 列出你的目标语言
