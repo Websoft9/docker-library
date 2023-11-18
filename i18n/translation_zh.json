@@ -20,5 +20,7 @@
     "mongodb": "",
     "kafka": "",
     "redis": "",
-    "port": ""
+    "port": "",
+    "ssh": "",
+    "api": ""
 }
