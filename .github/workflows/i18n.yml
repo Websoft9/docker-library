@@ -1,0 +1,24 @@
+name: i18n
+
+on: 
+  repository_dispatch:
+  push:
+    branches: [ main ]
+    paths: 
+      - 'i18n/itemname_fields'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+      name: Check out code  
+      
+    - name: Create tranlation files
+      run: |
+        python3 i18n/build.py
+        
+    - name: push i18n  
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: push i18n
