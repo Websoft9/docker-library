@@ -23,4 +23,4 @@ jobs:
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: push i18n
-        #push_options: --force
+        push_options: --force
