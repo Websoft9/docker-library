@@ -19,5 +19,6 @@
     "postgresql": "",
     "mongodb": "",
     "kafka": "",
-    "redis": ""
+    "redis": "",
+    "port": ""
 }
