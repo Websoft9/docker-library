@@ -3,10 +3,10 @@ import os
 
 # 从文件中读取单词
 with open('itemname_fields', 'r', encoding='utf-8') as f:
-    words = [line.strip() for line in f]
+    words = [line.strip() for line in f if line.strip() and not line.startswith('#')]
 
 # 列出你的目标语言
-languages = ["zh", "fr", "de", "ja", "es"]
+languages = ["zh", "fr", "de", "ja", "en"]
 
 # 对每种语言生成一个翻译文件
 for lang in languages:
