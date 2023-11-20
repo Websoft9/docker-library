@@ -7,57 +7,52 @@ version: '3.8'
 services:
 
   mysql:
-    image: mysql:${W9_DB_MYSQL_VERSION}
-    container_name: ${W9_NAME}-db
+    image: mysql:$MYSQL_VERSION
+    container_name: $W9_ID-mysql
     command: --default-authentication-plugin=mysql_native_password    
-    environment:
-      MYSQL_ROOT_PASSWORD: ${W9_DB_MYSQL_PASSWORD}
-      MYSQL_DATABASE: ${W9_DB_MYSQL_NAME}
-      MYSQL_USER: ${W9_DB_MYSQL_USER}
-      MYSQL_PASSWORD: ${W9_DB_MYSQL_PASSWORD}
+    env_file: 
+      - .env
     volumes:
       - mysql:/var/lib/mysql
     restart: unless-stopped
 
   espocrm:
-    image: espocrm/espocrm:$W9_VERSION
-    container_name: ${W9_NAME}
-    env_file: .env
-    environment:
-      ESPOCRM_DATABASE_HOST: ${W9_NAME}-db
-      ESPOCRM_DATABASE_USER: ${W9_DB_MYSQL_USER}
-      ESPOCRM_DATABASE_PASSWORD: ${W9_DB_MYSQL_PASSWORD}
-      ESPOCRM_ADMIN_USERNAME: ${W9_USER}
-      ESPOCRM_ADMIN_PASSWORD: ${W9_PASSWORD}
-      ESPOCRM_SITE_URL: "http://localhost:${W9_HTTP_PORT}"
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    env_file: 
+      - .env
     volumes:
       - espocrm:/var/www/html
     restart: unless-stopped
     ports:
-      - ${W9_HTTP_PORT}:80
+      - ${W9_HTTP_PORT_SET}:80
 
   espocrm-daemon:
     image: espocrm/espocrm
-    container_name: ${W9_NAME}-daemon
+    container_name: $W9_ID-daemon
     volumes:
       - espocrm:/var/www/html
     restart: unless-stopped
+    depends_on:
+      - espocrm
     entrypoint: docker-daemon.sh
 
   espocrm-websocket:
     image: espocrm/espocrm
-    container_name: ${W9_NAME}-websocket    
+    container_name: $W9_ID-websocket    
     environment:
       ESPOCRM_CONFIG_USE_WEB_SOCKET: "true"
-      ESPOCRM_CONFIG_WEB_SOCKET_URL: "ws://localhost:${W9_WEBSOCKET_PORT}"
+      ESPOCRM_CONFIG_WEB_SOCKET_URL: "ws://localhost:${W9_WEBSOCKET_PORT_SET}"
       ESPOCRM_CONFIG_WEB_SOCKET_ZERO_M_Q_SUBSCRIBER_DSN: "tcp://*:7777"
       ESPOCRM_CONFIG_WEB_SOCKET_ZERO_M_Q_SUBMISSION_DSN: "tcp://espocrm-websocket:7777"
     volumes:
       - espocrm:/var/www/html
     restart: unless-stopped
+    depends_on:
+      - espocrm
     entrypoint: docker-websocket.sh
     ports:
-      - ${W9_WEBSOCKET_PORT}:8080
+      - ${W9_WEBSOCKET_PORT_SET}:8080
       
 networks:
   default:

@@ -5,41 +5,28 @@ version: '3.8'
 services:
   drupal:
     image: $W9_REPO:$W9_VERSION
-    container_name: $W9_NAME
+    container_name: $W9_ID
     ports:
-      - $W9_HTTP_PORT:8080
+      - $W9_HTTP_PORT_SET:8080
     volumes:
       - drupal:/bitnami/drupal
     restart: unless-stopped
     env_file: .env
-    environment:
-      - DRUPAL_DATABASE_HOST=$W9_NAME-db
-      - DRUPAL_DATABASE_USER=$W9_DB_MYSQL_USER
-      - DRUPAL_DATABASE_PASSWORD=$W9_DB_MYSQL_PASSWORD
-      - DRUPAL_DATABASE_NAME=$W9_DB_MYSQL_NAME
-      - DRUPAL_USERNAME=$W9_USER
-      - DRUPAL_PASSWORD=$W9_PASSWORD
     depends_on:
       - db
 
   db:
-    image: mysql:${W9_DB_MYSQL_VERSION}
-    container_name: $W9_NAME-db
+    image: mysql:5.7
+    container_name: $W9_ID-mysql
     restart: unless-stopped
-    ports:
-     - $W9_DB_MYSQL_PORT:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - mysql:/var/lib/mysql
-    environment:
-      MYSQL_DATABASE: $W9_DB_MYSQL_NAME
-      MYSQL_USER: $W9_DB_MYSQL_USER
-      MYSQL_PASSWORD: $W9_DB_MYSQL_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_DB_MYSQL_PASSWORD
+    env_file: .env
 
 networks:
   default:
-    name: ${W9_NETWORK}
+    name: $W9_NETWORK
     external: true
 
 volumes:

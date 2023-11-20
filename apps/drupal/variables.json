@@ -3,7 +3,12 @@
   "trademark": "Drupal",
   "release": true,
   "fork_url": "https://hub.docker.com/r/bitnami/drupal",
-  "version": "10.1.2,latest",
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["10.1.6", "latest"]
+    }
+  ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
