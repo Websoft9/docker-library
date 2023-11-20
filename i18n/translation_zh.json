@@ -20,5 +20,6 @@
     "port": "",
     "ssh": "",
     "api": "",
-    "gui": ""
+    "gui": "",
+    "console": ""
 }
