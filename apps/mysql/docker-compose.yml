@@ -6,11 +6,11 @@ version: '3.8'
 services:
 
   mysql:
-    image: mysql:${W9_VERSION}
-    container_name: ${W9_NAME}
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
     restart: unless-stopped
     ports:
-     - ${W9_DB_PORT}:3306
+     - $W9_DB_PORT_SET:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
      - mysql_data:/var/lib/mysql
@@ -18,7 +18,7 @@ services:
      - ./src/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     env_file: .env
     environment:
-      MYSQL_ROOT_PASSWORD: ${W9_PASSWORD}
+      MYSQL_ROOT_PASSWORD: $W9_PASSWORD
 
 volumes:
   mysql_data:
@@ -26,5 +26,5 @@ volumes:
   
 networks:
   default:
-    name: ${W9_NETWORK}
+    name: $W9_NETWORK
     external: true
