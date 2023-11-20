@@ -5,11 +5,11 @@ version: '3.8'
 
 services:
   mosquitto:
-    container_name: $APP_NAME
-    image: APP_REPO:APP_VERSION
+    container_name: $W9_NAME
+    image: W9_REPO:W9_VERSION
     ports:
-      - $APP_MQTT_PORT:1883
-      - $APP_WS_PORT:9001
+      - $W9_MQTT_PORT:1883
+      - $W9_WS_PORT:9001
     volumes:
       - data:/mosquitto/data
       - config:/mosquitto/config
@@ -19,7 +19,7 @@ services:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

@@ -5,26 +5,26 @@ version: '3.8'
 
 services:
   rethinkdb:
-    image: rethinkdb:${APP_VERSION}
+    image: rethinkdb:${W9_VERSION}
     container_name: rethinkdb
     restart: unless-stopped
     ports:
      - 9090:8080
-     - ${APP_CLIENT_PORT}:28015
-     - ${APP_CLUSTER_PORT}:29015
+     - ${W9_CLIENT_PORT}:28015
+     - ${W9_CLUSTER_PORT}:29015
     env_file: .env
     command:
       - /bin/bash
       - -c
       - |
-        rethinkdb create --initial-password  ${APP_PASSWORD}
+        rethinkdb create --initial-password  ${W9_PASSWORD}
         rethinkdb --bind all
     volumes:
       - rethinkdb_data:/data
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

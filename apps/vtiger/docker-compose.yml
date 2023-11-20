@@ -5,21 +5,21 @@ version: '3.8'
 services:
 
   vtiger:
-    image: websoft9dev/vtiger:${APP_VERSION}
-    container_name: ${APP_NAME}
+    image: websoft9dev/vtiger:${W9_VERSION}
+    container_name: ${W9_NAME}
     restart: unless-stopped
     ports:
-      - ${APP_HTTP_PORT}:80
+      - ${W9_HTTP_PORT}:80
     env_file: .env
     environment:
-      - MYSQL_DATABASE=${APP_DB_MYSQL_NAME}
-      - MYSQL_ROOT_PASSWORD=${APP_DB_MYSQL_PASSWORD}
-      - MYSQL_USER=${APP_DB_MYSQL_USER}
-      - MYSQL_PASSWORD=${APP_DB_MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${W9_DB_MYSQL_NAME}
+      - MYSQL_ROOT_PASSWORD=${W9_DB_MYSQL_PASSWORD}
+      - MYSQL_USER=${W9_DB_MYSQL_USER}
+      - MYSQL_PASSWORD=${W9_DB_MYSQL_PASSWORD}
       - VTIGER_DB_HOST=mysql
-      - VTIGER_DB_USER=${APP_DB_MYSQL_USER}
-      - VTIGER_DB_DATABASE=${APP_DB_MYSQL_NAME}
-      - VTIGER_DB_PASSWORD=${APP_DB_MYSQL_PASSWORD}
+      - VTIGER_DB_USER=${W9_DB_MYSQL_USER}
+      - VTIGER_DB_DATABASE=${W9_DB_MYSQL_NAME}
+      - VTIGER_DB_PASSWORD=${W9_DB_MYSQL_PASSWORD}
     volumes:
       - vtiger:/var/www/html
       - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
@@ -30,17 +30,17 @@ services:
       - source: my_cmd
 
   mysql:
-    image: mysql:${APP_DB_MYSQL_VERSION}
-    container_name: ${APP_NAME}-db
+    image: mysql:${W9_DB_MYSQL_VERSION}
+    container_name: ${W9_NAME}-db
     restart: unless-stopped
     environment:
-      - MYSQL_DATABASE=${APP_DB_MYSQL_NAME}
-      - MYSQL_ROOT_PASSWORD=${APP_DB_MYSQL_PASSWORD}
-      - MYSQL_USER=${APP_DB_MYSQL_USER}
-      - MYSQL_PASSWORD=${APP_DB_MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${W9_DB_MYSQL_NAME}
+      - MYSQL_ROOT_PASSWORD=${W9_DB_MYSQL_PASSWORD}
+      - MYSQL_USER=${W9_DB_MYSQL_USER}
+      - MYSQL_PASSWORD=${W9_DB_MYSQL_PASSWORD}
     command: --character-set-server=utf8 --collation-server=utf8_general_ci --sql_mode=NO_ENGINE_SUBSTITUTION --local_infile=ON
     ports:
-      - ${APP_DB_MYSQL_PORT}:3306
+      - ${W9_DB_MYSQL_PORT}:3306
     volumes:
       - mysql:/var/lib/mysql
 
@@ -50,7 +50,7 @@ volumes:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 configs:
   my_cmd:

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DOTNET_ROOT_PATH=/data/apps
-DOTNET_APP_NAME=aspnet
+DOTNET_W9_NAME=aspnet
 
 apt update
 apt install unzip

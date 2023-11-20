@@ -4,7 +4,7 @@ version: '3.8'
 
 services:
   guacd:
-    container_name: ${APP_CONTAINER_NAME}-guacd
+    container_name: ${W9_CONTAINER_NAME}-guacd
     image: guacamole/guacd
     restart: unless-stopped
     depends_on:
@@ -14,7 +14,7 @@ services:
       - record:/record:rw
       
   guacamole-preparation:
-    image: guacamole/guacamole:${APP_VERSION}
+    image: guacamole/guacamole:${W9_VERSION}
     entrypoint: [ "bash", "-c", "chmod -R +x /opt/guacamole/init && /opt/guacamole/bin/initdb.sh --postgres > /opt/guacamole/init/initdb.sql"]
     user: root
     privileged: true
@@ -23,16 +23,16 @@ services:
     restart: on-failure
     
   postgres:
-    image: postgres:${APP_DB_POSTGRESQL_VERSION}
+    image: postgres:${W9_DB_POSTGRESQL_VERSION}
     restart: unless-stopped
-    container_name: ${APP_CONTAINER_NAME}-postgres
+    container_name: ${W9_CONTAINER_NAME}-postgres
     depends_on:
       - guacamole-preparation
     environment:
       - PGDATA=/var/lib/postgresql/data/guacamole
-      - POSTGRES_DB=${APP_DB_POSTGRESQL_NAME}
-      - POSTGRES_PASSWORD=${APP_DB_POSTGRESQL_PASSWORD}
-      - POSTGRES_USER=${APP_DB_POSTGRESQL_USER}
+      - POSTGRES_DB=${W9_DB_POSTGRESQL_NAME}
+      - POSTGRES_PASSWORD=${W9_DB_POSTGRESQL_PASSWORD}
+      - POSTGRES_USER=${W9_DB_POSTGRESQL_USER}
     volumes:
       - ./init:/docker-entrypoint-initdb.d:ro
       - postgres:/var/lib/postgresql/data:rw
@@ -40,8 +40,8 @@ services:
       - 5432:5432
       
   guacamole:
-    image: guacamole/guacamole:${APP_VERSION}
-    container_name: ${APP_CONTAINER_NAME}
+    image: guacamole/guacamole:${W9_VERSION}
+    container_name: ${W9_CONTAINER_NAME}
     restart: unless-stopped
     depends_on:
      - guacd
@@ -49,12 +49,12 @@ services:
      - guacamole-preparation
     environment:
       - GUACD_HOSTNAME=guacd
-      - POSTGRES_DATABASE=${APP_DB_POSTGRESQL_NAME}
-      - POSTGRES_HOSTNAME=${APP_DB_POSTGRESQL_HOST}
-      - POSTGRES_PASSWORD=${APP_DB_POSTGRESQL_PASSWORD}
-      - POSTGRES_USER=${APP_DB_POSTGRESQL_USER}
+      - POSTGRES_DATABASE=${W9_DB_POSTGRESQL_NAME}
+      - POSTGRES_HOSTNAME=${W9_DB_POSTGRESQL_HOST}
+      - POSTGRES_PASSWORD=${W9_DB_POSTGRESQL_PASSWORD}
+      - POSTGRES_USER=${W9_DB_POSTGRESQL_USER}
     ports:
-      - ${APP_HTTP_PORT}:8080
+      - ${W9_HTTP_PORT}:8080
     
 volumes:
   postgres:
@@ -63,5 +63,5 @@ volumes:
   
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true

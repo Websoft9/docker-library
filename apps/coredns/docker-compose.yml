@@ -4,18 +4,18 @@ version: '3.8'
 
 services:
   coredns:
-    image: coredns/coredns:${APP_VERSION}
-    container_name: ${APP_NAME}
+    image: coredns/coredns:${W9_VERSION}
+    container_name: ${W9_NAME}
     expose:
       - '53'
     ports:
-      - '${APP_HTTP_PORT}:53'
+      - '${W9_HTTP_PORT}:53'
     volumes:
       - './src/config:/etc/coredns'
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

@@ -1,4 +1,4 @@
-# This fields is for app environments. e.g  APP_http_port_SET, APP_mq_address_SET
+# This fields is for app environments. e.g  W9_http_port_SET, W9_mq_address_SET
 # i18n for translation
 
 http

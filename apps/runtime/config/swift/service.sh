@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SWIFT_ROOT_PATH=/data/apps
-SWIFT_APP_NAME=vapor
+SWIFT_W9_NAME=vapor
 
 installVapor(){
 echo "hello world"

@@ -5,11 +5,11 @@ version: '3.8'
 
 services:
   netdata:
-    image: netdata/netdata:$APP_VERSION
-    container_name: $APP_NAME
-    hostname: $APP_URL
+    image: netdata/netdata:$W9_VERSION
+    container_name: $W9_NAME
+    hostname: $W9_URL
     ports:
-      - $APP_HTTP_PORT:19999
+      - $W9_HTTP_PORT:19999
     restart: unless-stopped
     cap_add:
       - SYS_PTRACE
@@ -27,7 +27,7 @@ services:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

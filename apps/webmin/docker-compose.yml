@@ -5,16 +5,16 @@ version: '3.8'
 
 services:
   webmin:
-    image: websoft9dev/webmin:${APP_VERSION}
-    container_name: ${APP_NAME}
+    image: websoft9dev/webmin:${W9_VERSION}
+    container_name: ${W9_NAME}
     env_file: .env
     environment:
-      - WEBMIN_PASSWORD=${APP_PASSWORD}
+      - WEBMIN_PASSWORD=${W9_PASSWORD}
     ports:
       - '10000:10000'
     restart: unless-stopped
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true

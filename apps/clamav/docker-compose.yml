@@ -6,15 +6,15 @@ version: '3.8'
 
 services:
   clamav:
-    image: clamav/clamav:$APP_VERSION
-    container_name: $APP_NAME
+    image: clamav/clamav:$W9_VERSION
+    container_name: $W9_NAME
     privileged: true
     volumes:
       - 'clamav:/var/lib/clamav'
-      - '$APP_SCAN_PATH:/scandir'
+      - '$W9_SCAN_PATH:/scandir'
 networks:
   default:
-    name: $APP_NETWORK
+    name: $W9_NETWORK
     external: true
 
 volumes:

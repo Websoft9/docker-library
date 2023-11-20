@@ -5,22 +5,22 @@ version: '3.8'
 services:
 
   neo4j:
-    container_name: ${APP_NAME}
-    image: neo4j:${APP_VERSION}
+    container_name: ${W9_NAME}
+    image: neo4j:${W9_VERSION}
     env_file: .env
     environment:
     #   SECURE_FILE_PERMISSIONS=yes
-     - NEO4J_AUTH=${APP_DB_NEO4J_USER}/${APP_DB_NEO4J_PASSWORD}
+     - NEO4J_AUTH=${W9_DB_NEO4J_USER}/${W9_DB_NEO4J_PASSWORD}
     ports:
-     - ${APP_DB_NEO4J_PORT}:7687
-     - ${APP_HTTP_PORT}:7474
+     - ${W9_DB_NEO4J_PORT}:7687
+     - ${W9_HTTP_PORT}:7474
     restart: unless-stopped
     volumes:
      - neo4j:/var/lib/neo4j
   
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
     
 volumes:

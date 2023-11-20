@@ -1,6 +1,6 @@
 ## 0.5.7 release on 2023-09-27
 
-1. add edition and app_name->app_id
+1. add edition and w9_name->w9_id
 
 ## 0.5.4 release on 2023-08-23
 

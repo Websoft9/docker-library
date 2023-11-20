@@ -6,25 +6,25 @@
 version: '3.8'
 services:
   teamcity-server:
-    image: jetbrains/teamcity-server:${APP_VERSION}
-    container_name: ${APP_NAME}
+    image: jetbrains/teamcity-server:${W9_VERSION}
+    container_name: ${W9_NAME}
     restart: unless-stopped
     depends_on:
       - teamcity-db
     env_file: .env
     ports:
-      - "${APP_HTTP_PORT}:8111"
+      - "${W9_HTTP_PORT}:8111"
     volumes:
       - data:/data/teamcity_server/datadir
       - logs:/opt/teamcity/logs
 
   teamcity-db:
     image: mysql:8.0
-    container_name: ${APP_NAME}-db 
+    container_name: ${W9_NAME}-db 
     environment:
       - MYSQL_ROOT_PASSWORD=${POWER_PASSWORD}
-      - MYSQL_DATABASE=${APP_NAME}
-      - MYSQL_USER=${APP_NAME}
+      - MYSQL_DATABASE=${W9_NAME}
+      - MYSQL_USER=${W9_NAME}
       - MYSQL_PASSWORD=${POWER_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
@@ -32,7 +32,7 @@ services:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

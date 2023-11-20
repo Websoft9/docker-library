@@ -4,26 +4,26 @@
 version: '3.8'
 services:
   memcached:
-    image: memcached:${APP_VERSION}
-    container_name: ${APP_NAME}
+    image: memcached:${W9_VERSION}
+    container_name: ${W9_NAME}
     restart: unless-stopped
     ports:
-     - '${APP_DB_PORT}:11211'
+     - '${W9_DB_PORT}:11211'
     env_file: .env
     command:
-     - '-m ${APP_MEMORY}'
-     - '-c ${APP_MEMORY}'
+     - '-m ${W9_MEMORY}'
+     - '-c ${W9_MEMORY}'
 
   memadmin:
     image: hatamiarash7/memcached-admin:latest
-    container_name: $APP_NAME-panel
+    container_name: $W9_NAME-panel
     restart: unless-stopped
     ports:
-     - '$APP_PANEL_PORT:80'
+     - '$W9_PANEL_PORT:80'
     environment: 
      - 'MEMCACHED_HOST=memcached'
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true

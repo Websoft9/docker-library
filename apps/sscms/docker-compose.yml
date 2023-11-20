@@ -7,17 +7,17 @@ version: '3.8'
 
 services:
   sscms:
-    image: sscms/core:${APP_VERSION}
-    container_name: ${APP_NAME}
+    image: sscms/core:${W9_VERSION}
+    container_name: ${W9_NAME}
     ports:
-      - ${APP_HTTP_PORT}:80
+      - ${W9_HTTP_PORT}:80
     volumes:
       - sscms:/app/wwwroot
     environment:
-      - SSCMS_DATABASE_PASSWORD=${APP_DB_MYSQL_PASSWORD}
-      - SSCMS_DATABASE_NAME=${APP_DB_MYSQL_NAME}
-      - SSCMS_DATABASE_USER=${APP_DB_MYSQL_USER}
-      - SSCMS_DATABASE_PORT=${APP_DB_MYSQL_PORT}
+      - SSCMS_DATABASE_PASSWORD=${W9_DB_MYSQL_PASSWORD}
+      - SSCMS_DATABASE_NAME=${W9_DB_MYSQL_NAME}
+      - SSCMS_DATABASE_USER=${W9_DB_MYSQL_USER}
+      - SSCMS_DATABASE_PORT=${W9_DB_MYSQL_PORT}
       - SSCMS_DATABASE_HOST=mysql
       - SSCMS_SECURITY_KEY=e2a3d303-ac9b-41ff-9154-930710af0845
       - SSCMS_DATABASE_TYPE=MySQL
@@ -26,22 +26,22 @@ services:
     restart: unless-stopped
 
   mysql:
-    image: mysql:${APP_DB_MYSQL_VERSION}
-    container_name: ${APP_NAME}-mysql
+    image: mysql:${W9_DB_MYSQL_VERSION}
+    container_name: ${W9_NAME}-mysql
     restart: unless-stopped
     ports:
-     - ${APP_DB_MYSQL_PORT}:3306
+     - ${W9_DB_MYSQL_PORT}:3306
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: ${APP_DB_MYSQL_NAME}
-      MYSQL_USER: ${APP_DB_MYSQL_USER}
-      MYSQL_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${W9_DB_MYSQL_NAME}
+      MYSQL_USER: ${W9_DB_MYSQL_USER}
+      MYSQL_PASSWORD: ${W9_DB_MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${W9_DB_MYSQL_PASSWORD}
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

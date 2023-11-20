@@ -4,12 +4,12 @@
 version: '3.8'
 services:    
   pimcore:
-    image: $APP_REPO:$APP_VERSION
-    container_name: $APP_NAME
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_NAME
     restart: unless-stopped
     env_file: .env
     ports:
-      - $APP_HTTP_PORT:80
+      - $W9_HTTP_PORT:80
     logging:
       driver: "json-file"
       options:
@@ -19,15 +19,15 @@ services:
       - pimcore:/var/www/html
     environment:
       PIMCORE_ENVIRONMENT: dev
-      MYSQL_HOST: $APP_NAME-db
-      MYSQL_DATABASE: $APP_DB_MYSQL_NAME
-      MYSQL_USER: $APP_DB_MYSQL_USER
-      MYSQL_PASSWORD: $APP_DB_MYSQL_PASSWORD
+      MYSQL_HOST: $W9_NAME-db
+      MYSQL_DATABASE: $W9_DB_MYSQL_NAME
+      MYSQL_USER: $W9_DB_MYSQL_USER
+      MYSQL_PASSWORD: $W9_DB_MYSQL_PASSWORD
 
   supervisord:
     #user: '1000:1000' # set to your uid:gid
     image: pimcore/pimcore:php8.2-supervisord-latest
-    container_name: $APP_NAME-supervisord
+    container_name: $W9_NAME-supervisord
     depends_on:
       db:
           condition: service_healthy
@@ -38,7 +38,7 @@ services:
   nginx:
     image: nginx:stable-alpine
     ports:
-      - "$APP_HTTP_PORT:80"
+      - "$W9_HTTP_PORT:80"
     volumes:
       - .:/var/www/html:ro
       - ./src/nginx.conf:/etc/nginx/conf.d/default.conf:ro
@@ -46,30 +46,30 @@ services:
       - php
 
   mysql:
-    image: mysql:$APP_DB_MYSQL_VERSION
-    container_name: $APP_NAME-db
+    image: mysql:$W9_DB_MYSQL_VERSION
+    container_name: $W9_NAME-db
     restart: unless-stopped
     ports:
-     - ${APP_DB_MYSQL_PORT}:3306
+     - ${W9_DB_MYSQL_PORT}:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
     volumes:
       - mysql_data:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: $APP_DB_MYSQL_NAME
-      MYSQL_USER: $APP_DB_MYSQL_USER
-      MYSQL_PASSWORD: $APP_DB_MYSQL_PASSWORD
-      MYSQL_ROOT_PASSWORD: $APP_DB_MYSQL_PASSWORD
+      MYSQL_DATABASE: $W9_DB_MYSQL_NAME
+      MYSQL_USER: $W9_DB_MYSQL_USER
+      MYSQL_PASSWORD: $W9_DB_MYSQL_PASSWORD
+      MYSQL_ROOT_PASSWORD: $W9_DB_MYSQL_PASSWORD
 
   redis:
     image: redis:alpine
-    container_name: $APP_NAME-redis
+    container_name: $W9_NAME-redis
     command: [ redis-server, --maxmemory 128mb, --maxmemory-policy volatile-lru, --save "" ]
 
   
 
 networks:
   default:
-      name: ${APP_NETWORK}
+      name: ${W9_NETWORK}
       external: true
     
 volumes:

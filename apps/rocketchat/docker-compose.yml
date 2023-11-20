@@ -5,37 +5,37 @@ version: '3.8'
 
 services:
   rocketchat:
-    image: rocket.chat:${APP_VERSION}
-    container_name: ${APP_NAME}
+    image: rocket.chat:${W9_VERSION}
+    container_name: ${W9_NAME}
     ports:
-      - ${APP_HTTP_PORT}:3000
+      - ${W9_HTTP_PORT}:3000
     volumes:
       - rocketchat:/app
     environment:
       - ROOT_URL=http://localhost
-      - MONGO_URL=mongodb://mongo:${APP_DB_MONGODB_PORT}/rocketchat?replicaSet=rs01
-      - MONGO_OPLOG_URL=mongodb://mongo:${APP_DB_MONGODB_PORT}/local?replicaSet=rs01
+      - MONGO_URL=mongodb://mongo:${W9_DB_MONGODB_PORT}/rocketchat?replicaSet=rs01
+      - MONGO_OPLOG_URL=mongodb://mongo:${W9_DB_MONGODB_PORT}/local?replicaSet=rs01
     depends_on:
       - mongo
     restart: unless-stopped
 
   mongo:
-    image: mongo:${APP_DB_MONGODB_VERSION}
-    container_name: ${APP_NAME}-db
+    image: mongo:${W9_DB_MONGODB_VERSION}
+    container_name: ${W9_NAME}-db
     restart: unless-stopped
     volumes:
       - mongo:/data/db
     command: mongod --smallfiles --oplogSize 128 --replSet rs01
 
   mongo-init-replica:
-    image: mongo:${APP_DB_MONGODB_VERSION}
+    image: mongo:${W9_DB_MONGODB_VERSION}
     command: 'mongo mongo/rocketchat --eval "rs.initiate({ _id: ''rs01'', members: [ { _id: 0, host: ''mongo:27017'' } ]})"'
     depends_on:
       - mongo
       
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

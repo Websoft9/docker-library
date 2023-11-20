@@ -5,20 +5,20 @@ version: "3.8"
 
 services:
   moodle:
-    image: docker.io/bitnami/moodle:${APP_VERSION}
-    container_name: ${APP_NAME}
+    image: docker.io/bitnami/moodle:${W9_VERSION}
+    container_name: ${W9_NAME}
     restart: unless-stopped
     environment:
       - ALLOW_EMPTY_PASSWORD=no
-      - MOODLE_DATABASE_HOST=${APP_NAME}-db
+      - MOODLE_DATABASE_HOST=${W9_NAME}-db
       - MOODLE_DATABASE_PORT_NUMBER=3306
-      - MOODLE_DATABASE_USER=${APP_DB_MARIADB_USER}
-      - MOODLE_DATABASE_PASSWORD=${APP_DB_MARIADB_PASSWORD}
-      - MOODLE_DATABASE_NAME=${APP_DB_MARIADB_NAME}
-      - MOODLE_USERNAME=${APP_USER}
-      - MOODLE_PASSWORD=${APP_PASSWORD}
+      - MOODLE_DATABASE_USER=${W9_DB_MARIADB_USER}
+      - MOODLE_DATABASE_PASSWORD=${W9_DB_MARIADB_PASSWORD}
+      - MOODLE_DATABASE_NAME=${W9_DB_MARIADB_NAME}
+      - MOODLE_USERNAME=${W9_USER}
+      - MOODLE_PASSWORD=${W9_PASSWORD}
     ports:
-      - "${APP_HTTP_PORT}:8080"
+      - "${W9_HTTP_PORT}:8080"
     env_file:
       - .env
     volumes:
@@ -28,19 +28,19 @@ services:
       - mariadb
 
   mariadb:
-    image: docker.io/bitnami/mariadb:${APP_DB_MARIADB_VERSION}
-    container_name: ${APP_NAME}-db
+    image: docker.io/bitnami/mariadb:${W9_DB_MARIADB_VERSION}
+    container_name: ${W9_NAME}-db
     restart: unless-stopped
     environment:
       - ALLOW_EMPTY_PASSWORD=no
-      - MARIADB_USER=${APP_DB_MARIADB_USER}
-      - MARIADB_PASSWORD=${APP_DB_MARIADB_PASSWORD}
-      - MARIADB_ROOT_PASSWORD=${APP_DB_MARIADB_PASSWORD}
-      - MARIADB_DATABASE=${APP_DB_MARIADB_NAME}
+      - MARIADB_USER=${W9_DB_MARIADB_USER}
+      - MARIADB_PASSWORD=${W9_DB_MARIADB_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${W9_DB_MARIADB_PASSWORD}
+      - MARIADB_DATABASE=${W9_DB_MARIADB_NAME}
       - MARIADB_CHARACTER_SET=utf8mb4
       - MARIADB_COLLATE=utf8mb4_unicode_ci
     ports:
-      - ${APP_DB_MARIADB_PORT}:3306
+      - ${W9_DB_MARIADB_PORT}:3306
     volumes:
       - "mariadb_data:/bitnami/mariadb"
 
@@ -51,5 +51,5 @@ volumes:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true

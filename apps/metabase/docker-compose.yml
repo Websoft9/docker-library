@@ -4,41 +4,41 @@
 version: '3.8'
 services:
   metabase:
-    image: metabase/metabase:$APP_VERSION
+    image: metabase/metabase:$W9_VERSION
     restart: unless-stopped
-    container_name: $APP_NAME
-    hostname: $APP_NAME
+    container_name: $W9_NAME
+    hostname: $W9_NAME
     volumes: 
      - /dev/urandom:/dev/random:ro
      - metabase-data:/metabase-data
      - metabase-plugins:/plugins
     ports:
-      - $APP_HTTP_PORT:3000
+      - $W9_HTTP_PORT:3000
     privileged: true
     env_file: .env
     environment: 
-      JAVA_TIMEZONE: $APP_TIMEZONE
-      MB_DB_DBNAME: $APP_DB_MYSQL_NAME
-      MB_DB_USER: $APP_DB_MYSQL_USER
-      MB_DB_PASS: $APP_DB_MYSQL_PASSWORD
-      MB_DB_HOST: $APP_NAME-db
+      JAVA_TIMEZONE: $W9_TIMEZONE
+      MB_DB_DBNAME: $W9_DB_MYSQL_NAME
+      MB_DB_USER: $W9_DB_MYSQL_USER
+      MB_DB_PASS: $W9_DB_MYSQL_PASSWORD
+      MB_DB_HOST: $W9_NAME-db
     depends_on: 
       - mysql
 
   mysql:
-    image: mysql:$APP_DB_MYSQL_VERSION
-    container_name: $APP_NAME-db
+    image: mysql:$W9_DB_MYSQL_VERSION
+    container_name: $W9_NAME-db
     restart: unless-stopped
     ports:
-     - $APP_DB_MYSQL_PORT:3306
+     - $W9_DB_MYSQL_PORT:3306
     volumes:
      - mysql:/var/lib/mysql
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-time-zone=+8:00 --lower-case-table-names=1 --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ROOT_PASSWORD: $APP_DB_MYSQL_PASSWORD
-      MYSQL_DATABASE: $APP_DB_MYSQL_NAME
-      MYSQL_USERNAME: $APP_DB_MYSQL_USER
-      MYSQL_PASSWORD: $APP_DB_MYSQL_PASSWORD
+      MYSQL_ROOT_PASSWORD: $W9_DB_MYSQL_PASSWORD
+      MYSQL_DATABASE: $W9_DB_MYSQL_NAME
+      MYSQL_USERNAME: $W9_DB_MYSQL_USER
+      MYSQL_PASSWORD: $W9_DB_MYSQL_PASSWORD
 
 volumes:
   mysql:
@@ -47,5 +47,5 @@ volumes:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true

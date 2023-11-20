@@ -47,14 +47,14 @@ jobs:
               fi
           done
           echo ${appname}
-          echo "APP_NAME=${appname}" >> $GITHUB_ENV
+          echo "W9_NAME=${appname}" >> $GITHUB_ENV
           echo "PASS_STEP=${pass}" >> $GITHUB_ENV
           cp -r apps/${appname}/* .
 
       - name: set tags
         if: env.PASS_STEP=='false'
         run: |
-          tag=$(cat apps/${{env.APP_NAME}}/variables.json | jq '.version' | sed 's/\"//g')
+          tag=$(cat apps/${{env.W9_NAME}}/variables.json | jq '.version' | sed 's/\"//g')
           echo ${tag}
           if [ ${tag} != "null" ];then
              echo "set tags"
@@ -77,7 +77,7 @@ jobs:
         name: Build & push Docker image
         if: env.PASS_STEP=='false'
         with:
-          image: websoft9dev/${{env.APP_NAME}}
+          image: websoft9dev/${{env.W9_NAME}}
           tags: ${{env.TAGS}}
           registry: docker.io
           dockerfile: Dockerfile
@@ -86,12 +86,12 @@ jobs:
 
       - name: add readme file
         run: |
-          cd apps/${{env.APP_NAME}}
+          cd apps/${{env.W9_NAME}}
           touch myread.md
-          echo "This repository is the easiest ${{env.APP_NAME}} deployment on GitHub and DockerHub  "' 
+          echo "This repository is the easiest ${{env.W9_NAME}} deployment on GitHub and DockerHub  "' 
           ```  
              git clone https://github.com/Websoft9/docker-library.git  
-             cd docker-library/apps/${{env.APP_NAME}}  
+             cd docker-library/apps/${{env.W9_NAME}}  
              sudo docker network create websoft9 &&  sudo docker compose up -d  
           ```' > myread.md
 
@@ -100,5 +100,5 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: websoft9dev/${{env.APP_NAME}}
-          readme-filepath: apps/${{env.APP_NAME}}/myread.md
+          repository: websoft9dev/${{env.W9_NAME}}
+          readme-filepath: apps/${{env.W9_NAME}}/myread.md

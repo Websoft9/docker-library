@@ -1,17 +1,17 @@
 version: '3.8'
 services:
   mingdao-doc:
-    container_name: ${APP_NAME}-doc
+    container_name: ${W9_NAME}-doc
     image: registry.cn-hangzhou.aliyuncs.com/mdpublic/mingdaoyun-doc:1.2.0
     user: root
     restart: unless-stopped
      
   mingdao:
-    container_name: ${APP_NAME}
+    container_name: ${W9_NAME}
     image: registry.cn-hangzhou.aliyuncs.com/mdpublic/mingdaoyun-community:3.1.1
     environment:
       ENV_MINGDAO_PROTO: "http"
-      ENV_MINGDAO_HOST: ${APP_HTTP_HOST}
+      ENV_MINGDAO_HOST: ${W9_HTTP_HOST}
       ENV_MINGDAO_PORT: "8880"
       COMPlus_ThreadPool_ForceMinWorkerThreads: 100
       COMPlus_ThreadPool_ForceMaxWorkerThreads: 500
@@ -26,7 +26,7 @@ services:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

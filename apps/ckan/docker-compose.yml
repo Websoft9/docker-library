@@ -6,5 +6,5 @@ version: "3.8"
     
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true

@@ -3,24 +3,24 @@
 version: '3.8'
 services:
   minio:
-    container_name: ${APP_NAME}
-    image: minio/minio:${APP_VERSION}
+    container_name: ${W9_NAME}
+    image: minio/minio:${W9_VERSION}
     ports:
-      - ${APP_API_PORT}:9000
-      - ${APP_HTTP_PORT}:9001
+      - ${W9_API_PORT}:9000
+      - ${W9_HTTP_PORT}:9001
     restart: unless-stopped
     env_file: .env
     volumes:
      - data:/data
     command: server /data --console-address ":9001"
     environment:
-      MINIO_ROOT_USER: ${APP_USER}
-      MINIO_ROOT_PASSWORD: ${APP_PASSWORD}
-      MINIO_SERVER_URL: http://${APP_URL}:${APP_API_PORT}
+      MINIO_ROOT_USER: ${W9_USER}
+      MINIO_ROOT_PASSWORD: ${W9_PASSWORD}
+      MINIO_SERVER_URL: http://${W9_URL}:${W9_API_PORT}
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
     
 volumes:

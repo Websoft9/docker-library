@@ -5,10 +5,10 @@ version: '3.8'
 
 services:
   zentao:
-    image: $APP_REPO:$APP_VERSION
-    container_name: $APP_ID
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
     ports:
-      - $APP_HTTP_PORT_SET:80
+      - $W9_HTTP_PORT_SET:80
     volumes:
       - zentao:/data
     env_file:
@@ -17,7 +17,7 @@ services:
       
   mysql:
     image: mysql:5.7
-    container_name: $APP_ID-mysql
+    container_name: $W9_ID-mysql
     restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     env_file:
@@ -25,14 +25,14 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: $APP_ID
-      MYSQL_USER:  $APP_ID
+      MYSQL_DATABASE: $W9_ID
+      MYSQL_USER:  $W9_ID
       MYSQL_PASSWORD: $POWER_PASSWORD
       MYSQL_ROOT_PASSWORD: $POWER_PASSWORD
       
 networks:
   default:
-    name: $APP_NETWORK
+    name: $W9_NETWORK
     external: true
 
 volumes:

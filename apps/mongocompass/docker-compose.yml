@@ -4,14 +4,14 @@ version: '3.8'
 
 services:
   mongocompass:
-    image: websoft9dev/mongocompass:${APP_VERSION}
-    container_name: ${APP_NAME}
+    image: websoft9dev/mongocompass:${W9_VERSION}
+    container_name: ${W9_NAME}
     restart: unless-stopped
     ports:
-      - '${APP_HTTP_PORT}:6901'
+      - '${W9_HTTP_PORT}:6901'
     env_file: .env
     environment:
-      - VNC_PW=$APP_PASSWORD
+      - VNC_PW=$W9_PASSWORD
 
   mongo:
     image: mongo
@@ -24,7 +24,7 @@ services:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

@@ -9,16 +9,16 @@ services:
   kafka_manager:
     build: .
     image: cmak
-    container_name: "${APP_NAME}"
+    container_name: "${W9_NAME}"
     restart: unless-stopped
     env_file: .env
     ports:
-      - "${APP_HTTP_PORT}:9000"
+      - "${W9_HTTP_PORT}:9000"
     environment:
-      KAFKA_MANAGER_USERNAME: ${APP_USER}
-      KAFKA_MANAGER_PASSWORD: ${APP_PASSWORD}
+      KAFKA_MANAGER_USERNAME: ${W9_USER}
+      KAFKA_MANAGER_PASSWORD: ${W9_PASSWORD}
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true

@@ -4,18 +4,18 @@
 version: "3.8"
 services:
   phpmyadmin:
-      image: $APP_REPO:$APP_VERSION
-      container_name: $APP_ID
+      image: $W9_REPO:$W9_VERSION
+      container_name: $W9_ID
       volumes:
        - ./src/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
       env_file: .env
       restart: unless-stopped
       ports:
-       - $APP_HTTP_PORT_SET:80
+       - $W9_HTTP_PORT_SET:80
 
   db:
     image: mariadb:10.3
-    container_name: $APP_ID-mariadb
+    container_name: $W9_ID-mariadb
     restart: unless-stopped
     env_file: .env
     environment:
@@ -25,5 +25,5 @@ services:
 
 networks:
   default:
-    name: $APP_NETWORK
+    name: $W9_NETWORK
     external: true

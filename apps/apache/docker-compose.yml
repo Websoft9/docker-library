@@ -3,17 +3,17 @@
 version: '3.8'
 services:
   apache:
-    container_name: ${APP_NAME}
-    image: httpd:${APP_VERSION}
+    container_name: ${W9_NAME}
+    image: httpd:${W9_VERSION}
     restart: unless-stopped
     ports:
-     - ${APP_HTTP_PORT}:80
+     - ${W9_HTTP_PORT}:80
     volumes:
      - apache:/usr/local/apache2/htdocs
      
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
     
 volumes:

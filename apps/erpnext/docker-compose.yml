@@ -5,8 +5,8 @@ version: "3.8"
 
 services:
   backend:
-    image: frappe/erpnext-worker:${APP_VERSION}
-    container_name: ${APP_NAME} 
+    image: frappe/erpnext-worker:${W9_VERSION}
+    container_name: ${W9_NAME} 
     deploy:
       restart_policy:
         condition: on-failure
@@ -15,8 +15,8 @@ services:
       - assets:/home/frappe/frappe-bench/sites/assets
 
   configurator:
-    image: frappe/erpnext-worker:${APP_VERSION}
-    container_name: ${APP_NAME}-configurator
+    image: frappe/erpnext-worker:${W9_VERSION}
+    container_name: ${W9_NAME}-configurator
     command:
       - configure.py
     environment:
@@ -30,8 +30,8 @@ services:
       - sites:/home/frappe/frappe-bench/sites
 
   create-site:
-    image: frappe/erpnext-worker:${APP_VERSION}
-    container_name: ${APP_NAME}-create-site
+    image: frappe/erpnext-worker:${W9_VERSION}
+    container_name: ${W9_NAME}-create-site
     deploy:
       restart_policy:
         condition: on-failure
@@ -58,13 +58,13 @@ services:
           fi
         done;
         echo "common_site_config.json found";
-        bench new-site frontend --admin-password=${APP_PASSWORD} --${APP_DB_PARAM}-root-password=${APP_DB_MARIADB_PASSWORD} --install-app erpnext;
+        bench new-site frontend --admin-password=${W9_PASSWORD} --${W9_DB_PARAM}-root-password=${W9_DB_MARIADB_PASSWORD} --install-app erpnext;
 
   db:
     image: mariadb:10.6
-    container_name: ${APP_NAME}-db
+    container_name: ${W9_NAME}-db
     healthcheck:
-      test: mysqladmin ping -h localhost --password=${APP_DB_MARIADB_PASSWORD}
+      test: mysqladmin ping -h localhost --password=${W9_DB_MARIADB_PASSWORD}
       interval: 1s
       retries: 15
     deploy:
@@ -76,15 +76,15 @@ services:
       - --skip-character-set-client-handshake
       - --skip-innodb-read-only-compressed # Temporary fix for MariaDB 10.6
     environment:
-      MYSQL_ROOT_PASSWORD: ${APP_DB_MARIADB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${W9_DB_MARIADB_PASSWORD}
     volumes:
       - db-data:/var/lib/mysql
     ports:
-      - "${APP_DB_MARIADB_PORT}:3306"
+      - "${W9_DB_MARIADB_PORT}:3306"
       
   frontend:
-    image: frappe/erpnext-nginx:${APP_VERSION}
-    container_name: ${APP_NAME}-frontend
+    image: frappe/erpnext-nginx:${W9_VERSION}
+    container_name: ${W9_NAME}-frontend
     deploy:
       restart_policy:
         condition: on-failure
@@ -99,11 +99,11 @@ services:
       - sites:/usr/share/nginx/html/sites
       - assets:/usr/share/nginx/html/assets
     ports:
-      - "${APP_HTTP_PORT}:8080"
+      - "${W9_HTTP_PORT}:8080"
 
   queue-default:
-    image: frappe/erpnext-worker:${APP_VERSION}
-    container_name: ${APP_NAME}-queue-default
+    image: frappe/erpnext-worker:${W9_VERSION}
+    container_name: ${W9_NAME}-queue-default
     deploy:
       restart_policy:
         condition: on-failure
@@ -116,8 +116,8 @@ services:
       - sites:/home/frappe/frappe-bench/sites
 
   queue-long:
-    image: frappe/erpnext-worker:${APP_VERSION}
-    container_name: ${APP_NAME}-queue-long
+    image: frappe/erpnext-worker:${W9_VERSION}
+    container_name: ${W9_NAME}-queue-long
     deploy:
       restart_policy:
         condition: on-failure
@@ -130,8 +130,8 @@ services:
       - sites:/home/frappe/frappe-bench/sites
 
   queue-short:
-    image: frappe/erpnext-worker:${APP_VERSION}
-    container_name: ${APP_NAME}-queue-short
+    image: frappe/erpnext-worker:${W9_VERSION}
+    container_name: ${W9_NAME}-queue-short
     deploy:
       restart_policy:
         condition: on-failure
@@ -145,7 +145,7 @@ services:
 
   redis:
     image: redis:6.2-alpine
-    container_name: ${APP_NAME}-redis
+    container_name: ${W9_NAME}-redis
     deploy:
       restart_policy:
         condition: on-failure
@@ -153,8 +153,8 @@ services:
       - redis-data:/data
 
   scheduler:
-    image: frappe/erpnext-worker:${APP_VERSION}
-    container_name: ${APP_NAME}-scheduler
+    image: frappe/erpnext-worker:${W9_VERSION}
+    container_name: ${W9_NAME}-scheduler
     deploy:
       restart_policy:
         condition: on-failure
@@ -165,8 +165,8 @@ services:
       - sites:/home/frappe/frappe-bench/sites
 
   websocket:
-    image: frappe/frappe-socketio:${APP_VERSION}
-    container_name: ${APP_NAME}-websocket
+    image: frappe/frappe-socketio:${W9_VERSION}
+    container_name: ${W9_NAME}-websocket
     deploy:
       restart_policy:
         condition: on-failure
@@ -181,5 +181,5 @@ volumes:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true

@@ -2,7 +2,7 @@
     "key": "wordpress",
     "docker_env_settings": [
     {
-        "key": "APP_HTTP_PORT_SET",
+        "key": "W9_HTTP_PORT_SET",
         "lable": "应用 HTTP 端口",
         "value": "9001"
     }

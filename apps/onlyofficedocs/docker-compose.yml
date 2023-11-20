@@ -6,15 +6,15 @@
 version: '3.8'
 services:     
   onlyofficedocs:
-    container_name: ${APP_NAME}
-    image: onlyoffice/${APP_REPO}:${APP_VERSION}
+    container_name: ${W9_NAME}
+    image: onlyoffice/${W9_REPO}:${W9_VERSION}
     stdin_open: true
     tty: true
     restart: unless-stopped
     env_file:
       - .env
     ports:
-     - '${APP_HTTP_PORT}:80'
+     - '${W9_HTTP_PORT}:80'
     expose:
       - '80'
       - '443'
@@ -28,7 +28,7 @@ services:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

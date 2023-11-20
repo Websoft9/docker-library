@@ -72,12 +72,12 @@ services:
             - ETHERPAD_PUBLIC_URL
             - ETHERPAD_URL_BASE
             - GOOGLE_ANALYTICS_ID
-            - GOOGLE_API_APP_CLIENT_ID
+            - GOOGLE_API_W9_CLIENT_ID
             - INVITE_SERVICE_URL
             - JICOFO_AUTH_USER
             - MATOMO_ENDPOINT
             - MATOMO_SITE_ID
-            - MICROSOFT_API_APP_CLIENT_ID
+            - MICROSOFT_API_W9_CLIENT_ID
             - NGINX_RESOLVER
             - NGINX_WORKER_PROCESSES
             - NGINX_WORKER_CONNECTIONS
@@ -162,8 +162,8 @@ services:
             - JIBRI_XMPP_PASSWORD
             - JIBRI_RECORDER_USER
             - JIBRI_RECORDER_PASSWORD
-            - JWT_APP_ID
-            - JWT_APP_SECRET
+            - JWT_W9_ID
+            - JWT_W9_SECRET
             - JWT_ACCEPTED_ISSUERS
             - JWT_ACCEPTED_AUDIENCES
             - JWT_ASAP_KEYSERVER

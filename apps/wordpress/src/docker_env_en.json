@@ -2,7 +2,7 @@
     "key": "wordpress",
     "docker_env_settings": [
       {
-          "key": "APP_HTTP_PORT_SET",
+          "key": "W9_HTTP_PORT_SET",
           "lable": "Application HTTP PORT",
           "value": "9001"
       }

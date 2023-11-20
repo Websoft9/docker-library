@@ -5,11 +5,11 @@
 version: "3.8"
 services:
   pgadmin:
-    image: $APP_REPO:$APP_VERSION
+    image: $W9_REPO:$W9_VERSION
     restart: unless-stopped
-    container_name: $APP_ID
+    container_name: $W9_ID
     ports:
-      - "${APP_HTTP_PORT_SET}:80"
+      - "${W9_HTTP_PORT_SET}:80"
     env_file: .env
 
 
@@ -23,5 +23,5 @@ services:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true

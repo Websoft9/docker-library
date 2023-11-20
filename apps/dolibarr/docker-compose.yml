@@ -5,31 +5,31 @@ version: '3.8'
 
 services:
     mariadb:
-        image: mariadb:${APP_DB_MARIADB_VERSION}
-        container_name: ${APP_NAME}-db
+        image: mariadb:${W9_DB_MARIADB_VERSION}
+        container_name: ${W9_NAME}-db
         restart: unless-stopped
         environment:
-            MYSQL_ROOT_PASSWORD: ${APP_DB_MARIADB_PASSWORD}
-            MYSQL_DATABASE: ${APP_DB_MARIADB_NAME}
-            MYSQL_USER: ${APP_DB_MARIADB_USER}
-            MARIADB_PASSWORD: ${APP_DB_MARIADB_PASSWORD}
+            MYSQL_ROOT_PASSWORD: ${W9_DB_MARIADB_PASSWORD}
+            MYSQL_DATABASE: ${W9_DB_MARIADB_NAME}
+            MYSQL_USER: ${W9_DB_MARIADB_USER}
+            MARIADB_PASSWORD: ${W9_DB_MARIADB_PASSWORD}
         volumes:
             - mariadb:/var/lib/mysql
 
     dolibarr:
-        image: tuxgasy/dolibarr:${APP_VERSION}
-        container_name: ${APP_NAME}
+        image: tuxgasy/dolibarr:${W9_VERSION}
+        container_name: ${W9_NAME}
         restart: unless-stopped
         env_file: .env
         environment:
-            DOLI_DB_HOST: ${APP_NAME}-db
-            DOLI_DB_USER: ${APP_DB_MARIADB_USER}
-            DOLI_DB_PASSWORD: ${APP_DB_MARIADB_PASSWORD}
-            DOLI_DB_NAME: ${APP_DB_MARIADB_NAME}
-            DOLI_ADMIN_LOGIN: ${APP_USER}
-            DOLI_ADMIN_PASSWORD: ${APP_PASSWORD}
+            DOLI_DB_HOST: ${W9_NAME}-db
+            DOLI_DB_USER: ${W9_DB_MARIADB_USER}
+            DOLI_DB_PASSWORD: ${W9_DB_MARIADB_PASSWORD}
+            DOLI_DB_NAME: ${W9_DB_MARIADB_NAME}
+            DOLI_ADMIN_LOGIN: ${W9_USER}
+            DOLI_ADMIN_PASSWORD: ${W9_PASSWORD}
         ports:
-            - "${APP_HTTP_PORT}:80"
+            - "${W9_HTTP_PORT}:80"
         volumes:
             - dolibarr_html:/var/www/html
             - dolibarr_documents:/var/www/documents
@@ -37,7 +37,7 @@ services:
             - mariadb
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

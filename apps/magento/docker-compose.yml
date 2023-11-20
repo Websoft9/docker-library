@@ -4,17 +4,17 @@ version: '3.8'
 
 services:
   magento:
-    image: docker.io/bitnami/magento:$APP_VERSION
-    container_name: $APP_ID
+    image: docker.io/bitnami/magento:$W9_VERSION
+    container_name: $W9_ID
     restart: unless-stopped
     ports:
       - '9001-9999:80'
     env_file:
       - .env
     environment:
-      - MAGENTO_HOST=$APP_URL
-      - MAGENTO_DATABASE_USER=$APP_ID
-      - MAGENTO_DATABASE_NAME=$APP_ID
+      - MAGENTO_HOST=$W9_URL
+      - MAGENTO_DATABASE_USER=$W9_ID
+      - MAGENTO_DATABASE_NAME=$W9_ID
       - MAGENTO_DATABASE_PASSWORD=$POWER_PASSWORD
     volumes:
       - 'magento_data:/bitnami/magento'
@@ -22,17 +22,17 @@ services:
       - mariadb
       - elasticsearch
     labels:
-      com.docker.compose.websoft9.http.port: $APP_HTTP_PORT
+      com.docker.compose.websoft9.http.port: $W9_HTTP_PORT
 
   mariadb:
     image: docker.io/bitnami/mariadb:10.4
-    container_name: $APP_ID-db
+    container_name: $W9_ID-db
     restart: unless-stopped
     env_file:
       - .env
     environment:
-      - MARIADB_USER=$APP_ID
-      - MARIADB_DATABASE=$APP_ID
+      - MARIADB_USER=$W9_ID
+      - MARIADB_DATABASE=$W9_ID
       - MARIADB_PASSWORD=$POWER_PASSWORD
       - MARIADB_ROOT_PASSWORD=$POWER_PASSWORD
     volumes:
@@ -43,7 +43,7 @@ services:
   elasticsearch:
     image: docker.io/bitnami/elasticsearch:7
     restart: unless-stopped
-    container_name: $APP_ID-elasticsearch
+    container_name: $W9_ID-elasticsearch
     volumes:
       - 'elasticsearch_data:/bitnami/elasticsearch/data'
 
@@ -57,5 +57,5 @@ volumes:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true

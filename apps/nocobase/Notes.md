@@ -6,7 +6,7 @@ Nocodb 提供了非常精准的 [Docker Compose 部署方案](https://github.com
 
 ```
     ports:
-      - "${APP_PORT}:8080"
+      - "${W9_PORT}:8080"
       - "8081:8081"
       - "8082:8082"
       - "8083:8083"

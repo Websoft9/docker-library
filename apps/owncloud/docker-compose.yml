@@ -5,10 +5,10 @@ version: '3.8'
 
 services:
   owncloud:
-    image: $APP_REPO:$APP_VERSION
-    container_name: $APP_ID
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
     ports:
-      - $APP_HTTP_PORT_SET:8080
+      - $W9_HTTP_PORT_SET:8080
     volumes:
       - owncloud:/mnt/data
     env_file: .env
@@ -24,7 +24,7 @@ services:
 
   mysql:
     image: mysql:5.7
-    container_name: $APP_ID-mysql
+    container_name: $W9_ID-mysql
     restart: unless-stopped
     command: ["--max-allowed-packet=128M", "--innodb-log-file-size=64M", "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
     volumes:
@@ -36,15 +36,15 @@ services:
       retries: 5
     env_file: .env
     environment:
-      MYSQL_DATABASE: $APP_ID
-      MYSQL_USER: $APP_ID
+      MYSQL_DATABASE: $W9_ID
+      MYSQL_USER: $W9_ID
       MYSQL_PASSWORD: $POWER_PASSWORD
       MYSQL_ROOT_PASSWORD: $POWER_PASSWORD
 
   redis:
     image: redis:6
     env_file: .env
-    container_name: $APP_ID-redis
+    container_name: $W9_ID-redis
     restart: unless-stopped
     command: ["--databases", "1"]
     healthcheck:
@@ -62,5 +62,5 @@ volumes:
  
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true

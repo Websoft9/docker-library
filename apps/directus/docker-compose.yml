@@ -5,11 +5,11 @@ version: '3.8'
 
 services:
   directus:
-    image: directus/directus:$APP_VERSION
-    container_name: $APP_NAME
+    image: directus/directus:$W9_VERSION
+    container_name: $W9_NAME
     env_file: .env
     ports:
-      - $APP_HTTP_PORT:8055
+      - $W9_HTTP_PORT:8055
     volumes:
       - directus_uploads:/directus/uploads
       - directus_extensions:/directus/extensions
@@ -18,11 +18,11 @@ services:
       KEY: '255d861b-5ea1-5996-9aa3-922530ec40b1'
       SECRET: '6116487b-cda1-52c2-b5b5-c8022c45e263'
       DB_CLIENT: 'pg'
-      DB_HOST: $APP_NAME-db
+      DB_HOST: $W9_NAME-db
       DB_PORT: '5432'
-      DB_DATABASE: $APP_DB_POSTGRESQL_NAME
-      DB_USER: $APP_DB_POSTGRESQL_USER
-      DB_PASSWORD: $APP_DB_POSTGRESQL_PASSWORD
+      DB_DATABASE: $W9_DB_POSTGRESQL_NAME
+      DB_USER: $W9_DB_POSTGRESQL_USER
+      DB_PASSWORD: $W9_DB_POSTGRESQL_PASSWORD
 
       # Make sure to set this in production
       # (see https://docs.directus.io/reference/environment-variables/#general)
@@ -30,24 +30,24 @@ services:
     restart: unless-stopped
 
   db:
-    image: postgres:$APP_DB_POSTGRESQL_VERSION
-    container_name: $APP_NAME-db
+    image: postgres:$W9_DB_POSTGRESQL_VERSION
+    container_name: $W9_NAME-db
     restart: unless-stopped
     volumes:
       - postgres:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: $APP_DB_POSTGRESQL_NAME
-      POSTGRES_USER: $APP_DB_POSTGRESQL_USER
-      POSTGRES_PASSWORD: $APP_DB_POSTGRESQL_PASSWORD
+      POSTGRES_DB: $W9_DB_POSTGRESQL_NAME
+      POSTGRES_USER: $W9_DB_POSTGRESQL_USER
+      POSTGRES_PASSWORD: $W9_DB_POSTGRESQL_PASSWORD
 
   redis:
-    image: redis:$APP_DB_REDIS_VERSION
-    container_name: $APP_NAME-redis
+    image: redis:$W9_DB_REDIS_VERSION
+    container_name: $W9_NAME-redis
     restart: unless-stopped
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

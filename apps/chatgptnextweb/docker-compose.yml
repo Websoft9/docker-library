@@ -4,14 +4,14 @@ version: '3.8'
 
 services:
   chatgpt-next-web: 
-    image: yidadaa/chatgpt-next-web:${APP_VERSION}
-    container_name: ${APP_NAME}
+    image: yidadaa/chatgpt-next-web:${W9_VERSION}
+    container_name: ${W9_NAME}
     restart: unless-stopped
     env_file: .env
     ports:
-      - $APP_HTTP_PORT:3000
+      - $W9_HTTP_PORT:3000
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true

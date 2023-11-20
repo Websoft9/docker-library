@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   proxy:
-    image: jc21/nginx-proxy-manager:${APP_VERSION}
+    image: jc21/nginx-proxy-manager:${W9_VERSION}
     restart: always
     container_name: nginxproxymanager
     ports:
@@ -15,7 +15,7 @@ services:
  
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

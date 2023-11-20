@@ -3,14 +3,14 @@
 version: "3.8"
 services:
   mongo-express:
-    image: mongo-express:${APP_VERSION}
+    image: mongo-express:${W9_VERSION}
     restart: unless-stopped
-    container_name: ${APP_NAME}
+    container_name: ${W9_NAME}
     ports:
-      - "${APP_HTTP_PORT}:8081"
+      - "${W9_HTTP_PORT}:8081"
     environment:
-      - ME_CONFIG_BASICAUTH_USERNAMEL=${APP_USER}
-      - ME_CONFIG_BASICAUTH_PASSWORD=${APP_PASSWORD}
+      - ME_CONFIG_BASICAUTH_USERNAMEL=${W9_USER}
+      - ME_CONFIG_BASICAUTH_PASSWORD=${W9_PASSWORD}
       - ME_CONFIG_MONGODB_ADMINUSERNAME=root
       - ME_CONFIG_MONGODB_ADMINPASSWORD=example
       - ME_CONFIG_MONGODB_SERVER=mongo
@@ -26,5 +26,5 @@ services:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true

@@ -8,11 +8,11 @@ version: '3.8'
 services:
 
   grafana:
-    image: grafana/grafana:${APP_VERSION}
-    container_name: ${APP_NAME}  
+    image: grafana/grafana:${W9_VERSION}
+    container_name: ${W9_NAME}  
     restart: unless-stopped
     ports:
-      - ${APP_HTTP_PORT}:3000
+      - ${W9_HTTP_PORT}:3000
     volumes:
       - grafana_data:/var/lib/grafana
       - grafana_config:/etc/grafana
@@ -21,26 +21,26 @@ services:
     env_file: .env
     environment:
       # You can use any environment from grafana.ini. format: GF_[group]_item
-      - GF_SECURITY_ADMIN_USER=${APP_USER}
-      - GF_SECURITY_ADMIN_PASSWORD=${APP_PASSWORD}
-      - GF_DATABASE_URL=mysql://$APP_DB_MYSQL_USER:$APP_DB_MYSQL_PASSWORD@db:3306/$APP_DB_MYSQL_NAME
+      - GF_SECURITY_ADMIN_USER=${W9_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${W9_PASSWORD}
+      - GF_DATABASE_URL=mysql://$W9_DB_MYSQL_USER:$W9_DB_MYSQL_PASSWORD@db:3306/$W9_DB_MYSQL_NAME
 
   db:
-    image: mysql:${APP_DB_MYSQL_VERSION}
-    container_name: ${APP_NAME}-db
+    image: mysql:${W9_DB_MYSQL_VERSION}
+    container_name: ${W9_NAME}-db
     restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: $APP_DB_MYSQL_NAME
-      MYSQL_USER: $APP_DB_MYSQL_USER
-      MYSQL_PASSWORD: $APP_DB_MYSQL_PASSWORD
-      MYSQL_ROOT_PASSWORD: $APP_DB_MYSQL_PASSWORD
+      MYSQL_DATABASE: $W9_DB_MYSQL_NAME
+      MYSQL_USER: $W9_DB_MYSQL_USER
+      MYSQL_PASSWORD: $W9_DB_MYSQL_PASSWORD
+      MYSQL_ROOT_PASSWORD: $W9_DB_MYSQL_PASSWORD
 
   loki:
     image: grafana/loki:main
-    container_name: ${APP_NAME}-loki
+    container_name: ${W9_NAME}-loki
     restart: unless-stopped
     volumes:
       - grafana_loki_data:/loki
@@ -48,7 +48,7 @@ services:
 
   promtail:
     image: grafana/promtail:main
-    container_name: ${APP_NAME}-promtail
+    container_name: ${W9_NAME}-promtail
     restart: unless-stopped
     volumes:
       -  grafana_promtail_log:/var/log
@@ -56,7 +56,7 @@ services:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

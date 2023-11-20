@@ -5,12 +5,12 @@ version: '3.8'
 
 services:
   app:
-    image: jc21/nginx-proxy-manager:${APP_VERSION}
+    image: jc21/nginx-proxy-manager:${W9_VERSION}
     restart: unless-stopped
-    container_name: ${APP_NAME}
+    container_name: ${W9_NAME}
     ports:
       - '80:80'
-      - '${APP_HTTP_PORT}:81'
+      - '${W9_HTTP_PORT}:81'
       - '443:443'
     volumes:
       - nginx_data:/data
@@ -18,7 +18,7 @@ services:
  
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

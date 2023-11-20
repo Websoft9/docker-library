@@ -5,13 +5,13 @@ version: '3.8'
 
 services:
   huginn:
-    image: $APP_REPO:$APP_VERSION
-    container_name: $APP_NAME
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_NAME
     restart: unless-stopped
     env_file:
       - .env
     ports:
-      - '$APP_HTTP_PORT:80'
+      - '$W9_HTTP_PORT:80'
     volumes:
       - "humhub-config:/var/www/localhost/htdocs/protected/config"
       - "humhub-uploads:/var/www/localhost/htdocs/uploads"
@@ -23,23 +23,23 @@ services:
       retries: 3
 
   db:
-    image: mariadb:$APP_DB_MARIADB_VERSION
-    container_name: $APP_NAME-db
+    image: mariadb:$W9_DB_MARIADB_VERSION
+    container_name: $W9_NAME-db
     restart: unless-stopped
     ports:
-     - ${APP_DB_MARIADB_PORT}:3306
+     - ${W9_DB_MARIADB_PORT}:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: $APP_DB_MARIADB_NAME
-      MYSQL_USER: $APP_DB_MARIADB_USER
-      MYSQL_PASSWORD: $APP_DB_MARIADB_PASSWORD
-      MYSQL_ROOT_PASSWORD: $APP_DB_MARIADB_PASSWORD
+      MYSQL_DATABASE: $W9_DB_MARIADB_NAME
+      MYSQL_USER: $W9_DB_MARIADB_USER
+      MYSQL_PASSWORD: $W9_DB_MARIADB_PASSWORD
+      MYSQL_ROOT_PASSWORD: $W9_DB_MARIADB_PASSWORD
 
   redis:
     image: redis:5.0-alpine
-    container_name: $APP_NAME-redis
+    container_name: $W9_NAME-redis
     expose:
       - '6379'
     volumes:
@@ -52,7 +52,7 @@ services:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

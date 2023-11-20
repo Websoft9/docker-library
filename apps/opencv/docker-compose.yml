@@ -5,7 +5,7 @@ services:
 
 networks:
   default:
-      name: ${APP_NAME}
+      name: ${W9_NAME}
 
 volumes:
   mysql:

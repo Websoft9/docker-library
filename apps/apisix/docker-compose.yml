@@ -4,8 +4,8 @@ version: "3.8"
 
 services:
   apisix:
-    image: "apache/apisix:${APP_VERSION}"
-    container_name: ${APP_CONTAINER_NAME}
+    image: "apache/apisix:${W9_VERSION}"
+    container_name: ${W9_CONTAINER_NAME}
     restart: unless-stopped
     volumes:
       - ./src/config/apisix_log:/usr/local/apisix/logs
@@ -18,19 +18,19 @@ services:
       - "9443:9443/tcp"
 
   dashboard:
-    image: "apache/apisix-dashboard:${APP_DASHBOARD_VERSION}"
-    container_name: ${APP_CONTAINER_NAME}-dashboard
+    image: "apache/apisix-dashboard:${W9_DASHBOARD_VERSION}"
+    container_name: ${W9_CONTAINER_NAME}-dashboard
     restart: unless-stopped
     volumes:
       - ./src/config/dashboard_conf/conf.yaml:/usr/local/apisix-dashboard/conf/conf.yaml:ro
     depends_on:
       - etcd
     ports:
-      - "${APP_DASHBOARD_PORT}:9000/tcp"
+      - "${W9_DASHBOARD_PORT}:9000/tcp"
 
   etcd:
     image: bitnami/etcd:${DB_ETCD_VERSION}
-    container_name: ${APP_CONTAINER_NAME}-etcd
+    container_name: ${W9_CONTAINER_NAME}-etcd
     user: root
     restart: unless-stopped
     volumes:
@@ -46,5 +46,5 @@ services:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true

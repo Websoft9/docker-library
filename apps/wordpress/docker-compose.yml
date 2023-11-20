@@ -5,8 +5,8 @@ version: '3.8'
 services:
 
   wordpress:
-    image: wordpress:$APP_VERSION
-    container_name: $APP_ID
+    image: wordpress:$W9_VERSION
+    container_name: $W9_ID
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -14,7 +14,7 @@ services:
           max-file: "5"
           max-size: 10m
     ports:
-      - $APP_HTTP_PORT_SET:80
+      - $W9_HTTP_PORT_SET:80
     env_file: .env
     volumes:
       - wordpress:/var/www/html
@@ -22,15 +22,15 @@ services:
 
   mariadb:
     image: mariadb:10.4
-    container_name: $APP_ID-mariadb
+    container_name: $W9_ID-mariadb
     restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
     env_file: .env
     volumes:
       - mysql_data:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: $APP_ID
-      MYSQL_USER: $APP_ID
+      MYSQL_DATABASE: $W9_ID
+      MYSQL_USER: $W9_ID
       MYSQL_PASSWORD: $POWER_PASSWORD
       MYSQL_ROOT_PASSWORD: $POWER_PASSWORD
 
@@ -40,5 +40,5 @@ volumes:
     
 networks:
   default:
-    name: $APP_NETWORK
+    name: $W9_NETWORK
     external: true

@@ -3,17 +3,17 @@
 version: '3.8'
 services:
   tomcat:
-    container_name: ${APP_NAME}
-    image: tomcat:${APP_VERSION}
+    container_name: ${W9_NAME}
+    image: tomcat:${W9_VERSION}
     restart: unless-stopped
     ports:
-      - '${APP_HTTP_PORT}:8080'
+      - '${W9_HTTP_PORT}:8080'
     volumes:
      - tomcat:/usr/local/tomcat
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

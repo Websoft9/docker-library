@@ -5,20 +5,20 @@ version: '3.8'
 
 services:
   n8n:
-    image: $APP_REPO:$APP_VERSION
-    container_name: $APP_NAME
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_NAME
     restart: unless-stopped
     env_file:
       - .env
     ports:
-      - '${APP_HTTP_PORT}:5678'
+      - '${W9_HTTP_PORT}:5678'
     volumes:
       - 'n8n:/home/node/.n8n'
       - './src/my-config.json:$N8N_CONFIG_FILES'
 
 networks:
   default:
-    name: $APP_NETWORK
+    name: $W9_NETWORK
     external: true
 
 volumes:

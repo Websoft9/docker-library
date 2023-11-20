@@ -87,7 +87,7 @@ You should modify **APP\_\*\_PORT** at .env file
 
 #### What the credentials for application?
 
-APP_USER, APP_PASSWORD
+W9_USER, W9_PASSWORD
 
 #### Is there any infrastructure limit?
 

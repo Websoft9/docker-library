@@ -5,16 +5,16 @@ version: '3.8'
 
 services:
   excalidraw:
-    image: excalidraw/excalidraw:${APP_VERSION}
-    container_name: ${APP_NAME}
+    image: excalidraw/excalidraw:${W9_VERSION}
+    container_name: ${W9_NAME}
     restart: unless-stopped
     env_file: .env
     ports:
-        - "${APP_HTTP_PORT}:80"
+        - "${W9_HTTP_PORT}:80"
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

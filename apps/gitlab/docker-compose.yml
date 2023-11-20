@@ -7,21 +7,21 @@ version: '3.8'
 services:
 
   gitlab:
-    image: $APP_IMAGEURL:$APP_VERSION
-    container_name: "$APP_NAME"
-    hostname: "$APP_URL"
+    image: $W9_IMAGEURL:$W9_VERSION
+    container_name: "$W9_NAME"
+    hostname: "$W9_URL"
     env_file: .env
     environment:
       GITLAB_OMNIBUS_CONFIG: |
         # external_url rule: the protocol must be http://, can not use https://
-        # external_url 'http://$APP_URL'
+        # external_url 'http://$W9_URL'
         gitlab_rails['gitlab_shell_ssh_port'] = 22
         # Add any other gitlab.rb configuration here, each on its own line
         # other
     shm_size: '256m'
     restart: unless-stopped
     ports:
-      - '${APP_HTTP_PORT}:80'
+      - '${W9_HTTP_PORT}:80'
       - '23:22'
     volumes:
       - gitlab_config:/etc/gitlab
@@ -30,7 +30,7 @@ services:
 
   runner:
     image: gitlab/gitlab-runner:latest
-    container_name: $APP_NAME-runner
+    container_name: $W9_NAME-runner
     restart: unless-stopped
     volumes:
       - gitlab_runner:/etc/gitlab-runner
@@ -38,7 +38,7 @@ services:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

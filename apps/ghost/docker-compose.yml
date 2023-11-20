@@ -4,41 +4,41 @@ version: '3.8'
 
 services:
   ghost:
-    image: ghost:$APP_VERSION
-    container_name: $APP_NAME
+    image: ghost:$W9_VERSION
+    container_name: $W9_NAME
     restart: unless-stopped
     ports:
-      - $APP_HTTP_PORT:2368
+      - $W9_HTTP_PORT:2368
     env_file: .env
     environment:
-      - database__connection__user=$APP_DB_MYSQL_USER
-      - database__connection__password="$APP_DB_MYSQL_PASSWORD"
-      - database__connection__database=$APP_DB_MYSQL_NAME
+      - database__connection__user=$W9_DB_MYSQL_USER
+      - database__connection__password="$W9_DB_MYSQL_PASSWORD"
+      - database__connection__database=$W9_DB_MYSQL_NAME
       # this url value is just an example, and is likely wrong for your environment!
-      - url=http://$APP_URL
+      - url=http://$W9_URL
     volumes:
       - ghost:/var/lib/ghost
     depends_on:
       - db
 
   db:
-    image: mysql:$APP_DB_MYSQL_VERSION
-    container_name: $APP_NAME-db
+    image: mysql:$W9_DB_MYSQL_VERSION
+    container_name: $W9_NAME-db
     restart: unless-stopped
     ports:
-     - $APP_DB_MYSQL_PORT:3306
+     - $W9_DB_MYSQL_PORT:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: $APP_DB_MYSQL_NAME
-      MYSQL_USER: $APP_DB_MYSQL_USER
-      MYSQL_PASSWORD: $APP_DB_MYSQL_PASSWORD
-      MYSQL_ROOT_PASSWORD: $APP_DB_MYSQL_PASSWORD
+      MYSQL_DATABASE: $W9_DB_MYSQL_NAME
+      MYSQL_USER: $W9_DB_MYSQL_USER
+      MYSQL_PASSWORD: $W9_DB_MYSQL_PASSWORD
+      MYSQL_ROOT_PASSWORD: $W9_DB_MYSQL_PASSWORD
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

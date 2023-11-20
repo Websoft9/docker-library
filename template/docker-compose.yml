@@ -6,23 +6,23 @@ version: '3.8'
 
 services:
   suitecrm:
-    image: docker.io/bitnami/suitecrm:${APP_VERSION}
-    container_name: ${APP_NAME}
+    image: docker.io/bitnami/suitecrm:${W9_VERSION}
+    container_name: ${W9_NAME}
     restart: unless-stopped
     env_file:
       - .env
     ports:
-      - '${APP_HTTP_PORT}:8080'
-      - '${APP_HTTPS_PORT}:8443'
+      - '${W9_HTTP_PORT}:8080'
+      - '${W9_HTTPS_PORT}:8443'
     environment:
       - SUITECRM_DATABASE_HOST=mysql
-      - SUITECRM_DATABASE_PORT_NUMBER=${APP_DB_MYSQL_PORT}
-      - SUITECRM_DATABASE_USER=${APP_DB_MYSQL_USER}
-      - SUITECRM_DATABASE_NAME=${APP_DB_MYSQL_NAME}
-      - SUITECRM_DATABASE_PASSWORD=${APP_DB_MYSQL_PASSWORD}
-      - SUITECRM_USERNAME=${APP_USER}
-      - SUITECRM_PASSWORD=${APP_PASSWORD}
-      - SUITECRM_EMAIL=${APP_EMAIL}
+      - SUITECRM_DATABASE_PORT_NUMBER=${W9_DB_MYSQL_PORT}
+      - SUITECRM_DATABASE_USER=${W9_DB_MYSQL_USER}
+      - SUITECRM_DATABASE_NAME=${W9_DB_MYSQL_NAME}
+      - SUITECRM_DATABASE_PASSWORD=${W9_DB_MYSQL_PASSWORD}
+      - SUITECRM_USERNAME=${W9_USER}
+      - SUITECRM_PASSWORD=${W9_PASSWORD}
+      - SUITECRM_EMAIL=${W9_EMAIL}
       - SUITECRM_SKIP_BOOTSTRAP=no
       - ALLOW_EMPTY_PASSWORD=no
     volumes:
@@ -36,14 +36,14 @@ services:
     
 
   mysql:
-    image: mysql:${APP_DB_MYSQL_VERSION}
-    container_name: ${APP_NAME}-mysql
+    image: mysql:${W9_DB_MYSQL_VERSION}
+    container_name: ${W9_NAME}-mysql
     command: --default-authentication-plugin=mysql_native_password    
     environment:
-      MYSQL_ROOT_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
-      MYSQL_DATABASE: ${APP_DB_MYSQL_NAME}
-      MYSQL_USER: ${APP_DB_MYSQL_USER}
-      MYSQL_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${W9_DB_MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${W9_DB_MYSQL_NAME}
+      MYSQL_USER: ${W9_DB_MYSQL_USER}
+      MYSQL_PASSWORD: ${W9_DB_MYSQL_PASSWORD}
     volumes:
       - mysql:/var/lib/mysql
     restart: always
@@ -51,19 +51,19 @@ services:
       com.docker.compose.websoft9.db.connection: true
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:${APP_DB_ES_VERSION}
-    container_name: ${APP_NAME}-elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:${W9_DB_ES_VERSION}
+    container_name: ${W9_NAME}-elasticsearch
     restart: unless-stopped
     ports:
-        - ${APP_DB_ES_HTTP_PORT}:9200
-        - ${APP_DB_ES_TCP_PORT}:9300
+        - ${W9_DB_ES_HTTP_PORT}:9200
+        - ${W9_DB_ES_TCP_PORT}:9300
     environment:
         - discovery.type=single-node
         - xpack.security.enabled=false
         - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

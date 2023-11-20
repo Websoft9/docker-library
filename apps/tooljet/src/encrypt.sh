@@ -4,7 +4,7 @@ clear
 
 
 
-# Add encrypt script below if use APP_ENCRYPT_PASSWORD at .env file
+# Add encrypt script below if use W9_ENCRYPT_PASSWORD at .env file
 # ------------- start -------------------------
 
 

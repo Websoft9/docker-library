@@ -22,15 +22,15 @@ EOF
 # install pm2 and setup runtime project
 echo "Create sample and pm2 for your reference"
 yarn global add pm2
-installApp $NODE_ROOT_PATH $NODE_APP_NAME
+installApp $NODE_ROOT_PATH $NODE_W9_NAME
 
-if [ "$NODE_APP_NAME"  == "express" ];then
+if [ "$NODE_W9_NAME"  == "express" ];then
   cd $NODE_ROOT_PATH
-  pm2 $NODE_APP_NAME/main.js
-elif [ "$NODE_APP_NAME" == "appname" ];then
+  pm2 $NODE_W9_NAME/main.js
+elif [ "$NODE_W9_NAME" == "appname" ];then
   echo "start appname"
 else
-  echo "Not support APP:$NODE_APP_NAME now!"
+  echo "Not support APP:$NODE_W9_NAME now!"
 fi
 
 tail -f /dev/null

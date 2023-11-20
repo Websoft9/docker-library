@@ -6,29 +6,29 @@ version: '3.8'
 
 services:
   mastodon:
-    image: $APP_REPO:$APP_VERSION
-    container_name: $APP_NAME
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_NAME
     ports:
-      - '$APP_HTTP_PORT:80'
+      - '$W9_HTTP_PORT:80'
     env_file: .env
     volumes:
       - 'mastodon_config:/config'
     restart: unless-stopped
 
   postgres:
-    image: postgres:$APP_DB_POSTGRESQL_VERSION
-    container_name: $APP_NAME-db
+    image: postgres:$W9_DB_POSTGRESQL_VERSION
+    container_name: $W9_NAME-db
     environment:
-      POSTGRES_DB: $APP_DB_POSTGRESQL_NAME
-      POSTGRES_USER: $APP_DB_POSTGRESQL_USER
-      POSTGRES_PASSWORD: $APP_DB_POSTGRESQL_PASSWORD
+      POSTGRES_DB: $W9_DB_POSTGRESQL_NAME
+      POSTGRES_USER: $W9_DB_POSTGRESQL_USER
+      POSTGRES_PASSWORD: $W9_DB_POSTGRESQL_PASSWORD
     volumes:
       - postgres:/var/lib/postgresql/data
     restart: unless-stopped
   
   redis:
-    image: redis:$APP_DB_REDIS_VERSION
-    container_name: $APP_NAME-redis
+    image: redis:$W9_DB_REDIS_VERSION
+    container_name: $W9_NAME-redis
     restart: unless-stopped
     volumes:
       - redis:/data
@@ -37,7 +37,7 @@ services:
 
 networks:
   default:
-    name: $APP_NETWORK
+    name: $W9_NETWORK
     external: true
 
 volumes:

@@ -8,7 +8,7 @@ ip_address = socket.gethostbyname(hostname)
 DEBUG = True
 SECRET_KEY = "XzFwTFZnM0NSLUhWMHdybEVPaEQ="
 CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1",
-                        f"http://{ip_address}", f"http://{ip_address}:8052", 'http://127.0.0.1:8052', f'http://{ip_address}:{os.getenv("APP_HTTP_PORT")}', f'http://127.0.0.1:{os.getenv("APP_HTTP_PORT")}']
+                        f"http://{ip_address}", f"http://{ip_address}:8052", 'http://127.0.0.1:8052', f'http://{ip_address}:{os.getenv("W9_HTTP_PORT")}', f'http://127.0.0.1:{os.getenv("W9_HTTP_PORT")}']
 CORS_ALLOW_METHODS = (
     'DELETE',
     'GET',

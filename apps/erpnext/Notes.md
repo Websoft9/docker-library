@@ -19,7 +19,7 @@ docker compose -f  docker-compose.yml -f src/overrides/compose.erpnext.yaml -f s
 
 5. 主服务 backend 中创建一个 erpnext 项目（此步骤是必须的，但很容易被忽略）
 ```
-APP_URL=8.218.129.87
+W9_URL=8.218.129.87
 docker compose exec backend bench new-site youurl --mariadb-root-password yourpassword --admin-password admin123
 
 or

@@ -6,8 +6,8 @@ version: '3.8'
 
 services:
   redpanda-console:
-    image: $APP_REPO:$APP_VERSION
-    container_name: $APP_NAME
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_NAME
     restart: unless-stopped
     env_file:
       - .env
@@ -16,7 +16,7 @@ services:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

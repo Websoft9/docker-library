@@ -3,5 +3,5 @@
 
 # up the native entrypoint.sh and cmd
 exec "$@"
-echo "$(sed "s/admin:.*/admin:$APP_PASSWORD/g" /usr/local/etc/haproxy/haproxy.cfg)" > /usr/local/etc/haproxy/haproxy.cfg
+echo "$(sed "s/admin:.*/admin:$W9_PASSWORD/g" /usr/local/etc/haproxy/haproxy.cfg)" > /usr/local/etc/haproxy/haproxy.cfg
 /usr/local/bin/docker-entrypoint.sh haproxy -f /usr/local/etc/haproxy/haproxy.cfg

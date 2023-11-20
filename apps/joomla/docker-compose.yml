@@ -4,43 +4,43 @@ version: '3.8'
 
 services:
   joomla:
-    image: $APP_REPO:$APP_VERSION
-    container_name: $APP_NAME
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_NAME
     restart: unless-stopped
     ports:
-      - ${APP_HTTP_PORT}:8080
+      - ${W9_HTTP_PORT}:8080
     volumes:
       - joomla:/bitnami/joomla
     env_file:
       - .env
     environment:
-      - JOOMLA_USERNAME=$APP_USER	
-      - JOOMLA_PASSWORD=$APP_PASSWORD
-      - JOOMLA_DATABASE_HOST=$APP_NAME-db
+      - JOOMLA_USERNAME=$W9_USER	
+      - JOOMLA_PASSWORD=$W9_PASSWORD
+      - JOOMLA_DATABASE_HOST=$W9_NAME-db
       - JOOMLA_DATABASE_PORT_NUMBER=3306
-      - JOOMLA_DATABASE_NAME=$APP_DB_MARIADB_NAME
-      - JOOMLA_DATABASE_USER=$APP_DB_MARIADB_USER
-      - JOOMLA_DATABASE_PASSWORD=$APP_DB_MARIADB_PASSWORD
+      - JOOMLA_DATABASE_NAME=$W9_DB_MARIADB_NAME
+      - JOOMLA_DATABASE_USER=$W9_DB_MARIADB_USER
+      - JOOMLA_DATABASE_PASSWORD=$W9_DB_MARIADB_PASSWORD
     depends_on:
       - mariadb
 
   mariadb:
-    image: mariadb:$APP_DB_MARIADB_VERSION
-    container_name: $APP_NAME-db
+    image: mariadb:$W9_DB_MARIADB_VERSION
+    container_name: $W9_NAME-db
     restart: unless-stopped
     ports:
-     - ${APP_DB_MARIADB_PORT}:3306
+     - ${W9_DB_MARIADB_PORT}:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - mariadb:/var/lib/mysql
     environment:
-      - MARIADB_DATABASE=$APP_DB_MARIADB_NAME
-      - MARIADB_USER=$APP_DB_MARIADB_USER
-      - MARIADB_PASSWORD=$APP_DB_MARIADB_PASSWORD
-      - MARIADB_ROOT_PASSWORD=$APP_DB_MARIADB_PASSWORD
+      - MARIADB_DATABASE=$W9_DB_MARIADB_NAME
+      - MARIADB_USER=$W9_DB_MARIADB_USER
+      - MARIADB_PASSWORD=$W9_DB_MARIADB_PASSWORD
+      - MARIADB_ROOT_PASSWORD=$W9_DB_MARIADB_PASSWORD
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

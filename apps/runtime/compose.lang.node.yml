@@ -5,8 +5,8 @@ x-node-defaults: &node_defaults
   configs:
     - source: node_service
   environment:
-    - NODE_APP_NAME=${APP_NAME}
-    - NODE_ROOT_PATH=${APP_ROOT_PATH}
+    - NODE_W9_NAME=${W9_NAME}
+    - NODE_ROOT_PATH=${W9_ROOT_PATH}
 
 services:
 
@@ -50,5 +50,5 @@ configs:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true

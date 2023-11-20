@@ -8,27 +8,27 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    image: nocodb/nocodb:${APP_VERSION}
-    container_name: ${APP_NAME}
+    image: nocodb/nocodb:${W9_VERSION}
+    container_name: ${W9_NAME}
     ports:
-      - "${APP_HTTP_PORT}:8080"
+      - "${W9_HTTP_PORT}:8080"
     restart: unless-stopped
     volumes: 
       - "nocodb:/usr/app/data"
     environment:
-      NC_DB: "pg://${APP_NAME}-postgre:5432?u=${APP_DB_POSTGRESQL_USER}&p=${APP_DB_POSTGRESQL_PASSWORD}&d=${APP_DB_POSTGRESQL_NAME}"
+      NC_DB: "pg://${W9_NAME}-postgre:5432?u=${W9_DB_POSTGRESQL_USER}&p=${W9_DB_POSTGRESQL_PASSWORD}&d=${W9_DB_POSTGRESQL_NAME}"
 
   db:
-    image: postgres:${APP_DB_POSTGRESQL_VERSION}
-    container_name: ${APP_NAME}-postgre
-    hostname: ${APP_NAME}-postgre
+    image: postgres:${W9_DB_POSTGRESQL_VERSION}
+    container_name: ${W9_NAME}-postgre
+    hostname: ${W9_NAME}-postgre
     restart: unless-stopped
     volumes:
       - postgres:/var/lib/postgresql/data
     environment:
-      POSTGRES_PASSWORD: ${APP_DB_POSTGRESQL_PASSWORD}
-      POSTGRES_USER: ${APP_DB_POSTGRESQL_USER}
-      POSTGRES_DB: ${APP_DB_POSTGRESQL_NAME}
+      POSTGRES_PASSWORD: ${W9_DB_POSTGRESQL_PASSWORD}
+      POSTGRES_USER: ${W9_DB_POSTGRESQL_USER}
+      POSTGRES_DB: ${W9_DB_POSTGRESQL_NAME}
     healthcheck:
       test: pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"
       interval: 10s
@@ -37,7 +37,7 @@ services:
     
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
     
 volumes:

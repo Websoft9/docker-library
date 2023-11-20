@@ -5,8 +5,8 @@ version: '3.8'
 
 services:
  zabbix-server:
-  image: zabbix/zabbix-server-mysql:ubuntu-${APP_VERSION}-latest
-  container_name: ${APP_NAME}-server
+  image: zabbix/zabbix-server-mysql:ubuntu-${W9_VERSION}-latest
+  container_name: ${W9_NAME}-server
   restart: unless-stopped
   ports:
    - "10051:10051"
@@ -38,12 +38,12 @@ services:
   env_file:
    - ./src/env_vars/.env_srv
   environment:
-   - DB_SERVER_HOST=$APP_NAME-db
-   - DB_SERVER_PORT=${APP_DB_MYSQL_PORT}
-   - MYSQL_ROOT_PASSWORD=${APP_DB_MYSQL_PASSWORD}
-   - MYSQL_PASSWORD=${APP_DB_MYSQL_PASSWORD}
-   - MYSQL_DATABASE=${APP_DB_MYSQL_NAME}
-   - APP_PASSWORD=${APP_PASSWORD}
+   - DB_SERVER_HOST=$W9_NAME-db
+   - DB_SERVER_PORT=${W9_DB_MYSQL_PORT}
+   - MYSQL_ROOT_PASSWORD=${W9_DB_MYSQL_PASSWORD}
+   - MYSQL_PASSWORD=${W9_DB_MYSQL_PASSWORD}
+   - MYSQL_DATABASE=${W9_DB_MYSQL_NAME}
+   - W9_PASSWORD=${W9_PASSWORD}
   depends_on:
    - mysql
   stop_grace_period: 30s
@@ -67,11 +67,11 @@ services:
     - source: my_cmd
  
  zabbix-web-apache-mysql:
-  image: zabbix/zabbix-web-apache-mysql:ubuntu-${APP_VERSION}-latest
-  container_name: ${APP_NAME}-web
+  image: zabbix/zabbix-web-apache-mysql:ubuntu-${W9_VERSION}-latest
+  container_name: ${W9_NAME}-web
   restart: unless-stopped
   ports:
-   - "${APP_HTTP_PORT}:8080"
+   - "${W9_HTTP_PORT}:8080"
   volumes:
    - /etc/localtime:/etc/localtime:ro
    - apache2:/etc/ssl/apache2:ro
@@ -86,10 +86,10 @@ services:
     reservations:
       memory: 256M
   environment:
-   - DB_SERVER_HOST=$APP_NAME-db
-   - DB_SERVER_PORT=${APP_DB_MYSQL_PORT}
-   - MYSQL_ROOT_PASSWORD=${APP_DB_MYSQL_PASSWORD}
-   - MYSQL_PASSWORD=${APP_DB_MYSQL_PASSWORD}
+   - DB_SERVER_HOST=$W9_NAME-db
+   - DB_SERVER_PORT=${W9_DB_MYSQL_PORT}
+   - MYSQL_ROOT_PASSWORD=${W9_DB_MYSQL_PASSWORD}
+   - MYSQL_PASSWORD=${W9_DB_MYSQL_PASSWORD}
   env_file:
    - ./src/env_vars/.env_web
   depends_on:
@@ -113,8 +113,8 @@ services:
    com.zabbix.os: "ubuntu"
 
  zabbix-agent:
-  image: zabbix/zabbix-agent:ubuntu-${APP_VERSION}-latest
-  container_name: ${APP_NAME}-agent
+  image: zabbix/zabbix-agent:ubuntu-${W9_VERSION}-latest
+  container_name: ${W9_NAME}-agent
   restart: unless-stopped
   ports:
    - "10050:10050"
@@ -146,8 +146,8 @@ services:
    com.zabbix.os: "ubuntu"
 
  zabbix-java-gateway:
-  image: zabbix/zabbix-java-gateway:ubuntu-${APP_VERSION}-latest
-  container_name: ${APP_NAME}-java
+  image: zabbix/zabbix-java-gateway:ubuntu-${W9_VERSION}-latest
+  container_name: ${W9_NAME}-java
   restart: unless-stopped
   ports:
    - "10052:10052"
@@ -167,8 +167,8 @@ services:
    com.zabbix.os: "ubuntu"
 
  zabbix-snmptraps:
-  image: zabbix/zabbix-snmptraps:ubuntu-${APP_VERSION}-latest
-  container_name: ${APP_NAME}-snmptraps
+  image: zabbix/zabbix-snmptraps:ubuntu-${W9_VERSION}-latest
+  container_name: ${W9_NAME}-snmptraps
   restart: unless-stopped
   ports:
    - "162:1162/udp"
@@ -188,11 +188,11 @@ services:
    com.zabbix.os: "ubuntu"
 
  mysql:
-  image: mysql:${APP_DB_MYSQL_VERSION}
-  container_name: ${APP_NAME}-db
+  image: mysql:${W9_DB_MYSQL_VERSION}
+  container_name: ${W9_NAME}-db
   restart: unless-stopped
   ports: 
-   - ${APP_DB_MYSQL_PORT}:3306
+   - ${W9_DB_MYSQL_PORT}:3306
   command:
    - mysqld
    - --character-set-server=utf8mb4
@@ -201,24 +201,24 @@ services:
   volumes:
    - mysql:/var/lib/mysql:rw
   environment: 
-   - DB_SERVER_HOST=$APP_NAME-db
-   - MYSQL_ROOT_PASSWORD=${APP_DB_MYSQL_PASSWORD}
-   - DB_SERVER_PORT=${APP_DB_MYSQL_PORT}
-   - MYSQL_USER=${APP_DB_MYSQL_USER}
-   - MYSQL_PASSWORD=${APP_DB_MYSQL_PASSWORD}
+   - DB_SERVER_HOST=$W9_NAME-db
+   - MYSQL_ROOT_PASSWORD=${W9_DB_MYSQL_PASSWORD}
+   - DB_SERVER_PORT=${W9_DB_MYSQL_PORT}
+   - MYSQL_USER=${W9_DB_MYSQL_USER}
+   - MYSQL_PASSWORD=${W9_DB_MYSQL_PASSWORD}
   security_opt:
    - seccomp:unconfined
   stop_grace_period: 1m
 
  db_data_mysql:
   image: busybox
-  container_name: ${APP_NAME}-data
+  container_name: ${W9_NAME}-data
   volumes:
    - mysql:/var/lib/mysql:rw
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

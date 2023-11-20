@@ -5,35 +5,35 @@ version: "3.8"
 
 services:
   odoo:
-    image: odoo:${APP_VERSION}
-    container_name: ${APP_NAME}
+    image: odoo:${W9_VERSION}
+    container_name: ${W9_NAME}
     ports:
-      - ${APP_HTTP_PORT}:8069
+      - ${W9_HTTP_PORT}:8069
     volumes:
       - odoo_web:/var/lib/odoo
       - odoo_config:/etc/odoo
       - odoo_addons:/mnt/extra-addons
     env_file: .env
     environment:
-      HOST: ${APP_NAME}-db
-      USER: ${APP_DB_POSTGRESQL_USER}
-      PASSWORD: ${APP_DB_POSTGRESQL_PASSWORD}
+      HOST: ${W9_NAME}-db
+      USER: ${W9_DB_POSTGRESQL_USER}
+      PASSWORD: ${W9_DB_POSTGRESQL_PASSWORD}
     depends_on:
       - db
     restart: unless-stopped
 
   db:
-    image: postgres:${APP_DB_POSTGRESQL_VERSION}
-    container_name: ${APP_NAME}-db
+    image: postgres:${W9_DB_POSTGRESQL_VERSION}
+    container_name: ${W9_NAME}-db
     restart: unless-stopped
     ports:
-      - ${APP_DB_POSTGRESQL_PORT}:5432
+      - ${W9_DB_POSTGRESQL_PORT}:5432
     volumes:
       - postgres:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: ${APP_DB_POSTGRESQL_NAME}
-      POSTGRES_USER: ${APP_DB_POSTGRESQL_USER}
-      POSTGRES_PASSWORD: ${APP_DB_POSTGRESQL_PASSWORD}
+      POSTGRES_DB: ${W9_DB_POSTGRESQL_NAME}
+      POSTGRES_USER: ${W9_DB_POSTGRESQL_USER}
+      POSTGRES_PASSWORD: ${W9_DB_POSTGRESQL_PASSWORD}
       POSTGRES_INITDB_ARGS: --data-checksums
       POSTGRES_HOST_AUTH_METHOD: trust
       PGDATA: /var/lib/postgresql/data
@@ -46,5 +46,5 @@ volumes:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true

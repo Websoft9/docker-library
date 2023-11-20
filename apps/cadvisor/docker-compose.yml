@@ -5,10 +5,10 @@ version: "3.8"
 
 services:
   cadvisor:
-    image: "google/cadvisor:${APP_VERSION}"
+    image: "google/cadvisor:${W9_VERSION}"
     restart: always
     ports:
-      - "${APP_HTTP_PORT}:8080"
+      - "${W9_HTTP_PORT}:8080"
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw
@@ -17,5 +17,5 @@ services:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true

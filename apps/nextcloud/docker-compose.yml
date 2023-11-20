@@ -4,37 +4,37 @@ version: '3.8'
 
 services:
   nextcloud:
-    image: nextcloud:${APP_VERSION}
-    container_name: ${APP_NAME}
+    image: nextcloud:${W9_VERSION}
+    container_name: ${W9_NAME}
     ports:
-      - ${APP_HTTP_PORT}:80
+      - ${W9_HTTP_PORT}:80
     volumes:
       - nextcloud:/var/www/html
       - nextcloud-data:/var/www/html/data
     env_file: .env
     environment:
-      - MYSQL_PASSWORD=${APP_DB_MYSQL_PASSWORD}
-      - MYSQL_DATABASE=${APP_DB_MYSQL_NAME}
-      - MYSQL_USER=${APP_DB_MYSQL_USER}
-      - MYSQL_HOST=${APP_NAME}-db
+      - MYSQL_PASSWORD=${W9_DB_MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${W9_DB_MYSQL_NAME}
+      - MYSQL_USER=${W9_DB_MYSQL_USER}
+      - MYSQL_HOST=${W9_NAME}-db
     links:
       - mysql
     restart: unless-stopped
 
   mysql:
-    image: mysql:${APP_DB_MYSQL_VERSION}
-    container_name: ${APP_NAME}-db
+    image: mysql:${W9_DB_MYSQL_VERSION}
+    container_name: ${W9_NAME}-db
     restart: unless-stopped
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     ports:
-     - ${APP_DB_MYSQL_PORT}:3306
+     - ${W9_DB_MYSQL_PORT}:3306
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: ${APP_DB_MYSQL_NAME}
-      MYSQL_USER: ${APP_DB_MYSQL_USER}
-      MYSQL_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${W9_DB_MYSQL_NAME}
+      MYSQL_USER: ${W9_DB_MYSQL_USER}
+      MYSQL_PASSWORD: ${W9_DB_MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${W9_DB_MYSQL_PASSWORD}
 
 volumes:
   nextcloud:
@@ -43,5 +43,5 @@ volumes:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true

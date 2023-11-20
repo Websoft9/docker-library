@@ -6,10 +6,10 @@ version: '3.8'
 
 services:
   chronograf:
-    image: chronograf:${APP_VERSION}
-    container_name: ${APP_NAME}-chronograf
+    image: chronograf:${W9_VERSION}
+    container_name: ${W9_NAME}-chronograf
     ports:
-      - '${APP_HTTP_PORT}:8888'
+      - '${W9_HTTP_PORT}:8888'
     command: --influxdb-url=http://influxdb:8086
     volumes:
       - chronograf:/var/lib/chronograf
@@ -18,7 +18,7 @@ services:
 
   influxdb:
     image: influxdb:${DB_INFLUXDB_VERSION}
-    container_name: ${APP_NAME}
+    container_name: ${W9_NAME}
     ports:
       - '${DB_INFLUXDB_PORT}:8086'
       - '${DB_INFLUXDB_GRAPHITE_PORT}:2003'
@@ -28,7 +28,7 @@ services:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

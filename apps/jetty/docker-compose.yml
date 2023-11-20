@@ -5,10 +5,10 @@
 version: '3.8'
 services:
   onlyoffice-mysql-server:
-    container_name: ${APP_CONTAINER_NAME}-mysql
-    image: mysql:${APP_DB_MYSQL_VERSION}
+    container_name: ${W9_CONTAINER_NAME}-mysql
+    image: mysql:${W9_DB_MYSQL_VERSION}
     environment:
-     - MYSQL_ROOT_PASSWORD=${APP_DB_MYSQL_PASSWORD}
+     - MYSQL_ROOT_PASSWORD=${W9_DB_MYSQL_PASSWORD}
     stdin_open: true
     user: root
     tty: true
@@ -19,7 +19,7 @@ services:
      - ${VOLUMES_PATH_PREFIX}/mysql_data:/var/lib/mysql
      
   onlyoffice-community-server:
-    container_name: ${APP_CONTAINER_NAME}
+    container_name: ${W9_CONTAINER_NAME}
     image: onlyoffice/communityserver:11.0.0.1458
     depends_on:
      - onlyoffice-mysql-server
@@ -38,7 +38,7 @@ services:
      - MYSQL_SERVER_USER=onlyoffice
      - MYSQL_SERVER_PASS=123456
     ports:
-     - '${APP_HTTP_PORT}:80'
+     - '${W9_HTTP_PORT}:80'
      - '443'
      - '5222:5222'
     stdin_open: true
@@ -54,7 +54,7 @@ services:
      - ${VOLUMES_PATH_PREFIX}/certs:/var/www/onlyoffice/Data/certs
      
   onlyoffice-document-server:
-    container_name:  ${APP_CONTAINER_NAME}-document-server
+    container_name:  ${W9_CONTAINER_NAME}-document-server
     image: onlyoffice/documentserver:6.0.2
     stdin_open: true
     tty: true
@@ -75,7 +75,7 @@ services:
        - .document_forgotten:/var/lib/onlyoffice/documentserver/App_Data/cache/files/forgotten
 
   onlyoffice-control-panel:
-    container_name:  ${APP_CONTAINER_NAME}-control-panel
+    container_name:  ${W9_CONTAINER_NAME}-control-panel
     depends_on:
      - onlyoffice-document-server
      - onlyoffice-community-server
@@ -95,7 +95,7 @@ services:
     
 networks:
   default:
-      name: ${APP_NETWORK}
+      name: ${W9_NETWORK}
     
 volumes:
   document_data:

@@ -5,4 +5,4 @@ do
 done 
 gitlab_pwd=$(sudo grep 'Password:' /var/lib/docker/volumes/gitlab_gitlab_config/_data/initial_root_password|cut -d: -f2)
 echo "POWER_PASSWORD=$gitlab_pwd" >> /data/apps/gitlab/.env
-echo "APP_PASSWORD=$gitlab_pwd" >> /data/apps/gitlab/.env
+echo "W9_PASSWORD=$gitlab_pwd" >> /data/apps/gitlab/.env

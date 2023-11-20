@@ -5,20 +5,20 @@ version: '3.8'
 services:
 
   redmine:
-    image: redmine:$APP_VERSION
-    container_name: $APP_NAME
+    image: redmine:$W9_VERSION
+    container_name: $W9_NAME
     restart: unless-stopped
     ports:
-     - $APP_HTTP_PORT:3000
+     - $W9_HTTP_PORT:3000
     volumes: 
      - redmine:/usr/src/redmine
     env_file: .env
     environment:
-      REDMINE_DB_MYSQL: $APP_NAME-db
-      REDMINE_DB_PASSWORD: $APP_DB_MYSQL_PASSWORD
+      REDMINE_DB_MYSQL: $W9_NAME-db
+      REDMINE_DB_PASSWORD: $W9_DB_MYSQL_PASSWORD
       REDMINE_SECRET_KEY_BASE: supersecretkey
       REDMINE_PLUGINS_MIGRATE: "true"
-      REDMINE_PASSWORD: $APP_PASSWORD
+      REDMINE_PASSWORD: $W9_PASSWORD
     entrypoint:
       - bash
       - -c
@@ -29,17 +29,17 @@ services:
       - source: my_cmd
 
   db:
-    image: mysql:$APP_DB_MYSQL_VERSION
-    container_name: $APP_NAME-db
+    image: mysql:$W9_DB_MYSQL_VERSION
+    container_name: $W9_NAME-db
     restart: unless-stopped
     ports:
-     - $APP_DB_MYSQL_PORT:3306
+     - $W9_DB_MYSQL_PORT:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
      - mysql:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: $APP_DB_MYSQL_PASSWORD
-      MYSQL_DATABASE: $APP_DB_MYSQL_NAME
+      MYSQL_ROOT_PASSWORD: $W9_DB_MYSQL_PASSWORD
+      MYSQL_DATABASE: $W9_DB_MYSQL_NAME
       
 volumes:
   mysql:
@@ -47,7 +47,7 @@ volumes:
   
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 configs:

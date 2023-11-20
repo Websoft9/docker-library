@@ -1,7 +1,7 @@
 #!/bin/bash
 
 RUBY_ROOT_PATH=/data/apps
-RUBY_APP_NAME=rails
+RUBY_W9_NAME=rails
 
 installRails(){
 

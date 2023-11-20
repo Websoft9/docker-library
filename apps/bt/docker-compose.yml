@@ -5,19 +5,19 @@ version: "3.8"
 
 services:
   btpanel:
-    image: btpanel/baota:$APP_VERSION
-    container_name: ${APP_NAME}
+    image: btpanel/baota:$W9_VERSION
+    container_name: ${W9_NAME}
     restart: unless-stopped
     ports:
-      - "${APP_FTP_PORT}:21"
-      - "${APP_SSH_PORT}:22"
-      - "${APP_CONSOLE_PORT}:8888"
-      - "${APP_PHPMYADMIN_PORT}:888"
-      - "${APP_SITE_HTTP_PORT}:80"
-      - "${APP_SITE_HTTPS_PORT}:443"
+      - "${W9_FTP_PORT}:21"
+      - "${W9_SSH_PORT}:22"
+      - "${W9_CONSOLE_PORT}:8888"
+      - "${W9_PHPMYADMIN_PORT}:888"
+      - "${W9_SITE_HTTP_PORT}:80"
+      - "${W9_SITE_HTTPS_PORT}:443"
     environment:
-      - BAOTA_USER=$APP_USER
-      - BAOTA_PASSWORD=$APP_PASSWORD
+      - BAOTA_USER=$W9_USER
+      - BAOTA_PASSWORD=$W9_PASSWORD
     volumes:
       - www:/www
     command: bash -c "cat /my_cmd > cmd.sh && chmod +x /cmd.sh && /cmd.sh"
@@ -27,19 +27,19 @@ services:
       - btpanel
       
   aapanel:
-    image: aapanel/aapanel:$APP_VERSION
-    container_name: ${APP_NAME}
+    image: aapanel/aapanel:$W9_VERSION
+    container_name: ${W9_NAME}
     restart: unless-stopped
     ports:
-      - "${APP_FTP_PORT}:21"
-      - "${APP_SSH_PORT}:22"
-      - "${APP_CONSOLE_PORT}:7800"
-      - "${APP_PHPMYADMIN_PORT}:888"
-      - "${APP_SITE_HTTP_PORT}:80"
-      - "${APP_SITE_HTTPS_PORT}:443"
+      - "${W9_FTP_PORT}:21"
+      - "${W9_SSH_PORT}:22"
+      - "${W9_CONSOLE_PORT}:7800"
+      - "${W9_PHPMYADMIN_PORT}:888"
+      - "${W9_SITE_HTTP_PORT}:80"
+      - "${W9_SITE_HTTPS_PORT}:443"
     environment:
-      - BAOTA_USER=$APP_USER
-      - BAOTA_PASSWORD=$APP_PASSWORD
+      - BAOTA_USER=$W9_USER
+      - BAOTA_PASSWORD=$W9_PASSWORD
     volumes:
       - www:/www
     command: bash -c "cat /my_cmd > cmd.sh && chmod +x /cmd.sh && /cmd.sh"
@@ -50,7 +50,7 @@ services:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

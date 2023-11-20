@@ -6,10 +6,10 @@ version: '3.8'
 
 services:
   mautic:
-    image: mautic/mautic:${APP_VERSION}
-    container_name: ${APP_NAME}
+    image: mautic/mautic:${W9_VERSION}
+    container_name: ${W9_NAME}
     ports:
-      - ${APP_HTTP_PORT}:80
+      - ${W9_HTTP_PORT}:80
     volumes:
       - mautic:/var/www/html
     env_file:
@@ -18,31 +18,31 @@ services:
       # MAUTIC_DB_USER must root, otherwise container error
       - MAUTIC_DB_HOST=mysql
       - MAUTIC_DB_USER=root
-      - MAUTIC_DB_PASSWORD=${APP_DB_MYSQL_PASSWORD}
-      - MAUTIC_DB_NAME=${APP_DB_MYSQL_NAME}
+      - MAUTIC_DB_PASSWORD=${W9_DB_MYSQL_PASSWORD}
+      - MAUTIC_DB_NAME=${W9_DB_MYSQL_NAME}
     depends_on:
       - mysql
     restart: unless-stopped
 
 
   mysql:
-    image: mysql:${APP_DB_MYSQL_VERSION}
-    container_name: ${APP_NAME}-db
+    image: mysql:${W9_DB_MYSQL_VERSION}
+    container_name: ${W9_NAME}-db
     restart: unless-stopped
     ports:
-     - ${APP_DB_MYSQL_PORT}:3306
+     - ${W9_DB_MYSQL_PORT}:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: ${APP_DB_MYSQL_NAME}
-      MYSQL_USER: ${APP_DB_MYSQL_USER}
-      MYSQL_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${APP_DB_MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${W9_DB_MYSQL_NAME}
+      MYSQL_USER: ${W9_DB_MYSQL_USER}
+      MYSQL_PASSWORD: ${W9_DB_MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${W9_DB_MYSQL_PASSWORD}
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

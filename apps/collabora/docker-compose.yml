@@ -5,23 +5,23 @@
 version: '3.8'
 services:
   collabora-online:
-    container_name: ${APP_NAME}
-    image: collabora/code:${APP_VERSION}
+    container_name: ${W9_NAME}
+    image: collabora/code:${W9_VERSION}
     environment:
-     - domain=${APP_URL}
-     - username=${APP_USER}
-     - password=${APP_PASSWORD}
+     - domain=${W9_URL}
+     - username=${W9_USER}
+     - password=${W9_PASSWORD}
      - DONT_GEN_SSL_CERT=YES
      - extra_params=--o:ssl.enable=false --o:ssl.termination=true
     ports:
-      - ${APP_HTTP_PORT}:9980
+      - ${W9_HTTP_PORT}:9980
     tty: true
     restart: unless-stopped
      
     
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
     
 volumes:

@@ -6,33 +6,33 @@
 version: '3.8'
 services:
   umami:
-    image: $APP_REPO:$APP_VERSION
-    container_name: $APP_NAME
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_NAME
     env_file:
       - .env
     ports:
-      - $APP_HTTP_PORT:3000
+      - $W9_HTTP_PORT:3000
     environment:
       DATABASE_URL: postgresql://umami:umami@db:5432/umami
       DATABASE_TYPE: postgresql
-      APP_SECRET: replace-me-with-a-random-string
+      W9_SECRET: replace-me-with-a-random-string
     depends_on:
       - db
     restart: unless-stopped
 
   db:
-    image: postgres:$APP_DB_POSTGRES_VERSION
+    image: postgres:$W9_DB_POSTGRES_VERSION
     environment:
-      POSTGRES_DB: $APP_DB_POSTGRES_NAME
-      POSTGRES_USER: $APP_DB_POSTGRES_USER
-      POSTGRES_PASSWORD: $APP_DB_POSTGRES_PASSWORD
+      POSTGRES_DB: $W9_DB_POSTGRES_NAME
+      POSTGRES_USER: $W9_DB_POSTGRES_USER
+      POSTGRES_PASSWORD: $W9_DB_POSTGRES_PASSWORD
     volumes:
       - ./src/schema.postgresql.sql:/docker-entrypoint-initdb.d/schema.postgresql.sql:ro
       - postgresql:/var/lib/postgresql/data
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

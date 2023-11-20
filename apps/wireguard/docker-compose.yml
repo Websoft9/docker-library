@@ -3,7 +3,7 @@
 version: '3.8'
 services:
   wireguard:
-    image: lscr.io/linuxserver/wireguard:$APP_VERSION
+    image: lscr.io/linuxserver/wireguard:$W9_VERSION
     container_name: wireguard
     cap_add:
       - NET_ADMIN
@@ -13,7 +13,7 @@ services:
       - PGID=0
       - TZ=Europe/London
       - SERVERURL=auto #public IP of Server
-      - SERVERPORT=$APP_UDP_PORT #optional
+      - SERVERPORT=$W9_UDP_PORT #optional
       - PEERS=10 #optional
       - PEERDNS=auto #optional
       - INTERNAL_SUBNET=192.168.2.1 #your intranet gateway
@@ -24,7 +24,7 @@ services:
       - wireguard:/config
       - /lib/modules:/lib/modules
     ports:
-      - $APP_UDP_PORT:51820/udp
+      - $W9_UDP_PORT:51820/udp
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     restart: unless-stopped
@@ -34,5 +34,5 @@ volumes:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true

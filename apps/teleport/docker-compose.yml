@@ -7,8 +7,8 @@ version: '3.8'
 
 services:
   teleport-configure:
-    image: $APP_REPO:$APP_VERSION
-    container_name: $APP_NAME-configure
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_NAME-configure
     entrypoint: /bin/sh
     hostname: localhost
     command: -c "if [ ! -f /etc/teleport/teleport.yaml ]; then teleport configure > /etc/teleport/teleport.yaml; fi"
@@ -16,15 +16,15 @@ services:
       - ./src/config:/etc/teleport
 
   teleport:
-    image: $APP_REPO:$APP_VERSION
-    container_name: $APP_NAME
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_NAME
     entrypoint: /bin/sh
     hostname: localhost
     command: -c "sleep 1 && /usr/bin/dumb-init teleport start -c /etc/teleport/teleport.yaml"
     ports:
       - "3023:3023"
       - "3025:3025"
-      - '${APP_HTTP_PORT}:3080'
+      - '${W9_HTTP_PORT}:3080'
     volumes:
       - ./src/config:/etc/teleport
       - teleport_data:/var/lib/teleport
@@ -33,7 +33,7 @@ services:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

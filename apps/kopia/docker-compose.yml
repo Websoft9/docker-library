@@ -3,21 +3,21 @@
 version: "3.8"
 services:
   kopia:
-    image: kopia/kopia:$APP_VERSION
+    image: kopia/kopia:$W9_VERSION
     hostname: Hostname
-    container_name: $APP_NAME
+    container_name: $W9_NAME
     restart: unless-stopped
     ports:
-      - $APP_HTTP_PORT:51515
+      - $W9_HTTP_PORT:51515
     # Setup the server that provides the web gui
     command:
       - server
       - start
       - --disable-csrf-token-checks
       - --insecure
-      - --address=0.0.0.0:$APP_HTTP_PORT
-      - --server-username=$APP_USER
-      - --server-password=$APP_PASSWORD
+      - --address=0.0.0.0:$W9_HTTP_PORT
+      - --server-username=$W9_USER
+      - --server-password=$W9_PASSWORD
     volumes:
       - kopia_config:/app/config
       - kopia_cache:/app/cache
@@ -36,5 +36,5 @@ volumes:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true

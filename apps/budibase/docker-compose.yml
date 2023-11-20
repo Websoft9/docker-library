@@ -7,7 +7,7 @@ services:
   app-service:
     restart: unless-stopped
     image: budibase.docker.scarf.sh/budibase/apps
-    container_name: $APP_NAME
+    container_name: $W9_NAME
     environment:
       SELF_HOSTED: 1
       COUCH_DB_URL: http://${COUCH_DB_USER}:${COUCH_DB_PASSWORD}@couchdb-service:5984
@@ -31,7 +31,7 @@ services:
   worker-service:
     restart: unless-stopped
     image: budibase.docker.scarf.sh/budibase/worker
-    container_name: $APP_NAME-bbworker
+    container_name: $W9_NAME-bbworker
     environment:
       SELF_HOSTED: 1
       PORT: 4003
@@ -56,7 +56,7 @@ services:
   minio-service:
     restart: unless-stopped
     image: minio/minio
-    container_name: $APP_NAME-minio
+    container_name: $W9_NAME-minio
     volumes:
       - minio_data:/data
     environment:
@@ -71,7 +71,7 @@ services:
       retries: 3
 
   proxy-service:
-    container_name: $APP_NAME-proxy
+    container_name: $W9_NAME-proxy
     restart: unless-stopped
     ports:
       - "${MAIN_PORT}:10000"
@@ -85,7 +85,7 @@ services:
   couchdb-service:
     restart: unless-stopped
     image: ibmcom/couchdb3
-    container_name: $APP_NAME-couchdb
+    container_name: $W9_NAME-couchdb
     environment:
       - COUCHDB_PASSWORD=${COUCH_DB_PASSWORD}
       - COUCHDB_USER=${COUCH_DB_USER}
@@ -102,7 +102,7 @@ services:
 
   redis-service:
     restart: unless-stopped
-    container_name: $APP_NAME-redis
+    container_name: $W9_NAME-redis
     image: redis
     command: redis-server --requirepass ${REDIS_PASSWORD}
     volumes:
@@ -123,7 +123,7 @@ services:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

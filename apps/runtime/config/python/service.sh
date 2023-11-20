@@ -1,7 +1,7 @@
 #!/bin/bash
 
 env  PYTHON_ROOT_PATH=/data/apps
-env  PYTHON_APP_NAME
+env  PYTHON_W9_NAME
 
 cd $NODE_ROOT_PATH
 pip install django

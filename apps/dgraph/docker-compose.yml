@@ -6,7 +6,7 @@ version: '3.8'
 services:
   zero:
     image: dgraph/dgraph:${DB_DGRAPH_VERSION}
-    container_name: ${APP_NAME}-zero
+    container_name: ${W9_NAME}-zero
     volumes:
       - dgraph:/dgraph
     ports:
@@ -17,7 +17,7 @@ services:
 
   alpha:
     image: dgraph/dgraph:${DB_DGRAPH_VERSION}
-    container_name: ${APP_NAME}-alpha
+    container_name: ${W9_NAME}-alpha
     volumes:
       - dgraph:/dgraph
     ports:
@@ -28,7 +28,7 @@ services:
 
   ratel:
     image: dgraph/ratel:${DB_DGRAPH_VERSION}
-    container_name: ${APP_NAME}-ratel
+    container_name: ${W9_NAME}-ratel
     volumes:
       - type: volume
         source: dgraph
@@ -41,7 +41,7 @@ services:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

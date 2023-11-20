@@ -7,37 +7,37 @@ version: "3.8"
 
 services:
   activemq-classic:
-    image: alfresco/alfresco-activemq:$APP_CLASSIC_VERSION
-    container_name: $APP_NAME
+    image: alfresco/alfresco-activemq:$W9_CLASSIC_VERSION
+    container_name: $W9_NAME
     restart: unless-stopped
     env_file: .env
     ports:
-      - "$APP_HTTP_PORT:8161" # Web Console
-      - "$APP_AMQP_PORT:5672" # AMQP
-      - "$APP_OPENWIRE_PORT:61616" # OpenWire
-      - "$APP_STOMP_PORT:61613" # STOMP
+      - "$W9_HTTP_PORT:8161" # Web Console
+      - "$W9_AMQP_PORT:5672" # AMQP
+      - "$W9_OPENWIRE_PORT:61616" # OpenWire
+      - "$W9_STOMP_PORT:61613" # STOMP
     environment:
       - ACTIVEMQ_BROKER_NAME=localhost
-      - ACTIVEMQ_ADMIN_LOGIN=$APP_USER
-      - ACTIVEMQ_ADMIN_PASSWORD=$APP_PASSWORD
+      - ACTIVEMQ_ADMIN_LOGIN=$W9_USER
+      - ACTIVEMQ_ADMIN_PASSWORD=$W9_PASSWORD
     volumes:
       - activemq_root:/opt/activemq
       - activemq_logs:/var/log/activemq
 
   activemq-artemis:
-    image: ghcr.io/ls1intum/activemq-broker-docker-centos:$APP_ARTEMIS_VERSION
-    container_name: $APP_NAME
+    image: ghcr.io/ls1intum/activemq-broker-docker-centos:$W9_ARTEMIS_VERSION
+    container_name: $W9_NAME
     restart: unless-stopped
     env_file: .env
     ports:
-      - "$APP_HTTP_PORT:8161" # Web Console
-      - "$APP_AMQP_PORT:5672" # AMQP
-      - "$APP_OPENWIRE_PORT:61616" # OpenWire
-      - "$APP_STOMP_PORT:61613" # STOMP
+      - "$W9_HTTP_PORT:8161" # Web Console
+      - "$W9_AMQP_PORT:5672" # AMQP
+      - "$W9_OPENWIRE_PORT:61616" # OpenWire
+      - "$W9_STOMP_PORT:61613" # STOMP
     environment:
       - EXTRA_ARGS=--http-host 0.0.0.0 --relax-jolokia
-      - ARTEMIS_USER=$APP_USER
-      - ARTEMIS_PASSWORD=$APP_PASSWORD
+      - ARTEMIS_USER=$W9_USER
+      - ARTEMIS_PASSWORD=$W9_PASSWORD
 
     volumes:
       - activemq_root:/var/lib/artemis-instance
@@ -46,7 +46,7 @@ services:
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

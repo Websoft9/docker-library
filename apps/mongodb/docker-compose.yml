@@ -5,23 +5,23 @@ version: '3.8'
 
 services:
   mongo:
-    image: mongo:${APP_VERSION}
+    image: mongo:${W9_VERSION}
     restart: unless-stopped
-    container_name: ${APP_NAME}
+    container_name: ${W9_NAME}
     ports:
-      - ${APP_DB_PORT}:27017
+      - ${W9_DB_PORT}:27017
     env_file: .env
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${APP_USER}
-      MONGO_INITDB_ROOT_PASSWORD: ${APP_PASSWORD}
-    command: ${APP_COMMAND}
+      MONGO_INITDB_ROOT_USERNAME: ${W9_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${W9_PASSWORD}
+    command: ${W9_COMMAND}
     volumes:
       - mongo_data:/data/db
       - ./src/mongod.conf:/etc/mongod.conf
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
     
 volumes:

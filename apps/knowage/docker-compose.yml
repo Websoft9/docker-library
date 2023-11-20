@@ -4,82 +4,82 @@
 version: "3.8"
 services:
   knowage:
-    container_name: $APP_NAME
-    image: knowagelabs/knowage-server-docker:$APP_VERSION
+    container_name: $W9_NAME
+    image: knowagelabs/knowage-server-docker:$W9_VERSION
     restart: unless-stopped
     depends_on:
       - knowagedb
       - knowagecache
     ports:
-      - "$APP_HTTP_PORT:8080"
+      - "$W9_HTTP_PORT:8080"
     volumes:
       - knowage:/home/knowage/apache-tomcat/resources
     env_file: .env
     environment:
-      - DB_HOST=$APP_DB_MARIADB_HOST
-      - DB_PORT=$APP_DB_MARIADB_PORT
-      - DB_DB=$APP_DB_MARIADB_NAME
-      - DB_USER=$APP_DB_MARIADB_USER
-      - DB_PASS=$APP_DB_MARIADB_PASSWORD
-      - CACHE_DB_HOST=$APP_DB_MARIADB_CACHE_HOST
-      - CACHE_DB_PORT=$APP_DB_MARIADB_CACHE_PORT
-      - CACHE_DB_DB=$APP_DB_MARIADB_CACHE_NAME
-      - CACHE_DB_USER=$APP_DB_MARIADB_CACHE_USER
-      - CACHE_DB_PASS=$APP_DB_MARIADB_PASSWORD
-      - HMAC_KEY=$APP_HMAC_KEY
-      - PASSWORD_ENCRYPTION_SECRET=$APP_PASSWORD_ENCRYPTION_SECRET
+      - DB_HOST=$W9_DB_MARIADB_HOST
+      - DB_PORT=$W9_DB_MARIADB_PORT
+      - DB_DB=$W9_DB_MARIADB_NAME
+      - DB_USER=$W9_DB_MARIADB_USER
+      - DB_PASS=$W9_DB_MARIADB_PASSWORD
+      - CACHE_DB_HOST=$W9_DB_MARIADB_CACHE_HOST
+      - CACHE_DB_PORT=$W9_DB_MARIADB_CACHE_PORT
+      - CACHE_DB_DB=$W9_DB_MARIADB_CACHE_NAME
+      - CACHE_DB_USER=$W9_DB_MARIADB_CACHE_USER
+      - CACHE_DB_PASS=$W9_DB_MARIADB_PASSWORD
+      - HMAC_KEY=$W9_HMAC_KEY
+      - PASSWORD_ENCRYPTION_SECRET=$W9_PASSWORD_ENCRYPTION_SECRET
       - PUBLIC_ADDRESS=localhost
-      - APP_USER=$APP_USER
-      - APP_PASSWORD=$APP_PASSWORD
+      - W9_USER=$W9_USER
+      - W9_PASSWORD=$W9_PASSWORD
     command: bash -c "cat /my_cmd > /home/knowage/cmd.sh && chmod +x /home/knowage/cmd.sh && /home/knowage/cmd.sh"
     configs:
       - source: my_cmd
       
   knowagepython:
-    container_name: $APP_NAME-python
-    image: knowagelabs/knowage-python-docker:$APP_VERSION
+    container_name: $W9_NAME-python
+    image: knowagelabs/knowage-python-docker:$W9_VERSION
     restart: unless-stopped
     environment:
-      - HMAC_KEY=$APP_HMAC_KEY
+      - HMAC_KEY=$W9_HMAC_KEY
       - KNOWAGE_PUBLIC_ADDRESS=knowage
       - PUBLIC_ADDRESS=localhost
 
   knowager:
-    container_name: $APP_NAME-r
-    image: knowagelabs/knowage-r-docker:$APP_VERSION
+    container_name: $W9_NAME-r
+    image: knowagelabs/knowage-r-docker:$W9_VERSION
     restart: unless-stopped
     environment:
-      - HMAC_KEY=$APP_HMAC_KEY
+      - HMAC_KEY=$W9_HMAC_KEY
 
   knowagedb:
-    image: mariadb:$APP_DB_MARIADB_VERSION
-    container_name: $APP_NAME-db
+    image: mariadb:$W9_DB_MARIADB_VERSION
+    container_name: $W9_NAME-db
     restart: unless-stopped
     environment:
-      - MYSQL_USER=$APP_DB_MARIADB_USER
-      - MYSQL_PASSWORD=$APP_DB_MARIADB_PASSWORD
-      - MYSQL_DATABASE=$APP_DB_MARIADB_NAME
-      - MYSQL_ROOT_PASSWORD=$APP_DB_MARIADB_PASSWORD
+      - MYSQL_USER=$W9_DB_MARIADB_USER
+      - MYSQL_PASSWORD=$W9_DB_MARIADB_PASSWORD
+      - MYSQL_DATABASE=$W9_DB_MARIADB_NAME
+      - MYSQL_ROOT_PASSWORD=$W9_DB_MARIADB_PASSWORD
     ports: 
-      - "$APP_DB_MARIADB_PORT:3306"
+      - "$W9_DB_MARIADB_PORT:3306"
     volumes:
       - "db:/var/lib/mysql"
 
   knowagecache:
-    image: mariadb:$APP_DB_MARIADB_VERSION
-    container_name: $APP_NAME-cache
+    image: mariadb:$W9_DB_MARIADB_VERSION
+    container_name: $W9_NAME-cache
     restart: unless-stopped
     environment:
-      - MYSQL_USER=$APP_DB_MARIADB_CACHE_USER
-      - MYSQL_PASSWORD=$APP_DB_MARIADB_PASSWORD
-      - MYSQL_DATABASE=$APP_DB_MARIADB_CACHE_NAME
+      - MYSQL_USER=$W9_DB_MARIADB_CACHE_USER
+      - MYSQL_PASSWORD=$W9_DB_MARIADB_PASSWORD
+      - MYSQL_DATABASE=$W9_DB_MARIADB_CACHE_NAME
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
     volumes:
       - "cache:/var/lib/mysql"
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

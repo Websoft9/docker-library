@@ -5,11 +5,11 @@ version: '3.8'
 
 services:
   redis:
-    image: redis:${APP_VERSION}
-    container_name: ${APP_NAME}
+    image: redis:${W9_VERSION}
+    container_name: ${W9_NAME}
     restart: unless-stopped
     ports: 
-      - ${APP_DB_PORT}:6379
+      - ${W9_DB_PORT}:6379
     env_file: .env
     volumes:
       - ./src/redis.conf:/etc/redis.conf:ro
@@ -17,15 +17,15 @@ services:
     entrypoint: ["redis-server", "/etc/redis.conf"] 
 
   redisinsight:
-    image: redislabs/redisinsight:${APP_GUI_VERSION}
-    container_name: ${APP_NAME}-gui
+    image: redislabs/redisinsight:${W9_GUI_VERSION}
+    container_name: ${W9_NAME}-gui
     restart: unless-stopped
     ports:
-      - "${APP_GUI_PORT}:8001"
+      - "${W9_GUI_PORT}:8001"
 
 networks:
   default:
-    name: ${APP_NETWORK}
+    name: ${W9_NETWORK}
     external: true
 
 volumes:
