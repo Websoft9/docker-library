@@ -1,1 +1,1 @@
-1. add new application
+1. add i18n for wordpress
