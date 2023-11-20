@@ -5,7 +5,7 @@ version: '3.8'
 services:
 
   wordpress:
-    image: wordpress:$W9_VERSION
+    image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
     logging:
