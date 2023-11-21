@@ -64,17 +64,19 @@ We will list and explain commonly used environmental variables as following tabl
 
 | Variable name          | Description                                                                                                                                                          | Necessity |
 | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| POWER_PASSWORD         | Original Password, all containers password in the Docker Compose are setted to this password, make all container passwords the same                                  | no        |
-| W9_NAME               | The name of this application, main container also named by **W9_NAME's** value                                                                                      | yes       |
+| W9_REPO     | The main container docker image url                                                                                                              | no        |
+| W9_DIST     | The edition of main application                                       | no        |
 | W9_VERSION            | The version of this application, the image's tag of main container                                                                                                   | yes       |
-| W9_NETWORK            | We have uniformly created a network named constant **websoft9**, which ensures that multiple applications can easily access it through the container name if needed  | yes       |
+| POWER_PASSWORD         | Original Password, all containers password in the Docker Compose are setted to this password, make all container passwords the same                                  | no        |
 | W9_HTTP_PORT_SET     | The main port of this web application, you can access this application by http://ip:W9_HTTP_PORT  _SET                                                                      | no        |
+| W9_HTTPS_PORT_SET     | The main port of this web application, you can access this application by https://ip:W9_HTTPs_PORT  _SET                                                                      | no        |
 | W9_DB_PORT_SET          | The database's port when application is a Database | no        |
 | W9_MQ_PORT_SET          | The MQ's port when application is a MQ | no        |
 | W9_SSH_PORT_SET         | The extra ssh port of a aplication, such as gitlab | no        |
+| W9_ID               | The name of this application, main container also named by **W9_NAME's** value                                                                                      | yes       |\
+| W9_NAME               | The application name,such as wordpress,mysql                                             | yes       |
 | W9_URL_REPLACE        | You must modify W9_URL on init when it is true                                                                                                                      | no        |
 | W9_URL                | It is used when the application APP needs to set an external URL, which can be IP(or domain), IP:PORT, http(s)://IP:POR                                              | no        |
-| W9_HTTPS_ACCESS       | Some application (e.g teleport) need HTTPS access, you need to set it to **True**                                                                                    | no        |
 | W9_ADMIN_PATH         | Application's background access address is main url and this suffix                                                                                                  | no        |
 | W9_USER               | Application's login username                                                                                                                                         | no        |
 | W9_PASSWORD           | Application's login password                                                                                                                                         | no        |
@@ -82,8 +84,7 @@ We will list and explain commonly used environmental variables as following tabl
 | W9_DB_EXPOSE  | Main database of application                                                                                            | no        |
 | W9_HTTP_PORT     | Main container internal http port                                                                                                                              | no        |
 | W9_HTTPS_PORT     | Main container internal https port                                                                                                        | no        |
-| W9_REPO     | The main container docker image url                                                                                                              | no        |
-| W9_DIST     | The edition of main application                                       | no        |
+| W9_NETWORK            | We have uniformly created a network named constant **websoft9**, which ensures that multiple applications can easily access it through the container name if needed  | yes       |
 
 
 > main container: When the container has web pages, the corresponding container of the page is the main container; When a container has no pages, the corresponding container for the core application is usually the main container.
