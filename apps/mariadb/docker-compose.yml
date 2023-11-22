@@ -19,7 +19,7 @@ services:
      - ./src/conf.d/:/etc/mysql/conf.d
 networks:
   default:
-    name: ${W9_NETWORK}
+    name: $W9_NETWORK
     external: true
 
 volumes:
