@@ -4,14 +4,14 @@ version: '3.8'
 services:
   mariadb:
     image: $W9_REPO:$W9_VERSION
-    container_name: $W9_NAME
+    container_name: $W9_ID
     restart: unless-stopped
     env_file: .env
     environment:
      - MARIADB_ROOT_PASSWORD=$W9_DB_MARIADB_PASSWORD
      - MYSQL_ROOT_PASSWORD=$W9_DB_MARIADB_PASSWORD
     ports:
-     - $W9_DB_PORT:3306
+     - $W9_DB_PORT_SET:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
      - mariadb_data:/var/lib/mysql
