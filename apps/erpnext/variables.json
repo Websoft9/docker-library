@@ -3,7 +3,12 @@
   "trademark": "ERPNext",
   "release": true,
   "fork_url": "https://github.com/frappe/frappe_docker.git",
-  "version": "v13,v14",
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["v14", "v13"]
+    }
+  ],
   "requirements": {
     "cpu": "2",
     "memory": "8",
