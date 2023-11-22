@@ -4,20 +4,20 @@ version: '3.8'
 
 services:
   jenkins:
-    container_name: ${W9_NAME}
-    image: jenkins/jenkins:${W9_VERSION}
+    container_name: $W9_ID
+    image: $W9_REPO:$W9_VERSION
     env_file: .env
     user: root
     restart: unless-stopped
     ports:
-      - "$W9_JENKINS_SLAVE_AGENT_PORT:50000"
-      - "$W9_HTTP_PORT:8080"
+      - $W9_AGENT_PORT_SET:50000
+      - $W9_HTTP_PORT_SET:8080
     volumes:
       - jenkins:/var/jenkins_home
 
 networks:
   default:
-    name: ${W9_NETWORK}
+    name: $W9_NETWORK
     external: true
 
 volumes:
