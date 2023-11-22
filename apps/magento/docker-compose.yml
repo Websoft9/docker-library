@@ -4,11 +4,11 @@ version: '3.8'
 
 services:
   magento:
-    image: docker.io/bitnami/magento:$W9_VERSION
+    image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
     ports:
-      - '9001-9999:80'
+      - $W9_HTTP_PORT_SET:80
     env_file:
       - .env
     environment:
@@ -21,8 +21,6 @@ services:
     depends_on:
       - mariadb
       - elasticsearch
-    labels:
-      com.docker.compose.websoft9.http.port: $W9_HTTP_PORT
 
   mariadb:
     image: docker.io/bitnami/mariadb:10.4
@@ -57,5 +55,5 @@ volumes:
 
 networks:
   default:
-    name: ${W9_NETWORK}
+    name: $W9_NETWORK
     external: true
