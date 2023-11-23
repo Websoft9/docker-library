@@ -1,6 +1,6 @@
 # EspoCRM on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for EspoCRM v
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for EspoCRM community-8.0
 
 ## System Requirements
 
