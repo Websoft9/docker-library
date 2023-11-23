@@ -1,4 +1,4 @@
-# image: https://github.com/bitnami/bitnami-docker-mediawiki
+# image: https://hub.docker.com/r/bitnami/mediawiki
 
 version: '3.8'
 
@@ -29,6 +29,21 @@ services:
       MYSQL_PASSWORD: $POWER_PASSWORD
       MYSQL_ROOT_PASSWORD: $POWER_PASSWORD
 
+  # this used for running command to modify Mediawiki's LocalSettings.php
+  busybox:
+    image: busybox
+    volumes:
+      - mediawiki:/data
+    command: |
+      /bin/sh -c "
+      while [ ! -f /data/LocalSettings.php ]; do
+        echo 'Waiting for LocalSettings.php to be created...'
+        sleep 2
+      done
+      echo 'LocalSettings.php found, proceeding...'
+      kill 1
+      "
+      
 networks:
   default:
     name: ${W9_NETWORK}
