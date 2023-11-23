@@ -5,22 +5,11 @@ version: '3.8'
 services:
   mediawiki:
     image: $W9_REPO:$W9_VERSION
-    container_name: $W9_NAME
+    container_name: $W9_ID
     ports:
-      - ${W9_HTTP_PORT}:8080
+      - ${W9_HTTP_PORT_SET}:8080
     env_file:
       - .env
-    environment:
-      - MEDIAWIKI_DATABASE_HOST=$W9_NAME-db
-      - MEDIAWIKI_DATABASE_PORT_NUMBER=$W9_DB_MYSQL_PORT
-      - MEDIAWIKI_DATABASE_USER=$W9_DB_MYSQL_USER
-      - MEDIAWIKI_DATABASE_NAME=$W9_DB_MYSQL_NAME
-      - MEDIAWIKI_DATABASE_PASSWORD=$W9_DB_MYSQL_PASSWORD
-      - MEDIAWIKI_USERNAME=$W9_USER
-      - MEDIAWIKI_PASSWORD=$W9_PASSWORD
-      - MEDIAWIKI_EMAIL=$W9_EMAIL
-      - MEDIAWIKI_HOST=$W9_URL
-      - MEDIAWIKI_WIKI_NAME=$W9_SITENAME
     volumes:
       - mediawiki:/bitnami/mediawiki
     depends_on:
@@ -28,19 +17,17 @@ services:
     restart: unless-stopped
 
   db:
-    image: mysql:$W9_DB_MYSQL_VERSION
-    container_name: $W9_NAME-db
+    image: mysql:$MYSQL_VERSION
+    container_name: $W9_ID-mysql
     restart: unless-stopped
-    #ports:
-    # - $W9_DB_MYSQL_PORT:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: $W9_DB_MYSQL_NAME
-      MYSQL_USER: $W9_DB_MYSQL_USER
-      MYSQL_PASSWORD: $W9_DB_MYSQL_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_DB_MYSQL_PASSWORD
+      MYSQL_DATABASE: $W9_ID
+      MYSQL_USER: $W9_ID
+      MYSQL_PASSWORD: $POWER_PASSWORD
+      MYSQL_ROOT_PASSWORD: $POWER_PASSWORD
 
 networks:
   default:
