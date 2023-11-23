@@ -38,8 +38,8 @@ services:
     environment:
       MYSQL_DATABASE: $W9_ID
       MYSQL_USER: $W9_ID
-      MYSQL_PASSWORD: $POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $POWER_PASSWORD
+      MYSQL_PASSWORD: $W9_POWER_PASSWORD
+      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
 
   redis:
     image: redis:6
