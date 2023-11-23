@@ -6,11 +6,11 @@
   "edition": [
     {
       "dist": "community",
-      "version": ["latest", "2.2"]
+      "version": ["2.2","latest"]
     },
     {
       "dist": "enterprise",
-      "version": ["latest", "1.8.2"]
+      "version": ["1.8.2","latest"]
     }
   ],
   "requirements": {
