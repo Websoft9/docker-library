@@ -3,7 +3,22 @@
   "trademark": "Kopia",
   "release": false,
   "fork_url": "https://github.com/bitnami/bitnami-docker-kafka",
-  "version": "0.13",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "2.2",
+        "latest"
+      ]
+    },
+    {
+      "dist": "enterprise",
+      "version": [
+        "1.8.2",
+        "latest"
+      ]
+    }
+  ],
   "requirements": {
     "cpu": "1",
     "memory": "2",

@@ -3,7 +3,22 @@
   "trademark": "Oracle Database",
   "release": true,
   "fork_url": "https://container-registry.oracle.com/database/express",
-  "version": "latest,21.3.0-xe,18.4.0-xe",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "2.2",
+        "latest"
+      ]
+    },
+    {
+      "dist": "enterprise",
+      "version": [
+        "1.8.2",
+        "latest"
+      ]
+    }
+  ],
   "requirements": {
     "cpu": "2",
     "memory": "8",

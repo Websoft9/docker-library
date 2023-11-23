@@ -3,7 +3,22 @@
   "trademark": "Zabbix",
   "release": true,
   "fork_url": "https://github.com/zabbix/zabbix-docker",
-  "version": "6.2,6.0,5.4",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "2.2",
+        "latest"
+      ]
+    },
+    {
+      "dist": "enterprise",
+      "version": [
+        "1.8.2",
+        "latest"
+      ]
+    }
+  ],
   "requirements": {
     "cpu": "2",
     "memory": "4",

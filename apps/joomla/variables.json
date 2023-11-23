@@ -3,7 +3,22 @@
   "trademark": "Joomla",
   "release": true,
   "fork_url": "https://github.com/joomla-docker/docker-joomla",
-  "version": "4.3,latest",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "2.2",
+        "latest"
+      ]
+    },
+    {
+      "dist": "enterprise",
+      "version": [
+        "1.8.2",
+        "latest"
+      ]
+    }
+  ],
   "requirements": {
     "cpu": "1",
     "memory": "1",

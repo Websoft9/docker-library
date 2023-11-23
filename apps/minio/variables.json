@@ -3,7 +3,22 @@
   "trademark": "Minio",
   "release": true,
   "fork_url": "",
-  "version": "RELEASE.2023-05-18T00-05-36Z,latest",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "2.2",
+        "latest"
+      ]
+    },
+    {
+      "dist": "enterprise",
+      "version": [
+        "1.8.2",
+        "latest"
+      ]
+    }
+  ],
   "requirements": {
     "cpu": "1",
     "memory": "2",

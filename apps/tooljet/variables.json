@@ -3,7 +3,22 @@
   "trademark": "TooleJet",
   "release": false,
   "fork_url": "https://github.com/ToolJet/ToolJet",
-  "version": "latest",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "2.2",
+        "latest"
+      ]
+    },
+    {
+      "dist": "enterprise",
+      "version": [
+        "1.8.2",
+        "latest"
+      ]
+    }
+  ],
   "requirements": {
     "cpu": "1",
     "memory": "1",

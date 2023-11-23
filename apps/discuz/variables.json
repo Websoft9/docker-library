@@ -3,7 +3,22 @@
   "trademark": "Discuz",
   "release": false,
   "fork_url": "",
-  "version": "v3.4.0",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "2.2",
+        "latest"
+      ]
+    },
+    {
+      "dist": "enterprise",
+      "version": [
+        "1.8.2",
+        "latest"
+      ]
+    }
+  ],
   "requirements": {
     "cpu": "1",
     "memory": "1",

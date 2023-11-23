@@ -3,7 +3,22 @@
   "trademark": "Elasticsearch",
   "release": true,
   "fork_url": "https://github.com/elastic/elasticsearch",
-  "version": "8.6.0",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "2.2",
+        "latest"
+      ]
+    },
+    {
+      "dist": "enterprise",
+      "version": [
+        "1.8.2",
+        "latest"
+      ]
+    }
+  ],
   "requirements": {
     "cpu": "2",
     "memory": "4",

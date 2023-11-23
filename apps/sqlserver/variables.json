@@ -3,7 +3,22 @@
   "trademark": "SQL Server",
   "release": true,
   "fork_url": "https://github.com/twright-msft/mssql-node-docker-demo-app",
-  "version": "2022,2019,2017",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "2.2",
+        "latest"
+      ]
+    },
+    {
+      "dist": "enterprise",
+      "version": [
+        "1.8.2",
+        "latest"
+      ]
+    }
+  ],
   "requirements": {
     "cpu": "2",
     "memory": "4",

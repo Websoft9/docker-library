@@ -3,7 +3,22 @@
   "trademark": "Nocodb",
   "release": true,
   "fork_url": "https://supabase.com/docs/guides/self-hosting/docker",
-  "version": "0.12.0-alpha.3, main",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "2.2",
+        "latest"
+      ]
+    },
+    {
+      "dist": "enterprise",
+      "version": [
+        "1.8.2",
+        "latest"
+      ]
+    }
+  ],
   "requirements": {
     "cpu": "1",
     "memory": "1",

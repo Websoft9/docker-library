@@ -6,7 +6,17 @@
   "edition": [
     {
       "dist": "community",
-      "version": ["latest", "8.2", "8.1", "8.0", "5.7", "5.6", "5.5"]
+      "version": [
+        "2.2",
+        "latest"
+      ]
+    },
+    {
+      "dist": "enterprise",
+      "version": [
+        "1.8.2",
+        "latest"
+      ]
     }
   ],
   "requirements": {
