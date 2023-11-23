@@ -10,13 +10,6 @@
         "6.3",
         "latest"
       ]
-    },
-    {
-      "dist": "enterprise",
-      "version": [
-        "1.8.2",
-        "latest"
-      ]
     }
   ],
   "requirements": {
