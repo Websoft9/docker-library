@@ -135,3 +135,22 @@ The elements of label are necessary: such as version,vendor,description.
 ## variables.json
 
 Every application must contain a variables.json, which contains information such as version, trademark, document reference address, and running environment requirements.
+
+## How to use new template？
+
+### docker-compose.yml
+
+1. Docker image address using environment variables
+2. Do not expose external ports in the main database and message queue of web applications
+3. Each container must directly reference. env
+4. Use after declaring volumes
+5. The configuration file volumes uses the absolute path reference of src
+
+###  .env
+
+1. Custom environment variables start with W9
+2. Place the environment variables of the container itself last of .env
+3. All exposed ports are marked with End of _SET, users can modify them
+4. These variables must be included in .env: W9_REPO, W9_DIST, W9_VERSION, W9_ID
+5. W9_URL is an identifier that distinguishes web applications
+6. There are two internal ports in the web application container: W9_HTTP_PORT, W9_HTTPS_PORT
