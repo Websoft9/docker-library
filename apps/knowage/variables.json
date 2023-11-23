@@ -6,23 +6,13 @@
   "edition": [
     {
       "dist": "community",
-      "version": [
-        "2.2",
-        "latest"
-      ]
-    },
-    {
-      "dist": "enterprise",
-      "version": [
-        "1.8.2",
-        "latest"
-      ]
+      "version": ["7.4"]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "4",
-    "disk": "1",
+    "disk": "3",
     "url": "https://knowage-suite.readthedocs.io/en/7.4/installation-guide/knowage-ce-installer.html#server-side-requirements"
   }
 }

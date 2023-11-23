@@ -4,78 +4,71 @@
 version: "3.8"
 services:
   knowage:
-    container_name: $W9_NAME
-    image: knowagelabs/knowage-server-docker:$W9_VERSION
+    container_name: $W9_ID
+    image: $W9_REPO:$W9_VERSION
     restart: unless-stopped
     depends_on:
       - knowagedb
       - knowagecache
+      - hazelcast
     ports:
-      - "$W9_HTTP_PORT:8080"
+      - "$W9_HTTP_PORT_SET:8080"
     volumes:
       - knowage:/home/knowage/apache-tomcat/resources
     env_file: .env
-    environment:
-      - DB_HOST=$W9_DB_MARIADB_HOST
-      - DB_PORT=$W9_DB_MARIADB_PORT
-      - DB_DB=$W9_DB_MARIADB_NAME
-      - DB_USER=$W9_DB_MARIADB_USER
-      - DB_PASS=$W9_DB_MARIADB_PASSWORD
-      - CACHE_DB_HOST=$W9_DB_MARIADB_CACHE_HOST
-      - CACHE_DB_PORT=$W9_DB_MARIADB_CACHE_PORT
-      - CACHE_DB_DB=$W9_DB_MARIADB_CACHE_NAME
-      - CACHE_DB_USER=$W9_DB_MARIADB_CACHE_USER
-      - CACHE_DB_PASS=$W9_DB_MARIADB_PASSWORD
-      - HMAC_KEY=$W9_HMAC_KEY
-      - PASSWORD_ENCRYPTION_SECRET=$W9_PASSWORD_ENCRYPTION_SECRET
-      - PUBLIC_ADDRESS=localhost
-      - W9_USER=$W9_USER
-      - W9_PASSWORD=$W9_PASSWORD
     command: bash -c "cat /my_cmd > /home/knowage/cmd.sh && chmod +x /home/knowage/cmd.sh && /home/knowage/cmd.sh"
     configs:
       - source: my_cmd
-      
-  knowagepython:
-    container_name: $W9_NAME-python
-    image: knowagelabs/knowage-python-docker:$W9_VERSION
-    restart: unless-stopped
-    environment:
-      - HMAC_KEY=$W9_HMAC_KEY
-      - KNOWAGE_PUBLIC_ADDRESS=knowage
-      - PUBLIC_ADDRESS=localhost
 
-  knowager:
-    container_name: $W9_NAME-r
-    image: knowagelabs/knowage-r-docker:$W9_VERSION
-    restart: unless-stopped
+  # from Knowage8 need this service
+  hazelcast:
+    image: hazelcast/hazelcast:3.6
+    container_name: $W9_ID-hazelcast
+    env_file: .env
     environment:
-      - HMAC_KEY=$W9_HMAC_KEY
+      - JAVA_OPTS=-Dhazelcast.local.publicAddress=hazelcast -Dhazelcast.config=/opt/hazelcast/hazelcast.xml
+    volumes:
+      - ./src/hazelcast-server.xml:/opt/hazelcast/hazelcast.xml
 
   knowagedb:
-    image: mariadb:$W9_DB_MARIADB_VERSION
-    container_name: $W9_NAME-db
+    image: mariadb:$MARIADB_VERSION
+    container_name: $W9_ID-mariadb
     restart: unless-stopped
+    env_file: .env
     environment:
-      - MYSQL_USER=$W9_DB_MARIADB_USER
-      - MYSQL_PASSWORD=$W9_DB_MARIADB_PASSWORD
-      - MYSQL_DATABASE=$W9_DB_MARIADB_NAME
-      - MYSQL_ROOT_PASSWORD=$W9_DB_MARIADB_PASSWORD
-    ports: 
-      - "$W9_DB_MARIADB_PORT:3306"
+      - MYSQL_USER=$W9_ID
+      - MYSQL_PASSWORD=$POWER_PASSWORD
+      - MYSQL_DATABASE=$W9_ID
+      - MYSQL_ROOT_PASSWORD=$POWER_PASSWORD
     volumes:
       - "db:/var/lib/mysql"
 
   knowagecache:
-    image: mariadb:$W9_DB_MARIADB_VERSION
-    container_name: $W9_NAME-cache
+    image: mariadb:$MARIADB_VERSION
+    container_name: $W9_ID-cache
     restart: unless-stopped
+    env_file: .env
     environment:
-      - MYSQL_USER=$W9_DB_MARIADB_CACHE_USER
-      - MYSQL_PASSWORD=$W9_DB_MARIADB_PASSWORD
-      - MYSQL_DATABASE=$W9_DB_MARIADB_CACHE_NAME
-      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_USER=${W9_ID}_cache
+      - MYSQL_PASSWORD=$POWER_PASSWORD
+      - MYSQL_DATABASE=${W9_ID}_cache
+      - MYSQL_ROOT_PASSWORD=$POWER_PASSWORD
     volumes:
       - "cache:/var/lib/mysql"
+
+  knowagepython:
+    container_name: $W9_ID-python
+    image: knowagelabs/knowage-python-docker:$W9_VERSION
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - KNOWAGE_PUBLIC_ADDRESS=knowage
+
+  knowager:
+    container_name: $W9_ID-r
+    image: knowagelabs/knowage-r-docker:$W9_VERSION
+    restart: unless-stopped
+    env_file: .env
 
 networks:
   default:
