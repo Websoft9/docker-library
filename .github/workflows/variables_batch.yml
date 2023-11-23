@@ -6,7 +6,7 @@ on:
   push:
     branches: [ main ]
     paths: 
-      - 'template/variables.json'
+      - 'template/variables1.json'
 
 jobs:
   build:
