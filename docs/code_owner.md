@@ -154,3 +154,4 @@ Every application must contain a variables.json, which contains information such
 4. These variables must be included in .env: W9_REPO, W9_DIST, W9_VERSION, W9_ID
 5. W9_URL is an identifier that distinguishes web applications
 6. There are two internal ports in the web application container: W9_HTTP_PORT, W9_HTTPS_PORT
+7. The user's main database type is W9_ DB_ EXPOSE to determine
