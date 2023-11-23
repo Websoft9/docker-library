@@ -1,6 +1,6 @@
 # ZenTao on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for ZenTao v
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for ZenTao community-18.8
 
 ## System Requirements
 
