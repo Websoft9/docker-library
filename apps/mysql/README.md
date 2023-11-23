@@ -1,6 +1,6 @@
 # MySQL on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for MySQL v
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for MySQL community-8.1
 
 ## System Requirements
 
