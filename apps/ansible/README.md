@@ -1,6 +1,9 @@
 # Ansible on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Ansible v2.9.0
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Ansible:
+
+ - community:  latest
+
 
 ## System Requirements
 
