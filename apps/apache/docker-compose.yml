@@ -3,13 +3,14 @@
 version: '3.8'
 services:
   apache:
-    container_name: ${W9_NAME}
+    container_name: ${W9_ID}
     image: httpd:${W9_VERSION}
     restart: unless-stopped
     ports:
-     - ${W9_HTTP_PORT}:80
+     - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
     volumes:
      - apache:/usr/local/apache2/htdocs
+    env_file: .env
      
 networks:
   default:
