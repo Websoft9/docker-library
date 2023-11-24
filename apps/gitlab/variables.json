@@ -7,14 +7,14 @@
     {
       "dist": "community",
       "version": [
-        "2.2",
+        "16.0.7-ce.0",
         "latest"
       ]
     },
     {
       "dist": "enterprise",
       "version": [
-        "1.8.2",
+        "16.0.7-ce.0",
         "latest"
       ]
     }
