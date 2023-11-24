@@ -8,11 +8,11 @@ version: '3.8'
 services:
 
   grafana:
-    image: grafana/grafana:${W9_VERSION}
+    image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}  
     restart: unless-stopped
     ports:
-      - ${W9_HTTP_PORT}:3000
+      - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
     volumes:
       - grafana_data:/var/lib/grafana
       - grafana_config:/etc/grafana
@@ -23,7 +23,7 @@ services:
       # You can use any environment from grafana.ini. format: GF_[group]_item
       - GF_SECURITY_ADMIN_USER=${W9_USER}
       - GF_SECURITY_ADMIN_PASSWORD=${W9_POWER_PASSWORD}
-      - GF_DATABASE_URL=mysql://$W9_ID:$W9_POWER_PASSWORD@db:3306/$W9_ID
+      - GF_DATABASE_URL=mysql://$W9_ID:$W9_POWER_PASSWORD@mysql:3306/$W9_ID
 
   mysql:
     image: mysql:5.7
@@ -37,6 +37,7 @@ services:
       MYSQL_USER: $W9_ID
       MYSQL_PASSWORD: $W9_POWER_PASSWORD
       MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+    env_file: .env
 
   loki:
     image: grafana/loki:main
@@ -45,6 +46,7 @@ services:
     volumes:
       - grafana_loki_data:/loki
     command: -config.file=/etc/loki/local-config.yaml
+    env_file: .env
 
   promtail:
     image: grafana/promtail:main
@@ -53,6 +55,7 @@ services:
     volumes:
       -  grafana_promtail_log:/var/log
     command: -config.file=/etc/promtail/config.yml
+    env_file: .env
 
 networks:
   default:
