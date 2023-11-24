@@ -19,7 +19,7 @@ services:
 
   mysql:
     image: mysql:5.7
-    container_name: ${W9_NAME}-mysql
+    container_name: ${W9_ID}-mysql
     restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
