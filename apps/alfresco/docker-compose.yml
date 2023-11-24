@@ -63,7 +63,7 @@ services:
     environment:
       JAVA_OPTS: " -XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=80"
     ports:
-      - "$W9_TRANSFORM_PORT_SET:#W9_TRANSFORM_PORT"
+      - "$W9_TRANSFORM_PORT_SET:$W9_TRANSFORM_PORT"
     env_file: .env
 
   share:
