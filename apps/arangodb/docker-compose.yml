@@ -6,12 +6,12 @@ version: '3.8'
 services:
   arangodb:
     image: $W9_REPO:$W9_VERSION
-    container_name: $W9_NAME
+    container_name: $W9_ID
     restart: unless-stopped
     env_file:
       - .env
     ports:
-      - '${W9_HTTP_PORT}:8529'
+      - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
     environment:
       - ARANGO_ROOT_PASSWORD=$W9_PASSWORD
     volumes:

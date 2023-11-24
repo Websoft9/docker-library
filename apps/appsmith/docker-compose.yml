@@ -13,6 +13,7 @@ services:
     volumes:
       - appsmith:/appsmith-stacks
     restart: unless-stopped
+    env_file: .env
 
 networks:
   default:
