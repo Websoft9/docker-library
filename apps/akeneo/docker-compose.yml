@@ -12,9 +12,9 @@ services:
       - ./000-default.conf:/etc/apache2/sites-available/000-default.conf
     restart: unless-stopped
     environment:
-      AKENEO_MYSQL_DATABASE: ${W9_DB_MYSQL_NAME}
-      AKENEO_MYSQL_USER: ${W9_DB_MYSQL_USER}
-      AKENEO_MYSQL_PASSWORD: ${W9_DB_MYSQL_PASSWORD}
+      AKENEO_MYSQL_DATABASE: ${W9_ID}
+      AKENEO_MYSQL_USER: ${W9_ID}
+      AKENEO_MYSQL_PASSWORD: ${W9_POWER_PASSWO}
       AKENEO_MYSQL_HOST: $W9_ID-db
       AKENEO_SITENAME: ${W9_SITENAME}
       AKENEO_ADMIN_USER: ${W9_ADMIN_NAME}
