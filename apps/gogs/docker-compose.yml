@@ -5,7 +5,7 @@ version: '3.8'
 services:
   gogs:
     image: gogs/gogs:${W9_VERSION}
-    container_name: ${W9_NAME}
+    container_name: ${W9_ID}
     ports:
       - ${W9_HTTP_PORT}:3000
       - ${W9_SSH_PORT}:22
@@ -18,17 +18,17 @@ services:
     restart: unless-stopped
 
   mysql:
-    image: mysql:${W9_DB_MYSQL_VERSION}
-    container_name: ${W9_NAME}-db
+    image: mysql:5.7
+    container_name: ${W9_NAME}-mysql
     restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: ${W9_DB_MYSQL_NAME}
-      MYSQL_USER: ${W9_DB_MYSQL_USER}
-      MYSQL_PASSWORD: ${W9_DB_MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${W9_DB_MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${W9_ID}
+      MYSQL_USER: ${W9_ID}
+      MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
 
 networks:
   default:
