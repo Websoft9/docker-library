@@ -5,7 +5,7 @@ on:
   push:
     branches: [ main ]
     paths: 
-      - 'template/README.jinja2'
+      #- 'template/README.jinja2'
       - 'apps/*/variables.json'
 
 jobs:
