@@ -64,7 +64,7 @@ services:
     image: mariadb:10.6
     container_name: $W9_ID-mariadb
     healthcheck:
-      test: mysqladmin ping -h localhost --password=$W9_POWER_PASSWORD
+      test: mysqladmin ping -h localhost --password=$POWER_PASSWO
       interval: 1s
       retries: 15
     deploy:
@@ -76,7 +76,7 @@ services:
       - --skip-character-set-client-handshake
       - --skip-innodb-read-only-compressed # Temporary fix for MariaDB 10.6
     environment:
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      MYSQL_ROOT_PASSWORD: $POWER_PASSWO
     volumes:
       - db-data:/var/lib/mysql
       

@@ -67,7 +67,7 @@ We will list and explain commonly used environmental variables as following tabl
 | W9_REPO     | The main container docker image url                                                                                                              | no        |
 | W9_DIST     | The edition of main application                                       | no        |
 | W9_VERSION            | The version of this application, the image's tag of main container                                                                                                   | yes       |
-| POWER_PASSWORD         | Original Password, all containers password in the Docker Compose are setted to this password, make all container passwords the same                                  | no        |
+| W9_POWER_PASSWO         | Original Password, all containers password in the Docker Compose are setted to this password, make all container passwords the same                                  | no        |
 | W9_HTTP_PORT_SET     | The main port of this web application, you can access this application by http://ip:W9_HTTP_PORT_SET                                                                      | no        |
 | W9_HTTPS_PORT_SET     | The main port of this web application, you can access this application by https://ip:W9_HTTPs_PORT_SET                                                                      | no        |
 | W9_DB_PORT_SET          | The database's port when application is a Database | no        |

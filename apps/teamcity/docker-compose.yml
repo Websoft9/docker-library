@@ -22,10 +22,10 @@ services:
     image: mysql:8.0
     container_name: ${W9_NAME}-db 
     environment:
-      - MYSQL_ROOT_PASSWORD=${POWER_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWO}
       - MYSQL_DATABASE=${W9_NAME}
       - MYSQL_USER=${W9_NAME}
-      - MYSQL_PASSWORD=${POWER_PASSWORD}
+      - MYSQL_PASSWORD=${W9_POWER_PASSWO}
     volumes:
       - mysql_data:/var/lib/mysql
     restart: unless-stopped

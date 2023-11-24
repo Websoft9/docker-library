@@ -15,7 +15,7 @@ services:
       - MAGENTO_HOST=$W9_URL
       - MAGENTO_DATABASE_USER=$W9_ID
       - MAGENTO_DATABASE_NAME=$W9_ID
-      - MAGENTO_DATABASE_PASSWORD=$POWER_PASSWORD
+      - MAGENTO_DATABASE_PASSWORD=$W9_POWER_PASSWO
     volumes:
       - 'magento_data:/bitnami/magento'
     depends_on:
@@ -31,8 +31,8 @@ services:
     environment:
       - MARIADB_USER=$W9_ID
       - MARIADB_DATABASE=$W9_ID
-      - MARIADB_PASSWORD=$POWER_PASSWORD
-      - MARIADB_ROOT_PASSWORD=$POWER_PASSWORD
+      - MARIADB_PASSWORD=$W9_POWER_PASSWO
+      - MARIADB_ROOT_PASSWORD=$W9_POWER_PASSWO
     volumes:
       - 'mariadb_data:/bitnami/mariadb'
     labels:
