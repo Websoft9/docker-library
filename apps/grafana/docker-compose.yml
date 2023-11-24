@@ -9,10 +9,10 @@ services:
 
   grafana:
     image: grafana/grafana:${W9_VERSION}
-    container_name: ${W9_NAME}  
+    container_name: ${W9_ID}  
     restart: unless-stopped
     ports:
-      - ${W9_HTTP_PORT}:3000
+      - ${W9_HTTP_PORT_SET}:3000
     volumes:
       - grafana_data:/var/lib/grafana
       - grafana_config:/etc/grafana
@@ -27,7 +27,7 @@ services:
 
   db:
     image: mysql:${W9_DB_MYSQL_VERSION}
-    container_name: ${W9_NAME}-db
+    container_name: ${W9_ID}-db
     restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
@@ -37,10 +37,11 @@ services:
       MYSQL_USER: $W9_DB_MYSQL_USER
       MYSQL_PASSWORD: $W9_DB_MYSQL_PASSWORD
       MYSQL_ROOT_PASSWORD: $W9_DB_MYSQL_PASSWORD
+    env_file: .env
 
   loki:
     image: grafana/loki:main
-    container_name: ${W9_NAME}-loki
+    container_name: ${W9_ID}-loki
     restart: unless-stopped
     volumes:
       - grafana_loki_data:/loki
@@ -48,7 +49,7 @@ services:
 
   promtail:
     image: grafana/promtail:main
-    container_name: ${W9_NAME}-promtail
+    container_name: ${W9_ID}-promtail
     restart: unless-stopped
     volumes:
       -  grafana_promtail_log:/var/log
