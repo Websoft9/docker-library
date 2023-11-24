@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   appflowy:
+  env_file: .env
 
 
 networks:
