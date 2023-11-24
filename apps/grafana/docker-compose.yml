@@ -46,7 +46,7 @@ services:
     volumes:
       - grafana_loki_data:/loki
     command: -config.file=/etc/loki/local-config.yaml
-  env_file: .env
+    env_file: .env
 
   promtail:
     image: grafana/promtail:main
