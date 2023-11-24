@@ -127,7 +127,7 @@ services:
       # SHARED SECRET VALUE
       JAVA_TOOL_OPTIONS: "-Dalfresco.secureComms.secret=secret"
     ports:
-      - "8083:8983" # Browser port
+      - "$W9_SOLR_PORT_SET:$W9_SOLR_PORT" # Browser port
     env_file: .env
 
   activemq:
@@ -140,9 +140,9 @@ services:
           memory: 1G
     ports:
       - "$MQ_ACTIVEMQ_PORT:8161" # Web Console
-      - "5672:5672" # AMQP
-      - "61616:61616" # OpenWire
-      - "61613:61613" # STOMP
+      - "$W9_AMQP_PORT_SET:$W9_AMQP_PORT" # AMQP
+      - "$W9_OPENWIRE_PORT_SET:$W9_OPENWIRE_PORT" # OpenWire
+      - "$W9_STOMP_PORT_SET:$W9_STOMP_PORT" # STOMP
     env_file: .env
 
   proxy:
