@@ -13,7 +13,6 @@ services:
     restart: unless-stopped
     ports:
       - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
-      - ${W9_SSH_PORT_SET}:${W9_SSH_PORT}
     volumes:
       - grafana_data:/var/lib/grafana
       - grafana_config:/etc/grafana
