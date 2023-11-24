@@ -6,8 +6,8 @@ version: "3.8"
 
 services:
   alfresco:
-    image: alfresco/alfresco-content-repository-community:$W9_VERSION-M2
-    container_name: $W9_NAME
+    image: $W9_REPO:$W9_VERSION-M2
+    container_name: $W9_ID
     restart: unless-stopped
     env_file: .env
     deploy:
@@ -31,7 +31,7 @@ services:
         -Dalfresco_user_store.adminpassword=$W9_ENCRYPT_PASSWORD
         -Ddb.driver=org.postgresql.Driver
         -Ddb.username=alfresco
-        -Ddb.password=$W9_DB_POSTGRESQL_PASSWORD
+        -Ddb.password=$W9_POWER_PASSWO
         -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
         -Dsolr.host=solr6
         -Dsolr.port=8983
@@ -54,7 +54,7 @@ services:
 
   transform-core-aio:
     image: alfresco/alfresco-transform-core-aio:2.5.7
-    container_name: $W9_NAME-transform
+    container_name: $W9_ID-transform
     restart: unless-stopped
     deploy:
       resources:
@@ -63,11 +63,12 @@ services:
     environment:
       JAVA_OPTS: " -XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=80"
     ports:
-      - "8090:8090"
+      - "$W9_TRANSFORM_PORT_SET:#W9_TRANSFORM_PORT"
+    env_file: .env
 
   share:
     image: alfresco/alfresco-share:$W9_VERSION-M2
-    container_name: $W9_NAME-share
+    container_name: $W9_ID-share
     restart: unless-stopped
     deploy:
       resources:
@@ -84,29 +85,29 @@ services:
         -Dalfresco.context=alfresco
         -Dalfresco.protocol=http
         "
+    env_file: .env
 
   postgres:
     image: postgres:$W9_DB_POSTGRESQL_VERSION
-    container_name: $W9_NAME-db
+    container_name: $W9_ID-postgres
     restart: unless-stopped
     deploy:
       resources:
         limits:
           memory: 512M
     environment:
-      - POSTGRES_PASSWORD=$W9_DB_POSTGRESQL_PASSWORD
-      - POSTGRES_USER=$W9_DB_POSTGRESQL_USER
-      - POSTGRES_DB=$W9_DB_POSTGRESQL_NAME
+      - POSTGRES_PASSWORD=$W9_POWER_PASSWO
+      - POSTGRES_USER=$W9_ID
+      - POSTGRES_DB=$W9_ID
     command: postgres -c max_connections=300 -c log_min_messages=LOG
-    ports:
-      - $W9_DB_POSTGRESQL_PORT:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - postgres_logs:/var/log/postgresql
+    env_file: .env
 
   solr6:
     image: alfresco/alfresco-search-services:2.0.3
-    container_name: $W9_NAME-solr
+    container_name: $W9_ID-solr
     restart: unless-stopped
     deploy:
       resources:
@@ -124,15 +125,14 @@ services:
       # HTTPS or SECRET
       ALFRESCO_SECURE_COMMS: "secret"
       # SHARED SECRET VALUE
-      JAVA_TOOL_OPTIONS: "
-          -Dalfresco.secureComms.secret=secret
-      "
+      JAVA_TOOL_OPTIONS: "-Dalfresco.secureComms.secret=secret"
     ports:
       - "8083:8983" # Browser port
+    env_file: .env
 
   activemq:
     image: alfresco/alfresco-activemq:$MQ_ACTIVEMQ_VERSION
-    container_name: $W9_NAME-activemq
+    container_name: $W9_ID-activemq
     restart: unless-stopped
     deploy:
       resources:
@@ -143,10 +143,11 @@ services:
       - "5672:5672" # AMQP
       - "61616:61616" # OpenWire
       - "61613:61613" # STOMP
+    env_file: .env
 
   proxy:
     image: alfresco/alfresco-acs-nginx:3.2.0
-    container_name: $W9_NAME-proxy
+    container_name: $W9_ID-proxy
     restart: unless-stopped
     deploy:
       resources:
@@ -159,10 +160,11 @@ services:
     depends_on:
       - alfresco
     ports:
-      - "$W9_HTTP_PORT:8080"
+      - "$W9_HTTP_PORT_SET:$W9_HTTP_PORT"
     links:
       - alfresco
       - share
+    env_file: .env
 
 networks:
   default:
