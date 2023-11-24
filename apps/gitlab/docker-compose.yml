@@ -21,8 +21,8 @@ services:
     shm_size: '256m'
     restart: unless-stopped
     ports:
-      - '${W9_HTTP_PORT_SET}:80'
-      - '${W9_SSH_PORT_SET}:22'
+      - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
+      - '${W9_SSH_PORT_SET}:${W9_SSH_PORT}'
     volumes:
       - gitlab_config:/etc/gitlab
       - gitlab_logs:/var/log/gitlab
