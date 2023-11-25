@@ -1,10 +1,13 @@
-# Tensorflow on Docker  
+# ChatGPT-Next-Web on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Tensorflow v2.11.0
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for ChatGPT-Next-Web:
+
+ - community:  latest
+
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://github.com/onlyoffice/docker#recommended-system-requirements):
+The following are the minimal [recommended requirements](https://github.com/Yidadaa/ChatGPT-Next-Web):
 
 * **RAM**: 1 GB or more
 * **CPU**: 1 cores or higher
@@ -13,10 +16,10 @@ The following are the minimal [recommended requirements](https://github.com/only
 
 ## Install
 
-You can install this Tensorflow by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this ChatGPT-Next-Web by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use Tensorflow with **Websoft9 Business Support** free, you can [subscribe Tensorflow](https://www.websoft9.com/apps) on Cloud platform
+If you want use ChatGPT-Next-Web with **Websoft9 Business Support** free, you can [subscribe ChatGPT-Next-Web](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[Tensorflow Administrator Guide](https://support.websoft9.com/docs/tensorflow) powered by Websoft9
+[ChatGPT-Next-Web Administrator Guide](https://support.websoft9.com/docs/chatgptnextweb) powered by Websoft9
