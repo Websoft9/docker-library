@@ -5,30 +5,32 @@ version: '3.8'
 
 services:
   zero:
-    image: dgraph/dgraph:${DB_DGRAPH_VERSION}
-    container_name: ${W9_NAME}-zero
+    image: $W9_REPO:${DB_DGRAPH_VERSION}
+    container_name: ${W9_ID}-zero
     volumes:
       - dgraph:/dgraph
     ports:
-      - 5080:5080
-      - 6080:6080
+      - ${W9_ZERO_1_PORT_SET}:${W9_ZERO_1_PORT}
+      - ${W9_ZERO_2_PORT_SET}:${W9_ZERO_2_PORT}
     restart: on-failure
     command: dgraph zero --my=zero:5080
+    env_file: .env
 
   alpha:
-    image: dgraph/dgraph:${DB_DGRAPH_VERSION}
-    container_name: ${W9_NAME}-alpha
+    image: $W9_REPO:${DB_DGRAPH_VERSION}
+    container_name: ${W9_ID}-alpha
     volumes:
       - dgraph:/dgraph
     ports:
-      - 8080:8080
-      - 9080:9080
+      - ${W9_ALPHA_1_PORT_SET}:${W9_ALPHA_1_PORT}
+      - ${W9_ALPHA_2_PORT_SET}:${W9_ALPHA_2_PORT}
     restart: on-failure
     command: dgraph alpha --my=alpha:7080 --zero=zero:5080
+    env_file: .env
 
   ratel:
     image: dgraph/ratel:${DB_DGRAPH_VERSION}
-    container_name: ${W9_NAME}-ratel
+    container_name: ${W9_ID}-ratel
     volumes:
       - type: volume
         source: dgraph
@@ -36,8 +38,9 @@ services:
         volume:
           nocopy: true
     ports:
-      - 8000:8000
+      - ${W9_RATEL_PORT_SET}:${W9_RATEL_PORT}
     command: dgraph-ratel
+    env_file: .env
 
 networks:
   default:

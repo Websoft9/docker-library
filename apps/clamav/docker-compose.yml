@@ -6,12 +6,13 @@ version: '3.8'
 
 services:
   clamav:
-    image: clamav/clamav:$W9_VERSION
-    container_name: $W9_NAME
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
     privileged: true
     volumes:
       - 'clamav:/var/lib/clamav'
       - '$W9_SCAN_PATH:/scandir'
+    env_file: .env
 networks:
   default:
     name: $W9_NETWORK
