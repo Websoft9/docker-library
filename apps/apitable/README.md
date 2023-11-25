@@ -1,6 +1,9 @@
 # APITable on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for APITable v0.20.0
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for APITable:
+
+ - community:  v0.99.0-alpha_1575, latest
+
 
 ## System Requirements
 
