@@ -6,8 +6,8 @@ version: "3.8"
 services:
   app-service:
     restart: unless-stopped
-    image: budibase.docker.scarf.sh/budibase/apps
-    container_name: $W9_NAME
+    image: $W9_REPO
+    container_name: $W9_ID
     environment:
       SELF_HOSTED: 1
       COUCH_DB_URL: http://${COUCH_DB_USER}:${COUCH_DB_PASSWORD}@couchdb-service:5984
@@ -27,15 +27,16 @@ services:
     depends_on:
       - worker-service
       - redis-service
+    env_file: .env
 
   worker-service:
     restart: unless-stopped
     image: budibase.docker.scarf.sh/budibase/worker
-    container_name: $W9_NAME-bbworker
+    container_name: $W9_ID-bbworker
     environment:
       SELF_HOSTED: 1
       PORT: 4003
-      CLUSTER_PORT: ${MAIN_PORT}
+      CLUSTER_PORT: ${W9_HTTP_PORT_SET}
       JWT_SECRET: ${JWT_SECRET}
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
@@ -52,11 +53,12 @@ services:
       - redis-service
       - minio-service
       - couch-init
+    env_file: .env
 
   minio-service:
     restart: unless-stopped
     image: minio/minio
-    container_name: $W9_NAME-minio
+    container_name: $W9_ID-minio
     volumes:
       - minio_data:/data
     environment:
@@ -69,28 +71,31 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
+    env_file: .env
 
   proxy-service:
-    container_name: $W9_NAME-proxy
+    container_name: $W9_ID-proxy
     restart: unless-stopped
     ports:
-      - "${MAIN_PORT}:10000"
+      - "${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}"
     image: budibase/proxy
     depends_on:
       - minio-service
       - worker-service
       - app-service
       - couchdb-service
+    env_file: .env
 
   couchdb-service:
     restart: unless-stopped
     image: ibmcom/couchdb3
-    container_name: $W9_NAME-couchdb
+    container_name: $W9_ID-couchdb
     environment:
       - COUCHDB_PASSWORD=${COUCH_DB_PASSWORD}
       - COUCHDB_USER=${COUCH_DB_USER}
     volumes:
       - couchdb3_data:/opt/couchdb/data
+    env_file: .env
 
   couch-init:
     image: curlimages/curl
@@ -99,14 +104,16 @@ services:
     depends_on:
       - couchdb-service
     command: ["sh","-c","sleep 10 && $${PUT_CALL}/_users && $${PUT_CALL}/_replicator; fg;"]
+    env_file: .env
 
   redis-service:
     restart: unless-stopped
-    container_name: $W9_NAME-redis
+    container_name: $W9_ID-redis
     image: redis
     command: redis-server --requirepass ${REDIS_PASSWORD}
     volumes:
       - redis_data:/data
+    env_file: .env
 
   watchtower-service:
     restart: unless-stopped
@@ -120,6 +127,7 @@ services:
       - WATCHTOWER_CLEANUP=true
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
+    env_file: .env
 
 networks:
   default:

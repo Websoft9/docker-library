@@ -5,14 +5,14 @@
 version: '3.8'
 services:
   caddy:
-    image: caddy:$W9_VERSION
-    container_name: $W9_NAME
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
     env_file:
       - .env
     restart: unless-stopped
     ports:
-      - "$W9_HTTP_PORT:80"
-      - "$W9_HTTPS_PORT:443"
+      - "$W9_HTTP_PORT_SET:W9_HTTP_PORT"
+      - "$W9_HTTPS_PORT_SET:W9_HTTPS_PORT"
     volumes:
       - ./src/Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data

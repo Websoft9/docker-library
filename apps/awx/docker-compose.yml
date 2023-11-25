@@ -5,7 +5,7 @@ version: "3.8"
 services:
   web:
     image: quay.io/ansible/awx:${W9_VERSION}
-    container_name: ${W9_NAME}
+    container_name: ${W9_ID}
     depends_on:
       - redis
       - rsyslog
@@ -37,14 +37,14 @@ services:
       https_proxy:
       no_proxy:
     ports:
-      - "${W9_HTTP_PORT}:8052"
+      - "${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}"
 
   awx:
     # image: quay.io/ansible/awx:${W9_VERSION}
     build:
       context: ./
       dockerfile: Dockerfile
-    container_name: ${W9_NAME}-task
+    container_name: ${W9_ID}-task
     depends_on:
       - redis
       - web
@@ -133,8 +133,8 @@ services:
       - postgres_new-data:/var/lib/postgresql/data/pgdata/
     environment:
       POSTGRES_PASSWORD: ${PASSWORD}
-      POSTGRES_DB: ${W9_DB_POSTGRESQL_NAME}
-      POSTGRES_USER: ${W9_DB_POSTGRESQL_USER}
+      POSTGRES_DB: ${W9_ID}
+      POSTGRES_USER: ${W9_ID}
       http_proxy:
       https_proxy:
       no_proxy:
