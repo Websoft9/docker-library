@@ -5,7 +5,7 @@ version: '3.8'
 services:
   joomla:
     image: $W9_REPO:$W9_VERSION
-    container_name: $W9_NAME
+    container_name: $W9_ID
     restart: unless-stopped
     ports:
       - ${W9_HTTP_PORT}:8080
@@ -16,28 +16,27 @@ services:
     environment:
       - JOOMLA_USERNAME=$W9_USER	
       - JOOMLA_PASSWORD=$W9_PASSWORD
-      - JOOMLA_DATABASE_HOST=$W9_NAME-db
+      - JOOMLA_DATABASE_HOST=$W9_ID-mariadb
       - JOOMLA_DATABASE_PORT_NUMBER=3306
-      - JOOMLA_DATABASE_NAME=$W9_DB_MARIADB_NAME
-      - JOOMLA_DATABASE_USER=$W9_DB_MARIADB_USER
-      - JOOMLA_DATABASE_PASSWORD=$W9_DB_MARIADB_PASSWORD
+      - JOOMLA_DATABASE_NAME=$W9_ID
+      - JOOMLA_DATABASE_USER=$W9_ID
+      - JOOMLA_DATABASE_PASSWORD=$W9_POWER_PASSWO
     depends_on:
       - mariadb
 
   mariadb:
-    image: mariadb:$W9_DB_MARIADB_VERSION
-    container_name: $W9_NAME-db
+    image: mariadb:10.6
+    container_name: $W9_ID-mariadb
     restart: unless-stopped
-    ports:
-     - ${W9_DB_MARIADB_PORT}:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - mariadb:/var/lib/mysql
     environment:
-      - MARIADB_DATABASE=$W9_DB_MARIADB_NAME
-      - MARIADB_USER=$W9_DB_MARIADB_USER
-      - MARIADB_PASSWORD=$W9_DB_MARIADB_PASSWORD
-      - MARIADB_ROOT_PASSWORD=$W9_DB_MARIADB_PASSWORD
+      - MARIADB_DATABASE=$W9_ID
+      - MARIADB_USER=$W9_ID
+      - MARIADB_PASSWORD=$W9_POWER_PASSWO
+      - MARIADB_ROOT_PASSWORD=$W9_POWER_PASSWO
+    env_file: .env
 networks:
   default:
     name: ${W9_NETWORK}
