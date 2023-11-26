@@ -39,11 +39,13 @@ services:
       POSTGRES_DB: $W9_ID
       POSTGRES_USER: $W9_ID
       POSTGRES_PASSWORD: $W9_POWER_PASSWORD
+    env_file: .env
 
   redis:
     image: redis:6
     container_name: $W9_ID-redis
     restart: unless-stopped
+    env_file: .env
 
 networks:
   default:
