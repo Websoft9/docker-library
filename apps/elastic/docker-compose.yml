@@ -9,12 +9,12 @@ services:
 
   kibana:
     image: kibana:${W9_VERSION}
-    container_name: ${W9_NAME}-kibana
+    container_name: ${W9_ID}-kibana
     restart: unless-stopped
     volumes:
       - ./src/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
     environment:
-      ELASTICSEARCH_HOSTS: '["http://$W9_NAME-elasticsearch:9200"]'
+      ELASTICSEARCH_HOSTS: '["http://$W9_ID-elasticsearch:9200"]'
       ELASTICSEARCH_SERVICEACCOUNTTOKEN: AAEAAWVsYXN0aWMva2liYW5hL3Rlc3Q6bU5CMTVuNEZTdG1BaHBvSWFjVXlHZw
       SERVER_HOST: "0.0.0.0"
       SERVER_NAME: "kibana"
@@ -25,7 +25,7 @@ services:
 
   elasticsearch:
     image: elasticsearch:${W9_VERSION}
-    container_name: ${W9_NAME}-elasticsearch
+    container_name: ${W9_ID}-elasticsearch
     restart: unless-stopped
     volumes:
       - ./src/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
@@ -41,7 +41,7 @@ services:
 
   logstash:
     image: logstash:${W9_VERSION}
-    container_name: ${W9_NAME}-logstash
+    container_name: ${W9_ID}-logstash
     restart: unless-stopped
     volumes:
       - ./src/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
@@ -59,12 +59,12 @@ services:
 
   agent:
     image: elastic/elastic-agent-complete:${W9_VERSION}
-    container_name: ${W9_NAME}-agent
+    container_name: ${W9_ID}-agent
     restart: unless-stopped
     env_file:
       - .env
     environment:
-      - FLEET_SERVER_ELASTICSEARCH_HOST=http://${W9_NAME}-elasticsearch
+      - FLEET_SERVER_ELASTICSEARCH_HOST=http://${W9_ID}-elasticsearch
       - FLEET_SERVER_SERVICE_TOKEN=AAEAAWVsYXN0aWMva2liYW5hL3Rlc3Q6bU5CMTVuNEZTdG1BaHBvSWFjVXlHZw
     user: root
     depends_on:

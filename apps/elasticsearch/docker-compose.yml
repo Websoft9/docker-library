@@ -7,16 +7,16 @@ version: '3.8'
 services:
 
   elasticsearch:
-    image: elasticsearch:$W9_VERSION
-    container_name: $W9_NAME
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
     restart: unless-stopped
     volumes:
       - ./src/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - ./src/elasticsearch/config/service_tokens:/usr/share/elasticsearch/config/service_tokens
       - elasticsearch:/usr/share/elasticsearch/data
     ports:
-      - ${W9_HTTP_PORT}:9200
-      - ${W9_TCP_PORT}:9300
+      - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
+      - ${W9_TCP_PORT_SET}:${W9_TCP_PORT}
     env_file: .env
     environment:
       ELASTIC_USERNAME: ${W9_USER}
