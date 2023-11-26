@@ -9,31 +9,32 @@ services:
 
   kibana:
     image: kibana:${W9_VERSION}
-    container_name: ${W9_NAME}-kibana
+    container_name: ${W9_ID}-kibana
     restart: unless-stopped
     volumes:
       - ./src/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
     environment:
-      ELASTICSEARCH_HOSTS: '["http://$W9_NAME-elasticsearch:9200"]'
+      ELASTICSEARCH_HOSTS: '["http://$W9_ID-elasticsearch:9200"]'
       ELASTICSEARCH_SERVICEACCOUNTTOKEN: AAEAAWVsYXN0aWMva2liYW5hL3Rlc3Q6bU5CMTVuNEZTdG1BaHBvSWFjVXlHZw
       SERVER_HOST: "0.0.0.0"
       SERVER_NAME: "kibana"
     ports:
-      - ${W9_HTTP_PORT}:5601
+      - ${W9_KIBANA_PORT_SET}:${W9_KIBANA_PORT}
+    env_file: .env
     depends_on:
       - elasticsearch
 
   elasticsearch:
-    image: elasticsearch:${W9_VERSION}
-    container_name: ${W9_NAME}-elasticsearch
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}-elasticsearch
     restart: unless-stopped
     volumes:
       - ./src/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - ./src/elasticsearch/config/service_tokens:/usr/share/elasticsearch/config/service_tokens
       - elasticsearch:/usr/share/elasticsearch/data
     ports:
-      - ${W9_DB_ES_HTTP_PORT}:9200
-      - ${W9_DB_ES_TCP_PORT}:9300
+      - ${W9_DB_ES_HTTP_PORT_SET}:${W9_DB_ES_HTTP_PORT}
+      - ${W9_DB_ES_TCP_PORT_SET}:${W9_DB_ES_TCP_PORT}
     env_file: .env
     environment:
       ELASTIC_USERNAME: ${W9_USER}
@@ -41,30 +42,31 @@ services:
 
   logstash:
     image: logstash:${W9_VERSION}
-    container_name: ${W9_NAME}-logstash
+    container_name: ${W9_ID}-logstash
     restart: unless-stopped
     volumes:
       - ./src/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./src/logstash/pipeline:/usr/share/logstash/pipeline
     ports:
-      - ${W9_LOGSTASH_API_PORT}:9600
-      - ${W9_LOGSTASH_TCP_PORT}:5000/tcp
-      - ${W9_LOGSTASH_UDP_PORT}:5000/udp
-      - ${W9_LOGSTASH_BEATS_PORT}:5044
+      - ${W9_LOGSTASH_API_PORT_SET}:${W9_LOGSTASH_API_PORT}
+      - ${W9_LOGSTASH_TCP_PORT_SET}:${W9_LOGSTASH_TCP_PORT}/tcp
+      - ${W9_LOGSTASH_UDP_PORT_SET}:${W9_LOGSTASH_UDP_PORT}/udp
+      - ${W9_LOGSTASH_BEATS_PORT_SET}:${W9_LOGSTASH_BEATS_PORT}
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     user: root
+    env_file: .env
     depends_on:
       - elasticsearch
 
   agent:
     image: elastic/elastic-agent-complete:${W9_VERSION}
-    container_name: ${W9_NAME}-agent
+    container_name: ${W9_ID}-agent
     restart: unless-stopped
     env_file:
       - .env
     environment:
-      - FLEET_SERVER_ELASTICSEARCH_HOST=http://${W9_NAME}-elasticsearch
+      - FLEET_SERVER_ELASTICSEARCH_HOST=http://${W9_ID}-elasticsearch
       - FLEET_SERVER_SERVICE_TOKEN=AAEAAWVsYXN0aWMva2liYW5hL3Rlc3Q6bU5CMTVuNEZTdG1BaHBvSWFjVXlHZw
     user: root
     depends_on:
