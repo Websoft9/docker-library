@@ -5,15 +5,15 @@ version: '3.8'
 
 services:
   kong:
-    image: kong:${W9_VERSION}
-    container_name: ${W9_NAME}
+    image: $W9_REPO:${W9_VERSION}
+    container_name: ${W9_ID}
     environment:
       - LC_CTYPE=en_US.UTF-8
       - LC_ALL=en_US.UTF-8
       - KONG_DATABASE=postgres
       - KONG_PG_HOST=postgres
-      - KONG_PG_USER=${W9_DB_POSTGRESQL_USER}
-      - KONG_PG_PASSWORD=${W9_DB_POSTGRESQL_PASSWORD}
+      - KONG_PG_USER=${W9_ID}
+      - KONG_PG_PASSWORD=${W9_POWER_PASSWO}
       - KONG_PROXY_ACCESS_LOG=/dev/stdout
       - KONG_ADMIN_ACCESS_LOG=/dev/stdout
       - KONG_PROXY_ERROR_LOG=/dev/stderr
@@ -27,44 +27,46 @@ services:
       - 8444:8444
     links:
       - postgres
+    env_file: .env
     depends_on:
       - kong-migrations
 
   konga:
     image: pantsel/konga
-    container_name: ${W9_NAME}-konga
+    container_name: ${W9_ID}-konga
     ports:
-      - "${W9_HTTP_PORT}:1337"
+      - "${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}"
     links:
       - kong
     restart: unless-stopped
     environment:
       - NODE_ENV=production
+    env_file: .env
 
   kong-migrations:
     image: kong
     environment:
       - KONG_DATABASE=postgres
       - KONG_PG_HOST=postgres
-      - KONG_PG_USER=${W9_DB_POSTGRESQL_USER}
-      - KONG_PG_PASSWORD=${W9_DB_POSTGRESQL_PASSWORD}
+      - KONG_PG_USER=${W9_ID}
+      - KONG_PG_PASSWORD=${W9_POWER_PASSWO}
     command: kong migrations bootstrap
     restart: on-failure
+    env_file: .env
     depends_on:
       - postgres
 
   postgres:
-    image: postgres:${W9_DB_POSTGRESQL_VERSION}
+    image: postgres:9.6
     restart: unless-stopped
-    container_name: ${W9_NAME}-postgres
-    ports:
-      - "${W9_DB_POSTGRESQL_PORT}:5432"
+    container_name: ${W9_ID}-postgres
     environment:
-      - POSTGRES_USER=${W9_DB_POSTGRESQL_USER}
-      - POSTGRES_DB=${W9_DB_POSTGRESQL_NAME}
-      - POSTGRES_PASSWORD=${W9_DB_POSTGRESQL_PASSWORD}
+      - POSTGRES_USER=${W9_ID}
+      - POSTGRES_DB=${W9_ID}
+      - POSTGRES_PASSWORD=${W9_POWER_PASSWO}
     volumes:
       - "postgres:/var/lib/postgresql/data"
+    env_file: .env
 
 
 volumes:
