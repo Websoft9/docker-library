@@ -45,7 +45,6 @@ services:
       - '${W9_DB_ES_PORT_SET}:${W9_DB_ES_PORT}'
     env_file: .env
 
-
 networks:
   default:
     name: ${W9_NETWORK}

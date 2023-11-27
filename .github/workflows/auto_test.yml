@@ -1,0 +1,39 @@
+name: Build app And Push To Docker Hub
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/*/.env"
+      - "apps/*/dockercompose.yml"
+
+jobs:
+  build:
+    name: Build Docker image
+    runs-on: ubuntu-latest
+    env:
+      TAGS: latest
+    steps:
+      - uses: actions/checkout@v2
+        name: Check out code
+
+      - name: set appname
+        run: |
+          changefile=$(curl \
+                         -H "Accept: application/vnd.github+json" \
+                         -H "Authorization: Bearer ${{github.token}}" \
+                         https://api.github.com/repos/Websoft9/docker-library/compare/${{github.event.before}}...${{github.event.after}} | jq '.files[].filename' | sed 's/\"//g')
+          declare -a appnames
+          for name in ${changefile};do
+              echo ${name}
+              app=$(echo ${name} | cut -d "/" -f 2)
+              file=$(echo ${name} | cut -d "/" -f 3)
+              if [[ ${file} == ".env" ]] || [[ ${file} == "dockercompose.yml" ]];then
+                  if [[ ! " ${appnames[@]} " =~ " ${app} " ]]; then
+                      appnames+=(${app})
+                  fi
+              else
+                  echo "affect nothing";
+              fi
+          done
+          echo ${appnames[@]}

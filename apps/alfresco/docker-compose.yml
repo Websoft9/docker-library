@@ -127,7 +127,7 @@ services:
       # SHARED SECRET VALUE
       JAVA_TOOL_OPTIONS: "-Dalfresco.secureComms.secret=secret"
     ports:
-      - "$W9_SOLR_PORT_SET:$W9_SOLR_PORT" # Browser port
+      - "$W9_SOLR_PORT_SET:$W9_SOLR_PORT"
     env_file: .env
 
   activemq:
