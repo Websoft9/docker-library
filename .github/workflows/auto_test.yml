@@ -42,7 +42,7 @@ jobs:
           for appname in ${appnames[@]}; do
             docker-compose -f apps/${appname}/docker-compose.yml up -d
             sleep 30  # Wait for the service to start
-            output=$(curl --silent localhost:9001)
+            output=$(curl -L --silent localhost:9001)
             if echo "$output" | grep -q "Failed to connect to localhost"; then
               echo "${appname}: can not access" >> /tmp/output
             else
