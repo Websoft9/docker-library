@@ -88,7 +88,7 @@ services:
     env_file: .env
 
   postgres:
-    image: postgres:$W9_DB_POSTGRESQL_VERSION
+    image: postgres:13.3
     container_name: $W9_ID-postgres
     restart: unless-stopped
     deploy:
@@ -131,7 +131,7 @@ services:
     env_file: .env
 
   activemq:
-    image: alfresco/alfresco-activemq:$MQ_ACTIVEMQ_VERSION
+    image: alfresco/alfresco-activemq:5.16.4-jre11-centos7
     container_name: $W9_ID-activemq
     restart: unless-stopped
     deploy:
