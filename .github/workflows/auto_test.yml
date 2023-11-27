@@ -38,6 +38,7 @@ jobs:
           done
           
           docker network create websoft9
+          ls -la
           for appname in ${appnames[@]}; do
             cd apps/${appname} && docker-compose up -d
             sleep 30  # Wait for the service to start
