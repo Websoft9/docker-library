@@ -6,39 +6,46 @@ version: '3.8'
 services:
   discourse:
     image: $W9_REPO:$W9_VERSION
-    container_name: $W9_NAME
+    container_name: $W9_ID
     env_file: .env
     ports:
-      - '$W9_HTTP_PORT:3000'
+      - '$W9_HTTP_PORT_SET:$W9_HTTP_PORT'
     volumes:
       - 'discourse_data:/bitnami/discourse'
+    environment:
+      - DISCOURSE_HOST=$W9_URL
+      - DISCOURSE_USERNAME=$W9_USER
+      - DISCOURSE_PASSWORD=$W9_POWER_PASSWO
+      - DISCOURSE_PRECOMPILE_ASSETS=no
     depends_on:
       - postgresql
       - redis
 
   postgresql:
-    image: docker.io/bitnami/postgresql:$W9_DB_POSTGRES_VERSION
-    container_name: $W9_NAME-db
+    image: docker.io/bitnami/postgresql:15
+    container_name: $W9_ID-postgres
     volumes:
       - 'postgresql_data:/bitnami/postgresql'
     environment:
-      - POSTGRESQL_USERNAME=$W9_DB_POSTGRES_USER
-      - POSTGRESQL_DATABASE=$W9_DB_POSTGRES_NAME
-      - POSTGRESQL_PASSWORD=$W9_DB_POSTGRES_PASSWORD
+      - POSTGRESQL_USERNAME=$W9_ID
+      - POSTGRESQL_DATABASE=$W9_ID
+      - POSTGRESQL_PASSWORD=$W9_POWER_PASSWO
+    env_file: .env
 
   redis:
     image: docker.io/bitnami/redis:7.0
-    container_name: $W9_NAME-redis
+    container_name: $W9_ID-redis
     environment:
       # ALLOW_EMPTY_PASSWORD is recommended only for development.
       - ALLOW_EMPTY_PASSWORD=yes
     volumes:
       - 'redis_data:/bitnami/redis'
+    env_file: .env
 
   sidekiq:
     image: $W9_REPO:$W9_VERSION
     env_file: .env
-    container_name: $W9_NAME-sidekiq
+    container_name: $W9_ID-sidekiq
     depends_on:
       - discourse
     volumes:
