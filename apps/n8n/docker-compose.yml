@@ -6,12 +6,12 @@ version: '3.8'
 services:
   n8n:
     image: $W9_REPO:$W9_VERSION
-    container_name: $W9_NAME
+    container_name: $W9_ID
     restart: unless-stopped
     env_file:
       - .env
     ports:
-      - '${W9_HTTP_PORT}:5678'
+      - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
     volumes:
       - 'n8n:/home/node/.n8n'
       - './src/my-config.json:$N8N_CONFIG_FILES'

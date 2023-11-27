@@ -5,11 +5,11 @@ version: '3.8'
 
 services:
   netdata:
-    image: netdata/netdata:$W9_VERSION
-    container_name: $W9_NAME
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
     hostname: $W9_URL
     ports:
-      - $W9_HTTP_PORT:19999
+      - $W9_HTTP_PORT_SET:$W9_HTTP_PORT
     restart: unless-stopped
     cap_add:
       - SYS_PTRACE

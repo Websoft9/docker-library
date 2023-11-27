@@ -5,20 +5,20 @@ version: "3.8"
 
 services:
   moodle:
-    image: docker.io/bitnami/moodle:${W9_VERSION}
-    container_name: ${W9_NAME}
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
     environment:
       - ALLOW_EMPTY_PASSWORD=no
-      - MOODLE_DATABASE_HOST=${W9_NAME}-db
+      - MOODLE_DATABASE_HOST=${W9_ID}-mariadb
       - MOODLE_DATABASE_PORT_NUMBER=3306
-      - MOODLE_DATABASE_USER=${W9_DB_MARIADB_USER}
-      - MOODLE_DATABASE_PASSWORD=${W9_DB_MARIADB_PASSWORD}
-      - MOODLE_DATABASE_NAME=${W9_DB_MARIADB_NAME}
+      - MOODLE_DATABASE_USER=${W9_ID}
+      - MOODLE_DATABASE_PASSWORD=${W9_POWER_PASSWO}
+      - MOODLE_DATABASE_NAME=${W9_ID}
       - MOODLE_USERNAME=${W9_USER}
       - MOODLE_PASSWORD=${W9_PASSWORD}
     ports:
-      - "${W9_HTTP_PORT}:8080"
+      - "${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}"
     env_file:
       - .env
     volumes:
@@ -28,19 +28,17 @@ services:
       - mariadb
 
   mariadb:
-    image: docker.io/bitnami/mariadb:${W9_DB_MARIADB_VERSION}
-    container_name: ${W9_NAME}-db
+    image: docker.io/bitnami/mariadb:10.6
+    container_name: ${W9_ID}-mariadb
     restart: unless-stopped
     environment:
       - ALLOW_EMPTY_PASSWORD=no
-      - MARIADB_USER=${W9_DB_MARIADB_USER}
-      - MARIADB_PASSWORD=${W9_DB_MARIADB_PASSWORD}
-      - MARIADB_ROOT_PASSWORD=${W9_DB_MARIADB_PASSWORD}
-      - MARIADB_DATABASE=${W9_DB_MARIADB_NAME}
+      - MARIADB_USER=${W9_ID}
+      - MARIADB_PASSWORD=${W9_POWER_PASSWO}
+      - MARIADB_ROOT_PASSWORD=${W9_POWER_PASSWO}
+      - MARIADB_DATABASE=${W9_ID}
       - MARIADB_CHARACTER_SET=utf8mb4
       - MARIADB_COLLATE=utf8mb4_unicode_ci
-    ports:
-      - ${W9_DB_MARIADB_PORT}:3306
     volumes:
       - "mariadb_data:/bitnami/mariadb"
 
