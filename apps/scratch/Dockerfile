@@ -9,7 +9,7 @@ ENV SCRATCH_VERSION=v3.2.37
 ENV scratch_repo="https://github.com/scratchfoundation/scratch-gui/archive/refs/tags"
 ENV file_type=".zip"
 RUN apk add --no-cache nano git
-RUN wget $scratch_repo/$SCRATCH_VERSION$file_type && unzip $SCRATCH_VERSION$file_type && mv scratch-gui* /data/scratch-gui
+RUN wget $scratch_repo/$SCRATCH_VERSION$file_type && unzip $SCRATCH_VERSION$file_type && mkdir /data/ && mv scratch-gui* /data/scratch-gui
 RUN cd /data/scratch-gui && npm install
 RUN cd /data/scratch-gui && npm run build
 
