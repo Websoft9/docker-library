@@ -5,7 +5,7 @@ version: '3.8'
 services:
   memcached:
     image: memcached:${W9_VERSION}
-    container_name: ${W9_NAME}
+    container_name: ${W9_ID}
     restart: unless-stopped
     ports:
      - '${W9_DB_PORT}:11211'
@@ -16,7 +16,7 @@ services:
 
   memadmin:
     image: hatamiarash7/memcached-admin:latest
-    container_name: $W9_NAME-panel
+    container_name: $W9_ID-panel
     restart: unless-stopped
     ports:
      - '$W9_PANEL_PORT:80'
