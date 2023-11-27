@@ -1,4 +1,4 @@
-name: Build app And Push To Docker Hub
+name: Generally auto test apps
 
 on:
   push:
