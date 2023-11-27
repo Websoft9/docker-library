@@ -6,10 +6,10 @@ version: "3.8"
 services:
   kafka:
     image: $W9_REPO:$W9_VERSION
-    container_name: $W9_NAME
+    container_name: $W9_ID
     restart: unless-stopped
     ports:
-      - "$W9_DB_KAFKA_PORT:9092"
+      - "$W9_DB_KAFKA_PORT_SET:$W9_DB_KAFKA_PORT"
     volumes:
       - "kafka_data:/bitnami"
     env_file: .env
@@ -18,20 +18,20 @@ services:
 
   zookeeper:
     image: docker.io/bitnami/zookeeper:latest
-    container_name: $W9_NAME-zookeeper
+    container_name: $W9_ID-zookeeper
     restart: unless-stopped
     ports:
-      - "$W9_ZOOMKEEPER_PORT:2181"
+      - "$W9_ZOOMKEEPER_PORT_SET:$W9_ZOOMKEEPER_PORT"
     volumes:
       - "zookeeper_data:/bitnami"
     env_file: .env
 
   cmak:
     image: ghcr.io/eshepelyuk/dckr/cmak-3.0.0.5:latest
-    container_name: $W9_NAME-cmak
+    container_name: $W9_ID-cmak
     restart: unless-stopped
     ports:
-      - "$W9_CMAK_PORT:9000"
+      - "$W9_CMAK_PORT_SET:$W9_CMAK_PORT"
     env_file: .env
     environment:
       KAFKA_MANAGER_USERNAME: $W9_USER
