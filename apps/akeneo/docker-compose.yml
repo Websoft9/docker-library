@@ -21,7 +21,7 @@ services:
       AKENEO_ADMIN_PASSWORD: ${W9_ADMIN_PASSWORD}
       
   mysql:
-    image: mysql:${W9_DB_MYSQL_VERSION}
+    image: mysql:8.0
     container_name: $W9_ID-mysql
     restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
@@ -35,7 +35,7 @@ services:
     env_file: .env
 
   elasticsearch:
-    image: 'elasticsearch:${W9_DB_ES_VERSION}'
+    image: elasticsearch:7.10.1
     container_name: ${W9_ID}-elasticsearch
     restart: unless-stopped
     environment:
