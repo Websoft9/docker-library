@@ -6,26 +6,28 @@ version: '3.8'
 services:
   guacd:
     image: dushixiang/guacd:latest
-    container_name: ${W9_NAME}-guacd
+    container_name: ${W9_ID}-guacd
     volumes:
       - guacd:/usr/local/next-terminal/data
     restart:
       always
+    env_file: .env
           
   next-terminal:
-    image: dushixiang/next-terminal:$W9_VERSION
-    container_name: ${W9_NAME}
+    image: ${W9_REPO}:$W9_VERSION
+    container_name: ${W9_ID}
     environment:
       DB: sqlite
       GUACD_HOSTNAME: guacd
       GUACD_PORT: 4822
     ports:
-      - "${W9_HTTP_PORT}:8088"
+      - "${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}"
     volumes:
       - /etc/localtime:/etc/localtime
       - next_terminal:/usr/local/next-terminal/data
     restart:
       always
+    env_file: .env
       
 networks:
   default:
