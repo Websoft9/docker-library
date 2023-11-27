@@ -20,6 +20,23 @@ services:
       - wordpress:/var/www/html
       - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
 
+  wordpress-cli:
+    image: $W9_REPO:cli
+    container_name: $W9_ID-cli
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - wordpress:/var/www/html
+    command: |
+      /bin/sh -c "
+      wp option update home 'http://$W9_URL'
+      wp option update siteurl 'http://$W9_URL'
+      echo 'success to change wordpress url...'
+      kill 1
+      "
+    depends_on:
+      - wordpress
+      
   mariadb:
     image: mariadb:10.4
     container_name: $W9_ID-mariadb
