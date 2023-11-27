@@ -27,6 +27,8 @@ services:
     env_file: .env
     volumes:
       - wordpress:/var/www/html
+    depends_on:
+      - wordpress
     command: |
       /bin/sh -c "
       wp option update home 'http://$W9_URL'
@@ -34,8 +36,6 @@ services:
       echo 'success to change wordpress url...'
       kill 1
       "
-    depends_on:
-      - wordpress
       
   mariadb:
     image: mariadb:10.4
