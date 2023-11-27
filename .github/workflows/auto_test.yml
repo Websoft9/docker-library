@@ -40,12 +40,13 @@ jobs:
           docker network create websoft9
           ls -la
           for appname in ${appnames[@]}; do
-            cd apps/${appname} && docker-compose up -d
+            docker-compose -f apps/${appname}/docker-compose.yml up -d
             sleep 30  # Wait for the service to start
             if curl --silent --fail localhost:9001 > /dev/null; then
               echo "${appname}: can access" >> /tmp/output
             else
               echo "${appname}: can not access" >> /tmp/output
             fi
+            docker-compose -f apps/${appname}/docker-compose.yml down -v
           done
           cat /tmp/output
