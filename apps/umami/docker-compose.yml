@@ -11,7 +11,7 @@ services:
     env_file:
       - .env
     ports:
-      - $W9_HTTP_PORT_SET:$W9_HTTP_PORT
+      - '$W9_HTTP_PORT_SET:$W9_HTTP_PORT'
     environment:
       DATABASE_URL: postgresql://umami:umami@db:5432/umami
       DATABASE_TYPE: postgresql
