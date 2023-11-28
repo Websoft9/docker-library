@@ -7,11 +7,11 @@ version: '3.8'
 services:
   umami:
     image: $W9_REPO:$W9_VERSION
-    container_name: $W9_NAME
+    container_name: $W9_ID
     env_file:
       - .env
     ports:
-      - $W9_HTTP_PORT:3000
+      - $W9_HTTP_PORT_SET:$W9_HTTP_PORT
     environment:
       DATABASE_URL: postgresql://umami:umami@db:5432/umami
       DATABASE_TYPE: postgresql
@@ -21,14 +21,15 @@ services:
     restart: unless-stopped
 
   db:
-    image: postgres:$W9_DB_POSTGRES_VERSION
+    image: postgres:15-alpine
     environment:
-      POSTGRES_DB: $W9_DB_POSTGRES_NAME
-      POSTGRES_USER: $W9_DB_POSTGRES_USER
-      POSTGRES_PASSWORD: $W9_DB_POSTGRES_PASSWORD
+      POSTGRES_DB: $W9_ID
+      POSTGRES_USER: $W9_ID
+      POSTGRES_PASSWORD: $W9_POWER_PASSWO
     volumes:
       - ./src/schema.postgresql.sql:/docker-entrypoint-initdb.d/schema.postgresql.sql:ro
       - postgresql:/var/lib/postgresql/data
+    env_file: .env
 
 networks:
   default:
