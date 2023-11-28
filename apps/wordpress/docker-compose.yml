@@ -31,8 +31,8 @@ services:
       - wordpress
     command: |
       /bin/sh -c "
-      wp option update home 'http://$W9_URL:$W9_HTTP_PORT_SET'
-      wp option update siteurl 'http://$W9_URL:$W9_HTTP_PORT_SET'
+      wp option update home 'http://$W9_URL'
+      wp option update siteurl 'http://$W9_URL'
       echo 'success to change wordpress url.'
       "
       
