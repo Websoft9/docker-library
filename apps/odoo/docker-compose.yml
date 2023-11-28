@@ -29,7 +29,7 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: postgresql
+      POSTGRES_DB: postgres
       POSTGRES_USER: ${W9_ID}
       POSTGRES_PASSWORD: ${W9_POWER_PASSWO}
       POSTGRES_INITDB_ARGS: --data-checksums
