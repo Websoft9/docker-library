@@ -51,7 +51,7 @@ services:
     container_name: $W9_ID-app
     restart: unless-stopped
     ports:
-      - $W9_HTTP_PORT_SET:$W9_HTTP_PORT
+      - '$W9_HTTP_PORT_SET:$W9_HTTP_PORT'
     privileged: true
     user: root
     environment:
