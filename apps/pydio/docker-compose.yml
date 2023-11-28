@@ -5,11 +5,11 @@ version: '3.8'
 
 services:
   pydio:
-    image: pydio/cells:$W9_VERSION
-    container_name: $W9_NAME
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
     ports:
-      - $W9_HTTP_PORT:8080
-      - $W9_GRPC_PORT:33060
+      - $W9_HTTP_PORT_SET:$W9_HTTP_PORT
+      - $W9_GRPC_PORT_SET:$W9_GRPC_PORT
     volumes:
       - pydio:/var/cells
       - ./src/install-conf.yml:/pydio/config/install.yml:ro
@@ -18,19 +18,17 @@ services:
     restart: unless-stopped
 
   mysql:
-    image: mysql:$W9_DB_MYSQL_VERSION
-    container_name: $W9_NAME-db
+    image: mysql:8
+    container_name: $W9_ID-mysql
     restart: unless-stopped
     command: [mysqld, --character-set-server=utf8mb4, --collation-server=utf8mb4_unicode_ci]
-    ports:
-     - $W9_DB_MYSQL_PORT:3306
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: $W9_DB_MYSQL_NAME
-      MYSQL_USER: $W9_DB_MYSQL_USER
-      MYSQL_PASSWORD: $W9_DB_MYSQL_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_DB_MYSQL_PASSWORD
+      MYSQL_DATABASE: $W9_ID
+      MYSQL_USER: $W9_ID
+      MYSQL_PASSWORD: $W9_POWER_PASSWO
+      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWO
 
 networks:
   default:

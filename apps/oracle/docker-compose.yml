@@ -6,30 +6,30 @@ version: '3.8'
 services:
   oracleex:
     image: container-registry.oracle.com/database/express:${W9_VERSION}
-    container_name: ${W9_NAME}  
+    container_name: ${W9_ID}  
     env_file: .env
     volumes:
       - data:/opt/oracle/oradata
       - startup:/opt/oracle/scripts/startup
       - setup:/opt/oracle/scripts/setup 
     ports:
-      -  ${W9_DB_PORT}:1521
-      -  ${W9_EM_PORT}:5500
+      -  ${W9_DB_PORT_SET}:${W9_DB_PORT}
+      -  ${W9_EM_PORT_SET}:${W9_EM_PORT}
     restart: unless-stopped
     profiles:
       - express
 
   oracle:
-    image: container-registry.oracle.com/database/enterprise:${W9_VERSION}
-    container_name: ${W9_NAME}  
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}  
     env_file: .env
     volumes:
       - data:/opt/oracle/oradata
       - startup:/opt/oracle/scripts/startup
       - setup:/opt/oracle/scripts/setup 
     ports:
-      -  ${W9_DB_PORT}:1521
-      -  ${W9_EM_PORT}:5500
+      -  ${W9_DB_PORT_SET}:${W9_DB_PORT}
+      -  ${W9_EM_PORT_SET}:${W9_EM_PORT}
     restart: unless-stopped
     profiles:
       - enterprise
