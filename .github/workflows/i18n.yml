@@ -5,22 +5,68 @@ on:
   push:
     branches: [ main ]
     paths: 
-      - 'i18n/itemname_fields'
+      - "apps/*/.env"
 
 jobs:
-  build:
+  create:
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     steps:
     - uses: actions/checkout@master
       name: Check out code  
-      
-    - name: Create tranlation files
+
+    - name: Get changed apps list and Update translation.json
       run: |
+        echo "Get list"
+        changefile=$(curl \
+                        -H "Accept: application/vnd.github+json" \
+                        -H "Authorization: Bearer ${{github.token}}" \
+                        https://api.github.com/repos/Websoft9/docker-library/compare/${{github.event.before}}...${{github.event.after}} | jq '.files[].filename' | sed 's/\"//g')
+        declare -a appnames
+        for name in ${changefile};do
+            echo ${name}
+            app=$(echo ${name} | cut -d "/" -f 2)
+            file=$(echo ${name} | cut -d "/" -f 3)
+            if [[ ${file} == ".env" ]];then
+                if [[ ! " ${appnames[@]} " =~ " ${app} " ]]; then
+                    appnames+=(${app})
+                fi
+            else
+                echo "affect nothing";
+            fi
+        done
+        echo "start to update translation.json"
         cd i18n
-        python3 build.py
+        python3 create.py appnames
         
     - name: push i18n  
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: push i18n
         push_options: --force
+
+  pr:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout websoft9
+        uses: actions/checkout@v2
+        with:
+          repository: Websoft9/plugin-appstore
+          ref: main    
+      
+      - name: update languages files
+        run: |
+          wget https://raw.githubusercontent.com/Websoft9/docker-library/main/i18n/translation.json
+          wget ttps://raw.githubusercontent.com/Websoft9/docker-library/main/i18n/pr.py
+          python3 pr.py
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.ZJ_ADMIN_TOKEN }}
+          branch: update-appstore-version-${{ github.run_number }}
+          delete-branch: true
+          commit-message: App Store conbine translation.json
+          title: "App Store conbine translation.json: ${{ steps.update_data.outputs.PLUGIN_VERSION }}"
+          body: "App Store conbine translation.json"

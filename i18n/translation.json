@@ -1,0 +1,18 @@
+{
+    "W9_DB_PORT_SET": [
+        "Database Port",
+        "应用数据库端口"
+    ],
+    "W9_HTTP_PORT_SET": [
+        "App HTTP Port",
+        "应用 HTTP 端口"
+    ],
+    "W9_AGENT_PORT_SET": [
+        "Application Agent Port",
+        "应用代理端口"
+    ],
+    "W9_SSH_PORT_SET": [
+        "Application SSH Port",
+        "应用 SSH 端口"
+    ]
+}
