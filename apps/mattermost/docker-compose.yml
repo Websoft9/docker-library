@@ -5,8 +5,8 @@ version: '3.8'
 
 services:
   mattermost:
-    image: mattermost/mattermost-team-edition:$W9_VERSION
-    container_name: $W9_NAME
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
@@ -14,7 +14,7 @@ services:
     tmpfs:
       - /tmp
     ports:
-      - ${W9_HTTP_PORT}:8065
+      - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
     volumes:
       - mattermost_config:/mattermost/config:rw
       - mattermost_data:/mattermost/data:rw
@@ -29,8 +29,8 @@ services:
       - postgres
 
   postgres:
-    container_name: $W9_NAME-db
-    image: postgres:${W9_DB_POSTGRESQL_VERSION}
+    container_name: $W9_ID-postgres
+    image: postgres:13-alpine
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
@@ -46,6 +46,7 @@ services:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
       - POSTGRES_DB
+    env_file: .env
 
 networks:
   default:
