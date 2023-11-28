@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - "apps/*/.env"
-      - "apps/*/dockercompose.yml"
+      - "apps/*/docker-compose.yml"
 
 jobs:
   build:

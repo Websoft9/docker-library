@@ -41,7 +41,7 @@ services:
           echo "$W9_URL is a domain"
           real_url=$W9_URL
       else
-          echo "$W9_URL is not a valid IP address or domain"
+          echo "$W9_URL is not a valid IP or domain"
       fi
       wp option update home 'http://$real_url'
       wp option update siteurl 'http://$real_url'
