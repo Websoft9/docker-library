@@ -6,7 +6,7 @@ version: '3.8'
 services:
  zabbix-server:
   image: zabbix/zabbix-server-mysql:ubuntu-${W9_VERSION}-latest
-  container_name: ${W9_NAME}-server
+  container_name: ${W9_ID}-server
   restart: unless-stopped
   ports:
    - "10051:10051"
@@ -38,11 +38,11 @@ services:
   env_file:
    - ./src/env_vars/.env_srv
   environment:
-   - DB_SERVER_HOST=$W9_NAME-db
-   - DB_SERVER_PORT=${W9_DB_MYSQL_PORT}
-   - MYSQL_ROOT_PASSWORD=${W9_DB_MYSQL_PASSWORD}
-   - MYSQL_PASSWORD=${W9_DB_MYSQL_PASSWORD}
-   - MYSQL_DATABASE=${W9_DB_MYSQL_NAME}
+   - DB_SERVER_HOST=$W9_ID-mysql
+   - DB_SERVER_PORT=3306
+   - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWO}
+   - MYSQL_PASSWORD=${W9_POWER_PASSWO}
+   - MYSQL_DATABASE=${W9_ID}
    - W9_PASSWORD=${W9_PASSWORD}
   depends_on:
    - mysql
@@ -67,11 +67,11 @@ services:
     - source: my_cmd
  
  zabbix-web-apache-mysql:
-  image: zabbix/zabbix-web-apache-mysql:ubuntu-${W9_VERSION}-latest
-  container_name: ${W9_NAME}-web
+  image: ${W9_REPO}:ubuntu-${W9_VERSION}-latest
+  container_name: ${W9_ID}-web
   restart: unless-stopped
   ports:
-   - "${W9_HTTP_PORT}:8080"
+   - "${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}"
   volumes:
    - /etc/localtime:/etc/localtime:ro
    - apache2:/etc/ssl/apache2:ro
@@ -86,10 +86,10 @@ services:
     reservations:
       memory: 256M
   environment:
-   - DB_SERVER_HOST=$W9_NAME-db
-   - DB_SERVER_PORT=${W9_DB_MYSQL_PORT}
-   - MYSQL_ROOT_PASSWORD=${W9_DB_MYSQL_PASSWORD}
-   - MYSQL_PASSWORD=${W9_DB_MYSQL_PASSWORD}
+   - DB_SERVER_HOST=$W9_ID-mysql
+   - DB_SERVER_PORT=3306
+   - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWO}
+   - MYSQL_PASSWORD=${W9_POWER_PASSWO}
   env_file:
    - ./src/env_vars/.env_web
   depends_on:
@@ -114,7 +114,7 @@ services:
 
  zabbix-agent:
   image: zabbix/zabbix-agent:ubuntu-${W9_VERSION}-latest
-  container_name: ${W9_NAME}-agent
+  container_name: ${W9_ID}-agent
   restart: unless-stopped
   ports:
    - "10050:10050"
@@ -147,7 +147,7 @@ services:
 
  zabbix-java-gateway:
   image: zabbix/zabbix-java-gateway:ubuntu-${W9_VERSION}-latest
-  container_name: ${W9_NAME}-java
+  container_name: ${W9_ID}-java
   restart: unless-stopped
   ports:
    - "10052:10052"
@@ -168,7 +168,7 @@ services:
 
  zabbix-snmptraps:
   image: zabbix/zabbix-snmptraps:ubuntu-${W9_VERSION}-latest
-  container_name: ${W9_NAME}-snmptraps
+  container_name: ${W9_ID}-snmptraps
   restart: unless-stopped
   ports:
    - "162:1162/udp"
@@ -186,13 +186,12 @@ services:
    com.zabbix.company: "Zabbix LLC"
    com.zabbix.component: "snmptraps"
    com.zabbix.os: "ubuntu"
+  env_file: .env
 
  mysql:
-  image: mysql:${W9_DB_MYSQL_VERSION}
-  container_name: ${W9_NAME}-db
+  image: mysql:8.0
+  container_name: ${W9_ID}-mysql
   restart: unless-stopped
-  ports: 
-   - ${W9_DB_MYSQL_PORT}:3306
   command:
    - mysqld
    - --character-set-server=utf8mb4
@@ -201,18 +200,19 @@ services:
   volumes:
    - mysql:/var/lib/mysql:rw
   environment: 
-   - DB_SERVER_HOST=$W9_NAME-db
-   - MYSQL_ROOT_PASSWORD=${W9_DB_MYSQL_PASSWORD}
-   - DB_SERVER_PORT=${W9_DB_MYSQL_PORT}
-   - MYSQL_USER=${W9_DB_MYSQL_USER}
-   - MYSQL_PASSWORD=${W9_DB_MYSQL_PASSWORD}
+   - DB_SERVER_HOST=$W9_ID-mysql
+   - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWO}
+   - DB_SERVER_PORT=3306
+   - MYSQL_USER=${W9_ID}
+   - MYSQL_PASSWORD=${W9_POWER_PASSWO}
   security_opt:
    - seccomp:unconfined
   stop_grace_period: 1m
+  env_file: .env
 
  db_data_mysql:
   image: busybox
-  container_name: ${W9_NAME}-data
+  container_name: ${W9_ID}-data
   volumes:
    - mysql:/var/lib/mysql:rw
 
