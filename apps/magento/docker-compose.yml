@@ -22,6 +22,33 @@ services:
       - mariadb
       - elasticsearch
 
+  magentocli:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID-cli
+    volumes:
+      - magento_data:/data
+    depends_on:
+      - magento
+    entrypoint: |
+      /bin/sh -c "
+      apt update -y
+      apt install -y --no-install-recommends wget
+      while [ ! -f /data/bin/magento ]; do
+        echo 'Waiting for bin/magento to be created...'
+        sleep 10
+      done
+      # This url is download from https://raw.githubusercontent.com/magento-l10n/language-zh_CN/master/zh_CN.csv
+      # When update magento, you should update src/zh_CN.csv file
+      wget https://websoft9.github.io/docker-library/apps/magento/src/zh_CN.csv -O /data/vendor/magento/language-zh_hans_cn/zh_CN.csv
+      cd /data
+      bin/magento setup:static-content:deploy zh_Hans_CN
+      bin/magento indexer:reindex
+      bin/magento setup:store-config:set --base-url="http://$W9_URL/"
+      bin/magento setup:store-config:set --base-url-secure="https://$W9_URL/"
+      bin/magento cache:clean
+      bin/magento cache:flush
+      "
+
   mariadb:
     image: docker.io/bitnami/mariadb:10.4
     container_name: $W9_ID-mariadb
