@@ -15,7 +15,7 @@ services:
       - odoo_addons:/mnt/extra-addons
     env_file: .env
     environment:
-      HOST: ${W9_ID}-postgres
+      HOST: ${W9_ID}-postgresql
       USER: ${W9_ID}
       PASSWORD: ${W9_POWER_PASSWO}
     depends_on:
@@ -24,17 +24,18 @@ services:
 
   db:
     image: postgres:14
-    container_name: ${W9_ID}-postgres
+    container_name: ${W9_ID}-postgresql
     restart: unless-stopped
     volumes:
       - postgres:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: postgres
+      POSTGRES_DB: postgresql
       POSTGRES_USER: ${W9_ID}
       POSTGRES_PASSWORD: ${W9_POWER_PASSWO}
       POSTGRES_INITDB_ARGS: --data-checksums
       POSTGRES_HOST_AUTH_METHOD: trust
       PGDATA: /var/lib/postgresql/data
+    env_file: .env
 
 volumes:
   odoo_web:
