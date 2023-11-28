@@ -5,23 +5,23 @@ version: '3.8'
 
 services:
   rocketchat:
-    image: rocket.chat:${W9_VERSION}
-    container_name: ${W9_NAME}
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     ports:
-      - ${W9_HTTP_PORT}:3000
+      - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
     volumes:
       - rocketchat:/app
     environment:
       - ROOT_URL=http://localhost
-      - MONGO_URL=mongodb://mongo:${W9_DB_MONGODB_PORT}/rocketchat?replicaSet=rs01
-      - MONGO_OPLOG_URL=mongodb://mongo:${W9_DB_MONGODB_PORT}/local?replicaSet=rs01
+      - MONGO_URL=mongodb://mongo:27017/rocketchat?replicaSet=rs01
+      - MONGO_OPLOG_URL=mongodb://mongo:27017/local?replicaSet=rs01
     depends_on:
       - mongo
     restart: unless-stopped
 
   mongo:
-    image: mongo:${W9_DB_MONGODB_VERSION}
-    container_name: ${W9_NAME}-db
+    image: mongo:4.0
+    container_name: ${W9_ID}-mongodb
     restart: unless-stopped
     volumes:
       - mongo:/data/db

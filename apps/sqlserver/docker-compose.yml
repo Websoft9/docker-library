@@ -5,15 +5,15 @@ version: "3.8"
 
 services:
   db:
-    image: mcr.microsoft.com/mssql/server:${W9_VERSION}-latest
-    container_name: ${W9_NAME}
+    image: $W9_REPO:${W9_VERSION}-latest
+    container_name: ${W9_ID}
     env_file: .env
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=${W9_PASSWORD}
       - MSSQL_PID=${W9_PID}
     ports:
-      - ${W9_DB_PORT}:1433
+      - ${W9_DB_PORT_SET}:${W9_DB_PORT}
     volumes:
       - mssql_data:/var/opt/mssql
     restart: unless-stopped
