@@ -30,3 +30,13 @@ yes, `magento -h`
 #### How long for Magento init?
 
 5-10 mins 
+
+#### Magento 从生产模式切货到开发模式后乱码？
+
+运行如下命令进行重建：  
+
+```
+bin/magento indexer:reindex
+bin/magento cache:clean
+bin/magento cache:flush
+```
