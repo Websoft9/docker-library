@@ -33,18 +33,18 @@ services:
       /bin/sh -c "
       ip_regex="^([0-9]{1,3}[\.]){3}[0-9]{1,3}$"
       domain_regex="^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$"
-      real_url=""
+      real_url=''
       if [[ $W9_URL =~ $ip_regex ]]; then
-          echo "$W9_URL is an IP address"
+          echo '$W9_URL is an IP address'
           real_url=$W9_URL:$W9_HTTP_PORT_SET
       elif [[ $W9_URL =~ $domain_regex ]]; then
-          echo "$W9_URL is a domain"
+          echo '$W9_URL is a domain'
           real_url=$W9_URL
       else
-          echo "$W9_URL is not a valid IP or domain"
+          echo '$W9_URL is not a valid IP or domain'
       fi
-      wp option update home 'http://$real_url'
-      wp option update siteurl 'http://$real_url'
+      wp option update home 'http://$W9_URL'
+      wp option update siteurl 'http://$W9_URL'
       echo 'success to change wordpress url...'
       "
       
