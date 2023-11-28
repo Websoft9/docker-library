@@ -16,7 +16,7 @@ services:
     container_name: $W9_ID-memcached
     restart: unless-stopped
     entrypoint: memcached -m 256
-  env_file: .env
+    env_file: .env
 
   elasticsearch:
     image: seafileltd/elasticsearch-with-ik:5.6.16
