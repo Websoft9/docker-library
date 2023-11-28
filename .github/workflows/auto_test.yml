@@ -42,6 +42,34 @@ jobs:
           for appname in ${appnames[@]}; do
             docker-compose -f apps/${appname}/docker-compose.yml up -d
             sleep 30  # Wait for the service to start
+            docker ps
+            env_file="apps/${appname}/.env"
+            if [ -f "$env_file" ]; then
+                port=$(grep W9_HTTP_PORT_SET $env_file | cut -d '=' -f2)
+                if [ -z "$port" ]; then
+                    echo "It is not web app";
+                    exit 1
+                else
+                    echo "It is a web app"
+                fi
+            else
+                echo "$env_file does not exist";
+                exit 1
+            fi
+            url="http://localhost:$port"
+            retry=0
+            while [ $retry -lt 3 ]; do
+              response=$(curl --write-out '%{http_code}' --silent --output /dev/null "$url")
+            
+              if [ "$response" -eq 200 ] ; then
+                echo "WordPress is up and running."
+                exit 0
+              else
+                echo "Waiting for WordPress to start..."
+                sleep 10
+                ((retry++))
+              fi
+            done
             output=$(curl -L --silent localhost:9001)
             if echo "$output" | grep -q "Failed"; then
               echo "${appname}: can not access" >> /tmp/output
