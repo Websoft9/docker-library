@@ -14,6 +14,7 @@ services:
     command: -c "if [ ! -f /etc/teleport/teleport.yaml ]; then teleport configure > /etc/teleport/teleport.yaml; fi"
     volumes:
       - ./src/config:/etc/teleport
+    env_file: .env
 
   teleport:
     image: $W9_REPO:$W9_VERSION
@@ -22,14 +23,15 @@ services:
     hostname: localhost
     command: -c "sleep 1 && /usr/bin/dumb-init teleport start -c /etc/teleport/teleport.yaml"
     ports:
-      - "3023:3023"
-      - "3025:3025"
-      - '${W9_HTTP_PORT}:3080'
+      - '${W9_3023_PORT_SET}:${W9_3023_PORT}'
+      - '${W9_3025_PORT_SET}:${W9_3025_PORT}'
+      - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
     volumes:
       - ./src/config:/etc/teleport
       - teleport_data:/var/lib/teleport
     depends_on:
       - teleport-configure
+    env_file: .env
 
 networks:
   default:
