@@ -34,6 +34,8 @@ services:
     image: busybox
     volumes:
       - mediawiki:/data
+    depends_on:
+      - mediawiki
     command: |
       /bin/sh -c "
       while [ ! -f /data/LocalSettings.php ]; do
