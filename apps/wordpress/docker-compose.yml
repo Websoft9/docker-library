@@ -35,7 +35,7 @@ services:
       domain_regex="^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$"
       real_url=''
       if [[ $W9_URL =~ $ip_regex ]]; then
-          echo '$W9_URL is an IP address'
+          echo '$W9_URL is an IP'
           real_url=$W9_URL:$W9_HTTP_PORT_SET
       elif [[ $W9_URL =~ $domain_regex ]]; then
           echo '$W9_URL is a domain'

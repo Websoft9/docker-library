@@ -28,7 +28,7 @@ jobs:
               echo ${name}
               app=$(echo ${name} | cut -d "/" -f 2)
               file=$(echo ${name} | cut -d "/" -f 3)
-              if [[ ${file} == ".env" ]] || [[ ${file} == "dockercompose.yml" ]];then
+              if [[ ${file} == ".env" ]] || [[ ${file} == "docker-compose.yml" ]];then
                   if [[ ! " ${appnames[@]} " =~ " ${app} " ]]; then
                       appnames+=(${app})
                   fi
