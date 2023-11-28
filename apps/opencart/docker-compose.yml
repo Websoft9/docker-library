@@ -7,7 +7,7 @@ services:
     image: $W9_REPO:${W9_VERSION}
     container_name: ${W9_ID}
     ports:
-     - ${W9_HTTP_PORT}:80
+     - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
     volumes:
       - opencart:/var/www/html
       - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
