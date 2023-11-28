@@ -33,14 +33,14 @@ services:
 
       # database engine specific environment variables
       # change the below if you prefers another database engine
-      - DATABASE_PORT=$W9_DB_POSTGRESQL_PORT
+      - DATABASE_PORT=5432
       - DATABASE_DIALECT=postgresql
       - POSTGRES_DB=$W9_ID
       - POSTGRES_USER=$W9_ID
       - POSTGRES_PASSWORD=$W9_POWER_PASSWO
 
       - REDIS_HOST=redis
-      - REDIS_PORT=$W9_DB_REDIS_PORT
+      - REDIS_PORT=6379
 
     volumes:
       - postgresql:/var/lib/postgresql/data
@@ -63,7 +63,7 @@ services:
       - DATABASE_USER=$W9_ID
       # database engine specific environment variables
       # change the below if you prefers another database engine
-      - DATABASE_PORT=$W9_DB_POSTGRESQL_PORT
+      - DATABASE_PORT=5432
       - DATABASE_DIALECT=postgresql
       - POSTGRES_DB=$W9_ID
       - POSTGRES_USER=$W9_ID
@@ -71,7 +71,7 @@ services:
 
       # Add the mapped in /app/pythonpath_docker which allows devs to override stuff
       - REDIS_HOST=$W9_DB_REDIS_HOST
-      - REDIS_PORT=$W9_DB_REDIS_PORT
+      - REDIS_PORT=6379
     depends_on: *superset-depends-on
     volumes: *superset-volumes
 
@@ -89,7 +89,7 @@ services:
       - DATABASE_USER=$W9_ID
       # database engine specific environment variables
       # change the below if you prefers another database engine
-      - DATABASE_PORT=$W9_DB_POSTGRESQL_PORT
+      - DATABASE_PORT=5432
       - DATABASE_DIALECT=postgresql
       - POSTGRES_DB=$W9_ID
       - POSTGRES_USER=$W9_ID
@@ -97,7 +97,7 @@ services:
 
       # Add the mapped in /app/pythonpath_docker which allows devs to override stuff
       - REDIS_HOST=$W9_DB_REDIS_HOST
-      - REDIS_PORT=$W9_DB_REDIS_PORT
+      - REDIS_PORT=6379
       - W9_PASSWORD=$W9_PASSWORD
     depends_on: *superset-depends-on
     user: "root"
@@ -119,7 +119,7 @@ services:
       - DATABASE_USER=$W9_ID
       # database engine specific environment variables
       # change the below if you prefers another database engine
-      - DATABASE_PORT=$W9_DB_POSTGRESQL_PORT
+      - DATABASE_PORT=5432
       - DATABASE_DIALECT=postgresql
       - POSTGRES_DB=$W9_ID
       - POSTGRES_USER=$W9_ID
@@ -127,7 +127,7 @@ services:
 
       # Add the mapped in /app/pythonpath_docker which allows devs to override stuff
       - REDIS_HOST=$W9_DB_REDIS_HOST
-      - REDIS_PORT=$W9_DB_REDIS_PORT
+      - REDIS_PORT=6379
     restart: unless-stopped
     depends_on: *superset-depends-on
     user: "root"
@@ -149,7 +149,7 @@ services:
       - DATABASE_USER=$W9_ID
       # database engine specific environment variables
       # change the below if you prefers another database engine
-      - DATABASE_PORT=$W9_DB_POSTGRESQL_PORT
+      - DATABASE_PORT=5432
       - DATABASE_DIALECT=postgresql
       - POSTGRES_DB=$W9_ID
       - POSTGRES_USER=$W9_ID
@@ -157,7 +157,7 @@ services:
 
       # Add the mapped in /app/pythonpath_docker which allows devs to override stuff
       - REDIS_HOST=$W9_DB_REDIS_HOST
-      - REDIS_PORT=$W9_DB_REDIS_PORT
+      - REDIS_PORT=6379
     restart: unless-stopped
     depends_on: *superset-depends-on
     user: "root"
