@@ -9,12 +9,14 @@ services:
       - MYSQL_LOG_CONSOLE=true
     volumes:
       - mysql_data:/var/lib/mysql
+    env_file: .env
 
   memcached:
     image: memcached:1.6
     container_name: $W9_ID-memcached
     restart: unless-stopped
     entrypoint: memcached -m 256
+  env_file: .env
 
   elasticsearch:
     image: seafileltd/elasticsearch-with-ik:5.6.16
@@ -36,13 +38,14 @@ services:
       - elasticsearch_data:/usr/share/elasticsearch/data # Requested, specifies the path to Elasticsearch data persistent store.
     profiles:
       - pro
+    env_file: .env
 
   seafile-pro:
     image: docker.seafile.top/seafileltd/seafile-pro-mc:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
     ports:
-      - "$W9_HTTP_PORT:80"
+      - "$W9_HTTP_PORT_SET:$W9_HTTP_PORT"
     #     - "443:443"  # If https is enabled, cancel the comment.
     volumes:
       - seafile_data:/shared # Requested, specifies the path to Seafile data persistent store.
