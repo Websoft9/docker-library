@@ -7,8 +7,8 @@ version: "3.8"
 
 services:
   typesense:
-    image: typesense/typesense:${W9_VERSION}
-    container_name: ${W9_NAME}
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -20,13 +20,14 @@ services:
       - TYPESENSE_DATA_DIR=${W9_DATA_PATH}
       - TYPESENSE_ENABLE_CORS=true
     ports:
-      - "${W9_HTTP_PORT}:8108"
+      - "${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}"
     volumes:
       - typesense:/data
+    env_file: .env
 
   docsearch-scraper:
     image: typesense/docsearch-scraper:latest
-    container_name: ${W9_NAME}-scraper
+    container_name: ${W9_ID}-scraper
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -63,6 +64,7 @@ services:
           "nb_hits":46250}
     depends_on:
       - typesense
+    env_file: .env
 
 networks:
   default:

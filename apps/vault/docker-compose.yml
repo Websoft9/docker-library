@@ -5,12 +5,12 @@ version: '3.8'
 
 services:
   vault:
-    image: vault:${W9_VERSION}
-    container_name: ${W9_NAME}
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     cap_add: 
       - IPC_LOCK
     ports:
-      - '${W9_HTTP_PORT}:8200'
+      - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
     env_file:
       - .env
     environment:

@@ -5,21 +5,21 @@ version: '3.8'
 services:
 
   vtiger:
-    image: websoft9dev/vtiger:${W9_VERSION}
-    container_name: ${W9_NAME}
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - ${W9_HTTP_PORT}:80
+      - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
     env_file: .env
     environment:
-      - MYSQL_DATABASE=${W9_DB_MYSQL_NAME}
-      - MYSQL_ROOT_PASSWORD=${W9_DB_MYSQL_PASSWORD}
-      - MYSQL_USER=${W9_DB_MYSQL_USER}
-      - MYSQL_PASSWORD=${W9_DB_MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${W9_ID}
+      - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWO}
+      - MYSQL_USER=${W9_ID}
+      - MYSQL_PASSWORD=${W9_POWER_PASSWO}
       - VTIGER_DB_HOST=mysql
-      - VTIGER_DB_USER=${W9_DB_MYSQL_USER}
-      - VTIGER_DB_DATABASE=${W9_DB_MYSQL_NAME}
-      - VTIGER_DB_PASSWORD=${W9_DB_MYSQL_PASSWORD}
+      - VTIGER_DB_USER=${W9_ID}
+      - VTIGER_DB_DATABASE=${W9_ID}
+      - VTIGER_DB_PASSWORD=${W9_POWER_PASSWO}
     volumes:
       - vtiger:/var/www/html
       - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
@@ -30,19 +30,18 @@ services:
       - source: my_cmd
 
   mysql:
-    image: mysql:${W9_DB_MYSQL_VERSION}
-    container_name: ${W9_NAME}-db
+    image: mysql:5.6
+    container_name: ${W9_ID}-mysql
     restart: unless-stopped
     environment:
-      - MYSQL_DATABASE=${W9_DB_MYSQL_NAME}
-      - MYSQL_ROOT_PASSWORD=${W9_DB_MYSQL_PASSWORD}
-      - MYSQL_USER=${W9_DB_MYSQL_USER}
-      - MYSQL_PASSWORD=${W9_DB_MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${W9_ID}
+      - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWO}
+      - MYSQL_USER=${W9_ID}
+      - MYSQL_PASSWORD=${W9_POWER_PASSWO}
     command: --character-set-server=utf8 --collation-server=utf8_general_ci --sql_mode=NO_ENGINE_SUBSTITUTION --local_infile=ON
-    ports:
-      - ${W9_DB_MYSQL_PORT}:3306
     volumes:
       - mysql:/var/lib/mysql
+    env_file: .env
 
 volumes:
   mysql:
