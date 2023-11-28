@@ -59,7 +59,7 @@ services:
   postgres:
     image: postgres:9.6
     restart: unless-stopped
-    container_name: ${W9_ID}-postgres
+    container_name: ${W9_ID}-postgresql
     environment:
       - POSTGRES_USER=${W9_ID}
       - POSTGRES_DB=${W9_ID}
