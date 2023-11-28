@@ -1,4 +1,4 @@
-version: '2'
+W9_VERSION: '2'
 
 services:
 
@@ -10,12 +10,12 @@ services:
     environment:
       - BACKUP_SLEEP=86400
       - HOLD_DAYS=10
-      - POSTGRESQL_USER=${POSTGRES_USER}
-      - POSTGRESQL_PASSWORD=${POSTGRES_PASS}
-    image: ${IMAGE_REPO}:zammad-postgresql${VERSION}
+      - POSTGRESQL_USER=${W9_ID}
+      - POSTGRESQL_PASSWORD=${W9_POWER_PASSWO}
+    image: ${W9_REPO}:zammad-postgresql${W9_VERSION}
     links:
       - zammad-postgresql
-    restart: ${RESTART}
+    W9_RESTART: ${W9_RESTART}
     volumes:
       - zammad-backup:/var/tmp/zammad
       - zammad-data:/opt/zammad
@@ -23,8 +23,8 @@ services:
   zammad-elasticsearch:
     environment:
       - discovery.type=single-node
-    image: ${IMAGE_REPO}:zammad-elasticsearch${VERSION}
-    restart: ${RESTART}
+    image: ${W9_REPO}:zammad-elasticsearch${W9_VERSION}
+    W9_RESTART: ${W9_RESTART}
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
 
@@ -33,20 +33,20 @@ services:
     depends_on:
       - zammad-postgresql
     environment:
-      - POSTGRESQL_USER=${POSTGRES_USER}
-      - POSTGRESQL_PASS=${POSTGRES_PASS}
-    image: ${IMAGE_REPO}:zammad${VERSION}
+      - POSTGRESQL_USER=${W9_ID}
+      - POSTGRESQL_PASS=${W9_POWER_PASSWO}
+    image: ${W9_REPO}:zammad${W9_VERSION}
     links:
       - zammad-elasticsearch
       - zammad-postgresql
-    restart: on-failure
+    W9_RESTART: on-failure
     volumes:
       - zammad-data:/opt/zammad
 
   zammad-memcached:
     command: memcached -m 256M
     image: memcached:1.6.9-alpine
-    restart: ${RESTART}
+    W9_RESTART: ${W9_RESTART}
 
   zammad-nginx:
     command: ["zammad-nginx"]
@@ -54,20 +54,20 @@ services:
       - "8080"
     depends_on:
       - zammad-railsserver
-    image: ${IMAGE_REPO}:zammad${VERSION}
+    image: ${W9_REPO}:zammad${W9_VERSION}
     links:
       - zammad-railsserver
       - zammad-websocket
-    restart: ${RESTART}
+    W9_RESTART: ${W9_RESTART}
     volumes:
       - zammad-data:/opt/zammad
 
   zammad-postgresql:
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASS}
-    image: ${IMAGE_REPO}:zammad-postgresql${VERSION}
-    restart: ${RESTART}
+      - W9_ID=${W9_ID}
+      - W9_POWER_PASSWOWORD=${W9_POWER_PASSWO}
+    image: ${W9_REPO}:zammad-postgresql${W9_VERSION}
+    W9_RESTART: ${W9_RESTART}
     volumes:
       - postgresql-data:/var/lib/postgresql/data
 
@@ -76,12 +76,12 @@ services:
     depends_on:
       - zammad-memcached
       - zammad-postgresql
-    image: ${IMAGE_REPO}:zammad${VERSION}
+    image: ${W9_REPO}:zammad${W9_VERSION}
     links:
       - zammad-elasticsearch
       - zammad-memcached
       - zammad-postgresql
-    restart: ${RESTART}
+    W9_RESTART: ${W9_RESTART}
     volumes:
       - zammad-data:/opt/zammad
 
@@ -90,12 +90,12 @@ services:
     depends_on:
       - zammad-memcached
       - zammad-railsserver
-    image: ${IMAGE_REPO}:zammad${VERSION}
+    image: ${W9_REPO}:zammad${W9_VERSION}
     links:
       - zammad-elasticsearch
       - zammad-memcached
       - zammad-postgresql
-    restart: ${RESTART}
+    W9_RESTART: ${W9_RESTART}
     volumes:
       - zammad-data:/opt/zammad
 
@@ -104,11 +104,11 @@ services:
     depends_on:
       - zammad-memcached
       - zammad-railsserver
-    image: ${IMAGE_REPO}:zammad${VERSION}
+    image: ${W9_REPO}:zammad${W9_VERSION}
     links:
       - zammad-postgresql
       - zammad-memcached
-    restart: ${RESTART}
+    W9_RESTART: ${W9_RESTART}
     volumes:
       - zammad-data:/opt/zammad
 
