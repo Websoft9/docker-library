@@ -6,8 +6,8 @@
 version: '3.8'
 services:     
   onlyofficedocs:
-    container_name: ${W9_NAME}
-    image: onlyoffice/${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    image: ${W9_REPO}:${W9_VERSION}
     stdin_open: true
     tty: true
     restart: unless-stopped
