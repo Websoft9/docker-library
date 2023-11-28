@@ -54,7 +54,7 @@ jobs:
                         echo "Attempt $i: access localhost:$W9_HTTP_PORT_SET"
                         docker ps
                         response=$(curl -L --silent localhost:$W9_HTTP_PORT_SET)
-                        if echo "$output" | grep -q "Failed";then
+                        if echo "$response" | grep -q "Failed";then
                             echo "Cannot connect to localhost:$W9_HTTP_PORT_SET, waiting for 10 seconds before retrying"
                             sleep 10
                         else
