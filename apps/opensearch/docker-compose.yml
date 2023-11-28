@@ -57,7 +57,7 @@ services:
     env_file:
       - .env
     ports:
-      - 5601:5601
+      - ${W9_DASH_PORT_SET}:${W9_DASH_PORT}
     expose:
       - "5601"
     environment:
