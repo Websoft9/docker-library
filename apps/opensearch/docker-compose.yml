@@ -26,8 +26,8 @@ services:
     volumes:
       - opensearch-data1:/usr/share/opensearch/data
     ports:
-      - 9200:9200
-      - 9600:9600 # required for Performance Analyzer
+      - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
+      - ${W9_MAGE_PORT_SET}:${W9_MAGE_PORT} # required for Performance Analyzer
 
   opensearch-node2:
     image: opensearchproject/opensearch:$W9_VERSION
