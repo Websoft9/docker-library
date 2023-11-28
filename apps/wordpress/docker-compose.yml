@@ -23,7 +23,7 @@ services:
   wordpress-cli:
     image: $W9_REPO:cli
     container_name: $W9_ID-cli
-    restart: unless-stopped
+    restart: on-failure
     env_file: .env
     volumes:
       - wordpress:/var/www/html
@@ -34,7 +34,6 @@ services:
       wp option update home 'http://$W9_URL'
       wp option update siteurl 'http://$W9_URL'
       echo 'success to change wordpress url...'
-      kill 1
       "
       
   mariadb:

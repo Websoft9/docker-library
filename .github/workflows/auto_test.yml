@@ -52,7 +52,7 @@ jobs:
                     for i in {1..3}
                     do
                         echo "Attempt $i"
-                        response=$(curl -L --silent --connect-timeout 15 --output /dev/null --write-out '%{http_code}' localhost:$W9_HTTP_PORT_SET)
+                        response=$(curl -L --silent --connect-timeout 15 --output /dev/null --write-out '%{http_code}' localhost:$W9_HTTP_PORT_SET 2>/dev/null)
                         if [ "$response" -eq 200 ]; then
                             echo "Successfully connected to localhost:$W9_HTTP_PORT_SET"
                             break
