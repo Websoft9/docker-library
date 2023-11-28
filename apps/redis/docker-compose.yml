@@ -22,6 +22,7 @@ services:
     restart: unless-stopped
     ports:
       - "${W9_GUI_PORT_SET}:${W9_GUI_PORT}"
+    env_file: .env
 
 networks:
   default:
