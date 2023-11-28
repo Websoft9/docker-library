@@ -31,8 +31,8 @@ services:
       - wordpress
     command: |
       /bin/sh -c "
-      ip_regex="^([0-9]{1,3}[\.]){3}[0-9]{1,3}$"
-      domain_regex="^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$"
+      ip_regex='^([0-9]{1,3}[\.]){3}[0-9]{1,3}$'
+      domain_regex='^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$'
       real_url=''
       if [[ $W9_URL =~ $ip_regex ]]; then
           echo '$W9_URL is an IP'
