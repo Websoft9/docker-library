@@ -33,7 +33,7 @@ services:
       /bin/sh -c "
       wp option update home 'http://$W9_URL:$W9_HTTP_PORT_SET'
       wp option update siteurl 'http://$W9_URL:$W9_HTTP_PORT_SET'
-      echo 'success to change wordpress url.'
+      echo 'success to change wordpress url...'
       "
       
   mariadb:
