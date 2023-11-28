@@ -9,7 +9,7 @@ services:
     container_name: $W9_ID
     restart: unless-stopped
     ports:
-     - $W9_HTTP_PORT_SET:$W9_HTTP_PORT
+     - '$W9_HTTP_PORT_SET:$W9_HTTP_PORT'
     volumes: 
      - redmine:/usr/src/redmine
     env_file: .env
@@ -38,6 +38,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWO
       MYSQL_DATABASE: $W9_ID
+    env_file: .env
+
       
 volumes:
   mysql:
