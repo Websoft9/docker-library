@@ -5,13 +5,13 @@ version: '3.8'
 
 services:
   tensorflow:
-    image: tensorflow/tensorflow:${W9_VERSION}
-    container_name: ${W9_NAME}
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
     ports:
       # tensorboard port is 6006, but you need to start it on container by yourself 
-      - '${W9_HTTP_PORT}:8888'
-      - '${W9_GUI_PORT}:6006'
+      - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
+      - '${W9_GUI_PORT_SET}:${W9_GUI_PORT}'
     env_file: .env
     volumes:
       - tensorflow:/tf/notebooks

@@ -7,18 +7,18 @@ version: '3.8'
 services:
   thingsboard:
     image: $W9_REPO:$W9_VERSION
-    container_name: $W9_NAME
+    container_name: $W9_ID
     restart: unless-stopped
     env_file:
       - .env
     ports:
-      - '${W9_HTTP_PORT}:9090'
-      - '${W9_MQTT_PORT}:1883'
-      - '${W9_RPC_PORT}:7070'
-      - '${W9_UDP_PORT}:5683-5688/udp'
+      - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
+      - '${W9_MQTT_PORT_SET}:${W9_MQTT_PORT}'
+      - '${W9_RPC_PORT_SET}:${W9_RPC_PORT}'
+      - '${W9_UDP_PORT_SET}:${W9_UDP_PORT}/udp'
     environment:
       TB_QUEUE_TYPE: kafka
-      TB_KAFKA_SERVERS: $W9_NAME-kafka:9092
+      TB_KAFKA_SERVERS: $W9_ID-kafka:9092
     depends_on:
       - kafka
     volumes:
@@ -28,9 +28,9 @@ services:
   zookeeper:
     restart: unless-stopped
     image: "zookeeper:3.5"
-    container_name: $W9_NAME-zookeeper
+    container_name: $W9_ID-zookeeper
     ports:
-      - "$W9_ZK_PORT:2181"
+      - "$W9_ZK_PORT_SET:$W9_ZK_PORT"
     environment:
       ZOO_MY_ID: 1
       ZOO_SERVERS: server.1=zookeeper:2888:3888;zookeeper:2181
@@ -38,11 +38,11 @@ services:
   kafka:
     restart: unless-stopped
     image: wurstmeister/kafka
-    container_name: $W9_NAME-kafka
+    container_name: $W9_ID-kafka
     depends_on:
       - zookeeper
     ports:
-      - "$W9_KAFKA_PORT:9092"
+      - "$W9_KAFKA_PORT_SET:$W9_KAFKA_PORT"
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENERS: INSIDE://:9093,OUTSIDE://:9092
