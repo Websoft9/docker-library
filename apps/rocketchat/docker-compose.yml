@@ -18,6 +18,7 @@ services:
     depends_on:
       - mongo
     restart: unless-stopped
+    env_file: .env
 
   mongo:
     image: mongo:4.0
@@ -26,12 +27,14 @@ services:
     volumes:
       - mongo:/data/db
     command: mongod --smallfiles --oplogSize 128 --replSet rs01
+    env_file: .env
 
   mongo-init-replica:
-    image: mongo:${W9_DB_MONGODB_VERSION}
+    image: mongo:4.0
     command: 'mongo mongo/rocketchat --eval "rs.initiate({ _id: ''rs01'', members: [ { _id: 0, host: ''mongo:27017'' } ]})"'
     depends_on:
       - mongo
+    env_file: .env
       
 networks:
   default:
