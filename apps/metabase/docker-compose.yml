@@ -13,7 +13,7 @@ services:
      - metabase-data:/metabase-data
      - metabase-plugins:/plugins
     ports:
-      - $W9_HTTP_PORT_SET:$W9_HTTP_PORT
+      - '$W9_HTTP_PORT_SET:$W9_HTTP_PORT'
     privileged: true
     env_file: .env
     environment: 
