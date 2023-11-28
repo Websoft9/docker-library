@@ -8,8 +8,8 @@ services:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     ports:
-      - $W9_HTTP_PORT_SET:$W9_HTTP_PORT
-      - $W9_GRPC_PORT_SET:$W9_GRPC_PORT
+      - '$W9_HTTP_PORT_SET:$W9_HTTP_PORT'
+      - '$W9_GRPC_PORT_SET:$W9_GRPC_PORT'
     volumes:
       - pydio:/var/cells
       - ./src/install-conf.yml:/pydio/config/install.yml:ro
