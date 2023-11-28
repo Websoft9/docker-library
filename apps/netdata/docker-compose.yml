@@ -9,7 +9,7 @@ services:
     container_name: $W9_ID
     hostname: $W9_URL
     ports:
-      - $W9_HTTP_PORT_SET:$W9_HTTP_PORT
+      - '$W9_HTTP_PORT_SET:$W9_HTTP_PORT'
     restart: unless-stopped
     cap_add:
       - SYS_PTRACE
