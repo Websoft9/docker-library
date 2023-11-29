@@ -1,7 +1,7 @@
 # image: https://hub.docker.com/r/apache/superset
 # docs: https://github.com/apache/superset
 
-x-superset-image: &superset-image apache/superset:$W9_VERSION
+x-superset-image: &superset-image $W9_REPO:$W9_VERSION
 x-superset-depends-on: &superset-depends-on
   - db
   - redis
@@ -13,38 +13,34 @@ x-superset-volumes:
 version: "3.8"
 services:
   redis:
-    image: redis:$W9_DB_REDIS_VERSION
-    container_name: $W9_NAME-cache
+    image: redis:7
+    container_name: $W9_ID-cache
     restart: unless-stopped
-    ports:
-      - 127.0.0.1:$W9_DB_REDIS_PORT:$W9_DB_REDIS_PORT
     volumes:
       - redis:/data
 
   db:
     env_file: src/docker/.env
-    image: postgres:$W9_DB_POSTGRESQL_VERSION
-    container_name: $W9_NAME-db
+    image: postgres:14
+    container_name: $W9_ID-postgresql
     restart: unless-stopped
-    ports:
-      - $W9_DB_POSTGRESQL_PORT:$W9_DB_POSTGRESQL_PORT
     environment:
       # database configurations (do not modify)
-      - DATABASE_DB=$W9_DB_POSTGRESQL_NAME
-      - DATABASE_HOST=$W9_DB_POSTGRESQL_HOST
-      - DATABASE_PASSWORD=$W9_DB_POSTGRESQL_PASSWORD
+      - DATABASE_DB=$W9_ID
+      - DATABASE_HOST=db
+      - DATABASE_PASSWORD=$W9_POWER_PASSWO
       - DATABASE_USER=superset
 
       # database engine specific environment variables
       # change the below if you prefers another database engine
-      - DATABASE_PORT=$W9_DB_POSTGRESQL_PORT
+      - DATABASE_PORT=5432
       - DATABASE_DIALECT=postgresql
-      - POSTGRES_DB=$W9_DB_POSTGRESQL_NAME
-      - POSTGRES_USER=$W9_DB_POSTGRESQL_USER
-      - POSTGRES_PASSWORD=$W9_DB_POSTGRESQL_PASSWORD
+      - POSTGRES_DB=$W9_ID
+      - POSTGRES_USER=$W9_ID
+      - POSTGRES_PASSWORD=$W9_POWER_PASSWO
 
-      - REDIS_HOST=$W9_DB_REDIS_HOST
-      - REDIS_PORT=$W9_DB_REDIS_PORT
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
 
     volumes:
       - postgresql:/var/lib/postgresql/data
@@ -52,56 +48,56 @@ services:
   superset:
     env_file: src/docker/.env-non-dev
     image: *superset-image
-    container_name: $W9_NAME-app
+    container_name: $W9_ID-app
     restart: unless-stopped
     ports:
-      - $W9_HTTP_PORT:8088
+      - '$W9_HTTP_PORT_SET:$W9_HTTP_PORT'
     privileged: true
     user: root
     environment:
       - COMPOSE_PROJECT_NAME=superset
       # database configurations (do not modify)
-      - DATABASE_DB=$W9_DB_POSTGRESQL_NAME
-      - DATABASE_HOST=$W9_DB_POSTGRESQL_HOST
-      - DATABASE_PASSWORD=$W9_DB_POSTGRESQL_PASSWORD
-      - DATABASE_USER=$W9_DB_POSTGRESQL_USER
+      - DATABASE_DB=$W9_ID
+      - DATABASE_HOST=db
+      - DATABASE_PASSWORD=$W9_POWER_PASSWO
+      - DATABASE_USER=$W9_ID
       # database engine specific environment variables
       # change the below if you prefers another database engine
-      - DATABASE_PORT=$W9_DB_POSTGRESQL_PORT
+      - DATABASE_PORT=5432
       - DATABASE_DIALECT=postgresql
-      - POSTGRES_DB=$W9_DB_POSTGRESQL_NAME
-      - POSTGRES_USER=$W9_DB_POSTGRESQL_USER
-      - POSTGRES_PASSWORD=$W9_DB_POSTGRESQL_PASSWORD
+      - POSTGRES_DB=$W9_ID
+      - POSTGRES_USER=$W9_ID
+      - POSTGRES_PASSWORD=$W9_POWER_PASSWO
 
       # Add the mapped in /app/pythonpath_docker which allows devs to override stuff
       - REDIS_HOST=$W9_DB_REDIS_HOST
-      - REDIS_PORT=$W9_DB_REDIS_PORT
+      - REDIS_PORT=6379
     depends_on: *superset-depends-on
     volumes: *superset-volumes
 
   superset-init:
     image: *superset-image
-    container_name: $W9_NAME-init
+    container_name: $W9_ID-init
     command: ["/app/docker/docker-init.sh"]
     env_file: src/docker/.env-non-dev
     environment:
       - COMPOSE_PROJECT_NAME=superset
       # database configurations (do not modify)
-      - DATABASE_DB=$W9_DB_POSTGRESQL_NAME
-      - DATABASE_HOST=$W9_DB_POSTGRESQL_HOST
-      - DATABASE_PASSWORD=$W9_DB_POSTGRESQL_PASSWORD
-      - DATABASE_USER=$W9_DB_POSTGRESQL_USER
+      - DATABASE_DB=$W9_ID
+      - DATABASE_HOST=db
+      - DATABASE_PASSWORD=$W9_POWER_PASSWO
+      - DATABASE_USER=$W9_ID
       # database engine specific environment variables
       # change the below if you prefers another database engine
-      - DATABASE_PORT=$W9_DB_POSTGRESQL_PORT
+      - DATABASE_PORT=5432
       - DATABASE_DIALECT=postgresql
-      - POSTGRES_DB=$W9_DB_POSTGRESQL_NAME
-      - POSTGRES_USER=$W9_DB_POSTGRESQL_USER
-      - POSTGRES_PASSWORD=$W9_DB_POSTGRESQL_PASSWORD
+      - POSTGRES_DB=$W9_ID
+      - POSTGRES_USER=$W9_ID
+      - POSTGRES_PASSWORD=$W9_POWER_PASSWO
 
       # Add the mapped in /app/pythonpath_docker which allows devs to override stuff
       - REDIS_HOST=$W9_DB_REDIS_HOST
-      - REDIS_PORT=$W9_DB_REDIS_PORT
+      - REDIS_PORT=6379
       - W9_PASSWORD=$W9_PASSWORD
     depends_on: *superset-depends-on
     user: "root"
@@ -111,27 +107,27 @@ services:
 
   superset-worker:
     image: *superset-image
-    container_name: $W9_NAME-worker
+    container_name: $W9_ID-worker
     command: ["/app/docker/docker-bootstrap.sh", "worker"]
     env_file: src/docker/.env-non-dev
     environment:
       - COMPOSE_PROJECT_NAME=superset
       # database configurations (do not modify)
-      - DATABASE_DB=$W9_DB_POSTGRESQL_NAME
-      - DATABASE_HOST=$W9_DB_POSTGRESQL_HOST
-      - DATABASE_PASSWORD=$W9_DB_POSTGRESQL_PASSWORD
-      - DATABASE_USER=$W9_DB_POSTGRESQL_USER
+      - DATABASE_DB=$W9_ID
+      - DATABASE_HOST=db
+      - DATABASE_PASSWORD=$W9_POWER_PASSWO
+      - DATABASE_USER=$W9_ID
       # database engine specific environment variables
       # change the below if you prefers another database engine
-      - DATABASE_PORT=$W9_DB_POSTGRESQL_PORT
+      - DATABASE_PORT=5432
       - DATABASE_DIALECT=postgresql
-      - POSTGRES_DB=$W9_DB_POSTGRESQL_NAME
-      - POSTGRES_USER=$W9_DB_POSTGRESQL_USER
-      - POSTGRES_PASSWORD=$W9_DB_POSTGRESQL_PASSWORD
+      - POSTGRES_DB=$W9_ID
+      - POSTGRES_USER=$W9_ID
+      - POSTGRES_PASSWORD=$W9_POWER_PASSWO
 
       # Add the mapped in /app/pythonpath_docker which allows devs to override stuff
       - REDIS_HOST=$W9_DB_REDIS_HOST
-      - REDIS_PORT=$W9_DB_REDIS_PORT
+      - REDIS_PORT=6379
     restart: unless-stopped
     depends_on: *superset-depends-on
     user: "root"
@@ -141,27 +137,27 @@ services:
 
   superset-worker-beat:
     image: *superset-image
-    container_name: $W9_NAME-worker-beat
+    container_name: $W9_ID-worker-beat
     command: ["/app/docker/docker-bootstrap.sh", "beat"]
     env_file: src/docker/.env-non-dev
     environment:
       - COMPOSE_PROJECT_NAME=superset
       # database configurations (do not modify)
-      - DATABASE_DB=$W9_DB_POSTGRESQL_NAME
-      - DATABASE_HOST=$W9_DB_POSTGRESQL_HOST
-      - DATABASE_PASSWORD=$W9_DB_POSTGRESQL_PASSWORD
-      - DATABASE_USER=$W9_DB_POSTGRESQL_USER
+      - DATABASE_DB=$W9_ID
+      - DATABASE_HOST=db
+      - DATABASE_PASSWORD=$W9_POWER_PASSWO
+      - DATABASE_USER=$W9_ID
       # database engine specific environment variables
       # change the below if you prefers another database engine
-      - DATABASE_PORT=$W9_DB_POSTGRESQL_PORT
+      - DATABASE_PORT=5432
       - DATABASE_DIALECT=postgresql
-      - POSTGRES_DB=$W9_DB_POSTGRESQL_NAME
-      - POSTGRES_USER=$W9_DB_POSTGRESQL_USER
-      - POSTGRES_PASSWORD=$W9_DB_POSTGRESQL_PASSWORD
+      - POSTGRES_DB=$W9_ID
+      - POSTGRES_USER=$W9_ID
+      - POSTGRES_PASSWORD=$W9_POWER_PASSWO
 
       # Add the mapped in /app/pythonpath_docker which allows devs to override stuff
       - REDIS_HOST=$W9_DB_REDIS_HOST
-      - REDIS_PORT=$W9_DB_REDIS_PORT
+      - REDIS_PORT=6379
     restart: unless-stopped
     depends_on: *superset-depends-on
     user: "root"

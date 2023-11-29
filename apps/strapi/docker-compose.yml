@@ -5,21 +5,21 @@ version: '3.8'
 
 services:
   strapi:
-    image: strapi/strapi:${W9_VERSION}
-    container_name: ${W9_NAME}
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     env_file:
       - .env
     ports:
-      - ${W9_HTTP_PORT}:1337
+      - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
     volumes:
       - strapi:/srv/app
     environment:
       DATABASE_CLIENT: mysql
-      DATABASE_HOST: ${W9_NAME}-db
+      DATABASE_HOST: ${W9_ID}-mysql
       DATABASE_PORT: 3306
-      DATABASE_NAME: ${W9_DB_MYSQL_NAME}
-      DATABASE_USERNAME: ${W9_DB_MYSQL_USER}
-      DATABASE_PASSWORD: ${W9_DB_MYSQL_PASSWORD}
+      DATABASE_NAME: ${W9_ID}
+      DATABASE_USERNAME: ${W9_ID}
+      DATABASE_PASSWORD: ${W9_POWER_PASSWO}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:1337"]
       interval: 30s
@@ -30,19 +30,18 @@ services:
     restart: unless-stopped
 
   mysql:
-    image: mysql:${W9_DB_MYSQL_VERSION}
-    container_name: ${W9_NAME}-db
+    image: mysql:5.7
+    container_name: ${W9_ID}-mysql
     restart: unless-stopped
-    ports:
-     - ${W9_DB_MYSQL_PORT}:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: ${W9_DB_MYSQL_NAME}
-      MYSQL_USER: ${W9_DB_MYSQL_USER}
-      MYSQL_PASSWORD: ${W9_DB_MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${W9_DB_MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${W9_ID}
+      MYSQL_USER: ${W9_ID}
+      MYSQL_PASSWORD: ${W9_POWER_PASSWO}
+      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWO}
+    env_file: .env
 
 networks:
   default:

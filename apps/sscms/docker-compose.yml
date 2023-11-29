@@ -7,37 +7,37 @@ version: '3.8'
 
 services:
   sscms:
-    image: sscms/core:${W9_VERSION}
-    container_name: ${W9_NAME}
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     ports:
-      - ${W9_HTTP_PORT}:80
+      - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
     volumes:
       - sscms:/app/wwwroot
     environment:
-      - SSCMS_DATABASE_PASSWORD=${W9_DB_MYSQL_PASSWORD}
-      - SSCMS_DATABASE_NAME=${W9_DB_MYSQL_NAME}
-      - SSCMS_DATABASE_USER=${W9_DB_MYSQL_USER}
-      - SSCMS_DATABASE_PORT=${W9_DB_MYSQL_PORT}
+      - SSCMS_DATABASE_PASSWORD=${W9_POWER_PASSWO}
+      - SSCMS_DATABASE_NAME=${W9_ID}
+      - SSCMS_DATABASE_USER=${W9_ID}
+      - SSCMS_DATABASE_PORT=3306
       - SSCMS_DATABASE_HOST=mysql
       - SSCMS_SECURITY_KEY=e2a3d303-ac9b-41ff-9154-930710af0845
       - SSCMS_DATABASE_TYPE=MySQL
     depends_on: 
       - mysql
     restart: unless-stopped
+    env_file: .env
 
   mysql:
-    image: mysql:${W9_DB_MYSQL_VERSION}
-    container_name: ${W9_NAME}-mysql
+    image: mysql:5.7
+    container_name: ${W9_ID}-mysql
     restart: unless-stopped
-    ports:
-     - ${W9_DB_MYSQL_PORT}:3306
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: ${W9_DB_MYSQL_NAME}
-      MYSQL_USER: ${W9_DB_MYSQL_USER}
-      MYSQL_PASSWORD: ${W9_DB_MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${W9_DB_MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${W9_ID}
+      MYSQL_USER: ${W9_ID}
+      MYSQL_PASSWORD: ${W9_POWER_PASSWO}
+      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWO}
+    env_file: .env
 
 networks:
   default:

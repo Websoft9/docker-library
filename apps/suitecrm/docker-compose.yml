@@ -5,18 +5,18 @@ version: '3.8'
 
 services:
   suitecrm:
-    image: docker.io/bitnami/suitecrm:${W9_VERSION}
-    container_name: ${W9_NAME}
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - '${W9_HTTP_PORT}:8080'
+      - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
     env_file: .env
     environment:
-      - SUITECRM_DATABASE_HOST=${W9_NAME}-db 
+      - SUITECRM_DATABASE_HOST=${W9_ID}-mariadb
       - SUITECRM_DATABASE_PORT_NUMBER=3306
-      - SUITECRM_DATABASE_USER=${W9_DB_MYSQL_USER}
-      - SUITECRM_DATABASE_NAME=${W9_DB_MYSQL_NAME}
-      - SUITECRM_DATABASE_PASSWORD=${W9_DB_MYSQL_PASSWORD}
+      - SUITECRM_DATABASE_USER=${W9_ID}
+      - SUITECRM_DATABASE_NAME=${W9_ID}
+      - SUITECRM_DATABASE_PASSWORD=${W9_POWER_PASSWO}
       - SUITECRM_USERNAME=${W9_USER}
       - SUITECRM_PASSWORD=${W9_PASSWORD}
     volumes:
@@ -25,15 +25,13 @@ services:
       - mariadb
 
   mariadb:
-    image: mariadb:${W9_DB_MYSQL_VERSION}
-    container_name: ${W9_NAME}-db 
+    image: mariadb:10.6
+    container_name: ${W9_ID}-mariadb
     environment:
-      - MARIADB_ROOT_PASSWORD=${W9_DB_MYSQL_PASSWORD}
-      - MARIADB_DATABASE=${W9_DB_MYSQL_NAME}
-      - MARIADB_USER=${W9_DB_MYSQL_USER}
-      - MARIADB_PASSWORD=${W9_DB_MYSQL_PASSWORD}
-    ports:
-      - '${W9_DB_MYSQL_PORT}:3306'
+      - MARIADB_ROOT_PASSWORD=${W9_POWER_PASSWO}
+      - MARIADB_DATABASE=${W9_ID}
+      - MARIADB_USER=${W9_ID}
+      - MARIADB_PASSWORD=${W9_POWER_PASSWO}
     volumes:
       - mysql_data:/var/lib/mysql
     restart: unless-stopped
