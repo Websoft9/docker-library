@@ -5,13 +5,13 @@ version: '3.8'
 
 services:
   rethinkdb:
-    image: rethinkdb:${W9_VERSION}
+    image: ${W9_REPO}:${W9_VERSION}
     container_name: rethinkdb
     restart: unless-stopped
     ports:
-     - 9090:8080
-     - ${W9_CLIENT_PORT}:28015
-     - ${W9_CLUSTER_PORT}:29015
+     - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
+     - ${W9_CLIENT_PORT_SET}:${W9_CLIENT_PORT}
+     - ${W9_CLUSTER_PORT_SET}:${W9_CLUSTER_PORT}
     env_file: .env
     command:
       - /bin/bash
