@@ -8,7 +8,7 @@ services:
 
   plausible:
     image: $W9_REPO:$W9_VERSION
-    container_name: $W9_NAME
+    container_name: $W9_ID
     restart: unless-stopped
     command: sh -c "sleep 10 && /entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh run"
     depends_on:
@@ -16,28 +16,28 @@ services:
       - plausible_events_db
       - mail
     ports:
-      - $W9_HTTP_PORT:8000
+      - $W9_HTTP_PORT_SET:$W9_HTTP_PORT
     env_file:
       - .env
 
   mail:
     image: bytemark/smtp
-    container_name: $W9_NAME-mail
+    container_name: $W9_ID-mail
     restart: unless-stopped
 
   plausible_db:
     # supported versions are 12, 13, and 14
     image: postgres:14-alpine
-    container_name: $W9_NAME-db
+    container_name: $W9_ID-postgresql
     restart: unless-stopped
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=$W9_DB_POSTGRES_PASSWOR
+      - POSTGRES_PASSWORD=$W9_POWER_PASSWO
     
   plausible_events_db:
     image: clickhouse/clickhouse-server:22.6-alpine
-    container_name: $W9_NAME-clickhouse
+    container_name: $W9_ID-clickhouse
     restart: unless-stopped
     volumes:
       - event-data:/var/lib/clickhouse
@@ -47,6 +47,8 @@ services:
       nofile:
         soft: 262144
         hard: 262144
+    env_file:
+      - .env
 
 networks:
   default:
