@@ -5,8 +5,8 @@
 version: '3'
 services:
   opensearch-node1:
-    image: opensearchproject/opensearch:$W9_VERSION
-    container_name: $W9_NAME-node1
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID-node1
     env_file:
       - .env
     environment:
@@ -26,12 +26,12 @@ services:
     volumes:
       - opensearch-data1:/usr/share/opensearch/data
     ports:
-      - 9200:9200
-      - 9600:9600 # required for Performance Analyzer
+      - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
+      - ${W9_MAGE_PORT_SET}:${W9_MAGE_PORT} # required for Performance Analyzer
 
   opensearch-node2:
     image: opensearchproject/opensearch:$W9_VERSION
-    container_name: $W9_NAME-node2
+    container_name: $W9_ID-node2
     env_file:
       - .env
     environment:
@@ -53,11 +53,11 @@ services:
 
   opensearch-dashboards:
     image: opensearchproject/opensearch-dashboards:$W9_VERSION
-    container_name: $W9_NAME
+    container_name: $W9_ID
     env_file:
       - .env
     ports:
-      - 5601:5601
+      - ${W9_DASH_PORT_SET}:${W9_DASH_PORT}
     expose:
       - "5601"
     environment:

@@ -4,15 +4,13 @@
 version: '3.8'
 services:
   onlyoffice-mysql-server:
-    container_name: ${W9_NAME}-db
-    image: mysql:${W9_DB_MYSQL_VERSION}
-    ports:
-     - ${W9_DB_MYSQL_PORT}:3306
+    container_name: ${W9_ID}-mysql
+    image: mysql:5.7
     environment:
-     - MYSQL_DATABASE=${W9_DB_MYSQL_NAME}
-     - MYSQL_USER=${W9_DB_MYSQL_USER}
-     - MYSQL_PASSWORD=${W9_DB_MYSQL_PASSWORD}
-     - MYSQL_ROOT_PASSWORD=${W9_DB_MYSQL_PASSWORD}
+     - MYSQL_DATABASE=${W9_ID}
+     - MYSQL_USER=${W9_ID}
+     - MYSQL_PASSWORD=${W9_POWER_PASSWO}
+     - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWO}
     stdin_open: true
     tty: true
     restart: unless-stopped
@@ -22,8 +20,8 @@ services:
      - mysql_data:/var/lib/mysql
      
   onlyoffice-community-server:
-    container_name: ${W9_NAME}
-    image: onlyoffice/communityserver:${W9_VERSION}
+    container_name: ${W9_ID}
+    image: ${W9_REPO}:${W9_VERSION}
     depends_on:
      - onlyoffice-mysql-server
      - onlyoffice-document-server
@@ -35,15 +33,15 @@ services:
      - DOCUMENT_SERVER_JWT_ENABLED=false
      - DOCUMENT_SERVER_JWT_SECRET=jwt_secret
      - DOCUMENT_SERVER_JWT_HEADER=AuthorizationJwt
-     - MYSQL_SERVER_ROOT_PASSWORD=${W9_DB_MYSQL_PASSWORD}
-     - MYSQL_SERVER_DB_NAME=${W9_DB_MYSQL_NAME}
-     - MYSQL_SERVER_HOST=${W9_NAME}-db
-     - MYSQL_SERVER_USER=${W9_DB_MYSQL_USER}
-     - MYSQL_SERVER_PASS=${W9_DB_MYSQL_PASSWORD}
+     - MYSQL_SERVER_ROOT_PASSWORD=${W9_POWER_PASSWO}
+     - MYSQL_SERVER_DB_NAME=${W9_ID}
+     - MYSQL_SERVER_HOST=${W9_ID}-mysql
+     - MYSQL_SERVER_USER=${W9_ID}
+     - MYSQL_SERVER_PASS=${W9_POWER_PASSWO}
     ports:
-     - '${W9_HTTP_PORT}:80'
-     - '443'
-     - '5222:5222'
+     - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
+     - '${W9_HTTPS_PORT_SET}'
+     - '${W9_SET_PORT_SET}:${W9_SET_PORT}'
     stdin_open: true
     tty: true
     restart: unless-stopped
@@ -55,9 +53,10 @@ services:
      - document_data:/var/www/onlyoffice/DocumentServerData
      - /sys/fs/cgroup:/sys/fs/cgroup:ro
      - ./certs:/var/www/onlyoffice/Data/certs
+    env_file: .env
      
   onlyoffice-document-server:
-    container_name: ${W9_NAME}-docs
+    container_name: ${W9_ID}-docs
     image: onlyoffice/documentserver:7.0
     stdin_open: true
     tty: true
@@ -76,9 +75,10 @@ services:
       - document_log:/var/log/onlyoffice
       - ./document_fonts:/usr/share/fonts/truetype/custom
       - document_forgotten:/var/lib/onlyoffice/documentserver/App_Data/cache/files/forgotten
+    env_file: .env
 
   onlyoffice-control-panel:
-    container_name: ${W9_NAME}-control
+    container_name: ${W9_ID}-control
     depends_on:
      - onlyoffice-document-server
      - onlyoffice-community-server
@@ -95,6 +95,7 @@ services:
       - controlpanel_log:/var/log/onlyoffice
     stdin_open: true
     tty: true
+    env_file: .env
 
 volumes:
   document_data:
