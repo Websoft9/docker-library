@@ -5,14 +5,14 @@ version: '3.8'
 
 services:
   rabbitmq:
-    image: rabbitmq:${W9_VERSION}-management
-    container_name: ${W9_NAME}
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
     ports:
       # EXPOSE 4369 5671 5672 15691 15692 25672
-      - '${W9_ER_PORT}:4369'
-      - '${W9_MQ_PORT}:5672'
-      - '${W9_GUI_PORT}:15672'
+      - '${W9_ER_PORT_SET}:${W9_ER_PORT}'
+      - '${W9_MQ_PORT_SET}:${W9_MQ_PORT}'
+      - '${W9_GUI_PORT_SET}:${W9_GUI_PORT}'
     env_file: .env
     environment:
       - RABBITMQ_DEFAULT_USER=${W9_USER}

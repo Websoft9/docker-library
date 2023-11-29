@@ -7,12 +7,12 @@ version: '3.8'
 services:
   redpanda-console:
     image: $W9_REPO:$W9_VERSION
-    container_name: $W9_NAME
+    container_name: $W9_ID
     restart: unless-stopped
     env_file:
       - .env
     ports:
-      - "3000:3000"
+      - "$W9_HTTP_PORT_SET:$W9_HTTP_PORT"
 
 networks:
   default:
