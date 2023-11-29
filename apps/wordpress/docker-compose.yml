@@ -30,10 +30,17 @@ services:
     depends_on:
       - wordpress
     command: |
-      /bin/sh -c "
-      wp option update home 'http://$W9_URL'
-      wp option update siteurl 'http://$W9_URL'
-      echo 'success to change wordpress url.'
+      /bin/bash -c "
+      if [[ $W9_URL =~ ^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; then
+        wp_url=$W9_URL:$W9_HTTP_PORT_SET
+        echo 'URL is IP'
+      else
+        wp_url=$W9_URL
+        echo 'URL is not IP'
+      fi
+      sleep 5
+      wp option update home \"http://$$wp_url\"
+      wp option update siteurl \"http://$$wp_url\"
       "
       
   mariadb:
