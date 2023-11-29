@@ -14,7 +14,7 @@ services:
     environment:
       - MATOMO_DATABASE_HOST=${W9_ID}-db
       - MATOMO_DATABASE_USERNAME=${W9_ID}
-      - MATOMO_DATABASE_PASSWORD=${W9_POWER_PASSWO}
+      - MATOMO_DATABASE_PASSWORD=${W9_POWER_PASSWORD}
       - MATOMO_DATABASE_DBNAME=${W9_ID}
     volumes:
       - 'matomo:/var/www/html'
@@ -27,10 +27,10 @@ services:
     container_name: ${W9_ID}-mysql
     command: --default-authentication-plugin=mysql_native_password    
     environment:
-      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWO}
+      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
       MYSQL_DATABASE: ${W9_ID}
       MYSQL_USER: ${W9_ID}
-      MYSQL_PASSWORD: ${W9_POWER_PASSWO}
+      MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
     volumes:
       - mysql:/var/lib/mysql
     restart: unless-stopped

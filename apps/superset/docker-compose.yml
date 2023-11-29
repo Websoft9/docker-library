@@ -28,7 +28,7 @@ services:
       # database configurations (do not modify)
       - DATABASE_DB=$W9_ID
       - DATABASE_HOST=db
-      - DATABASE_PASSWORD=$W9_POWER_PASSWO
+      - DATABASE_PASSWORD=$W9_POWER_PASSWORD
       - DATABASE_USER=superset
 
       # database engine specific environment variables
@@ -37,7 +37,7 @@ services:
       - DATABASE_DIALECT=postgresql
       - POSTGRES_DB=$W9_ID
       - POSTGRES_USER=$W9_ID
-      - POSTGRES_PASSWORD=$W9_POWER_PASSWO
+      - POSTGRES_PASSWORD=$W9_POWER_PASSWORD
 
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -59,7 +59,7 @@ services:
       # database configurations (do not modify)
       - DATABASE_DB=$W9_ID
       - DATABASE_HOST=db
-      - DATABASE_PASSWORD=$W9_POWER_PASSWO
+      - DATABASE_PASSWORD=$W9_POWER_PASSWORD
       - DATABASE_USER=$W9_ID
       # database engine specific environment variables
       # change the below if you prefers another database engine
@@ -67,7 +67,7 @@ services:
       - DATABASE_DIALECT=postgresql
       - POSTGRES_DB=$W9_ID
       - POSTGRES_USER=$W9_ID
-      - POSTGRES_PASSWORD=$W9_POWER_PASSWO
+      - POSTGRES_PASSWORD=$W9_POWER_PASSWORD
 
       # Add the mapped in /app/pythonpath_docker which allows devs to override stuff
       - REDIS_HOST=$W9_DB_REDIS_HOST
@@ -85,7 +85,7 @@ services:
       # database configurations (do not modify)
       - DATABASE_DB=$W9_ID
       - DATABASE_HOST=db
-      - DATABASE_PASSWORD=$W9_POWER_PASSWO
+      - DATABASE_PASSWORD=$W9_POWER_PASSWORD
       - DATABASE_USER=$W9_ID
       # database engine specific environment variables
       # change the below if you prefers another database engine
@@ -93,7 +93,7 @@ services:
       - DATABASE_DIALECT=postgresql
       - POSTGRES_DB=$W9_ID
       - POSTGRES_USER=$W9_ID
-      - POSTGRES_PASSWORD=$W9_POWER_PASSWO
+      - POSTGRES_PASSWORD=$W9_POWER_PASSWORD
 
       # Add the mapped in /app/pythonpath_docker which allows devs to override stuff
       - REDIS_HOST=$W9_DB_REDIS_HOST
@@ -115,7 +115,7 @@ services:
       # database configurations (do not modify)
       - DATABASE_DB=$W9_ID
       - DATABASE_HOST=db
-      - DATABASE_PASSWORD=$W9_POWER_PASSWO
+      - DATABASE_PASSWORD=$W9_POWER_PASSWORD
       - DATABASE_USER=$W9_ID
       # database engine specific environment variables
       # change the below if you prefers another database engine
@@ -123,7 +123,7 @@ services:
       - DATABASE_DIALECT=postgresql
       - POSTGRES_DB=$W9_ID
       - POSTGRES_USER=$W9_ID
-      - POSTGRES_PASSWORD=$W9_POWER_PASSWO
+      - POSTGRES_PASSWORD=$W9_POWER_PASSWORD
 
       # Add the mapped in /app/pythonpath_docker which allows devs to override stuff
       - REDIS_HOST=$W9_DB_REDIS_HOST
@@ -145,7 +145,7 @@ services:
       # database configurations (do not modify)
       - DATABASE_DB=$W9_ID
       - DATABASE_HOST=db
-      - DATABASE_PASSWORD=$W9_POWER_PASSWO
+      - DATABASE_PASSWORD=$W9_POWER_PASSWORD
       - DATABASE_USER=$W9_ID
       # database engine specific environment variables
       # change the below if you prefers another database engine
@@ -153,7 +153,7 @@ services:
       - DATABASE_DIALECT=postgresql
       - POSTGRES_DB=$W9_ID
       - POSTGRES_USER=$W9_ID
-      - POSTGRES_PASSWORD=$W9_POWER_PASSWO
+      - POSTGRES_PASSWORD=$W9_POWER_PASSWORD
 
       # Add the mapped in /app/pythonpath_docker which allows devs to override stuff
       - REDIS_HOST=$W9_DB_REDIS_HOST

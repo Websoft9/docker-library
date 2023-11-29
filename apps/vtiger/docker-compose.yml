@@ -13,13 +13,13 @@ services:
     env_file: .env
     environment:
       - MYSQL_DATABASE=${W9_ID}
-      - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWO}
+      - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWORD}
       - MYSQL_USER=${W9_ID}
-      - MYSQL_PASSWORD=${W9_POWER_PASSWO}
+      - MYSQL_PASSWORD=${W9_POWER_PASSWORD}
       - VTIGER_DB_HOST=mysql
       - VTIGER_DB_USER=${W9_ID}
       - VTIGER_DB_DATABASE=${W9_ID}
-      - VTIGER_DB_PASSWORD=${W9_POWER_PASSWO}
+      - VTIGER_DB_PASSWORD=${W9_POWER_PASSWORD}
     volumes:
       - vtiger:/var/www/html
       - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
@@ -35,9 +35,9 @@ services:
     restart: unless-stopped
     environment:
       - MYSQL_DATABASE=${W9_ID}
-      - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWO}
+      - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWORD}
       - MYSQL_USER=${W9_ID}
-      - MYSQL_PASSWORD=${W9_POWER_PASSWO}
+      - MYSQL_PASSWORD=${W9_POWER_PASSWORD}
     command: --character-set-server=utf8 --collation-server=utf8_general_ci --sql_mode=NO_ENGINE_SUBSTITUTION --local_infile=ON
     volumes:
       - mysql:/var/lib/mysql

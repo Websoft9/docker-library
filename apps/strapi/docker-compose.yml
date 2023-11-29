@@ -19,7 +19,7 @@ services:
       DATABASE_PORT: 3306
       DATABASE_NAME: ${W9_ID}
       DATABASE_USERNAME: ${W9_ID}
-      DATABASE_PASSWORD: ${W9_POWER_PASSWO}
+      DATABASE_PASSWORD: ${W9_POWER_PASSWORD}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:1337"]
       interval: 30s
@@ -39,8 +39,8 @@ services:
     environment:
       MYSQL_DATABASE: ${W9_ID}
       MYSQL_USER: ${W9_ID}
-      MYSQL_PASSWORD: ${W9_POWER_PASSWO}
-      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWO}
+      MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
     env_file: .env
 
 networks:

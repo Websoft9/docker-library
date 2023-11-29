@@ -33,7 +33,7 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=$W9_POWER_PASSWO
+      - POSTGRES_PASSWORD=$W9_POWER_PASSWORD
     
   plausible_events_db:
     image: clickhouse/clickhouse-server:22.6-alpine

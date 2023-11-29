@@ -18,7 +18,7 @@ services:
     environment:
       DISCUZQ_MYSQL_DATABASE: ${W9_ID}
       DISCUZQ_MYSQL_USER: ${W9_ID}
-      DISCUZQ_MYSQL_PASSWORD: ${W9_POWER_PASSWO}
+      DISCUZQ_MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
       DISCUZQ_MYSQL_HOST: $W9_ID-mysql
       DISCUZQ_SITENAME: ${W9_SITENAME}
     depends_on:
@@ -35,8 +35,8 @@ services:
     environment:
       MYSQL_DATABASE: ${W9_ID}
       MYSQL_USER: ${W9_ID}
-      MYSQL_PASSWORD: ${W9_POWER_PASSWO}
-      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWO}
+      MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
     env_file: .env
 
 volumes:

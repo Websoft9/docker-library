@@ -11,7 +11,7 @@ services:
       - BACKUP_SLEEP=86400
       - HOLD_DAYS=10
       - POSTGRESQL_USER=${W9_ID}
-      - POSTGRESQL_PASSWORD=${W9_POWER_PASSWO}
+      - POSTGRESQL_PASSWORD=${W9_POWER_PASSWORD}
     image: ${W9_REPO}:zammad-postgresql${W9_VERSION}
     links:
       - zammad-postgresql
@@ -34,7 +34,7 @@ services:
       - zammad-postgresql
     environment:
       - POSTGRESQL_USER=${W9_ID}
-      - POSTGRESQL_PASS=${W9_POWER_PASSWO}
+      - POSTGRESQL_PASS=${W9_POWER_PASSWORD}
     image: ${W9_REPO}:zammad${W9_VERSION}
     links:
       - zammad-elasticsearch
@@ -65,7 +65,7 @@ services:
   zammad-postgresql:
     environment:
       - W9_ID=${W9_ID}
-      - W9_POWER_PASSWOWORD=${W9_POWER_PASSWO}
+      - W9_POWER_PASSWORDWORD=${W9_POWER_PASSWORD}
     image: ${W9_REPO}:zammad-postgresql${W9_VERSION}
     restart: ${W9_RESTART}
     volumes:

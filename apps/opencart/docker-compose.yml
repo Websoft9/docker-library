@@ -16,8 +16,8 @@ services:
     environment:
       MYSQL_DATABASE: ${W9_ID}
       MYSQL_USER: ${W9_ID}
-      MYSQL_PASSWORD: ${W9_POWER_PASSWO}
-      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWO}
+      MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
       MYSQL_HOST: ${W9_ID}-mysql
     links: 
       - mysql
@@ -35,8 +35,8 @@ services:
     environment:
       MYSQL_DATABASE: ${W9_ID}
       MYSQL_USER: ${W9_ID}
-      MYSQL_PASSWORD: ${W9_POWER_PASSWO}
-      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWO}
+      MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
     env_file: .env
 
 networks:

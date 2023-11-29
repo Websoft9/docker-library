@@ -11,7 +11,7 @@ services:
       - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
     env_file: .env
     environment:
-      - VNC_PW=$W9_POWER_PASSWO
+      - VNC_PW=$W9_POWER_PASSWORD
 
   mongo:
     image: mongo

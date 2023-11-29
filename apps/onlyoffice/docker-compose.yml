@@ -9,8 +9,8 @@ services:
     environment:
      - MYSQL_DATABASE=${W9_ID}
      - MYSQL_USER=${W9_ID}
-     - MYSQL_PASSWORD=${W9_POWER_PASSWO}
-     - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWO}
+     - MYSQL_PASSWORD=${W9_POWER_PASSWORD}
+     - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWORD}
     stdin_open: true
     tty: true
     restart: unless-stopped
@@ -33,11 +33,11 @@ services:
      - DOCUMENT_SERVER_JWT_ENABLED=false
      - DOCUMENT_SERVER_JWT_SECRET=jwt_secret
      - DOCUMENT_SERVER_JWT_HEADER=AuthorizationJwt
-     - MYSQL_SERVER_ROOT_PASSWORD=${W9_POWER_PASSWO}
+     - MYSQL_SERVER_ROOT_PASSWORD=${W9_POWER_PASSWORD}
      - MYSQL_SERVER_DB_NAME=${W9_ID}
      - MYSQL_SERVER_HOST=${W9_ID}-mysql
      - MYSQL_SERVER_USER=${W9_ID}
-     - MYSQL_SERVER_PASS=${W9_POWER_PASSWO}
+     - MYSQL_SERVER_PASS=${W9_POWER_PASSWORD}
     ports:
      - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
      - '${W9_HTTPS_PORT_SET}'

@@ -15,7 +15,7 @@ services:
       - DISCUZ_DB_HOST=$W9_ID-mysql
       - DISCUZ_DB_USER=$W9_ID
       - DISCUZ_DB_DATABASE=$W9_ID
-      - DISCUZ_DB_PASSWORD=$W9_POWER_PASSWO
+      - DISCUZ_DB_PASSWORD=$W9_POWER_PASSWORD
     entrypoint:
       - bash
       - -c
@@ -33,10 +33,10 @@ services:
     container_name: $W9_ID-mysql
     command: --default-authentication-plugin=mysql_native_password    
     environment:
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWO
+      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
       MYSQL_DATABASE: $W9_ID
       MYSQL_USER: $W9_ID
-      MYSQL_PASSWORD: $W9_POWER_PASSWO
+      MYSQL_PASSWORD: $W9_POWER_PASSWORD
     volumes:
       - mysql:/var/lib/mysql
     restart: unless-stopped

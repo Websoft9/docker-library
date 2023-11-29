@@ -16,7 +16,7 @@ services:
       - SUITECRM_DATABASE_PORT_NUMBER=3306
       - SUITECRM_DATABASE_USER=${W9_ID}
       - SUITECRM_DATABASE_NAME=${W9_ID}
-      - SUITECRM_DATABASE_PASSWORD=${W9_POWER_PASSWO}
+      - SUITECRM_DATABASE_PASSWORD=${W9_POWER_PASSWORD}
       - SUITECRM_USERNAME=${W9_USER}
       - SUITECRM_PASSWORD=${W9_PASSWORD}
     volumes:
@@ -28,10 +28,10 @@ services:
     image: mariadb:10.6
     container_name: ${W9_ID}-mariadb
     environment:
-      - MARIADB_ROOT_PASSWORD=${W9_POWER_PASSWO}
+      - MARIADB_ROOT_PASSWORD=${W9_POWER_PASSWORD}
       - MARIADB_DATABASE=${W9_ID}
       - MARIADB_USER=${W9_ID}
-      - MARIADB_PASSWORD=${W9_POWER_PASSWO}
+      - MARIADB_PASSWORD=${W9_POWER_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
     restart: unless-stopped

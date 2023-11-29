@@ -15,7 +15,7 @@ services:
     environment:
       - DISCOURSE_HOST=$W9_URL
       - DISCOURSE_USERNAME=$W9_USER
-      - DISCOURSE_PASSWORD=$W9_POWER_PASSWO
+      - DISCOURSE_PASSWORD=$W9_POWER_PASSWORD
       - DISCOURSE_PRECOMPILE_ASSETS=no
     depends_on:
       - postgresql
@@ -29,7 +29,7 @@ services:
     environment:
       - POSTGRESQL_USERNAME=$W9_ID
       - POSTGRESQL_DATABASE=$W9_ID
-      - POSTGRESQL_PASSWORD=$W9_POWER_PASSWO
+      - POSTGRESQL_PASSWORD=$W9_POWER_PASSWORD
     env_file: .env
 
   redis:

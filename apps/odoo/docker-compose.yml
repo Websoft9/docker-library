@@ -17,7 +17,7 @@ services:
     environment:
       HOST: ${W9_ID}-postgresql
       USER: ${W9_ID}
-      PASSWORD: ${W9_POWER_PASSWO}
+      PASSWORD: ${W9_POWER_PASSWORD}
     depends_on:
       - db
     restart: unless-stopped
@@ -31,7 +31,7 @@ services:
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: ${W9_ID}
-      POSTGRES_PASSWORD: ${W9_POWER_PASSWO}
+      POSTGRES_PASSWORD: ${W9_POWER_PASSWORD}
       POSTGRES_INITDB_ARGS: --data-checksums
       POSTGRES_HOST_AUTH_METHOD: trust
       PGDATA: /var/lib/postgresql/data

@@ -40,8 +40,8 @@ services:
   environment:
    - DB_SERVER_HOST=$W9_ID-mysql
    - DB_SERVER_PORT=3306
-   - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWO}
-   - MYSQL_PASSWORD=${W9_POWER_PASSWO}
+   - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWORD}
+   - MYSQL_PASSWORD=${W9_POWER_PASSWORD}
    - MYSQL_DATABASE=${W9_ID}
    - W9_PASSWORD=${W9_PASSWORD}
   depends_on:
@@ -88,8 +88,8 @@ services:
   environment:
    - DB_SERVER_HOST=$W9_ID-mysql
    - DB_SERVER_PORT=3306
-   - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWO}
-   - MYSQL_PASSWORD=${W9_POWER_PASSWO}
+   - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWORD}
+   - MYSQL_PASSWORD=${W9_POWER_PASSWORD}
   env_file:
    - ./src/env_vars/.env_web
   depends_on:
@@ -201,10 +201,10 @@ services:
    - mysql:/var/lib/mysql:rw
   environment: 
    - DB_SERVER_HOST=$W9_ID-mysql
-   - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWO}
+   - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWORD}
    - DB_SERVER_PORT=3306
    - MYSQL_USER=${W9_ID}
-   - MYSQL_PASSWORD=${W9_POWER_PASSWO}
+   - MYSQL_PASSWORD=${W9_POWER_PASSWORD}
   security_opt:
    - seccomp:unconfined
   stop_grace_period: 1m

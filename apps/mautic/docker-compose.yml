@@ -18,7 +18,7 @@ services:
       # MAUTIC_DB_USER must root, otherwise container error
       - MAUTIC_DB_HOST=mysql
       - MAUTIC_DB_USER=root
-      - MAUTIC_DB_PASSWORD=${W9_POWER_PASSWO}
+      - MAUTIC_DB_PASSWORD=${W9_POWER_PASSWORD}
       - MAUTIC_DB_NAME=${W9_ID}
     depends_on:
       - mysql
@@ -35,8 +35,8 @@ services:
     environment:
       MYSQL_DATABASE: ${W9_ID}
       MYSQL_USER: ${W9_ID}
-      MYSQL_PASSWORD: ${W9_POWER_PASSWO}
-      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWO}
+      MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
     env_file: .env
 
 networks:

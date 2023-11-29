@@ -11,8 +11,8 @@ services:
       - "TZ=Asia/Shanghai"
       - "MYSQL_DATABASE=$W9_ID"
       - "MYSQL_USER=$W9_ID"
-      - "MYSQL_PASSWORD=$W9_POWER_PASSWO"
-      - "MYSQL_ROOT_PASSWORD=$W9_POWER_PASSWO"
+      - "MYSQL_PASSWORD=$W9_POWER_PASSWORD"
+      - "MYSQL_ROOT_PASSWORD=$W9_POWER_PASSWORD"
     restart: always
     volumes:
       - mysql_data:/var/lib/mysql
@@ -29,7 +29,7 @@ services:
       - "MYSQL_SERVER=mariadb"
       - "MYSQL_DATABASE=$W9_ID"
       - "MYSQL_USER=$W9_ID"
-      - "MYSQL_PASSWORD=$W9_POWER_PASSWO"
+      - "MYSQL_PASSWORD=$W9_POWER_PASSWORD"
       - "SESSION_HOST=redis"
       - "PUID=1050"
       - "PGID=1051"

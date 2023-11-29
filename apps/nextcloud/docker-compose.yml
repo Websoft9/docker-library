@@ -13,7 +13,7 @@ services:
       - nextcloud-data:/var/www/html/data
     env_file: .env
     environment:
-      - MYSQL_PASSWORD=${W9_POWER_PASSWO}
+      - MYSQL_PASSWORD=${W9_POWER_PASSWORD}
       - MYSQL_DATABASE=${W9_ID}
       - MYSQL_USER=${W9_ID}
       - MYSQL_HOST=${W9_ID}-mysql
@@ -31,8 +31,8 @@ services:
     environment:
       MYSQL_DATABASE: ${W9_ID}
       MYSQL_USER: ${W9_ID}
-      MYSQL_PASSWORD: ${W9_POWER_PASSWO}
-      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWO}
+      MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
 
 volumes:
   nextcloud:

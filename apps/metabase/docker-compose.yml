@@ -20,7 +20,7 @@ services:
       JAVA_TIMEZONE: $W9_TIMEZONE
       MB_DB_DBNAME: $W9_ID
       MB_DB_USER: root
-      MB_DB_PASS: $W9_POWER_PASSWO
+      MB_DB_PASS: $W9_POWER_PASSWORD
       MB_DB_HOST: $W9_ID-mysql
     depends_on: 
       - mysql
@@ -33,10 +33,10 @@ services:
      - mysql:/var/lib/mysql
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-time-zone=+8:00 --lower-case-table-names=1 --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWO
+      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
       MYSQL_DATABASE: $W9_ID
       MYSQL_USERNAME: root
-      MYSQL_PASSWORD: $W9_POWER_PASSWO
+      MYSQL_PASSWORD: $W9_POWER_PASSWORD
 
 volumes:
   mysql:

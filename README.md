@@ -79,7 +79,7 @@ Propose and vote for [apps](wishlist.md) to be packaged
 
 #### Do I need to change the password before docker-compose up?
 
-Yes, you should modify **W9_POWER_PASSWO** at .env file for production
+Yes, you should modify **W9_POWER_PASSWORD** at .env file for production
 
 #### Docker runing failed for the reason that port conflict?
 

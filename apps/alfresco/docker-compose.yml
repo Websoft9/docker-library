@@ -31,7 +31,7 @@ services:
         -Dalfresco_user_store.adminpassword=$W9_ENCRYPT_PASSWORD
         -Ddb.driver=org.postgresql.Driver
         -Ddb.username=alfresco
-        -Ddb.password=$W9_POWER_PASSWO
+        -Ddb.password=$W9_POWER_PASSWORD
         -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
         -Dsolr.host=solr6
         -Dsolr.port=8983
@@ -96,7 +96,7 @@ services:
         limits:
           memory: 512M
     environment:
-      - POSTGRES_PASSWORD=$W9_POWER_PASSWO
+      - POSTGRES_PASSWORD=$W9_POWER_PASSWORD
       - POSTGRES_USER=$W9_ID
       - POSTGRES_DB=$W9_ID
     command: postgres -c max_connections=300 -c log_min_messages=LOG

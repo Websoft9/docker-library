@@ -13,7 +13,7 @@ services:
       - KONG_DATABASE=postgres
       - KONG_PG_HOST=postgres
       - KONG_PG_USER=${W9_ID}
-      - KONG_PG_PASSWORD=${W9_POWER_PASSWO}
+      - KONG_PG_PASSWORD=${W9_POWER_PASSWORD}
       - KONG_PROXY_ACCESS_LOG=/dev/stdout
       - KONG_ADMIN_ACCESS_LOG=/dev/stdout
       - KONG_PROXY_ERROR_LOG=/dev/stderr
@@ -49,7 +49,7 @@ services:
       - KONG_DATABASE=postgres
       - KONG_PG_HOST=postgres
       - KONG_PG_USER=${W9_ID}
-      - KONG_PG_PASSWORD=${W9_POWER_PASSWO}
+      - KONG_PG_PASSWORD=${W9_POWER_PASSWORD}
     command: kong migrations bootstrap
     restart: on-failure
     env_file: .env
@@ -63,7 +63,7 @@ services:
     environment:
       - POSTGRES_USER=${W9_ID}
       - POSTGRES_DB=${W9_ID}
-      - POSTGRES_PASSWORD=${W9_POWER_PASSWO}
+      - POSTGRES_PASSWORD=${W9_POWER_PASSWORD}
     volumes:
       - "postgres:/var/lib/postgresql/data"
     env_file: .env

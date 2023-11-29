@@ -16,10 +16,10 @@ services:
       - PS_DOMAIN=${W9_URL}
       - DB_SERVER=${W9_ID}-mysql
       - DB_USER=${W9_ID}
-      - DB_PASSWD=${W9_POWER_PASSWO}
+      - DB_PASSWD=${W9_POWER_PASSWORD}
       - DB_PREFIX=ps_
       - ADMIN_MAIL=${W9_USER}
-      - ADMIN_PASSWD=${W9_POWER_PASSWO}
+      - ADMIN_PASSWD=${W9_POWER_PASSWORD}
     depends_on:
       - mysql
     restart: unless-stopped
@@ -34,8 +34,8 @@ services:
     environment:
       MYSQL_DATABASE: ${W9_ID}
       MYSQL_USER: ${W9_ID}
-      MYSQL_PASSWORD: ${W9_POWER_PASSWO}
-      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWO}
+      MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
     env_file: .env
 
 networks:
