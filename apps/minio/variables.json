@@ -7,14 +7,7 @@
     {
       "dist": "community",
       "version": [
-        "2.2",
-        "latest"
-      ]
-    },
-    {
-      "dist": "enterprise",
-      "version": [
-        "1.8.2",
+        "RELEASE.2023-05-18T00-05-36Z",
         "latest"
       ]
     }
