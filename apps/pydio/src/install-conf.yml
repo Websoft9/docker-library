@@ -5,12 +5,12 @@
 
 # WebUI Admin definition
 frontendlogin: {$W9_USER}
-frontendpassword: {$W9_PASSWORD}
+frontendpassword: {$W9_POWER_PASSWORD}
 
 # DB connection
 dbconnectiontype: tcp
 dbtcphostname: mysql
 dbtcpport: 3306
 dbtcpname: cells
-dbtcpuser: {$W9_DB_MYSQL_USER}
-dbtcppassword: {$W9_DB_MYSQL_PASSWORD}
+dbtcpuser: {$W9_ID}
+dbtcppassword: {$W9_POWER_PASSWORD}
