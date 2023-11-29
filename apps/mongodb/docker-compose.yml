@@ -5,11 +5,11 @@ version: '3.8'
 
 services:
   mongo:
-    image: mongo:${W9_VERSION}
+    image: ${W9_REPO}:${W9_VERSION}
     restart: unless-stopped
-    container_name: ${W9_NAME}
+    container_name: ${W9_ID}
     ports:
-      - ${W9_DB_PORT}:27017
+      - ${W9_DB_PORT_SET}:${W9_DB_PORT}
     env_file: .env
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${W9_USER}
