@@ -13,15 +13,16 @@ services:
     ports:
       - '$W9_HTTP_PORT_SET:$W9_HTTP_PORT'
     environment:
-      DATABASE_URL: postgresql://umami:umami@db:5432/umami
+      DATABASE_URL: postgresql://$W9_ID:$W9_POWER_PASSWO@$W9_ID-postgresql:5432/$W9_ID
       DATABASE_TYPE: postgresql
       W9_SECRET: replace-me-with-a-random-string
     depends_on:
-      - db
+      - postgresql
     restart: unless-stopped
 
-  db:
+  postgresql:
     image: postgres:15-alpine
+    container_name: $W9_ID-postgresql
     environment:
       POSTGRES_DB: $W9_ID
       POSTGRES_USER: $W9_ID
