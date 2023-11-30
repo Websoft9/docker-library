@@ -37,9 +37,9 @@ services:
     env_file: .env
     environment:
       - MYSQL_USER=$W9_ID
-      - MYSQL_PASSWORD=$POWER_PASSWO
+      - MYSQL_PASSWORD=$W9_POWER_PASSWORD
       - MYSQL_DATABASE=$W9_ID
-      - MYSQL_ROOT_PASSWORD=$POWER_PASSWO
+      - MYSQL_ROOT_PASSWORD=$W9_POWER_PASSWORD
     volumes:
       - "db:/var/lib/mysql"
 
@@ -50,9 +50,9 @@ services:
     env_file: .env
     environment:
       - MYSQL_USER=${W9_ID}_cache
-      - MYSQL_PASSWORD=$POWER_PASSWO
+      - MYSQL_PASSWORD=$W9_POWER_PASSWORD
       - MYSQL_DATABASE=${W9_ID}_cache
-      - MYSQL_ROOT_PASSWORD=$POWER_PASSWO
+      - MYSQL_ROOT_PASSWORD=$W9_POWER_PASSWORD
     volumes:
       - "cache:/var/lib/mysql"
 
