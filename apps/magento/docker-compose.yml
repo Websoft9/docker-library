@@ -33,7 +33,7 @@ services:
       /bin/sh -c "
       apt update -y
       apt install -y --no-install-recommends wget
-      while [ ! -f /data/bin/magento ]; do
+      while [ ! -f /data/vendor/magento/language-zh_hans_cn ]; do
         echo 'Waiting for bin/magento to be created...'
         sleep 10
       done
