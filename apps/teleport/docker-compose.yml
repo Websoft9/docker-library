@@ -23,9 +23,9 @@ services:
     hostname: localhost
     command: -c "sleep 1 && /usr/bin/dumb-init teleport start -c /etc/teleport/teleport.yaml"
     ports:
-      - '${W9_3023_PORT_SET}:${W9_3023_PORT}'
-      - '${W9_3025_PORT_SET}:${W9_3025_PORT}'
-      - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
+      - '${W9_SSH_PORT_SET}:${W9_SSH_PORT}'
+      - '${W9_AUTH_PORT_SET}:${W9_AUTH_PORT}'
+      - '${W9_HTTPS_PORT_SET}:${W9_HTTPS_PORT}'
     volumes:
       - ./src/config:/etc/teleport
       - teleport_data:/var/lib/teleport
