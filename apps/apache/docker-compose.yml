@@ -4,7 +4,7 @@ version: '3.8'
 services:
   apache:
     container_name: ${W9_ID}
-    image: httpd:${W9_VERSION}
+    image: ${W9_REPO}:${W9_VERSION}
     restart: unless-stopped
     ports:
      - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}

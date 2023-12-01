@@ -32,7 +32,7 @@ services:
 
   mongo:
     image: mongo:5.0.0
-    container_name: ${W9_ID}-mongo
+    container_name: ${W9_ID}-mongodb
     restart: unless-stopped
     volumes: 
       - mongo:/data/db

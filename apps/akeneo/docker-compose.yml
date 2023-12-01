@@ -42,7 +42,7 @@ services:
       ES_JAVA_OPTS: '${ES_JAVA_OPTS:--Xms512m -Xmx512m}'
       discovery.type: 'single-node'
     ports:
-      - '${W9_DB_ES_PORT_SET}:${W9_DB_ES_PORT}'
+      - '${W9_ES_PORT_SET}:${W9_ES_PORT}'
     env_file: .env
 
 networks:

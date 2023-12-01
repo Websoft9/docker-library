@@ -4,7 +4,7 @@
 version: "3.8"
 services:
   web:
-    image: quay.io/ansible/awx:${W9_VERSION}
+    image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     depends_on:
       - redis
@@ -126,7 +126,7 @@ services:
 
   postgres:
     image: postgres:12
-    container_name: awx_postgres
+    container_name: awx_postgresql
     restart: unless-stopped
     env_file: .env
     volumes:

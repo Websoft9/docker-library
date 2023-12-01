@@ -29,7 +29,7 @@ services:
       - postgres
 
   postgres:
-    container_name: $W9_ID-postgres
+    container_name: $W9_ID-postgresql
     image: postgres:13-alpine
     restart: unless-stopped
     security_opt:

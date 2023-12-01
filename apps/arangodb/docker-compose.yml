@@ -13,7 +13,7 @@ services:
     ports:
       - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
     environment:
-      - ARANGO_ROOT_PASSWORD=$W9_PASSWORD
+      - ARANGO_ROOT_PASSWORD=$W9_POWER_PASSWORD
     volumes:
       - 'db:/var/lib/arangodb3'
       - 'apps:/var/lib/arangodb3-apps'
