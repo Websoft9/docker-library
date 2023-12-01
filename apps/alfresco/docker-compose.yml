@@ -89,7 +89,7 @@ services:
 
   postgres:
     image: postgres:13.3
-    container_name: $W9_ID-postgres
+    container_name: $W9_ID-postgresql
     restart: unless-stopped
     deploy:
       resources:

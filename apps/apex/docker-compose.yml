@@ -4,15 +4,15 @@ version: '3.8'
 
 services:
   oracledb:
-    image: container-registry.oracle.com/database/${W9_DB_ORACLE_EDITION}:${W9_DB_ORACLE_VERSION}
+    image: container-registry.oracle.com/database/express:latest
     container_name: ${W9_ID}-oracle
     environment:
-      ORACLE_CHARACTERSET: ${W9_DB_CHARACTERSET}
+      ORACLE_CHARACTERSET: AL32UTF8
       ORACLE_PWD: ${W9_POWER_PASSWORD}
-      ORACLE_SID: ${W9_DB_ORACLE_SID}
-      ORACLE_PDB: ${W9_DB_ORACLE_PDB}
-      INIT_SGA_SIZE: ${W9_DB_ORACLE_SGA}
-      INIT_PGA_SIZE: ${W9_DB_ORACLE_PGA}
+      ORACLE_SID: xe
+      ORACLE_PDB: xepdb1
+      INIT_SGA_SIZE: 1000
+      INIT_PGA_SIZE: 1000
       ENABLE_ARCHIVELOG: true
     volumes:
       - oracledb:/opt/oracle/oradata
@@ -29,7 +29,7 @@ services:
       - /bin/bash
       - -c
       - |
-        echo 'CONN_STRING=sys/$W9_POWER_PASSWORD@oracledb:$W9_DB_ORACLE_PORT/${W9_DB_ORACLE_PDB}' > /opt/oracle/variables/conn_string.txt
+        echo 'CONN_STRING=sys/$W9_POWER_PASSWORD@oracledb:1512/xepdb1' > /opt/oracle/variables/conn_string.txt
         sed -i 's/Welcome_1/${W9_PASSWORD}/g' /opt/oracle/apex/setapexadmin.sql
         bash /entrypoint.sh
     ports:

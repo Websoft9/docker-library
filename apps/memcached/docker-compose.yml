@@ -8,7 +8,7 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-     - '${W9_DB_PORT_SET}:${W9_DB_PORT}'
+     - '${W9_MEM_PORT_SET}:${W9_MEM_PORT}'
     env_file: .env
     command:
      - '-m ${W9_MEMORY}'
