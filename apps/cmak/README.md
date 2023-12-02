@@ -1,6 +1,11 @@
 # Cmak on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Cmak v3.0
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Cmak:
+
+ - community:  3.0
+
+ - enterprise:  1.8.2, latest
+
 
 ## System Requirements
 

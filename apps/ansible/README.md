@@ -2,7 +2,7 @@
 
 This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Ansible:
 
- - community:  latest
+ - community:  2.9.0
 
 
 ## System Requirements

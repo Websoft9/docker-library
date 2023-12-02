@@ -1,6 +1,11 @@
 # ONLYOFFICE on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for ONLYOFFICE v
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for ONLYOFFICE:
+
+ - community:  latest
+
+ - enterprise:  1.8.2, latest
+
 
 ## System Requirements
 

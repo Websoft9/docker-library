@@ -2,7 +2,7 @@
 
 This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for chat2:
 
- - community:  latest
+ - community:  2.0.6
 
 
 ## System Requirements

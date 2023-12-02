@@ -1,6 +1,11 @@
 # BT on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for BT v7.9.7
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for BT:
+
+ - community:  7.9.7
+
+ - enterprise:  1.8.2, latest
+
 
 ## System Requirements
 

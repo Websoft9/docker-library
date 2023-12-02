@@ -1,6 +1,9 @@
 # Discuz on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Discuz vv3.4.0
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Discuz:
+
+ - community:  v3.4.0
+
 
 ## System Requirements
 

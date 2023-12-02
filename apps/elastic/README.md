@@ -1,6 +1,9 @@
 # elastic Stack on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for elastic Stack v8.5.0
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for elastic Stack:
+
+ - community:  8.10.2, latest
+
 
 ## System Requirements
 

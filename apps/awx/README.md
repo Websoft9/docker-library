@@ -2,7 +2,7 @@
 
 This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for AWX:
 
- - community:  22.5.0, latest
+ - community:  22.5.0
 
 
 ## System Requirements
