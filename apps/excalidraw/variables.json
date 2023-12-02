@@ -2,7 +2,7 @@
   "name": "excalidraw",
   "trademark": "Excalidraw",
   "release": true,
-  "fork_url": "https://github.com/toeverything/AFFiNE",
+  "fork_url": "https://excalidraw.com/",
   "edition": [
     {
       "dist": "community",
@@ -15,6 +15,6 @@
     "cpu": "1",
     "memory": "1",
     "disk": "1",
-    "url": "https://github.com/toeverything/AFFiNE"
+    "url": "https://excalidraw.com/"
   }
 }
