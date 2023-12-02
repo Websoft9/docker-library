@@ -1,6 +1,9 @@
 # Metabase on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Metabase v
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Metabase:
+
+ - community:  0.47.3, latest
+
 
 ## System Requirements
 

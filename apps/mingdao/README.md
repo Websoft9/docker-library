@@ -1,6 +1,9 @@
 # Mingdao on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Mingdao v3.9.1
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Mingdao:
+
+ - community:  3.9.1
+
 
 ## System Requirements
 
