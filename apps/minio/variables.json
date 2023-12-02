@@ -6,10 +6,7 @@
   "edition": [
     {
       "dist": "community",
-      "version": [
-        "RELEASE.2023-05-18T00-05-36Z",
-        "latest"
-      ]
+      "version": ["RELEASE.2023-05-18T00-05-36Z","latest"]
     }
   ],
   "requirements": {
