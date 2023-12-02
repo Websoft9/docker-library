@@ -1,10 +1,8 @@
-# ONLYOFFICE on Docker  
+# Docusaurus on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for ONLYOFFICE:
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Docusaurus:
 
  - community:  latest
-
- - enterprise:  1.8.2, latest
 
 
 ## System Requirements
@@ -18,10 +16,10 @@ The following are the minimal [recommended requirements](https://github.com/only
 
 ## Install
 
-You can install this ONLYOFFICE by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this Docusaurus by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use ONLYOFFICE with **Websoft9 Business Support** free, you can [subscribe ONLYOFFICE](https://www.websoft9.com/apps) on Cloud platform
+If you want use Docusaurus with **Websoft9 Business Support** free, you can [subscribe Docusaurus](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[ONLYOFFICE Administrator Guide](https://support.websoft9.com/docs/template) powered by Websoft9
+[Docusaurus Administrator Guide](https://support.websoft9.com/docs/docusaurus) powered by Websoft9
