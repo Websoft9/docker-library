@@ -58,6 +58,7 @@ jobs:
         #判断是否存在commmunity version,若有，默认改变第一个
         distribution=$(cat distribution.json)
         echo "distribution":$distribution
+        echo "json read ok"
         
         readarray -t edition_array <<< $(echo $edition | jq -r '.[] | @base64')
 
