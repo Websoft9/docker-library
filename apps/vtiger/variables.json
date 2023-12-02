@@ -2,7 +2,7 @@
   "name": "vtiger",
   "trademark": "Vtiger",
   "release": true,
-  "fork_url": "",
+  "fork_url": "https://www.vtiger.com",
   "edition": [
     {
       "dist": "community",

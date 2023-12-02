@@ -2,12 +2,13 @@
   "name": "nocodb",
   "trademark": "Nocodb",
   "release": true,
-  "fork_url": "https://supabase.com/docs/guides/self-hosting/docker",
+  "fork_url": "https://github.com/nocobase/nocobase",
   "edition": [
     {
       "dist": "community",
       "version": [
-        "latest"
+        "0.16.0-alpha.5",
+        "main"
       ]
     }
   ],
@@ -15,6 +16,6 @@
     "cpu": "1",
     "memory": "1",
     "disk": "1",
-    "url": "https://github.com/nocodb"
+    "url": "https://github.com/nocobase/nocobase"
   }
 }

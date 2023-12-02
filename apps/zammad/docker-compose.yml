@@ -12,7 +12,7 @@ services:
       - HOLD_DAYS=10
       - POSTGRESQL_USER=${W9_ID}
       - POSTGRESQL_PASSWORD=${W9_POWER_PASSWORD}
-    image: ${W9_REPO}:zammad-postgresql${W9_VERSION}
+    image: ${W9_REPO}:zammad-postgresql-${W9_VERSION}
     links:
       - zammad-postgresql
     restart: ${W9_RESTART}
@@ -23,7 +23,7 @@ services:
   zammad-elasticsearch:
     environment:
       - discovery.type=single-node
-    image: ${W9_REPO}:zammad-elasticsearch${W9_VERSION}
+    image: ${W9_REPO}:zammad-elasticsearch-${W9_VERSION}
     restart: ${W9_RESTART}
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
@@ -35,7 +35,7 @@ services:
     environment:
       - POSTGRESQL_USER=${W9_ID}
       - POSTGRESQL_PASS=${W9_POWER_PASSWORD}
-    image: ${W9_REPO}:zammad${W9_VERSION}
+    image: ${W9_REPO}:zammad-${W9_VERSION}
     links:
       - zammad-elasticsearch
       - zammad-postgresql
@@ -54,7 +54,7 @@ services:
       - "8080"
     depends_on:
       - zammad-railsserver
-    image: ${W9_REPO}:zammad${W9_VERSION}
+    image: ${W9_REPO}:zammad-${W9_VERSION}
     links:
       - zammad-railsserver
       - zammad-websocket
@@ -66,7 +66,7 @@ services:
     environment:
       - W9_ID=${W9_ID}
       - W9_POWER_PASSWORDWORD=${W9_POWER_PASSWORD}
-    image: ${W9_REPO}:zammad-postgresql${W9_VERSION}
+    image: ${W9_REPO}:zammad-postgresql-${W9_VERSION}
     restart: ${W9_RESTART}
     volumes:
       - postgresql-data:/var/lib/postgresql/data
@@ -76,7 +76,7 @@ services:
     depends_on:
       - zammad-memcached
       - zammad-postgresql
-    image: ${W9_REPO}:zammad${W9_VERSION}
+    image: ${W9_REPO}:zammad-${W9_VERSION}
     links:
       - zammad-elasticsearch
       - zammad-memcached
@@ -90,7 +90,7 @@ services:
     depends_on:
       - zammad-memcached
       - zammad-railsserver
-    image: ${W9_REPO}:zammad${W9_VERSION}
+    image: ${W9_REPO}:zammad-${W9_VERSION}
     links:
       - zammad-elasticsearch
       - zammad-memcached
@@ -104,7 +104,7 @@ services:
     depends_on:
       - zammad-memcached
       - zammad-railsserver
-    image: ${W9_REPO}:zammad${W9_VERSION}
+    image: ${W9_REPO}:zammad-${W9_VERSION}
     links:
       - zammad-postgresql
       - zammad-memcached

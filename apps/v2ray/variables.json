@@ -2,20 +2,12 @@
   "name": "v2ray",
   "trademark": "V2Ray",
   "release": false,
-  "fork_url": "",
+  "fork_url": "https://www.v2ray.com/",
   "edition": [
     {
       "dist": "community",
       "version": [
-        "2.2",
-        "latest"
-      ]
-    },
-    {
-      "dist": "enterprise",
-      "version": [
-        "1.8.2",
-        "latest"
+        "5.4.1"
       ]
     }
   ],
@@ -23,6 +15,6 @@
     "cpu": "1",
     "memory": "1",
     "disk": "1",
-    "url": "https://community.vtiger.com/help/vtigercrm/administrators/installation.html"
+    "url": "https://www.v2ray.com/"
   }
 }

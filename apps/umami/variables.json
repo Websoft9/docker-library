@@ -1,8 +1,8 @@
 {
-  "name": "plausible",
-  "trademark": "Plausible",
+  "name": "umami",
+  "trademark": "Umami",
   "release": true,
-  "fork_url": "https://github.com/plausible/hosting",
+  "fork_url": "https://umami.is/docs/install",
   "edition": [
     {
       "dist": "community",
@@ -15,6 +15,6 @@
     "cpu": "1",
     "memory": "1",
     "disk": "1",
-    "url": "https://github.com/plausible/analytics"
+    "url": "https://umami.is/docs/install"
   }
 }
