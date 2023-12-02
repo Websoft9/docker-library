@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
     paths: 
-      - 'apps/*/variables1.json'
+      - 'apps/*/variables.json'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -44,6 +44,7 @@ jobs:
         echo "version=${version}" >> $GITHUB_ENV
         echo "newVersion=${newVersion}" >> $GITHUB_ENV
         echo $(echo $entry | jq '.items[0].fields.distribution') > distribution.json
+        echo
         
     - name: contentful update
       run: |
@@ -55,55 +56,51 @@ jobs:
         
         #判断是否存在commmunity version,若有，默认改变第一个
         distribution=$(cat distribution.json)
-        result=$(echo $distribution | grep "Community")
-        if [[ "$result" != "" ]]
-        then
-            newDistribution=$(echo $distribution | sed '0,/\"value\": \"[^\"]*\"/{s/\"value\": \"[^\"]*\"/\"value\": '${version}'/}')
-        else
-            newDistribution=$(echo $distribution)
-        fi
-        
-        #1、更新数据
-        echo '[{
-                  "op": "add",
-                  "path": "/fields/vcpu",
-                  "value": {
-                    "en-US": '${cpu}',
-                    "zh-CN": '${cpu}'
-                  }
-                }, {
-                  "op": "add",
-                  "path": "/fields/memory",
-                  "value": {
-                    "en-US": '${memory}',
-                    "zh-CN": '${memory}'
-                  }
-                }, {
-                  "op": "add",
-                  "path": "/fields/storage",
-                  "value": {
-                    "en-US": '${disk}',
-                    "zh-CN": '${disk}'
-                  }
-                }, {
-                      "op": "add",
-                      "path": "/fields/distribution",
-                      "value": '${newDistribution}'
-                }]' > data.json
-        curl --include \
-             --request PATCH \
-             --header 'Authorization: Bearer ${{secrets.CONTENTFUL_TOKEN}}' \
-             --header 'Content-Type: application/json-patch+json' \
-             -H 'X-Contentful-Version: ${{env.version}}' \
-             -d '@data.json' \
-             https://api.contentful.com/spaces/ffrhttfighww/environments/master/entries/${{env.id}}
+        echo $distribution
+        jq -s '.[0] * .[1]' "$edition" "$distribution" > "merged.json"
+        newDistribution=$(cat merged.json)
+        echo $newDistribution
+
+        # echo '[{
+        #           "op": "add",
+        #           "path": "/fields/vcpu",
+        #           "value": {
+        #             "en-US": '${cpu}',
+        #             "zh-CN": '${cpu}'
+        #           }
+        #         }, {
+        #           "op": "add",
+        #           "path": "/fields/memory",
+        #           "value": {
+        #             "en-US": '${memory}',
+        #             "zh-CN": '${memory}'
+        #           }
+        #         }, {
+        #           "op": "add",
+        #           "path": "/fields/storage",
+        #           "value": {
+        #             "en-US": '${disk}',
+        #             "zh-CN": '${disk}'
+        #           }
+        #         }, {
+        #               "op": "add",
+        #               "path": "/fields/distribution",
+        #               "value": '${newDistribution}'
+        #         }]' > data.json
+        # curl --include \
+        #      --request PATCH \
+        #      --header 'Authorization: Bearer ${{secrets.CONTENTFUL_TOKEN}}' \
+        #      --header 'Content-Type: application/json-patch+json' \
+        #      -H 'X-Contentful-Version: ${{env.version}}' \
+        #      -d '@data.json' \
+        #      https://api.contentful.com/spaces/ffrhttfighww/environments/master/entries/${{env.id}}
          
-         #2、发布
-         newVersion=$(($entryVersion+1))
-         echo $newVersion
-         curl --include \
-               --request PUT \
-               --header 'Authorization: Bearer ${{secrets.CONTENTFUL_TOKEN}}' \
-               --header 'X-Contentful-Version: ${{env.newVersion}}' \
-               https://api.contentful.com/spaces/ffrhttfighww/environments/master/entries/${{env.id}}/published
+        #  #2、发布
+        #  newVersion=$(($entryVersion+1))
+        #  echo $newVersion
+        #  curl --include \
+        #        --request PUT \
+        #        --header 'Authorization: Bearer ${{secrets.CONTENTFUL_TOKEN}}' \
+        #        --header 'X-Contentful-Version: ${{env.newVersion}}' \
+        #        https://api.contentful.com/spaces/ffrhttfighww/environments/master/entries/${{env.id}}/published
 
