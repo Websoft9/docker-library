@@ -24,6 +24,8 @@ def update_contentful(product_name, editions):
     )
     response.raise_for_status()
     entries = response.json()
+
+    print(f"entries: {entries}")
     
     # 假设只有一个匹配的 entry
     if entries['total'] > 0:
@@ -39,6 +41,7 @@ def update_contentful(product_name, editions):
                 }
             }
         }
+        print(f"update_data: {update_data}")
         
         # 更新 Contentful entry
         update_response = requests.put(
