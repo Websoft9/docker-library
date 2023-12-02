@@ -1,21 +1,12 @@
 {
-  "name": "template",
-  "trademark": "ONLYOFFICE",
+  "name": "docusaurus",
+  "trademark": "Docusaurus",
   "release": false,
   "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
   "edition": [
     {
       "dist": "community",
-      "version": [
-        "latest"
-      ]
-    },
-    {
-      "dist": "enterprise",
-      "version": [
-        "1.8.2",
-        "latest"
-      ]
+      "version": ["latest"]
     }
   ],
   "requirements": {
