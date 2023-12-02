@@ -1,6 +1,9 @@
 # MongoDB on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for MongoDB v6.0,5.0,4.4,3.7
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for MongoDB:
+
+ - community:  7.0, 6.0, 5.0, 4.4, 3.7, latest
+
 
 ## System Requirements
 

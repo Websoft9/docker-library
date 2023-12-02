@@ -1,6 +1,9 @@
 # HAProxy on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for HAProxy v2.7,2.6,2.5,2.4,2.3,2.3,2.0
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for HAProxy:
+
+ - community:  2.8, 2.7, 2.6, 2.5, 2.4, 2.3, 2.0
+
 
 ## System Requirements
 

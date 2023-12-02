@@ -1,6 +1,9 @@
 # Jenkins on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Jenkins community-2.418
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Jenkins:
+
+ - community:  2.426, latest
+
 
 ## System Requirements
 
