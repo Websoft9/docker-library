@@ -1,9 +1,7 @@
 name: Sync App Version to Contentful
 
 on:
-  push:
-    paths:
-      - 'apps/**/variables.json'
+  workflow_dispatch:
 
 jobs:
   sync-to-contentful:
