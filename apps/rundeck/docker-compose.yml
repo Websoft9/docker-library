@@ -1,4 +1,5 @@
-# image,docs: https://hub.docker.com/_/wordpress/
+# docs: https://docs.rundeck.com/docs/administration/install/docker.html
+# image: https://hub.docker.com/r/rundeck/rundeck
 
 version: '3.8'
 
