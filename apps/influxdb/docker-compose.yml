@@ -10,7 +10,7 @@ services:
     container_name: ${W9_ID}-chronograf
     ports:
       - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
-    command: --influxdb-url=http://influxdb:8086
+    command: --influxdb-url=http://${W9_ID}-influxdb:8086
     volumes:
       - chronograf:/var/lib/chronograf
     env_file: .env
@@ -19,7 +19,7 @@ services:
 
   influxdb:
     image: influxdb:latest
-    container_name: ${W9_ID}
+    container_name: ${W9_ID}-influxdb
     ports:
       - '${W9_DB_INFLUXDB_PORT_SET}:${W9_DB_INFLUXDB_PORT}'
       - '${W9_DB_INFLUXDB_GRAPHITE_PORT_SET}:${W9_DB_INFLUXDB_GRAPHITE_PORT}'

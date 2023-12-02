@@ -31,7 +31,7 @@ services:
     container_name: $W9_ID-cmak
     restart: unless-stopped
     ports:
-      - "$W9_CMAK_PORT_SET:$W9_CMAK_PORT"
+      - "$W9_HTTP_PORT_SET:$W9_HTTP_PORT"
     env_file: .env
     environment:
       KAFKA_MANAGER_USERNAME: $W9_USER
