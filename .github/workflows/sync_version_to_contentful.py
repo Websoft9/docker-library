@@ -14,7 +14,7 @@ headers = {
     "Content-Type": "application/vnd.contentful.management.v1+json"
 }
 
-def update_contentful(product_name, editions):
+def update_contentful(product_name):
     # 获取 Contentful 中的 Product entry
     response = requests.get(
         f"{CONTENTFUL_MANAGEMENT_API}/spaces/{SPACE_ID}/environments/master/entries?content_type=product&fields.key={product_name}",
@@ -24,3 +24,5 @@ def update_contentful(product_name, editions):
     entries = response.json()
     # 打印返回的数据
     print(json.dumps(entries, indent=2))
+
+update_contentful("wordpress")
