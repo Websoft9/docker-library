@@ -53,10 +53,12 @@ jobs:
         disk=$(cat apps/${{env.app}}/variables.json | jq -r '.requirements.disk')
         #version=$(cat apps/${{env.app}}/variables.json | jq '.version')
         edition=$(cat apps/${{env.app}}/variables.json | jq '.edition')
+        edition="'$edition'"
         echo "edition":$edition
         
         #判断是否存在commmunity version,若有，默认改变第一个
         distribution=$(cat distribution.json)
+        distribution="'$distribution'"
         echo "distribution":$distribution
         echo "json read ok"
         
