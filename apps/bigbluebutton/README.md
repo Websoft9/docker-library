@@ -4,8 +4,6 @@ This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.
 
  - community:  latest
 
- - enterprise:  latest
-
 
 ## System Requirements
 
