@@ -6,17 +6,7 @@
   "edition": [
     {
       "dist": "community",
-      "version": [
-        "16.0.7-ce.0",
-        "latest"
-      ]
-    },
-    {
-      "dist": "enterprise",
-      "version": [
-        "16.0.7-ce.0",
-        "latest"
-      ]
+      "version": ["16.4.1-ce.0","latest"]
     }
   ],
   "requirements": {
