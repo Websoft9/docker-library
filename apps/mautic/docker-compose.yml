@@ -16,7 +16,7 @@ services:
       - .env
     environment:
       # MAUTIC_DB_USER must root, otherwise container error
-      - MAUTIC_DB_HOST=mysql
+      - MAUTIC_DB_HOST=${W9_ID}-mysql
       - MAUTIC_DB_USER=root
       - MAUTIC_DB_PASSWORD=${W9_POWER_PASSWORD}
       - MAUTIC_DB_NAME=${W9_ID}
