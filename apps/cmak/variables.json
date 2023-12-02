@@ -9,13 +9,6 @@
       "version": [
         "3.0"
       ]
-    },
-    {
-      "dist": "enterprise",
-      "version": [
-        "1.8.2",
-        "latest"
-      ]
     }
   ],
   "requirements": {
