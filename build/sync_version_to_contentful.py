@@ -8,6 +8,8 @@ CONTENTFUL_MANAGEMENT_API = "https://api.contentful.com"
 ACCESS_TOKEN = os.environ['CONTENTFUL_ACCESS_TOKEN']
 SPACE_ID = "ffrhttfighww"
 
+print(f"ACCESS_TOKEN: {ACCESS_TOKEN}")
+
 # 设置请求头
 headers = {
     "Authorization": f"Bearer {ACCESS_TOKEN}",
