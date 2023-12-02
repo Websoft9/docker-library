@@ -10,8 +10,8 @@
     }
   ],
   "requirements": {
-    "cpu": "2",
-    "memory": "4",
+    "cpu": "1",
+    "memory": "2",
     "disk": "1",
     "url": "https://github.com/jetty/docker#recommended-system-requirements"
   }

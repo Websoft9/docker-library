@@ -13,6 +13,6 @@
     "cpu": "2",
     "memory": "4",
     "disk": "1",
-    "url": ""
+    "url": "https://github.com/jumpserver/installer"
   }
 }
