@@ -70,13 +70,13 @@ jobs:
           _jq() {
             echo ${item} | base64 --decode | jq -r ${1}
           }
-
+          echo "get error1"
           dist=$(_jq '.dist')
           version=$(_jq '.version | join(",")')
-
+          echo "get error2"
           # 更新 JSON B
           distribution=$(echo $distribution | jq --arg dist "$dist" --arg version "$version" '.["en-US"][] | select(.key | ascii_downcase == $dist) .value = $version')
-
+          echo "get error3"
         done
 
         # 打印更新后的 JSON
