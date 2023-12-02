@@ -53,13 +53,14 @@ jobs:
         disk=$(cat apps/${{env.app}}/variables.json | jq -r '.requirements.disk')
         #version=$(cat apps/${{env.app}}/variables.json | jq '.version')
         edition=$(cat apps/${{env.app}}/variables.json | jq '.edition')
+        echo "edition":$edition
         
         #判断是否存在commmunity version,若有，默认改变第一个
         distribution=$(cat distribution.json)
-        echo $distribution
-        jq -s '.[0] * .[1]' "$edition" "$distribution" > "merged.json"
-        newDistribution=$(cat merged.json)
-        echo $newDistribution
+        echo "distribution":$distribution
+        # jq -s '.[0] * .[1]' "$edition" "$distribution" > "merged.json"
+        # newDistribution=$(cat merged.json)
+        # echo $newDistribution
 
         # echo '[{
         #           "op": "add",
