@@ -44,7 +44,7 @@ jobs:
         echo "version=${version}" >> $GITHUB_ENV
         echo "newVersion=${newVersion}" >> $GITHUB_ENV
         echo $(echo $entry | jq '.items[0].fields.distribution') > distribution.json
-        echo
+        
         
     - name: contentful update
       run: |
@@ -58,9 +58,27 @@ jobs:
         #判断是否存在commmunity version,若有，默认改变第一个
         distribution=$(cat distribution.json)
         echo "distribution":$distribution
-        # jq -s '.[0] * .[1]' "$edition" "$distribution" > "merged.json"
-        # newDistribution=$(cat merged.json)
-        # echo $newDistribution
+        
+        readarray -t edition_array <<< $(echo $edition | jq -r '.[] | @base64')
+
+        # 遍历 JSON A 的数组
+        for item in "${edition_array[@]}"; do
+          # 解码 JSON A 的元素
+          _jq() {
+            echo ${item} | base64 --decode | jq -r ${1}
+          }
+
+          dist=$(_jq '.dist')
+          version=$(_jq '.version | join(",")')
+
+          # 更新 JSON B
+          distribution=$(echo $distribution | jq --arg dist "$dist" --arg version "$version" '.["en-US"][] | select(.key | ascii_downcase == $dist) .value = $version')
+
+        done
+
+        # 打印更新后的 JSON
+        newDistribution=distribution
+        echo "newDistribution:" $newDistribution
 
         # echo '[{
         #           "op": "add",
