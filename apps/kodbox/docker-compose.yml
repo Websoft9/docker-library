@@ -26,7 +26,7 @@ services:
     volumes:
       - kodbox:/var/www/html
     environment:
-      - "MYSQL_SERVER=mariadb"
+      - "MYSQL_SERVER=$W9_ID-mariadb"
       - "MYSQL_DATABASE=$W9_ID"
       - "MYSQL_USER=$W9_ID"
       - "MYSQL_PASSWORD=$W9_POWER_PASSWORD"
