@@ -9,12 +9,6 @@
       "version": [
         "latest"
       ]
-    },
-    {
-      "dist": "enterprise",
-      "version": [
-        "latest"
-      ]
     }
   ],
   "requirements": {
