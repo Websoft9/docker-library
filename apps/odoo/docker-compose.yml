@@ -19,10 +19,10 @@ services:
       USER: ${W9_ID}
       PASSWORD: ${W9_POWER_PASSWORD}
     depends_on:
-      - db
+      - postgresql
     restart: unless-stopped
 
-  db:
+  postgresql:
     image: postgres:14
     container_name: ${W9_ID}-postgresql
     restart: unless-stopped
