@@ -36,4 +36,4 @@ def update_contentful(product_name, editions):
 #         editions = data['edition']
 #         update_contentful(product_name, editions)
 
-update_contentful("wordpress", [{"dist": "wordpress", "version": "5.7.2"}])
+update_contentful("wordpress", [{"dist": "community", "version": "6.5,latest"}])
