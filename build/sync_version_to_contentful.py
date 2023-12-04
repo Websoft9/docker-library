@@ -31,13 +31,11 @@ def update_contentful(product_name, editions, requirements):
         entry.publish()
 
 # 遍历 apps 文件夹中的 variables.json 文件
-# apps_path = Path('apps')
-# for variables_file in apps_path.rglob('variables.json'):
-#     with open(variables_file) as file:
-#         data = json.load(file)
-#         product_name = data['name']
-#         editions = data['edition']
-#         requirements = data['requirements']
-#         update_contentful(product_name, editions, requirements)
-
-update_contentful("wordpress", [{"dist": "wordpress", "version": "5.7.2"}], {"cpu": "1", "memory": "1", "disk": "10"})
+apps_path = Path('apps')
+for variables_file in apps_path.rglob('variables.json'):
+    with open(variables_file) as file:
+        data = json.load(file)
+        product_name = data['name']
+        editions = data['edition']
+        requirements = data['requirements']
+        update_contentful(product_name, editions, requirements)
