@@ -27,12 +27,8 @@ def update_contentful(product_name, editions, requirements):
         entry.fields('en-US')['storage'] = requirements['disk']
 
         # 保存和发布更新
-        try:
-            entry.save()
-            entry.publish()
-            print(f"Entry '{product_name}' updated and published.")
-        except Exception as e:
-            print(f"Failed to update and publish entry: {e}")
+        entry.save()
+        entry.publish()
 
 # 遍历 apps 文件夹中的 variables.json 文件
 # apps_path = Path('apps')
