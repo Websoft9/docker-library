@@ -1,6 +1,9 @@
 # WordPress on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for WordPress community-6.3
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for WordPress:
+
+ - community:  6.4, latest
+
 
 ## System Requirements
 
