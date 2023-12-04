@@ -22,9 +22,9 @@ def update_contentful(product_name, editions, requirements):
         entry.fields('en-US')['distribution'] = distribution 
 
         # 准备 requirements 更新的数据
-        entry.fields('en-US')['vcpu'] = requirements['cpu']
-        entry.fields('en-US')['memory'] = requirements['memory']
-        entry.fields('en-US')['storage'] = requirements['disk']
+        entry.fields('en-US')['vcpu'] = int(requirements['cpu'])
+        entry.fields('en-US')['memory'] = int(requirements['memory'])
+        entry.fields('en-US')['storage'] = int(requirements['disk'])
 
         # 保存和发布更新
         entry.save()
