@@ -44,4 +44,4 @@ def update_contentful(product_name, editions, requirements):
 #         requirements = data['requirements']
 #         update_contentful(product_name, editions, requirements)
 
-update_contentful("wordpress", [{"dist": "wordpress", "version": "5.7.2"}], {"cpu": "1", "memory": "1G", "disk": "10G"})
+update_contentful("wordpress", [{"dist": "wordpress", "version": "5.7.2"}], {"cpu": "1", "memory": "1", "disk": "10"})
