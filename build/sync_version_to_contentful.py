@@ -16,8 +16,8 @@ def update_contentful(product_name, editions):
     if entries:
         entry = entries[0]
         # 准备更新的数据
-        distribution = [{"id": edition['dist'], "key": "version", "value": edition['version']} for edition in editions]
-        entry.fields('en-US')['distribution'] = distribution  # 假设 'en-US' 是您的 locale
+        distribution = [{"key": edition['dist'], "value": edition['version']} for edition in editions]
+        entry.fields('en-US')['distribution'] = distribution 
 
         # 保存和发布更新
         try:
@@ -36,4 +36,4 @@ def update_contentful(product_name, editions):
 #         editions = data['edition']
 #         update_contentful(product_name, editions)
 
-update_contentful("wordpress", [{"dist": "community", "version": "6.5,latest"}])
+update_contentful("wordpress", [{"dist": "community", "version": "6.5,latest"}, {"dist": "enterprise", "version": "6.5,latest"}])
