@@ -69,10 +69,12 @@ def update_contentful(product_name, editions):
             return
 
 # 遍历 apps 文件夹中的 variables.json 文件
-apps_path = Path('apps')
-for variables_file in apps_path.rglob('variables.json'):
-    with open(variables_file) as file:
-        data = json.load(file)
-        product_name = data['name']
-        editions = data['edition']
-        update_contentful(product_name, editions)
+# apps_path = Path('apps')
+# for variables_file in apps_path.rglob('variables.json'):
+#     with open(variables_file) as file:
+#         data = json.load(file)
+#         product_name = data['name']
+#         editions = data['edition']
+#         update_contentful(product_name, editions)
+
+update_contentful("wordpress", [{"dist": "wordpress", "version": "5.7.2"}])
