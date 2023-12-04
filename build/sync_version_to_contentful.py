@@ -1,72 +1,31 @@
 import os
-import json
-import requests
-from pathlib import Path
+from contentful_management import Client
 
 # 设置 Contentful API 访问参数
-CONTENTFUL_MANAGEMENT_API = "https://api.contentful.com"
 ACCESS_TOKEN = os.environ['CONTENTFUL_ACCESS_TOKEN']
 SPACE_ID = "ffrhttfighww"
 
-# 设置请求头
-headers = {
-    "Authorization": f"Bearer {ACCESS_TOKEN}",
-    "Content-Type": "application/vnd.contentful.management.v1+json"
-}
+# 初始化 Contentful 管理客户端
+client = Client(ACCESS_TOKEN)
 
 def update_contentful(product_name, editions):
     # 获取 Contentful 中的 Product entry
-    try:
-        response = requests.get(
-            f"{CONTENTFUL_MANAGEMENT_API}/spaces/{SPACE_ID}/environments/master/entries?content_type=product&fields.key={product_name}",
-            headers=headers
-        )
-        response.raise_for_status()
-    except requests.exceptions.HTTPError as e:
-        print(f"Failed to get entries: {e.response.text}")
-        return
-
-    entries = response.json()
-    print(f"entries: {entries}")
+    entries = client.entries(SPACE_ID, 'master').all({'content_type': 'product', 'fields.key': product_name})
 
     # 假设只有一个匹配的 entry
-    if entries['total'] > 0:
-        entry_id = entries['items'][0]['sys']['id']
-        version = entries['items'][0]['sys']['version']
-
+    if entries:
+        entry = entries[0]
         # 准备更新的数据
         distribution = [{"id": edition['dist'], "key": "version", "value": edition['version']} for edition in editions]
-        update_data = {
-            "fields": {
-                "distribution": {
-                    "en-US": distribution
-                }
-            }
-        }
-        print(f"update_data: {update_data}")
+        entry.fields('en-US')['distribution'] = distribution  # 假设 'en-US' 是您的 locale
 
-        # 更新 Contentful entry
+        # 保存和发布更新
         try:
-            update_response = requests.put(
-                f"{CONTENTFUL_MANAGEMENT_API}/spaces/{SPACE_ID}/environments/master/entries/{entry_id}",
-                headers={**headers, "X-Contentful-Version": str(version)},
-                data=json.dumps(update_data)
-            )
-            update_response.raise_for_status()
-        except requests.exceptions.HTTPError as e:
-            print(f"Failed to update entry: {e.response.text}")
-            return
-
-        # 发布更新
-        try:
-            publish_response = requests.put(
-                f"{CONTENTFUL_MANAGEMENT_API}/spaces/{SPACE_ID}/environments/master/entries/{entry_id}/published",
-                headers={**headers, "X-Contentful-Version": str(update_response.json()['sys']['version'])}
-            )
-            publish_response.raise_for_status()
-        except requests.exceptions.HTTPError as e:
-            print(f"Failed to publish entry: {e.response.text}")
-            return
+            entry.save()
+            entry.publish()
+            print(f"Entry '{product_name}' updated and published.")
+        except Exception as e:
+            print(f"Failed to update and publish entry: {e}")
 
 # 遍历 apps 文件夹中的 variables.json 文件
 # apps_path = Path('apps')
