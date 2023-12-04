@@ -1,4 +1,4 @@
-name: Update_contentful
+name: Sync data to Contentful
 
 on:
   workflow_dispatch:

@@ -1,4 +1,4 @@
-name: upload_artifact
+name: Release to gihub and artifact
 
 on:
   workflow_dispatch:
@@ -9,8 +9,8 @@ on:
       - "CHANGELOG.md"
 
 jobs:
-  upload_artifact:
-    name: Build Docker image
+  release:
+    name: Release to github and artifact
     runs-on: ubuntu-latest
     env:
       CI: false
@@ -33,24 +33,8 @@ jobs:
             echo "release version"
             echo "CHANNEL=release" >> $GITHUB_OUTPUT
           fi
-
-      - name: Update CHANGELOG.md
-        id: update_data
-        run: |                 
-          changelog=$(cat changelog_latest.md)
-          echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT 
-          echo "$changelog" >> $GITHUB_OUTPUT 
-          echo "EOF" >> $GITHUB_OUTPUT
-          current_date=$(date +%Y-%m-%d)
-          printf "## ${{ steps.convert_version.outputs.VERSION }} release on $current_date\n$changelog\n$(cat CHANGELOG.md)" > temp.txt
-          mv temp.txt CHANGELOG.md
-
-      # - name: Commit and push changes
-      #   uses: stefanzweifel/git-auto-commit-action@v4
-      #   with:
-      #     commit_message: Build Plugin For Release
                   
-      - name: Create Zip Archive
+      - name: Create Zip Archive for artifact
         run: |
           mkdir ${{ env.appname }} artifacts
           cp -r apps ${{ env.appname }}
@@ -63,7 +47,7 @@ jobs:
           cp ${{ env.appname }}-${{ steps.convert_version.outputs.VERSION_CORE }}.zip artifacts
           cp artifacts/${{ env.appname }}-${{ steps.convert_version.outputs.VERSION_CORE }}.zip artifacts/${{ env.appname }}-latest.zip
 
-      - name: Upload To Azure Blob
+      - name: Upload zip files to Azure Blob
         uses: LanceMcCarthy/Action-AzureBlobUpload@v2
         with:
           connection_string: ${{ secrets.AZURE_STORAGE_ARTIFACT }}
@@ -73,7 +57,7 @@ jobs:
           delete_if_exists: true
           fail_if_source_empty: true
 
-      - name: Create Release
+      - name: Create Github Release from code
         uses: softprops/action-gh-release@v1
         with:
           files: |

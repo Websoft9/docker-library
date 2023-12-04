@@ -1,4 +1,4 @@
-name: Template README for app by variables.json
+name: Update README by template
 
 on: 
 #   repository_dispatch:

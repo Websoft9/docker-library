@@ -1,4 +1,4 @@
-name: Generally auto test apps
+name: Auto test apps
 
 on:
   push:

@@ -1,5 +1,5 @@
 # add, delete item for variables.json
-name: Batch manage all variables.json template from template
+name: Batch update variable.json by template
 
 on: 
 # repository_dispatch:

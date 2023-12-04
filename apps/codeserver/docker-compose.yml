@@ -4,10 +4,6 @@ services:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     env_file: .env
-    environment:
-      - PASSWORD=$W9_PASSWORD
-      - SUDO_PASSWORD=$W9_PASSWORD
-      - PROXY_DOMAIN=$W9_URL
     volumes:
       - "code:/config"
     ports:
