@@ -1,4 +1,4 @@
-name: Sync App Version To Contentful
+name: Update_contentful
 
 on:
   workflow_dispatch:
