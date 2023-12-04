@@ -23,8 +23,6 @@ services:
       - mattermost_client_plugins:/mattermost/client/plugins:rw
       - mattermost_bleve-indexes:/mattermost/bleve-indexes:rw
     env_file: .env
-    environment:
-      - MM_SERVICESETTINGS_SITEURL=http://${W9_URL}
     depends_on: 
       - postgres
 
@@ -43,10 +41,9 @@ services:
       - postgres:/var/lib/postgresql/data
     environment:
       - TZ
-      - POSTGRES_USER
-      - POSTGRES_PASSWORD
-      - POSTGRES_DB
-    env_file: .env
+      - POSTGRES_USER:$W9_ID
+      - POSTGRES_PASSWORD:$W9_POWER_PASSWORD
+      - POSTGRES_DB:$W9_ID
 
 networks:
   default:
