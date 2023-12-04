@@ -31,6 +31,10 @@ services:
       - wordpress
     command: |
       /bin/bash -c "
+      if [ -z \"$W9_URL\" ]; then
+        echo 'W9_URL is empty, not need to change, exiting...'
+        exit 0
+      fi
       if [[ $W9_URL =~ ^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; then
         wp_url=$W9_URL:$W9_HTTP_PORT_SET
         echo 'URL is IP'
@@ -44,7 +48,7 @@ services:
       "
       
   mariadb:
-    image: mariadb:10.4
+    image: mariadb:$W9_DB_VERSION
     container_name: $W9_ID-mariadb
     restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
