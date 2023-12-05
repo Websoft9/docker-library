@@ -18,8 +18,9 @@ jobs:
     - name: Get changed files
       id: getfile
       run: |
-        echo "VARIABLES_FILES=$(git diff --name-only -- 'apps/*/variables.json')" >> $GITHUB_ENV
-        echo "COMPOSE_FILES=$(git diff --name-only -- 'apps/*/docker-compose-*.yml')" >> $GITHUB_ENV
+        git diff --name-only HEAD^ HEAD
+        echo "VARIABLES_FILES=$(git diff --name-only HEAD^ HEAD -- 'apps/*/variables.json')" >> $GITHUB_ENV
+        echo "COMPOSE_FILES=$(git diff --name-only HEAD^ HEAD -- 'apps/*/docker-compose-*.yml')" >> $GITHUB_ENV
         echo "VARIABLES_FILES: ${{ env.VARIABLES_FILES }}"
         echo "COMPOSE_FILES: ${{ env.COMPOSE_FILES }}"
 
