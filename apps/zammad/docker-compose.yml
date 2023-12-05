@@ -1,4 +1,8 @@
-version: '2'
+# image: https://hub.docker.com/r/zammad/zammad-docker-compose
+# docs: https://docs.zammad.org/en/latest/install/docker-compose.html#getting-started-with-zammad-docker-compose
+# github: https://github.com/zammad/zammad-docker-compose
+
+version: '3.8'
 
 services:
 
@@ -114,13 +118,9 @@ services:
 
 volumes:
   elasticsearch-data:
-    driver: local
   postgresql-data:
-    driver: local
   zammad-backup:
-    driver: local
   zammad-data:
-    driver: local
 
 networks:
   default:
