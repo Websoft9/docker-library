@@ -7,7 +7,6 @@ from contentful_management.errors import HTTPError
 # 设置 Contentful API 访问参数
 ACCESS_TOKEN = os.environ['CONTENTFUL_ACCESS_TOKEN']
 SPACE_ID = "ffrhttfighww"
-APP_LISTS = os.environ['APP_LISTS']
 
 # 初始化 Contentful 管理客户端
 client = Client(ACCESS_TOKEN)
@@ -17,7 +16,6 @@ def update_contentful(product_name, editions, requirements):
         # 获取 Contentful 中的 Product entry
         entries = client.entries(SPACE_ID, 'master').all({'content_type': 'product', 'fields.key': product_name})
 
-        # 假设只有一个匹配的 entry
         if entries:
             entry = entries[0]
             # 准备 distribution 更新的数据
@@ -49,13 +47,16 @@ successful_updates = 0
 failed_updates = 0
 failed_products = []
 
-# 遍历 apps 文件夹中的 variables.json 文件
+# 遍历 apps 文件夹下app_lists下的 variables.json 文件
 apps_path = Path('apps')
-for variables_file in apps_path.rglob('variables.json'):
+app_lists_str = os.getenv('APP_LISTS', '')
+app_lists = app_lists_str.split(',') 
+
+for product_name in app_lists:
+    variables_file = apps_path / product_name / 'variables.json'
     try:
         with open(variables_file) as file:
             data = json.load(file)
-            product_name = data['name']
             editions = data['edition']
             requirements = data['requirements']
             
@@ -65,20 +66,23 @@ for variables_file in apps_path.rglob('variables.json'):
             else:
                 failed_updates += 1
                 failed_products.append(product_name)
+    except FileNotFoundError:
+        print(f"File not found: {variables_file}")
+        failed_updates += 1
+        failed_products.append(product_name)
     except json.JSONDecodeError as e:
-        # 使用父目录的名称来标识出现问题的 JSON 文件
-        parent_dir_name = variables_file.parent.name
         print(f"JSON decode error in file {variables_file}: {e}")
         failed_updates += 1
-        failed_products.append(parent_dir_name)  # 使用父目录名作为产品名
+        failed_products.append(product_name)
     except Exception as e:
-        # 同样，使用父目录的名称来标识出现问题的 JSON 文件
-        parent_dir_name = variables_file.parent.name
         print(f"An unexpected error occurred while processing file {variables_file}: {e}")
         failed_updates += 1
-        failed_products.append(parent_dir_name)  # 使用父目录名作为产品名
+        failed_products.append(product_name)
+
 
 # 打印更新报告
-print(f"Update Summary:\nTotal updates attempted: {total_updates}\nSuccessful updates: {successful_updates}\nFailed updates: {failed_updates}")
-if failed_products:
-    print(f"Failed product updates: {', '.join(failed_products)}")
+print(f"Total updates attempted: {total_updates}")
+print(f"Successful updates: {successful_updates}")
+print(f"Failed updates: {failed_updates}")
+if failed_updates > 0:
+    print(f"Failed products: {failed_products}")
