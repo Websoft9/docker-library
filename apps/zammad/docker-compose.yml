@@ -15,7 +15,7 @@ services:
     image: ${W9_REPO}:zammad-postgresql-${W9_VERSION}
     links:
       - zammad-postgresql
-    restart: ${W9_RESTART}
+    restart: unless-stopped
     volumes:
       - zammad-backup:/var/tmp/zammad
       - zammad-data:/opt/zammad
@@ -24,7 +24,7 @@ services:
     environment:
       - discovery.type=single-node
     image: ${W9_REPO}:zammad-elasticsearch-${W9_VERSION}
-    restart: ${W9_RESTART}
+    restart: unless-stopped
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
 
@@ -39,14 +39,14 @@ services:
     links:
       - zammad-elasticsearch
       - zammad-postgresql
-    restart: on-failure
+    restart: unless-stopped
     volumes:
       - zammad-data:/opt/zammad
 
   zammad-memcached:
     command: memcached -m 256M
     image: memcached:1.6.9-alpine
-    restart: ${W9_RESTART}
+    restart: unless-stopped
 
   zammad-nginx:
     command: ["zammad-nginx"]
@@ -58,7 +58,7 @@ services:
     links:
       - zammad-railsserver
       - zammad-websocket
-    restart: ${W9_RESTART}
+    restart: unless-stopped
     volumes:
       - zammad-data:/opt/zammad
 
@@ -67,7 +67,7 @@ services:
       - W9_ID=${W9_ID}
       - W9_POWER_PASSWORDWORD=${W9_POWER_PASSWORD}
     image: ${W9_REPO}:zammad-postgresql-${W9_VERSION}
-    restart: ${W9_RESTART}
+    restart: unless-stopped
     volumes:
       - postgresql-data:/var/lib/postgresql/data
 
@@ -81,7 +81,7 @@ services:
       - zammad-elasticsearch
       - zammad-memcached
       - zammad-postgresql
-    restart: ${W9_RESTART}
+    restart: unless-stopped
     volumes:
       - zammad-data:/opt/zammad
 
@@ -95,7 +95,7 @@ services:
       - zammad-elasticsearch
       - zammad-memcached
       - zammad-postgresql
-    restart: ${W9_RESTART}
+    restart: unless-stopped
     volumes:
       - zammad-data:/opt/zammad
 
@@ -108,7 +108,7 @@ services:
     links:
       - zammad-postgresql
       - zammad-memcached
-    restart: ${W9_RESTART}
+    restart: unless-stopped
     volumes:
       - zammad-data:/opt/zammad
 
