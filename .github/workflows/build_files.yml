@@ -20,6 +20,8 @@ jobs:
       run: |
         echo "::set-output name=variables_files::$(git diff --name-only -- 'apps/*/variables.json')"
         echo "::set-output name=compose_files::$(git diff --name-only -- 'apps/*/docker-compose-*.yml')"
+        echo "variables_files: ${{ steps.getfile.outputs.variables_files }}"
+        echo "compose_files: ${{ steps.getfile.outputs.compose_files }}"
 
     - name: Run variables_files.py
       run: python3 build/variables_files.py "${{ steps.getfile.outputs.variables_files }}"
