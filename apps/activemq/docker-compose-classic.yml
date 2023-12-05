@@ -1,3 +1,4 @@
+# only for classic activemq
 version: "3.8"
 
 services:

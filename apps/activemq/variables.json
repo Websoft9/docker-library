@@ -10,7 +10,6 @@
         "5.18.2-jre17-rockylinux8"
       ]
     },
-
     {
       "dist": "artemis",
       "version": [

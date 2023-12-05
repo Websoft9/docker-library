@@ -1,0 +1,35 @@
+name: Build files and push
+
+on: 
+  repository_dispatch:
+  push:
+    branches: [ main ]
+    paths: 
+      - 'apps/*/variables.json'
+      - 'apps/*/docker-compose-*.json'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Get changed files
+      id: getfile
+      run: |
+        echo "::set-output name=variables_files::$(git diff --name-only -- 'apps/*/variables.json')"
+        echo "::set-output name=compose_files::$(git diff --name-only -- 'apps/*/docker-compose-*.json')"
+
+    - name: Run variables_files.py
+      run: python3 build/variables_files.py "${{ steps.getfile.outputs.variables_files }}"
+
+    - name: Run compose_files.py
+      run: python3 build/compose_files.py "${{ steps.getfile.outputs.compose_files }}"
+
+    - name: Commit and push if changed
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: "Update files"
+        commit_options: "--no-verify --signoff"
+        push_options: "--force-with-lease"
