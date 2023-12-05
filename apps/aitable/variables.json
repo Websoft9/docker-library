@@ -15,7 +15,7 @@
   "requirements": {
     "cpu": "2",
     "memory": "8",
-    "disk": "2",
+    "disk": "3",
     "url": "https://github.com/apitable/apitable/blob/develop/docker-compose.yaml"
   }
 }
