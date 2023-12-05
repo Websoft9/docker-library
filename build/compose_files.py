@@ -20,10 +20,11 @@ for filename in filenames:
     name_part = basename.split('-')[2].split('.')[0]  # 从 'docker-compose-*.yml' 中提取 '*'
 
     # 构造新的文件名
-    new_filename = os.path.join(directory, f'docker-compose-{name_part}-merged.yml')
+    new_filename = os.path.join(directory, f'{name_part}.yml')
 
     # 构造 docker-compose 命令
-    cmd = ['docker-compose', '-f', 'docker-compose.yml', '-f', filename, 'config', '>', new_filename]
+    docker_compose_file = os.path.join(directory, 'docker-compose.yml')
+    cmd = ['docker-compose', '-f', docker_compose_file, '-f', filename, 'config', '>', new_filename]
 
     # 执行命令
     subprocess.run(' '.join(cmd), shell=True, check=True)

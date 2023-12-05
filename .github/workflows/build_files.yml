@@ -29,9 +29,11 @@ jobs:
 
     - name: Run variables_files.py
       run: python3 build/variables_files.py "${{ env.VARIABLES_FILES }}"
+      if: env.VARIABLES_FILES != ''
 
     - name: Run compose_files.py
       run: python3 build/compose_files.py "${{ env.COMPOSE_FILES }}"
+      if: env.COMPOSE_FILES != ''
 
     - name: Commit and push if changed
       uses: stefanzweifel/git-auto-commit-action@v4
