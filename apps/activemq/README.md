@@ -2,7 +2,9 @@
 
 This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for ActiveMQ:
 
- - community:  5.18.2-jre17-rockylinux8
+ - classic:  5.18.2-jre17-rockylinux8
+
+ - artemis:  2.21.0
 
 
 ## System Requirements
