@@ -6,7 +6,7 @@ on:
     branches: [ main ]
     paths: 
       - 'apps/*/variables.json'
-      - 'apps/*/docker-compose-*.json'
+      - 'apps/*/docker-compose-*.yml'
 
 jobs:
   build:
@@ -19,7 +19,7 @@ jobs:
       id: getfile
       run: |
         echo "::set-output name=variables_files::$(git diff --name-only -- 'apps/*/variables.json')"
-        echo "::set-output name=compose_files::$(git diff --name-only -- 'apps/*/docker-compose-*.json')"
+        echo "::set-output name=compose_files::$(git diff --name-only -- 'apps/*/docker-compose-*.yml')"
 
     - name: Run variables_files.py
       run: python3 build/variables_files.py "${{ steps.getfile.outputs.variables_files }}"
