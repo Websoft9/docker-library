@@ -20,6 +20,8 @@ jobs:
       run: |
         echo "VARIABLES_FILES=$(git diff --name-only -- 'apps/*/variables.json')" >> $GITHUB_ENV
         echo "COMPOSE_FILES=$(git diff --name-only -- 'apps/*/docker-compose-*.yml')" >> $GITHUB_ENV
+        echo "VARIABLES_FILES: ${{ env.VARIABLES_FILES }}"
+        echo "COMPOSE_FILES: ${{ env.COMPOSE_FILES }}"
 
     - name: Run variables_files.py
       run: python3 build/variables_files.py "${{ env.VARIABLES_FILES }}"
