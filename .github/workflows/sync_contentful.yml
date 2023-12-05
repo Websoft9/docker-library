@@ -13,8 +13,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: get appList
+      - name: get appList on push
         id: get_applist
+        if: github.event_name != 'workflow_dispatch'
         run: |
           changefile=$(curl \
                          -H "Accept: application/vnd.github+json" \
@@ -36,12 +37,16 @@ jobs:
           if [ -n "$appnames" ]; then
               appnames=${appnames:0:-1}
               echo update $appnames
-          else
-              echo "update all"
-              appnames=$(find ./apps -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
           fi
           echo "APP_LISTS=$appnames" >> $GITHUB_OUTPUT
-      
+
+      - name: get appList on push
+        id: get_applist
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          appnames=$(find ./apps -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
+          echo "APP_LISTS=$appnames" >> $GITHUB_OUTPUT
+                
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
