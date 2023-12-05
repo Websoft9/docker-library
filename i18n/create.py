@@ -20,4 +20,4 @@ for filename in glob.glob('../apps/*/.env'):
 
 # 将修改后的 translation.json 写回到文件中
 with open('translation.json', 'w') as f:
-    json.dump(translation, f, indent=4)
+    json.dump(translation, f, indent=4, ensure_ascii=False)
