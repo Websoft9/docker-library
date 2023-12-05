@@ -50,63 +50,35 @@ failed_products = []
 # 遍历 apps 文件夹下app_lists下的 variables.json 文件
 apps_path = Path('apps')
 app_lists_str = os.getenv('APP_LISTS', '')
-if not app_lists_str:  # 如果 app_lists_str 为空
-    app_lists = app_lists_str.split(',') 
-    for product_name in app_lists:
-        variables_file = apps_path / product_name / 'variables.json'
-        try:
-            with open(variables_file) as file:
-                data = json.load(file)
-                editions = data['edition']
-                requirements = data['requirements']
-                
-                total_updates += 1
-                if update_contentful(product_name, editions, requirements):
-                    successful_updates += 1
-                else:
-                    failed_updates += 1
-                    failed_products.append(product_name)
-        except FileNotFoundError:
-            print(f"File not found: {variables_file}")
-            failed_updates += 1
-            failed_products.append(product_name)
-        except json.JSONDecodeError as e:
-            print(f"JSON decode error in file {variables_file}: {e}")
-            failed_updates += 1
-            failed_products.append(product_name)
-        except Exception as e:
-            print(f"An unexpected error occurred while processing file {variables_file}: {e}")
-            failed_updates += 1
-            failed_products.append(product_name)
+app_lists = app_lists_str.split(',') 
 
-else:
-    # 遍历 apps 文件夹中的 variables.json 文件
-    for variables_file in apps_path.rglob('variables.json'):
-        try:
-            with open(variables_file) as file:
-                data = json.load(file)
-                product_name = data['name']
-                editions = data['edition']
-                requirements = data['requirements']
-                
-                total_updates += 1
-                if update_contentful(product_name, editions, requirements):
-                    successful_updates += 1
-                else:
-                    failed_updates += 1
-                    failed_products.append(product_name)
-        except json.JSONDecodeError as e:
-            # 使用父目录的名称来标识出现问题的 JSON 文件
-            parent_dir_name = variables_file.parent.name
-            print(f"JSON decode error in file {variables_file}: {e}")
-            failed_updates += 1
-            failed_products.append(parent_dir_name)  # 使用父目录名作为产品名
-        except Exception as e:
-            # 同样，使用父目录的名称来标识出现问题的 JSON 文件
-            parent_dir_name = variables_file.parent.name
-            print(f"An unexpected error occurred while processing file {variables_file}: {e}")
-            failed_updates += 1
-            failed_products.append(parent_dir_name)  # 使用父目录名作为产品名
+for product_name in app_lists:
+    variables_file = apps_path / product_name / 'variables.json'
+    try:
+        with open(variables_file) as file:
+            data = json.load(file)
+            editions = data['edition']
+            requirements = data['requirements']
+            
+            total_updates += 1
+            if update_contentful(product_name, editions, requirements):
+                successful_updates += 1
+            else:
+                failed_updates += 1
+                failed_products.append(product_name)
+    except FileNotFoundError:
+        print(f"File not found: {variables_file}")
+        failed_updates += 1
+        failed_products.append(product_name)
+    except json.JSONDecodeError as e:
+        print(f"JSON decode error in file {variables_file}: {e}")
+        failed_updates += 1
+        failed_products.append(product_name)
+    except Exception as e:
+        print(f"An unexpected error occurred while processing file {variables_file}: {e}")
+        failed_updates += 1
+        failed_products.append(product_name)
+
 
 # 打印更新报告
 print(f"Total updates attempted: {total_updates}")

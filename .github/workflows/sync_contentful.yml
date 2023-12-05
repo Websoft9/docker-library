@@ -35,7 +35,10 @@ jobs:
           done
           if [ -n "$appnames" ]; then
               appnames=${appnames:0:-1}
-              echo $appnames
+              echo update $appnames
+          else
+              echo "update all"
+              appnames=$(find ./apps -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
           fi
           echo "APP_LISTS=$appnames" >> $GITHUB_OUTPUT
       
