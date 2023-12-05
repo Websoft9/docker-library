@@ -40,9 +40,11 @@ jobs:
       
       - name: update languages files
         run: |
+          cd public
           wget https://raw.githubusercontent.com/Websoft9/docker-library/main/i18n/translation.json
           wget https://raw.githubusercontent.com/Websoft9/docker-library/main/i18n/pr.py
-          python3 pr.py
+          python3 pr.py translation.json po.en_US.js po.zh_CN.js
+          rm -rf pr.py translation.json
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
@@ -51,5 +53,29 @@ jobs:
           branch: update-appstore-version-${{ github.run_number }}
           delete-branch: true
           commit-message: App Store conbine translation.json
-          title: "App Store conbine translation.json: ${{ steps.update_data.outputs.PLUGIN_VERSION }}"
+          title: "App Store conbine translation.json"
           body: "App Store conbine translation.json"
+          
+      - name: Checkout websoft9
+        uses: actions/checkout@v2
+        with:
+          repository: Websoft9/plugin-myapps
+          ref: main    
+      
+      - name: update languages files
+        run: |
+          cd public
+          wget https://raw.githubusercontent.com/Websoft9/docker-library/main/i18n/translation.json
+          wget https://raw.githubusercontent.com/Websoft9/docker-library/main/i18n/pr.py
+          python3 pr.py translation.json po.en_US.js po.zh_CN.js
+          rm -rf pr.py translation.json
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.ZJ_ADMIN_TOKEN }}
+          branch: update-myapps-version-${{ github.run_number }}
+          delete-branch: true
+          commit-message: App Store conbine translation.json
+          title: "myapps conbine translation.json"
+          body: "myapps conbine translation.json"
