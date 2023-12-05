@@ -16,14 +16,6 @@ services:
       - redis_data:/data
     entrypoint: ["redis-server", "/etc/redis.conf"] 
 
-  redisinsight:
-    image: redislabs/redisinsight:latest
-    container_name: ${W9_ID}-gui
-    restart: unless-stopped
-    ports:
-      - "${W9_GUI_PORT_SET}:${W9_GUI_PORT}"
-    env_file: .env
-
 networks:
   default:
     name: ${W9_NETWORK}

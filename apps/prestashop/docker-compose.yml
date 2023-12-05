@@ -21,7 +21,8 @@ services:
       - ADMIN_MAIL=${W9_USER}
       - ADMIN_PASSWD=${W9_POWER_PASSWORD}
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     restart: unless-stopped
 
   mysql:
@@ -31,6 +32,8 @@ services:
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - mysql_data:/var/lib/mysql
+          healthcheck:
+    test: "mysql ${W9_ID} -u${W9_ID} -p${W9_POWER_PASSWORD} -e 'SELECT 1;'"
     environment:
       MYSQL_DATABASE: ${W9_ID}
       MYSQL_USER: ${W9_ID}

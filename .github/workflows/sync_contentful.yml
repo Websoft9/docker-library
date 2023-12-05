@@ -23,4 +23,5 @@ jobs:
       - name: Run inline Python script to sync data to Contentful
         env:
           CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_TOKEN }}
-        run: python ./build/sync_version_to_contentful.py
+          APP_LISTS: ""
+        run: python ./build/sync_contentful.py

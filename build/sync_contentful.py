@@ -7,6 +7,7 @@ from contentful_management.errors import HTTPError
 # 设置 Contentful API 访问参数
 ACCESS_TOKEN = os.environ['CONTENTFUL_ACCESS_TOKEN']
 SPACE_ID = "ffrhttfighww"
+APP_LISTS = os.environ['APP_LISTS']
 
 # 初始化 Contentful 管理客户端
 client = Client(ACCESS_TOKEN)

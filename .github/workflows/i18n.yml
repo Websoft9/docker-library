@@ -58,7 +58,7 @@ jobs:
       - name: update languages files
         run: |
           wget https://raw.githubusercontent.com/Websoft9/docker-library/main/i18n/translation.json
-          wget ttps://raw.githubusercontent.com/Websoft9/docker-library/main/i18n/pr.py
+          wget https://raw.githubusercontent.com/Websoft9/docker-library/main/i18n/pr.py
           python3 pr.py
 
       - name: Create Pull Request

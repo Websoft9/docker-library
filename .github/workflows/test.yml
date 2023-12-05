@@ -71,7 +71,7 @@ jobs:
                 ((retry++))
               fi
             done
-            output=$(curl -L --silent localhost:9001)
+            output=$(curl -L --silent $url)
             if echo "$output" | grep -q "Failed"; then
               echo "${appname}: can not access" >> /tmp/output
             else
