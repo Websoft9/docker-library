@@ -27,12 +27,16 @@ jobs:
               file=$(echo ${name} | cut -d "/" -f 3)
               if [[ ${file} == "variables.json" ]];then
                   if [[ ! " ${appnames[@]} " =~ " ${app} " ]]; then
-                      appnames+=(${app})
+                      appnames+=${app},
                   fi
               else
                   echo "affect nothing";
               fi
           done
+          if [ -n "$appnames" ]; then
+              appnames=${appnames:0:-1}
+              echo $appnames
+          fi
           echo "APP_LISTS=$appnames" >> $GITHUB_OUTPUT
       
       - name: Set up Python
