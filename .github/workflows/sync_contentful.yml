@@ -40,8 +40,8 @@ jobs:
           fi
           echo "APP_LISTS=$appnames" >> $GITHUB_OUTPUT
 
-      - name: get appList on push
-        id: get_applist
+      - name: get appList on workflow_dispatch
+        id: get_applist_workflow
         if: github.event_name == 'workflow_dispatch'
         run: |
           appnames=$(find ./apps -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
@@ -58,7 +58,15 @@ jobs:
           pip install requests contentful_management
       
       - name: Run inline Python script to sync data to Contentful
+        if: github.event_name != 'workflow_dispatch'
         env:
           CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_TOKEN }}
-          APP_LISTS: ${{ steps.get_applist.outputs.APP_LISTS }}
+          APP_LISTS: ${{ steps.get_applist.outputs.APP_LISTS }}  
+        run: python ./build/sync_contentful.py
+
+      - name: Run inline Python script to sync data to Contentful
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_TOKEN }}
+          APP_LISTS: ${{ steps.get_applist_workflow.outputs.APP_LISTS }}
         run: python ./build/sync_contentful.py
