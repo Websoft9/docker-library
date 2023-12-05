@@ -6,13 +6,16 @@ on:
     branches: [main]
     paths:
       - "apps/*/variables.json"
+      
 jobs:
   sync-to-contentful:
     runs-on: ubuntu-latest
     steps:
+      # Check out the repository
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      # Get the list of apps affected by the changes
       - name: get appList
         id: get_applist
         run: |
@@ -49,20 +52,23 @@ jobs:
               echo update $appnames
           else
               echo "update all"
-              appnames=$(find ./apps -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
+              appnames=$(find ./apps -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | tr '\n' ',')
           fi
-          echo "APP_LISTS=$appnames" >> $GITHUB_OUTPUT
-      
+          echo "::set-output name=APP_LISTS::$appnames"
+
+      # Set up Python
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
       
+      # Install Python dependencies
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install requests contentful_management
       
+      # Sync data to Contentful
       - name: Run inline Python script to sync data to Contentful
         env:
           CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_TOKEN }}
