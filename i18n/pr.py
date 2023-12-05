@@ -24,6 +24,10 @@ with open(args.zh_js_file, "r") as f:
 
 # 定义一个函数，用于在js文件中查找或替换key和value
 def update_js(lines, key, value):
+    # 如果值为空字符串，则不更新
+    if value == "":
+        return False
+
     # 遍历每一行
     for i, line in enumerate(lines):
         # 如果找到了key
@@ -52,10 +56,12 @@ for key, values in translation.items():
     # 获取英文和中文的value
     en_value = values[0]
     zh_value = values[1]
-    # 在po.en_US.js文件中更新或插入key和value
-    update_js(en_lines, key, en_value)
-    # 在po.zh_CN.js文件中更新或插入key和value
-    update_js(zh_lines, key, zh_value)
+    # 如果英文值不为空，则在po.en_US.js文件中更新或插入key和value
+    if en_value:
+        update_js(en_lines, key, en_value)
+    # 如果中文值不为空，则在po.zh_CN.js文件中更新或插入key和value
+    if zh_value:
+        update_js(zh_lines, key, zh_value)
 
 # 写入po.en_US.js文件
 with open(args.en_js_file, "w") as f:
