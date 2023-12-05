@@ -1,83 +1,15 @@
+# docs: 
+# compose: 
+# modification: use named volumes, restart policy
+
 version: "3.9"
 
 services:
-  web-server:
-    container_name: $W9_ID-webserver
-    image: ${IMAGE_REGISTRY}/${IMAGE_WEB_SERVER}
-    pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
-    restart: always
-    expose:
-      - "8080"
-    env_file:
-      - "${ENV_FILE:-.env}"
-
-  imageproxy-server:
-    container_name: $W9_ID-imageproxyserver
-    image: ${IMAGE_REGISTRY}/${IMAGE_IMAGEPROXY_SERVER}
-    pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
-    restart: always
-    expose:
-      - "8080"
-    environment:
-      - TZ=${TIMEZONE}
-      - BASEURL=${AWS_ENDPOINT}
-    env_file:
-      - "${ENV_FILE:-.env}"
-
-  backend-server:
-    container_name: $W9_ID-backendserver
-    image: ${IMAGE_REGISTRY}/${IMAGE_BACKEND_SERVER}
-    pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
-    restart: always
-    env_file:
-      - "${ENV_FILE:-.env}"
-    expose:
-      - "8081"
-    environment:
-      - TZ=${TIMEZONE}
-      - DEFAULT_TIME_ZONE=${TIMEZONE}
-    depends_on:
-      init-db:
-        condition: service_completed_successfully
-    healthcheck:
-      test: ["CMD-SHELL", "curl -sS 'http://localhost:8081' || exit 1"]
-      interval: 5s
-      timeout: 5s
-      start_period: 30s
-      retries: 60
-
-  room-server:
-    container_name: $W9_ID-roomserver
-    image: ${IMAGE_REGISTRY}/${IMAGE_ROOM_SERVER}
-    pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
-    restart: always
-    expose:
-      - "3333"
-      - "3334"
-      - "3001"
-      - "3002"
-      - "3006"
-      - "3005"
-      - "3007"
-    env_file:
-      - "${ENV_FILE:-.env}"
-    environment:
-      - TZ=${TIMEZONE}
-      - NODE_ENV=${ENV}
-      - NODE_OPTIONS=--max-old-space-size=2048 --max-http-header-size=80000
-      - API_MAX_MODIFY_RECORD_COUNTS=${API_MAX_MODIFY_RECORD_COUNTS:-30}
-      - INSTANCE_MAX_MEMORY=4096M
-      - ENABLE_SOCKET=true
-    depends_on:
-      mysql:
-        condition: service_healthy
-
-  # Third Party Dockers
   gateway:
-    container_name: $W9_ID
     image: ${IMAGE_REGISTRY}/${IMAGE_GATEWAY}
+    container_name: $W9_ID
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
-    restart: always
+    restart: unless-stopped
     ports:
       - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
     environment:
@@ -94,20 +26,91 @@ services:
       init-appdata:
         condition: service_completed_successfully
     env_file:
-      - "${ENV_FILE:-.env}"
+      - .env
+
+  web-server:
+    container_name: $W9_ID-webserver
+    image: ${IMAGE_REGISTRY}/${IMAGE_WEB_SERVER}
+    pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
+    restart: unless-stopped
+    expose:
+      - "8080"
+    env_file:
+      - .env
+
+  imageproxy-server:
+    container_name: $W9_ID-imageproxyserver
+    image: ${IMAGE_REGISTRY}/${IMAGE_IMAGEPROXY_SERVER}
+    pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
+    restart: unless-stopped
+    expose:
+      - "8080"
+    environment:
+      - TZ=${TIMEZONE}
+      - BASEURL=${AWS_ENDPOINT}
+    env_file:
+      - .env
+
+  backend-server:
+    container_name: $W9_ID-backendserver
+    image: ${IMAGE_REGISTRY}/${IMAGE_BACKEND_SERVER}
+    pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
+    restart: unless-stopped
+    env_file:
+      - .env
+    expose:
+      - "8081"
+    environment:
+      - TZ=${TIMEZONE}
+      - DEFAULT_TIME_ZONE=${TIMEZONE}
+    depends_on:
+      init-db:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sS 'http://localhost:8081' || exit 1"]
+      interval: 5s
+      timeout: 5s
+      start_period: 30s
+      retries: 60
+
+  room-server:
+    image: ${IMAGE_REGISTRY}/${IMAGE_ROOM_SERVER}
+    container_name: $W9_ID-roomserver
+    pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
+    restart: unless-stopped
+    expose:
+      - "3333"
+      - "3334"
+      - "3001"
+      - "3002"
+      - "3006"
+      - "3005"
+      - "3007"
+    env_file:
+      - .env
+    environment:
+      - TZ=${TIMEZONE}
+      - NODE_ENV=${ENV}
+      - NODE_OPTIONS=--max-old-space-size=2048 --max-http-header-size=80000
+      - API_MAX_MODIFY_RECORD_COUNTS=${API_MAX_MODIFY_RECORD_COUNTS:-30}
+      - INSTANCE_MAX_MEMORY=4096M
+      - ENABLE_SOCKET=true
+    depends_on:
+      mysql:
+        condition: service_healthy
 
   minio:
-    container_name: minio
     image: ${IMAGE_MINIO}
+    container_name: $W9_ID-minio
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
-    restart: always
+    restart: unless-stopped
     command: server --console-address ":9001" /data
     expose:
       - "9000"
       - "9001"
     volumes:
-      - ${DATA_PATH}/.data/minio/data:/data
-      - ${DATA_PATH}/.data/minio/config:/root/.minio
+      - minio_data:/data
+      - minio_config:/root/.minio
     environment:
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
@@ -120,13 +123,13 @@ services:
       timeout: 5s
       retries: 30
     env_file:
-      - "${ENV_FILE:-.env}"
+      - .env
 
   redis:
-    container_name: $W9_ID-redis
     image: ${IMAGE_REDIS}
+    container_name: $W9_ID-redis
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
-    restart: always
+    restart: unless-stopped
     command:
       [
         "redis-server",
@@ -138,19 +141,19 @@ services:
     expose:
       - "6379"
     volumes:
-      - ${DATA_PATH}/.data/redis:/data
+      - redis:/data
     environment:
       - TZ=${TIMEZONE}
     env_file:
-      - "${ENV_FILE:-.env}"
+      - .env
 
   mysql:
-    container_name: $W9_ID-mysql
     image: ${IMAGE_MYSQL}
+    container_name: $W9_ID-mysql
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
-    restart: always
+    restart: unless-stopped
     volumes:
-      - ${DATA_PATH}/.data/mysql:/var/lib/mysql
+      - mysql:/var/lib/mysql
     expose:
       - "3306"
     environment:
@@ -169,15 +172,15 @@ services:
       start_period: 30s
       retries: 60
     env_file:
-      - "${ENV_FILE:-.env}"
+      - .env
 
   rabbitmq:
     image: ${IMAGE_RABBITMQ}
-    pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
-    restart: always
     container_name: $W9_ID-rabbitmq
+    pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
+    restart: unless-stopped
     volumes:
-      - ${DATA_PATH}/.data/rabbitmq:/var/lib/rabbitmq
+      - rabbitmq:/var/lib/rabbitmq
     expose:
       - "5671"
       - "5672"
@@ -186,13 +189,13 @@ services:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_USERNAME}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
     env_file:
-      - "${ENV_FILE:-.env}"
+      - .env
 
   # init data
   init-db:
     image: ${IMAGE_REGISTRY}/${IMAGE_INIT_DB}
-    pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
     container_name: $W9_ID-initdb
+    pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
     environment:
       - TZ=${TIMEZONE}
       - DB_HOST=${MYSQL_HOST}
@@ -206,15 +209,15 @@ services:
       mysql:
         condition: service_healthy
     env_file:
-      - "${ENV_FILE:-.env}"
+      - .env
 
   # init-appdata
   init-appdata:
     image: ${IMAGE_REGISTRY}/${IMAGE_INIT_APPDATA}
-    pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
     container_name: $W9_ID-initappdata
+    pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
     env_file:
-      - "${ENV_FILE:-.env}"
+      - .env
     depends_on:
       mysql:
         condition: service_healthy
@@ -225,3 +228,10 @@ networks:
   default:
     name: ${W9_NETWORK}
     external: true
+
+volumes:
+  redis:
+  mysql:
+  minio_data: 
+  minio_config: 
+  rabbitmq:
