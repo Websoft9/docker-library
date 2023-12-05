@@ -17,27 +17,10 @@ jobs:
 
     - name: Get changed apps list and Update translation.json
       run: |
-        echo "Get list"
-        changefile=$(curl \
-                        -H "Accept: application/vnd.github+json" \
-                        -H "Authorization: Bearer ${{github.token}}" \
-                        https://api.github.com/repos/Websoft9/docker-library/compare/${{github.event.before}}...${{github.event.after}} | jq '.files[].filename' | sed 's/\"//g')
-        declare -a appnames
-        for name in ${changefile};do
-            echo ${name}
-            app=$(echo ${name} | cut -d "/" -f 2)
-            file=$(echo ${name} | cut -d "/" -f 3)
-            if [[ ${file} == ".env" ]];then
-                if [[ ! " ${appnames[@]} " =~ " ${app} " ]]; then
-                    appnames+=(${app})
-                fi
-            else
-                echo "affect nothing";
-            fi
-        done
         echo "start to update translation.json"
         cd i18n
-        python3 create.py appnames
+        pip3 install python-dotenv
+        python3 create.py
         
     - name: push i18n  
       uses: stefanzweifel/git-auto-commit-action@v4
