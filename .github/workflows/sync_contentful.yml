@@ -13,40 +13,46 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: get appList on push
+      - name: get appList
         id: get_applist
-        if: github.event_name != 'workflow_dispatch'
         run: |
-          changefile=$(curl \
-                         -H "Accept: application/vnd.github+json" \
-                         -H "Authorization: Bearer ${{github.token}}" \
-                         https://api.github.com/repos/Websoft9/docker-library/compare/${{github.event.before}}...${{github.event.after}} | jq '.files[].filename' | sed 's/\"//g')
           declare -a appnames
-          for name in ${changefile};do
-              echo ${name}
-              app=$(echo ${name} | cut -d "/" -f 2)
-              file=$(echo ${name} | cut -d "/" -f 3)
-              if [[ ${file} == "variables.json" ]];then
-                  if [[ ! " ${appnames[@]} " =~ " ${app} " ]]; then
-                      appnames+=${app},
+          changefile=$(curl \
+                      -H "Accept: application/vnd.github+json" \
+                      -H "Authorization: Bearer ${{github.token}}" \
+                      https://api.github.com/repos/Websoft9/docker-library/compare/${{github.event.before}}...${{github.event.after}})
+
+          # Check if files field exists in the JSON object
+          if echo "$changefile" | jq -e .files > /dev/null 2>&1; then
+              changefile=$(echo "$changefile" | jq '.files[].filename' | sed 's/\"//g')
+
+              for name in ${changefile}; do
+                  echo ${name}
+                  app=$(echo ${name} | cut -d "/" -f 2)
+                  file=$(echo ${name} | cut -d "/" -f 3)
+                  if [[ ${file} == "variables.json" ]]; then
+                      # Check if array is empty before adding a new element
+                      if [[ ${#appnames[@]} -eq 0 ]]; then
+                          appnames+=${app}
+                      else
+                          appnames+=,${app}
+                      fi
+                  else
+                      echo "affect nothing"
                   fi
-              else
-                  echo "affect nothing";
-              fi
-          done
+              done
+          else
+              echo "No files changed"
+          fi
           if [ -n "$appnames" ]; then
               appnames=${appnames:0:-1}
               echo update $appnames
+          else
+              echo "update all"
+              appnames=$(find ./apps -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
           fi
           echo "APP_LISTS=$appnames" >> $GITHUB_OUTPUT
-
-      - name: get appList on workflow_dispatch
-        id: get_applist_workflow
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          appnames=$(find ./apps -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
-          echo "APP_LISTS=$appnames" >> $GITHUB_OUTPUT
-                
+      
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -58,15 +64,7 @@ jobs:
           pip install requests contentful_management
       
       - name: Run inline Python script to sync data to Contentful
-        if: github.event_name != 'workflow_dispatch'
         env:
           CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_TOKEN }}
-          APP_LISTS: ${{ steps.get_applist.outputs.APP_LISTS }}  
-        run: python ./build/sync_contentful.py
-
-      - name: Run inline Python script to sync data to Contentful
-        if: github.event_name == 'workflow_dispatch'
-        env:
-          CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_TOKEN }}
-          APP_LISTS: ${{ steps.get_applist_workflow.outputs.APP_LISTS }}
+          APP_LISTS: ${{ steps.get_applist.outputs.APP_LISTS }}
         run: python ./build/sync_contentful.py
