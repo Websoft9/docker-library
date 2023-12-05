@@ -24,11 +24,8 @@ jobs:
       id: getfile
       run: |
         git diff --name-only HEAD^ HEAD
-        echo "VARIABLES_FILES=$(git diff --name-only HEAD^ HEAD -- 'apps/*/variables.json' | tr '\n' ',')" >> $GITHUB_ENV
-        echo "COMPOSE_FILES=$(git diff --name-only HEAD^ HEAD -- 'apps/*/docker-compose-*.yml' | tr '\n' ',')" >> $GITHUB_ENV
-        echo "VARIABLES_FILES: ${{ env.VARIABLES_FILES }}"
-        echo "COMPOSE_FILES: ${{ env.COMPOSE_FILES }}"
-
+        echo "VARIABLES_FILES=$(git diff --name-only HEAD^ HEAD -- 'apps/*/variables.json' | tr '\n' ',' | sed 's/,$//')" >> $GITHUB_ENV
+        echo "COMPOSE_FILES=$(git diff --name-only HEAD^ HEAD -- 'apps/*/docker-compose-*.yml' | tr '\n' ',' | sed 's/,$//')" >> $GITHUB_ENV
 
     - name: Run variables_files.py
       run: python3 build/variables_files.py "${{ env.VARIABLES_FILES }}"
