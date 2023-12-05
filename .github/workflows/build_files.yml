@@ -5,6 +5,8 @@ on:
   push:
     branches: [ main ]
     paths: 
+      - 'template/README.jinja2'
+      - 'template/variables1.json'
       - 'apps/*/variables.json'
       - 'apps/*/docker-compose-*.yml'
 
