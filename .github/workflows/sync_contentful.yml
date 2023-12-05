@@ -13,7 +13,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: get appnames and test 
+      - name: get appList
+        id: get_applist
         run: |
           changefile=$(curl \
                          -H "Accept: application/vnd.github+json" \
@@ -32,6 +33,7 @@ jobs:
                   echo "affect nothing";
               fi
           done
+          echo "APP_LISTS=$appnames" >> $GITHUB_OUTPUT
       
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -46,5 +48,5 @@ jobs:
       - name: Run inline Python script to sync data to Contentful
         env:
           CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_TOKEN }}
-          APP_LISTS: ""
+          APP_LISTS: ${{ steps.get_applist.outputs.APP_LISTS }}
         run: python ./build/sync_contentful.py
