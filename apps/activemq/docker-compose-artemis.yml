@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  activemq:
+    image: $W9_ARTEMIS_REPO:$W9_VERSION
+    environment:
+      - EXTRA_ARGS=--http-host 0.0.0.0 --relax-jolokia
+      - ARTEMIS_USER=$W9_USER
+      - ARTEMIS_PASSWORD=$W9_PASSWORD
+    volumes:
+      - activemq_root:/var/lib/artemis-instance

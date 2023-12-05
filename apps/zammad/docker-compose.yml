@@ -4,123 +4,152 @@
 
 version: '3.8'
 
+x-shared:
+  zammad-service: &zammad-service
+    environment: &zammad-environment
+      MEMCACHE_SERVERS: ${MEMCACHE_SERVERS}
+      POSTGRESQL_DB: ${POSTGRES_DB}
+      POSTGRESQL_HOST: ${POSTGRES_HOST}
+      POSTGRESQL_USER: ${POSTGRES_USER}
+      POSTGRESQL_PASS: ${POSTGRES_PASS}
+      POSTGRESQL_PORT: ${POSTGRES_PORT}
+      REDIS_URL: ${REDIS_URL}
+      # Allow passing in these variables via .env:
+      AUTOWIZARD_JSON:
+      AUTOWIZARD_RELATIVE_PATH:
+      ELASTICSEARCH_ENABLED:
+      ELASTICSEARCH_HOST:
+      ELASTICSEARCH_PORT:
+      ELASTICSEARCH_SCHEMA:
+      ELASTICSEARCH_NAMESPACE:
+      ELASTICSEARCH_REINDEX:
+      ELASTICSEARCH_SSL_VERIFY:
+      NGINX_PORT:
+      NGINX_SERVER_NAME:
+      NGINX_SERVER_SCHEME:
+      POSTGRESQL_DB_CREATE:
+      POSTGRESQL_OPTIONS:
+      RAILS_TRUSTED_PROXIES:
+      ZAMMAD_WEB_CONCURRENCY:
+      ZAMMAD_SESSION_JOBS:
+      ZAMMAD_PROCESS_SCHEDULED:
+      ZAMMAD_PROCESS_DELAYED_JOBS_WORKERS:
+    image: ${IMAGE_REPO}:${VERSION}
+    restart: ${RESTART}
+    volumes:
+      - zammad-storage:/opt/zammad/storage
+      - zammad-var:/opt/zammad/var
+    depends_on:
+      - zammad-memcached
+      - zammad-postgresql
+      - zammad-redis
+
 services:
 
   zammad-backup:
+    container_name: $W9_ID-backup
     command: ["zammad-backup"]
     depends_on:
       - zammad-railsserver
+      - zammad-postgresql
     entrypoint: /usr/local/bin/backup.sh
     environment:
-      - BACKUP_SLEEP=86400
-      - HOLD_DAYS=10
-      - POSTGRESQL_USER=${W9_ID}
-      - POSTGRESQL_PASSWORD=${W9_POWER_PASSWORD}
-    image: ${W9_REPO}:zammad-postgresql-${W9_VERSION}
-    links:
-      - zammad-postgresql
-    restart: unless-stopped
+      <<: *zammad-environment
+      BACKUP_TIME: "03:00"
+      HOLD_DAYS: "10"
+      TZ: Europe/Berlin
+    image: postgres:${POSTGRES_VERSION}
+    restart: ${RESTART}
     volumes:
       - zammad-backup:/var/tmp/zammad
-      - zammad-data:/opt/zammad
+      - zammad-storage:/opt/zammad/storage:ro
+      - zammad-var:/opt/zammad/var:ro
+      - ./scripts/backup.sh:/usr/local/bin/backup.sh:ro
 
   zammad-elasticsearch:
-    environment:
-      - discovery.type=single-node
-    image: ${W9_REPO}:zammad-elasticsearch-${W9_VERSION}
-    restart: unless-stopped
+    container_name: $W9_ID-elasticsearch
+    image: bitnami/elasticsearch:${ELASTICSEARCH_VERSION}
+    restart: ${RESTART}
     volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
+      - elasticsearch-data:/bitnami/elasticsearch/data
 
   zammad-init:
+    <<: *zammad-service
+    container_name: $W9_ID-init
     command: ["zammad-init"]
     depends_on:
       - zammad-postgresql
-    environment:
-      - POSTGRESQL_USER=${W9_ID}
-      - POSTGRESQL_PASS=${W9_POWER_PASSWORD}
-    image: ${W9_REPO}:zammad-${W9_VERSION}
-    links:
-      - zammad-elasticsearch
-      - zammad-postgresql
-    restart: unless-stopped
+    restart: on-failure
+    user: 0:0
     volumes:
-      - zammad-data:/opt/zammad
+      - zammad-storage:/opt/zammad/storage
+      - zammad-var:/opt/zammad/var
 
   zammad-memcached:
+    container_name: $W9_ID-memcached
     command: memcached -m 256M
-    image: memcached:1.6.9-alpine
-    restart: unless-stopped
+    image: memcached:${MEMCACHE_VERSION}
+    restart: ${RESTART}
 
   zammad-nginx:
+    <<: *zammad-service
+    container_name: $W9_ID
     command: ["zammad-nginx"]
+    ports:
+      - $W9_HTTP_PORT_SET:$W9_HTTP_PORT
     expose:
       - "8080"
     depends_on:
       - zammad-railsserver
-    image: ${W9_REPO}:zammad-${W9_VERSION}
-    links:
-      - zammad-railsserver
-      - zammad-websocket
-    restart: unless-stopped
     volumes:
-      - zammad-data:/opt/zammad
+      - zammad-var:/opt/zammad/var:ro # required for the zammad-ready check file
 
   zammad-postgresql:
+    container_name: $W9_ID-postgresql
     environment:
-      - W9_ID=${W9_ID}
-      - W9_POWER_PASSWORDWORD=${W9_POWER_PASSWORD}
-    image: ${W9_REPO}:zammad-postgresql-${W9_VERSION}
-    restart: unless-stopped
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASS}
+    image: postgres:${POSTGRES_VERSION}
+    restart: ${RESTART}
     volumes:
       - postgresql-data:/var/lib/postgresql/data
 
   zammad-railsserver:
+    container_name: $W9_ID-railsserver
+    <<: *zammad-service
     command: ["zammad-railsserver"]
-    depends_on:
-      - zammad-memcached
-      - zammad-postgresql
-    image: ${W9_REPO}:zammad-${W9_VERSION}
-    links:
-      - zammad-elasticsearch
-      - zammad-memcached
-      - zammad-postgresql
-    restart: unless-stopped
+
+  zammad-redis:
+    container_name: $W9_ID-redis
+    image: redis:${REDIS_VERSION}
+    restart: ${RESTART}
     volumes:
-      - zammad-data:/opt/zammad
+      - redis-data:/data
 
   zammad-scheduler:
+    <<: *zammad-service
+    container_name: $W9_ID-scheduler
     command: ["zammad-scheduler"]
-    depends_on:
-      - zammad-memcached
-      - zammad-railsserver
-    image: ${W9_REPO}:zammad-${W9_VERSION}
-    links:
-      - zammad-elasticsearch
-      - zammad-memcached
-      - zammad-postgresql
-    restart: unless-stopped
-    volumes:
-      - zammad-data:/opt/zammad
 
   zammad-websocket:
+    <<: *zammad-service
+    container_name: $W9_ID-websocket
     command: ["zammad-websocket"]
-    depends_on:
-      - zammad-memcached
-      - zammad-railsserver
-    image: ${W9_REPO}:zammad-${W9_VERSION}
-    links:
-      - zammad-postgresql
-      - zammad-memcached
-    restart: unless-stopped
-    volumes:
-      - zammad-data:/opt/zammad
 
 volumes:
   elasticsearch-data:
+    driver: local
   postgresql-data:
+    driver: local
+  redis-data:
+    driver: local
   zammad-backup:
-  zammad-data:
+    driver: local
+  zammad-storage:
+    driver: local
+  zammad-var:
+    driver: local
 
 networks:
   default:

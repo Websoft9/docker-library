@@ -5,9 +5,16 @@
   "fork_url": "https://github.com/apache/activemq-artemis/tree/main/artemis-docker",
   "edition": [
     {
-      "dist": "community",
+      "dist": "classic",
       "version": [
         "5.18.2-jre17-rockylinux8"
+      ]
+    },
+
+    {
+      "dist": "artemis",
+      "version": [
+        "2.21.0"
       ]
     }
   ],
