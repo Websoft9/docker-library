@@ -15,7 +15,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 2
 
@@ -27,7 +27,7 @@ jobs:
         echo "APP_LISTS=$(git diff --name-only HEAD^ HEAD -- 'apps/*/variables.json' | awk -F/ '{print $2}' | tr '\n' ',' | sed 's/,$//')" >> $GITHUB_ENV
         echo "APP_LISTS_ALL=$(ls -d apps/*/ | cut -f2 -d'/' | tr '\n' ',' | sed 's/,$//')" >> $GITHUB_ENV
         git diff --name-only HEAD^ HEAD | grep 'template/README.jinja2' && echo "TPL_README=changed" >> $GITHUB_ENV || true
-        git diff --name-only HEAD^ HEAD | grep 'template/ariables.json' && echo "TPL_VARS=changed" >> $GITHUB_ENV || true
+        git diff --name-only HEAD^ HEAD | grep 'template/variables.json' && echo "TPL_VARS=changed" >> $GITHUB_ENV || true
 
     - name: Update readme when app's variables.json changed
       run: python3 build/update_readme.py "${{ env.APP_LISTS }}"

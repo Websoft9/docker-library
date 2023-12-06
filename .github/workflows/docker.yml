@@ -9,69 +9,23 @@ on:
       - "apps/*/entrypoint.sh"
 
 jobs:
-  build:
+  test:
     name: Build Docker image
     runs-on: ubuntu-latest
-    env:
-      TAGS: latest
+
     steps:
-      - uses: actions/checkout@v2
-        name: Check out code
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 2
 
-      - name: set appname
-        run: |
-          changefile=$(curl \
-                         -H "Accept: application/vnd.github+json" \
-                         -H "Authorization: Bearer ${{github.token}}" \
-                         https://api.github.com/repos/Websoft9/docker-library/compare/${{github.event.before}}...${{github.event.after}} | jq '.files[].filename' | sed 's/\"//g')
-          first="true"
-          pass="false"
-          for name in ${changefile};do
-              echo ${name}
-              app=$(echo ${name} | cut -d "/" -f 2)
-              file=$(echo ${name} | cut -d "/" -f 3)
-              if [[ ${file} == "Dockerfile" ]] || [[ ${file} == "cmd.sh" ]] || [[ ${file} == "entrypoint.sh" ]];then
-                  if [ ${first} == "true" ];then
-                       echo "set appname";
-                       appname=${app};
-                       first="false";
-                     else
-                       echo "compare name";
-                       if [ ${appname} != ${app} ];then
-                            echo "stop update image on github";
-                            pass="true"
-                       fi
-                  fi 
-               else
-                  echo "affect nothing";
-              fi
-          done
-          echo ${appname}
-          echo "W9_NAME=${appname}" >> $GITHUB_ENV
-          echo "PASS_STEP=${pass}" >> $GITHUB_ENV
-          cp -r apps/${appname}/* .
-
-      - name: set tags
-        if: env.PASS_STEP=='false'
-        run: |
-          tag=$(cat apps/${{env.W9_NAME}}/variables.json | jq '.version' | sed 's/\"//g')
-          echo ${tag}
-          if [ ${tag} != "null" ];then
-             echo "set tags"
-             arraytag1=$(echo ${tag} | cut -d "." -f 1)
-             arraytag2=$(echo ${tag} | cut -d "." -f 2)
-             arraytag3=$(echo ${tag} | cut -d "." -f 3)
-             echo "$arraytag1 $arraytag2"
-             if [ ${arraytag3}x != x ];then
-                 TAGS=${arraytag1},${arraytag1}.${arraytag2},${tag},latest
-             else
-                 TAGS=${arraytag1},${tag},latest
-             fi
-          else
-             TAGS="latest"
-          fi
-          echo "123$TAGS"
-          echo "TAGS=${TAGS}" >> $GITHUB_ENV
+    - name: Get applist
+      id: getlist
+      run: |
+        git diff --name-only HEAD^ HEAD
+        changed_files=$(git diff --name-only HEAD^ HEAD)
+        app_list=$(echo "$changed_files" | grep -E 'apps/.*/(Dockerfile|cmd.sh|entrypoint.sh)$' | awk -F'/' '{print $2}' | sort | uniq)
+        echo "APP_LISTS=$app_list" >> $GITHUB_ENV
 
       - uses: mr-smithers-excellent/docker-build-push@v5
         name: Build & push Docker image
@@ -83,17 +37,6 @@ jobs:
           dockerfile: Dockerfile
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: add readme file
-        run: |
-          cd apps/${{env.W9_NAME}}
-          touch myread.md
-          echo "This repository is the easiest ${{env.W9_NAME}} deployment on GitHub and DockerHub  "' 
-          ```  
-             git clone https://github.com/Websoft9/docker-library.git  
-             cd docker-library/apps/${{env.W9_NAME}}  
-             sudo docker network create websoft9 &&  sudo docker compose up -d  
-          ```' > myread.md
 
       - name: Docker Hub Description
         uses: peter-evans/dockerhub-description@v3
