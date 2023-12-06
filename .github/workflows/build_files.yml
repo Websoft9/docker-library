@@ -23,11 +23,11 @@ jobs:
       id: getlist
       run: |
         pip install jinja2-cli
-        git diff --name-only HEAD^ HEAD
-        echo "APP_LISTS=$(git diff --name-only HEAD^ HEAD -- 'apps/*/variables.json' | awk -F/ '{print $2}' | tr '\n' ',' | sed 's/,$//')" >> $GITHUB_ENV
-        echo "APP_LISTS_ALL=$(ls -d apps/*/ | cut -f2 -d'/' | tr '\n' ',' | sed 's/,$//')" >> $GITHUB_ENV
-        git diff --name-only HEAD^ HEAD | grep 'template/README.jinja2' && echo "TPL_README=changed" >> $GITHUB_ENV
-        git diff --name-only HEAD^ HEAD | grep 'template/variables.json' && echo "TPL_VARS=changed" >> $GITHUB_ENV
+        git diff --name-only HEAD^ HEAD || exit $?
+        echo "APP_LISTS=$(git diff --name-only HEAD^ HEAD -- 'apps/*/variables.json' | awk -F/ '{print $2}' | tr '\n' ',' | sed 's/,$//')" >> $GITHUB_ENV || exit $?
+        echo "APP_LISTS_ALL=$(ls -d apps/*/ | cut -f2 -d'/' | tr '\n' ',' | sed 's/,$//')" >> $GITHUB_ENV || exit $?
+        git diff --name-only HEAD^ HEAD | grep 'template/README.jinja2' && echo "TPL_README=changed" >> $GITHUB_ENV || exit $?
+        git diff --name-only HEAD^ HEAD | grep 'template/variables.json' && echo "TPL_VARS=changed" >> $GITHUB_ENV || exit $?
 
     - name: Update readme when app's variables.json changed
       run: python3 build/update_readme.py "${{ env.APP_LISTS }}"
