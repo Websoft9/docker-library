@@ -15,7 +15,7 @@ jobs:
     - uses: actions/checkout@master
       name: Check out code  
 
-    - name: Get changed apps list and Update translation.json
+    - name: Update translation.json
       run: |
         echo "start to update translation.json"
         cd i18n
@@ -35,18 +35,20 @@ jobs:
       matrix:
         repository: ['Websoft9/plugin-appstore', 'Websoft9/plugin-myapps']
     steps:
-      - name: Checkout and update language files
+      - name: Checkout
         uses: actions/checkout@v2
         with:
           repository: ${{ matrix.repository }}
           ref: main    
-      - name: update languages files
+
+      - name: Update languages files
         run: |
           cd public
           wget https://raw.githubusercontent.com/Websoft9/docker-library/main/i18n/translation.json
           wget https://raw.githubusercontent.com/Websoft9/docker-library/main/i18n/pr.py
           python3 pr.py translation.json po.en_US.js po.zh_CN.js
           rm -rf pr.py translation.json
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
