@@ -13,8 +13,8 @@
     }
   ],
   "requirements": {
-    "cpu": "1",
-    "memory": "2",
+    "cpu": "2",
+    "memory": "4",
     "disk": "1",
     "url": "https://github.com/zammad-contrib/docker-zammad/blob/master/README.md"
   }

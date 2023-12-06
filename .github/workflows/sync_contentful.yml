@@ -48,7 +48,6 @@ jobs:
               echo "No files changed"
           fi
           if [ -n "$appnames" ]; then
-              appnames=${appnames:0:-1}
               echo update $appnames
           else
               echo "update all"
