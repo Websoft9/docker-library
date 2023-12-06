@@ -2,7 +2,7 @@
 
 This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for MongoDB:
 
- - community:  7.0.4, 6.0.12, 5.0.23, 4.4.26, 4.2.24-rc2, 4.2.24, 4.0.28, 3.6.23, 3.4.24, 3.2.21, 3.0.15, latest
+ - community:  7.0.4, 6.0.12, 5.0.23, 4.4.26, 4.2.24-rc2, 4.2.24, 4.0.28, 3.6.23, 3.4.24, 3.2.21, 3.0.15, 3.0.16, latest
 
 
 ## System Requirements

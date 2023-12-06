@@ -2,7 +2,7 @@
 
 This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for MySQL:
 
- - community:  8.1, 8.0, 5.7, 5.6, 5.5
+ - community:  8.1, 8.0, 5.7, 5.6, 5.5, 5.4
 
 
 ## System Requirements
