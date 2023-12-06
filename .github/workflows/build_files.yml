@@ -32,6 +32,7 @@ jobs:
         git diff --name-only HEAD^ HEAD | grep 'template/README.jinja2' && echo "TPL_README=changed" >> $GITHUB_ENV
         echo "4"
         git diff --name-only HEAD^ HEAD | grep 'template/variables.json' && echo "TPL_VARS=changed" >> $GITHUB_ENV
+        echo "${{ env.APP_LISTS }}" "${{ env.APP_LISTS_ALL }}"
 
     - name: Update readme when app's variables.json changed
       run: python3 build/update_readme.py "${{ env.APP_LISTS }}"
