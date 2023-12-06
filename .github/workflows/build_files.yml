@@ -8,7 +8,6 @@ on:
       - 'template/README.jinja2'
       - 'template/variables1.json'
       - 'apps/*/variables.json'
-      - 'apps/*/docker-compose-*.yml'
 
 jobs:
   build:
@@ -25,15 +24,10 @@ jobs:
       run: |
         git diff --name-only HEAD^ HEAD
         echo "VARIABLES_FILES=$(git diff --name-only HEAD^ HEAD -- 'apps/*/variables.json' | tr '\n' ',' | sed 's/,$//')" >> $GITHUB_ENV
-        echo "COMPOSE_FILES=$(git diff --name-only HEAD^ HEAD -- 'apps/*/docker-compose-*.yml' | tr '\n' ',' | sed 's/,$//')" >> $GITHUB_ENV
 
     - name: Run variables_files.py
       run: python3 build/variables_files.py "${{ env.VARIABLES_FILES }}"
       if: env.VARIABLES_FILES != ''
-
-    - name: Run compose_files.py
-      run: python3 build/compose_files.py "${{ env.COMPOSE_FILES }}"
-      if: env.COMPOSE_FILES != ''
 
     - name: Commit and push if changed
       uses: stefanzweifel/git-auto-commit-action@v4

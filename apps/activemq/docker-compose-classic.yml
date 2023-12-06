@@ -1,8 +1,15 @@
-# only for classic activemq
+# classic image: https://hub.docker.com/r/alfresco/alfresco-activemq
+# classic docs: https://github.com/Alfresco/alfresco-docker-activemq
+# artemis repo: https://github.com/ls1intum/activemq-broker-docker/pkgs/container/activemq-broker-docker-centos
+# Multiply version: docker-compose --profile classic up -d
+
 version: "3.8"
 
 services:
   activemq:
+    container_name: $W9_ID
+    restart: unless-stopped
+    env_file: .env
     image: $W9_CLASSIC_REPO:$W9_VERSION
     environment:
       - ACTIVEMQ_BROKER_NAME=localhost
@@ -11,3 +18,17 @@ services:
     volumes:
       - activemq_root:/opt/activemq
       - activemq_logs:/var/log/activemq
+    ports:
+      - "$W9_HTTP_PORT_SET:$W9_HTTP_PORT" # Web Console
+      - "$W9_AMQP_PORT_SET:$W9_AMQP_PORT" # AMQP
+      - "$W9_OPENWIRE_PORT_SET:$W9_AMQP_PORT" # OpenWire
+      - "$W9_STOMP_PORT_SET:$W9_AMQP_PORT" # STOMP
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true
+
+volumes:
+  activemq_root:
+  activemq_logs:
