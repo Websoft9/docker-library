@@ -1,6 +1,7 @@
 # chat2 on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for chat2:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for chat2:
+
 
  - community:  2.0.6
 

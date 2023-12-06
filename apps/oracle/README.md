@@ -1,6 +1,7 @@
 # Oracle Database on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Oracle Database:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Oracle Database:
+
 
  - community:  21.3.0-xe, 18.4.0-xe, latest
 

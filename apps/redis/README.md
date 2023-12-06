@@ -1,6 +1,7 @@
 # Redis on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Redis:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Redis:
+
 
  - community:  7.0, 6.0, 5.0, 4.0, latest
 

@@ -1,6 +1,7 @@
 # Zabbix on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Zabbix:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Zabbix:
+
 
  - community:  6.2, 6.0, 5.4, latest
 

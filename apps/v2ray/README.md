@@ -1,6 +1,7 @@
 # V2Ray on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for V2Ray:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for V2Ray:
+
 
  - community:  5.4.1
 
