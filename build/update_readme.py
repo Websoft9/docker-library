@@ -1,6 +1,7 @@
 # update the apps's README file that it variables.json file changed
 
 import os
+import json  # Add this line
 from jinja2 import Environment, FileSystemLoader
 
 # Get the list of apps from the environment variable
