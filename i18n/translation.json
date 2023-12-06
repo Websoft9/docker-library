@@ -36,8 +36,8 @@
         ""
     ],
     "W9_TCP_PORT_SET": [
-        "",
-        ""
+        "Application TCP Port",
+        "应用 TCP 端口"
     ],
     "W9_TRANSFORM_PORT_SET": [
         "",
@@ -60,7 +60,7 @@
         ""
     ],
     "W9_HTTPS_PORT_SET": [
-        "",
+        "Application HTTPS Port",
         ""
     ],
     "W9_DB_INFLUXDB_PORT_SET": [

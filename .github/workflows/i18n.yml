@@ -31,13 +31,15 @@ jobs:
   pr:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
+    strategy:
+      matrix:
+        repository: ['Websoft9/plugin-appstore', 'Websoft9/plugin-myapps']
     steps:
-      - name: Checkout websoft9
+      - name: Checkout and update language files
         uses: actions/checkout@v2
         with:
-          repository: Websoft9/plugin-appstore
+          repository: ${{ matrix.repository }}
           ref: main    
-      
       - name: update languages files
         run: |
           cd public
@@ -45,37 +47,12 @@ jobs:
           wget https://raw.githubusercontent.com/Websoft9/docker-library/main/i18n/pr.py
           python3 pr.py translation.json po.en_US.js po.zh_CN.js
           rm -rf pr.py translation.json
-
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.ZJ_ADMIN_TOKEN }}
-          branch: update-appstore-version-${{ github.run_number }}
+          branch: update-${{ matrix.repository }}-version-${{ github.run_number }}
           delete-branch: true
-          commit-message: App Store conbine translation.json
-          title: "App Store conbine translation.json"
-          body: "App Store conbine translation.json"
-          
-      - name: Checkout websoft9
-        uses: actions/checkout@v2
-        with:
-          repository: Websoft9/plugin-myapps
-          ref: main    
-      
-      - name: update languages files
-        run: |
-          cd public
-          wget https://raw.githubusercontent.com/Websoft9/docker-library/main/i18n/translation.json
-          wget https://raw.githubusercontent.com/Websoft9/docker-library/main/i18n/pr.py
-          python3 pr.py translation.json po.en_US.js po.zh_CN.js
-          rm -rf pr.py translation.json
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.ZJ_ADMIN_TOKEN }}
-          branch: update-myapps-version-${{ github.run_number }}
-          delete-branch: true
-          commit-message: App Store conbine translation.json
-          title: "myapps conbine translation.json"
-          body: "myapps conbine translation.json"
+          commit-message: "${{ matrix.repository }} combine translation.json"
+          title: "${{ matrix.repository }} combine translation.json"
+          body: "${{ matrix.repository }} combine translation.json"

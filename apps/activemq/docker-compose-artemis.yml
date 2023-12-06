@@ -1,9 +1,10 @@
-# only for artemis activemq
+# artemis repo: https://github.com/ls1intum/activemq-broker-docker/pkgs/container/activemq-broker-docker-centos
 
 version: "3.8"
 
 services:
   activemq:
+    container_name: $W9_ID
     image: $W9_ARTEMIS_REPO:$W9_VERSION
     environment:
       - EXTRA_ARGS=--http-host 0.0.0.0 --relax-jolokia
@@ -11,3 +12,18 @@ services:
       - ARTEMIS_PASSWORD=$W9_PASSWORD
     volumes:
       - activemq_root:/var/lib/artemis-instance
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "$W9_HTTP_PORT_SET:$W9_HTTP_PORT" # Web Console
+      - "$W9_AMQP_PORT_SET:$W9_AMQP_PORT" # AMQP
+      - "$W9_OPENWIRE_PORT_SET:$W9_AMQP_PORT" # OpenWire
+      - "$W9_STOMP_PORT_SET:$W9_AMQP_PORT" # STOMP
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true
+
+volumes:
+  activemq_root:

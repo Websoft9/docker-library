@@ -1,7 +1,5 @@
-# classic image: https://hub.docker.com/r/alfresco/alfresco-activemq
-# classic docs: https://github.com/Alfresco/alfresco-docker-activemq
-# artemis repo: https://github.com/ls1intum/activemq-broker-docker/pkgs/container/activemq-broker-docker-centos
-# Multiply version: docker-compose --profile classic up -d
+# This file is defined for community version, if it not have community version, is not need
+# For the reason that Websoft9 console can not support multiply distribution, now we use active classic at here
 
 version: "3.8"
 
@@ -10,6 +8,14 @@ services:
     container_name: $W9_ID
     restart: unless-stopped
     env_file: .env
+    image: $W9_CLASSIC_REPO:$W9_VERSION
+    environment:
+      - ACTIVEMQ_BROKER_NAME=localhost
+      - ACTIVEMQ_ADMIN_LOGIN=$W9_USER
+      - ACTIVEMQ_ADMIN_PASSWORD=$W9_PASSWORD
+    volumes:
+      - activemq_root:/opt/activemq
+      - activemq_logs:/var/log/activemq
     ports:
       - "$W9_HTTP_PORT_SET:$W9_HTTP_PORT" # Web Console
       - "$W9_AMQP_PORT_SET:$W9_AMQP_PORT" # AMQP

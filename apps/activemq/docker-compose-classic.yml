@@ -1,7 +1,5 @@
 # classic image: https://hub.docker.com/r/alfresco/alfresco-activemq
 # classic docs: https://github.com/Alfresco/alfresco-docker-activemq
-# artemis repo: https://github.com/ls1intum/activemq-broker-docker/pkgs/container/activemq-broker-docker-centos
-# Multiply version: docker-compose --profile classic up -d
 
 version: "3.8"
 
