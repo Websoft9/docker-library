@@ -1,3 +1,6 @@
+# workflow_dispatch mode will sync all applications
+# push trigger mode only sync changed applications
+
 name: Sync data to Contentful
 
 on:
