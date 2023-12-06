@@ -1,6 +1,9 @@
-# jupyterhub on Docker  
+# JupyterHub on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for jupyterhub v
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for JupyterHub:
+
+ - community:  latest
+
 
 ## System Requirements
 
@@ -13,10 +16,10 @@ The following are the minimal [recommended requirements](https://www.jupyterhub.
 
 ## Install
 
-You can install this jupyterhub by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this JupyterHub by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use jupyterhub with **Websoft9 Business Support** free, you can [subscribe jupyterhub](https://www.websoft9.com/apps) on Cloud platform
+If you want use JupyterHub with **Websoft9 Business Support** free, you can [subscribe JupyterHub](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[jupyterhub Administrator Guide](https://support.websoft9.com/docs/jupyterhub) powered by Websoft9
+[JupyterHub Administrator Guide](https://support.websoft9.com/docs/jupyterhub) powered by Websoft9

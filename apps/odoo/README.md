@@ -1,6 +1,9 @@
 # Odoo on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Odoo v16.0,15.0,14.0
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Odoo:
+
+ - community:  16.0, 15.0, 14.0, latest
+
 
 ## System Requirements
 

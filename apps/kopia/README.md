@@ -1,6 +1,9 @@
 # Kopia on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Kopia v0.13
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Kopia:
+
+ - community:  0.13
+
 
 ## System Requirements
 

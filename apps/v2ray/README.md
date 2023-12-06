@@ -1,10 +1,13 @@
 # V2Ray on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for V2Ray v5.4.1
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for V2Ray:
+
+ - community:  5.4.1
+
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://community.vtiger.com/help/vtigercrm/administrators/installation.html):
+The following are the minimal [recommended requirements](https://www.v2ray.com/):
 
 * **RAM**: 1 GB or more
 * **CPU**: 1 cores or higher

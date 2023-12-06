@@ -1,6 +1,9 @@
 # Kasm Workspaces on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Kasm Workspaces v1.13.0
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Kasm Workspaces:
+
+ - community:  1.13.0
+
 
 ## System Requirements
 

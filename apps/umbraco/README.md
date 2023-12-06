@@ -1,10 +1,13 @@
-# ONLYOFFICE on Docker  
+# Umbraco on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for ONLYOFFICE v
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Umbraco:
+
+ - community:  latest
+
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://github.com/onlyoffice/docker#recommended-system-requirements):
+The following are the minimal [recommended requirements](https://umbraco.com/):
 
 * **RAM**: 4 GB or more
 * **CPU**: 2 cores or higher
@@ -13,10 +16,10 @@ The following are the minimal [recommended requirements](https://github.com/only
 
 ## Install
 
-You can install this ONLYOFFICE by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this Umbraco by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use ONLYOFFICE with **Websoft9 Business Support** free, you can [subscribe ONLYOFFICE](https://www.websoft9.com/apps) on Cloud platform
+If you want use Umbraco with **Websoft9 Business Support** free, you can [subscribe Umbraco](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[ONLYOFFICE Administrator Guide](https://support.websoft9.com/docs/template) powered by Websoft9
+[Umbraco Administrator Guide](https://support.websoft9.com/docs/umbraco) powered by Websoft9

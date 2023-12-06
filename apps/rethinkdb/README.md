@@ -1,6 +1,9 @@
 # RethinkDB on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for RethinkDB v2.4
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for RethinkDB:
+
+ - community:  2.4, latest
+
 
 ## System Requirements
 

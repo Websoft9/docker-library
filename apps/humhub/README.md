@@ -1,6 +1,9 @@
 # HumHub on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for HumHub v1.6,latest
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for HumHub:
+
+ - community:  1.6, latest
+
 
 ## System Requirements
 

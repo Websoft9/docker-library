@@ -1,13 +1,16 @@
 # Neo4j on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Neo4j v5.7,4.4
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Neo4j:
+
+ - community:  5.12, 5.7, 4.4, latest
+
 
 ## System Requirements
 
 The following are the minimal [recommended requirements](https://neo4j.com/docs/operations-manual/current/installation/requirements/):
 
-* **RAM**: 4 GB or more
-* **CPU**: 2 cores or higher
+* **RAM**: 2 GB or more
+* **CPU**: 1 cores or higher
 * **Disk**: at least 1 GB of free space
 * **bandwidth**: more fluent experience over 100M  
 

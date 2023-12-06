@@ -1,6 +1,9 @@
 # Kodbox on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Kodbox vv1.4104
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Kodbox:
+
+ - community:  v1.4505, latest
+
 
 ## System Requirements
 

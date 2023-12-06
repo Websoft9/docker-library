@@ -1,10 +1,13 @@
 # TeamCity on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for TeamCity v0.24.1
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for TeamCity:
+
+ - community:  latest
+
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://teamcity.org/docs/guide/install-teamcity.html):
+The following are the minimal [recommended requirements](https://github.com/JetBrains/teamcity-docker-server):
 
 * **RAM**: 4 GB or more
 * **CPU**: 2 cores or higher

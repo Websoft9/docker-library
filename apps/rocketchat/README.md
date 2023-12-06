@@ -1,6 +1,9 @@
 # RocketChat on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for RocketChat v
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for RocketChat:
+
+ - community:  4.8, latest
+
 
 ## System Requirements
 

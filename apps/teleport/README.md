@@ -1,6 +1,9 @@
 # Teleport on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Teleport v11.3
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Teleport:
+
+ - community:  14-amd64, latest
+
 
 ## System Requirements
 

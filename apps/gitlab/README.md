@@ -2,9 +2,7 @@
 
 This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Gitlab:
 
- - community:  16.0.7-ce.0, latest
-
- - enterprise:  16.0.7-ce.0, latest
+ - community:  16.4.1-ce.0, latest
 
 
 ## System Requirements

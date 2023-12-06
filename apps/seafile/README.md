@@ -1,13 +1,16 @@
 # Seafile on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Seafile v10.0.1
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Seafile:
+
+ - community:  11.0.0, latest
+
 
 ## System Requirements
 
 The following are the minimal [recommended requirements](https://cloud.seafile.com/published/seafile-manual-cn/docker/):
 
-* **RAM**: 8 GB or more
-* **CPU**: 2 cores or higher
+* **RAM**: 2 GB or more
+* **CPU**: 1 cores or higher
 * **Disk**: at least 1 GB of free space
 * **bandwidth**: more fluent experience over 100M  
 

@@ -1,13 +1,16 @@
 # Gitea on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Gitea v1.2.5
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Gitea:
+
+ - community:  1.25, latest
+
 
 ## System Requirements
 
 The following are the minimal [recommended requirements](https://docs.gitea.io/zh-cn/install-with-docker-rootless):
 
-* **RAM**: 4 GB or more
-* **CPU**: 2 cores or higher
+* **RAM**: 1 GB or more
+* **CPU**: 1 cores or higher
 * **Disk**: at least 1 GB of free space
 * **bandwidth**: more fluent experience over 100M  
 

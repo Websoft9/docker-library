@@ -1,6 +1,9 @@
 # Prestashop on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Prestashop v1.7
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Prestashop:
+
+ - community:  8, latest
+
 
 ## System Requirements
 

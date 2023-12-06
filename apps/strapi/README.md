@@ -1,6 +1,9 @@
 # Strapi on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Strapi vlatest
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Strapi:
+
+ - community:  3.6.8, latest
+
 
 ## System Requirements
 

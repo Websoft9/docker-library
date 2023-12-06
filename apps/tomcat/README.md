@@ -1,6 +1,9 @@
 # Tomcat  on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Tomcat  v
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Tomcat :
+
+ - community:  latest
+
 
 ## System Requirements
 

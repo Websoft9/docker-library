@@ -1,6 +1,9 @@
 # Plausible on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Plausible vlatest
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Plausible:
+
+ - community:  v1.5, latest
+
 
 ## System Requirements
 

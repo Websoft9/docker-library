@@ -1,6 +1,9 @@
 # Matomo on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Matomo v4.14
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Matomo:
+
+ - community:  4.15
+
 
 ## System Requirements
 

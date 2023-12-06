@@ -1,6 +1,9 @@
 # Typesense on Docker  
 
-This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Typesense v0.24.1
+This is an **Cloud Native solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Typesense:
+
+ - community:  0.24.1, latest
+
 
 ## System Requirements
 
