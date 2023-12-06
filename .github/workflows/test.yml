@@ -29,5 +29,6 @@ jobs:
     - name: Update readme when app's variables.json changed
       run: |
         docker network create websoft9
+        pip install python-dotenv
         python3 build/test_apps.py "${{ env.APP_LISTS }}"
       if: env.APP_LISTS != ''  
