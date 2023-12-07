@@ -40,9 +40,9 @@ jobs:
       run: |
         IFS=',' read -ra APP_LISTS <<< "$APP_LISTS"
         for APP in "${APP_LISTS[@]}"; do
-          TAG=$(grep 'LABEL version' "apps/$APP/Dockerfile" | cut -d'"' -f2)
+          TAG=$(grep 'LABEL version' "apps/$APP/Dockerfile" | cut -d'"' -f2 | xargs)
           echo $TAG
-          TAGS=$(echo $TAG | awk -F. '{for(i=1;i<=NF;i++){printf (i==1?"":",")"%s",substr($0,1,index($0,$i"."$((i+1)))-1)}}' | sed 's/,$//')
+          IFS='.' read -ra PARTS <<< "$TAG"; TAGS=""; for i in "${!PARTS[@]}"; do if [ "$i" -eq 0 ]; then TAGS+="${PARTS[$i]}"; else TAGS+=",${TAGS}.${PARTS[$i]}"; fi; done; echo $TAGS
           echo $TAGS
           echo "Building and pushing Docker image for $APP with tags: $TAGS"
           echo "TAGS=$TAGS" >> $GITHUB_ENV
