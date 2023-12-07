@@ -234,5 +234,29 @@
     "W9_ZK_PORT_SET": [
         "",
         ""
+    ],
+    "W9_UDP1_PORT_SET": [
+        "",
+        ""
+    ],
+    "W9_UDP2_PORT_SET": [
+        "",
+        ""
+    ],
+    "W9_UDP3_PORT_SET": [
+        "",
+        ""
+    ],
+    "W9_UDP4_PORT_SET": [
+        "",
+        ""
+    ],
+    "W9_UDP5_PORT_SET": [
+        "",
+        ""
+    ],
+    "W9_UDP6_PORT_SET": [
+        "",
+        ""
     ]
 }
