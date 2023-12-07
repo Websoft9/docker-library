@@ -9,44 +9,68 @@ on:
       - "apps/*/entrypoint.sh"
 
 jobs:
-  test:
-    name: Build Docker image
+  setup:
     runs-on: ubuntu-latest
-
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
       with:
         fetch-depth: 2
 
-    - name: Get applist
-      id: getlist
+    - id: set-matrix for applists
       run: |
         git diff --name-only HEAD^ HEAD
         changed_files=$(git diff --name-only HEAD^ HEAD)
-        app_list=$(echo "$changed_files" | grep -E 'apps/.*/(Dockerfile|cmd.sh|entrypoint.sh)$' | awk -F'/' '{print $2}' | sort | uniq)
-        echo "APP_LISTS=$app_list" >> $GITHUB_ENV
+        app_list=$(echo "$changed_files" | grep -E 'apps/.*/(Dockerfile|cmd.sh|entrypoint.sh)' | awk -F'/' '{print $2}' | sort | uniq)
+        app_list_json=$(echo $app_list | jq -R -s -c 'split(" ")')
+        echo "::set-output name=matrix::{\"app\": $app_list_json}"
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
-    - name: Login to DockerHub
-      uses: docker/login-action@v3
+  build:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{fromJson(needs.setup.outputs.matrix)}}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
       with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+        fetch-depth: 2
 
     - name: Build and push Docker images
       run: |
-        IFS=',' read -ra APP_LISTS <<< "$APP_LISTS"
-        for APP in "${APP_LISTS[@]}"; do
-          TAG=$(grep 'LABEL version' "apps/$APP/Dockerfile" | cut -d'"' -f2 | xargs)
-          echo $APP version is $TAG
-          IFS='.' read -ra PARTS <<< "$TAG"; TAGS=""; for i in "${!PARTS[@]}"; do if [ "$i" -eq 0 ]; then TAGS="${PARTS[$i]}"; else TAGS="${TAGS},${TAGS}.${PARTS[$i]}"; fi; done;
-          echo "Building and pushing Docker image for $APP with tags: $TAGS"
-          echo "TAGS=$TAGS" >> $GITHUB_ENV
-          echo "APP=$APP" >> $GITHUB_ENV
-          echo "DOCKERFILE=apps/$APP/Dockerfile" >> $GITHUB_ENV
-          echo "README=apps/$APP/README.md" >> $GITHUB_ENV
-        done
-      if: env.APP_LISTS != ''
+        APP=${{ matrix.app }}
+        TAG=$(grep 'LABEL version' "apps/$APP/Dockerfile" | cut -d'"' -f2 | xargs)
+        echo $APP version is $TAG
+        if [[ "$TAG" == *"-"* ]]; then
+          TAGS="$TAG"
+        else
+          IFS='.' read -ra PARTS <<< "$TAG"; TAGS="latest"; for i in "${!PARTS[@]}"; do if [ "$i" -eq 0 ]; then TAGS="${TAGS},${PARTS[$i]}"; else TAGS="${TAGS},${TAGS}.${PARTS[$i]}"; fi; done;
+        fi
+        echo "Building and pushing Docker image for $APP with tags: $TAGS"
+        echo "TAGS=$TAGS" >> $GITHUB_ENV
+        echo "APP=$APP" >> $GITHUB_ENV
+        echo "DOCKERFILE=apps/$APP/Dockerfile" >> $GITHUB_ENV
+        echo "README=apps/$APP/README.md" >> $GITHUB_ENV
+
+    - uses: mr-smithers-excellent/docker-build-push@v5
+      name: Build & push Docker image
+      if: env.PASS_STEP=='false'
+      with:
+        image: websoft9dev/${{env.APP}}
+        tags: ${{env.TAGS}}
+        registry: docker.io
+        dockerfile: ${{env.DOCKERFILE}}
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Docker Hub Description
+      uses: peter-evans/dockerhub-description@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: websoft9dev/${{env.APP}}
+        readme-filepath: ${{env.README}}
+      if: needs.setup.outputs.matrix != ''
+
