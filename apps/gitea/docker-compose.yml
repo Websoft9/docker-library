@@ -25,7 +25,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
     ports:
       - "$W9_HTTP_PORT_SET:$W9_HTTP_PORT"
-      - "$W9_SSH_PORT_SET:W9_SSH_PORT"
+      - "$W9_SSH_PORT_SET:$W9_SSH_PORT"
     depends_on:
        - mysql
  
