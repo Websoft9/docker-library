@@ -19,7 +19,7 @@ jobs:
       with:
         fetch-depth: 2
 
-    - id: set-matrix for applists
+    - id: set-matrix
       run: |
         git diff --name-only HEAD^ HEAD
         changed_files=$(git diff --name-only HEAD^ HEAD)
