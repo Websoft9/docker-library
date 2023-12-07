@@ -15,7 +15,12 @@ services:
       - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
       - '${W9_MQTT_PORT_SET}:${W9_MQTT_PORT}'
       - '${W9_RPC_PORT_SET}:${W9_RPC_PORT}'
-      - '${W9_UDP_PORT_SET}:${W9_UDP_PORT}/udp'
+      - '${W9_UDP1_PORT_SET}:${W9_UDP1_PORT}/udp'
+      - '${W9_UDP2_PORT_SET}:${W9_UDP2_PORT}/udp'
+      - '${W9_UDP3_PORT_SET}:${W9_UDP3_PORT}/udp'
+      - '${W9_UDP4_PORT_SET}:${W9_UDP4_PORT}/udp'
+      - '${W9_UDP5_PORT_SET}:${W9_UDP5_PORT}/udp'
+      - '${W9_UDP6_PORT_SET}:${W9_UDP6_PORT}/udp'
     environment:
       TB_QUEUE_TYPE: kafka
       TB_KAFKA_SERVERS: $W9_ID-kafka:9092
