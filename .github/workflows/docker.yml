@@ -42,7 +42,7 @@ jobs:
         for APP in "${APP_LISTS[@]}"; do
           TAG=$(grep 'LABEL version' "apps/$APP/Dockerfile" | cut -d'"' -f2 | xargs)
           echo $APP version is $TAG
-          IFS='.' read -ra PARTS <<< "$TAG"; TAGS=""; for i in "${!PARTS[@]}"; do if [ "$i" -eq 0 ]; then TAGS="${PARTS[$i]}"; else TAGS+=",${TAGS}.${PARTS[$i]}"; fi; done; echo $TAG
+          IFS='.' read -ra PARTS <<< "$TAG"; TAGS=""; for i in "${!PARTS[@]}"; do if [ "$i" -eq 0 ]; then TAGS="${PARTS[$i]}"; else TAGS="${TAGS},${TAGS}.${PARTS[$i]}"; fi; done;
           echo "Building and pushing Docker image for $APP with tags: $TAGS"
           echo "TAGS=$TAGS" >> $GITHUB_ENV
           echo "APP=$APP" >> $GITHUB_ENV
