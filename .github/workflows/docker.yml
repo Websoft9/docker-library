@@ -54,9 +54,8 @@ jobs:
         echo "DOCKERFILE=apps/$APP/Dockerfile" >> $GITHUB_ENV
         echo "README=apps/$APP/README.md" >> $GITHUB_ENV
 
-    - uses: mr-smithers-excellent/docker-build-push@v5
-      name: Build & push Docker image
-      if: env.PASS_STEP=='false'
+    - name: Build & push Docker image
+      uses: mr-smithers-excellent/docker-build-push@v5
       with:
         image: websoft9dev/${{env.APP}}
         tags: ${{env.TAGS}}
