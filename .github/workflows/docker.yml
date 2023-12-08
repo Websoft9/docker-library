@@ -1,7 +1,8 @@
-# This action is use for build multiply applications to DockerHub at one time
+# This action is used for building multiply applications to DockerHub at one time
 # It need LABEL version="" at your dockerfile. And it can divide version. e.g version v3.4.0.3 will divide to latest,v3,v3.4,v3.4.0,v3.4.0.3
 # When version include "-", it not divide version and build ony one test image
 # It have enable multiPlatform, you add more platform at platform: linux/amd64...
+# If you add more paths for trigger, please update app_list= at set-matrix for it also
 
 name: Build image to DockerHub
 
