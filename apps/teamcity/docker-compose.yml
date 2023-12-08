@@ -20,11 +20,12 @@ services:
 
   teamcity-agent:
     image: jetbrains/teamcity-agent:${W9_VERSION}
-    container_name: ${W9_ID}-agent
     privileged: true
-    volumes:
-      - ./src/agents/agent-1/conf:/data/teamcity_agent/conf
     environment:
+      - SERVER_URL=http://${W9_ID}:8111
+      - AGENT_NAME=agent1
+      - AGENT_TOKEN=71723e836df10d65390420820fe3451c
+      - OWN_PORT=9090
       - DOCKER_IN_DOCKER=start
      
   teamcity-mysql:
