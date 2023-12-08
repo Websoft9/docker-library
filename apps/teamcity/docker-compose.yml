@@ -18,28 +18,13 @@ services:
       - data:/data/teamcity_server/datadir
       - logs:/opt/teamcity/logs
 
-  agent:
-    build: ./src/agents/python-node-yarn
-    env_file: .env
-    depends_on:
-      - redis
-    #     if you need docker inside the agent
-    #     (http://jpetazzo.github.io/2015/09/03/do-not-use-docker-in-docker-for-ci/)
+  teamcity-agent-1:
+    image: jetbrains/teamcity-agent:${W9_VERSION}-linux-sudo
+    privileged: true
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
-        
-  redis:
-    image: redis:3.2
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
+      - ./src/agents/agent1/conf:/data/teamcity_agent/conf
+    environment:
+      - DOCKER_IN_DOCKER=start
      
   teamcity-db:
     image: mysql:8.0
