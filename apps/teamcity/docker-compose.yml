@@ -1,25 +1,25 @@
 # image: https://hub.docker.com/r/jetbrains/teamcity-server
 # docs: https://www.jetbrains.com/help/teamcity/teamcity-documentation.html
-# https://github.com/JetBrains/teamcity-docker-server
-# https://github.com/egregors/teamcity-docker-compose
+# docker: https://github.com/JetBrains/teamcity-docker-server
+# compose: https://github.com/JetBrains/teamcity-docker-samples/blob/master/compose-ubuntu/docker-compose.yml
 
 version: '3.8'
 services:
   teamcity-server:
-    image: jetbrains/teamcity-server:${W9_VERSION}
-    container_name: ${W9_NAME}
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
     depends_on:
       - teamcity-db
     env_file: .env
     ports:
-      - "${W9_HTTP_PORT}:8111"
+      - "${W9_HTTP_PORT_SET}:8111"
     volumes:
       - data:/data/teamcity_server/datadir
       - logs:/opt/teamcity/logs
 
   teamcity-agent-1:
-    image: jetbrains/teamcity-agent:${W9_VERSION}-linux-sudo
+    image: ${W9_REPO}:${W9_VERSION}-linux-sudo
     privileged: true
     volumes:
       - ./src/agents/agent1/conf:/data/teamcity_agent/conf
@@ -28,11 +28,11 @@ services:
      
   teamcity-db:
     image: mysql:8.0
-    container_name: ${W9_NAME}-db 
+    container_name: ${W9_ID}-db 
     environment:
       - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWORD}
-      - MYSQL_DATABASE=${W9_NAME}
-      - MYSQL_USER=${W9_NAME}
+      - MYSQL_DATABASE=${W9_ID}
+      - MYSQL_USER=${W9_ID}
       - MYSQL_PASSWORD=${W9_POWER_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
