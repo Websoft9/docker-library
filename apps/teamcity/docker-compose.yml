@@ -20,6 +20,7 @@ services:
 
   teamcity-agent:
     image: jetbrains/teamcity-agent:${W9_VERSION}
+    container_name: ${W9_ID}-agent
     privileged: true
     volumes:
       - ./src/agents/agent-1/conf:/data/teamcity_agent/conf
