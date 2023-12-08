@@ -18,11 +18,11 @@ services:
       - data:/data/teamcity_server/datadir
       - logs:/opt/teamcity/logs
 
-  teamcity-agent-1:
+  teamcity-agent:
     image: jetbrains/teamcity-agent:${W9_VERSION}
     privileged: true
     volumes:
-      - ./src/agents/agent1-1/conf:/data/teamcity_agent/conf
+      - ./src/agents/agent-1/conf:/data/teamcity_agent/conf
     environment:
       - DOCKER_IN_DOCKER=start
      
