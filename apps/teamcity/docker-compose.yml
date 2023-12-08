@@ -7,32 +7,32 @@ version: '3.8'
 services:
   teamcity-server:
     image: jetbrains/teamcity-server:${W9_VERSION}
-    container_name: ${W9_NAME}
+    container_name: ${W9_ID}
     restart: unless-stopped
     depends_on:
-      - teamcity-db
+      - teamcity-mysql
     env_file: .env
     ports:
-      - "${W9_HTTP_PORT}:8111"
+      - "${W9_HTTP_PORT_SET}:8111"
     volumes:
       - data:/data/teamcity_server/datadir
       - logs:/opt/teamcity/logs
 
   teamcity-agent-1:
-    image: jetbrains/teamcity-agent:${W9_VERSION}-linux-sudo
+    image: jetbrains/teamcity-agent:${W9_VERSION}
     privileged: true
     volumes:
       - ./src/agents/agent1-1/conf:/data/teamcity_agent/conf
     environment:
       - DOCKER_IN_DOCKER=start
      
-  teamcity-db:
+  teamcity-mysql:
     image: mysql:8.0
-    container_name: ${W9_NAME}-db 
+    container_name: ${W9_ID}-mysql
     environment:
       - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWORD}
-      - MYSQL_DATABASE=${W9_NAME}
-      - MYSQL_USER=${W9_NAME}
+      - MYSQL_DATABASE=${W9_ID}
+      - MYSQL_USER=${W9_ID}
       - MYSQL_PASSWORD=${W9_POWER_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
