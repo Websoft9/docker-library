@@ -3,7 +3,7 @@
 FROM joomla:php7.4-apache
 
 LABEL maintainer="help@websoft9.com"
-LABEL version="v3.4.0.3-rc1"
+LABEL version="v3.4.0"
 LABEL source="Discuz_X3.4_SC_UTF8_20220811"
 LABEL description="Discuz"
 

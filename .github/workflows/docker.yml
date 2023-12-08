@@ -1,3 +1,8 @@
+# This action is use for build multiply applications to DockerHub at one time
+# It need LABEL version="" at your dockerfile. And it can divide version. e.g version v3.4.0.3 will divide to latest,v3,v3.4,v3.4.0,v3.4.0.3
+# When version include "-", it not divide version and build ony one test image
+# It have enable multiPlatform, you add more platform at platform: linux/amd64...
+
 name: Build image to DockerHub
 
 on:
@@ -73,6 +78,8 @@ jobs:
         registry: docker.io
         directory: ${{env.DIRECTORY}}
         dockerfile: ${{env.DOCKERFILE}}
+        multiPlatform: true
+        platform: linux/amd64
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
