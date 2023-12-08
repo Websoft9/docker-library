@@ -1,4 +1,4 @@
-# update time: 202312080818
+# update time: 202312080849
 
 FROM joomla:php7.4-apache
 
@@ -17,7 +17,7 @@ RUN apt-get update && apt-get upgrade -y && apt install unzip zip -y; \
 
 COPY  ./src/Discuz_* /tmp
 
-COPY ./entrypoint.sh /entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
 
 
 RUN set -ex; \

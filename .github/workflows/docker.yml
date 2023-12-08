@@ -38,7 +38,7 @@ jobs:
       with:
         fetch-depth: 2
 
-    - name: Build and push Docker images
+    - name: Prepare tags and files for Docker build
       run: |
         APP=${{ matrix.app }}
         TAG=$(grep 'LABEL version' "apps/$APP/Dockerfile" | cut -d'"' -f2 | xargs)
@@ -62,20 +62,22 @@ jobs:
         echo "TAGS=$TAGS" >> $GITHUB_ENV
         echo "APP=$APP" >> $GITHUB_ENV
         echo "DOCKERFILE=apps/$APP/Dockerfile" >> $GITHUB_ENV
+        echo "DIRECTORY=apps/$APP" >> $GITHUB_ENV
         echo "README=apps/$APP/README.md" >> $GITHUB_ENV
 
     - name: Build & push Docker image
-      uses: mr-smithers-excellent/docker-build-push@v5
+      uses: mr-smithers-excellent/docker-build-push@v6
       with:
         image: websoft9dev/${{env.APP}}
         tags: ${{env.TAGS}}
         registry: docker.io
+        directory: ${{env.DIRECTORY}}
         dockerfile: ${{env.DOCKERFILE}}
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Docker Hub Description
-      uses: peter-evans/dockerhub-description@v3
+      uses: peter-evans/dockerhub-description@v4
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
