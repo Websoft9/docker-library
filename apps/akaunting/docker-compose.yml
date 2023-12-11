@@ -13,8 +13,6 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-    environment:
-      - AKAUNTING_SETUP
 
   makaunting-db:
     image: mariadb:11.0
@@ -26,9 +24,8 @@ services:
     environment:
       MYSQL_DATABASE: $W9_ID
       MYSQL_USER: $W9_ID
-      MYSQL_PASSWORD: $W9_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_PASSWORD
-    env_file: .env
+      MYSQL_PASSWORD: $W9_POWER_PASSWORD
+      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
 
 volumes:
   akaunting-data:
