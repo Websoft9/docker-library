@@ -20,7 +20,7 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix
       - /dev/dri:/dev/dri
       - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
-      #- appflowy-data:/home/appflowy
+      - appflowy-data:/home/appflowy
     network_mode: host
 
 networks:
@@ -28,5 +28,5 @@ networks:
     name: $W9_NETWORK
     external: true
 
-# volumes:
-#   appflowy-data:
+volumes:
+  appflowy-data:
