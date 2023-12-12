@@ -1,6 +1,9 @@
-# docs: 
-# compose: 
-# modification: use named volumes, restart policy
+# docs: https://github.com/apitable/apitable/blob/develop/README.md#installation
+# Official docs only provide install.sh, and we have get the From install.sh, 
+# it is easy to see that it only downloads compose and starts it
+# compose: https://github.com/apitable/apitable/blob/develop/docker-compose.yaml
+
+# modifications: Named volumes, restart policy, container_name
 
 version: "3.9"
 
@@ -25,8 +28,6 @@ services:
         condition: service_started
       init-appdata:
         condition: service_completed_successfully
-    env_file:
-      - .env
 
   web-server:
     container_name: $W9_ID-webserver
@@ -39,7 +40,7 @@ services:
       - .env
 
   imageproxy-server:
-    container_name: $W9_ID-imageproxyserver
+    container_name: $W9_ID-imageproxy
     image: ${IMAGE_REGISTRY}/${IMAGE_IMAGEPROXY_SERVER}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
     restart: unless-stopped
@@ -48,11 +49,9 @@ services:
     environment:
       - TZ=${TIMEZONE}
       - BASEURL=${AWS_ENDPOINT}
-    env_file:
-      - .env
 
   backend-server:
-    container_name: $W9_ID-backendserver
+    container_name: $W9_ID-backend
     image: ${IMAGE_REGISTRY}/${IMAGE_BACKEND_SERVER}
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
     restart: unless-stopped
@@ -75,7 +74,7 @@ services:
 
   room-server:
     image: ${IMAGE_REGISTRY}/${IMAGE_ROOM_SERVER}
-    container_name: $W9_ID-roomserver
+    container_name: $W9_ID-room
     pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
     restart: unless-stopped
     expose:
@@ -95,6 +94,21 @@ services:
       - API_MAX_MODIFY_RECORD_COUNTS=${API_MAX_MODIFY_RECORD_COUNTS:-30}
       - INSTANCE_MAX_MEMORY=4096M
       - ENABLE_SOCKET=true
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  databus-server:
+    image: ${IMAGE_REGISTRY}/${IMAGE_DATABUS_SERVER}
+    container_name: $W9_ID-databus
+    pull_policy: ${IMAGE_PULL_POLICY:-if_not_present}
+    restart: always
+    expose:
+      - "8625"
+    env_file:
+      - "${ENV_FILE:-.env}"
+    environment:
+      - TZ=${TIMEZONE}
     depends_on:
       mysql:
         condition: service_healthy
@@ -122,8 +136,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 30
-    env_file:
-      - .env
 
   redis:
     image: ${IMAGE_REDIS}
@@ -144,8 +156,6 @@ services:
       - redis:/data
     environment:
       - TZ=${TIMEZONE}
-    env_file:
-      - .env
 
   mysql:
     image: ${IMAGE_MYSQL}
@@ -160,7 +170,8 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - TZ=${TIMEZONE}
-    command: --default-authentication-plugin=mysql_native_password
+    command: 
+      --default-authentication-plugin=mysql_native_password
       --character-set-server=utf8mb4
       --collation-server=utf8mb4_general_ci
       --sql_mode=IGNORE_SPACE,NO_ENGINE_SUBSTITUTION
@@ -171,8 +182,6 @@ services:
       timeout: 5s
       start_period: 30s
       retries: 60
-    env_file:
-      - .env
 
   rabbitmq:
     image: ${IMAGE_RABBITMQ}
@@ -188,8 +197,6 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_USERNAME}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
-    env_file:
-      - .env
 
   # init data
   init-db:
@@ -208,8 +215,6 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-    env_file:
-      - .env
 
   # init-appdata
   init-appdata:

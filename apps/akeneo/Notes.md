@@ -1,5 +1,7 @@
 # Akeneo
 
+本应用需要重新编写，建议采用官方的 make 方案
+
 ## 安装
 
 先阅读官方文档：https://docs.akeneo.com/master/install_pim/docker/installation_docker.html
@@ -33,6 +35,7 @@
 ## 常见问题
 
 #### make prod 成功之后，仍然无法访问？
+
 需修正访问根目录的权限 ： chown -R www-data:www-data /var/www/html
 
 #### 默认的账号密码是什么？

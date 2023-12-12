@@ -11,17 +11,9 @@ services:
       - akeneo:/var/www/html
       - ./000-default.conf:/etc/apache2/sites-available/000-default.conf
     restart: unless-stopped
-    environment:
-      AKENEO_MYSQL_DATABASE: ${W9_ID}
-      AKENEO_MYSQL_USER: ${W9_ID}
-      AKENEO_MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
-      AKENEO_MYSQL_HOST: $W9_ID-mysql
-      AKENEO_SITENAME: ${W9_SITENAME}
-      AKENEO_ADMIN_USER: ${W9_USER}
-      AKENEO_ADMIN_PASSWORD: ${W9_POWER_PASSWORD}
       
   mysql:
-    image: mysql:8.0
+    image: mysql:$W9_MYSQL_VERSION
     container_name: $W9_ID-mysql
     restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
@@ -32,18 +24,16 @@ services:
       MYSQL_USER: ${W9_ID}
       MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
-    env_file: .env
 
   elasticsearch:
-    image: elasticsearch:7.10.1
+    image: elasticsearch:$W9_ES_VERSION
     container_name: ${W9_ID}-elasticsearch
     restart: unless-stopped
+    volumes:
+      - elasticsearch:/usr/share/elasticsearch/data
     environment:
       ES_JAVA_OPTS: '${ES_JAVA_OPTS:--Xms512m -Xmx512m}'
       discovery.type: 'single-node'
-    ports:
-      - '${W9_ES_PORT_SET}:${W9_ES_PORT}'
-    env_file: .env
 
 networks:
   default:
@@ -53,3 +43,4 @@ networks:
 volumes:
   akeneo:
   mysql:
+  elasticsearch:

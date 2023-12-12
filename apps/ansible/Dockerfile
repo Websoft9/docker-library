@@ -1,10 +1,14 @@
+# refer to: 
 # refer to: https://learn.microsoft.com/en-us/azure/developer/ansible/configure-in-docker-container
 
-FROM centos:centos7
+FROM ghcr.io/ansible-community/community-ee-base:latest
 
 LABEL maintainer="help@websoft9.com"
 LABEL version="latest"
 LABEL description="Ansible"
+
+ENV LANG en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
 
 WORKDIR "/ansible/project"
 
