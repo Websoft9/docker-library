@@ -20,6 +20,8 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix
       - /dev/dri:/dev/dri
       - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
+      - appflowy-data:/home/appflowy
+    network_mode: host
 
 networks:
   default:
@@ -27,4 +29,4 @@ networks:
     external: true
 
 volumes:
-  appflowy:
+  appflowy-data:
