@@ -7,6 +7,8 @@ LABEL maintainer="help@websoft9.com"
 LABEL version="latest"
 LABEL description="Ansible"
 
+USER root
+
 WORKDIR "/ansible/project"
 
 RUN yum check-update; \
@@ -27,7 +29,7 @@ RUN pip3 install --upgrade pip; \
     pip3 install pywinrm; \
     pip3 install jmspath; \
     pip3 install requests; \
-    
+
 # download template of role, it's to run the tasks of you want to test -- need transfer
 # RUN git clone https://github.com/Websoft9/role_template
 
