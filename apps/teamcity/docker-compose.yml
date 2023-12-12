@@ -20,6 +20,7 @@ services:
 
   teamcity-agent:
     image: jetbrains/teamcity-agent:${W9_VERSION}
+    restart: unless-stopped
     privileged: true
     environment:
       - SERVER_URL=http://${W9_ID}:8111
