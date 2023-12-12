@@ -7,20 +7,27 @@ LABEL maintainer="help@websoft9.com"
 LABEL version="latest"
 LABEL description="Ansible"
 
-ENV LANG en_US.UTF-8
-ENV LC_ALL en_US.UTF-8
-
 WORKDIR "/ansible/project"
 
-# Install ansible
-RUN yum install -y epel-release 1>/dev/null 2>&1
-RUN yum install -y git mosh gcc wget libffi-devel openssl unzip bzip2 expect at tree vim screen pwgen  htop yum-utils gcc jq telnet mlocate epel-release
-RUN yum install python python3 -y 1>/dev/null 2>&1
-RUN yum clean all
+RUN yum check-update; \
+    yum install -y gcc libffi-devel python3 epel-release; \
+    yum install -y python3-pip; \
+    yum install -y wget; \
+    yum install -y openssl; \
+    yum install -y vim; \
+    yum install -y yum-utils \
+    yum install -y jq \
+    yum install -y unzip \
+    yum install -y curl \
+    yum clean all
 
-# Install python module
-RUN python3 -m pip install --upgrade pip virtualenv && python3 -m pip install -U --force-reinstall requests fabric httplib2 pywinrm[kerberos] pywinrm jmspath
-
+RUN pip3 install --upgrade pip; \
+    pip3 install --upgrade virtualenv; \
+    pip3 install pywinrm[kerberos]; \
+    pip3 install pywinrm; \
+    pip3 install jmspath; \
+    pip3 install requests; \
+    
 # download template of role, it's to run the tasks of you want to test -- need transfer
 # RUN git clone https://github.com/Websoft9/role_template
 
