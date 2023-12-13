@@ -28,7 +28,9 @@ services:
         condition: service_started
       init-appdata:
         condition: service_completed_successfully
-
+    env_file:
+      - .env
+      
   web-server:
     container_name: $W9_ID-webserver
     image: ${IMAGE_REGISTRY}/${IMAGE_WEB_SERVER}
