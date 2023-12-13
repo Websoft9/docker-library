@@ -78,8 +78,8 @@ We will list and explain commonly used environmental variables as following tabl
 | W9_URL_REPLACE        | You must modify W9_URL on init when it is true                                                                                                                      | no        |
 | W9_URL                | It is used when the application APP needs to set an external URL, which can be IP(or domain), IP:PORT, http(s)://IP:POR                                              | no        |
 | W9_ADMIN_PATH         | Application's background access address is main url and this suffix                                                                                                  | no        |
-| W9_USER               | Application's login username                                                                                                                                         | no        |
-| W9_PASSWORD           | Application's login password                                                                                                                                         | no        |
+| W9_LOGIN_USER               | Application's login username                                                                                                                                         | no        |
+| W9_LOGIN_PASSWORD           | Application's login password                                                                                                                                         | no        |
 | W9_ENCRYPT_PASSWORD   | Some application must use password with encryption                                                                                                                   | no        |
 | W9_DB_EXPOSE  | Main database of application                                                                                            | no        |
 | W9_HTTP_PORT     | Main container internal http port                                                                                                                              | no        |
