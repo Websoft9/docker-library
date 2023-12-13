@@ -98,6 +98,9 @@ src is the directory which include config or script files for creating/modify ap
 | nginx_proxy.conf         | nginx config code section which will insert to server{} by websoft9 api, and it can override the exist location                                 | no        |
 | php_exra.ini         | extra php.ini for PHP application, you can add it to docker-compose.yml if you want to use it                    | no        |
 
+
+> you should add **proxy_pass  $forward_scheme://$server:$port$request_uri;** to your nginx_proxy.conf if you override default location /{}
+
 ## Build docker image of websoft9
 
 When we cannot find a suitable image, we have to compile the image by Dockerfile,We make a requirement in the following aspects.
