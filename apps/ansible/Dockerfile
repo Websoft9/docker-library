@@ -12,6 +12,14 @@ USER root
 
 WORKDIR "/ansible/project"
 
+# Set ansible.cfg
+COPY ./test/ansible.cfg /etc/ansible/
+
+# Copy test files
+COPY ./test/inventory ./test/
+COPY ./test/playbook.yml ./test/
+
+# Install tools
 RUN yum check-update; \
     yum install -y gcc libffi-devel; \
     yum install -y wget; \
@@ -23,7 +31,7 @@ RUN yum check-update; \
     yum install -y curl; \
     yum clean all
     
-
+# Install python packages
 RUN ln -s $(command -v pip3) /usr/local/bin/pip; \
     pip install --upgrade pip; \
     pip install --upgrade virtualenv; \

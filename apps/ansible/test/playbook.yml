@@ -1,0 +1,7 @@
+---
+- hosts: nodes
+  tasks:
+  - name: Write hello world to /tmp/ansible
+    copy:
+      content: "hello world\n"
+      dest: /tmp/ansible
