@@ -1,11 +1,13 @@
-# image: https://github.com/orgs/ansible-community/packages/container/package/community-ee-base
+# image and version from: https://github.com/orgs/ansible-community/packages/container/package/community-ee-base
 # docs1: https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-ansible-to-containers
 # docs2: https://learn.microsoft.com/en-us/azure/developer/ansible/configure-in-docker-container
 
 FROM ghcr.io/ansible-community/community-ee-base:latest
 
 LABEL maintainer="help@websoft9.com"
-LABEL version="latest"
+
+# You should change the below if official image latest version changed
+LABEL version="2.16.1"
 LABEL description="Ansible"
 
 USER root
@@ -21,7 +23,6 @@ COPY ./test/playbook.yml ./test/
 
 # Install tools
 RUN yum check-update; \
-    yum install -y gcc libffi-devel; \
     yum install -y wget; \
     yum install -y openssl; \
     yum install -y vim; \
