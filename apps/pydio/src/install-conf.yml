@@ -4,7 +4,7 @@
 # Environment variables are defined in .env file and injected at runtime.
 
 # WebUI Admin definition
-frontendlogin: {$W9_USER}
+frontendlogin: {$W9_LOGIN_USER}
 frontendpassword: {$W9_POWER_PASSWORD}
 
 # DB connection

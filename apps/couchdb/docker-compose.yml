@@ -18,8 +18,8 @@ services:
      - couchdb_log:/opt/couchdb/var/log
     env_file: .env
     environment:
-      COUCHDB_USER: ${W9_USER}
-      COUCHDB_PASSWORD: ${W9_PASSWORD}
+      COUCHDB_USER: ${W9_LOGIN_USER}
+      COUCHDB_PASSWORD: ${W9_LOGIN_PASSWORD}
 
 networks:
   default:

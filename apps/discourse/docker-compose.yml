@@ -14,7 +14,7 @@ services:
       - 'discourse_data:/bitnami/discourse'
     environment:
       - DISCOURSE_HOST=$W9_URL
-      - DISCOURSE_USERNAME=$W9_USER
+      - DISCOURSE_USERNAME=$W9_LOGIN_USER
       - DISCOURSE_PASSWORD=$W9_POWER_PASSWORD
       - DISCOURSE_PRECOMPILE_ASSETS=no
     depends_on:

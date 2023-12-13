@@ -16,8 +16,8 @@ services:
       - "${W9_SITE_HTTP_PORT}:80"
       - "${W9_SITE_HTTPS_PORT}:443"
     environment:
-      - BAOTA_USER=$W9_USER
-      - BAOTA_PASSWORD=$W9_PASSWORD
+      - BAOTA_USER=$W9_LOGIN_USER
+      - BAOTA_PASSWORD=$W9_LOGIN_PASSWORD
     volumes:
       - www:/www
     command: bash -c "cat /my_cmd > cmd.sh && chmod +x /cmd.sh && /cmd.sh"
@@ -38,8 +38,8 @@ services:
       - "${W9_SITE_HTTP_PORT}:80"
       - "${W9_SITE_HTTPS_PORT}:443"
     environment:
-      - BAOTA_USER=$W9_USER
-      - BAOTA_PASSWORD=$W9_PASSWORD
+      - BAOTA_USER=$W9_LOGIN_USER
+      - BAOTA_PASSWORD=$W9_LOGIN_PASSWORD
     volumes:
       - www:/www
     command: bash -c "cat /my_cmd > cmd.sh && chmod +x /cmd.sh && /cmd.sh"

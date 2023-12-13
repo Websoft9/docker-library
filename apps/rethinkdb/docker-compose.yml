@@ -17,7 +17,7 @@ services:
       - /bin/bash
       - -c
       - |
-        rethinkdb create --initial-password  ${W9_PASSWORD}
+        rethinkdb create --initial-password  ${W9_LOGIN_PASSWORD}
         rethinkdb --bind all
     volumes:
       - rethinkdb_data:/data

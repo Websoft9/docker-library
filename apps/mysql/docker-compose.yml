@@ -18,7 +18,7 @@ services:
      - ./src/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     env_file: .env
     environment:
-      MYSQL_ROOT_PASSWORD: $W9_PASSWORD
+      MYSQL_ROOT_PASSWORD: $W9_LOGIN_PASSWORD
 
 volumes:
   mysql_data:

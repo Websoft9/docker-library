@@ -34,8 +34,8 @@ services:
       - "$W9_HTTP_PORT_SET:$W9_HTTP_PORT"
     env_file: .env
     environment:
-      KAFKA_MANAGER_USERNAME: $W9_USER
-      KAFKA_MANAGER_PASSWORD: $W9_PASSWORD
+      KAFKA_MANAGER_USERNAME: $W9_LOGIN_USER
+      KAFKA_MANAGER_PASSWORD: $W9_LOGIN_PASSWORD
 
 volumes:
   zookeeper_data:

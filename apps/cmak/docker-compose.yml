@@ -15,8 +15,8 @@ services:
     ports:
       - "${W9_HTTP_PORT}:9000"
     environment:
-      KAFKA_MANAGER_USERNAME: ${W9_USER}
-      KAFKA_MANAGER_PASSWORD: ${W9_PASSWORD}
+      KAFKA_MANAGER_USERNAME: ${W9_LOGIN_USER}
+      KAFKA_MANAGER_PASSWORD: ${W9_LOGIN_PASSWORD}
 
 networks:
   default:

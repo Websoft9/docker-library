@@ -6,7 +6,7 @@ apt-get update && apt-get install apache2-utils -y 1>/dev/null 2>&1
 # for CentOS image
 # yum install httpd-tools -y 1>/dev/null 2>&1
 
-app_pass=$(htpasswd -bnBC 10 "" $W9_PASSWORD | tr -d ':')
+app_pass=$(htpasswd -bnBC 10 "" $W9_LOGIN_PASSWORD | tr -d ':')
 app_pass=$(echo $app_pass |sed 's/\$/\\$/g')
 app_pass=$(echo $app_pass |sed 's/\//\\\//g')
 echo $app_pass

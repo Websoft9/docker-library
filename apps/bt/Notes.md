@@ -23,7 +23,7 @@ echo -e "6\nadministrator" | bt
 或
 ```
 # 仅支持修改密码，官方未提供用户名修改方案
-cd /www/server/panel && python tools.py panel $W9_PASSWORD
+cd /www/server/panel && python tools.py panel $W9_LOGIN_PASSWORD
 ```
 
 ## 删除登录URI问题

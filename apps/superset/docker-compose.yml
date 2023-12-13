@@ -98,7 +98,7 @@ services:
       # Add the mapped in /app/pythonpath_docker which allows devs to override stuff
       - REDIS_HOST=$W9_DB_REDIS_HOST
       - REDIS_PORT=6379
-      - W9_PASSWORD=$W9_PASSWORD
+      - W9_LOGIN_PASSWORD=$W9_LOGIN_PASSWORD
     depends_on: *superset-depends-on
     user: "root"
     volumes: *superset-volumes

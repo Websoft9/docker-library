@@ -19,8 +19,8 @@ services:
       - ${W9_TCP_PORT_SET}:${W9_TCP_PORT}
     env_file: .env
     environment:
-      ELASTIC_USERNAME: ${W9_USER}
-      ELASTIC_PASSWORD: ${W9_PASSWORD}
+      ELASTIC_USERNAME: ${W9_LOGIN_USER}
+      ELASTIC_PASSWORD: ${W9_LOGIN_PASSWORD}
 
 volumes:
   elasticsearch:

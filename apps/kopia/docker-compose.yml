@@ -16,8 +16,8 @@ services:
       - --disable-csrf-token-checks
       - --insecure
       - --address=0.0.0.0:$W9_HTTP_PORT
-      - --server-username=$W9_USER
-      - --server-password=$W9_PASSWORD
+      - --server-username=$W9_LOGIN_USER
+      - --server-password=$W9_LOGIN_PASSWORD
     volumes:
       - kopia_config:/app/config
       - kopia_cache:/app/cache

@@ -17,8 +17,8 @@ services:
       - SUITECRM_DATABASE_USER=${W9_ID}
       - SUITECRM_DATABASE_NAME=${W9_ID}
       - SUITECRM_DATABASE_PASSWORD=${W9_POWER_PASSWORD}
-      - SUITECRM_USERNAME=${W9_USER}
-      - SUITECRM_PASSWORD=${W9_PASSWORD}
+      - SUITECRM_USERNAME=${W9_LOGIN_USER}
+      - SUITECRM_PASSWORD=${W9_LOGIN_PASSWORD}
     volumes:
       - suitecrm:/bitnami/suitecrm
     depends_on:

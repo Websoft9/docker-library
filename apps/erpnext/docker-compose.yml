@@ -58,7 +58,7 @@ services:
           fi
         done;
         echo "common_site_config.json found";
-        bench new-site frontend --admin-password=$W9_PASSWORD --db-root-password=$W9_PASSWORD --install-app erpnext;
+        bench new-site frontend --admin-password=$W9_LOGIN_PASSWORD --db-root-password=$W9_LOGIN_PASSWORD --install-app erpnext;
 
   mariadb:
     image: mariadb:10.6

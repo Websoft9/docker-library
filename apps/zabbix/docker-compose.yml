@@ -43,7 +43,7 @@ services:
    - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWORD}
    - MYSQL_PASSWORD=${W9_POWER_PASSWORD}
    - MYSQL_DATABASE=${W9_ID}
-   - W9_PASSWORD=${W9_PASSWORD}
+   - W9_LOGIN_PASSWORD=${W9_LOGIN_PASSWORD}
   depends_on:
    - mysql
   stop_grace_period: 30s

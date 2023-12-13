@@ -14,7 +14,7 @@ if [ -n "${AWX_KUBE_DEVEL}" ]; then
 fi
 
 set -e
-export DJANGO_SUPERUSER_PASSWORD=$W9_PASSWORD
+export DJANGO_SUPERUSER_PASSWORD=$W9_LOGIN_PASSWORD
 # 迁移数据库
 awx-manage migrate
 
@@ -25,7 +25,7 @@ export PATH=$PATH:/var/lib/awx/venv/awx/bin
 awx-manage create_preload_data
 awx-manage register_default_execution_environments
 # 创建admin账号密码
-if output=$(awx-manage createsuperuser --noinput --username=${W9_USER} --email=admin@localhost 2> /dev/null); then
+if output=$(awx-manage createsuperuser --noinput --username=${W9_LOGIN_USER} --email=admin@localhost 2> /dev/null); then
     echo $output
 fi
 echo "Admin password: ${DJANGO_SUPERUSER_PASSWORD}"

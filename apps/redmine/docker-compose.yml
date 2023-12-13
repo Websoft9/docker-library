@@ -18,7 +18,7 @@ services:
       REDMINE_DB_PASSWORD: $W9_POWER_PASSWORD
       REDMINE_SECRET_KEY_BASE: supersecretkey
       REDMINE_PLUGINS_MIGRATE: "true"
-      REDMINE_PASSWORD: $W9_PASSWORD
+      REDMINE_PASSWORD: $W9_LOGIN_PASSWORD
     entrypoint:
       - bash
       - -c

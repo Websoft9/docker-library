@@ -14,8 +14,8 @@ services:
     env_file:
       - .env
     environment:
-      - JOOMLA_USERNAME=$W9_USER	
-      - JOOMLA_PASSWORD=$W9_PASSWORD
+      - JOOMLA_USERNAME=$W9_LOGIN_USER	
+      - JOOMLA_PASSWORD=$W9_LOGIN_PASSWORD
       - JOOMLA_DATABASE_HOST=$W9_ID-mariadb
       - JOOMLA_DATABASE_PORT_NUMBER=3306
       - JOOMLA_DATABASE_NAME=$W9_ID

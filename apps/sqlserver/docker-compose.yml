@@ -10,7 +10,7 @@ services:
     env_file: .env
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=${W9_PASSWORD}
+      - SA_PASSWORD=${W9_LOGIN_PASSWORD}
       - MSSQL_PID=${W9_PID}
     ports:
       - ${W9_DB_PORT_SET}:${W9_DB_PORT}

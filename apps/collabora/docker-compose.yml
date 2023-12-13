@@ -9,8 +9,8 @@ services:
     image: collabora/code:${W9_VERSION}
     environment:
      - domain=${W9_URL}
-     - username=${W9_USER}
-     - password=${W9_PASSWORD}
+     - username=${W9_LOGIN_USER}
+     - password=${W9_LOGIN_PASSWORD}
      - DONT_GEN_SSL_CERT=YES
      - extra_params=--o:ssl.enable=false --o:ssl.termination=true
     ports:

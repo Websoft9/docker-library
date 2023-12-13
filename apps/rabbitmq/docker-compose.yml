@@ -15,8 +15,8 @@ services:
       - '${W9_GUI_PORT_SET}:${W9_GUI_PORT}'
     env_file: .env
     environment:
-      - RABBITMQ_DEFAULT_USER=${W9_USER}
-      - RABBITMQ_DEFAULT_PASS=${W9_PASSWORD}
+      - RABBITMQ_DEFAULT_USER=${W9_LOGIN_USER}
+      - RABBITMQ_DEFAULT_PASS=${W9_LOGIN_PASSWORD}
     volumes:
       - 'rabbitmq_data:/var/lib/rabbitmq'
       - 'rabbitmq_plugins:/plugins'

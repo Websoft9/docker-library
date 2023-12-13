@@ -9,8 +9,8 @@
 
 支持 grafana.ini 中的参数作为环境变量，格式：GF_[groupname]_itename，例如：  
    ```
-   - GF_SECURITY_ADMIN_USER=${W9_USER}
-   - GF_SECURITY_ADMIN_PASSWORD=${W9_PASSWORD}
+   - GF_SECURITY_ADMIN_USER=${W9_LOGIN_USER}
+   - GF_SECURITY_ADMIN_PASSWORD=${W9_LOGIN_PASSWORD}
    ```
 
 ### 常见问题

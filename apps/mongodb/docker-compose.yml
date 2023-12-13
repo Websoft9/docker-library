@@ -12,8 +12,8 @@ services:
       - ${W9_DB_PORT_SET}:${W9_DB_PORT}
     env_file: .env
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${W9_USER}
-      MONGO_INITDB_ROOT_PASSWORD: ${W9_PASSWORD}
+      MONGO_INITDB_ROOT_USERNAME: ${W9_LOGIN_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${W9_LOGIN_PASSWORD}
     command: ${W9_COMMAND}
     volumes:
       - mongo_data:/data/db

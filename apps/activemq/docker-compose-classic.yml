@@ -11,8 +11,8 @@ services:
     image: $W9_CLASSIC_REPO:$W9_VERSION
     environment:
       - ACTIVEMQ_BROKER_NAME=localhost
-      - ACTIVEMQ_ADMIN_LOGIN=$W9_USER
-      - ACTIVEMQ_ADMIN_PASSWORD=$W9_PASSWORD
+      - ACTIVEMQ_ADMIN_LOGIN=$W9_LOGIN_USER
+      - ACTIVEMQ_ADMIN_PASSWORD=$W9_LOGIN_PASSWORD
     volumes:
       - activemq_root:/opt/activemq
       - activemq_logs:/var/log/activemq
