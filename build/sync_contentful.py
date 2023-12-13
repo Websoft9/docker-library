@@ -11,7 +11,7 @@ SPACE_ID = "ffrhttfighww"
 # 初始化 Contentful 管理客户端
 client = Client(ACCESS_TOKEN)
 
-def update_contentful(product_name, editions, requirements):
+def update_contentful(product_name, editions, requirements, production):
     try:
         # 获取 Contentful 中的 Product entry
         entries = client.entries(SPACE_ID, 'master').all({'content_type': 'product', 'fields.key': product_name})
@@ -26,6 +26,8 @@ def update_contentful(product_name, editions, requirements):
             entry.fields('en-US')['vcpu'] = int(requirements['cpu'])
             entry.fields('en-US')['memory'] = int(requirements['memory'])
             entry.fields('en-US')['storage'] = int(requirements['disk'])
+            
+            entry.fields('en-US')['production'] = bool(production)
 
             # 保存和发布更新
             entry.save()
@@ -59,9 +61,10 @@ for product_name in app_lists:
             data = json.load(file)
             editions = data['edition']
             requirements = data['requirements']
+            production = data['release']
             
             total_updates += 1
-            if update_contentful(product_name, editions, requirements):
+            if update_contentful(product_name, editions, requirements,production):
                 successful_updates += 1
             else:
                 failed_updates += 1

@@ -1,8 +1,8 @@
 {
-  "name": "affine",
-  "trademark": "AFFiNE",
+  "name": "appflowy",
+  "trademark": "AppFlowy",
   "release": false,
-  "fork_url": "https://github.com/toeverything/AFFiNE",
+  "fork_url": "https://hub.docker.com/r/appflowyio/appflowy_client/",
   "edition": [
     {
       "dist": "community",
@@ -14,7 +14,7 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": "https://github.com/toeverything/AFFiNE"
+    "disk": "2",
+    "url": "https://hub.docker.com/r/appflowyio/appflowy_client/"
   }
 }

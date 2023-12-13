@@ -9,7 +9,6 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     stdin_open: true
     container_name: $W9_ID
-    # tty: true
     devices:
       - /dev/dri:/dev/dri
     environment:
