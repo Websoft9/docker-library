@@ -12,17 +12,25 @@ USER root
 
 WORKDIR "/ansible/project"
 
-RUN yum check-update && \
-    yum install -y gcc libffi-devel wget openssl vim yum-utils jq unzip curl && \
-    yum clean all && \
-    ln -s $(command -v pip3) /usr/local/bin/pip && \
-    pip3 install --upgrade pip --no-cache-dir && \
-    pip3 install --upgrade virtualenv --no-cache-dir && \
-    pip3 install jmespath --no-cache-dir && \
-    pip3 install requests --no-cache-dir
+RUN yum check-update; \
+    yum install -y gcc libffi-devel; \
+    yum install -y wget; \
+    yum install -y openssl; \
+    yum install -y vim; \
+    yum install -y yum-utils; \
+    yum install -y jq; \
+    yum install -y unzip; \
+    yum install -y curl; \
+    yum clean all
+    
+
+RUN ln -s $(command -v pip3) /usr/local/bin/pip; \
+    pip install --upgrade pip; \
+    pip install --upgrade virtualenv; \
+    pip install jmspath; \
+    pip install requests
 
 VOLUME "/ansible/project"
 
 # Define the entry point for the docker container.
-# You may want to change this according to your actual needs.
 ENTRYPOINT ["tail", "-f", "/dev/null"]
