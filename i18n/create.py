@@ -12,8 +12,8 @@ for filename in glob.glob('../apps/*/.env'):
     env_dict = dotenv_values(filename)
     # 遍历所有环境变量
     for key in env_dict.keys():
-        # 如果 key 以 'W9_' 开头并以 '_SET' 结尾
-        if key.startswith('W9_') and key.endswith('_SET'):
+        # 如果 key 以 'W9_' 开头并以 '_SET' 结尾，或者以 'W9_LOGIN' 开头
+        if (key.startswith('W9_') and key.endswith('_SET')) or key.startswith('W9_LOGIN'):
             # 如果 key 不在 translation.json 中，将其添加到 translation.json 中
             if key not in translation:
                 translation[key] = ["", ""]
