@@ -25,9 +25,10 @@ services:
       - apex
     command: |
       /bin/sh -c "
-      if [ ! -f /data/conn_string.txt ]; then
-        echo 'CONN_STRING=sys/$W9_POWER_PASSWORD@$W9_ID-oracle:1521/$ORACLE_PDB' > /data/conn_string.txt
-      fi
+      while [ ! -f /data/conn_string.txt ]; do
+          echo 'CONN_STRING=sys/$W9_POWER_PASSWORD@$W9_ID-oracle:1521/$ORACLE_PDB' > /data/conn_string.txt || true
+          sleep 20
+      done
       exit 0
       "
 
