@@ -12,7 +12,6 @@ services:
     restart: unless-stopped
     ports:
       - "$W9_HTTP_PORT_SET:80"
-      - "$W9_HTTPS_PORT_SET:443"
     volumes:
       - ./src/Caddyfile:/etc/caddy/Caddyfile
       - data:/data
