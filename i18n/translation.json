@@ -272,15 +272,11 @@
         ""
     ],
     "W9_OPENAI_API_KEY_SET": [
-        "",
-        ""
-    ],
-    "W9_PASSWORD_SET": [
-        "",
-        ""
+        "OPENAI API KEY",
+        "OPENAI API KEY"
     ],
     "W9_LOGIN_OPENAI_API_KEY": [
-        "",
-        ""
+        "OPENAI API KEY",
+        "OPENAI API KEY"
     ]
 }
