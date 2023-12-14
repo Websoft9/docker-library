@@ -3,7 +3,7 @@
   "Repository": "https://github.com/Websoft9/docker-library",
   "Update URI": "https://example.com/my-plugin/",
   "Description": "200 application template for you installation.",
-  "Version": "0.5.21-rc1",
+  "Version": "0.5.21",
   "Requires at most": "1.5.0",
   "Requires at least": "0.0.3",
   "Author": "Websoft9 Inc",
