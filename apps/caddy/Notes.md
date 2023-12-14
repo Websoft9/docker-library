@@ -2,11 +2,5 @@
 
 ### Caddyfile
 
-Caddyfile如果在docker-compose里面使用本地volumes，一定不能为空，通常需要设置下列项目：
-1. 监听端口
-2. 设置网站根目录
-3. 启用静态文件服务器
-
- > Caddy 的docker compose文件里面，容器内部端口不能使用变量，否则报错
-
+映射的 Caddyfile 会**覆盖**容器中默认的 Caddyfile，即 Caddyfile 一定需要有预先配置（最少不能少于容器中的默认配置），不能为空。
 

@@ -1,7 +1,7 @@
 {
   "name": "budibase",
   "trademark": "Budibase",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/Budibase/budibase/tree/develop/hosting",
   "edition": [
     {
