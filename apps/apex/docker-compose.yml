@@ -13,8 +13,14 @@ services:
       - apex_config:/etc/ords/config/
       - apex_variables:/opt/oracle/variables
     ports:
-      -  ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
+      -  ${W9_HTTP_PORT_SET}:8181
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sS 'http://localhost:8181' || exit 1"]
+      interval: 20s
+      timeout: 5s
+      start_period: 30s
+      retries: 30
 
   busybox:
     image: busybox
@@ -26,6 +32,7 @@ services:
     command: |
       /bin/sh -c "
       while [ ! -f /data/conn_string.txt ]; do
+          echo 'starting set CONN_STRING'
           echo 'CONN_STRING=sys/$W9_POWER_PASSWORD@$W9_ID-oracle:1521/$ORACLE_PDB' > /data/conn_string.txt || true
           sleep 20
       done
