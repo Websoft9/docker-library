@@ -270,5 +270,17 @@
     "W9_LOGIN_PASSWORD_INIT": [
         "",
         ""
+    ],
+    "W9_OPENAI_API_KEY_SET": [
+        "",
+        ""
+    ],
+    "W9_PASSWORD_SET": [
+        "",
+        ""
+    ],
+    "W9_LOGIN_OPENAI_API_KEY": [
+        "",
+        ""
     ]
 }
