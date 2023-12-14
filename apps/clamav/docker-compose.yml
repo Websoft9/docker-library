@@ -11,7 +11,7 @@ services:
     privileged: true
     volumes:
       - 'clamav:/var/lib/clamav'
-      - '$W9_SCAN_PATH:/scandir'
+      - '$W9_SCAN_PATH_SET:/scandir'
     env_file: .env
 networks:
   default:
