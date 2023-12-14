@@ -1,7 +1,7 @@
 {
   "name": "apex",
   "trademark": "Oracle APEX",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
   "edition": [
     {
