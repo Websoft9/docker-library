@@ -256,16 +256,16 @@
         ""
     ],
     "W9_LOGIN_USER": [
-        "",
-        ""
+        "Administrator UserName",
+        "管理员用户名"
     ],
     "W9_LOGIN_PASSWORD": [
-        "",
-        ""
+        "Administrator Password",
+        "管理员密码"
     ],
     "W9_LOGIN_WORKSPACE": [
-        "",
-        ""
+        "Login Workspace",
+        "Workspace"
     ],
     "W9_LOGIN_PASSWORD_INIT": [
         "",
