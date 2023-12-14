@@ -2,7 +2,7 @@
 # docs: https://docs.budibase.com/docs/docker-compose
 # compose: https://github.com/Budibase/budibase/blob/master/hosting/docker-compose.yaml
 
-# Websoft9 only add container_name, and add plugins volume and network
+# Websoft9 modifications: add container_name, add plugins volume, add network, add env_file: .env for proxy-service
 
 version: "3.8"
 services:
@@ -84,6 +84,7 @@ services:
       - "${MAIN_PORT}:10000"
     container_name: $W9_ID
     image: budibase/proxy
+    env_file: .env
     environment:
       - PROXY_RATE_LIMIT_WEBHOOKS_PER_SECOND=10
       - PROXY_RATE_LIMIT_API_PER_SECOND=20
