@@ -1,8 +1,8 @@
 # image: https://hub.docker.com/_/caddy
-# default MySQL root password is 123456
-
+# docs: https://github.com/caddyserver/caddy-docker
 
 version: '3.8'
+
 services:
   caddy:
     image: $W9_REPO:$W9_VERSION
@@ -11,8 +11,8 @@ services:
       - .env
     restart: unless-stopped
     ports:
-      - "$W9_HTTP_PORT_SET:W9_HTTP_PORT"
-      - "$W9_HTTPS_PORT_SET:W9_HTTPS_PORT"
+      - "$W9_HTTP_PORT_SET:80"
+      - "$W9_HTTPS_PORT_SET:443"
     volumes:
       - ./src/Caddyfile:/etc/caddy/Caddyfile
       - data:/data
