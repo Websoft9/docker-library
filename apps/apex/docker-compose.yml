@@ -16,7 +16,7 @@ services:
       -  ${W9_HTTP_PORT_SET}:8181
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "curl -sS 'http://localhost:8181' || exit 1"]
+      test: ["CMD-SHELL", "curl -sS 'http://localhost:8181/ords/_/landing' || exit 1"]
       interval: 20s
       timeout: 5s
       start_period: 30s
