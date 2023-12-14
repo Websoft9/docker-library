@@ -3,12 +3,12 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Caddy:
 
 
- - community:  latest
+ - community:  2.7, latest
 
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://github.com/caddy/docker#recommended-system-requirements):
+The following are the minimal [recommended requirements](https://hub.docker.com/_/caddy):
 
 * **RAM**: 1 GB or more
 * **CPU**: 1 cores or higher
