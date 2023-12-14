@@ -254,5 +254,21 @@
     "W9_ZK_PORT_SET": [
         "",
         ""
+    ],
+    "W9_LOGIN_USER": [
+        "",
+        ""
+    ],
+    "W9_LOGIN_PASSWORD": [
+        "",
+        ""
+    ],
+    "W9_LOGIN_WORKSPACE": [
+        "",
+        ""
+    ],
+    "W9_LOGIN_PASSWORD_INIT": [
+        "",
+        ""
     ]
 }
