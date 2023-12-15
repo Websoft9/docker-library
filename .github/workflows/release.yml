@@ -4,12 +4,6 @@ on:
   workflow_dispatch:
   repository_dispatch:
     types: [custom_event]
-    
-  push:
-    branches: [main]
-    paths:
-      - "library.json"
-      - "CHANGELOG.md"
 
 jobs:
   release:
@@ -25,17 +19,23 @@ jobs:
       - name: Version convert
         id: convert_version      
         run: |
-          version=$(jq -r '.Version' "${{ env.appname }}.json")
-          version_core=${version%%-*}
-          echo "VERSION=$version" >> $GITHUB_OUTPUT
-          echo "VERSION_CORE=$version_core" >> $GITHUB_OUTPUT
-          if [[ $version == *-* ]]; then
-            echo "rc release version"
-            echo "CHANNEL=dev" >> $GITHUB_OUTPUT
+          curl https://raw.githubusercontent.com/Websoft9/websoft9/main/docker/apphub/Dockerfile -o Dockerfile
+
+          library_tag=$(grep 'ARG LIBRARY_VERSION' "Dockerfile" | cut -d'"' -f2 | xargs)
+          apphub_tag=$(grep 'LABEL version' "Dockerfile" | cut -d'"' -f2 | xargs)
+
+          if [[ "$apphub_tag" == *"-"* ]]; then
+            suffix="${apphub_tag#*-}"
+            libraray_tag_gh="${library_tag}${suffix}"
+            echo "CHANNEL=dev" >> $GITHUB_ENV
           else
-            echo "release version"
-            echo "CHANNEL=release" >> $GITHUB_OUTPUT
-          fi
+            libraray_tag_gh=$library_tag
+            echo "CHANNEL=release" >> $GITHUB_ENV
+
+          echo "LIBRARY_TAG=$library_tag" >> $GITHUB_ENV
+          echo "LIBRARY_TAG_GH=$libraray_tag_gh" >> $GITHUB_ENV
+
+          jq --arg version "$libraray_tag_gh" '.Version = $version' library.json > temp.json && mv temp.json library.json
                   
       - name: Create Zip Archive for artifact
         run: |
@@ -46,15 +46,15 @@ jobs:
           cp *.md ${{ env.appname }}
           cp ${{ env.appname }}.json ${{ env.appname }}
           cp ${{ env.appname }}.json CHANGELOG.md artifacts
-          zip -r ${{ env.appname }}-${{ steps.convert_version.outputs.VERSION_CORE }}.zip ${{ env.appname }}
-          cp ${{ env.appname }}-${{ steps.convert_version.outputs.VERSION_CORE }}.zip artifacts
-          cp artifacts/${{ env.appname }}-${{ steps.convert_version.outputs.VERSION_CORE }}.zip artifacts/${{ env.appname }}-latest.zip
+          zip -r ${{ env.appname }}-${{ env.LIBRARY_TAG }}.zip ${{ env.appname }}
+          cp ${{ env.appname }}-${{ env.LIBRARY_TAG }}.zip artifacts
+          cp artifacts/${{ env.appname }}-${{ env.LIBRARY_TAG }}.zip artifacts/${{ env.appname }}-latest.zip
 
       - name: Upload zip files to Azure Blob
         uses: LanceMcCarthy/Action-AzureBlobUpload@v2
         with:
           connection_string: ${{ secrets.AZURE_STORAGE_ARTIFACT }}
-          container_name: ${{ steps.convert_version.outputs.CHANNEL }}
+          container_name: ${{ env.CHANNEL }}
           source_folder: artifacts/
           destination_folder: ./websoft9/plugin/${{ env.appname }}
           delete_if_exists: true
@@ -65,8 +65,8 @@ jobs:
         with:
           files: |
             ${{ env.appname }}.json
-          tag_name: ${{ steps.convert_version.outputs.VERSION }}
-          name: ${{ steps.convert_version.outputs.VERSION }}
+          tag_name: ${{ env.VERSION }}
+          name: ${{ env.VERSION }}
           body: ${{ steps.update_data.outputs.CHANGELOG }}
           draft: false
           prerelease: false
