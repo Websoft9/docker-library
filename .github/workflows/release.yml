@@ -26,17 +26,18 @@ jobs:
 
           if [[ "$apphub_tag" == *"-"* ]]; then
             suffix="${apphub_tag#*-}"
-            libraray_tag_gh="${library_tag}${suffix}"
+            library_tag_gh="${library_tag}${suffix}"
             echo "CHANNEL=dev" >> $GITHUB_ENV
           else
-            libraray_tag_gh=$library_tag
+            library_tag_gh=$library_tag
             echo "CHANNEL=release" >> $GITHUB_ENV
+          fi
 
           echo "LIBRARY_TAG=$library_tag" >> $GITHUB_ENV
-          echo "LIBRARY_TAG_GH=$libraray_tag_gh" >> $GITHUB_ENV
+          echo "LIBRARY_TAG_GH=$library_tag_gh" >> $GITHUB_ENV
 
-          jq --arg version "$libraray_tag_gh" '.Version = $version' library.json > temp.json && mv temp.json library.json
-                  
+          jq --arg version "$library_tag_gh" '.Version = $version' library.json > temp.json && mv temp.json library.json
+
       - name: Create Zip Archive for artifact
         run: |
           mkdir ${{ env.appname }} artifacts
