@@ -10,8 +10,8 @@ services:
     volumes:
       - dgraph:/dgraph
     ports:
-      - ${W9_ZERO_1_PORT_SET}:${W9_ZERO_1_PORT}
-      - ${W9_ZERO_2_PORT_SET}:${W9_ZERO_2_PORT}
+      - ${W9_ZERO_1_PORT_SET}:5080
+      - ${W9_ZERO_2_PORT_SET}:6080
     restart: on-failure
     command: dgraph zero --my=zero:5080
     env_file: .env
@@ -22,8 +22,8 @@ services:
     volumes:
       - dgraph:/dgraph
     ports:
-      - ${W9_ALPHA_1_PORT_SET}:${W9_ALPHA_1_PORT}
-      - ${W9_ALPHA_2_PORT_SET}:${W9_ALPHA_2_PORT}
+      - ${W9_ALPHA_1_PORT_SET}:8080
+      - ${W9_ALPHA_2_PORT_SET}:9080
     restart: on-failure
     command: dgraph alpha --my=alpha:7080 --zero=zero:5080
     env_file: .env
@@ -38,7 +38,7 @@ services:
         volume:
           nocopy: true
     ports:
-      - ${W9_RATEL_PORT_SET}:${W9_RATEL_PORT}
+      - ${W9_HTTP_PORT_SET}:8000
     command: dgraph-ratel
     env_file: .env
 
