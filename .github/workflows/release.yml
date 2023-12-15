@@ -26,7 +26,7 @@ jobs:
 
           if [[ "$apphub_tag" == *"-"* ]]; then
             suffix="${apphub_tag#*-}"
-            library_tag_gh="${library_tag}${suffix}"
+            library_tag_gh="${library_tag}-${suffix}"
             echo "CHANNEL=dev" >> $GITHUB_ENV
           else
             library_tag_gh=$library_tag
