@@ -1,0 +1,49 @@
+# image: https://hub.docker.com/r/dgraph/dgraph/
+# docs: https://dgraph.io/docs/get-started/#step-1-run-dgraph
+
+version: '3.8'
+
+services:
+  ratel:
+    image: dgraph/ratel:latest
+    container_name: ${W9_ID}
+    volumes:
+      - type: volume
+        source: dgraph
+        target: /dgraph
+        volume:
+          nocopy: true
+    ports:
+      - ${W9_HTTP_PORT_SET}:8000
+    command: dgraph-ratel
+    env_file: .env
+
+  zero:
+    image: $W9_REPO:${DB_DGRAPH_VERSION}
+    container_name: ${W9_ID}-zero
+    volumes:
+      - dgraph:/dgraph
+    ports:
+      - ${W9_DGRAPH_ZERO_gRPC_PORT_SET}:5080
+      - ${W9_DGRAPH_ZERO_HTTP_PORT_SET}:6080
+    restart: on-failure
+    command: dgraph zero --my=zero:5080
+
+  alpha:
+    image: image: $W9_REPO:${W9_VERSION}
+    container_name: ${W9_ID}-dgraph
+    volumes:
+      - dgraph:/dgraph
+    ports:
+      - ${W9_DGRAPH_GraphQL_PORT_SET}:8080
+      - ${W9_DGRAPH_gRPC2_PORT_SET}:9080
+    restart: on-failure
+    command: dgraph alpha --my=alpha:7080 --zero=zero:5080
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true
+
+volumes:
+  dgraph:

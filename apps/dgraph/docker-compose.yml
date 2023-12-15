@@ -1,46 +1,26 @@
-# image: https://hub.docker.com/r/dgraph/dgraph/
-# docs: https://dgraph.io/docs/get-started/#step-1-run-dgraph
+# This file only running single dgraph and web-base gui ratel
+# image: https://hub.docker.com/r/dgraph/standalone
+# docs: https://dgraph.io/docs/deploy/installation/single-host-setup
 
 version: '3.8'
 
 services:
-  zero:
-    image: $W9_REPO:${DB_DGRAPH_VERSION}
-    container_name: ${W9_ID}-zero
-    volumes:
-      - dgraph:/dgraph
-    ports:
-      - ${W9_ZERO_1_PORT_SET}:5080
-      - ${W9_ZERO_2_PORT_SET}:6080
-    restart: on-failure
-    command: dgraph zero --my=zero:5080
-    env_file: .env
-
-  alpha:
-    image: $W9_REPO:${DB_DGRAPH_VERSION}
-    container_name: ${W9_ID}-alpha
-    volumes:
-      - dgraph:/dgraph
-    ports:
-      - ${W9_ALPHA_1_PORT_SET}:8080
-      - ${W9_ALPHA_2_PORT_SET}:9080
-    restart: on-failure
-    command: dgraph alpha --my=alpha:7080 --zero=zero:5080
-    env_file: .env
-
   ratel:
-    image: dgraph/ratel:${DB_DGRAPH_VERSION}
-    container_name: ${W9_ID}-ratel
-    volumes:
-      - type: volume
-        source: dgraph
-        target: /dgraph
-        volume:
-          nocopy: true
+    image: dgraph/ratel:latest
+    container_name: ${W9_ID}
     ports:
       - ${W9_HTTP_PORT_SET}:8000
-    command: dgraph-ratel
     env_file: .env
+
+  dgraph:
+    image: $W9_REPO:${W9_VERSION}
+    container_name: ${W9_ID}-dgraph
+    volumes:
+      - dgraph:/dgraph
+    ports:
+      - ${W9_DGRAPH_GraphQL_PORT_SET}:8080
+      - ${W9_DGRAPH_gRPC2_PORT_SET}:9080
+    restart: on-failure
 
 networks:
   default:
