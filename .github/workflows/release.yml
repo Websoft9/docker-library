@@ -66,9 +66,8 @@ jobs:
         with:
           files: |
             ${{ env.appname }}.json
-          tag_name: ${{ env.VERSION }}
-          name: ${{ env.VERSION }}
-          body: ${{ steps.update_data.outputs.CHANGELOG }}
+          tag_name: ${{ env.LIBRARY_TAG_GH }}
+          name: ${{ env.LIBRARY_TAG_GH }}
           draft: false
           prerelease: false
 
