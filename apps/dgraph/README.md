@@ -8,7 +8,7 @@ This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://hub.docker.com/r/dgraph/dgraph/):
+The following are the minimal [recommended requirements](https://hub.docker.com/r/dgraph/standalone):
 
 * **RAM**: 1 GB or more
 * **CPU**: 1 cores or higher
