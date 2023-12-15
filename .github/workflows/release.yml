@@ -2,6 +2,9 @@ name: Release to Github and artifact
 
 on:
   workflow_dispatch:
+  repository_dispatch:
+    types: [custom_event]
+    
   push:
     branches: [main]
     paths:
