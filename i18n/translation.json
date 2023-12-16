@@ -282,5 +282,29 @@
     "W9_SCAN_PATH_SET": [
         "",
         ""
+    ],
+    "W9_Alpha_HTTP_PORT_SET": [
+        "",
+        ""
+    ],
+    "W9_Zero_HTTP_PORT_SET": [
+        "",
+        ""
+    ],
+    "W9_Alpha_gRPC_PORT_SET": [
+        "",
+        ""
+    ],
+    "W9_Zero_gRPC_PORT_SET": [
+        "",
+        ""
+    ],
+    "W9_LOGIN_ServerURL": [
+        "",
+        ""
+    ],
+    "W9_LOGIN_Auth_Token": [
+        "",
+        ""
     ]
 }
