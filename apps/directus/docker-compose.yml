@@ -1,5 +1,6 @@
 # image: https://hub.docker.com/r/directus/directus
 # docs: https://docs.directus.io/self-hosted/docker-guide.html
+# compose: https://docs.directus.io/self-hosted/quickstart.html#create-a-docker-compose-file
 
 version: '3.8'
 
@@ -14,23 +15,10 @@ services:
       - directus_uploads:/directus/uploads
       - directus_extensions:/directus/extensions
       - directus_sqlite:/directus/database
-    environment:
-      KEY: '255d861b-5ea1-5996-9aa3-922530ec40b1'
-      SECRET: '6116487b-cda1-52c2-b5b5-c8022c45e263'
-      DB_CLIENT: 'pg'
-      DB_HOST: $W9_ID-postgresql
-      DB_PORT: '5432'
-      DB_DATABASE: $W9_ID
-      DB_USER: $W9_ID
-      DB_PASSWORD: $W9_POWER_PASSWORD
-
-      # Make sure to set this in production
-      # (see https://docs.directus.io/reference/environment-variables/#general)
-      # PUBLIC_URL: 'https://directus.example.com'
     restart: unless-stopped
 
   postgresql:
-    image: postgres:13
+    image: postgres:$W9_DB_POSTGRE_VERSION
     container_name: $W9_ID-postgresql
     restart: unless-stopped
     volumes:
@@ -39,13 +27,6 @@ services:
       POSTGRES_DB: $W9_ID
       POSTGRES_USER: $W9_ID
       POSTGRES_PASSWORD: $W9_POWER_PASSWORD
-    env_file: .env
-
-  redis:
-    image: redis:6
-    container_name: $W9_ID-redis
-    restart: unless-stopped
-    env_file: .env
 
 networks:
   default:
