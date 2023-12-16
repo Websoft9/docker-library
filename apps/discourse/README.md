@@ -8,7 +8,7 @@ This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://hub.docker.com/r/bitnami/discourse):
+The following are the minimal [recommended requirements](https://github.com/discourse/discourse/blob/main/docs/INSTALL.md#hardware-requirements):
 
 * **RAM**: 1 GB or more
 * **CPU**: 1 cores or higher
