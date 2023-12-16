@@ -16,6 +16,6 @@
     "cpu": "1",
     "memory": "1",
     "disk": "1",
-    "url": "https://hub.docker.com/r/bitnami/discourse"
+    "url": "https://github.com/discourse/discourse/blob/main/docs/INSTALL.md#hardware-requirements"
   }
 }

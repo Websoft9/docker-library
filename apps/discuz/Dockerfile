@@ -1,10 +1,10 @@
-# update time: 202312080850
+# update time: 202312161657
 
 FROM joomla:php7.4-apache
 
 LABEL maintainer="help@websoft9.com"
-LABEL version="v3.4.0"
-LABEL source="Discuz_X3.4_SC_UTF8_20220811"
+LABEL version="v3.5.0"
+LABEL source="Discuz_X3.5_SC_UTF8_20231001"
 LABEL description="Discuz"
 
 ENV DISCUZ_DB_HOST=mysql

@@ -13,35 +13,16 @@ services:
     volumes:
       - 'discourse_data:/bitnami/discourse'
     environment:
-      - DISCOURSE_HOST=$W9_URL
       - DISCOURSE_USERNAME=$W9_LOGIN_USER
       - DISCOURSE_PASSWORD=$W9_POWER_PASSWORD
-      - DISCOURSE_PRECOMPILE_ASSETS=no
+      - POSTGRESQL_CLIENT_POSTGRES_USER=postgres
+      - POSTGRESQL_CLIENT_POSTGRES_PASSWORD=$W9_POWER_PASSWORD
+      - POSTGRESQL_CLIENT_CREATE_DATABASE_NAME=$W9_ID
+      - POSTGRESQL_CLIENT_CREATE_DATABASE_EXTENSIONS=hstore,pg_trgm
     depends_on:
       - postgresql
       - redis
-
-  postgresql:
-    image: docker.io/bitnami/postgresql:15
-    container_name: $W9_ID-postgresql
-    volumes:
-      - 'postgresql_data:/bitnami/postgresql'
-    environment:
-      - POSTGRESQL_USERNAME=$W9_ID
-      - POSTGRESQL_DATABASE=$W9_ID
-      - POSTGRESQL_PASSWORD=$W9_POWER_PASSWORD
-    env_file: .env
-
-  redis:
-    image: docker.io/bitnami/redis:7.0
-    container_name: $W9_ID-redis
-    environment:
-      # ALLOW_EMPTY_PASSWORD is recommended only for development.
-      - ALLOW_EMPTY_PASSWORD=yes
-    volumes:
-      - 'redis_data:/bitnami/redis'
-    env_file: .env
-
+  
   sidekiq:
     image: $W9_REPO:$W9_VERSION
     env_file: .env
@@ -51,6 +32,25 @@ services:
     volumes:
       - 'sidekiq_data:/bitnami/discourse'
     command: /opt/bitnami/scripts/discourse-sidekiq/run.sh
+
+  postgresql:
+    image: docker.io/bitnami/postgresql:16
+    container_name: $W9_ID-postgresql
+    volumes:
+      - 'postgresql_data:/bitnami/postgresql'
+    environment:
+      - POSTGRESQL_USERNAME=$W9_ID
+      - POSTGRESQL_DATABASE=$W9_ID
+      - POSTGRESQL_PASSWORD=$W9_POWER_PASSWORD
+
+  redis:
+    image: docker.io/bitnami/redis:7.0
+    container_name: $W9_ID-redis
+    environment:
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - 'redis_data:/bitnami/redis'
 
 
 networks:
