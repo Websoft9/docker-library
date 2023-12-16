@@ -29,7 +29,7 @@ services:
       # PUBLIC_URL: 'https://directus.example.com'
     restart: unless-stopped
 
-  db:
+  postgresql:
     image: postgres:13
     container_name: $W9_ID-postgresql
     restart: unless-stopped
