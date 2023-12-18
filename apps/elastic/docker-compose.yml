@@ -33,8 +33,8 @@ services:
       - ./src/elasticsearch/config/service_tokens:/usr/share/elasticsearch/config/service_tokens
       - elasticsearch:/usr/share/elasticsearch/data
     ports:
-      - ${W9_DB_ES_HTTP_PORT_SET}:${W9_DB_ES_HTTP_PORT}
-      - ${W9_DB_ES_TCP_PORT_SET}:${W9_DB_ES_TCP_PORT}
+      - ${W9_DB_ES_HTTP_PORT_SET}:9200
+      - ${W9_DB_ES_TCP_PORT_SET}:9300
     env_file: .env
     environment:
       ELASTIC_USERNAME: ${W9_LOGIN_USER}
@@ -48,10 +48,10 @@ services:
       - ./src/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./src/logstash/pipeline:/usr/share/logstash/pipeline
     ports:
-      - ${W9_LOGSTASH_API_PORT_SET}:${W9_LOGSTASH_API_PORT}
-      - ${W9_LOGSTASH_TCP_PORT_SET}:${W9_LOGSTASH_TCP_PORT}/tcp
-      - ${W9_LOGSTASH_UDP_PORT_SET}:${W9_LOGSTASH_UDP_PORT}/udp
-      - ${W9_LOGSTASH_BEATS_PORT_SET}:${W9_LOGSTASH_BEATS_PORT}
+      - ${W9_LOGSTASH_API_PORT_SET}:9600
+      - ${W9_LOGSTASH_TCPUDP_PORT_SET}:5000/tcp
+      - ${W9_LOGSTASH_TCPUDP_PORT_SET}:5000/udp
+      - ${W9_LOGSTASH_BEATS_PORT_SET}:5044
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     user: root
