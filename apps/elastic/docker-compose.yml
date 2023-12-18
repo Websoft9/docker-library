@@ -19,7 +19,7 @@ services:
       SERVER_HOST: "0.0.0.0"
       SERVER_NAME: "kibana"
     ports:
-      - ${W9_KIBANA_PORT_SET}:${W9_KIBANA_PORT}
+      - ${W9_HTTP_PORT_SET}:5601
     env_file: .env
     depends_on:
       - elasticsearch
