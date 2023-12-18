@@ -28,7 +28,7 @@ services:
       - ${W9_HTTP_PORT_SET}:80
 
   espocrm-daemon:
-    image: espocrm/espocrm
+    image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID-daemon
     volumes:
       - espocrm:/var/www/html
@@ -38,7 +38,7 @@ services:
     entrypoint: docker-daemon.sh
 
   espocrm-websocket:
-    image: espocrm/espocrm
+    image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID-websocket    
     environment:
       ESPOCRM_CONFIG_USE_WEB_SOCKET: "true"
