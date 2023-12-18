@@ -1,17 +1,21 @@
 # image: https://hub.docker.com/r/espocrm/espocrm
 # dockfile: https://github.com/espocrm/espocrm-docker
 # docs: https://docs.espocrm.com/administration/installation-by-script/
+# docker compose: https://docs.espocrm.com/administration/docker/installation/#install-espocrm-with-docker-compose
 
 version: '3.8'
 
 services:
 
   mysql:
-    image: mysql:$MYSQL_VERSION
+    image: mysql:$W9_MYSQL_VERSION
     container_name: $W9_ID-mysql
     command: --default-authentication-plugin=mysql_native_password    
-    env_file: 
-      - .env
+    environment:
+      - MYSQL_DATABASE=$W9_ID
+      - MYSQL_USER=$W9_ID
+      - MYSQL_PASSWORD=$W9_POWER_PASSWORD
+      - MYSQL_ROOT_PASSWORD=$W9_POWER_PASSWORD
     volumes:
       - mysql:/var/lib/mysql
     restart: unless-stopped
