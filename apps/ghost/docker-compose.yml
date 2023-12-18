@@ -19,9 +19,9 @@ services:
     volumes:
       - ghost:/var/lib/ghost
     depends_on:
-      - db
+      - mysql
 
-  db:
+  mysql:
     image: mysql:8.0
     container_name: $W9_ID-mysql
     restart: unless-stopped
