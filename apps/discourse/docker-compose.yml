@@ -39,7 +39,6 @@ services:
     volumes:
       - 'postgresql_data:/bitnami/postgresql'
     environment:
-      - POSTGRESQL_USERNAME=$W9_ID
       - POSTGRESQL_DATABASE=$W9_ID
       - POSTGRESQL_PASSWORD=$W9_POWER_PASSWORD
 

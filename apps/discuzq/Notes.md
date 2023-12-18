@@ -1,5 +1,8 @@
 # DiscuzQ
 
+官网：https://discuzq.icu/
+
+官方已经22个月没有更新 Docker 镜像，故本应用暂时停止维护
 
 ## 安装
 
