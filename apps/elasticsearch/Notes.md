@@ -1,6 +1,9 @@
 ## About
 
-This repository is forked from ONLYOFFICE/Docker-CommunityServer, we have the following modifications are provided
+- 9200 is outer port
+- 9300 is port for ES cluster
 
-* replace README.md
-* add README-zh.md, CHANGELOG.md, Note.md, License.md, docker-compose.yml,.env, src, .github folder
+```
+# Test ES
+curl -u elastic:yourpassword http://localhost:9200
+```

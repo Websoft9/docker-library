@@ -1,4 +1,4 @@
-# refer repository: https://github.com/deviantony/docker-elk
+# compose: https://github.com/elastic/elasticsearch/blob/main/distribution/docker/docker-compose.yml
 # image: https://hub.docker.com/_/elasticsearch
 # docs: https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-docker.html
 
@@ -10,17 +10,24 @@ services:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+      nproc:
+        soft: 4096
+        hard: 4096
+    healthcheck:
+      start_period: 15s
+      test: ["CMD", "curl", "-f", "-u", "elastic:${ELASTIC_PASSWORD}", "-k", "http://localhost:9200"]
+      interval: 10s
+      timeout: 2s
+      retries: 5
     volumes:
-      - ./src/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-      - ./src/elasticsearch/config/service_tokens:/usr/share/elasticsearch/config/service_tokens
       - elasticsearch:/usr/share/elasticsearch/data
     ports:
-      - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
-      - ${W9_TCP_PORT_SET}:${W9_TCP_PORT}
+      - ${W9_HTTP_PORT_SET}:9200
     env_file: .env
-    environment:
-      ELASTIC_USERNAME: ${W9_LOGIN_USER}
-      ELASTIC_PASSWORD: ${W9_LOGIN_PASSWORD}
 
 volumes:
   elasticsearch:
