@@ -98,6 +98,7 @@ services:
       - assets:/usr/share/nginx/html/assets
     ports:
       - $W9_HTTP_PORT_SET:8080
+    env_file: .env
 
   queue-default:
     image: $W9_REPO:$W9_VERSION
