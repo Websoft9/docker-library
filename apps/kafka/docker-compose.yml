@@ -12,7 +12,6 @@ services:
       - "$W9_DB_KAFKA_PORT_SET:9092"
     volumes:
       - "kafka_data:/bitnami"
-    env_file: .env
     depends_on:
       - zookeeper
 
@@ -29,6 +28,7 @@ services:
   efak:
     image: 'tchiotludo/akhq:latest'
     container_name: $W9_ID
+    env_file: .env
     ports:
       - $W9_HTTP_PORT_SET:8080
     environment:
