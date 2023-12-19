@@ -8,7 +8,7 @@ services:
     container_name: $W9_ID
     image: $W9_REPO:$W9_VERSION
     ports:
-      - $W9_HTTP_PORT_SET:$W9_HTTP_PORT
+      - $W9_HTTP_PORT_SET:8123
     volumes:
       - hs_config:/config
       - /etc/localtime:/etc/localtime:ro
