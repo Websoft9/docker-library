@@ -6,10 +6,10 @@ version: "3.8"
 services:
   kafka:
     image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    container_name: $W9_ID-kafka
     restart: unless-stopped
     ports:
-      - "$W9_DB_KAFKA_PORT_SET:$W9_DB_KAFKA_PORT"
+      - "$W9_DB_KAFKA_PORT_SET:9092"
     volumes:
       - "kafka_data:/bitnami"
     env_file: .env
@@ -21,21 +21,21 @@ services:
     container_name: $W9_ID-zookeeper
     restart: unless-stopped
     ports:
-      - "$W9_ZOOMKEEPER_PORT_SET:$W9_ZOOMKEEPER_PORT"
+      - "$W9_ZOOMKEEPER_PORT_SET:2181"
     volumes:
       - "zookeeper_data:/bitnami"
     env_file: .env
 
-  cmak:
-    image: ghcr.io/eshepelyuk/dckr/cmak-3.0.0.5:latest
-    container_name: $W9_ID-cmak
-    restart: unless-stopped
+  efak:
+    image: 'tchiotludo/akhq:latest'
+    container_name: $W9_ID
     ports:
-      - "$W9_HTTP_PORT_SET:$W9_HTTP_PORT"
-    env_file: .env
+      - $W9_HTTP_PORT_SET:8080
     environment:
-      KAFKA_MANAGER_USERNAME: $W9_LOGIN_USER
-      KAFKA_MANAGER_PASSWORD: $W9_LOGIN_PASSWORD
+      - AKHQ_CONFIGURATION=akhq
+      - AKHQ_CONNECTIONS_DEFAULT_BOOTSTRAP_SERVERS=kafka:9092
+    depends_on:
+      - kafka
 
 volumes:
   zookeeper_data:
