@@ -1,3 +1,6 @@
+# image: https://hub.docker.com/_/jupyterhub
+# docs: https://docs.jupyter.org/en/latest/
+
 version: '3.8'
 
 services:
@@ -6,7 +9,7 @@ services:
     container_name: ${W9_ID}
     env_file: .env
     ports:
-      - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
+      - ${W9_HTTP_PORT_SET}:8000
     volumes:
       - jupyterhub:/var/www/html
     restart: unless-stopped
