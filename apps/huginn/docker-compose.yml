@@ -13,7 +13,7 @@ services:
     env_file:
       - .env
     ports:
-      - '$W9_HTTP_PORT_SET:$W9_HTTP_PORT'
+      - '$W9_HTTP_PORT_SET:3000'
     volumes:
       - 'huginn-mysql:/var/lib/mysql'
 
