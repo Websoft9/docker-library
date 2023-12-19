@@ -7,8 +7,8 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     ports:
-      - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
-      - ${W9_SSH_PORT_SET}:${W9_SSH_PORT}
+      - ${W9_HTTP_PORT_SET}:3000
+      - ${W9_SSH_PORT_SET}:22
     volumes:
       - gogs_data:/data
     environment:
