@@ -1,7 +1,6 @@
 # image: https://hub.docker.com/_/chronograf
 # docs: https://docs.influxdata.com/influxdb/latest/install/?t=Docker
 
-
 version: '3.8'
 
 services:
@@ -9,7 +8,7 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}-chronograf
     ports:
-      - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
+      - '${W9_HTTP_PORT_SET}:8888'
     command: --influxdb-url=http://${W9_ID}-influxdb:8086
     volumes:
       - chronograf:/var/lib/chronograf
@@ -21,12 +20,11 @@ services:
     image: influxdb:latest
     container_name: ${W9_ID}-influxdb
     ports:
-      - '${W9_DB_INFLUXDB_PORT_SET}:${W9_DB_INFLUXDB_PORT}'
-      - '${W9_DB_INFLUXDB_GRAPHITE_PORT_SET}:${W9_DB_INFLUXDB_GRAPHITE_PORT}'
+      - '${W9_DB_INFLUXDB_PORT_SET}:8086'
+      - '${W9_DB_INFLUXDB_GRAPHITE_PORT_SET}:2003'
     volumes:
       - influxdb:/var/lib/influxdb2
     restart: unless-stopped
-    env_file: .env
 
 networks:
   default:
