@@ -6,7 +6,7 @@ version: '3.8'
 services:
   kong:
     image: $W9_REPO:${W9_VERSION}
-    container_name: ${W9_ID}
+    container_name: ${W9_ID}-kong
     environment:
       - LC_CTYPE=en_US.UTF-8
       - LC_ALL=en_US.UTF-8
@@ -33,9 +33,9 @@ services:
 
   konga:
     image: pantsel/konga
-    container_name: ${W9_ID}-konga
+    container_name: ${W9_ID}
     ports:
-      - "${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}"
+      - "${W9_HTTP_PORT_SET}:1337"
     links:
       - kong
     restart: unless-stopped
