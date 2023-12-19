@@ -7,8 +7,8 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     ports:
-      - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
-      - ${W9_STATS_PORT_SET}:${W9_STATS_PORT}
+      - ${W9_HTTP_PORT_SET}:1080
+      - ${W9_STATS_PORT_SET}:80
     volumes:    
       - ./src/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
     restart: unless-stopped
