@@ -17,15 +17,15 @@ services:
       - elasticsearch
     ports:
       # Graylog web interface and REST API
-      - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
+      - ${W9_HTTP_PORT_SET}:9000
       # Syslog TCP
-      - ${W9_SYSLOG_TCP_PORT_SET}:${W9_SYSLOG_TCP_PORT}
+      - ${W9_SYSLOG_TCP_PORT_SET}:1514
       # Syslog UDP
-      - ${W9_SYSLOG_UDP_PORT_SET}:${W9_SYSLOG_UDP_PORT}/udp
+      - ${W9_SYSLOG_UDP_PORT_SET}:1514/udp
       # GELF TCP
-      - ${W9_GELE_TCP_PORT_SET}:${W9_GELE_TCP_PORT}
+      - ${W9_GELE_TCP_PORT_SET}:12201
       # GELF UDP
-      - ${W9_GELE_UDP_PORT_SET}:${W9_GELE_UDP_PORT}/udp
+      - ${W9_GELE_UDP_PORT_SET}:12201/udp
     volumes: 
       - graylog_data:/usr/share/graylog/data/
       - graylog_plugin:/usr/share/graylog/plugin
