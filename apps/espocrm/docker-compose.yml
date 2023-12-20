@@ -7,18 +7,18 @@ version: '3.8'
 
 services:
 
-  mysql:
-    image: mysql:$W9_MYSQL_VERSION
-    container_name: $W9_ID-mysql
-    command: --default-authentication-plugin=mysql_native_password    
-    environment:
-      - MYSQL_DATABASE=$W9_ID
-      - MYSQL_USER=$W9_ID
-      - MYSQL_PASSWORD=$W9_POWER_PASSWORD
-      - MYSQL_ROOT_PASSWORD=$W9_POWER_PASSWORD
-    volumes:
-      - mysql:/var/lib/mysql
+  mariadb:
+    image: mariadb:$W9_DB_VERSION
+    container_name: $W9_ID-mariadb
     restart: unless-stopped
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
+    volumes:
+      - mariadb:/var/lib/mysql
+    environment:
+      MARIADB_DATABASE: $W9_ID
+      MARIADB_USER: $W9_ID
+      MARIADB_PASSWORD: $W9_POWER_PASSWORD
+      MARIADB_ROOT_PASSWORD: $W9_POWER_PASSWORD
 
   espocrm:
     image: $W9_REPO:$W9_VERSION
@@ -30,33 +30,6 @@ services:
     restart: unless-stopped
     ports:
       - ${W9_HTTP_PORT_SET}:80
-
-  espocrm-daemon:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID-daemon
-    volumes:
-      - espocrm:/var/www/html
-    restart: unless-stopped
-    depends_on:
-      - espocrm
-    entrypoint: docker-daemon.sh
-
-  espocrm-websocket:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID-websocket    
-    environment:
-      ESPOCRM_CONFIG_USE_WEB_SOCKET: "true"
-      ESPOCRM_CONFIG_WEB_SOCKET_URL: "ws://localhost:${W9_WEBSOCKET_PORT_SET}"
-      ESPOCRM_CONFIG_WEB_SOCKET_ZERO_M_Q_SUBSCRIBER_DSN: "tcp://*:7777"
-      ESPOCRM_CONFIG_WEB_SOCKET_ZERO_M_Q_SUBMISSION_DSN: "tcp://espocrm-websocket:7777"
-    volumes:
-      - espocrm:/var/www/html
-    restart: unless-stopped
-    depends_on:
-      - espocrm
-    entrypoint: docker-websocket.sh
-    ports:
-      - ${W9_WEBSOCKET_PORT_SET}:8080
       
 networks:
   default:
@@ -64,5 +37,5 @@ networks:
     external: true
       
 volumes:
-  mysql:
+  mariadb:
   espocrm:
