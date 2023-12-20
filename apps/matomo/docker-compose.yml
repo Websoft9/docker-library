@@ -12,7 +12,7 @@ services:
       - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
     env_file: .env
     environment:
-      - MATOMO_DATABASE_HOST=${W9_ID}-db
+      - MATOMO_DATABASE_HOST=${W9_ID}-mysql
       - MATOMO_DATABASE_USERNAME=${W9_ID}
       - MATOMO_DATABASE_PASSWORD=${W9_POWER_PASSWORD}
       - MATOMO_DATABASE_DBNAME=${W9_ID}
