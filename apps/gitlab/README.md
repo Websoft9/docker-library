@@ -5,6 +5,8 @@ This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft
 
  - community:  16.6.2-ce.0, latest
 
+ - jihu:  16.6.2, latest
+
 
 ## System Requirements
 
