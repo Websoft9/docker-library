@@ -312,7 +312,7 @@
         ""
     ],
     "W9_LOGIN_GET_PASSWORD": [
-        "",
-        ""
+        "GET Administrator Password",
+        "获取管理员密码"
     ]
 }
