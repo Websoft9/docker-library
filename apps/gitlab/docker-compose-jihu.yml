@@ -7,7 +7,7 @@ version: '3.8'
 services:
 
   gitlab:
-    image: $W9_REPO:$W9_VERSION
+    image: registry.gitlab.cn/omnibus/gitlab-jh:$W9_VERSION
     container_name: "$W9_ID"
     hostname: "$W9_URL"
     env_file: .env
@@ -16,7 +16,6 @@ services:
         # external_url rule: the protocol must be http://, can not use https://
         # external_url 'http://$W9_URL'
         gitlab_rails['gitlab_shell_ssh_port'] = 22
-        gitlab_rails['initial_root_password'] = ${W9_LOGIN_PASSWORD}
         # Add any other gitlab.rb configuration here, each on its own line
         # other
     shm_size: '256m'
