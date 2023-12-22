@@ -10,8 +10,6 @@ services:
       - ${W9_HTTP_PORT_SET}:1080
     volumes:    
       - ./src/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
-    environment:
-      W9_POWER_PASSWORD: $W9_POWER_PASSWORD
     restart: unless-stopped
     user: root
     env_file: .env
