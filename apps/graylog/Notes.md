@@ -1,5 +1,10 @@
 # Graylog
 
+从5.2开始，引入了一个叫数据节点的组件，并需要在登录前先完成初始化，需进一步研究。
+
+
+> 目前只能使用5.1  
+
 ## URL
 
 Graylog 是前后端分离的系统，我们访问的 Web 界面是通过 API 与后端交互。
@@ -20,3 +25,7 @@ https://Internet IP:9000/api/api-browser/global/index.html
 
 #### 管理员密码怎么设置？
 运行 echo -n 'admin' | sha256sum | awk '{ print $1 }' 命令，得到密文后传递给容器
+
+#### 如何设置反向代理？
+
+https://go2docs.graylog.org/5-2/setting_up_graylog/web_interface.htm

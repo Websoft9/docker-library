@@ -6,7 +6,7 @@
   "edition": [
     {
       "dist": "community",
-      "version": ["10.1.4","latest"]
+      "version": ["10.1.6","latest"]
     }
   ],
   "requirements": {

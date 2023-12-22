@@ -1,4 +1,4 @@
-# this docker-compose make from https://docs.graylog.org/en/4.0/pages/installation/docker.html#quick-start
+# this docker-compose make from https://go2docs.graylog.org/5-2/downloading_and_installing_graylog/docker_installation.htm
 # Graylog: https://hub.docker.com/r/graylog/graylog/
 
 version: '3.8'
@@ -7,10 +7,7 @@ services:
     image: $W9_REPO:${W9_VERSION}
     container_name: ${W9_ID}
     env_file: .env
-    environment:
-      # echo -n admin | shasum -a 256, default password is admin
-      - GRAYLOG_ROOT_PASSWORD_SHA2=${W9_ENCRYPT_PASSWORD}
-    entrypoint: /usr/bin/tini -- wait-for-it elasticsearch:9200 --  /docker-entrypoint.sh
+    entrypoint: /usr/bin/tini -- wait-for-it ${W9_ID}-elasticsearch:9200 --  /docker-entrypoint.sh
     restart: unless-stopped
     depends_on:
       - mongo
@@ -23,23 +20,22 @@ services:
       # Syslog UDP
       - ${W9_SYSLOG_UDP_PORT_SET}:1514/udp
       # GELF TCP
-      - ${W9_GELE_TCP_PORT_SET}:12201
+      - ${W9_GELF_TCP_PORT_SET}:12201
       # GELF UDP
-      - ${W9_GELE_UDP_PORT_SET}:12201/udp
+      - ${W9_GELF_UDP_PORT_SET}:12201/udp
     volumes: 
       - graylog_data:/usr/share/graylog/data/
       - graylog_plugin:/usr/share/graylog/plugin
 
   mongo:
-    image: mongo:5.0.0
+    image: mongo:$W9_MONGO_VERSION
     container_name: ${W9_ID}-mongodb
     restart: unless-stopped
     volumes: 
       - mongo:/data/db
-    env_file: .env
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.16.3
+    image: docker.elastic.co/elasticsearch/elasticsearch:$W9_ES_VERSION
     container_name: ${W9_ID}-elasticsearch
     environment:
       - http.host=0.0.0.0
@@ -57,7 +53,6 @@ services:
     restart: unless-stopped
     volumes: 
       - elasticsearch:/usr/share/elasticsearch/data
-    env_file: .env
 
 volumes: 
   graylog_data:

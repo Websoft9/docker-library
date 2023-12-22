@@ -14,19 +14,6 @@ services:
     restart: unless-stopped
     env_file: .env
 
-  mysql:
-    image: mysql:${W9_DB_VERSION}
-    container_name: ${W9_ID}-mysql
-    restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-    volumes:
-      - mysql:/var/lib/mysql
-    environment:
-      MYSQL_DATABASE: ${W9_ID}
-      MYSQL_USER: ${W9_ID}
-      MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
-
 networks:
   default:
     name: ${W9_NETWORK}

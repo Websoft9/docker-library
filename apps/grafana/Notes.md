@@ -2,7 +2,7 @@
 
 * 容器路径：https://grafana.com/docs/grafana/latest/administration/configure-docker/#default-paths
 * 容器用户：grafana
-* Grafana 默认采用 sqlite，本项目修改为 MySQL
+* Grafana 默认采用 sqlite
 * 集成了：Loki
 
 ### 要点

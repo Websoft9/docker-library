@@ -1,0 +1,72 @@
+# docs: https://grafana.com/docs/grafana/latest/installation/docker/
+# dockerfile: https://github.com/grafana/grafana/blob/main/Dockerfile
+# dockerhub: https://hub.docker.com/r/grafana/grafana
+# mysql db for grafana meta storage
+
+version: '3.8'
+
+services:
+
+  grafana:
+    image: grafana/grafana-enterprise:${W9_VERSION}
+    container_name: ${W9_ID}  
+    restart: unless-stopped
+    ports:
+      - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - grafana_config:/etc/grafana
+      - grafana_logs:/var/log/grafana
+      - grafana_plugins:/var/lib/grafana/plugins
+    env_file: .env
+    environment:
+      # You can use any environment from grafana.ini. format: GF_[group]_item
+      - GF_SECURITY_ADMIN_USER=${W9_LOGIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${W9_POWER_PASSWORD}
+      - GF_DATABASE_URL=mysql://$W9_ID:$W9_POWER_PASSWORD@${W9_ID}-mysql:3306/$W9_ID
+
+  mysql:
+    image: mysql:5.7
+    container_name: ${W9_ID}-mysql
+    restart: unless-stopped
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: $W9_ID
+      MYSQL_USER: $W9_ID
+      MYSQL_PASSWORD: $W9_POWER_PASSWORD
+      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+    env_file: .env
+
+  loki:
+    image: grafana/loki:main
+    container_name: ${W9_ID}-loki
+    restart: unless-stopped
+    volumes:
+      - grafana_loki_data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+    env_file: .env
+
+  promtail:
+    image: grafana/promtail:main
+    container_name: ${W9_ID}-promtail
+    restart: unless-stopped
+    volumes:
+      -  grafana_promtail_log:/var/log
+    command: -config.file=/etc/promtail/config.yml
+    env_file: .env
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true
+
+volumes:
+  grafana_data:
+  grafana_config:
+  grafana_logs:
+  grafana_plugins:
+  grafana_loki_data:
+  grafana_promtail_log:
+  mysql:
