@@ -8,7 +8,7 @@ This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://docs.graylog.org/en/3.3/pages/installation.html#system-requirements):
+The following are the minimal [recommended requirements](https://docs.graylog.org/en/5.1/pages/installation.html#system-requirements):
 
 * **RAM**: 4 GB or more
 * **CPU**: 2 cores or higher
