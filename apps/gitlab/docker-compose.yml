@@ -16,7 +16,7 @@ services:
         # external_url rule: the protocol must be http://, can not use https://
         # external_url 'http://$W9_URL'
         gitlab_rails['gitlab_shell_ssh_port'] = 22
-        gitlab_rails['initial_root_password'] = ${W9_LOGIN_PASSWORD}
+        gitlab_rails['initial_root_password'] = '${W9_LOGIN_PASSWORD}'
         # Add any other gitlab.rb configuration here, each on its own line
         # other
     shm_size: '256m'
