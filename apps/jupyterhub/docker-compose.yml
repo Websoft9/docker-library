@@ -1,5 +1,5 @@
 # image: https://hub.docker.com/_/jupyterhub
-# docs: https://docs.jupyter.org/en/latest/
+# docs: https://jupyterhub.readthedocs.io/en/latest/tutorial/quickstart-docker.html
 
 version: '3.8'
 
