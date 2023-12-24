@@ -43,6 +43,7 @@ services:
       - TZ
       - POSTGRES_PASSWORD:$W9_POWER_PASSWORD
       - POSTGRES_DB:$W9_ID
+      - POSTGRES_USER: $W9_ID
 
 networks:
   default:
