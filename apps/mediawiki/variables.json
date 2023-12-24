@@ -1,7 +1,7 @@
 {
   "name": "mediawiki",
   "trademark": "MediaWiki",
-  "release": false,
+  "release": true,
   "fork_url": "https://registry.hub.docker.com/r/bitnami/mediawiki",
   "edition": [
     {
