@@ -16,8 +16,8 @@ services:
       - db
     restart: unless-stopped
 
-  db:
-    image: mysql:$MYSQL_VERSION
+  mysql:
+    image: mysql:$W9_DB_VERSION
     container_name: $W9_ID-mysql
     restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
