@@ -1,7 +1,7 @@
 {
   "name": "mongocompass",
   "trademark": "MongoDB Compass",
-  "release": false,
+  "release": true,
   "fork_url": "",
   "edition": [
     {
