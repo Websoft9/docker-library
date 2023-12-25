@@ -322,5 +322,13 @@
     "W9_GELF_UDP_PORT_SET": [
         "",
         ""
+    ],
+    "W9_Kong_Manager_PORT_SET": [
+        "",
+        ""
+    ],
+    "W9_LOGIN_APP_SECRET_TOKEN": [
+        "",
+        ""
     ]
 }
