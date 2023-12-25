@@ -13,7 +13,7 @@ services:
     volumes:
       - mediawiki:/bitnami/mediawiki
     depends_on:
-      - db
+      - mysql
     restart: unless-stopped
 
   mysql:
