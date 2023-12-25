@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Matomo:
 
 
- - community:  4, 4.15, latest
+ - community:  5.0, latest
 
 
 ## System Requirements
