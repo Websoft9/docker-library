@@ -9,13 +9,11 @@ services:
     env_file: .env
     environment:
      - MARIADB_ROOT_PASSWORD=$W9_LOGIN_PASSWORD
-     # MariaDB is can setted by mysql env
-     #- MYSQL_ROOT_PASSWORD=$W9_LOGIN_PASSWORD
     ports:
      - $W9_DB_PORT_SET:3306
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
-     - mariadb_data:/var/lib/mysql
+     - data:/var/lib/mysql
      - ./src/conf.d/:/etc/mysql/conf.d
 networks:
   default:
@@ -23,4 +21,4 @@ networks:
     external: true
 
 volumes:
-  mariadb_data:
+  data:

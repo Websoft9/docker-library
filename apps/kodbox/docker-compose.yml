@@ -4,7 +4,7 @@ version: "3.8"
 
 services:
   mariadb:
-    image: mariadb:10.4
+    image: mariadb:$W9_DB_VERSION
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     container_name: $W9_ID-mariadb
     environment:
@@ -16,7 +16,6 @@ services:
     restart: always
     volumes:
       - mysql_data:/var/lib/mysql
-    env_file: .env
 
   kodbox:
     image: $W9_REPO:$W9_VERSION
@@ -42,7 +41,6 @@ services:
     environment:
       - "TZ=Asia/Shanghai"
     restart: always
-    env_file: .env
 
 volumes:
   kodbox:

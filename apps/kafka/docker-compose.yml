@@ -1,5 +1,4 @@
 # kafka image: https://hub.docker.com/r/bitnami/kafka
-# cmak: https://github.com/eshepelyuk/cmak-docker
 
 version: "3.8"
 

@@ -1,4 +1,4 @@
-# refer to:
+# docs: https://docs.konghq.com/gateway/latest/install/docker/#main
 # image: https://hub.docker.com/_/kong
 
 version: '3.8'
@@ -6,68 +6,45 @@ version: '3.8'
 services:
   kong:
     image: $W9_REPO:${W9_VERSION}
-    container_name: ${W9_ID}-kong
-    environment:
-      - LC_CTYPE=en_US.UTF-8
-      - LC_ALL=en_US.UTF-8
-      - KONG_DATABASE=postgres
-      - KONG_PG_HOST=postgres
-      - KONG_PG_USER=${W9_ID}
-      - KONG_PG_PASSWORD=${W9_POWER_PASSWORD}
-      - KONG_PROXY_ACCESS_LOG=/dev/stdout
-      - KONG_ADMIN_ACCESS_LOG=/dev/stdout
-      - KONG_PROXY_ERROR_LOG=/dev/stderr
-      - KONG_ADMIN_ERROR_LOG=/dev/stderr
-      - KONG_ADMIN_LISTEN=0.0.0.0:8001, 0.0.0.0:8444 ssl
+    container_name: ${W9_ID}
     restart: unless-stopped
+    env_file: .env
     ports:
-      - 8000:8000
-      - 8443:8443
-      - 8001:8001
-      - 8444:8444
+      - ${W9_HTTP_PORT_SET}:8000  # http api
+      - ${W9_HTTPS_PORT_SET}:8443  # https api
+    # - 8001:8001  # admin http api
+    # - 8444:8444  # admin https api 
+      - ${W9_Kong_Manager_PORT_SET}:8002  # Kong Manager(HTTP)
+    # - 8445:8445  # Kong Dev Portal(HTTPS)
+    # - 8003:8003  # 
+    # - 8004:8004  #       
     links:
       - postgres
-    env_file: .env
     depends_on:
       - kong-migrations
 
-  konga:
-    image: pantsel/konga
-    container_name: ${W9_ID}
-    ports:
-      - "${W9_HTTP_PORT_SET}:1337"
-    links:
-      - kong
-    restart: unless-stopped
-    environment:
-      - NODE_ENV=production
-    env_file: .env
-
   kong-migrations:
-    image: kong
+    image: $W9_REPO:${W9_VERSION}
+    container_name: ${W9_ID}-migrations
     environment:
       - KONG_DATABASE=postgres
-      - KONG_PG_HOST=postgres
-      - KONG_PG_USER=${W9_ID}
+      - KONG_PG_HOST=${W9_ID}-postgresql
       - KONG_PG_PASSWORD=${W9_POWER_PASSWORD}
     command: kong migrations bootstrap
     restart: on-failure
-    env_file: .env
     depends_on:
       - postgres
 
   postgres:
-    image: postgres:9.6
+    image: postgres:$W9_DB_VERSION
     restart: unless-stopped
     container_name: ${W9_ID}-postgresql
     environment:
-      - POSTGRES_USER=${W9_ID}
-      - POSTGRES_DB=${W9_ID}
+      - POSTGRES_USER=kong
+      - POSTGRES_DB=kong
       - POSTGRES_PASSWORD=${W9_POWER_PASSWORD}
     volumes:
       - "postgres:/var/lib/postgresql/data"
-    env_file: .env
-
 
 volumes:
   postgres:

@@ -4,14 +4,14 @@
 version: '3.8'
 
 services:
-  influxdb:
-    image: $W9_REPO:$W9_VERSION
+  chronograf:
+    image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     ports:
-      - '${W9_HTTP_PORT_SET}:8086'
+      - '${W9_HTTP_PORT_SET}:8888'
     volumes:
-      - influxdb:/var/lib/influxdb2
-    restart: unless-stopped
+      - chronograf:/var/lib/chronograf
+    env_file: .env
 
 networks:
   default:
@@ -19,4 +19,4 @@ networks:
     external: true
 
 volumes:
-  influxdb:
+  chronograf:

@@ -1,6 +1,7 @@
 # image: https://github.com/huginn/huginn/pkgs/container/huginn
 # docs1: https://github.com/huginn/huginn/blob/master/doc/docker/install.md
 # docs2: https://hub.docker.com/r/huginn/huginn
+# docs3: https://github.com/huginn/huginn/tree/master/docker/single-process
 
 
 version: '3.8'

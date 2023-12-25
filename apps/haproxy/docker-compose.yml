@@ -7,15 +7,12 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     ports:
-      - ${W9_HTTP_PORT_SET}:1080
+      - ${W9_HTTP_PORT_SET}:80
     volumes:    
       - ./src/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
     restart: unless-stopped
     user: root
     env_file: .env
-    entrypoint: bash -c "cat /my_cmd > /myentrypoint.sh && chmod +x /myentrypoint.sh && /myentrypoint.sh"
-    configs:
-      - source: my_cmd
 
 networks:
   default:
@@ -24,7 +21,3 @@ networks:
 
 volumes:
   haproxy:
-
-configs:
-  my_cmd:
-    file: ./entrypoint.sh

@@ -25,7 +25,7 @@ services:
       - mariadb
 
   mariadb:
-    image: mariadb:10.6
+    image: mariadb:$W9_MARIADB_VERSION
     container_name: $W9_ID-mariadb
     restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
@@ -36,7 +36,6 @@ services:
       - MARIADB_USER=$W9_ID
       - MARIADB_PASSWORD=$W9_POWER_PASSWORD
       - MARIADB_ROOT_PASSWORD=$W9_POWER_PASSWORD
-    env_file: .env
 networks:
   default:
     name: ${W9_NETWORK}

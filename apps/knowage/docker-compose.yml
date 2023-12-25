@@ -31,28 +31,28 @@ services:
       - ./src/hazelcast-server.xml:/opt/hazelcast/hazelcast.xml
 
   knowagedb:
-    image: mariadb:$MARIADB_VERSION
+    image: mariadb:$W9_MARIADB_VERSION
     container_name: $W9_ID-mariadb
     restart: unless-stopped
     env_file: .env
     environment:
-      - MYSQL_USER=$W9_ID
-      - MYSQL_PASSWORD=$W9_POWER_PASSWORD
-      - MYSQL_DATABASE=$W9_ID
-      - MYSQL_ROOT_PASSWORD=$W9_POWER_PASSWORD
+      - MARIADB_USER=$W9_ID
+      - MARIADB_PASSWORD=$W9_POWER_PASSWORD
+      - MARIADB_DATABASE=$W9_ID
+      - MARIADB_ROOT_PASSWORD=$W9_POWER_PASSWORD
     volumes:
       - "db:/var/lib/mysql"
 
   knowagecache:
-    image: mariadb:$MARIADB_VERSION
+    image: mariadb:$W9_MARIADB_VERSION
     container_name: $W9_ID-cache
     restart: unless-stopped
     env_file: .env
     environment:
-      - MYSQL_USER=${W9_ID}_cache
-      - MYSQL_PASSWORD=$W9_POWER_PASSWORD
-      - MYSQL_DATABASE=${W9_ID}_cache
-      - MYSQL_ROOT_PASSWORD=$W9_POWER_PASSWORD
+      - MARIADB_USER=${W9_ID}_cache
+      - MARIADB_PASSWORD=$W9_POWER_PASSWORD
+      - MARIADB_DATABASE=${W9_ID}_cache
+      - MARIADB_ROOT_PASSWORD=$W9_POWER_PASSWORD
     volumes:
       - "cache:/var/lib/mysql"
 
