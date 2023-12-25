@@ -38,6 +38,10 @@ services:
       - mediawiki
     command: |
       /bin/sh -c "
+      if [ -z \"$W9_URL\" ]; then
+        echo 'W9_URL is empty, not need to change, exiting...'
+        exit 0
+      fi
       while [ ! -f /data/LocalSettings.php ]; do
         echo 'Waiting for LocalSettings.php to be created...'
         sleep 2

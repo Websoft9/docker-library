@@ -8,21 +8,12 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-     - '${W9_MEM_PORT_SET}:${W9_MEM_PORT}'
+      - '${W9_DB_PORT_SET}:11211'
     env_file: .env
     command:
-     - '-m ${W9_MEMORY}'
-     - '-c ${W9_MEMORY}'
+      - '-m ${MAX_MEMORY}'
+      - '-c ${MAX_CONNECTIONS}'
 
-  memadmin:
-    image: hatamiarash7/memcached-admin:latest
-    container_name: $W9_ID-panel
-    restart: unless-stopped
-    ports:
-     - '$W9_PANEL_PORT_SET:$W9_PANEL_PORT'
-    environment: 
-     - 'MEMCACHED_HOST=memcached'
-    env_file: .env
 
 networks:
   default:

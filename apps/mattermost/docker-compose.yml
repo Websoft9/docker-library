@@ -1,4 +1,4 @@
-# docker-compose: https://github.com/mattermost/mattermost-docker/blob/master/docker-compose.yml
+# docs: https://docs.mattermost.com/install/install-docker.html#deploy-mattermost-on-docker-for-production-use
 # image: https://hub.docker.com/r/mattermost/mattermost-team-edition
 
 version: '3.8'
@@ -10,9 +10,6 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-    pids_limit: 200
-    tmpfs:
-      - /tmp
     ports:
       - ${W9_HTTP_PORT_SET}:8065
     volumes:
@@ -28,18 +25,15 @@ services:
 
   postgres:
     container_name: $W9_ID-postgresql
-    image: postgres:13
+    image: postgres:$W9_DB_VERSION
     restart: unless-stopped
-    env_file: .env
-    tmpfs:
-      - /tmp
-      - /var/run/postgresql
     volumes:
       - postgres:/var/lib/postgresql/data
     environment:
       - TZ
-      - POSTGRES_PASSWORD:$W9_POWER_PASSWORD
-      - POSTGRES_DB:$W9_ID
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=$W9_POWER_PASSWORD
+      - POSTGRES_DB=$W9_ID
 
 networks:
   default:
