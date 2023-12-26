@@ -23,18 +23,17 @@ services:
     restart: unless-stopped
 
   mysql:
-    image: mysql:5.7
+    image: mysql:$W9_DB_VERSION
     container_name: $W9_ID-mysql
     restart: unless-stopped
     command: ["--max-allowed-packet=128M", "--innodb-log-file-size=64M", "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
     volumes:
       - mysql:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-u", "root", "--password=owncloud"]
+      test: ["CMD", "mysqladmin", "ping", "-u", "root", "--password=$W9_POWER_PASSWORD"]
       interval: 10s
       timeout: 5s
       retries: 5
-    env_file: .env
     environment:
       MYSQL_DATABASE: $W9_ID
       MYSQL_USER: $W9_ID
