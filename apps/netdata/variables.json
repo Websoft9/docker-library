@@ -1,6 +1,6 @@
 {
-  "name": "netadata",
-  "trademark": "Netadata",
+  "name": "netdata",
+  "trademark": "Netdata",
   "release": true,
   "fork_url": "https://learn.netdata.cloud/docs/agent/packaging/docker",
   "edition": [
