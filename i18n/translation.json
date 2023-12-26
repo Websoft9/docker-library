@@ -334,5 +334,9 @@
     "W9_XMPP_PORT_SET": [
         "",
         ""
+    ],
+    "W9_DOCS_PORT_SET": [
+        "",
+        ""
     ]
 }
