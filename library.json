@@ -5,7 +5,7 @@
   "Description": "200 application template for you installation.",
   "Version": "",
   "Requires at most": "1.5.0",
-  "Requires at least": "0.0.3",
+  "Requires at least": "0.0.4",
   "Author": "Websoft9 Inc",
   "Author URI": "https://www.websoft9.com/",
   "License": "GPL v2 or later",
