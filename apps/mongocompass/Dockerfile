@@ -1,10 +1,14 @@
-FROM kasmweb/desktop:1.10.0
+FROM kasmweb/desktop:1.14.0
 USER root
+
+LABEL maintainer="help@websoft9.com"
+LABEL version="1.41.0"
+LABEL description="Mongo Compass"
 
 ENV HOME /home/kasm-default-profile
 ENV STARTUPDIR /dockerstartup
 ENV $STARTUPDIR/install
-ENV COMPASSVERSION=1.31.3
+ENV COMPASSVERSION=1.41.0
 WORKDIR $HOME
 
 

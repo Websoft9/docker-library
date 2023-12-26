@@ -1,3 +1,5 @@
+
+
 mkdir /var/www/onlyoffice/Data/certs
 cd /var/www/onlyoffice/Data/certs
 openssl genrsa -out onlyoffice.key 2048

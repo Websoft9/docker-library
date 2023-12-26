@@ -28,7 +28,7 @@ services:
       - mariadb
 
   mariadb:
-    image: docker.io/bitnami/mariadb:10.6
+    image: docker.io/bitnami/mariadb:$W9_MARIADB_VERSION
     container_name: ${W9_ID}-mariadb
     restart: unless-stopped
     environment:
