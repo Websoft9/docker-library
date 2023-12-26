@@ -4,8 +4,8 @@
 version: '3.8'
 
 services:
-  oracleex:
-    image: container-registry.oracle.com/database/express:${W9_VERSION}
+  oracle:
+    image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}  
     env_file: .env
     volumes:
@@ -13,9 +13,10 @@ services:
       - startup:/opt/oracle/scripts/startup
       - setup:/opt/oracle/scripts/setup 
     ports:
-      -  ${W9_DB_PORT_SET}:1521
-      -  ${W9_EM_PORT_SET}:5500
+      -  ${W9_DB_PORT_SET}:${W9_DB_PORT}
+      -  ${W9_EM_PORT_SET}:${W9_EM_PORT}
     restart: unless-stopped
+
 
 networks:
   default:
