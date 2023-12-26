@@ -7,7 +7,7 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     ports:
-      - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
+      - ${W9_HTTP_PORT_SET}:80
     volumes:
       - nextcloud:/var/www/html
       - nextcloud-data:/var/www/html/data
@@ -22,7 +22,7 @@ services:
     restart: unless-stopped
 
   mysql:
-    image: mysql:8.0
+    image: mysql:${W9_DB_VERSION}
     container_name: ${W9_ID}-mysql
     restart: unless-stopped
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
