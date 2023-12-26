@@ -338,5 +338,9 @@
     "W9_DOCS_PORT_SET": [
         "",
         ""
+    ],
+    "W9_SEARCH_PORT_SET": [
+        "",
+        ""
     ]
 }
