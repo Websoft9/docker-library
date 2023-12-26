@@ -8,7 +8,7 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     ports:
-      - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
+      - ${W9_HTTP_PORT_SET}:8069
     volumes:
       - odoo_web:/var/lib/odoo
       - odoo_config:/etc/odoo
@@ -23,7 +23,7 @@ services:
     restart: unless-stopped
 
   postgresql:
-    image: postgres:14
+    image: postgres:$W9_DB_VERSION
     container_name: ${W9_ID}-postgresql
     restart: unless-stopped
     volumes:
