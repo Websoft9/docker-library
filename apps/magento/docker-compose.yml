@@ -43,6 +43,7 @@ services:
       cd /data
       bin/magento setup:static-content:deploy zh_Hans_CN
       bin/magento indexer:reindex
+      echo 'check URL ...'
       if [ -z \"$W9_URL\" ]; then
         echo 'W9_URL is empty, not need to change, exiting...'
         exit 0
@@ -54,6 +55,7 @@ services:
         wp_url=$W9_URL
         echo 'URL is not IP'
       fi
+      echo 'Start to set URL ...'
       bin/magento setup:store-config:set --base-url=\"http://$$wp_url\"
       bin/magento setup:store-config:set --base-url-secure=\"http://$$wp_url\"
       bin/magento cache:clean
