@@ -22,9 +22,6 @@ services:
 
 #### step1: copy createCA.sh to container
 ```
-# 
-docker exec -it onlyofficedocs bash
-#
 wget -N https://raw.githubusercontent.com/Websoft9/docker-library/main/apps/onlyofficedocs/src/createCA.sh
 docker cp createCA.sh onlyofficedocs:/var/www/onlyoffice/Data
 ```
