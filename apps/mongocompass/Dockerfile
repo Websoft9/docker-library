@@ -1,3 +1,5 @@
+# update time: 20231226
+
 FROM kasmweb/desktop:1.14.0
 USER root
 
@@ -13,7 +15,13 @@ WORKDIR $HOME
 
 ######### Customize Container Here ###########
 
-RUN apt-get update && apt install -y kde-cli-tools  kde-runtime  trash-cli  libglib2.0-bin gvfs-bin gnome-keyring 
+RUN apt-get update && \
+    apt install -y kde-cli-tools && \
+    apt install -y kde-runtime && \
+    apt install -y trash-cli && \
+    apt install -y libglib2.0-bin && \
+    apt install -y gvfs-bin && \
+    apt install -y gnome-keyring 
 
 RUN apt install -y sudo \
     && useradd -m -d /home/kasm-user -s /bin/bash kasm-user \
