@@ -7,7 +7,6 @@ LABEL description="Mongo Compass"
 
 ENV HOME /home/kasm-default-profile
 ENV STARTUPDIR /dockerstartup
-ENV $STARTUPDIR/install
 ENV COMPASSVERSION=1.41.0
 WORKDIR $HOME
 

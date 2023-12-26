@@ -8,9 +8,6 @@ services:
     container_name: ${W9_ID}
     image: $W9_REPO:${W9_VERSION}
     env_file: .env
-    environment:
-    #   SECURE_FILE_PERMISSIONS=yes
-     - NEO4J_AUTH=${W9_DB_NEO4J_USER}/${W9_DB_NEO4J_PASSWORD}
     ports:
      - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
     restart: unless-stopped
