@@ -14,7 +14,6 @@ services:
     stdin_open: true
     tty: true
     restart: unless-stopped
-    env_file: .env
     volumes:
      - ./src/config/mysql/conf.d:/etc/mysql/conf.d
      - mysql_data:/var/lib/mysql
@@ -39,9 +38,9 @@ services:
      - MYSQL_SERVER_USER=${W9_ID}
      - MYSQL_SERVER_PASS=${W9_POWER_PASSWORD}
     ports:
-     - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
-     - '${W9_HTTPS_PORT_SET}'
-     - '${W9_SET_PORT_SET}:${W9_SET_PORT}'
+     - ${W9_HTTP_PORT_SET}:80
+     - ${W9_HTTPS_PORT_SET}:443
+     - ${W9_XMPP_PORT_SET}:5222
     stdin_open: true
     tty: true
     restart: unless-stopped
