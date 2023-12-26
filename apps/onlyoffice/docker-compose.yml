@@ -5,7 +5,7 @@ version: '3.8'
 services:
   onlyoffice-mysql-server:
     container_name: ${W9_ID}-mysql
-    image: mysql:5.7
+    image: mysql:$W9_DB_VERSION
     environment:
      - MYSQL_DATABASE=${W9_ID}
      - MYSQL_USER=${W9_ID}
@@ -65,7 +65,7 @@ services:
      - JWT_SECRET=jwt_secret
      - JWT_HEADER=AuthorizationJwt
     ports:
-     - '9002:80'
+     - ${W9_DOCS_PORT_SET}:80
     expose:
       - '80'
       - '443'
