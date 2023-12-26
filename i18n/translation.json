@@ -330,5 +330,9 @@
     "W9_LOGIN_APP_SECRET_TOKEN": [
         "",
         ""
+    ],
+    "W9_XMPP_PORT_SET": [
+        "",
+        ""
     ]
 }
