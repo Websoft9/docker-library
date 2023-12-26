@@ -11,21 +11,14 @@ services:
     restart: unless-stopped
     depends_on:
       - mysql
-    environment:
-      - DB_DIALECT=mysql
-      - DB_HOST=$W9_ID-mysql
-      - DB_DATABASE=$W9_ID
-      - DB_USER=$W9_ID
-      - DB_PASSWORD=$W9_POWER_PASSWORD
-      - LOCAL_STORAGE_BASE_URL=/storage/uploads
     volumes:
       - nocobase:/app/nocobase/storage
     ports:
-      - "$W9_HTTP_PORT_SET:$W9_HTTP_PORT"
+      - "$W9_HTTP_PORT_SET:80"
     env_file: .env
 
   mysql:
-    image: mysql:8
+    image: mysql:$W9_DB_VERSION
     container_name: $W9_ID-mysql
     environment:
       MYSQL_DATABASE: $W9_ID
@@ -36,7 +29,6 @@ services:
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
      - mysql:/var/lib/mysql
-    env_file: .env
 
 networks:
   default:
