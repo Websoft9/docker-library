@@ -9,7 +9,8 @@ services:
     image: $W9_REPO:${W9_VERSION}
     env_file: .env
     ports:
-     - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
+      - '${W9_HTTP_PORT_SET}:7474'
+      - '${W9_DB_PORT_SET}:7687'
     restart: unless-stopped
     volumes:
      - neo4j:/var/lib/neo4j

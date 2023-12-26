@@ -15,7 +15,7 @@ WORKDIR $HOME
 
 ######### Customize Container Here ###########
 
-RUN apt-get update && \
+RUN apt update -y && \
     apt install -y kde-cli-tools && \
     apt install -y kde-runtime && \
     apt install -y trash-cli && \
