@@ -15,7 +15,7 @@ services:
     environment:
       - PS_DOMAIN=${W9_URL}
       - DB_SERVER=${W9_ID}-mysql
-      - DB_USER=${W9_ID}
+      - DB_USER=root
       - DB_PASSWD=${W9_POWER_PASSWORD}
       - DB_PREFIX=ps_
       - ADMIN_MAIL=${W9_LOGIN_USER}
