@@ -11,7 +11,7 @@ services:
     env_file:
       - .env
     ports:
-      - '$W9_HTTP_PORT_SET:$W9_HTTP_PORT'
+      - $W9_HTTP_PORT_SET:8001
     volumes:
       - redisinsight:/db
     restart: unless-stopped
