@@ -12,15 +12,6 @@ services:
       - "${W9_HTTP_PORT_SET}:80"
     env_file: .env
 
-
-  postgres:
-    image: postgres
-    restart: unless-stopped
-    environment:
-      POSTGRES_PASSWORD: example
-    profiles:
-      - db
-
 networks:
   default:
     name: ${W9_NETWORK}

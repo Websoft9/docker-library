@@ -1,7 +1,7 @@
 {
   "name": "phpmyadmin",
   "trademark": "phpMyAdmin",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/phpmyadmin/docker",
   "edition": [
     {
