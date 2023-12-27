@@ -10,9 +10,9 @@ services:
     restart: unless-stopped
     ports:
       # EXPOSE 4369 5671 5672 15691 15692 25672
-      - '${W9_ER_PORT_SET}:${W9_ER_PORT}'
-      - '${W9_MQ_PORT_SET}:${W9_MQ_PORT}'
-      - '${W9_GUI_PORT_SET}:${W9_GUI_PORT}'
+      - ${W9_ER_PORT_SET}:4369
+      - ${W9_MQ_PORT_SET}:5672
+      - ${W9_HTTP_PORT_SET}:15672
     env_file: .env
     environment:
       - RABBITMQ_DEFAULT_USER=${W9_LOGIN_USER}
