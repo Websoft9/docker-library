@@ -9,12 +9,12 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports: 
-      - ${W9_DB_PORT_SET}:${W9_DB_PORT}
+      - ${W9_DB_PORT_SET}:6379
     env_file: .env
     volumes:
       - ./src/redis.conf:/etc/redis.conf:ro
       - redis_data:/data
-    entrypoint: ["redis-server", "/etc/redis.conf"] 
+    command: redis-server --requirepass ${REDIS_PASSWORD}
 
 networks:
   default:
