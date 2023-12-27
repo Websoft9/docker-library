@@ -9,7 +9,7 @@ frontendpassword: {$W9_POWER_PASSWORD}
 
 # DB connection
 dbconnectiontype: tcp
-dbtcphostname: mysql
+dbtcphostname: {$W9_ID}-mysql
 dbtcpport: 3306
 dbtcpname: cells
 dbtcpuser: {$W9_ID}
