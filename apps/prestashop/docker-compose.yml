@@ -18,6 +18,7 @@ services:
       - DB_USER=root
       - DB_PASSWD=${W9_POWER_PASSWORD}
       - DB_PREFIX=ps_
+      - DB_NAME=${W9_ID}
       - ADMIN_MAIL=${W9_LOGIN_USER}
       - ADMIN_PASSWD=${W9_POWER_PASSWORD}
     depends_on:
