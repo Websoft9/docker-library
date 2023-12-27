@@ -12,7 +12,6 @@ services:
       - ${W9_DB_PORT_SET}:6379
     env_file: .env
     volumes:
-      - ./src/redis.conf:/etc/redis.conf:ro
       - redis_data:/data
     command: redis-server --requirepass ${REDIS_PASSWORD}
 
