@@ -25,7 +25,7 @@ services:
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: $W9_ID
+      MYSQL_DATABASE: cells
       MYSQL_USER: $W9_ID
       MYSQL_PASSWORD: $W9_POWER_PASSWORD
       MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
