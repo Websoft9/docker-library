@@ -8,7 +8,7 @@ services:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     ports:
-      - $W9_HTTP_PORT_SET:8080
+      - $W9_HTTPS_PORT_SET:8080
       - $W9_GRPC_PORT_SET:33060
     environment:
       - CELLS_INSTALL_YAML=/pydio/config/install.yml
