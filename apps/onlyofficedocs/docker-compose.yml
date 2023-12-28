@@ -1,30 +1,45 @@
-# JWT_ENABLED must set to flase, otherwise error 'The documents security token is not correct. Please contact your system administrator.
 # image: https://hub.docker.com/r/onlyoffice/documentserver
-# docs: https://github.com/ONLYOFFICE/Docker-CommunityServer
-# license.lic should storaged to document_data
+# docs: https://github.com/ONLYOFFICE/DocumentServer
+# compose: https://github.com/ONLYOFFICE/Docker-DocumentServer/blob/master/docker-compose.yml
+
+# license.lic should storaged to data
+# volumes cache,mq is define at image but documentation not mention them
+# volumes fonts,forgotten is special define
+# it starting need lots cpu and long time, so set cpus: 0.5
+# Add RabbitMQ, otherwise Onlyofficedocs need long time to start because the inner rabbitmq some time not start: https://github.com/ONLYOFFICE/Docker-DocumentServer/issues/699
 
 version: '3.8'
 services:     
   onlyofficedocs:
     container_name: ${W9_ID}
     image: ${W9_REPO}:${W9_VERSION}
-    stdin_open: true
-    tty: true
     restart: unless-stopped
     env_file:
       - .env
+    cpus: 0.5
     ports:
       - ${W9_HTTP_PORT_SET}:80
     expose:
       - '80'
       - '443'
+    environment:
+      - AMQP_URI=amqp://guest:guest@${W9_ID}-rabbitmq
     volumes:
-       - document_data:/var/www/onlyoffice/Data
-       - document_log:/var/log/onlyoffice
-       - document_db:/var/lib/postgresql
-       - document_cache:/var/lib/onlyoffice
-       - document_fonts:/usr/share/fonts/truetype/custom
-       - document_forgotten:/var/lib/onlyoffice/documentserver/App_Data/cache/files/forgotten
+      - data:/var/www/onlyoffice/Data
+      - log:/var/log/onlyoffice
+      - db:/var/lib/postgresql
+      - lib:/var/lib/onlyoffice
+      - cache:/var/lib/redis
+      - mq:/var/lib/rabbitmq
+      - fonts:/usr/share/fonts/truetype/custom
+      - forgotten:/var/lib/onlyoffice/documentserver/App_Data/cache/files/forgotten
+
+  rabbitmq:
+    container_name: ${W9_ID}-rabbitmq
+    image: rabbitmq
+    restart: unless-stopped
+    expose:
+      - '5672'
 
 networks:
   default:
@@ -32,9 +47,11 @@ networks:
     external: true
 
 volumes:
-  document_data:
-  document_log:
-  document_db:
-  document_cache:
-  document_fonts:
-  document_forgotten:
+  data:
+  log:
+  db:
+  lib:
+  cache:
+  mq:
+  fonts:
+  forgotten:

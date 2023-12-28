@@ -6,10 +6,15 @@
   "edition": [
     {
       "dist": "community",
-      "version": [
-        "7.5",
-        "latest"
-      ]
+      "version": ["7.5","latest"]
+    },
+    {
+      "dist": "enterprise",
+      "version": ["7.5","latest"]
+    },
+    {
+      "dist": "developer ",
+      "version": ["7.5","latest"]
     }
   ],
   "requirements": {
