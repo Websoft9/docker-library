@@ -9,9 +9,9 @@ services:
     container_name: rethinkdb
     restart: unless-stopped
     ports:
-     - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
-     - ${W9_CLIENT_PORT_SET}:${W9_CLIENT_PORT}
-     - ${W9_CLUSTER_PORT_SET}:${W9_CLUSTER_PORT}
+     - ${W9_HTTP_PORT_SET}:8080
+     - ${W9_CLIENT_PORT_SET}:28015
+     - ${W9_CLUSTER_PORT_SET}:29015
     env_file: .env
     command:
       - /bin/bash
