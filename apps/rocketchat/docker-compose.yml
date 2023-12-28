@@ -1,5 +1,5 @@
-# docs: https://docs.rocket.chat/installing-and-updating/docker-containers
-# image and compose: https://raw.githubusercontent.com/RocketChat/Rocket.Chat/develop/docker-compose.yml
+# docs: https://docs.rocket.chat/deploy/deploy-rocket.chat/deploy-with-docker-and-docker-compose
+# image and compose: https://github.com/RocketChat/Docker.Official.Image
 
 version: '3.8'
 
@@ -8,33 +8,32 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     ports:
-      - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
-    volumes:
-      - rocketchat:/app
+      - ${W9_HTTP_PORT_SET}:3000
     environment:
-      - ROOT_URL=http://localhost
-      - MONGO_URL=mongodb://mongo:27017/rocketchat?replicaSet=rs01
-      - MONGO_OPLOG_URL=mongodb://mongo:27017/local?replicaSet=rs01
+      - ROOT_URL=http://W9_URL
+      - MONGO_URL=mongodb://${W9_ID}-mongodb:27017/rocketchat?replicaSet=rs0
+      - MONGO_OPLOG_URL=mongodb://${W9_ID}-mongodb:27017/local?replicaSet=rs0
     depends_on:
       - mongo
     restart: unless-stopped
     env_file: .env
 
   mongo:
-    image: mongo:4.0
+    image: bitnami/mongodb:$W9_DB_VERSION
     container_name: ${W9_ID}-mongodb
     restart: unless-stopped
     volumes:
-      - mongo:/data/db
-    command: mongod --smallfiles --oplogSize 128 --replSet rs01
-    env_file: .env
+      - mongodb_data:/bitnami/mongodb
+    environment:
+      MONGODB_REPLICA_SET_MODE: primary
+      MONGODB_REPLICA_SET_NAME: rs0
+      MONGODB_PORT_NUMBER: 27017
+      MONGODB_INITIAL_PRIMARY_HOST: ${W9_ID}-mongodb
+      MONGODB_INITIAL_PRIMARY_PORT_NUMBER: 27017
+      MONGODB_ADVERTISED_HOSTNAME:  ${W9_ID}-mongodb
+      MONGODB_ENABLE_JOURNAL: true
+      ALLOW_EMPTY_PASSWORD: yes
 
-  mongo-init-replica:
-    image: mongo:4.0
-    command: 'mongo mongo/rocketchat --eval "rs.initiate({ _id: ''rs01'', members: [ { _id: 0, host: ''mongo:27017'' } ]})"'
-    depends_on:
-      - mongo
-    env_file: .env
       
 networks:
   default:
@@ -42,5 +41,4 @@ networks:
     external: true
 
 volumes:
-  rocketchat:
-  mongo:
+  mongodb_data:
