@@ -5,6 +5,10 @@ This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft
 
  - community:  7.5, latest
 
+ - enterprise:  7.5, latest
+
+ - developer :  7.5, latest
+
 
 ## System Requirements
 
