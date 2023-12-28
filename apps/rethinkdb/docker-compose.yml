@@ -6,7 +6,7 @@ version: '3.8'
 services:
   rethinkdb:
     image: ${W9_REPO}:${W9_VERSION}
-    container_name: rethinkdb
+    container_name: $W9_ID
     restart: unless-stopped
     ports:
      - ${W9_HTTP_PORT_SET}:8080
