@@ -1,6 +1,8 @@
 # OpenCart
 
-已经弃用 Bitnami 镜像，改用自行开发的 Dockerfile
+已经弃用 Bitnami 镜像，改用自行开发的 Dockerfile  
+
+第三方
 
 ## 常见问题
 
