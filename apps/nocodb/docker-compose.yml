@@ -11,12 +11,13 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     ports:
-      - "${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}"
+      - "${W9_HTTP_PORT_SET}:8080"
     restart: unless-stopped
     volumes: 
       - "nocodb:/usr/app/data"
     environment:
       NC_DB: "pg://${W9_ID}-postgresql:5432?u=${W9_ID}&p=${W9_POWER_PASSWORD}&d=${W9_ID}"
+    env_file: .env
 
   db:
     image: postgres:latest

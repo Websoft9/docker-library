@@ -11,6 +11,7 @@ services:
     ports:
       - '$W9_HTTP_PORT_SET:19999'
     restart: unless-stopped
+    env_file: .env
     cap_add:
       - SYS_PTRACE
     security_opt:

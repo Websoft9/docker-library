@@ -14,6 +14,7 @@ services:
     depends_on: 
       - mysql
     restart: unless-stopped
+    env_file: .env
 
   mysql:
     image: mysql:$W9_DB_VERSION
