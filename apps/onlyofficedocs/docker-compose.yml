@@ -40,6 +40,8 @@ services:
     restart: unless-stopped
     expose:
       - '5672'
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
 
 networks:
   default:
@@ -55,3 +57,4 @@ volumes:
   mq:
   fonts:
   forgotten:
+  rabbitmq_data:
