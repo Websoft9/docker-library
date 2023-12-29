@@ -1,7 +1,6 @@
 # image: https://hub.docker.com/_/traefik
 # docs: https://doc.traefik.io/traefik/providers/docker/
 
-
 version: '3.8'
 
 services:
@@ -9,8 +8,8 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     ports:
-      - '${W9_WEB_PORT_SET}:${W9_WEB_PORT}'
-      - '${W9_DASHBOARD_PORT_SET}:${W9_DASHBOARD_PORT}'
+      - ${W9_WEB_PORT_SET}:80
+      - ${W9_HTTP_PORT_SET}:8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - $PWD/src/traefik.yml:/etc/traefik/traefik.yml
