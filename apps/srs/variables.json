@@ -1,13 +1,13 @@
 {
   "name": "srs",
   "trademark": "SRS",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
   "edition": [
     {
       "dist": "community",
       "version": [
-        "6.0.45",
+        "6.0.101",
         "latest"
       ]
     }
