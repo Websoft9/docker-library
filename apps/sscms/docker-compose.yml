@@ -10,7 +10,7 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     ports:
-      - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
+      - ${W9_HTTP_PORT_SET}:80
     volumes:
       - sscms:/app/wwwroot
     environment:
@@ -18,7 +18,7 @@ services:
       - SSCMS_DATABASE_NAME=${W9_ID}
       - SSCMS_DATABASE_USER=${W9_ID}
       - SSCMS_DATABASE_PORT=3306
-      - SSCMS_DATABASE_HOST=mysql
+      - SSCMS_DATABASE_HOST=${W9_ID}-mysql
       - SSCMS_SECURITY_KEY=e2a3d303-ac9b-41ff-9154-930710af0845
       - SSCMS_DATABASE_TYPE=MySQL
     depends_on: 
@@ -27,7 +27,7 @@ services:
     env_file: .env
 
   mysql:
-    image: mysql:5.7
+    image: mysql:$W9_DB_VERSION
     container_name: ${W9_ID}-mysql
     restart: unless-stopped
     volumes:
@@ -37,7 +37,6 @@ services:
       MYSQL_USER: ${W9_ID}
       MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
-    env_file: .env
 
 networks:
   default:
