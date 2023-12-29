@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Scratch:
 
 
- - community:  v2.3.13, latest
+ - community:  v3.0, latest
 
 
 ## System Requirements
