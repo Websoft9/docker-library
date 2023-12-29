@@ -1,3 +1,6 @@
+# image: https://hub.docker.com/r/seafileltd/seafile-mc
+# docs: https://cloud.seafile.com/published/seafile-manual-cn/
+
 version: "3.8"
 services:
   mariadb:

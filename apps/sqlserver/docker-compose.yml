@@ -4,7 +4,7 @@
 version: "3.8"
 
 services:
-  db:
+  sqlserver:
     image: $W9_REPO:${W9_VERSION}-latest
     container_name: ${W9_ID}
     env_file: .env
@@ -13,7 +13,7 @@ services:
       - SA_PASSWORD=${W9_LOGIN_PASSWORD}
       - MSSQL_PID=${W9_PID}
     ports:
-      - ${W9_DB_PORT_SET}:${W9_DB_PORT}
+      - ${W9_DB_PORT_SET}:1433
     volumes:
       - mssql_data:/var/opt/mssql
     restart: unless-stopped
