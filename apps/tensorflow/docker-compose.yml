@@ -10,8 +10,8 @@ services:
     restart: unless-stopped
     ports:
       # tensorboard port is 6006, but you need to start it on container by yourself 
-      - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
-      - '${W9_GUI_PORT_SET}:${W9_GUI_PORT}'
+      - ${W9_HTTP_PORT_SET}:8888
+      - ${W9_GUI_PORT_SET}:6006
     env_file: .env
     volumes:
       - tensorflow:/tf/notebooks
