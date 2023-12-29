@@ -1,5 +1,12 @@
 FROM openjdk:11-jre as build
 
+LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
+      org.opencontainers.image.description="Cmak packaged by Websoft9" \
+      org.opencontainers.image.source="https://github.com/Websoft9/docker-library/tree/main/apps/cmak" \
+      org.opencontainers.image.title="Cmak" \
+      org.opencontainers.image.vendor="Websoft9 Inc." \
+      org.opencontainers.image.version="3.0.0.5"
+
 ARG CMAK_VERSION="3.0.0.5"
 
 RUN curl -L https://github.com/yahoo/CMAK/releases/download/${CMAK_VERSION}/cmak-${CMAK_VERSION}.zip -o /tmp/cmak.zip \

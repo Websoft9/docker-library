@@ -2,10 +2,12 @@
 
 FROM joomla:php7.4-apache
 
-LABEL maintainer="help@websoft9.com"
-LABEL version="v3.5.0"
-LABEL source="Discuz_X3.5_SC_UTF8_20231001"
-LABEL description="Discuz"
+LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
+      org.opencontainers.image.description="Discuz packaged by Websoft9" \
+      org.opencontainers.image.source="Discuz_X3.5_SC_UTF8_20231001" \
+      org.opencontainers.image.title="Discuz" \
+      org.opencontainers.image.vendor="Websoft9 Inc." \
+      org.opencontainers.image.version="v3.5.0"
 
 ENV DISCUZ_DB_HOST=mysql
 ENV DISCUZ_DB_USER=discuz

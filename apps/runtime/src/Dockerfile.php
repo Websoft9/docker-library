@@ -2,9 +2,12 @@ ARG PHP_VERSION=${PHP_VERSION}
 
 FROM php:${PHP_VERSION}-fpm
 
-LABEL maintainer="help@websoft9.com"
-LABEL version="${PHP_VERSION}"
-LABEL description="PHP runtime for ${PHP_VERSION}"
+LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
+      org.opencontainers.image.description="PHP runtime by Websoft9" \
+      org.opencontainers.image.source="https://github.com/Websoft9/docker-library/tree/main/apps/runtime" \
+      org.opencontainers.image.title="php" \
+      org.opencontainers.image.vendor="Websoft9 Inc." \
+      org.opencontainers.image.version="${PHP_VERSION}"
 
 # install os common package or other image, such as drupal, wordpress,owncloud(https://github.com/docker-library)
 RUN apt-get update && apt-get install -y --no-install-recommends \

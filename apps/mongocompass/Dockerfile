@@ -3,9 +3,12 @@
 FROM kasmweb/desktop:1.14.0
 USER root
 
-LABEL maintainer="help@websoft9.com"
-LABEL version="1.41.0"
-LABEL description="Mongo Compass"
+LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
+      org.opencontainers.image.description="Mongo Compass packaged by Websoft9" \
+      org.opencontainers.image.source="https://github.com/Websoft9/docker-library/tree/main/apps/mongocompass" \
+      org.opencontainers.image.title="OpenCart" \
+      org.opencontainers.image.vendor="Websoft9 Inc." \
+      org.opencontainers.image.version="1.41.0"
 
 ENV HOME /home/kasm-default-profile
 ENV STARTUPDIR /dockerstartup

@@ -1,6 +1,13 @@
 # This file and entrypoint.sh, odoo.conf, wait-for-psql.py from: https://github.com/odoo/docker/tree/master/16.0 and change it for ARM
 # modify line37, curl wkhtmltox.deb of ARM. entrypoint.sh, odoo.conf, wait-for-psql.py only copy here, no changes
 
+LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
+      org.opencontainers.image.description="Odoo image for ARM powered by Websoft9" \
+      org.opencontainers.image.source="https://github.com/Websoft9/docker-library/tree/main/apps/odoo" \
+      org.opencontainers.image.title="Odoo" \
+      org.opencontainers.image.vendor="Websoft9 Inc." \
+      org.opencontainers.image.version="16.0"
+
 FROM debian:bullseye-slim
 MAINTAINER Odoo S.A. <info@odoo.com>
 

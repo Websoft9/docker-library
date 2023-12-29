@@ -4,11 +4,14 @@
 
 FROM ghcr.io/ansible-community/community-ee-base:latest
 
-LABEL maintainer="help@websoft9.com"
-
 # You should change the below if official image latest version changed
-LABEL version="2.16.1"
-LABEL description="Ansible"
+LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
+      org.opencontainers.image.description="Ansible packaged by Websoft9" \
+      org.opencontainers.image.source="https://github.com/Websoft9/docker-library/tree/main/apps/ansible" \
+      org.opencontainers.image.title="Ansible" \
+      org.opencontainers.image.vendor="Websoft9 Inc." \
+      org.opencontainers.image.version="2.16.1"
+
 
 USER root
 

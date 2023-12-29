@@ -3,9 +3,12 @@
 
 FROM ccr.ccs.tencentyun.com/discuzq/dzq:latest
 
-LABEL maintainer="help@websoft9.com"
-LABEL version="latest"
-LABEL description="DiscuzQ"
+LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
+      org.opencontainers.image.description="DiscuzQ packaged by Websoft9" \
+      org.opencontainers.image.source="https://github.com/Websoft9/docker-library/tree/main/apps/discuzq" \
+      org.opencontainers.image.title="DiscuzQ" \
+      org.opencontainers.image.vendor="Websoft9 Inc." \
+      org.opencontainers.image.version="latest"
 
 ENV DISCUZQ_MYSQL_HOST=mysql
 ENV DISCUZQ_MYSQL_USER=discuzq

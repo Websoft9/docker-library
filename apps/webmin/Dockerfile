@@ -1,6 +1,12 @@
 # Use the latest Ubuntu image as a parent
 FROM ubuntu:focal
-MAINTAINER "websoft9"
+
+LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
+      org.opencontainers.image.description="Webmin packaged by Websoft9" \
+      org.opencontainers.image.source="https://github.com/Websoft9/docker-library/tree/main/apps/webmin" \
+      org.opencontainers.image.title="Webmin" \
+      org.opencontainers.image.vendor="Websoft9 Inc." \
+      org.opencontainers.image.version="latest"
 
 ENV DEBIAN_FRONTEND=noninteractive TZ=Europe/Amsterdam 
 ENV WEBMIN_PASSWORD=admin123456

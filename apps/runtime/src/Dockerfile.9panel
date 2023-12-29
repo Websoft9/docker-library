@@ -1,8 +1,11 @@
 FROM php:8.1-fpm
 
-LABEL maintainer="help@websoft9.com"
-LABEL version="8.1-fpm"
-LABEL description="php"
+LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
+      org.opencontainers.image.description="php packaged by Websoft9" \
+      org.opencontainers.image.source="https://github.com/Websoft9/docker-library/tree/main/apps/runtime" \
+      org.opencontainers.image.title="php" \
+      org.opencontainers.image.vendor="Websoft9 Inc." \
+      org.opencontainers.image.version="8.1-fpm"
 
 ENV RUNTIME_LANG="LAMP"
 

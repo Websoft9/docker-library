@@ -1,9 +1,13 @@
 # fork from : https://github.com/DarkMaguz/scratch3-docker/blob/master/Dockerfile
 
 FROM node:14-alpine as builder
-LABEL maintainer="help@websoft9.com"
-LABEL version="v3.2.37"
-LABEL description="Scratch"
+
+LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
+      org.opencontainers.image.description="Scratch packaged by Websoft9" \
+      org.opencontainers.image.source="https://github.com/Websoft9/docker-library/tree/main/apps/scratch" \
+      org.opencontainers.image.title="Scratch" \
+      org.opencontainers.image.vendor="Websoft9 Inc." \
+      org.opencontainers.image.version="v3.2.37"
 
 RUN apk add --no-cache nano git
 

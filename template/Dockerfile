@@ -4,7 +4,6 @@ FROM ccr.ccs.tencentyun.com/discuzq/dzq:latest
 
 LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
       org.opencontainers.image.description="Application packaged by Websoft9" \
-      org.opencontainers.image.ref.name="4.0.1.1-p1-debian:bullseye-slim" \
       org.opencontainers.image.source="https://github.com/Websoft9/docker-library/tree/main/apps/opencart" \
       org.opencontainers.image.title="OpenCart" \
       org.opencontainers.image.vendor="Websoft9 Inc." \

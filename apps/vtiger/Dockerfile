@@ -5,9 +5,12 @@
 
 FROM php:7.2-apache
 
-LABEL maintainer="help@websoft9.com"
-LABEL version="7.4.0"
-LABEL description="Vtiger CRM"
+LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
+      org.opencontainers.image.description="Vtiger CRM packaged by Websoft9" \
+      org.opencontainers.image.source="https://github.com/Websoft9/docker-library/tree/main/apps/vtiger" \
+      org.opencontainers.image.title="Vtiger CRM" \
+      org.opencontainers.image.vendor="Websoft9 Inc." \
+      org.opencontainers.image.version="7.4.0"
 
 ENV INSTALL_DIR /var/www/html
 

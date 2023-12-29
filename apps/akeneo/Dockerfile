@@ -4,9 +4,12 @@
 
 FROM akeneo/pim-php-dev:8.1
 
-LABEL maintainer="help@websoft9.com"
-LABEL version="7.0.23"
-LABEL description="Akeneo"
+LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
+      org.opencontainers.image.description="Akeneo powered by Websoft9" \
+      org.opencontainers.image.source="https://github.com/Websoft9/docker-library/tree/main/apps/akeneo" \
+      org.opencontainers.image.title="Akeneo" \
+      org.opencontainers.image.vendor="Websoft9 Inc." \
+      org.opencontainers.image.version="7.0.23"
 
 ENV AKENEO_MYSQL_HOST=mysql
 ENV AKENEO_MYSQL_PORT=3306
