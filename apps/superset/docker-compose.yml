@@ -27,7 +27,7 @@ services:
     environment:
       # database configurations (do not modify)
       - DATABASE_DB=$W9_ID
-      - DATABASE_HOST=db
+      - DATABASE_HOST=$W9_ID-postgresql
       - DATABASE_PASSWORD=$W9_POWER_PASSWORD
       - DATABASE_USER=superset
 
@@ -46,9 +46,9 @@ services:
       - postgresql:/var/lib/postgresql/data
 
   superset:
-    env_file: src/docker/.env-non-dev
+    env_file: .env
     image: *superset-image
-    container_name: $W9_ID-app
+    container_name: $W9_ID
     restart: unless-stopped
     ports:
       - '$W9_HTTP_PORT_SET:$W9_HTTP_PORT'
@@ -58,7 +58,7 @@ services:
       - COMPOSE_PROJECT_NAME=superset
       # database configurations (do not modify)
       - DATABASE_DB=$W9_ID
-      - DATABASE_HOST=db
+      - DATABASE_HOST=$W9_ID-postgresql
       - DATABASE_PASSWORD=$W9_POWER_PASSWORD
       - DATABASE_USER=$W9_ID
       # database engine specific environment variables
@@ -84,7 +84,7 @@ services:
       - COMPOSE_PROJECT_NAME=superset
       # database configurations (do not modify)
       - DATABASE_DB=$W9_ID
-      - DATABASE_HOST=db
+      - DATABASE_HOST=$W9_ID-postgresql
       - DATABASE_PASSWORD=$W9_POWER_PASSWORD
       - DATABASE_USER=$W9_ID
       # database engine specific environment variables
@@ -114,7 +114,7 @@ services:
       - COMPOSE_PROJECT_NAME=superset
       # database configurations (do not modify)
       - DATABASE_DB=$W9_ID
-      - DATABASE_HOST=db
+      - DATABASE_HOST=$W9_ID-postgresql
       - DATABASE_PASSWORD=$W9_POWER_PASSWORD
       - DATABASE_USER=$W9_ID
       # database engine specific environment variables
@@ -144,7 +144,7 @@ services:
       - COMPOSE_PROJECT_NAME=superset
       # database configurations (do not modify)
       - DATABASE_DB=$W9_ID
-      - DATABASE_HOST=db
+      - DATABASE_HOST=$W9_ID-postgresql
       - DATABASE_PASSWORD=$W9_POWER_PASSWORD
       - DATABASE_USER=$W9_ID
       # database engine specific environment variables
