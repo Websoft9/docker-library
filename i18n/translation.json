@@ -346,5 +346,17 @@
     "W9_LOGIN_JWT_SECRET": [
         "",
         ""
+    ],
+    "W9_RTMP_SET": [
+        "",
+        ""
+    ],
+    "W9_REMOTE_SET": [
+        "",
+        ""
+    ],
+    "W9_FLV_SET": [
+        "",
+        ""
     ]
 }

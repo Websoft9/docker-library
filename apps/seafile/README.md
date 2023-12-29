@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Seafile:
 
 
- - community:  11.0.0, latest
+ - community:  11.0.3, latest
 
 
 ## System Requirements
