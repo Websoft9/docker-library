@@ -10,7 +10,7 @@ services:
     restart: unless-stopped
     env_file: .env
     ports:
-      - "${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}"
+      - ${W9_HTTP_PORT_SET}:80
     volumes:
       - scratch:/usr/share/nginx/html
 networks:

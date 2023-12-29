@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   mariadb:
-    image: mariadb:$W9_DB_VERSION
+    image: mariadb:10.5
     container_name: $W9_ID-mariadb
     restart: unless-stopped
     environment:
@@ -16,8 +16,27 @@ services:
     restart: unless-stopped
     entrypoint: memcached -m 256
 
-  seafile-ce:
-    image: $W9_REPO:$W9_VERSION
+  elasticsearch:
+    image: seafileltd/elasticsearch-with-ik:5.6.16
+    container_name: $W9_ID-elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data # Requested, specifies the path to Elasticsearch data persistent store.
+
+  seafile-pro:
+    image: docker.seafile.top/seafileltd/seafile-pro-mc:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
     ports:
@@ -37,6 +56,7 @@ services:
     depends_on:
       - mariadb
       - memcached
+      - elasticsearch
 
 networks:
   default:
