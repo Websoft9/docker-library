@@ -1,7 +1,7 @@
 {
   "name": "discuz",
   "trademark": "Discuz",
-  "release": false,
+  "release": true,
   "fork_url": "",
   "edition": [
     {
