@@ -25,7 +25,7 @@ services:
       - mariadb
 
   mariadb:
-    image: mariadb:10.6
+    image: mariadb:$W9_DB_VERSION
     container_name: ${W9_ID}-mariadb
     environment:
       - MARIADB_ROOT_PASSWORD=${W9_POWER_PASSWORD}
