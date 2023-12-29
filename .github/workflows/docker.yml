@@ -47,7 +47,7 @@ jobs:
     - name: Prepare tags and files for Docker build
       run: |
         APP=${{ matrix.app }}
-        TAG=$(grep 'LABEL version' "apps/$APP/Dockerfile" | cut -d'"' -f2 | xargs)
+        TAG=$(grep 'org.opencontainers.image.version' "apps/$APP/Dockerfile" | cut -d'"' -f2 | xargs)
         echo $APP version is $TAG
         if [[ "$TAG" == *"-"* ]]; then
           TAGS="$TAG"
