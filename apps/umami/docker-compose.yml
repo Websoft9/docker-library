@@ -6,12 +6,12 @@
 version: '3.8'
 services:
   umami:
-    image: $W9_REPO:$W9_VERSION
+    image: $W9_REPO:postgresql-$W9_VERSION
     container_name: $W9_ID
     env_file:
       - .env
     ports:
-      - '$W9_HTTP_PORT_SET:$W9_HTTP_PORT'
+      - $W9_HTTP_PORT_SET:3000
     environment:
       DATABASE_URL: postgresql://$W9_ID:$W9_POWER_PASSWORD@$W9_ID-postgresql:5432/$W9_ID
       DATABASE_TYPE: postgresql

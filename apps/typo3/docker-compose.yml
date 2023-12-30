@@ -7,7 +7,7 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     ports:
-      - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
+      - ${W9_HTTP_PORT_SET}:80
     volumes:
       - typo3fileadmin:/var/www/html/fileadmin
       - typo3conf:/var/www/html/typo3conf
@@ -24,7 +24,7 @@ services:
     env_file: .env
       
   mysql:
-    image: mysql:8
+    image: mysql:$W9_DB_VERSION
     container_name: ${W9_ID}-mysql
     restart: unless-stopped
     command: [mysqld, --character-set-server=utf8mb4, --collation-server=utf8mb4_unicode_ci]
@@ -35,7 +35,6 @@ services:
       MYSQL_USER: ${W9_ID}
       MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
-    env_file: .env
 
 networks:
   default:
