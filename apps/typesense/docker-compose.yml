@@ -20,7 +20,7 @@ services:
       - TYPESENSE_DATA_DIR=${W9_DATA_PATH}
       - TYPESENSE_ENABLE_CORS=true
     ports:
-      - "${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}"
+      - "${W9_API_PORT_SET}:${W9_API_PORT}"
     volumes:
       - typesense:/data
     env_file: .env
