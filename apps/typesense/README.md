@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Typesense:
 
 
- - community:  0.24.1, latest
+ - community:  0.25.0
 
 
 ## System Requirements
