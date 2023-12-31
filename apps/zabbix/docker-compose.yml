@@ -68,10 +68,10 @@ services:
  
  zabbix-web-apache-mysql:
   image: ${W9_REPO}:ubuntu-${W9_VERSION}-latest
-  container_name: ${W9_ID}-web
+  container_name: ${W9_ID}
   restart: unless-stopped
   ports:
-   - "${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}"
+   - ${W9_HTTP_PORT_SET}:8080
   volumes:
    - /etc/localtime:/etc/localtime:ro
    - apache2:/etc/ssl/apache2:ro
@@ -189,7 +189,7 @@ services:
   env_file: .env
 
  mysql:
-  image: mysql:8.0
+  image: mysql:$W9_DB_VERSION
   container_name: ${W9_ID}-mysql
   restart: unless-stopped
   command:

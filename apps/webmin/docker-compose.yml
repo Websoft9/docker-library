@@ -11,7 +11,7 @@ services:
     environment:
       - WEBMIN_PASSWORD=${W9_LOGIN_PASSWORD}
     ports:
-      - '$W9_HTTP_PORT_SET:$W9_HTTP_PORT'
+      - $W9_HTTP_PORT_SET:10000
     restart: unless-stopped
 
 networks:
