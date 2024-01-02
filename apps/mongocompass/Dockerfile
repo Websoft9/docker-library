@@ -27,23 +27,17 @@ ENV DEBIAN_FRONTEND noninteractive
 # 更新软件包列表
 RUN apt-get update
 
-# 安装MongoDB Compass依赖
-RUN apt-get install -y wget gnupg
+# 安装依赖
+RUN apt-get install -y wget libgconf-2-4
 
-# 添加MongoDB的公钥
-RUN wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | apt-key add -
-
-# 添加MongoDB的repository
-RUN echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-5.0.list
-
-# 再次更新软件包列表
-RUN apt-get update
+# 下载MongoDB Compass的最新版
+RUN wget https://downloads.mongodb.com/compass/mongodb-compass_1.41.0_amd64.deb
 
 # 安装MongoDB Compass
-RUN apt-get install -y mongodb-compass
+RUN dpkg -i mongodb-compass_1.41.0_amd64.deb || apt-get install -f
 
 # 清理不再需要的文件
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /mongodb-compass_1.31.1_amd64.deb
 
 # RUN apt update -y && \
 #     apt install -y kde-cli-tools && \
