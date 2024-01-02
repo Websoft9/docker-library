@@ -4,16 +4,18 @@
 
 version: '3'
 services:
-  opensearch-node1:
+  opensearch:
     image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID-node1
+    container_name: ${W9_ID}
+    hostname: opensearch-node1
+    env_file: .env
     environment:
-      - cluster.name=opensearch-cluster
-      - node.name=opensearch-node1
-      - discovery.seed_hosts=opensearch-node1,opensearch-node2
-      - cluster.initial_cluster_manager_nodes=opensearch-node1,opensearch-node2
-      - bootstrap.memory_lock=true # along with the memlock settings below, disables swapping
-      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m" # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
+      - cluster.name=${W9_ID}-cluster # Name the cluster
+      - node.name=opensearch-node1 # Name the node that will run in this container
+      - discovery.seed_hosts=opensearch-node1,opensearch-node2 # Nodes to look for when discovering the cluster
+      - cluster.initial_cluster_manager_nodes=opensearch-node1,opensearch-node2 # Nodes eligible to serve as cluster manager
+      - bootstrap.memory_lock=true # Disable JVM heap memory swapping
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m" # Set min and max JVM heap sizes to at least 50% of system RAM
     ulimits:
       memlock:
         soft: -1
@@ -22,16 +24,16 @@ services:
         soft: 65536 # maximum number of open files for the OpenSearch user, set to at least 65536 on modern systems
         hard: 65536
     volumes:
-      - opensearch-data1:/usr/share/opensearch/data
+      - node1_data:/usr/share/opensearch/data
     ports:
-      - ${W9_SEARCH_PORT_SET}:9200
-      - ${W9_MAGE_PORT_SET}:9600 # required for Performance Analyzer
+      - ${W9_HTTP_PORT_SET}:9200
+      #- 9600:9600 # required for Performance Analyzer
 
   opensearch-node2:
-    image: opensearchproject/opensearch:$W9_VERSION
-    container_name: $W9_ID-node2
+    image: opensearchproject/opensearch:latest # This should be the same image used for opensearch-node1 to avoid issues
+    container_name: opensearch-node2
     environment:
-      - cluster.name=opensearch-cluster
+      - cluster.name=${W9_ID}-cluster
       - node.name=opensearch-node2
       - discovery.seed_hosts=opensearch-node1,opensearch-node2
       - cluster.initial_cluster_manager_nodes=opensearch-node1,opensearch-node2
@@ -45,23 +47,26 @@ services:
         soft: 65536
         hard: 65536
     volumes:
-      - opensearch-data2:/usr/share/opensearch/data
+      - node2_data:/usr/share/opensearch/data
 
-  opensearch-dashboards:
+  dashboards:
     image: opensearchproject/opensearch-dashboards:$W9_VERSION
-    container_name: $W9_ID
-    env_file:
-      - .env
+    container_name: $W9_ID-dashboard
     ports:
-      - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
+      - ${W9_DASHBOARD_PORT_SET}:5601
     expose:
       - "5601"
     environment:
       OPENSEARCH_HOSTS: '["https://opensearch-node1:9200","https://opensearch-node2:9200"]'
 
+  busybox:
+    image: busybox
+    command: /bin/sh -c "sysctl -w vm.max_map_count=262144"
+    privileged: true
+
 volumes:
-  opensearch-data1:
-  opensearch-data2:
+  node1_data:
+  node2_data:
 
 networks:
   default:

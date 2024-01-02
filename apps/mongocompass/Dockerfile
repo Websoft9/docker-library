@@ -1,4 +1,7 @@
 # update time: 20231226
+# kasmweb refer to: https://www.kasmweb.com/docs/latest/how_to/building_images.html
+# kasmweb images: https://github.com/kasmtech/workspaces-images/tree/develop
+# compass refer to: https://www.mongodb.com/docs/compass/current/install/
 
 FROM kasmweb/desktop:1.14.0
 USER root
@@ -6,7 +9,7 @@ USER root
 LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
       org.opencontainers.image.description="Mongo Compass packaged by Websoft9" \
       org.opencontainers.image.source="https://github.com/Websoft9/docker-library/tree/main/apps/mongocompass" \
-      org.opencontainers.image.title="OpenCart" \
+      org.opencontainers.image.title="Mongo Compass" \
       org.opencontainers.image.vendor="Websoft9 Inc." \
       org.opencontainers.image.version="1.41.0"
 
