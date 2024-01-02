@@ -21,15 +21,15 @@ WORKDIR $HOME
 
 ######### Customize Container Here ###########
 
-RUN apt update -y && \
-    apt install -y kde-cli-tools && \
-    apt install -y kde-runtime && \
-    apt install -y trash-cli && \
-    apt install -y libglib2.0-bin && \
-    apt install -y gvfs-bin && \
-    apt install -y gnome-keyring 
+# RUN apt update -y && \
+#     apt install -y kde-cli-tools && \
+#     apt install -y kde-runtime && \
+#     apt install -y trash-cli && \
+#     apt install -y libglib2.0-bin && \
+#     apt install -y gvfs-bin && \
+#     apt install -y gnome-keyring 
 
-RUN apt install -y sudo \
+RUN apt update -y && apt install -y sudo \
     && useradd -m -d /home/kasm-user -s /bin/bash kasm-user \
     && echo 'kasm-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
