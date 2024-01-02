@@ -37,6 +37,6 @@ bash /var/www/onlyoffice/Data/createCA.sh
 Modify the container configuration file "/etc/onlyoffice/documentserver/default. json" and change the value of the "rejectUnauthorized" parameter to "false".
 
 ```
-supervisor ctl restart all
+supervisorctl restart all
 exit
 ```
