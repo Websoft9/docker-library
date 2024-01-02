@@ -29,9 +29,9 @@ WORKDIR $HOME
 #     apt install -y gvfs-bin && \
 #     apt install -y gnome-keyring 
 
-RUN apt update -y && apt install -y sudo \
-    && useradd -m -d /home/kasm-user -s /bin/bash kasm-user \
-    && echo 'kasm-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+# RUN apt install -y sudo \
+#     && useradd -m -d /home/kasm-user -s /bin/bash kasm-user \
+#     && echo 'kasm-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
 RUN wget https://downloads.mongodb.com/compass/mongodb-compass_$COMPASSVERSION_amd64.deb \
     && dpkg -i mongodb-compass_$COMPASSVERSION_amd64.deb || apt-get install -f
