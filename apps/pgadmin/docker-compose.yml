@@ -8,6 +8,8 @@ services:
     image: $W9_REPO:$W9_VERSION
     restart: unless-stopped
     container_name: $W9_ID
+    volumes:
+      - pgadmin:/var/lib/pgadmin
     ports:
       - "${W9_HTTP_PORT_SET}:80"
     env_file: .env
@@ -16,3 +18,6 @@ networks:
   default:
     name: ${W9_NETWORK}
     external: true
+
+volumes:
+  pgadmin:

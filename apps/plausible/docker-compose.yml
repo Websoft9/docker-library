@@ -41,6 +41,7 @@ services:
     restart: unless-stopped
     volumes:
       - event-data:/var/lib/clickhouse
+      - clickhouse_logs:/var/log/clickhouse-server
       - ./src/clickhouse/clickhouse-config.xml:/etc/clickhouse-server/config.d/logging.xml:ro
       - ./src/clickhouse/clickhouse-user-config.xml:/etc/clickhouse-server/users.d/logging.xml:ro
     ulimits:
@@ -61,4 +62,6 @@ volumes:
   event-data:
     driver: local
   geoip:
+    driver: local
+  clickhouse_logs:
     driver: local
