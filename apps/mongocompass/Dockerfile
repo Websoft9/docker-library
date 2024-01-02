@@ -32,7 +32,7 @@ WORKDIR $HOME
 # RUN apt install -y sudo \
 #     && useradd -m -d /home/kasm-user -s /bin/bash kasm-user \
 #     && echo 'kasm-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
-
+RUN wget --help
 RUN wget https://downloads.mongodb.com/compass/mongodb-compass_$COMPASSVERSION_amd64.deb \
     && dpkg -i mongodb-compass_$COMPASSVERSION_amd64.deb \
     && cp /usr/share/applications/mongodb-compass.desktop $HOME/Desktop/ \
