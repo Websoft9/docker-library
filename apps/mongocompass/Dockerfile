@@ -21,6 +21,30 @@ WORKDIR $HOME
 
 ######### Customize Container Here ###########
 
+# 设置环境变量，防止在docker构建时出现交互式提示
+ENV DEBIAN_FRONTEND noninteractive
+
+# 更新软件包列表
+RUN apt-get update
+
+# 安装MongoDB Compass依赖
+RUN apt-get install -y wget gnupg
+
+# 添加MongoDB的公钥
+RUN wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | apt-key add -
+
+# 添加MongoDB的repository
+RUN echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+
+# 再次更新软件包列表
+RUN apt-get update
+
+# 安装MongoDB Compass
+RUN apt-get install -y mongodb-compass
+
+# 清理不再需要的文件
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
 # RUN apt update -y && \
 #     apt install -y kde-cli-tools && \
 #     apt install -y kde-runtime && \
@@ -33,18 +57,18 @@ WORKDIR $HOME
 #     && useradd -m -d /home/kasm-user -s /bin/bash kasm-user \
 #     && echo 'kasm-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
-RUN wget https://downloads.mongodb.com/compass/mongodb-compass_$COMPASSVERSION_amd64.deb \
-    && dpkg -i mongodb-compass_$COMPASSVERSION_amd64.deb
+# RUN wget https://downloads.mongodb.com/compass/mongodb-compass_$COMPASSVERSION_amd64.deb \
+#     && dpkg -i mongodb-compass_$COMPASSVERSION_amd64.deb
     
-RUN cp /usr/share/applications/mongodb-compass.desktop $HOME/Desktop/ \
-    && chmod +x $HOME/Desktop/mongodb-compass.desktop \
-    && chown 1000:1000 $HOME/Desktop/mongodb-compass.desktop
+# RUN cp /usr/share/applications/mongodb-compass.desktop $HOME/Desktop/ \
+#     && chmod +x $HOME/Desktop/mongodb-compass.desktop \
+#     && chown 1000:1000 $HOME/Desktop/mongodb-compass.desktop
 
-RUN desktop-file-edit \
-    --set-key="Exec" --set-value="sudo mongodb-compass %U --no-sandbox" \
-    $HOME/Desktop/mongodb-compass.desktop
+# RUN desktop-file-edit \
+#     --set-key="Exec" --set-value="sudo mongodb-compass %U --no-sandbox" \
+#     $HOME/Desktop/mongodb-compass.desktop
 
-RUN  rm -rf mongodb-compass_$COMPASSVERSION_amd64.deb
+# RUN  rm -rf mongodb-compass_$COMPASSVERSION_amd64.deb
 
 ######### End Customizations ###########
 
