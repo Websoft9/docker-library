@@ -34,7 +34,6 @@ docker exec -it onlyofficedocs bash
 bash /var/www/onlyoffice/Data/createCA.sh
 ```
 #### step4: Modify the container configuration file and restart onlyofficedocs 
-Modify the container configuration file "/etc/onlyoffice/documentserver/default. json" and change the value of the "rejectUnauthorized" parameter to "false".
 
 ```
 sed -i 's/"rejectUnauthorized": true/"rejectUnauthorized": false/g' /etc/onlyoffice/documentserver/default.json
