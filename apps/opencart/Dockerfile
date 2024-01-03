@@ -6,9 +6,9 @@ LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
       org.opencontainers.image.source="https://github.com/Websoft9/docker-library/tree/main/apps/opencart" \
       org.opencontainers.image.title="OpenCart" \
       org.opencontainers.image.vendor="Websoft9 Inc." \
-      org.opencontainers.image.version="4.0.1.1"
+      org.opencontainers.image.version="4.0.2.3"
 
-ARG OC_VERSION='4.0.1.1'
+ARG OC_VERSION='4.0.2.3'
 
 ENV INSTALL_DIR /var/www/html
 
