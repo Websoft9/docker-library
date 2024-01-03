@@ -2,7 +2,6 @@ FROM php:8.1-apache
 
 LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
       org.opencontainers.image.description="Application packaged by Websoft9" \
-      org.opencontainers.image.ref.name="4.0.1.1-p1-debian:bullseye-slim" \
       org.opencontainers.image.source="https://github.com/Websoft9/docker-library/tree/main/apps/opencart" \
       org.opencontainers.image.title="OpenCart" \
       org.opencontainers.image.vendor="Websoft9 Inc." \
@@ -32,9 +31,7 @@ RUN curl -o opencart.zip -fL "https://github.com/opencart/opencart/releases/down
     rm -rf opencart.zip opencart;\
     mv $INSTALL_DIR/config-dist.php $INSTALL_DIR/config.php ; \
     mv $INSTALL_DIR/admin/config-dist.php $INSTALL_DIR/admin/config.php ; \
-    chown -R www-data:www-data /var/www/html ; \
-    find /var/www/html -type d -exec chmod 755 {} \; ;\
-    find /var/www/html -type f -exec chmod 644 {} \;
+    chmod -R 777 /var/www/html
     
 RUN sed -i "s/Options Indexes FollowSymLinks/Options FollowSymLinks/" /etc/apache2/apache2.conf
 
