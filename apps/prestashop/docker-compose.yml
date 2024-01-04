@@ -1,5 +1,6 @@
 # image: https://hub.docker.com/r/prestashop/prestashop
 # docs: https://github.com/PrestaShop/docker
+# docs: https://devdocs.prestashop-project.org/8/basics/installation/environments/docker/
 
 version: '3.8'
 
@@ -12,15 +13,6 @@ services:
     volumes:
       - prestashop:/var/www/html
     env_file: .env
-    environment:
-      - PS_DOMAIN=${W9_URL}
-      - DB_SERVER=${W9_ID}-mysql
-      - DB_USER=root
-      - DB_PASSWD=${W9_POWER_PASSWORD}
-      - DB_PREFIX=ps_
-      - DB_NAME=${W9_ID}
-      - ADMIN_MAIL=${W9_LOGIN_USER}
-      - ADMIN_PASSWD=${W9_POWER_PASSWORD}
     depends_on:
       - mysql
     restart: unless-stopped

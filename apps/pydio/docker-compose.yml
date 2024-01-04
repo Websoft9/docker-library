@@ -9,9 +9,7 @@ services:
     container_name: $W9_ID
     ports:
       - $W9_HTTPS_PORT_SET:8080
-      - $W9_GRPC_PORT_SET:33060
-    environment:
-      - CELLS_INSTALL_YAML=/pydio/config/install.yml
+      #- 9002:33060
     volumes:
       - pydio:/var/cells
       - ./src/install-conf.yml:/pydio/config/install.yml:ro
@@ -20,7 +18,7 @@ services:
     restart: unless-stopped
 
   mysql:
-    image: mysql:8
+    image: mysql:$W9_DB_VERSION
     container_name: $W9_ID-mysql
     restart: unless-stopped
     command: [mysqld, --character-set-server=utf8mb4, --collation-server=utf8mb4_unicode_ci]

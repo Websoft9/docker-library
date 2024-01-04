@@ -4,13 +4,13 @@
 # Environment variables are defined in .env file and injected at runtime.
 
 # WebUI Admin definition
-frontendlogin: ${W9_LOGIN_USER}
-frontendpassword: ${W9_POWER_PASSWORD}
+frontendlogin: {$W9_LOGIN_USER}
+frontendpassword: {$W9_POWER_PASSWORD}
 
 # DB connection
 dbconnectiontype: tcp
-dbtcphostname: ${W9_ID}-mysql
+dbtcphostname: {$W9_ID}-mysql
 dbtcpport: 3306
-dbtcpname: ${W9_ID}
-dbtcpuser: ${W9_ID}
-dbtcppassword: ${W9_POWER_PASSWORD}
+dbtcpname: {$W9_ID}
+dbtcpuser: {$W9_ID}
+dbtcppassword: {$W9_POWER_PASSWORD}
