@@ -47,6 +47,15 @@ services:
         sleep 2
       done
       echo 'LocalSettings.php found, proceeding...'
+      if [[ $W9_URL =~ ^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; then
+        media_url=$W9_URL:$W9_HTTP_PORT_SET
+        echo 'URL is IP'
+      else
+        media_url=$W9_URL
+        echo 'URL is not IP'
+      fi
+      sleep 5
+      sed -i 's|\$wgServer = .*|\$wgServer = \"http://$$media_url\";|g' /data/LocalSettings.php
       kill 1
       "
       
