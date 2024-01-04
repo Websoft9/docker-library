@@ -43,7 +43,7 @@ services:
       cd /data
       bin/magento setup:static-content:deploy zh_Hans_CN
       bin/magento indexer:reindex
-      echo 'set zh_Hans_CN ok ...'
+      echo 'Set zh_Hans_CN ok ...'
       if [ -z \"$W9_URL\" ]; then
         echo 'W9_URL is empty, not need to change, exiting...'
         exit 0
