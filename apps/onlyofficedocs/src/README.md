@@ -37,6 +37,8 @@ bash /var/www/onlyoffice/Data/createCA.sh
 
 ```
 sed -i 's/"rejectUnauthorized": true/"rejectUnauthorized": false/g' /etc/onlyoffice/documentserver/default.json
+sed -i 's/"downloadAttemptMaxCount": 3/"downloadAttemptMaxCount": 1/' /etc/onlyoffice/documentserver/default.json
+sed -i 's/"savetimeoutdelay": 5000/"savetimeoutdelay": 0/' /etc/onlyoffice/documentserver/default.json
 supervisorctl restart all
 exit
 docker restart onlyofficedocs
