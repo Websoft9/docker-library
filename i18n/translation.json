@@ -358,5 +358,13 @@
     "W9_FLV_SET": [
         "",
         ""
+    ],
+    "W9_LOGIN_Oracle_SID": [
+        "",
+        ""
+    ],
+    "W9_LOGIN_Oracle_PDB": [
+        "",
+        ""
     ]
 }
