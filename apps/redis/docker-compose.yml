@@ -13,7 +13,7 @@ services:
     env_file: .env
     volumes:
       - redis_data:/data
-    command: redis-server --requirepass ${REDIS_PASSWORD}
+    command: redis-server --requirepass ${REDIS_PASSWORD} --bind 0.0.0.0 --loglevel verbose
 
 networks:
   default:

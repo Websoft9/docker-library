@@ -15,8 +15,8 @@ services:
     env_file: .env
     environment:
       REDMINE_DB_MYSQL: $W9_ID-mysql
-      REDMINE_DB_USERNAME: redmine
-      REDMINE_DB_DATABASE: redmine
+      REDMINE_DB_USERNAME: $W9_ID
+      REDMINE_DB_DATABASE: $W9_ID
       REDMINE_DB_PASSWORD: $W9_POWER_PASSWORD
       REDMINE_SECRET_KEY_BASE: supersecretkey
     depends_on:
@@ -31,8 +31,8 @@ services:
      - mysql:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_DATABASE: redmine
-      MYSQL_USER: redmine
+      MYSQL_DATABASE: $W9_ID
+      MYSQL_USER: $W9_ID
       MYSQL_PASSWORD: $W9_POWER_PASSWORD
       
 volumes:

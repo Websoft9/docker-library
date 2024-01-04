@@ -39,7 +39,11 @@ services:
       done
       # This url is download from https://raw.githubusercontent.com/magento-l10n/language-zh_CN/master/zh_CN.csv
       # When update magento, you should update src/zh_CN.csv file
-      wget https://websoft9.github.io/docker-library/apps/magento/src/zh_CN.csv -O /data/vendor/magento/language-zh_hans_cn/zh_CN.csv
+      while [ ! -f /data/vendor/magento/language-zh_hans_cn/zh_CN.csv ]; do
+        echo 'try to download zh_CN.csv...'
+        wget https://websoft9.github.io/docker-library/apps/magento/src/zh_CN.csv -O /data/vendor/magento/language-zh_hans_cn/zh_CN.csv
+        sleep 10
+      done
       cd /data
       bin/magento setup:static-content:deploy zh_Hans_CN
       bin/magento indexer:reindex

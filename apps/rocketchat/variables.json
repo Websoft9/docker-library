@@ -2,7 +2,7 @@
   "name": "rocketchat",
   "trademark": "RocketChat",
   "release": true,
-  "fork_url": "https://github.com/RocketChat/Docker.Official.Image",
+  "fork_url": "https://github.com/RocketChat",
   "edition": [
     {
       "dist": "community",

@@ -14,9 +14,6 @@ services:
       - ${W9_MQ_PORT_SET}:5672
       - ${W9_HTTP_PORT_SET}:15672
     env_file: .env
-    environment:
-      - RABBITMQ_DEFAULT_USER=${W9_LOGIN_USER}
-      - RABBITMQ_DEFAULT_PASS=${W9_LOGIN_PASSWORD}
     volumes:
       - 'rabbitmq_data:/var/lib/rabbitmq'
       - 'rabbitmq_plugins:/plugins'
