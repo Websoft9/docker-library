@@ -27,11 +27,9 @@ RUN apt-get update && apt-get upgrade -y; \
 # RUN chmod +x /usr/local/bin/install-php-extensions && install-php-extensions gd zip
 
 # Download DiscuzQ and build
-RUN git clone --depth=1 https://gitee.com/Discuz/Discuz-Q.git; \
-    cd Discuz-Q/resources/frame && npm install && npm run build; \
-    cp -r Discuz-Q/* /var/www/html/
-
-RUN chown -R www-data:www-data /var/www/html
+RUN cd /var/www/html && git clone --depth=1 https://gitee.com/Discuz/Discuz-Q.git discuzq && \
+    cd discuzq/resources/frame && npm install && npm run build && \
+    chown -R www-data:www-data /var/www/html
 
 RUN sed -i "s/Options Indexes FollowSymLinks/Options FollowSymLinks/" /etc/apache2/apache2.conf
 
