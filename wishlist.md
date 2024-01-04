@@ -9,6 +9,8 @@
 
 * [AI应用集 AITools](http://www.aitools100.com/)
 * [AI工具集导航](https://ai.nancheng.fun/)
+* NVIDIA GPU 开发平台 [CUBA Toolkit ](https://developer.nvidia.com/about-cuda)
+* 开源深度学习框架 Apache MXNet (incubating) for Deep Learning [MXNet](https://github.com/apache/incubator-mxnet)
 
 
 ## 3D

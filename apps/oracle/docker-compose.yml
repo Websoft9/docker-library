@@ -12,7 +12,7 @@ services:
       - data:/opt/oracle/oradata
     ports:
       -  ${W9_DB_PORT_SET}:1521
-      -  ${W9_EM_PORT_SET}:5500
+      -  ${W9_HTTPS_PORT_SET}:5500
     restart: unless-stopped
 
 networks:
