@@ -29,7 +29,9 @@ RUN apt-get update && apt-get upgrade -y; \
 # Download DiscuzQ and build
 RUN git clone --depth=1 https://gitee.com/Discuz/Discuz-Q.git; \
     cd Discuz-Q/resources/frame && npm install && npm run build; \
-    chmod -R 777 /var/www/html
+    cp -r Discuz-Q/* /var/www/html/
+
+RUN chown -R www-data:www-data /var/www/html
 
 RUN sed -i "s/Options Indexes FollowSymLinks/Options FollowSymLinks/" /etc/apache2/apache2.conf
 
