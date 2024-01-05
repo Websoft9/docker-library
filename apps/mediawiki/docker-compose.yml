@@ -47,8 +47,15 @@ services:
         sleep 2
       done
       echo 'LocalSettings.php found, proceeding...'
-      sleep 2
-      sed -i 's|wgServer = .*|wgServer = \"//\";|g' /data/LocalSettings.php
+      if echo \"\$W9_URL\" | grep -q '\\.'; then
+        media_url=\$W9_URL
+        echo 'URL is a domain name'
+      else
+        media_url=\$W9_URL:\$W9_HTTP_PORT_SET
+        echo 'URL is an IP address'
+      fi
+      sleep 5
+      sed -i 's|wgServer = .*|wgServer = \"//\$$media_url\";|g' /data/LocalSettings.php
       "
       
 networks:
