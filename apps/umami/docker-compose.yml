@@ -11,10 +11,6 @@ services:
       - .env
     ports:
       - $W9_HTTP_PORT_SET:3000
-    environment:
-      DATABASE_URL: postgresql://$W9_ID:$W9_POWER_PASSWORD@$W9_ID-postgresql:5432/$W9_ID
-      DATABASE_TYPE: postgresql
-      APP_SECRET: replace-me-with-a-random-string
     depends_on:
       - postgresql
     restart: unless-stopped
