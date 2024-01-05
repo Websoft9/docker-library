@@ -62,7 +62,8 @@ services:
       fi
       echo 'Start to set URL ...'
       bin/magento setup:store-config:set --base-url=\"http://$$wp_url\"
-      bin/magento setup:store-config:set --base-url-secure=\"http://$$wp_url\"
+      # base-url-secure is for https url
+      #bin/magento setup:store-config:set --base-url-secure=\"https://$$wp_url\"
       bin/magento cache:clean
       bin/magento cache:flush
       "
