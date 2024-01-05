@@ -36,9 +36,9 @@ services:
       - mediawiki:/data
     depends_on:
       - mediawiki
-    command: |
+    command: >
       /bin/sh -c "
-      if [ -z \"$W9_URL\" ]; then
+      if [ -z \"\$W9_URL\" ]; then
         echo 'W9_URL is empty, not need to change, exiting...'
         exit 0
       fi
@@ -55,7 +55,7 @@ services:
         echo 'URL is an IP address'
       fi
       sleep 5
-      sed -i 's|wgServer = .*|wgServer = \"//$$media_url\";|g' /data/LocalSettings.php
+      sed -i 's|wgServer = .*|wgServer = \"//\$media_url\";|g' /data/LocalSettings.php
       kill 1
       "
       
