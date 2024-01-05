@@ -2,7 +2,6 @@
 # docs: https://umami.is/docs/install
 # compose: https://github.com/umami-software/umami/blob/master/docker-compose.yml
 
-
 version: '3.8'
 services:
   umami:
@@ -19,11 +18,6 @@ services:
     depends_on:
       - postgresql
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "curl http://localhost:3000/api/heartbeat"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
 
   postgresql:
     image: postgres:15-alpine
@@ -33,12 +27,7 @@ services:
       POSTGRES_USER: $W9_ID
       POSTGRES_PASSWORD: $W9_POWER_PASSWORD
     volumes:
-      - umami-db-data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      - postgresql:/var/lib/postgresql/data
 
 networks:
   default:
@@ -46,5 +35,5 @@ networks:
     external: true
 
 volumes:
-  umami-db-data:
+  postgresql:
     driver: local
