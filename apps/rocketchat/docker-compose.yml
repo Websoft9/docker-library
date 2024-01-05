@@ -9,10 +9,6 @@ services:
     container_name: ${W9_ID}
     ports:
       - ${W9_HTTP_PORT_SET}:3000
-    environment:
-      - ROOT_URL=http://${W9_URL}
-      - MONGO_URL=mongodb://${W9_ID}-mongodb:27017/rocketchat?replicaSet=rs0
-      - MONGO_OPLOG_URL=mongodb://${W9_ID}-mongodb:27017/local?replicaSet=rs0
     depends_on:
       - mongo
     restart: unless-stopped
@@ -34,7 +30,6 @@ services:
       MONGODB_ENABLE_JOURNAL: true
       ALLOW_EMPTY_PASSWORD: yes
 
-      
 networks:
   default:
     name: ${W9_NETWORK}
