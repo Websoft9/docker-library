@@ -36,7 +36,7 @@ services:
       - mediawiki:/data
     depends_on:
       - mediawiki
-    command: >
+    command: |
       /bin/sh -c "
       if [ -z \"\$W9_URL\" ]; then
         echo 'W9_URL is empty, not need to change, exiting...'
