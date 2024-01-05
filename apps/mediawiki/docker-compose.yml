@@ -56,7 +56,6 @@ services:
       fi
       sleep 5
       sed -i 's|wgServer = .*|wgServer = \"//\$media_url\";|g' /data/LocalSettings.php
-      kill 1
       "
       
 networks:
