@@ -15,10 +15,15 @@ services:
     environment:
       DATABASE_URL: postgresql://$W9_ID:$W9_POWER_PASSWORD@$W9_ID-postgresql:5432/$W9_ID
       DATABASE_TYPE: postgresql
-      W9_SECRET: replace-me-with-a-random-string
+      APP_SECRET: replace-me-with-a-random-string
     depends_on:
       - postgresql
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl http://localhost:3000/api/heartbeat"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   postgresql:
     image: postgres:15-alpine
@@ -28,9 +33,12 @@ services:
       POSTGRES_USER: $W9_ID
       POSTGRES_PASSWORD: $W9_POWER_PASSWORD
     volumes:
-      - ./src/schema.postgresql.sql:/docker-entrypoint-initdb.d/schema.postgresql.sql:ro
-      - postgresql:/var/lib/postgresql/data
-    env_file: .env
+      - umami-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 networks:
   default:
@@ -38,5 +46,5 @@ networks:
     external: true
 
 volumes:
-  postgresql:
+  umami-db-data:
     driver: local
