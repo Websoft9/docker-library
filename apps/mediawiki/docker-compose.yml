@@ -55,7 +55,7 @@ services:
         echo 'URL is not IP'
       fi
       sleep 5
-      sed -i 's|\$wgServer = .*|\$wgServer = \"http://$$media_url\";|g' /data/LocalSettings.php
+      sed -i 's|wgServer = .*|wgServer = \"http://$$media_url\";|g' /data/LocalSettings.php
       kill 1
       "
       
