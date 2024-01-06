@@ -64,7 +64,7 @@ services:
       - zammad-backup:/var/tmp/zammad
       - zammad-storage:/opt/zammad/storage:ro
       - zammad-var:/opt/zammad/var:ro
-      - ./scripts/backup.sh:/usr/local/bin/backup.sh:ro
+      - ./src/backup.sh:/usr/local/bin/backup.sh:ro
 
   zammad-elasticsearch:
     container_name: $W9_ID-elasticsearch
