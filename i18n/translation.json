@@ -366,5 +366,17 @@
     "W9_LOGIN_Oracle_PDB": [
         "",
         ""
+    ],
+    "W9_RTMP_PORT_SET": [
+        "",
+        ""
+    ],
+    "W9_REMOTE_PORT_SET": [
+        "",
+        ""
+    ],
+    "W9_FLV_PORT_SET": [
+        "",
+        ""
     ]
 }
