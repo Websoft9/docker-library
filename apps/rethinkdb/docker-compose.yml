@@ -9,9 +9,9 @@ services:
     container_name: $W9_ID
     restart: unless-stopped
     ports:
-     - ${W9_HTTP_PORT_SET}:8080
-     - ${W9_DB_PORT_SET}:28015
-     #- 9002:29015
+     - ${W9_DB_PORT_SET}:28015 #DB
+     #- 9098:8080  #GUI
+     #- 9002:29015 #Cluster
     env_file: .env
     command:
       - /bin/bash
