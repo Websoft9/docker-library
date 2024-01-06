@@ -8,7 +8,7 @@ This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://cloud.seafile.com/published/seafile-manual-cn/docker/):
+The following are the minimal [recommended requirements](https://cloud.seafile.com/published/seafile-manual-cn/docker):
 
 * **RAM**: 2 GB or more
 * **CPU**: 1 cores or higher
