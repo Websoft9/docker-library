@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Teleport:
 
 
- - community:  14-amd64, latest
+ - community:  14-amd64
 
 
 ## System Requirements
