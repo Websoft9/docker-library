@@ -97,6 +97,7 @@ services:
     command: ["zammad-nginx"]
     ports:
       - $W9_HTTP_PORT_SET:8080
+    env_file: .env
     expose:
       - "8080"
     depends_on:
