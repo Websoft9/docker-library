@@ -1,3 +1,4 @@
+# update time: 202401061124
 # fork from : https://github.com/DarkMaguz/scratch3-docker/blob/master/Dockerfile
 
 FROM node:14-alpine as builder

@@ -24,19 +24,11 @@ services:
     container_name: $W9_ID
     restart: unless-stopped
     ports:
-      - "$W9_HTTP_PORT_SET:$W9_HTTP_PORT"
+      - "$W9_HTTP_PORT_SET:80"
     #     - "443:443"  # If https is enabled, cancel the comment.
     volumes:
       - seafile_data:/shared # Requested, specifies the path to Seafile data persistent store.
     env_file: .env
-    environment:
-      - DB_HOST=$W9_ID-mariadb
-      - DB_ROOT_PASSWD=$W9_POWER_PASSWORD
-      - TIME_ZONE=$W9_TIME_ZONE
-      - SEAFILE_ADMIN_EMAIL=$W9_LOGIN_USER
-      - SEAFILE_ADMIN_PASSWORD=$W9_LOGIN_PASSWORD
-      - SEAFILE_SERVER_LETSENCRYPT=false
-      - SEAFILE_SERVER_HOSTNAME=$W9_URL
     depends_on:
       - mariadb
       - memcached
