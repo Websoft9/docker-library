@@ -108,7 +108,7 @@ services:
     container_name: $W9_ID-postgresql
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASS}
     image: postgres:${W9_DB_VERSION}
     restart: ${RESTART}
