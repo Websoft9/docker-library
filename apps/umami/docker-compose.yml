@@ -14,17 +14,27 @@ services:
     depends_on:
       - postgresql
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl http://localhost:3000/api/heartbeat"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   postgresql:
     image: postgres:15-alpine
     container_name: $W9_ID-postgresql
     environment:
       POSTGRES_DB: $W9_ID
-      POSTGRES_USER: $W9_ID
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: $W9_POWER_PASSWORD
     volumes:
       - postgresql:/var/lib/postgresql/data
-
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      
 networks:
   default:
     name: ${W9_NETWORK}
