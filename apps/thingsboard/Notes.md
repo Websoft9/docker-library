@@ -1,5 +1,7 @@
 # ThingsBoard
 
+Use RabbitMQ and not bind UDP/MQTT/Edge RPC port to host  
+
 
 Use the following default credentials:
 

@@ -1,7 +1,7 @@
 {
   "name": "theia",
   "trademark": "Theia",
-  "release": true,
+  "release": false,
   "fork_url": "https://registry.hub.docker.com/r/theiaide/theia",
   "edition": [
     {
