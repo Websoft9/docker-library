@@ -9,7 +9,7 @@ services:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
-    env_file: - .env
+    env_file: .env
     ports:
       - ${W9_HTTP_PORT_SET}:9090
       #- "1883:1883" # For MQTT 
