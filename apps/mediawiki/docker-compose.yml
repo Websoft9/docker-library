@@ -29,36 +29,6 @@ services:
       MYSQL_PASSWORD: $W9_POWER_PASSWORD
       MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
 
-  # this used for running command to modify Mediawiki's LocalSettings.php
-  busybox:
-    image: busybox
-    volumes:
-      - mediawiki:/data
-    depends_on:
-      - mediawiki
-    command: |
-      /bin/sh -c '
-      if [ -z "$W9_URL" ]; then
-        echo "W9_URL is empty, no need to change, exiting..."
-        exit 0
-      fi
-      while [ ! -f /data/LocalSettings.php ]; do
-        echo "Waiting for LocalSettings.php to be created..."
-        sleep 2
-      done
-      echo "LocalSettings.php found, proceeding..."
-      if echo "$W9_URL" | grep -q "[a-zA-Z]"; then
-        media_url=$W9_URL
-        echo "URL is a domain name"
-      else
-        media_url=$W9_URL:$W9_HTTP_PORT_SET
-        echo "URL is an IP address"
-      fi
-      sleep 5
-      #sed -i "s|wgServer = .*|wgServer = \"//$$media_url\";|g" /data/LocalSettings.php
-      sed -i "s|wgServer = .*|wgServer = \"//\";|g" /data/LocalSettings.php
-      '
-      
 networks:
   default:
     name: ${W9_NETWORK}
