@@ -1,14 +1,14 @@
-# Kafka on Docker  
+# AKHQ on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Kafka:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for AKHQ:
 
 
- - community:  3.6, 3.2, 2.8, 2.7, 2.6, 2.5, 2.4, 2.3, latest
+ - community:  latest
 
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](http://kafka.apache.org/quickstart):
+The following are the minimal [recommended requirements](https://akhq.io/):
 
 * **RAM**: 2 GB or more
 * **CPU**: 1 cores or higher
@@ -17,10 +17,10 @@ The following are the minimal [recommended requirements](http://kafka.apache.org
 
 ## Install
 
-You can install this Kafka by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this AKHQ by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use Kafka with **Websoft9 Business Support** free, you can [subscribe Kafka](https://www.websoft9.com/apps) on Cloud platform
+If you want use AKHQ with **Websoft9 Business Support** free, you can [subscribe AKHQ](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[Kafka Administrator Guide](https://support.websoft9.com/docs/kafka) powered by Websoft9
+[AKHQ Administrator Guide](https://support.websoft9.com/docs/akhq) powered by Websoft9
