@@ -28,7 +28,18 @@ services:
       - AGENT_TOKEN=71723e836df10d65390420820fe3451c
       - OWN_PORT=9090
       - DOCKER_IN_DOCKER=start
-     
+    volumes:
+      - agent_system:/opt/buildagent/system
+      - agent_docker:/var/lib/docker
+      - agent_work:/opt/buildagent/work
+      - agent_teamcitytemp:/opt/teamcity/temp
+      - agent_logs:/opt/buildagent/logs
+      - agent_conf:/data/teamcity_agent/conf
+      - agent_temp:/opt/buildagent/temp
+      - agent_tools:/opt/buildagent/tools
+        
+      
+           
   teamcity-mysql:
     image: mysql:$W9_DB_VERSION
     container_name: ${W9_ID}-mysql
@@ -50,3 +61,11 @@ volumes:
   logs:
   data:
   mysql_data:
+  agent_system:
+  agent_docker:
+  agent_work:
+  agent_teamcitytemp:
+  agent_logs:
+  agent_temp:
+  agent_tools:
+  agent_conf:
