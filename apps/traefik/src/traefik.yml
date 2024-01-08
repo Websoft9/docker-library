@@ -1,5 +1,7 @@
 # Static configure file
 
-entryPoints:
-  http:
-    address: ":80"
+api:
+  insecure: true
+
+## define your routers below
+

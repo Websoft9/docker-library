@@ -15,12 +15,8 @@ services:
       options:
           max-file: "5"
           max-size: 10m
-    environment:
-      - TYPESENSE_API_KEY=${W9_KEY}
-      - TYPESENSE_DATA_DIR=${W9_DATA_PATH}
-      - TYPESENSE_ENABLE_CORS=true
     ports:
-      - "${W9_API_PORT_SET}:${W9_API_PORT}"
+      - "${W9_API_PORT_SET}:8109"
     volumes:
       - typesense:/data
     env_file: .env
@@ -35,10 +31,10 @@ services:
           max-file: "5"
           max-size: 10m
     environment:
-      - TYPESENSE_API_KEY=${W9_KEY}
-      - TYPESENSE_HOST=${W9_HOST}
-      - TYPESENSE_PORT=${W9_HTTP_PORT}
-      - TYPESENSE_PROTOCOL=${W9_PROTOCOL}
+      - TYPESENSE_API_KEY=f324f596-f07b-${W9_POWER_PASSWORD}
+      - TYPESENSE_HOST=${W9_ID}
+      - TYPESENSE_PORT=8109
+      - TYPESENSE_PROTOCOL=http
       - CONFIG={
           "index_name":"websoft9",
           "start_urls":["https://support.websoft9.com/"],
@@ -64,7 +60,6 @@ services:
           "nb_hits":46250}
     depends_on:
       - typesense
-    env_file: .env
 
 networks:
   default:

@@ -10,14 +10,13 @@ services:
     env_file: .env
     command:
       - "--api.dashboard=true"
-      - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedByDefault=false"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
     ports:
-      - ${W9_HTTP_PORT_SET}:80
-      #- 4433:443  # For HTTPS
+      - ${W9_HTTP_PORT_SET}:80  # For HTTP traffic
+      #- 4433:443  # For HTTPS traffic
       #- 8080:8080 # For Dashboard and API
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
