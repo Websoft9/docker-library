@@ -15,8 +15,9 @@ services:
     ports:
       - "${W9_HTTP_PORT_SET}:8111"
     volumes:
-      - data:/data/teamcity_server/datadir
-      - logs:/opt/teamcity/logs
+      - teamcity_data:/data/teamcity_server/datadir
+      - teamcity_logs:/opt/teamcity/logs
+      - teamcity_temp:/opt/teamcity/temp
 
   teamcity-agent:
     image: jetbrains/teamcity-agent:${W9_VERSION}
@@ -32,11 +33,11 @@ services:
       - agent_system:/opt/buildagent/system
       - agent_docker:/var/lib/docker
       - agent_work:/opt/buildagent/work
-      - agent_teamcitytemp:/opt/teamcity/temp
       - agent_logs:/opt/buildagent/logs
       - agent_conf:/data/teamcity_agent/conf
       - agent_temp:/opt/buildagent/temp
       - agent_tools:/opt/buildagent/tools
+      - agent_plugins:/opt/buildagent/plugins
         
       
            
@@ -58,14 +59,15 @@ networks:
     external: true
 
 volumes:
-  logs:
-  data:
+  teamcity_logs:
+  teamcity_data:
+  teamcity_temp:
   mysql_data:
   agent_system:
   agent_docker:
   agent_work:
-  agent_teamcitytemp:
   agent_logs:
   agent_temp:
   agent_tools:
   agent_conf:
+  agent_plugins:
