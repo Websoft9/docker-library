@@ -7,12 +7,13 @@ services:
   traefik:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
+    env_file: .env
     ports:
-      - ${W9_WEB_PORT_SET}:80
-      - ${W9_HTTP_PORT_SET}:8080
+      - ${W9_HTTP_PORT_SET}:80
+      #- 8080:8080 # For console
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - $PWD/src/traefik.yml:/etc/traefik/traefik.yml
+      - ./src/traefik.yml:/etc/traefik/traefik.yml
 
 networks:
   default:
