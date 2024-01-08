@@ -1,5 +1,5 @@
 # Static configure file
 
-providers:
-  file:
-    filename: "dynamic_conf.yaml"
+entryPoints:
+  http:
+    address: ":80"
