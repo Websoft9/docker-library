@@ -9,6 +9,8 @@ services:
     restart: unless-stopped
     ports:
       - "$W9_DB_PORT_SET:9092"
+    env_file:
+      - .env
     volumes:
       - "kafka_data:/bitnami"
 
