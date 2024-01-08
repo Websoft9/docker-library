@@ -23,7 +23,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./src/traefik.yml:/etc/traefik/traefik.yml
     labels:
-      #- "traefik.enable=true"
+      - "traefik.enable=true"
 
 networks:
   default:
