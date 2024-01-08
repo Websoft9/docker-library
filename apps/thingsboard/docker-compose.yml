@@ -12,49 +12,29 @@ services:
     env_file: - .env
     ports:
       - ${W9_HTTP_PORT_SET}:9090
-      - ${W9_MQTT_PORT_SET}:1883
-      - ${W9_RPC_PORT_SET}:7070
-      - ${W9_UDP1_PORT_SET}:5683/udp
-      - ${W9_UDP2_PORT_SET}:5684/udp
-      - ${W9_UDP3_PORT_SET}:5685/udp
-      - ${W9_UDP4_PORT_SET}:5686/udp
-      - ${W9_UDP5_PORT_SET}:5687/udp
-      - ${W9_UDP6_PORT_SET}:5688/udp
+      #- "1883:1883" # For MQTT 
+      #- "7070:7070" # For Edge RPC
+      #- "5683-5688:5683-5688/udp" # UDP for COAP and LwM2M
     environment:
-      TB_QUEUE_TYPE: kafka
-      TB_KAFKA_SERVERS: $W9_ID-kafka:9092
+      TB_QUEUE_TYPE: rabbitmq
+      TB_QUEUE_RABBIT_MQ_USERNAME: guest
+      TB_QUEUE_RABBIT_MQ_PASSWORD: guest
+      TB_QUEUE_RABBIT_MQ_HOST: ${W9_ID}-rabbitmq
+      TB_QUEUE_RABBIT_MQ_PORT: 5672
     depends_on:
-      - kafka
+      - rabbitmq
     volumes:
       - 'data:/data'
       - 'logs:/var/log/thingsboard'
-      
-  zookeeper:
-    restart: unless-stopped
-    image: "zookeeper:3.5"
-    container_name: $W9_ID-zookeeper
-    ports:
-      - "$W9_ZK_PORT_SET:$W9_ZK_PORT"
-    environment:
-      ZOO_MY_ID: 1
-      ZOO_SERVERS: server.1=zookeeper:2888:3888;zookeeper:2181
 
-  kafka:
+  rabbitmq:
+    container_name: ${W9_ID}-rabbitmq
+    image: rabbitmq
     restart: unless-stopped
-    image: wurstmeister/kafka
-    container_name: $W9_ID-kafka
-    depends_on:
-      - zookeeper
-    ports:
-      - "$W9_KAFKA_PORT_SET:$W9_KAFKA_PORT"
-    environment:
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENERS: INSIDE://:9093,OUTSIDE://:9092
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9093,OUTSIDE://kafka:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+    expose:
+      - '5672'
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - rabbitmq_data:/var/lib/rabbitmq
 
 networks:
   default:
@@ -64,3 +44,4 @@ networks:
 volumes:
   data:
   logs:
+  rabbitmq_data:

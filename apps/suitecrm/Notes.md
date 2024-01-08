@@ -2,14 +2,6 @@
 
 This repository is based on [Bitnami SuiteCRM](https://github.com/bitnami/bitnami-docker-suitecrm)
 
-And we add:
-
-* elasticsearch
-
-## To do
-
-elasticsearch configuration
-
 ## FAQ
 
 #### 403 error?

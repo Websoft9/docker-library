@@ -13,14 +13,6 @@ services:
       - ${W9_HTTP_PORT_SET}:80
     volumes:
       - sscms:/app/wwwroot
-    environment:
-      - SSCMS_DATABASE_PASSWORD=${W9_POWER_PASSWORD}
-      - SSCMS_DATABASE_NAME=${W9_ID}
-      - SSCMS_DATABASE_USER=${W9_ID}
-      - SSCMS_DATABASE_PORT=3306
-      - SSCMS_DATABASE_HOST=${W9_ID}-mysql
-      - SSCMS_SECURITY_KEY=e2a3d303-ac9b-41ff-9154-930710af0845
-      - SSCMS_DATABASE_TYPE=MySQL
     depends_on: 
       - mysql
     restart: unless-stopped
