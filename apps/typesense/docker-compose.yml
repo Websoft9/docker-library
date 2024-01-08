@@ -16,10 +16,12 @@ services:
           max-file: "5"
           max-size: 10m
     ports:
-      - "${W9_API_PORT_SET}:8109"
+      - "${W9_HTTP_PORT_SET}:8108"
     volumes:
       - typesense:/data
     env_file: .env
+    environment:
+      - TYPESENSE_API_KEY=${W9_LOGIN_API_KEY}
 
   docsearch-scraper:
     image: typesense/docsearch-scraper:latest
@@ -31,9 +33,9 @@ services:
           max-file: "5"
           max-size: 10m
     environment:
-      - TYPESENSE_API_KEY=f324f596-f07b-${W9_POWER_PASSWORD}
+      - TYPESENSE_API_KEY=${W9_LOGIN_API_KEY}
       - TYPESENSE_HOST=${W9_ID}
-      - TYPESENSE_PORT=8109
+      - TYPESENSE_PORT=8108
       - TYPESENSE_PROTOCOL=http
       - CONFIG={
           "index_name":"websoft9",
