@@ -1,8 +1,5 @@
-# Docker configuration backend
-providers:
-  docker:
-    defaultRule: "Host(`{{ trimPrefix `/` .Name }}.docker.localhost`)"
+# Static configure file
 
-# API and dashboard configuration
-api:
-  insecure: true
+providers:
+  file:
+    filename: "dynamic_conf.yaml"

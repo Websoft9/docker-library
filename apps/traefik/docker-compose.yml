@@ -8,12 +8,33 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     env_file: .env
+    command:
+      - "--api.dashboard=true"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedByDefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
     ports:
       - ${W9_HTTP_PORT_SET}:80
+      #- 4433:443  # For HTTPS
       #- 8080:8080 # For console
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./src/traefik.yml:/etc/traefik/traefik.yml
+      - ./src/traefik.yml:/etc/traefik/dynamic_conf.yaml
+    labels:
+      - "traefik.enable=true"
+      # Define Dashboard routers
+      - "traefik.http.routers.dashboard.rule=PathPrefix(`/dashboard`)"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.middlewares=dashboard-stripprefix"
+      # 定义去除前缀的中间件
+      - "traefik.http.middlewares.dashboard-stripprefix.stripprefix.prefixes=/dashboard"
+      # 定义重定向，从 `/dashboard` 到 `/dashboard/`，以便正确加载资源
+      - "traefik.http.middlewares.dashboard-redirectregex.redirectregex.regex=^/dashboard$$"
+      - "traefik.http.middlewares.dashboard-redirectregex.redirectregex.replacement=/dashboard/"
+      - "traefik.http.middlewares.dashboard-redirectregex.redirectregex.permanent=true"
 
 networks:
   default:
