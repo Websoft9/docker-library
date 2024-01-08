@@ -30,7 +30,7 @@ services:
       - DOCKER_IN_DOCKER=start
      
   teamcity-mysql:
-    image: mysql:8.0
+    image: mysql:$W9_DB_VERSION
     container_name: ${W9_ID}-mysql
     environment:
       - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWORD}

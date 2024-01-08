@@ -8,7 +8,7 @@ services:
     container_name: $W9_ID-kafka
     restart: unless-stopped
     ports:
-      - "$W9_DB_KAFKA_PORT_SET:9092"
+      - "$W9_DB_PORT_SET:9092"
     volumes:
       - "kafka_data:/bitnami"
     depends_on:
@@ -18,23 +18,8 @@ services:
     image: docker.io/bitnami/zookeeper:latest
     container_name: $W9_ID-zookeeper
     restart: unless-stopped
-    ports:
-      - "$W9_ZOOMKEEPER_PORT_SET:2181"
     volumes:
       - "zookeeper_data:/bitnami"
-    env_file: .env
-
-  efak:
-    image: 'tchiotludo/akhq:latest'
-    container_name: $W9_ID
-    env_file: .env
-    ports:
-      - $W9_HTTP_PORT_SET:8080
-    environment:
-      - AKHQ_CONFIGURATION=akhq
-      - AKHQ_CONNECTIONS_DEFAULT_BOOTSTRAP_SERVERS=kafka:9092
-    depends_on:
-      - kafka
 
 volumes:
   zookeeper_data:
