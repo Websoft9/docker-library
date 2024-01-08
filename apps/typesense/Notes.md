@@ -2,6 +2,14 @@
 
 [Typesense](https://typesense.org/)是一款开源搜索工具，是Algolia 或者大型搜索ElasticSearch 的替代方案
 
+测试范例:  
+
+```
+curl "http://URL/collections" -H "X-TYPESENSE-API-KEY: f324f596-f07b-XP7bz4lUmA@Ln6XH"
+```
+
+> URL 是域名或 IP:port
+
 ## 容器介绍
 
 本项目涉及到两个容器typesense和typesense-scraper

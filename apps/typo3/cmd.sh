@@ -1,17 +1,22 @@
 #!/bin/bash
-# customrized cmd powered by Websoft9
+# customized cmd powered by Websoft9
 
-echo $TYPO3_DB_USER
+echo "TYPO3 DB User: $TYPO3_DB_USER"
 if [[ -f /var/www/html/wizard ]]; then
     echo "Initialization has been completed before this time!"
 else
-    echo "" >> /var/www/html/wizard
-    sed -i s/127.0.0.1/mysql/g  /var/www/html/typo3_src-11.5.12/typo3/sysext/install/Classes/Controller/InstallerController.php
-    cat InstallerController.php |grep username|grep TYPO3_CONF_VARS| awk '{print $NF}'
-    cat InstallerController.php |grep username|grep TYPO3_CONF_VARS| awk '{print $NF}'
-    
-    sed -i "s/\['user'\] ?? ''/['user'] ?? '$TYPO3_DB_USER'/" /var/www/html/typo3_src-11.5.14/typo3/sysext/install/Classes/Controller/InstallerController.php
-    sed -i "s/\['password'\] ?? ''/['password'] ?? '$TYPO3_DB_PASSWORD'/" /var/www/html/typo3_src-11.5.14/typo3/sysext/install/Classes/Controller/InstallerController.php
-    sed -i "s/\['host'\] ?? '127.0.0.1'/['host'] ?? '$TYPO3_DB_HOST'/" /var/www/html/typo3_src-11.5.14/typo3/sysext/install/Classes/Controller/InstallerController.php
+    # 标记初始化已完成
+    touch /var/www/html/wizard
+
+    # 定义 InstallerController.php 文件的路径模式
+    installer_pattern="/var/www/html/typo3_src-*/typo3/sysext/install/Classes/Controller/InstallerController.php"
+
+    # 使用定义的路径模式查找文件，并对每个文件执行 sed 替换
+    find /var/www/html -type f -path "$installer_pattern" -exec sed -i "s/127.0.0.1/mysql/g" {} \;
+    find /var/www/html -type f -path "$installer_pattern" -exec sed -i "s/\['user'\] ?? ''/\['user'\] ?? '$TYPO3_DB_USER'/" {} \;
+    find /var/www/html -type f -path "$installer_pattern" -exec sed -i "s/\['password'\] ?? ''/\['password'\] ?? '$TYPO3_DB_PASSWORD'/" {} \;
+    find /var/www/html -type f -path "$installer_pattern" -exec sed -i "s/\['host'\] ?? '127.0.0.1'/\['host'\] ?? '$TYPO3_DB_HOST'/" {} \;
 fi
+
+# 启动 Apache
 docker-php-entrypoint apache2-foreground
