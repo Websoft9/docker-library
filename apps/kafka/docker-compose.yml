@@ -11,19 +11,8 @@ services:
       - "$W9_DB_PORT_SET:9092"
     volumes:
       - "kafka_data:/bitnami"
-    depends_on:
-      - zookeeper
-
-  zookeeper:
-    image: docker.io/bitnami/zookeeper:latest
-    container_name: $W9_ID-zookeeper
-    restart: unless-stopped
-    volumes:
-      - "zookeeper_data:/bitnami"
 
 volumes:
-  zookeeper_data:
-    driver: local
   kafka_data:
     driver: local
 
