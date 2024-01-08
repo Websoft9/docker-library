@@ -55,7 +55,8 @@ services:
         echo "URL is an IP address"
       fi
       sleep 5
-      sed -i "s|wgServer = .*|wgServer = \"//$$media_url\";|g" /data/LocalSettings.php
+      #sed -i "s|wgServer = .*|wgServer = \"//$$media_url\";|g" /data/LocalSettings.php
+      sed -i "s|wgServer = .*|wgServer = \"//\";|g" /data/LocalSettings.php
       '
       
 networks:
