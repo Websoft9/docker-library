@@ -30,14 +30,14 @@ services:
       - OWN_PORT=9090
       - DOCKER_IN_DOCKER=start
     volumes:
-      - agent_system:/opt/buildagent/system
-      - agent_docker:/var/lib/docker
-      - agent_work:/opt/buildagent/work
-      - agent_logs:/opt/buildagent/logs
       - agent_conf:/data/teamcity_agent/conf
+      - /var/run/docker.sock:/var/run/docker.sock
+      - agent_work:/opt/buildagent/work
       - agent_temp:/opt/buildagent/temp
       - agent_tools:/opt/buildagent/tools
       - agent_plugins:/opt/buildagent/plugins
+      - agent_system:/opt/buildagent/system
+      - agent_logs:/opt/buildagent/logs
            
   teamcity-mysql:
     image: mysql:$W9_DB_VERSION
@@ -62,7 +62,6 @@ volumes:
   teamcity_temp:
   mysql_data:
   agent_system:
-  agent_docker:
   agent_work:
   agent_logs:
   agent_temp:
