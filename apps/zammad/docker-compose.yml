@@ -72,10 +72,10 @@ services:
   zammad-postgresql:
     container_name: $W9_ID-postgresql
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASS}
-    image: postgres:${POSTGRES_VERSION}
+      POSTGRES_DB: ${W9_ID}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${W9_POWER_PASSWORD}
+    image: postgres:${POSTGRESQL_VERSION}
     volumes:
       - postgresql-data:/var/lib/postgresql/data
 
