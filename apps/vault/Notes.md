@@ -1,12 +1,10 @@
 # Vault
 
-Vault 是hashicorp旗下的密码管理方案，支出多用户户、API和LDAP等
+Vault 是hashicorp旗下的密码管理方案，支出多用户户、API和LDAP等。 
 
 ## 安装
 
-如果是手动安装，安装完成后有一个**启封（unseal）**的动作。  
-但如果是 Docker 安装，只需要通过 Vault 容器日志查看启封后的结果 **Root Token**。
-
+Vault 默认启动（cmd 不带任何参数）是以 Dev  模式运行。Dev 模式下只需要通过 Vault 容器日志查看启封后的结果 **Root Token**。
 
 ## GUI
 
@@ -15,7 +13,3 @@ Vault 是hashicorp旗下的密码管理方案，支出多用户户、API和LDAP�
 ## 配置文件
 
 支持通过环境变量导入配置文件的参数
-
-## 概念
-
-秘钥

@@ -1,4 +1,4 @@
-# https://hub.docker.com/_/vault
+# image: https://hub.docker.com/r/hashicorp/vault
 # docs: https://www.vaultproject.io/
 
 version: '3.8'
@@ -10,7 +10,7 @@ services:
     cap_add: 
       - IPC_LOCK
     ports:
-      - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
+      - '${W9_HTTP_PORT_SET}:8200'
     env_file:
       - .env
     environment:
