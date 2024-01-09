@@ -38,8 +38,6 @@ services:
       - agent_temp:/opt/buildagent/temp
       - agent_tools:/opt/buildagent/tools
       - agent_plugins:/opt/buildagent/plugins
-        
-      
            
   teamcity-mysql:
     image: mysql:$W9_DB_VERSION
