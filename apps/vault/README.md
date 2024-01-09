@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Vault:
 
 
- - community:  1.13.3
+ - community:  1.15, latest
 
 
 ## System Requirements
