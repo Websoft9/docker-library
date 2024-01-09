@@ -382,5 +382,9 @@
     "W9_LOGIN_API_KEY": [
         "",
         ""
+    ],
+    "W9_LOGIN_GET_TOKEN": [
+        "",
+        ""
     ]
 }
