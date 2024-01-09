@@ -38,6 +38,7 @@ services:
       - agent_plugins:/opt/buildagent/plugins
       - agent_system:/opt/buildagent/system
       - agent_logs:/opt/buildagent/logs
+      - agent_docker:/var/lib/docker
            
   teamcity-mysql:
     image: mysql:$W9_DB_VERSION
@@ -68,3 +69,4 @@ volumes:
   agent_tools:
   agent_conf:
   agent_plugins:
+  agent_docker:
