@@ -6,91 +6,17 @@ version: '3.8'
 
 x-shared:
   zammad-service: &zammad-service
-    environment: &zammad-environment
-      MEMCACHE_SERVERS: ${MEMCACHE_SERVERS}
-      POSTGRESQL_DB: ${POSTGRES_DB}
-      POSTGRESQL_HOST: ${POSTGRES_HOST}
-      POSTGRESQL_USER: ${POSTGRES_USER}
-      POSTGRESQL_PASS: ${POSTGRES_PASS}
-      POSTGRESQL_PORT: ${POSTGRES_PORT}
-      REDIS_URL: ${REDIS_URL}
-      # Allow passing in these variables via .env:
-      AUTOWIZARD_JSON:
-      AUTOWIZARD_RELATIVE_PATH:
-      ELASTICSEARCH_ENABLED:
-      ELASTICSEARCH_HOST:
-      ELASTICSEARCH_PORT:
-      ELASTICSEARCH_SCHEMA:
-      ELASTICSEARCH_NAMESPACE:
-      ELASTICSEARCH_REINDEX:
-      ELASTICSEARCH_SSL_VERIFY:
-      NGINX_PORT:
-      NGINX_SERVER_NAME:
-      NGINX_SERVER_SCHEME:
-      POSTGRESQL_DB_CREATE:
-      POSTGRESQL_OPTIONS:
-      RAILS_TRUSTED_PROXIES:
-      ZAMMAD_WEB_CONCURRENCY:
-      ZAMMAD_SESSION_JOBS:
-      ZAMMAD_PROCESS_SCHEDULED:
-      ZAMMAD_PROCESS_DELAYED_JOBS_WORKERS:
-    image: ${IMAGE_REPO}:${VERSION}
-    restart: ${RESTART}
+    env_file: .env
+    image: ${W9_REPO}:${W9_VERSION}
+    restart: unless-stopped
     volumes:
       - zammad-storage:/opt/zammad/storage
       - zammad-var:/opt/zammad/var
     depends_on:
-      - zammad-memcached
       - zammad-postgresql
       - zammad-redis
 
 services:
-
-  zammad-backup:
-    container_name: $W9_ID-backup
-    command: ["zammad-backup"]
-    depends_on:
-      - zammad-railsserver
-      - zammad-postgresql
-    entrypoint: /usr/local/bin/backup.sh
-    environment:
-      <<: *zammad-environment
-      BACKUP_TIME: "03:00"
-      HOLD_DAYS: "10"
-      TZ: Europe/Berlin
-    image: postgres:${POSTGRES_VERSION}
-    restart: ${RESTART}
-    volumes:
-      - zammad-backup:/var/tmp/zammad
-      - zammad-storage:/opt/zammad/storage:ro
-      - zammad-var:/opt/zammad/var:ro
-      - ./src/backup.sh:/usr/local/bin/backup.sh:ro
-
-  zammad-elasticsearch:
-    container_name: $W9_ID-elasticsearch
-    image: bitnami/elasticsearch:${ELASTICSEARCH_VERSION}
-    restart: ${RESTART}
-    volumes:
-      - elasticsearch-data:/bitnami/elasticsearch/data
-
-  zammad-init:
-    <<: *zammad-service
-    container_name: $W9_ID-init
-    command: ["zammad-init"]
-    depends_on:
-      - zammad-postgresql
-    restart: on-failure
-    user: 0:0
-    volumes:
-      - zammad-storage:/opt/zammad/storage
-      - zammad-var:/opt/zammad/var
-
-  zammad-memcached:
-    container_name: $W9_ID-memcached
-    command: memcached -m 256M
-    image: memcached:${MEMCACHE_VERSION}
-    restart: ${RESTART}
-
   zammad-nginx:
     <<: *zammad-service
     container_name: $W9_ID
@@ -105,28 +31,10 @@ services:
     volumes:
       - zammad-var:/opt/zammad/var:ro # required for the zammad-ready check file
 
-  zammad-postgresql:
-    container_name: $W9_ID-postgresql
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${POSTGRES_PASS}
-    image: postgres:${W9_DB_VERSION}
-    restart: ${RESTART}
-    volumes:
-      - postgresql-data:/var/lib/postgresql/data
-
   zammad-railsserver:
     container_name: $W9_ID-railsserver
     <<: *zammad-service
     command: ["zammad-railsserver"]
-
-  zammad-redis:
-    container_name: $W9_ID-redis
-    image: redis:${REDIS_VERSION}
-    restart: ${RESTART}
-    volumes:
-      - redis-data:/data
 
   zammad-scheduler:
     <<: *zammad-service
@@ -138,14 +46,34 @@ services:
     container_name: $W9_ID-websocket
     command: ["zammad-websocket"]
 
+  zammad-memcached:
+    command: memcached -m 256M
+    container_name: $W9_ID-memcached
+    image: memcached:${MEMCACHE_VERSION}
+    restart: ${RESTART}
+
+  zammad-redis:
+    container_name: $W9_ID-redis
+    image: redis:${REDIS_VERSION}
+    restart: ${RESTART}
+    volumes:
+      - redis-data:/data
+
+  zammad-postgresql:
+    container_name: $W9_ID-postgresql
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASS}
+    image: postgres:${W9_DB_VERSION}
+    restart: ${RESTART}
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data
+
 volumes:
-  elasticsearch-data:
-    driver: local
   postgresql-data:
     driver: local
   redis-data:
-    driver: local
-  zammad-backup:
     driver: local
   zammad-storage:
     driver: local
