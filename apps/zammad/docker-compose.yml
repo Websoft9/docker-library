@@ -6,7 +6,6 @@ version: '3.8'
 
 x-shared:
   zammad-service: &zammad-service
-    env_file: .env
     image: ${W9_REPO}:${W9_VERSION}
     restart: unless-stopped
     volumes:
@@ -23,26 +22,39 @@ services:
     command: ["zammad-nginx"]
     ports:
       - $W9_HTTP_PORT_SET:8080
-    env_file: .env
     expose:
       - "8080"
+    env_file: .env
     depends_on:
       - zammad-railsserver
     volumes:
       - zammad-var:/opt/zammad/var:ro # required for the zammad-ready check file
 
+  zammad-init:
+    <<: *zammad-service
+    command: ["zammad-init"]
+    container_name: $W9_ID-init
+    env_file: .env
+    depends_on:
+      - zammad-postgresql
+    restart: on-failure
+    user: 0:0
+
   zammad-railsserver:
     container_name: $W9_ID-railsserver
+    env_file: .env
     <<: *zammad-service
     command: ["zammad-railsserver"]
 
   zammad-scheduler:
     <<: *zammad-service
+    env_file: .env
     container_name: $W9_ID-scheduler
     command: ["zammad-scheduler"]
 
   zammad-websocket:
     <<: *zammad-service
+    env_file: .env
     container_name: $W9_ID-websocket
     command: ["zammad-websocket"]
 
@@ -50,12 +62,10 @@ services:
     command: memcached -m 256M
     container_name: $W9_ID-memcached
     image: memcached:${MEMCACHE_VERSION}
-    restart: ${RESTART}
 
   zammad-redis:
     container_name: $W9_ID-redis
     image: redis:${REDIS_VERSION}
-    restart: ${RESTART}
     volumes:
       - redis-data:/data
 
@@ -63,10 +73,9 @@ services:
     container_name: $W9_ID-postgresql
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: postgres
+      POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASS}
-    image: postgres:${W9_DB_VERSION}
-    restart: ${RESTART}
+    image: postgres:${POSTGRES_VERSION}
     volumes:
       - postgresql-data:/var/lib/postgresql/data
 
