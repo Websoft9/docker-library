@@ -2,6 +2,7 @@
 # docs: https://www.jetbrains.com/help/teamcity/teamcity-documentation.html
 # https://github.com/JetBrains/teamcity-docker-server
 # compose: https://github.com/JetBrains/teamcity-docker-samples/blob/master/compose-ubuntu/docker-compose.yml
+# volumes: https://github.com/JetBrains/teamcity-docker-images/blob/master/dockerhub/teamcity-agent/README.md
 
 version: '3.8'
 services:
