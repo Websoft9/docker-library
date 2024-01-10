@@ -69,12 +69,11 @@ services:
     container_name: $W9_ID-postgresql
     hostname: $W9_RCODE-postgresql
     environment:
-      POSTGRES_DB: ${W9_ID}
+      POSTGRES_DB: zammad
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${W9_POWER_PASSWORD}
-      ZAMMAND_PASSWORD: ${ZAMMAND_PASSWORD}
+      POSTGRES_ZAMMAND_PASSWORD: ${W9_RCODE}
     image: postgres:${POSTGRESQL_VERSION}
-    env_file: .env
     volumes:
       - postgresql-data:/var/lib/postgresql/data
       - ./src/postgresql_init.sh:/docker-entrypoint-initdb.d/postgresql_init.sh
