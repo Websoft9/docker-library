@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -a
-source .env
+source /docker-entrypoint-initdb.d/.env
 set +a
 
 echo "POSTGRES_USER is set to: '${POSTGRES_USER}'"
