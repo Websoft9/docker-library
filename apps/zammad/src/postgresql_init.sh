@@ -1,8 +1,6 @@
 #!/bin/bash
 
 set -a
-source /docker-entrypoint-initdb.d/.env
-set +a
 
 echo "POSTGRES_USER is set to: '${POSTGRES_USER}'"
 echo "POSTGRES_ZAMMAD_PASSWORD is set to: '${POSTGRES_ZAMMAD_PASSWORD}'"
