@@ -8,6 +8,7 @@ x-shared:
   zammad-service: &zammad-service
     image: ${W9_REPO}:${W9_VERSION}
     restart: unless-stopped
+    env_file: .env
     volumes:
       - zammad-storage:/opt/zammad/storage
       - zammad-var:/opt/zammad/var
@@ -24,7 +25,6 @@ services:
       - $W9_HTTP_PORT_SET:8080
     expose:
       - "8080"
-    env_file: .env
     depends_on:
       - zammad-railsserver
     volumes:
@@ -34,7 +34,6 @@ services:
     <<: *zammad-service
     command: ["zammad-init"]
     container_name: $W9_ID-init
-    env_file: .env
     depends_on:
       - zammad-postgresql
     restart: on-failure
@@ -42,19 +41,16 @@ services:
 
   zammad-railsserver:
     container_name: $W9_ID-railsserver
-    env_file: .env
     <<: *zammad-service
     command: ["zammad-railsserver"]
 
   zammad-scheduler:
     <<: *zammad-service
-    env_file: .env
     container_name: $W9_ID-scheduler
     command: ["zammad-scheduler"]
 
   zammad-websocket:
     <<: *zammad-service
-    env_file: .env
     container_name: $W9_ID-websocket
     command: ["zammad-websocket"]
 
@@ -71,6 +67,7 @@ services:
 
   zammad-postgresql:
     container_name: $W9_ID-postgresql
+    hostname: $W9_RCODE-postgresql
     environment:
       POSTGRES_DB: ${W9_ID}
       POSTGRES_USER: postgres
