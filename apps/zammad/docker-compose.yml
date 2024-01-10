@@ -74,6 +74,7 @@ services:
       POSTGRES_PASSWORD: ${W9_POWER_PASSWORD}
       ZAMMAND_PASSWORD: ${ZAMMAND_PASSWORD}
     image: postgres:${POSTGRESQL_VERSION}
+    env_file: .env
     volumes:
       - postgresql-data:/var/lib/postgresql/data
       - ./src/postgresql_init.sh:/docker-entrypoint-initdb.d/postgresql_init.sh
