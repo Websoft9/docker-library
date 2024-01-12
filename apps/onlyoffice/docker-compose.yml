@@ -26,8 +26,6 @@ services:
     volumes:
      - community_data:/var/www/onlyoffice/Data
      - community_log:/var/log/onlyoffice
-     - community_letsencrypt:/etc/letsencrypt
-     - document_data:/var/www/onlyoffice/DocumentServerData
      - /sys/fs/cgroup:/sys/fs/cgroup:ro
     env_file: .env
 
@@ -64,10 +62,8 @@ services:
      - mysql_data:/var/lib/mysql
 
 volumes:
-  community_mysql:
   community_data:
   community_log:
-  community_letsencrypt:
   controlpanel_data:
   controlpanel_log:
   mysql_data:
