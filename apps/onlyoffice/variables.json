@@ -1,6 +1,6 @@
 {
   "name": "onlyoffice",
-  "trademark": "ONLYOFFICE",
+  "trademark": "ONLYOFFICE Workspace",
   "release": true,
   "fork_url": "https://github.com/ONLYOFFICE/Docker-CommunityServer.git",
   "edition": [

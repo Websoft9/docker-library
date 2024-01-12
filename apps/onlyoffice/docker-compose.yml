@@ -1,6 +1,7 @@
 # compose: https://github.com/ONLYOFFICE/Docker-CommunityServer/blob/master/docker-compose.workspace.yml
+# image: https://hub.docker.com/r/onlyoffice/communityserver
 # docs: https://github.com/ONLYOFFICE/Docker-CommunityServer
-# Not use: ES, onlyoffice-docs, onlyoffice-mailserver
+# Websoft9 modification: delete ES, onlyoffice-docs, onlyoffice-mailserver
 
 version: '3.8'
 services:
@@ -19,6 +20,8 @@ services:
      - MYSQL_SERVER_HOST=${W9_ID}-mysql
      - MYSQL_SERVER_USER=onlyoffice
      - MYSQL_SERVER_PASS=${W9_POWER_PASSWORD}
+     - ELASTICSEARCH_SERVER_HOST=${W9_ID}-elasticsearch
+     - ELASTICSEARCH_SERVER_HTTPPORT=9200
     ports:
      - ${W9_HTTP_PORT_SET}:80
      #- 5222:5222  # IM port
@@ -45,17 +48,39 @@ services:
       - controlpanel_data:/var/www/onlyoffice/Data
       - controlpanel_log:/var/log/onlyoffice
 
+  onlyoffice-elasticsearch:
+    image: onlyoffice/elasticsearch:7.16.3
+    container_name: ${W9_ID}-elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g -Dlog4j2.formatMsgNoLookups=true"
+      - "indices.fielddata.cache.size=30%"
+      - "indices.memory.index_buffer_size=30%" 
+      - "ingest.geoip.downloader.enabled=false"    
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65535
+        hard: 65535
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    expose:
+      - "9200"
+      - "9300"
+
   onlyoffice-mysql-server:
     container_name: ${W9_ID}-mysql
     image: mysql:$W9_DB_VERSION
+    command: --default-authentication-plugin=mysql_native_password --collation-server=utf8_general_ci
     environment:
      - MYSQL_DATABASE=onlyoffice
      - MYSQL_USER=onlyoffice
      - MYSQL_PASSWORD=${W9_POWER_PASSWORD}
      - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWORD}
-    stdin_open: true
-    tty: true
-    restart: unless-stopped
     volumes:
      - ./src/mysql/conf.d:/etc/mysql/conf.d
      - ./src/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
@@ -67,6 +92,7 @@ volumes:
   controlpanel_data:
   controlpanel_log:
   mysql_data:
+  es_data:
 
 networks:
   default:

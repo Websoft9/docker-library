@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS onlyoffice CHARACTER SET "utf8" COLLATE "utf8_general_ci";
-CREATE USER IF NOT EXISTS 'onlyoffice'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';
-GRANT ALL PRIVILEGES ON onlyoffice.* TO 'onlyoffice'@'%';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%';
+GRANT ALL PRIVILEGES ON *.* TO 'onlyoffice_user'@'%';
+
 FLUSH PRIVILEGES;
