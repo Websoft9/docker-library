@@ -1,19 +1,18 @@
 # docs: https://www.chatwoot.com/docs/self-hosted/deployment/docker
 # compose: https://github.com/chatwoot/chatwoot/blob/develop/docker-compose.production.yaml
+# chatwoot base container is not need, it only for build
 
 version: '3.8'
+
 services:
-  base: &base
+
+  rails:
     image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID-base
+    container_name: $W9_ID
     restart: unless-stopped
     env_file: .env
     volumes:
-      - storage:/app/storage
-
-  rails:
-    <<: *base
-    container_name: $W9_ID
+      - chatwoot:/app/storage
     depends_on:
       - postgres
       - redis
@@ -26,9 +25,28 @@ services:
     entrypoint: docker/entrypoints/rails.sh
     command: ['bundle', 'exec', 'rails', 's', '-p', '3000', '-b', '0.0.0.0']
 
+  migrate:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID-migrate
+    env_file: .env
+    volumes:
+      - chatwoot:/app/storage
+    depends_on:
+      - rails
+    environment:
+      - NODE_ENV=production
+      - RAILS_ENV=production
+      - INSTALLATION_ENV=docker
+    entrypoint: docker/entrypoints/rails.sh
+    command: bundle exec rails db:chatwoot_prepare
+
   sidekiq:
-    <<: *base
+    image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID-sidekiq
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - chatwoot:/app/storage
     depends_on:
       - postgres
       - redis
@@ -54,7 +72,7 @@ services:
     image: redis:alpine
     container_name: $W9_ID-redis
     restart: unless-stopped
-    command: ["sh", "-c", "redis-server --requirepass \"$REDIS_PASSWORD\""]
+    command: ["sh", "-c", "redis-server"]
     env_file: .env
     volumes:
       - /data/redis:/data
@@ -62,6 +80,7 @@ services:
 volumes:
   postgres:
   storage:
+  chatwoot:
     
 networks:
   default:
