@@ -1,87 +1,41 @@
-# image: https://hub.docker.com/r/onlyoffice/communityserver
+# compose: https://github.com/ONLYOFFICE/Docker-CommunityServer/blob/master/docker-compose.workspace.yml
 # docs: https://github.com/ONLYOFFICE/Docker-CommunityServer
+# Not use: ES, onlyoffice-docs, onlyoffice-mailserver
 
 version: '3.8'
 services:
-  onlyoffice-mysql-server:
-    container_name: ${W9_ID}-mysql
-    image: mysql:$W9_DB_VERSION
-    environment:
-     - MYSQL_DATABASE=${W9_ID}
-     - MYSQL_USER=${W9_ID}
-     - MYSQL_PASSWORD=${W9_POWER_PASSWORD}
-     - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWORD}
-    stdin_open: true
-    tty: true
-    restart: unless-stopped
-    volumes:
-     - ./src/config/mysql/conf.d:/etc/mysql/conf.d
-     - mysql_data:/var/lib/mysql
-     
+
   onlyoffice-community-server:
     container_name: ${W9_ID}
     image: ${W9_REPO}:${W9_VERSION}
     depends_on:
      - onlyoffice-mysql-server
-     - onlyoffice-document-server
     environment:
      - ONLYOFFICE_CORE_MACHINEKEY=core_secret
      - CONTROL_PANEL_PORT_80_TCP=80
-     - CONTROL_PANEL_PORT_80_TCP_ADDR=onlyoffice-control-panel
-     - DOCUMENT_SERVER_PORT_80_TCP_ADDR=onlyoffice-document-server
-     - DOCUMENT_SERVER_JWT_ENABLED=false
-     - DOCUMENT_SERVER_JWT_SECRET=jwt_secret
-     - DOCUMENT_SERVER_JWT_HEADER=AuthorizationJwt
+     - CONTROL_PANEL_PORT_80_TCP_ADDR=${W9_ID}-control
      - MYSQL_SERVER_ROOT_PASSWORD=${W9_POWER_PASSWORD}
-     - MYSQL_SERVER_DB_NAME=${W9_ID}
+     - MYSQL_SERVER_DB_NAME=onlyoffice
      - MYSQL_SERVER_HOST=${W9_ID}-mysql
-     - MYSQL_SERVER_USER=${W9_ID}
+     - MYSQL_SERVER_USER=onlyoffice
      - MYSQL_SERVER_PASS=${W9_POWER_PASSWORD}
     ports:
      - ${W9_HTTP_PORT_SET}:80
-     - ${W9_HTTPS_PORT_SET}:443
-     - ${W9_XMPP_PORT_SET}:5222
-    stdin_open: true
-    tty: true
+     #- 5222:5222  # IM port
     restart: unless-stopped
-    privileged: true
     volumes:
      - community_data:/var/www/onlyoffice/Data
      - community_log:/var/log/onlyoffice
      - community_letsencrypt:/etc/letsencrypt
      - document_data:/var/www/onlyoffice/DocumentServerData
      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-     - ./certs:/var/www/onlyoffice/Data/certs
-    env_file: .env
-     
-  onlyoffice-document-server:
-    container_name: ${W9_ID}-docs
-    image: onlyoffice/documentserver:7.0
-    stdin_open: true
-    tty: true
-    restart: unless-stopped
-    environment:
-     - JWT_ENABLED=false
-     - JWT_SECRET=jwt_secret
-     - JWT_HEADER=AuthorizationJwt
-    ports:
-     - ${W9_DOCS_PORT_SET}:80
-    expose:
-      - '80'
-      - '443'
-    volumes:
-      - document_data:/var/www/onlyoffice/Data
-      - document_log:/var/log/onlyoffice
-      - ./document_fonts:/usr/share/fonts/truetype/custom
-      - document_forgotten:/var/lib/onlyoffice/documentserver/App_Data/cache/files/forgotten
     env_file: .env
 
   onlyoffice-control-panel:
     container_name: ${W9_ID}-control
     depends_on:
-     - onlyoffice-document-server
      - onlyoffice-community-server
-    image: onlyoffice/controlpanel:3.0.3.410
+    image: onlyoffice/controlpanel:latest
     environment:
      - ONLYOFFICE_CORE_MACHINEKEY=core_secret
     expose:
@@ -92,14 +46,24 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - controlpanel_data:/var/www/onlyoffice/Data
       - controlpanel_log:/var/log/onlyoffice
+
+  onlyoffice-mysql-server:
+    container_name: ${W9_ID}-mysql
+    image: mysql:$W9_DB_VERSION
+    environment:
+     - MYSQL_DATABASE=onlyoffice
+     - MYSQL_USER=onlyoffice
+     - MYSQL_PASSWORD=${W9_POWER_PASSWORD}
+     - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWORD}
     stdin_open: true
     tty: true
-    env_file: .env
+    restart: unless-stopped
+    volumes:
+     - ./src/mysql/conf.d:/etc/mysql/conf.d
+     - ./src/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+     - mysql_data:/var/lib/mysql
 
 volumes:
-  document_data:
-  document_log:
-  document_forgotten:
   community_mysql:
   community_data:
   community_log:
