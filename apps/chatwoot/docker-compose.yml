@@ -2,16 +2,14 @@
 # compose: https://github.com/chatwoot/chatwoot/blob/develop/docker-compose.production.yaml
 
 version: '3.8'
-
-services:
-
 services:
   base: &base
     image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID-base
     restart: unless-stopped
     env_file: .env
     volumes:
-      - /data/storage:/app/storage
+      - storage:/app/storage
 
   rails:
     <<: *base
@@ -63,7 +61,7 @@ services:
 
 volumes:
   postgres:
-  mysql_data:
+  storage:
     
 networks:
   default:
