@@ -1,6 +1,6 @@
-# ONLYOFFICEDocs on Docker  
+# ONLYOFFICE Docs on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for ONLYOFFICEDocs:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for ONLYOFFICE Docs:
 
 
  - community:  7.5, latest
@@ -21,10 +21,10 @@ The following are the minimal [recommended requirements](https://github.com/ONLY
 
 ## Install
 
-You can install this ONLYOFFICEDocs by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this ONLYOFFICE Docs by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use ONLYOFFICEDocs with **Websoft9 Business Support** free, you can [subscribe ONLYOFFICEDocs](https://www.websoft9.com/apps) on Cloud platform
+If you want use ONLYOFFICE Docs with **Websoft9 Business Support** free, you can [subscribe ONLYOFFICE Docs](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[ONLYOFFICEDocs Administrator Guide](https://support.websoft9.com/docs/onlyofficedocs) powered by Websoft9
+[ONLYOFFICE Docs Administrator Guide](https://support.websoft9.com/docs/onlyofficedocs) powered by Websoft9
