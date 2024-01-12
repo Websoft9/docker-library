@@ -1,7 +1,7 @@
 {
   "name": "opencart",
   "trademark": "OpenCart",
-  "release": true,
+  "release": false,
   "fork_url": "",
   "edition": [
     {

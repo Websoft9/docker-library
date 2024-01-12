@@ -1,7 +1,7 @@
 {
   "name": "suitecrm",
   "trademark": "SuiteCRM",
-  "release": true,
+  "release": false,
   "fork_url": "https://github.com/bitnami/bitnami-docker-suitecrm",
   "edition": [
     {
