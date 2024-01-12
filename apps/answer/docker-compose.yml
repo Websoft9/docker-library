@@ -1,0 +1,36 @@
+# image: https://hub.docker.com/r/apache/answer/tags
+# docs: https://answer.apache.org/docs/installation/
+
+version: '3.8'
+
+services:
+
+  answer:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    restart: unless-stopped
+    ports:
+      - $W9_HTTP_PORT_SET:80
+    env_file: .env
+    volumes:
+      - answer:/data
+
+  postgres:
+    image: postgres:${W9_DB_VERSION}
+    container_name: ${W9_ID}-postgresql
+    restart: unless-stopped
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: answer
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${W9_POWER_PASSWORD}
+
+volumes:
+  answer:
+  postgres:
+    
+networks:
+  default:
+    name: $W9_NETWORK
+    external: true
