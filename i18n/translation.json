@@ -386,5 +386,9 @@
     "W9_LOGIN_GET_TOKEN": [
         "",
         ""
+    ],
+    "W9_LOGIN_GET_Credential": [
+        "",
+        ""
     ]
 }
