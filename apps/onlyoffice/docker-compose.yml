@@ -75,12 +75,12 @@ services:
   onlyoffice-mysql-server:
     container_name: ${W9_ID}-mysql
     image: mysql:$W9_DB_VERSION
-    command: --default-authentication-plugin=mysql_native_password --collation-server=utf8_general_ci
     environment:
      - MYSQL_DATABASE=onlyoffice
      - MYSQL_USER=onlyoffice
      - MYSQL_PASSWORD=${W9_POWER_PASSWORD}
      - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWORD}
+     - LC_COLLATE='utf8_general_ci'
     volumes:
      - ./src/mysql/conf.d:/etc/mysql/conf.d
      - ./src/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
