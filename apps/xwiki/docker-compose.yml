@@ -5,36 +5,31 @@ version: '3.8'
 
 services:
   xwiki:
-    image: xwiki:$W9_VERSION
-    container_name: $W9_NAME
+    image: $W9_REPO:$W9_VERSION
+    container_name: ${W9_ID}
     ports:
-      - $W9_HTTP_PORT:8080
+      - $W9_HTTP_PORT_SET:8080
     volumes:
       - xwiki:/usr/local/xwiki
     env_file:
       - .env
-    environment:
-      - DB_USER=${W9_DB_MYSQL_USER}
-      - DB_PASSWORD=${W9_DB_MYSQL_PASSWORD}
-      - DB_HOST=mysql
-    links: 
-      - mysql
+    depends_on:
+      - db
     restart: unless-stopped
 
-  mysql:
-    image: mysql:${W9_DB_MYSQL_VERSION}
-    container_name: $W9_NAME-mysql
+  db:
+    image: mysql:${W9_DB_VERSION}
+    container_name: ${W9_ID}-mysql
     restart: unless-stopped
-    ports:
-     - $W9_DB_MYSQL_PORT:3306
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    command:
+      - "--character-set-server=utf8mb4"
+      - "--collation-server=utf8mb4_bin"
+      - "--explicit-defaults-for-timestamp=1"
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: $W9_DB_MYSQL_NAME
-      MYSQL_USER: $W9_DB_MYSQL_USER
-      MYSQL_PASSWORD: $W9_DB_MYSQL_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_DB_MYSQL_PASSWORD
+      MYSQL_DATABASE: ${W9_ID}
+      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
 
 networks:
   default:
