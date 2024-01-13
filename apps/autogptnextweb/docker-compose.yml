@@ -1,9 +1,9 @@
-# compose: https://github.com/Yidadaa/ChatGPT-Next-Web/blob/main/docker-compose.yml
+# compose: https://github.com/ConnectAI-E/AutoGPT-Next-Web/blob/main/docker-compose.prod.yml
 
 version: '3.8'
 
 services:
-  chatgpt-next-web: 
+  autogpt-next-web: 
     image: $W9_REPO:${W9_VERSION}
     container_name: ${W9_ID}
     restart: unless-stopped
