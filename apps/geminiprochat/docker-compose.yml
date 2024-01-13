@@ -1,0 +1,17 @@
+# compose: https://github.com/ConnectAI-E/AutoGPT-Next-Web/blob/main/docker-compose.prod.yml
+
+version: '3.8'
+
+services:
+  autogpt-next-web: 
+    image: $W9_REPO:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - $W9_HTTP_PORT_SET:3000
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

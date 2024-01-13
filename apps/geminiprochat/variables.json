@@ -1,0 +1,20 @@
+{
+  "name": "geminiprochat",
+  "trademark": "GeminiProChat",
+  "release": true,
+  "fork_url": "https://geminiprochat.com/",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1",
+    "url": "https://geminiprochat.com/"
+  }
+}
