@@ -24,7 +24,7 @@ services:
     environment:
       POSTGRES_DB: answer
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${W9_POWER_PASSWORD}
+      POSTGRES_PASSWORD: $W9_RCODE
 
 volumes:
   answer:
