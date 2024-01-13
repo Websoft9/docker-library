@@ -1,6 +1,6 @@
 # Answer
 
-Postgres Password can not support some special string, have submit issue to Answer: https://github.com/apache/incubator-answer/issues/723
+Answer container not wait for Database container, when DB not prepare, auto install is failed: https://github.com/apache/incubator-answer/issues/723
 
 ## FAQ
 

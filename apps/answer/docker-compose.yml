@@ -4,11 +4,13 @@
 version: '3.8'
 
 services:
-
   answer:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
     ports:
       - $W9_HTTP_PORT_SET:80
     env_file: .env
@@ -24,7 +26,13 @@ services:
     environment:
       POSTGRES_DB: answer
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: $W9_RCODE
+      POSTGRES_PASSWORD: $W9_POWER_PASSWORD
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
 
 volumes:
   answer:
