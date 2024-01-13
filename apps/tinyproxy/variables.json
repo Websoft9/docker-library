@@ -1,7 +1,7 @@
 {
   "name": "tinyproxy",
   "trademark": "tinyproxy ",
-  "release": false,
+  "release": true,
   "fork_url": "",
   "edition": [
     {
