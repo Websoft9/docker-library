@@ -1,19 +1,14 @@
-# this file from docker-compose.workspace, delete mail-server
-# default MySQL root password is 123456
-
+# image and docs: https://hub.docker.com/r/ajoergensen/tinyproxy
 
 version: '3.8'
 services:
   tinyproxy:
-    container_name: ${W9_CONTAINER_NAME}
-    image: ajoergensen/tinyproxy:${W9_VERSION}
-    environment:
-     - ALLOWED=${BINDIP}
-    stdin_open: true
-    tty: true
+    container_name: ${W9_ID}
+    image: ${W9_REPO}:${W9_VERSION}
+    env_file: .env
     restart: unless-stopped
     ports:
-     - '${W9_HTTP_PORT}:8888'
+     - '${W9_HTTP_PORT_SET}:8888'
     
 networks:
   default:

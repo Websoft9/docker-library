@@ -23,3 +23,7 @@ mysql> show grants for xwiki@'%';
 
 By default XWiki ships with an embedded Solr. 但推荐使用外部 solr。官方方案配置外部 solr 还需要挂载一个配置文件，并更改权限，考虑复杂性，暂时不做
 
+3. 安装向导
+
+安装向导会在线拉去资源，故时间比较长
+
