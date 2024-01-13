@@ -8,7 +8,7 @@ services:
     env_file: .env
     restart: unless-stopped
     ports:
-     - '${W9_HTTP_PORT_SET}:8888'
+     - '${W9_TCP_PORT_SET}:8888'
     
 networks:
   default:

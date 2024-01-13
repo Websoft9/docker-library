@@ -2,7 +2,7 @@
   "name": "tinyproxy",
   "trademark": "tinyproxy ",
   "release": true,
-  "fork_url": "",
+  "fork_url": "https://hub.docker.com/r/ajoergensen/tinyproxy",
   "edition": [
     {
       "dist": "community",
