@@ -1,0 +1,25 @@
+# image,docs: https://hub.docker.com/r/linuxserver/duplicati
+
+version: '3.8'
+
+services:
+
+  wordpress:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    restart: unless-stopped
+    ports:
+      - $W9_HTTP_PORT_SET:80
+    env_file: .env
+    volumes:
+      - config:/config
+      - backups:/backups
+      - source:/source      
+volumes:
+  config:
+  backups:
+  source:
+networks:
+  default:
+    name: $W9_NETWORK
+    external: true
