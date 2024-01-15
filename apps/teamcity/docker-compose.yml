@@ -33,7 +33,7 @@ services:
       - DOCKER_IN_DOCKER=start
     volumes:
       #- agent_conf:/data/teamcity_agent/conf
-      - ./src/agents/agent/conf:/data/teamcity_agent/conf
+      - ./src/agents/agent-1/conf:/data/teamcity_agent/conf
       - /var/run/docker.sock:/var/run/docker.sock
       - agent_work:/opt/buildagent/work
       - agent_temp:/opt/buildagent/temp
