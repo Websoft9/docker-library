@@ -3,18 +3,18 @@
 version: '3.8'
 
 services:
-
-  wordpress:
+  duplicati:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
     ports:
-      - $W9_HTTP_PORT_SET:80
+      - $W9_HTTP_PORT_SET:8200
     env_file: .env
     volumes:
       - config:/config
-      - backups:/backups
-      - source:/source      
+      - /var/lib/docker/volumes:/source  # mount to host diretory
+      #- /data/backups:/backups
+     
 volumes:
   config:
   backups:
