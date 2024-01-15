@@ -9,6 +9,7 @@ services:
   teamcity-server:
     image: jetbrains/teamcity-server:${W9_VERSION}
     container_name: ${W9_ID}
+    hostname: teamcity
     restart: unless-stopped
     depends_on:
       - teamcity-mysql
