@@ -1,5 +1,6 @@
 # image: https://hub.docker.com/r/apache/answer/tags
 # docs: https://answer.apache.org/docs/installation/
+# compose: https://github.com/apache/incubator-answer/blob/main/docker-compose.uffizzi.yml
 # Health check is very important, otherwise answer will failed
 
 version: '3.8'

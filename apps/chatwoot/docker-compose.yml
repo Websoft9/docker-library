@@ -73,7 +73,6 @@ services:
     container_name: $W9_ID-redis
     restart: unless-stopped
     command: ["sh", "-c", "redis-server"]
-    env_file: .env
     volumes:
       - /data/redis:/data
 
