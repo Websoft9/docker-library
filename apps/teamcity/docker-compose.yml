@@ -26,7 +26,7 @@ services:
     restart: unless-stopped
     privileged: true
     environment:
-      - SERVER_URL=http://${W9_ID}:8111
+      - SERVER_URL=http\://${W9_ID}\:8111
       - AGENT_NAME=${W9_ID}-agent
       - AGENT_TOKEN=71723e836df10d65390420820fe3451c
       - OWN_PORT=9090
