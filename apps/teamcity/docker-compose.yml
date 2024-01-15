@@ -22,11 +22,12 @@ services:
 
   teamcity-agent:
     image: jetbrains/teamcity-agent:${W9_VERSION}
+    container_name: ${W9_ID}-agent
     restart: unless-stopped
     privileged: true
     environment:
       - SERVER_URL=http://${W9_ID}:8111
-      - AGENT_NAME=agent1
+      - AGENT_NAME=${W9_ID}-agent
       - AGENT_TOKEN=71723e836df10d65390420820fe3451c
       - OWN_PORT=9090
       - DOCKER_IN_DOCKER=start
