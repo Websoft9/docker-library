@@ -1,7 +1,7 @@
 {
   "name": "kopia",
   "trademark": "Kopia",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/bitnami/bitnami-docker-kafka",
   "edition": [
     {
