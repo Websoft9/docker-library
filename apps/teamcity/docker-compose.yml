@@ -27,7 +27,7 @@ services:
     restart: unless-stopped
     privileged: true
     environment:
-      - SERVER_URL=${W9_RCODE}:8111
+      - SERVER_URL=${W9_RCODE}:8111  # If use W9_ID which include _, agent can't connect Teamcity
       - AGENT_NAME=${W9_ID}-agent
       - OWN_PORT=9090
       - DOCKER_IN_DOCKER=start

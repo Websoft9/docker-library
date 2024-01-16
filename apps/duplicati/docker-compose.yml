@@ -13,12 +13,10 @@ services:
     volumes:
       - config:/config
       - /var/lib/docker/volumes:/source  # mount to host diretory
-      #- /data/backups:/backups
+      - /data/websoft9/vl_backups:/backups
      
 volumes:
   config:
-  backups:
-  source:
 networks:
   default:
     name: $W9_NETWORK

@@ -1,4 +1,5 @@
 # image: https://hub.docker.com/r/kopia
+# docs: https://kopia.io/docs/installation/#docker-images
 
 version: "3.8"
 services:
