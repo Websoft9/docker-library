@@ -1,3 +1,5 @@
+# image: https://hub.docker.com/r/linuxserver/code-server
+
 version: "3.8"
 services:
   code-server:
@@ -7,7 +9,8 @@ services:
     volumes:
       - "code:/config"
     ports:
-      - $W9_HTTP_PORT_SET:$W9_HTTP_PORT
+      - $W9_HTTP_PORT_SET:8443
+      #- 9003:3000 # for webserver when development test
     restart: unless-stopped
 
 networks:
