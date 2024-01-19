@@ -1,4 +1,5 @@
-# image: https://registry.hub.docker.com/r/$W9_REPO
+# old image: https://hub.docker.com/r/frappe/erpnext-worker/tags
+# new image: https://hub.docker.com/r/frappe/erpnext/tags
 # docs: https://github.com/frappe/frappe_docker/blob/main/pwd.yml
 
 version: "3.8"
