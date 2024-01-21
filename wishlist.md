@@ -35,6 +35,7 @@
 ## 客户360
 
 * https://www.chatwoot.com/  开源客户参与系统/CRM
+* http://www.fatfreecrm.com/ 高度可定制CRM
 * Mautic  电子邮件群发
 * listmonk.app  电子邮件群发 & Marketing
 * https://www.walnut.io/  销售体验软件 （产品演示）为 B2B 销售团队提供更多以客户为中心和数据驱动的销售体验
