@@ -1,5 +1,6 @@
 # image: https://hub.docker.com/r/homeassistant/home-assistant
 # docs: https://www.home-assistant.io/installation/linux
+# compose: https://www.home-assistant.io/installation/linux#docker-compose
 
 
 version: '3.8'
