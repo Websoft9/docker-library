@@ -14,13 +14,14 @@ services:
       - ACTIVEMQ_ADMIN_LOGIN=$W9_LOGIN_USER
       - ACTIVEMQ_ADMIN_PASSWORD=$W9_LOGIN_PASSWORD
     volumes:
-      - activemq_root:/opt/activemq
-      - activemq_logs:/var/log/activemq
+      - config:/opt/activemq/conf
+      - logs:/var/log/activemq
+      - data:/opt/activemq/data
     ports:
-      - "$W9_HTTP_PORT_SET:$W9_HTTP_PORT" # Web Console
-      - "$W9_AMQP_PORT_SET:$W9_AMQP_PORT" # AMQP
-      - "$W9_OPENWIRE_PORT_SET:$W9_AMQP_PORT" # OpenWire
-      - "$W9_STOMP_PORT_SET:$W9_AMQP_PORT" # STOMP
+      - "$W9_HTTP_PORT_SET:8161" # Web Console
+      - "$W9_AMQP_PORT_SET:5672" # AMQP
+      - "$W9_OPENWIRE_PORT_SET:61616" # OpenWire
+      - "$W9_STOMP_PORT_SET:61613" # STOMP
 
 networks:
   default:
@@ -28,5 +29,7 @@ networks:
     external: true
 
 volumes:
-  activemq_root:
-  activemq_logs:
+  config:
+  logs:
+  data:
+
