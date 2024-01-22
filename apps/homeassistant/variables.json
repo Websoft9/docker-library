@@ -1,7 +1,7 @@
 {
   "name": "homeassistant",
   "trademark": "Home Assistant",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/home-assistant/core",
   "edition": [
     {
