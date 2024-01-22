@@ -24,3 +24,7 @@ error: Cannot open configuration file/directory /usr/local/etc/haproxy/haproxy.c
 #### 统计功能是全局的吗？
 
 可以全局， 也可以局部。
+
+#### 配置文件报错Missing LF on last line？
+
+文件最后需要一个换行符
