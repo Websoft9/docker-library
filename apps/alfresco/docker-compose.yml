@@ -5,7 +5,7 @@
 version: "3.8"
 services:
   alfresco:
-    image: docker.io/alfresco/alfresco-content-repository-community:23.1.0
+    image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID-alfresco  # add by Websoft9
     mem_limit: 1900m
     environment:
@@ -129,11 +129,8 @@ services:
       - control-center
     ports:
       - "${W9_HTTP_PORT_SET}:8080"
-    links:
-      - content-app
-      - alfresco
-      - share
-      - control-center
+    env_file:
+      - .env
 
 networks:
   default:
