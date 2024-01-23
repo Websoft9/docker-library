@@ -22,7 +22,7 @@ services:
         -Ddb.driver=org.postgresql.Driver
         -Ddb.username=alfresco 
         -Ddb.password=$W9_POWER_PASSWORD
-        -Ddb.url=jdbc:postgresql://$W9_ID-postgres:5432/alfresco
+        -Ddb.url=jdbc:postgresql://$W9_ID-postgresql:5432/alfresco
         -Dsolr.host=$W9_ID-solr6
         -Dsolr.port=8983
         -Dsolr.http.connection.timeout=1000
