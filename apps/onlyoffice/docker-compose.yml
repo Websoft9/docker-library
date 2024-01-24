@@ -9,10 +9,16 @@ services:
   onlyoffice-community-server:
     container_name: ${W9_ID}
     image: ${W9_REPO}:${W9_VERSION}
+    command:
+      - sh
+      - -c
+      - |
+          /app/run-community-server.sh
+          exec /lib/systemd/systemd
     depends_on:
      - onlyoffice-mysql-server
     environment:
-     - ONLYOFFICE_CORE_MACHINEKEY=core_secret
+     - ONLYOFFICE_CORE_MACHINEKEY=1234567890
      - CONTROL_PANEL_PORT_80_TCP=80
      - CONTROL_PANEL_PORT_80_TCP_ADDR=${W9_ID}-control
      - MYSQL_SERVER_ROOT_PASSWORD=${W9_POWER_PASSWORD}
@@ -26,10 +32,12 @@ services:
      - ${W9_HTTP_PORT_SET}:80
      #- 5222:5222  # IM port
     restart: unless-stopped
+    privileged: true
     volumes:
      - community_data:/var/www/onlyoffice/Data
      - community_log:/var/log/onlyoffice
-     - /sys/fs/cgroup:/sys/fs/cgroup:ro
+     - /sys/fs/cgroup:/sys/fs/cgroup:rw
+     - ./src/server/nginx.conf:/etc/nginx/nginx.conf
     env_file: .env
 
   onlyoffice-control-panel:
@@ -38,7 +46,8 @@ services:
      - onlyoffice-community-server
     image: onlyoffice/controlpanel:latest
     environment:
-     - ONLYOFFICE_CORE_MACHINEKEY=core_secret
+      - ONLYOFFICE_CORE_MACHINEKEY=1234567890
+      - ONLYOFFICE_COMMUNITYSERVER_HOST=${W9_ID}
     expose:
       - '80'
       - '443'
