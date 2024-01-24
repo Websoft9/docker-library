@@ -55,6 +55,18 @@ Some application have lots of logs which will need storages. If you want to limi
           max-size: 10m
 ```
 
+### Bind mount
+
+Suggest use the unified bind mount *src* which include config or script files for creating/modify application.
+
+| file name          | Description                                                                                                                                                          | Necessity |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| nginx_proxy.conf         | nginx config code section which will insert to server{} by websoft9 api, and it can override the exist location                                 | no        |
+| php_exra.ini         | extra php.ini for PHP application, you can add it to docker-compose.yml if you want to use it                    | no        |
+
+
+> you should add **proxy_pass  $forward_scheme://$server:$port$request_uri;** to your nginx_proxy.conf if you override default location /{}
+
 ## Environment variables
 
 The environment variables of the container is the interface between the container and external interactions, the library all of the apps's environment variables are imported through **.env** file and cannot be directly defined in the docker-compose.yml, you can understand the basic composition and specifications through the [.env template file](../template/.env).
@@ -89,23 +101,12 @@ We will list and explain commonly used environmental variables as following tabl
 
 > main container: When the container has web pages, the corresponding container of the page is the main container; When a container has no pages, the corresponding container for the core application is usually the main container.
 
-## src folder
 
-src is the directory which include config or script files for creating/modify application.
-
-| file name          | Description                                                                                                                                                          | Necessity |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| nginx_proxy.conf         | nginx config code section which will insert to server{} by websoft9 api, and it can override the exist location                                 | no        |
-| php_exra.ini         | extra php.ini for PHP application, you can add it to docker-compose.yml if you want to use it                    | no        |
-
-
-> you should add **proxy_pass  $forward_scheme://$server:$port$request_uri;** to your nginx_proxy.conf if you override default location /{}
-
-## Build docker image of websoft9
+## Dockerfile
 
 When we cannot find a suitable image, we have to compile the image by Dockerfile,We make a requirement in the following aspects.
 
-## Parent Image
+### Parent Image
 
 The parent image needs to follow the following point:
 
@@ -113,7 +114,7 @@ The parent image needs to follow the following point:
 - Select the smallest possible base image to reduce the size of the image and potential security vulnerabilities.
 - Select images that have undergone security review and frequent updates.
 
-### Structure
+### Files path
 
 Main related files are all placed in two directories:
 
@@ -128,33 +129,44 @@ Sufficient external interfaces need to be provided through environment variables
 
 The elements of label are necessary: such as version,vendor,description.
 
-## PHP configuration
+## Configure fils
+
+Configure files use src to mount to container
+
+### PHP
 
 1. Docker official image or Bitnami image have different method for php configuration
 2. Docker official image need mount php_exra.ini to container
 3. Bitnami image have envs of php configuration
 4. As a reference, other php application should check if php conf.d directoy exist in container, mount php_exra.ini to this path
 
+### MySQL 
+
+
 ## variables.json
 
 Every application must contain a variables.json, which contains information such as version, trademark, document reference address, and running environment requirements.
 
-## How to use new template？
+## FAQ
 
-### docker-compose.yml
+#### How to create new application?
 
-1. Docker image address using environment variables
-2. Do not expose external ports in the main database and message queue of web applications
-3. Each container must directly reference. env
-4. Use after declaring volumes
-5. The configuration file volumes uses the absolute path reference of src
+Create new application must use [template](../template/), then set your file:  
 
-###  .env
+1. docker-compose.yml
 
-1. Custom environment variables start with W9
-2. Place the environment variables of the container itself last of .env
-3. All exposed ports are marked with End of _SET, users can modify them
-4. These variables must be included in .env: W9_REPO, W9_DIST, W9_VERSION, W9_ID
-5. W9_URL is an identifier that distinguishes web applications
-6. There are two internal ports in the web application container: W9_HTTP_PORT, W9_HTTPS_PORT
-7. The user's main database type is W9_ DB_ EXPOSE to determine
+- Docker image address using environment variables
+- Do not expose external ports in the main database and message queue of web applications
+- Each container must directly reference. env
+- Use after declaring volumes
+- The configuration file volumes uses the absolute path reference of src
+
+2. .env
+
+- Custom environment variables start with W9
+- Place the environment variables of the container itself last of .env
+- All exposed ports are marked with End of _SET, users can modify them
+- These variables must be included in .env: W9_REPO, W9_DIST, W9_VERSION, W9_ID
+- W9_URL is an identifier that distinguishes web applications
+- There are two internal ports in the web application container: W9_HTTP_PORT, W9_HTTPS_PORT
+- The user's main database type is W9_ DB_ EXPOSE to determine
