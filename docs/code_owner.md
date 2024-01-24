@@ -170,3 +170,13 @@ Create new application must use [template](../template/), then set your file:
 - W9_URL is an identifier that distinguishes web applications
 - There are two internal ports in the web application container: W9_HTTP_PORT, W9_HTTPS_PORT
 - The user's main database type is W9_ DB_ EXPOSE to determine
+
+#### Which environments added to .env file?
+
+You know there three type container for an application:
+
+- Application container
+- Application assisting container: Which help application container for automatic install wizard, monitor...
+- Independent Service: e.g database, mq, redis
+
+We suggest add Application container and Application assisting container 's environments to .env

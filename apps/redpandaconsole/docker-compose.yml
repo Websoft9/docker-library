@@ -1,5 +1,6 @@
-# image: https://hub.docker.com/r/redpandadata/redpanda
-# docs: https://docs.redpanda.com/current/reference/docker-compose/
+# image: https://hub.docker.com/r/redpandadata/console
+# repo: https://github.com/redpanda-data/console
+# docs: https://docs.redpanda.com/current/get-started/quick-start/?tab=tabs-1-three-brokers
 
 version: '3.8'
 
