@@ -5,21 +5,6 @@
 
 version: '3.8'
 services:
-
-  plausible:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
-    restart: unless-stopped
-    command: sh -c "sleep 10 && /entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh run"
-    depends_on:
-      - plausible_db
-      - plausible_events_db
-      - mail
-    ports:
-      - $W9_HTTP_PORT_SET:$W9_HTTP_PORT
-    env_file:
-      - .env
-
   mail:
     image: bytemark/smtp
     container_name: $W9_ID-mail
@@ -32,11 +17,13 @@ services:
     restart: unless-stopped
     volumes:
       - db-data:/var/lib/postgresql/data
+    env_file:
+      - .env
     environment:
       - POSTGRES_PASSWORD=$W9_POWER_PASSWORD
-    
+
   plausible_events_db:
-    image: clickhouse/clickhouse-server:22.6-alpine
+    image: clickhouse/clickhouse-server:latest
     container_name: $W9_ID-clickhouse
     restart: unless-stopped
     volumes:
@@ -50,6 +37,23 @@ services:
         hard: 262144
     env_file:
       - .env
+
+  plausible:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    restart: unless-stopped
+    command: sh -c "sleep 30 && /entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh run"
+    depends_on:
+      - plausible_db
+      - plausible_events_db
+      - mail
+    ports:
+      - $W9_HTTP_PORT_SET:$W9_HTTP_PORT
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgres://postgres:$W9_POWER_PASSWORD@$W9_ID-postgresql:5432/plausible_db
+      - CLICKHOUSE_DATABASE_URL=http://$W9_ID-clickhouse:8123/plausible_events_db
 
 networks:
   default:
