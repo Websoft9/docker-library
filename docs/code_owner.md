@@ -67,7 +67,7 @@ Suggest use the unified bind mount *src* which include config or script files fo
 
 > you should add **proxy_pass  $forward_scheme://$server:$port$request_uri;** to your nginx_proxy.conf if you override default location /{}
 
-## Environment variables
+## Environments
 
 The environment variables of the container is the interface between the container and external interactions, the library all of the apps's environment variables are imported through **.env** file and cannot be directly defined in the docker-compose.yml, you can understand the basic composition and specifications through the [.env template file](../template/.env).
 
@@ -142,10 +142,19 @@ Configure files use src to mount to container
 
 ### MySQL 
 
+## Metedata and Docs
 
-## variables.json
+### variables.json
 
 Every application must contain a variables.json, which contains information such as version, trademark, document reference address, and running environment requirements.
+
+### Notes
+
+Record some important items to remind all contributors.
+
+### CHANGELOG.md
+
+Change logs
 
 ## FAQ
 
