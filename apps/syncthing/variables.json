@@ -1,6 +1,6 @@
 {
-  "name": "scratch",
-  "trademark": "Scratch",
+  "name": "syncthing",
+  "trademark": "Syncthing",
   "release": true,
   "fork_url": "https://hub.docker.com/r/syncthing/syncthing",
   "edition": [
