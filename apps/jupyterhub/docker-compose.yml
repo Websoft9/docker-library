@@ -21,10 +21,10 @@ services:
       - -c 
       - |
           pip install jupyterlab
-          [ -z `grep -w $$USERNAME /etc/passwd` ] && useradd $$USERNAME -m && echo $$USERNAME:$$PASSWORD | chpasswd
+          [ -z "`grep -w ^$$USERNAME /etc/passwd`" ] && useradd $$USERNAME -m && echo $$USERNAME:$$PASSWORD | chpasswd
           jupyterhub
     environment:
-      USERNAME: admin
+      USERNAME: $W9_LOGIN_USER
       PASSWORD: $W9_POWER_PASSWORD
 
 
