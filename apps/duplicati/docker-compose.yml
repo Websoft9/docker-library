@@ -12,8 +12,8 @@ services:
     env_file: .env
     volumes:
       - config:/config
-      - /var/lib/docker/volumes:/source  # mount to host diretory
-      - /data/websoft9/vl_backups:/backups
+      - $SOURCE_PATH:/source  # mount to host diretory
+      - $BACKUP_PATH:/backups
      
 volumes:
   config:
