@@ -16,7 +16,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
     command:
-      #sh -c "pip install jupyterlab &&  [ -z `grep -w $$USERNAME /etc/passwd` ] && useradd $$USERNAME -m && echo $$USERNAME:$$PASSWORD | chpasswd && jupyterhub";
       - sh
       - -c 
       - |
