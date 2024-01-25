@@ -6,6 +6,8 @@ services:
     container_name: ${W9_ID}
     image: ${W9_REPO}:${W9_VERSION}
     env_file: .env
+    volumes:
+      - 'config:/config'
     restart: unless-stopped
     ports:
      - '${W9_TCP_PORT_SET}:8888'
@@ -14,3 +16,6 @@ networks:
   default:
     name: ${W9_NETWORK}
     external: true
+
+volumes:
+  config:
