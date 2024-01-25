@@ -15,17 +15,29 @@ services:
     image: postgres:14-alpine
     container_name: $W9_ID-postgresql
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 3s
+      timeout: 5s
+      retries: 15
     volumes:
       - db-data:/var/lib/postgresql/data
     env_file:
       - .env
     environment:
-      - POSTGRES_PASSWORD=$W9_POWER_PASSWORD
+      POSTGRES_DB: plausible_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${W9_RCODE}
 
   plausible_events_db:
     image: clickhouse/clickhouse-server:latest
     container_name: $W9_ID-clickhouse
-    restart: unless-stopped
+    restart: always
+    healthcheck:
+      test: ["CMD", "clickhouse-client", "--query", "SELECT 1"]
+      interval: 3s
+      timeout: 5s
+      retries: 15
     volumes:
       - event-data:/var/lib/clickhouse
       - clickhouse_logs:/var/log/clickhouse-server
@@ -42,7 +54,13 @@ services:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
-    command: sh -c "sleep 30 && /entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh run"
+    command:
+      - sh
+      - -c
+      - |
+        /entrypoint.sh db createdb
+        /entrypoint.sh db migrate
+        /entrypoint.sh run
     depends_on:
       - plausible_db
       - plausible_events_db
@@ -52,7 +70,7 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_URL=postgres://postgres:$W9_POWER_PASSWORD@$W9_ID-postgresql:5432/plausible_db
+      - DATABASE_URL=postgres://postgres:$W9_RCODE@$W9_ID-postgresql:5432/plausible_db
       - CLICKHOUSE_DATABASE_URL=http://$W9_ID-clickhouse:8123/plausible_events_db
 
 networks:
