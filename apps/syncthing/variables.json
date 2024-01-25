@@ -1,0 +1,21 @@
+{
+  "name": "scratch",
+  "trademark": "Scratch",
+  "release": true,
+  "fork_url": "https://hub.docker.com/r/syncthing/syncthing",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "1.27",
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1",
+    "url": "https://github.com/syncthing/syncthing/blob/main/README-Docker.md"
+  }
+}

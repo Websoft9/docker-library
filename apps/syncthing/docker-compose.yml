@@ -1,0 +1,23 @@
+# image: https://hub.docker.com/r/syncthing/syncthing
+# docs: https://github.com/syncthing/syncthing/blob/main/README-Docker.md
+
+version: "3.8"
+
+services:
+  scratch:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    hostname: my-syncthing
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - ${W9_HTTP_PORT_SET}:8384
+    volumes:
+      - sync:/var/syncthing
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true
+
+volumes:
+  sync:
