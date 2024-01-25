@@ -1,14 +1,14 @@
-# Syncthing on Docker  
+# Scratch on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Syncthing:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Scratch:
 
 
- - community:  v3.0, latest
+ - community:  1.27, latest
 
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://github.com/onlyoffice/docker#recommended-system-requirements):
+The following are the minimal [recommended requirements](https://github.com/syncthing/syncthing/blob/main/README-Docker.md):
 
 * **RAM**: 1 GB or more
 * **CPU**: 1 cores or higher
@@ -17,10 +17,10 @@ The following are the minimal [recommended requirements](https://github.com/only
 
 ## Install
 
-You can install this Syncthing by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this Scratch by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use Syncthing with **Websoft9 Business Support** free, you can [subscribe Syncthing](https://www.websoft9.com/apps) on Cloud platform
+If you want use Scratch with **Websoft9 Business Support** free, you can [subscribe Scratch](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[Syncthing Administrator Guide](https://support.websoft9.com/docs/scratch) powered by Websoft9
+[Scratch Administrator Guide](https://support.websoft9.com/docs/scratch) powered by Websoft9
