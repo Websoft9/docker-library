@@ -32,18 +32,19 @@ services:
         -Dindex.subsystem.name=solr6
         -Dshare.host=$W9_URL
         -Dshare.port=8080
-        -Dalfresco.host=localhost
+        -Dalfresco.host=$W9_URL
         -Dalfresco.port=8080
         -Dcsrf.filter.enabled=false
-        -Daos.baseUrlOverwrite=http://localhost:8080/alfresco/aos
+        -Daos.baseUrlOverwrite=http://$W9_URL:8080/alfresco/aos
         -Dmessaging.broker.url="failover:(nio://$W9_ID-activemq:61616)?timeout=3000&jms.useCompression=true"
         -Ddeployment.method=DOCKER_COMPOSE
-        -DlocalTransform.core-aio.url=http://transform-core-aio:8090/
+        -DlocalTransform.core-aio.url=http://$W9_ID-transform:8090/
         -XX:MinRAMPercentage=50
         -XX:MaxRAMPercentage=80
 
   transform-core-aio:
     image: alfresco/alfresco-transform-core-aio:5.0.1
+    container_name: $W9_ID-transform # add by Websoft9
     mem_limit: 1536m
     environment:
       JAVA_OPTS: >-
@@ -53,6 +54,7 @@ services:
   share:
     image: docker.io/alfresco/alfresco-share:23.1.1
     mem_limit: 1g
+    container_name: $W9_ID-share # add by Websoft9
     environment:
       REPO_HOST: "alfresco"
       REPO_PORT: "8080"
@@ -102,12 +104,14 @@ services:
 
   content-app:
     image: alfresco/alfresco-content-app:4.3.0
+    container_name: $W9_ID-app  # add by Websoft9
     mem_limit: 128m
     environment:
-      APP_BASE_SHARE_URL: "http://localhost:8080/aca/#/preview/s"
+      APP_BASE_SHARE_URL: "http://$W9_URL:8080/aca/#/preview/s"
 
   control-center:
     image: quay.io/alfresco/alfresco-control-center:8.3.0
+    container_name: $W9_ID-control  # add by Websoft9
     mem_limit: 128m
     environment:
       APP_CONFIG_PROVIDER: "ECM"
