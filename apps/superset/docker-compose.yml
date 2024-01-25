@@ -39,7 +39,7 @@ services:
       - POSTGRES_USER=$W9_ID
       - POSTGRES_PASSWORD=$W9_POWER_PASSWORD
 
-      - REDIS_HOST=redis
+      - REDIS_HOST=$W9_ID-cache
       - REDIS_PORT=6379
 
     volumes:
@@ -72,7 +72,7 @@ services:
       - POSTGRES_PASSWORD=$W9_POWER_PASSWORD
 
       # Add the mapped in /app/pythonpath_docker which allows devs to override stuff
-      - REDIS_HOST=$W9_DB_REDIS_HOST
+      - REDIS_HOST=$W9_ID-cache
       - REDIS_PORT=6379
     depends_on: *superset-depends-on
     volumes: *superset-volumes
@@ -98,7 +98,7 @@ services:
       - POSTGRES_PASSWORD=$W9_POWER_PASSWORD
 
       # Add the mapped in /app/pythonpath_docker which allows devs to override stuff
-      - REDIS_HOST=$W9_DB_REDIS_HOST
+      - REDIS_HOST=$W9_ID-cache
       - REDIS_PORT=6379
       - W9_LOGIN_PASSWORD=$W9_LOGIN_PASSWORD
     depends_on: *superset-depends-on
@@ -128,7 +128,7 @@ services:
       - POSTGRES_PASSWORD=$W9_POWER_PASSWORD
 
       # Add the mapped in /app/pythonpath_docker which allows devs to override stuff
-      - REDIS_HOST=$W9_DB_REDIS_HOST
+      - REDIS_HOST=$W9_ID-cache
       - REDIS_PORT=6379
     restart: unless-stopped
     depends_on: *superset-depends-on
@@ -158,7 +158,7 @@ services:
       - POSTGRES_PASSWORD=$W9_POWER_PASSWORD
 
       # Add the mapped in /app/pythonpath_docker which allows devs to override stuff
-      - REDIS_HOST=$W9_DB_REDIS_HOST
+      - REDIS_HOST=$W9_ID-cache
       - REDIS_PORT=6379
     restart: unless-stopped
     depends_on: *superset-depends-on
