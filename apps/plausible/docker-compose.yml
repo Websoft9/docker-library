@@ -22,8 +22,6 @@ services:
       retries: 15
     volumes:
       - db-data:/var/lib/postgresql/data
-    env_file:
-      - .env
     environment:
       POSTGRES_DB: plausible_db
       POSTGRES_USER: postgres
@@ -32,7 +30,7 @@ services:
   plausible_events_db:
     image: clickhouse/clickhouse-server:latest
     container_name: $W9_ID-clickhouse
-    restart: always
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "clickhouse-client", "--query", "SELECT 1"]
       interval: 3s
@@ -41,26 +39,18 @@ services:
     volumes:
       - event-data:/var/lib/clickhouse
       - clickhouse_logs:/var/log/clickhouse-server
-      - ./src/clickhouse/clickhouse-config.xml:/etc/clickhouse-server/config.d/logging.xml:ro
-      - ./src/clickhouse/clickhouse-user-config.xml:/etc/clickhouse-server/users.d/logging.xml:ro
+      - ./clickhouse/clickhouse-config.xml:/etc/clickhouse-server/config.d/logging.xml:ro
+      - ./clickhouse/clickhouse-user-config.xml:/etc/clickhouse-server/users.d/logging.xml:ro
     ulimits:
       nofile:
         soft: 262144
         hard: 262144
-    env_file:
-      - .env
 
   plausible:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
-    command:
-      - sh
-      - -c
-      - |
-        /entrypoint.sh db createdb
-        /entrypoint.sh db migrate
-        /entrypoint.sh run
+    command: sh -c "/entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh run"
     depends_on:
       - plausible_db
       - plausible_events_db
@@ -69,6 +59,7 @@ services:
       - $W9_HTTP_PORT_SET:$W9_HTTP_PORT
     env_file:
       - .env
+    # https://plausible.io/docs/self-hosting-configuration
     environment:
       - DATABASE_URL=postgres://postgres:$W9_RCODE@$W9_ID-postgresql:5432/plausible_db
       - CLICKHOUSE_DATABASE_URL=http://$W9_ID-clickhouse:8123/plausible_events_db
