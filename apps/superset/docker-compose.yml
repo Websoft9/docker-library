@@ -24,9 +24,9 @@ services:
     container_name: $W9_ID-postgresql
     restart: unless-stopped
     environment:
-      - POSTGRES_DB=$W9_ID
-      - POSTGRES_USER=$W9_ID
-      - POSTGRES_PASSWORD=$W9_POWER_PASSWORD
+      - POSTGRES_DB=$DATABASE_DB
+      - POSTGRES_USER=$DATABASE_USER
+      - POSTGRES_PASSWORD=$DATABASE_PASSWORD      
     volumes:
       - postgresql:/var/lib/postgresql/data
       - ./src/docker/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
