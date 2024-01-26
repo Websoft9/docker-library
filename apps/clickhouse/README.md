@@ -1,14 +1,14 @@
-# Caddy on Docker  
+# ClickHouse on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Caddy:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for ClickHouse:
 
 
- - community:  2.7, latest
+ - community:  23.12, latest
 
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://hub.docker.com/_/caddy):
+The following are the minimal [recommended requirements](https://github.com/ClickHouse/ClickHouse/tree/master/docker):
 
 * **RAM**: 1 GB or more
 * **CPU**: 1 cores or higher
@@ -17,10 +17,10 @@ The following are the minimal [recommended requirements](https://hub.docker.com/
 
 ## Install
 
-You can install this Caddy by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this ClickHouse by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use Caddy with **Websoft9 Business Support** free, you can [subscribe Caddy](https://www.websoft9.com/apps) on Cloud platform
+If you want use ClickHouse with **Websoft9 Business Support** free, you can [subscribe ClickHouse](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[Caddy Administrator Guide](https://support.websoft9.com/docs/caddy) powered by Websoft9
+[ClickHouse Administrator Guide](https://support.websoft9.com/docs/clickhouse) powered by Websoft9
