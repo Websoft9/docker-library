@@ -23,7 +23,7 @@ services:
 
 networks:
   default:
-    name: 
+    name: $W9_NETWORK
     external: true
 
 volumes:
