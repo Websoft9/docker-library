@@ -1,2 +1,0 @@
-# this file is created by Websoft9
-elasticsearch-dbapi
