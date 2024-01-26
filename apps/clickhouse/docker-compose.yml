@@ -1,18 +1,16 @@
 # image: https://hub.docker.com/r/clickhouse/clickhouse-server
 # docs: https://github.com/ClickHouse/ClickHouse/tree/master/docker
+# https://clickhouse.com/docs/en/intro
 
 version: '3.8'
 
 services:
   clickhouse:
-    image: clickhouse/clickhouse-server:latest
+    image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "clickhouse-client", "--query", "SELECT 1"]
-      interval: 3s
-      timeout: 5s
-      retries: 15
+    ports:
+     - $W9_DB_PORT_SET:8123
     volumes:
       - clickhouse-data:/var/lib/clickhouse
       - clickhouse_logs:/var/log/clickhouse-server
@@ -22,11 +20,12 @@ services:
       nofile:
         soft: 262144
         hard: 262144
-    
+
 networks:
   default:
-    name: ${W9_NETWORK}
+    name: 
     external: true
-    
+
 volumes:
   clickhouse-data:
+  clickhouse_logs:
