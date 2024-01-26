@@ -74,7 +74,5 @@ volumes:
     driver: local
   event-data:
     driver: local
-  geoip:
-    driver: local
   clickhouse_logs:
     driver: local
