@@ -4,20 +4,27 @@
 version: "3.8"
 
 services:
-  scratch:
-    image: ${W9_REPO}:${W9_VERSION}
-    container_name: ${W9_ID}
+  syncthing:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
     hostname: my-syncthing
     restart: unless-stopped
     env_file: .env
-    ports:
-      - ${W9_HTTP_PORT_SET}:8384
+    environment:
+      PUID: $PUID
+      PGID: $PGID
     volumes:
       - sync:/var/syncthing
-networks:
-  default:
-    name: ${W9_NETWORK}
-    external: true
+    ports:
+      - ${W9_HTTP_PORT_SET}:8384
+      - 22000:22000/tcp # TCP file transfers
+      - 22000:22000/udp # QUIC file transfers
+      - 21027:21027/udp # Receive local discovery broadcasts
+
+#networks:
+#  default:
+#    name: ${W9_NETWORK}
+#    external: true
 
 volumes:
   sync:
