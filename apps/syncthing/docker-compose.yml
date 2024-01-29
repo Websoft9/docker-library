@@ -7,12 +7,9 @@ services:
   syncthing:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
-    hostname: my-syncthing
+    hostname: syncthing
     restart: unless-stopped
     env_file: .env
-    environment:
-      PUID: $PUID
-      PGID: $PGID
     volumes:
       - sync:/var/syncthing
     ports:
@@ -21,10 +18,10 @@ services:
       - 22000:22000/udp # QUIC file transfers
       - 21027:21027/udp # Receive local discovery broadcasts
 
-#networks:
-#  default:
-#    name: ${W9_NETWORK}
-#    external: true
+networks:
+ default:
+   name: ${W9_NETWORK}
+   external: true
 
 volumes:
   sync:
