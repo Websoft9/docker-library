@@ -10,7 +10,7 @@ services:
     container_name: $W9_ID
     restart: unless-stopped
     ports:
-     - $W9_DB_PORT_SET:8123
+      - $W9_DB_PORT_SET:8123
     volumes:
       - clickhouse-data:/var/lib/clickhouse
       - clickhouse_logs:/var/log/clickhouse-server
