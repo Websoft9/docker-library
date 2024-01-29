@@ -1,21 +1,19 @@
-# image: https://hub.docker.com/_/caddy
-# docs: https://github.com/caddyserver/caddy-docker
+# image: https://hub.docker.com/r/bytebase/bytebase
+# docs: https://bytebase.com/docs/get-started/self-host/#docker
 
 version: '3.8'
 
 services:
-  caddy:
+  bytebase:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     env_file:
       - .env
     restart: unless-stopped
     ports:
-      - "$W9_HTTP_PORT_SET:80"
+      - "$W9_HTTP_PORT_SET:8080"
     volumes:
-      - ./src/Caddyfile:/etc/caddy/Caddyfile
-      - data:/data
-      - config:/config
+      - data:/var/opt/bytebase
     
 networks:
   default:
@@ -24,4 +22,3 @@ networks:
     
 volumes:
   data:
-  config:

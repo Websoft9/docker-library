@@ -1,14 +1,13 @@
 {
-  "name": "caddy",
-  "trademark": "Caddy",
+  "name": "bytebase",
+  "trademark": "Bytebase",
   "release": true,
-  "fork_url": "https://github.com/caddyserver/caddy-docker",
+  "fork_url": "https://hub.docker.com/r/bytebase/bytebase",
   "edition": [
     {
       "dist": "community",
       "version": [
-        "2.7",
-        "latest"
+        "2.13.3"
       ]
     }
   ],
@@ -16,6 +15,6 @@
     "cpu": "1",
     "memory": "1",
     "disk": "1",
-    "url": "https://hub.docker.com/_/caddy"
+    "url": "https://bytebase.com/docs/get-started/self-host/#docker"
   }
 }
