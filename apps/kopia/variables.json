@@ -2,17 +2,20 @@
   "name": "kopia",
   "trademark": "Kopia",
   "release": true,
-  "fork_url": "https://github.com/bitnami/bitnami-docker-kafka",
+  "fork_url": "https://kopia.io/docs/installation/#docker-images",
   "edition": [
     {
       "dist": "community",
-      "version": ["0.13"]
+      "version": [
+        "0.15",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "2",
     "disk": "1",
-    "url": "http://kafka.apache.org/quickstart"
+    "url": "https://kopia.io/docs/installation/#docker-images"
   }
 }

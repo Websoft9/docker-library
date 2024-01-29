@@ -1,0 +1,20 @@
+{
+  "name": "bytebase",
+  "trademark": "Bytebase",
+  "release": true,
+  "fork_url": "https://hub.docker.com/r/bytebase/bytebase",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "2.13.1"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1",
+    "url": "https://bytebase.com/docs/get-started/self-host/#docker"
+  }
+}

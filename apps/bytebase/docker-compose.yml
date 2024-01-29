@@ -1,0 +1,24 @@
+# image: https://hub.docker.com/r/bytebase/bytebase
+# docs: https://bytebase.com/docs/get-started/self-host/#docker
+
+version: '3.8'
+
+services:
+  bytebase:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    env_file:
+      - .env
+    restart: unless-stopped
+    ports:
+      - "$W9_HTTP_PORT_SET:8080"
+    volumes:
+      - data:/var/opt/bytebase
+    
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true
+    
+volumes:
+  data:

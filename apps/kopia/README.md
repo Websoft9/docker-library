@@ -3,12 +3,12 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Kopia:
 
 
- - community:  0.13
+ - community:  0.15, latest
 
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](http://kafka.apache.org/quickstart):
+The following are the minimal [recommended requirements](https://kopia.io/docs/installation/#docker-images):
 
 * **RAM**: 2 GB or more
 * **CPU**: 1 cores or higher

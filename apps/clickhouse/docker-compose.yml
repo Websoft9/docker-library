@@ -10,20 +10,27 @@ services:
     container_name: $W9_ID
     restart: unless-stopped
     ports:
-     - $W9_DB_PORT_SET:8123
+      - $W9_DB_PORT_SET:8123
     volumes:
       - clickhouse-data:/var/lib/clickhouse
       - clickhouse_logs:/var/log/clickhouse-server
-      - ./clickhouse/clickhouse-config.xml:/etc/clickhouse-server/config.d/logging.xml:ro
-      - ./clickhouse/clickhouse-user-config.xml:/etc/clickhouse-server/users.d/logging.xml:ro
+      - ./src/clickhouse-config.xml:/etc/clickhouse-server/config.d/logging.xml:ro
+      - ./src/clickhouse-user-config.xml:/etc/clickhouse-server/users.d/logging.xml:ro
     ulimits:
       nofile:
         soft: 262144
         hard: 262144
+    environment:
+      CLICKHOUSE_USER: $W9_LOGIN_USER
+      CLICKHOUSE_PASSWORD: $W9_LOGIN_PASSWORD
+      CLICKHOUSE_DB: $W9_CLICKHOUSE_DB
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    env_file:
+      - .env
 
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true
 
 volumes:
