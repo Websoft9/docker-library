@@ -21,9 +21,9 @@ services:
         soft: 262144
         hard: 262144
     environment:
-      CLICKHOUSE_USER: admin
+      CLICKHOUSE_USER: $W9_CLICKHOUSE_USER
       CLICKHOUSE_PASSWORD: $W9_POWER_PASSWORD
-      CLICKHOUSE_DB: clickhouse
+      CLICKHOUSE_DB: $W9_CLICKHOUSE_DB
       CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
 
 networks:
