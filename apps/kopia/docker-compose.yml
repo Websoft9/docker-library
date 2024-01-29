@@ -6,7 +6,7 @@ services:
   kopia:
     image: $W9_REPO:$W9_VERSION
     hostname: Hostname
-    container_name: $W9_NAME
+    container_name: $W9_ID
     restart: unless-stopped
     ports:
       - $W9_HTTP_PORT_SET:51515
@@ -16,7 +16,7 @@ services:
       - start
       - --disable-csrf-token-checks
       - --insecure
-      - --address=0.0.0.0:$W9_HTTP_PORT
+      - --address=0.0.0.0:$W9_HTTP_PORT_SET
       - --server-username=$W9_LOGIN_USER
       - --server-password=$W9_LOGIN_PASSWORD
     volumes:
