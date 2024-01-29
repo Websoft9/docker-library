@@ -25,6 +25,8 @@ services:
       CLICKHOUSE_PASSWORD: $W9_LOGIN_PASSWORD
       CLICKHOUSE_DB: $W9_CLICKHOUSE_DB
       CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    env_file:
+      - .env
 
 networks:
   default:
