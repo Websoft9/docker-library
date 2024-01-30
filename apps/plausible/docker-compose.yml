@@ -59,10 +59,6 @@ services:
       - $W9_HTTP_PORT_SET:8000
     env_file:
       - .env
-    # https://plausible.io/docs/self-hosting-configuration
-    environment:
-      - DATABASE_URL=postgres://postgres:$W9_RCODE@$W9_ID-postgresql:5432/plausible_db
-      - CLICKHOUSE_DATABASE_URL=http://$W9_ID-clickhouse:8123/plausible_events_db
 
 networks:
   default:

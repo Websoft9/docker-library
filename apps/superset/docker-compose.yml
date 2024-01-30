@@ -1,5 +1,6 @@
 # image: https://hub.docker.com/r/apache/superset
 # docs: https://github.com/apache/superset
+# compose: 
 
 x-superset-image: &superset-image $W9_REPO:$W9_VERSION
 x-superset-depends-on: &superset-depends-on
@@ -39,7 +40,6 @@ services:
     restart: unless-stopped
     ports:
       - '$W9_HTTP_PORT_SET:8088'
-    privileged: true
     user: root
     depends_on: *superset-depends-on
     volumes: *superset-volumes
