@@ -38,8 +38,7 @@ services:
       - ./src/docker/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
 
   superset:
-    env_file: 
-      - .env
+    env_file: .env
     image: *superset-image
     container_name: $W9_ID
     restart: unless-stopped
@@ -51,6 +50,7 @@ services:
     volumes: *superset-volumes
 
   superset-init:
+    env_file: .env
     image: *superset-image
     container_name: $W9_ID-init
     command: ["/app/docker/docker-init.sh"]
@@ -61,6 +61,7 @@ services:
       disable: true
 
   superset-worker:
+    env_file: .env
     image: *superset-image
     container_name: $W9_ID-worker
     command: ["/app/docker/docker-bootstrap.sh", "worker"]
@@ -76,6 +77,7 @@ services:
         ]
 
   superset-worker-beat:
+    env_file: .env
     image: *superset-image
     container_name: $W9_ID-worker-beat
     command: ["/app/docker/docker-bootstrap.sh", "beat"]
