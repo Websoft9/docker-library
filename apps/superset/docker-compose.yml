@@ -27,7 +27,12 @@ services:
     environment:
       - POSTGRES_DB=$DATABASE_DB
       - POSTGRES_USER=$DATABASE_USER
-      - POSTGRES_PASSWORD=$DATABASE_PASSWORD      
+      - POSTGRES_PASSWORD=$DATABASE_PASSWORD
+      - EXAMPLES_DB=examples
+      - EXAMPLES_HOST=$W9_ID-postgresql
+      - EXAMPLES_USER=examples
+      - EXAMPLES_PASSWORD=$W9_POWER_PASSWORD
+      - EXAMPLES_PORT=5432   
     volumes:
       - postgresql:/var/lib/postgresql/data
       - ./src/docker/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
@@ -56,8 +61,6 @@ services:
       disable: true
 
   superset-worker:
-    env_file: 
-      - .env
     image: *superset-image
     container_name: $W9_ID-worker
     command: ["/app/docker/docker-bootstrap.sh", "worker"]
