@@ -14,7 +14,7 @@ services:
     volumes:
       - clickhouse-data:/var/lib/clickhouse
       - clickhouse_logs:/var/log/clickhouse-server
-      - ckhouse-config:/etc/clickhouse-server/config.d:ro
+      - clickhouse-config:/etc/clickhouse-server/config.d:ro
       - clickhouse-userconfig:/etc/clickhouse-server/users.d:ro
     ulimits:
       nofile:
