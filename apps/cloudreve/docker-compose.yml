@@ -5,29 +5,30 @@ version: "3.8"
 
 services:
   cloudreve:
-    container_name: cloudreve
-    image: cloudreve/cloudreve:latest
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
     restart: unless-stopped
+    env_file: .env
     ports:
-      - "5212:5212"
+      - "$W9_HTTP_PORT_SET:5212"
     volumes:
+      - avatar:/cloudreve/avatar
+      - uploads:/cloudreve/uploads
       - temp_data:/data
-      - ./cloudreve/uploads:/cloudreve/uploads
-      - ./cloudreve/conf.ini:/cloudreve/conf.ini
-      - ./cloudreve/cloudreve.db:/cloudreve/cloudreve.db
-      - ./cloudreve/avatar:/cloudreve/avatar
+      - ./src/conf.ini:/cloudreve/conf.ini
+      - ./src/cloudreve.db:/cloudreve/cloudreve.db
     depends_on:
       - aria2
 
   aria2:
-    container_name: aria2
     image: p3terx/aria2-pro
+    container_name: $W9_ID-aria2
     restart: unless-stopped
     environment:
-      - RPC_SECRET=your_aria_rpc_token
+      - RPC_SECRET=$W9_RPC_SECRET
       - RPC_PORT=6800
     volumes:
-      - ./aria2/config:/config
+      - config:/config
       - temp_data:/data
 
 networks:
@@ -36,10 +37,11 @@ networks:
     external: true
 
 volumes:
+  avatar:
+    driver: local
+  config:
+    driver: local
+  uploads:
+    driver: local
   temp_data:
-    driver:
-      local
-    driver_opts:
-      type: none
-      device: $PWD/data
-      o: bind
+    driver: local
