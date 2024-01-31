@@ -1,12 +1,12 @@
 # image: https://hub.docker.com/r/websoft9dev/ansible
 # compose: https://docs.cloudreve.org/getting-started/install#yun-hang
 
-version: '3.8'
+version: "3.8"
 
 services:
   cloudreve:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    container_name: cloudreve
+    image: cloudreve/cloudreve:latest
     restart: unless-stopped
     ports:
       - "5212:5212"
@@ -18,8 +18,9 @@ services:
       - ./cloudreve/avatar:/cloudreve/avatar
     depends_on:
       - aria2
+
   aria2:
-    container_name: $W9_ID-aria2
+    container_name: aria2
     image: p3terx/aria2-pro
     restart: unless-stopped
     environment:
@@ -36,3 +37,9 @@ networks:
 
 volumes:
   temp_data:
+    driver:
+      local
+    driver_opts:
+      type: none
+      device: $PWD/data
+      o: bind
