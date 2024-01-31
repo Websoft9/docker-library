@@ -1,5 +1,5 @@
-# image: https://hub.docker.com/r/websoft9dev/ansible
-# compose: https://docs.cloudreve.org/getting-started/install#yun-hang
+# image: https://hub.docker.com/r/cloudreve/cloudreve
+# compose: https://docs.cloudreve.org/getting-started/install#docker-compose
 
 version: "3.8"
 
@@ -39,12 +39,8 @@ networks:
 
 volumes:
   avatar:
-    driver: local
-  config:
-    driver: local
   uploads:
-    driver: local
-  aria2_data:
-    driver: local
   temp_data:
-    driver: local
+  config:
+  aria2_data:
+

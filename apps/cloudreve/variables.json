@@ -2,12 +2,13 @@
   "name": "cloudreve",
   "trademark": "Cloudreve",
   "release": true,
-  "fork_url": "",
+  "fork_url": "https://docs.cloudreve.org/getting-started/install#docker-compose",
   "edition": [
     {
       "dist": "community",
       "version": [
-        "2.16.1"
+        "3.8.3",
+        "latest"
       ]
     }
   ],
