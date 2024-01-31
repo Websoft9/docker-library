@@ -28,6 +28,7 @@ from flask_caching.backends.filesystemcache import FileSystemCache
 
 logger = logging.getLogger()
 
+# refer to: https://superset.apache.org/docs/contributing/translations/#enabling-language-selection 
 LANGUAGES = {
     'en': {'flag': 'us', 'name': 'English'},
     'fr': {'flag': 'fr', 'name': 'French'},

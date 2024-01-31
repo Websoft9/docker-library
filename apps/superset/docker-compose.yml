@@ -1,5 +1,6 @@
 # image: https://hub.docker.com/r/apache/superset
 # docs: https://github.com/apache/superset
+# docs: https://superset.apache.org/docs/installation/installing-superset-using-docker-compose/
 # compose: https://github.com/apache/superset/blob/master/docker-compose-non-dev.yml 
 
 x-superset-image: &superset-image $W9_REPO:$W9_VERSION
