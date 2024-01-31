@@ -15,6 +15,7 @@ services:
       - avatar:/cloudreve/avatar
       - uploads:/cloudreve/uploads
       - temp_data:/data
+      - aria2_data:/data/aria2:rw
       - ./src/conf.ini:/cloudreve/conf.ini
       - ./src/cloudreve.db:/cloudreve/cloudreve.db
     depends_on:
@@ -42,6 +43,8 @@ volumes:
   config:
     driver: local
   uploads:
+    driver: local
+  aria2_data:
     driver: local
   temp_data:
     driver: local
