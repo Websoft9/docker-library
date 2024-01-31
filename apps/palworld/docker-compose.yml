@@ -1,0 +1,25 @@
+# imag: https://hub.docker.com/_/postgres
+
+version: '3.8'
+services:
+  postgres:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    ports:
+     - ${W9_DB_PORT_SET}:5432
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    env_file: .env
+    environment:
+      POSTGRES_DB: ${W9_ID}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${W9_POWER_PASSWORD}
+    
+volumes:
+  postgres:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

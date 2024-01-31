@@ -16,8 +16,8 @@ services:
       - clickhouse_logs:/var/log/clickhouse-server
       - clickhouse-config:/etc/clickhouse-server/config.d
       - clickhouse-userconfig:/etc/clickhouse-server/users.d
-      # - ./src/extra_config.xml:/etc/clickhouse-server/config.d/extra_config.xml
-      # - ./src/extra_user.xml:/etc/clickhouse-server/users.d/extra_user.xml
+      - ./src/extra_config.xml:/etc/clickhouse-server/config.d/extra_config.xml
+      - ./src/extra_user.xml:/etc/clickhouse-server/users.d/extra_user.xml
     ulimits:
       nofile:
         soft: 262144

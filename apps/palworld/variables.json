@@ -1,0 +1,26 @@
+{
+  "name": "postgresql",
+  "trademark": "PostgreSQL",
+  "release": true,
+  "fork_url": "https://github.com/docker-library/postgres",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "15",
+        "14",
+        "13",
+        "12",
+        "11",
+        "9.6",
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "2",
+    "disk": "1",
+    "url": "https://github.com/postgresql/docker#recommended-system-requirements"
+  }
+}
