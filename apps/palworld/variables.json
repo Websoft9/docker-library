@@ -1,26 +1,21 @@
 {
-  "name": "postgresql",
-  "trademark": "PostgreSQL",
+  "name": "palworld",
+  "trademark": "Palworld",
   "release": true,
-  "fork_url": "https://github.com/docker-library/postgres",
+  "fork_url": "https://hub.docker.com/r/pasharp/pal_server",
   "edition": [
     {
       "dist": "community",
       "version": [
-        "15",
-        "14",
-        "13",
-        "12",
-        "11",
-        "9.6",
+        "240125",
         "latest"
       ]
     }
   ],
   "requirements": {
-    "cpu": "1",
-    "memory": "2",
-    "disk": "1",
-    "url": "https://github.com/postgresql/docker#recommended-system-requirements"
+    "cpu": "4",
+    "memory": "16",
+    "disk": "20",
+    "url": "https://hub.docker.com/r/pasharp/pal_server"
   }
 }

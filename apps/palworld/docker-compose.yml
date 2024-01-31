@@ -1,25 +1,22 @@
-# imag: https://hub.docker.com/_/postgres
+# imag: https://hub.docker.com/r/pasharp/pal_server
 
 version: '3.8'
 services:
-  postgres:
+  palworld:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
-    restart: unless-stopped
+    restart: always
     ports:
-     - ${W9_DB_PORT_SET}:5432
+     - "${W9_UDP_PORT_SET}:8211/udp"
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - palworld_data:/opt/palworld/Pal/Saved
+    command: /home/game/Steam/steamapps/common/PalServer/PalServer.sh
     env_file: .env
-    environment:
-      POSTGRES_DB: ${W9_ID}
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${W9_POWER_PASSWORD}
-    
-volumes:
-  postgres:
 
 networks:
   default:
     name: ${W9_NETWORK}
     external: true
+
+volumes:
+  palworld_data:
