@@ -6,6 +6,10 @@ Must use **HTTPS** to access this application
 
 ## FAQ
 
+#### URI 连接不上数据库？
+
+URI 对特殊字符有限制，建议使用高级连接配置
+
 #### 如何自定义用户名和密码？
 
 目前只发现密码可以修改
