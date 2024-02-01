@@ -15,9 +15,9 @@ services:
       - sync:/var/syncthing
     ports:
       - ${W9_HTTP_PORT_SET}:8384
-      - 22000:22000/tcp # TCP file transfers
-      - 22000:22000/udp # QUIC file transfers
-      - 21027:21027/udp # Receive local discovery broadcasts
+      # - 22000:22000/tcp # TCP file transfers
+      # - 22000:22000/udp # QUIC file transfers
+      # - 21027:21027/udp # Receive local discovery broadcasts
 
 networks:
  default:
