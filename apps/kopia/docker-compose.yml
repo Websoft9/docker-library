@@ -24,9 +24,9 @@ services:
       - kopia_config:/app/config
       - kopia_cache:/app/cache
       - kopia_logs:/app/logs
-      - kopia_data:/data:ro
-      - kopia_repository:/repository
-      - kopia_tmp:/tmp:shared
+      - $SOURCE_PATH:/data:ro  # source
+      - $BACKUP_PATH:/repository # backup
+      - kopia_tmp:/tmp:shared 
 
 volumes:
   kopia_config:

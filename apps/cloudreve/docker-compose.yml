@@ -25,7 +25,7 @@ services:
     container_name: $W9_ID-aria2
     restart: unless-stopped
     environment:
-      - RPC_SECRET=$W9_RPC_SECRET
+      - RPC_SECRET=$W9_POWER_PASSWORD
       - RPC_PORT=6800
     volumes:
       - config:/config
