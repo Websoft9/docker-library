@@ -1,5 +1,6 @@
 # docs: https://docs.konghq.com/gateway/latest/install/docker/#main
 # image: https://hub.docker.com/_/kong
+# compose: https://github.com/Kong/docker-kong/blob/master/compose/docker-compose.yml
 
 version: '3.8'
 
