@@ -390,5 +390,13 @@
     "W9_LOGIN_GET_Credential": [
         "",
         ""
+    ],
+    "W9_LOGIN_SHOW_PASSWORD": [
+        "",
+        ""
+    ],
+    "W9_UDP_PORT_SET": [
+        "",
+        ""
     ]
 }
