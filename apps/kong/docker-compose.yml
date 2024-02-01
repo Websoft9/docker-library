@@ -4,50 +4,75 @@
 version: '3.8'
 
 services:
-  kong:
-    image: $W9_REPO:${W9_VERSION}
-    container_name: ${W9_ID}
-    restart: unless-stopped
-    env_file: .env
-    ports:
-      - ${W9_HTTP_PORT_SET}:8000  # http api
-      - ${W9_HTTPS_PORT_SET}:8443  # https api
-    # - 8001:8001  # admin http api
-    # - 8444:8444  # admin https api 
-      - ${W9_Kong_Manager_PORT_SET}:8002  # Kong Manager(HTTP)
-    # - 8445:8445  # Kong Dev Portal(HTTPS)
-    # - 8003:8003  # 
-    # - 8004:8004  #       
-    links:
-      - postgres
-    depends_on:
-      - kong-migrations
-
   kong-migrations:
     image: $W9_REPO:${W9_VERSION}
     container_name: ${W9_ID}-migrations
-    environment:
-      - KONG_DATABASE=postgres
-      - KONG_PG_HOST=${W9_ID}-postgresql
-      - KONG_PG_PASSWORD=${W9_POWER_PASSWORD}
     command: kong migrations bootstrap
-    restart: on-failure
     depends_on:
-      - postgres
+      - db
+    env_file: .env
+    restart: on-failure
 
-  postgres:
+  kong-migrations-up:
+    image: $W9_REPO:${W9_VERSION}
+    container_name: ${W9_ID}-migrations-up
+    command: kong migrations up && kong migrations finish
+    depends_on:
+      - db
+    env_file: .env
+    restart: on-failure
+
+  kong:
+    image: $W9_REPO:${W9_VERSION}
+    container_name: ${W9_ID}
+    user: "${KONG_USER:-kong}"
+    env_file: .env
+    ports:
+      - ${W9_HTTP_PORT_SET}:8000
+      - ${W9_KONG_ADMIN_LISTEN_PORT_SET}:8001
+      - ${W9_KONG_MANAGER_LISTEN_PORT_SET}:8002
+    healthcheck:
+      test: [ "CMD", "kong", "health" ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    restart: on-failure:5
+    read_only: true
+    volumes:
+      - kong_prefix_vol:${KONG_PREFIX}
+      - kong_tmp_vol:/tmp
+      - ./src/config:/opt/kong
+    security_opt:
+      - no-new-privileges
+
+  db:
     image: postgres:$W9_DB_VERSION
-    restart: unless-stopped
     container_name: ${W9_ID}-postgresql
     environment:
-      - POSTGRES_USER=kong
-      - POSTGRES_DB=kong
-      - POSTGRES_PASSWORD=${W9_POWER_PASSWORD}
+      POSTGRES_DB: ${KONG_PG_DATABASE}
+      POSTGRES_USER: ${KONG_PG_USER}
+      POSTGRES_PASSWORD: ${W9_POWER_PASSWORD}
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "${KONG_PG_DATABASE}", "-U", "${KONG_PG_USER}"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    restart: on-failure
+    stdin_open: true
+    tty: true
     volumes:
       - "postgres:/var/lib/postgresql/data"
 
 volumes:
-  postgres:
+  postgres: 
+  kong_prefix_vol:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+  kong_tmp_vol:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
 
 networks:
   default:
