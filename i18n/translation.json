@@ -398,5 +398,13 @@
     "W9_UDP_PORT_SET": [
         "",
         ""
+    ],
+    "W9_KONG_ADMIN_LISTEN_PORT_SET": [
+        "",
+        ""
+    ],
+    "W9_KONG_MANAGER_LISTEN_PORT_SET": [
+        "",
+        ""
     ]
 }
