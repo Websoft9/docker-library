@@ -406,5 +406,13 @@
     "W9_KONG_MANAGER_LISTEN_PORT_SET": [
         "",
         ""
+    ],
+    "W9_ADMIN_API_PORT_SET": [
+        "",
+        ""
+    ],
+    "W9_ADMIN_GUI_PORT_SET": [
+        "",
+        ""
     ]
 }
