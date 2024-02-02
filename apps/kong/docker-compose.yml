@@ -29,9 +29,9 @@ services:
     user: "${KONG_USER:-kong}"
     env_file: .env
     ports:
-      - ${W9_HTTP_PORT_SET}:8000
-      - ${W9_KONG_ADMIN_LISTEN_PORT_SET}:8001
-      - ${W9_KONG_MANAGER_LISTEN_PORT_SET}:8002
+      - ${W9_HTTP_PORT_SET}:8000 # apis
+      #- ${W9_ADMIN_API_PORT_SET}:8001 # admin api
+      - ${W9_ADMIN_GUI_PORT_SET}:8002 # admin gui
     healthcheck:
       test: [ "CMD", "kong", "health" ]
       interval: 10s
