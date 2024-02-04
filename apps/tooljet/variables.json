@@ -1,7 +1,7 @@
 {
   "name": "tooljet",
   "trademark": "TooleJet",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/ToolJet/ToolJet",
   "edition": [
     {
