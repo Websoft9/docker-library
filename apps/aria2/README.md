@@ -1,14 +1,14 @@
-# Ansible on Docker  
+# Aria2 on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Ansible:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Aria2:
 
 
- - community:  2.16.1
+ - community:  latest
 
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://docs.ansible.com/ansible/latest/installation_guide):
+The following are the minimal [recommended requirements](https://github.com/P3TERX/Aria2-Pro-Docker/blob/master/docker-compose.yml):
 
 * **RAM**: 1 GB or more
 * **CPU**: 1 cores or higher
@@ -17,10 +17,10 @@ The following are the minimal [recommended requirements](https://docs.ansible.co
 
 ## Install
 
-You can install this Ansible by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this Aria2 by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use Ansible with **Websoft9 Business Support** free, you can [subscribe Ansible](https://www.websoft9.com/apps) on Cloud platform
+If you want use Aria2 with **Websoft9 Business Support** free, you can [subscribe Aria2](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[Ansible Administrator Guide](https://support.websoft9.com/docs/ansible) powered by Websoft9
+[Aria2 Administrator Guide](https://support.websoft9.com/docs/aria2) powered by Websoft9
