@@ -25,6 +25,7 @@ services:
     container_name: ${W9_ID}-postgresql
     image: postgres:13
     restart: unless-stopped
+    env_file: .env
     volumes:
       - postgres:/var/lib/postgresql/data
     environment:
