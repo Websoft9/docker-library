@@ -12,7 +12,7 @@ services:
     restart: unless-stopped
     env_file: .env
     volumes:
-      - $SYNC_PATH/$APP_ID/syncthing:/var/syncthing
+      - $SYNC_PATH/$W9_ID/syncthing:/var/syncthing
     ports:
       - ${W9_HTTP_PORT_SET}:8384
       # - 22000:22000/tcp # TCP file transfers
