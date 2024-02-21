@@ -7,10 +7,11 @@ services:
   bytebase:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
-    #command: ["--backup-bucket", "your-bucket-name"]
     env_file:
       - .env
     restart: unless-stopped
+    command:
+      - "--data=/var/opt/bytebase"
     ports:
       - "$W9_HTTP_PORT_SET:8080"
     volumes:
