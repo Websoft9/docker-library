@@ -1,0 +1,21 @@
+{
+  "name": "zookeeper",
+  "trademark": "Zookeeper",
+  "release": true,
+  "fork_url": "https://zookeeper.apache.org/doc/r3.9.1/index.html",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "3.9.1",
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1",
+    "url": "https://zookeeper.apache.org/doc/r3.9.1/index.html"
+  }
+}

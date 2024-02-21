@@ -1,0 +1,26 @@
+# image: https://hub.docker.com/_/zookeeper
+# docs: https://zookeeper.apache.org/doc/r3.9.1/index.html
+
+version: '3.8'
+
+services:
+  zookeeper:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    ports:
+      - "$W9_CLIENT_PORT_SET:2181"
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_PORT: 2181
+    volumes:
+      - zookeeper_data:/data
+      - zookeeper_datalog:/datalog
+
+volumes:
+  zookeeper_data:
+  zookeeper_datalog:
+      
+networks:
+  default:
+    name: $W9_NETWORK
+    external: true
