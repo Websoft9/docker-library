@@ -35,11 +35,12 @@ services:
     container_name: ${W9_ID}-postgrest
     image: postgrest/postgrest:v10.1.1.20221215
     restart: unless-stopped
-    env_file: .env
     depends_on:
       - postgres
     environment:
       - PGRST_SERVER_PORT=80
+      - PGRST_DB_URI=postgres://postgres:$W9_RCODE@$W9_ID-postgresql/tooljet_db
+      - PGRST_JWT_SECRET=52bbe1c671a9c62d89e594dfd91597988542c27afaefa84a73$W9_RCODE
 
   redis:
     container_name: ${W9_ID}-redis
