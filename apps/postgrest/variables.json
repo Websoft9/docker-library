@@ -1,0 +1,21 @@
+{
+  "name": "postgrest",
+  "trademark": "PostgREST",
+  "release": true,
+  "fork_url": "https://postgrest.org/en/v12/",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "v12.0.2",
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "2",
+    "disk": "1",
+    "url": "https://postgrest.org/en/v12/"
+  }
+}
