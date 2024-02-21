@@ -1,0 +1,20 @@
+{
+  "name": "screego",
+  "trademark": "screego",
+  "release": true,
+  "fork_url": "https://screego.net/",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "1"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "2",
+    "disk": "1",
+    "url": "https://screego.net/"
+  }
+}

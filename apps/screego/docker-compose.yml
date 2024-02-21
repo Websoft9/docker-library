@@ -1,0 +1,20 @@
+# image: https://hub.docker.com/r/screego/server
+# docs and compose: https://screego.net/#/install?id=docker
+
+version: "3.8"
+
+services:
+  screego:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - $W9_HTTP_PORT_SET:5050
+      - $W9_TURN_PORT_SET:3478
+      - $W9_TURN_PORT_RANGE_SET:$SCREEGO_TURN_PORT_RANGE/udp
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true
