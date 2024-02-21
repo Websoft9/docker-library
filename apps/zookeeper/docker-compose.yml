@@ -16,6 +16,14 @@ services:
       - zookeeper_data:/data
       - zookeeper_datalog:/datalog
 
+  zoonavigator:
+    image: elkozmon/zoonavigator:latest
+    container_name: $W9_ID-gui
+    ports:
+      - "$W9_HTTP_PORT_SET:9000"
+    environment:
+      HTTP_PORT: 9000
+      
 volumes:
   zookeeper_data:
   zookeeper_datalog:
