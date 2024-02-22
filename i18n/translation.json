@@ -426,5 +426,9 @@
     "W9_TURN_PORT_RANGE_SET": [
         "",
         ""
+    ],
+    "W9_POSTGRESQL_URI_SET": [
+        "",
+        ""
     ]
 }
