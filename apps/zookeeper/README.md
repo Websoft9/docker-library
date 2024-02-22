@@ -1,14 +1,14 @@
-# ZenTao on Docker  
+# Zookeeper on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for ZenTao:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Zookeeper:
 
 
- - community:  18.8, latest
+ - community:  3.9.1, latest
 
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://hub.docker.com/r/easysoft/zentao):
+The following are the minimal [recommended requirements](https://zookeeper.apache.org/doc/r3.9.1/index.html):
 
 * **RAM**: 1 GB or more
 * **CPU**: 1 cores or higher
@@ -17,10 +17,10 @@ The following are the minimal [recommended requirements](https://hub.docker.com/
 
 ## Install
 
-You can install this ZenTao by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this Zookeeper by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use ZenTao with **Websoft9 Business Support** free, you can [subscribe ZenTao](https://www.websoft9.com/apps) on Cloud platform
+If you want use Zookeeper with **Websoft9 Business Support** free, you can [subscribe Zookeeper](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[ZenTao Administrator Guide](https://support.websoft9.com/docs/zentao) powered by Websoft9
+[Zookeeper Administrator Guide](https://support.websoft9.com/docs/zookeeper) powered by Websoft9

@@ -1,14 +1,14 @@
-# PostgreSQL on Docker  
+# PostgREST on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for PostgreSQL:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for PostgREST:
 
 
- - community:  15, 14, 13, 12, 11, 9.6, latest
+ - community:  v12.0.2, latest
 
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://github.com/postgresql/docker#recommended-system-requirements):
+The following are the minimal [recommended requirements](https://postgrest.org/en/v12/):
 
 * **RAM**: 2 GB or more
 * **CPU**: 1 cores or higher
@@ -17,10 +17,10 @@ The following are the minimal [recommended requirements](https://github.com/post
 
 ## Install
 
-You can install this PostgreSQL by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this PostgREST by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use PostgreSQL with **Websoft9 Business Support** free, you can [subscribe PostgreSQL](https://www.websoft9.com/apps) on Cloud platform
+If you want use PostgREST with **Websoft9 Business Support** free, you can [subscribe PostgREST](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[PostgreSQL Administrator Guide](https://support.websoft9.com/docs/postgresql) powered by Websoft9
+[PostgREST Administrator Guide](https://support.websoft9.com/docs/postgrest) powered by Websoft9
