@@ -430,5 +430,9 @@
     "W9_POSTGRESQL_URI_SET": [
         "",
         ""
+    ],
+    "W9_LOGIN_RPC_PASSWORD": [
+        "",
+        ""
     ]
 }
