@@ -7,4 +7,4 @@
 - RPC 授权令牌  ：Websoft9后台 -> 我的应用 -> 访问 -> 初始账号 -> W9_LOGIN_RPC_PASSWORD  
 - 临时下载目录  ：/data  
   
-临时下载目录/data/aria2必须赋予777权限  
+下载目录必须赋予777权限  
