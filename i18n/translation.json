@@ -434,5 +434,13 @@
     "W9_LOGIN_RPC_PASSWORD": [
         "",
         ""
+    ],
+    "W9_LOGIN_RPC_HOST": [
+        "",
+        ""
+    ],
+    "W9_LOGIN_RPC_DownloadPath": [
+        "",
+        ""
     ]
 }
