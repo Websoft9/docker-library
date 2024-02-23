@@ -1,5 +1,6 @@
 # image: https://hub.docker.com/r/cloudreve/cloudreve
 # compose: https://docs.cloudreve.org/getting-started/install#docker-compose
+# cloudreve just only connect aria2 at the Console by user
 
 version: "3.8"
 
@@ -14,7 +15,7 @@ services:
     volumes:
       - avatar:/cloudreve/avatar
       - uploads:/cloudreve/uploads
-      - temp_data:/data
+      - download:/data #download by aria2
       - ./src/conf.ini:/cloudreve/conf.ini
       - ./src/cloudreve.db:/cloudreve/cloudreve.db
     depends_on:
@@ -29,7 +30,12 @@ services:
       - RPC_PORT=6800
     volumes:
       - config:/config
-      - temp_data:/data
+      - download:/data
+    # Since Aria2 will continue to generate logs, limit the log size to 1M to prevent your hard disk from running out of space.
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
 
 networks:
   default:
@@ -39,6 +45,6 @@ networks:
 volumes:
   avatar:
   uploads:
-  temp_data:
+  download:
   config:
 

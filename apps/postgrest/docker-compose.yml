@@ -6,11 +6,9 @@ version: '3.8'
 services:
   postgrest:
     container_name: ${W9_ID}
+    env_file: .env
     image: ${W9_REPO}:${W9_VERSION}
     restart: unless-stopped
-    environment:
-      - PGRST_DB_URI=$W9_POSTGRESQL_URI_SET
-      - PGRST_JWT_SECRET=52bbe1c671a9c62d89e594dfd91597988542c27afaefa84a73$W9_RCODE
     ports:
       - ${W9_HTTP_PORT_SET}:3000
 

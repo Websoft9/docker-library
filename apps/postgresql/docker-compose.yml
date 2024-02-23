@@ -1,4 +1,5 @@
 # imag: https://hub.docker.com/_/postgres
+# database-backup-service only for your references
 
 version: '3.8'
 services:
@@ -15,9 +16,34 @@ services:
       POSTGRES_DB: ${W9_ID}
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${W9_POWER_PASSWORD}
+
+
+  database-backup-service:
+    image: postgres:alpine
+    container_name: ${W9_ID}-backup
+    volumes:
+      - backup:/backup
+    depends_on:
+      - postgres
+    profiles:
+      - backup
+    command: >
+      sh -c 'if [ "$DATABASE_BACKUP" = "true" ]; then
+        until PGPASSWORD=$W9_POWER_PASSWORD pg_isready -h ${W9_ID} -p 5432; do
+          echo "Waiting for PostgreSQL to become available..." && sleep 1;
+        done;
+        PGPASSWORD=$W9_POWER_PASSWORD pg_dump --host=${W9_ID} --port=5432 --username=postgres --dbname=$W9_ID -f "/backup/dump_$(date +'%Y%m%d%H%M%S').sql" &&
+        find /backup -type f -mtime +30 -delete &&
+        echo "Dump taken successfully." &&
+        exit 0;
+      else
+        echo "Skipping backup." &&
+        exit 1;
+      fi' 
     
 volumes:
   postgres:
+  backup:
 
 networks:
   default:
