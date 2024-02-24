@@ -11,8 +11,8 @@ services:
     env_file: .env
     ports:
       - $W9_HTTP_PORT_SET:5050
-      - $W9_TURN_PORT_SET:3478
-      - $W9_TURN_PORT_RANGE_SET:$SCREEGO_TURN_PORT_RANGE/udp
+      #- $W9_TURN_PORT_SET:3478
+      #- $W9_TURN_PORT_RANGE_SET:$SCREEGO_TURN_PORT_RANGE/udp
 
 networks:
   default:
