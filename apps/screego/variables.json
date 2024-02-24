@@ -1,7 +1,7 @@
 {
   "name": "screego",
   "trademark": "screego",
-  "release": false,
+  "release": true,
   "fork_url": "https://screego.net/",
   "edition": [
     {
