@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Elasticsearch:
 
 
- - community:  8.11.3, 7.17.16
+ - community:  8.12.2, 7.17.18
 
 
 ## System Requirements
