@@ -1,0 +1,18 @@
+{
+  "name": "kibana",
+  "trademark": "Kibana",
+  "release": true,
+  "fork_url": "https://hub.docker.com/_/kibana",
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["8.12.2","7.17.18"]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "5",
+    "url": "https://hub.docker.com/_/kibana"
+  }
+}

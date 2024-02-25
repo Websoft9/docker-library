@@ -5,3 +5,9 @@
 monitoring.ui.container.elasticsearch.enabled: true
 
 ## X-Pack security credentials
+
+## ES Connect
+#elasticsearch.ssl.verificationMode: none
+#elasticsearch.hosts: ["http://elasticsearch_vs26o:9200"]
+#elasticsearch.username: "kibana_system"
+#elasticsearch.password: "aEk@4FUq2Us@ZgLB"
