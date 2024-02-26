@@ -1,14 +1,14 @@
-# elastic Stack on Docker  
+# logstash on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for elastic Stack:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for logstash:
 
 
- - community:  8.11.3, 7.17.16
+ - community:  8.12.2
 
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://github.com/deviantony/docker-elk#requirements):
+The following are the minimal [recommended requirements](https://www.elastic.co/guide/en/logstash/current/docker-config.html):
 
 * **RAM**: 4 GB or more
 * **CPU**: 2 cores or higher
@@ -17,10 +17,10 @@ The following are the minimal [recommended requirements](https://github.com/devi
 
 ## Install
 
-You can install this elastic Stack by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this logstash by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use elastic Stack with **Websoft9 Business Support** free, you can [subscribe elastic Stack](https://www.websoft9.com/apps) on Cloud platform
+If you want use logstash with **Websoft9 Business Support** free, you can [subscribe logstash](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[elastic Stack Administrator Guide](https://support.websoft9.com/docs/elastic) powered by Websoft9
+[logstash Administrator Guide](https://support.websoft9.com/docs/logstash) powered by Websoft9
