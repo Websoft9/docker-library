@@ -1,8 +1,4 @@
 ## Collabora
 
-docs: https://sdk.collaboraonline.com/docs/installation/CODE_Docker_image.html
-
-此应用还没有调试成功，报错
-```
-In docker log sh: 1: /usr/bin/loolmount: Operation not permitted
-```
+- 支持域名和端口访问
+- WOPI 白名单机制通过环境变量 domain 实现

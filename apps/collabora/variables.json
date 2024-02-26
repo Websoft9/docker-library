@@ -1,7 +1,7 @@
 {
   "name": "collabora",
   "trademark": "Collabora",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/CollaboraOnline/online",
   "edition": [
     {
