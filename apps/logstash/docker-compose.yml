@@ -7,76 +7,20 @@ version: '3.8'
 
 services:
 
-  kibana:
-    image: kibana:${W9_VERSION}
+  logstash:
+    image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     restart: unless-stopped
     volumes:
-      - ./src/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
-    environment:
-      ELASTICSEARCH_HOSTS: '["http://$W9_ID-elasticsearch:9200"]'
-      ELASTICSEARCH_SERVICEACCOUNTTOKEN: AAEAAWVsYXN0aWMva2liYW5hL3Rlc3Q6bU5CMTVuNEZTdG1BaHBvSWFjVXlHZw
-      SERVER_HOST: "0.0.0.0"
-      SERVER_NAME: "kibana"
+      - ./src/pipeline:/usr/share/logstash/pipeline
     ports:
-      - ${W9_HTTP_PORT_SET}:5601
+      - ${W9_HTTP_PORT_SET}:9600 # for API
+      #- 5000:5000  # for TCP/UDP
+      #- 5044:5044 # for beate
     env_file: .env
-    depends_on:
-      - elasticsearch
-
-  elasticsearch:
-    image: ${W9_REPO}:${W9_VERSION}
-    container_name: ${W9_ID}-elasticsearch
-    restart: unless-stopped
-    volumes:
-      - ./src/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-      - ./src/elasticsearch/config/service_tokens:/usr/share/elasticsearch/config/service_tokens
-      - elasticsearch:/usr/share/elasticsearch/data
-    ports:
-      - ${W9_DB_ES_HTTP_PORT_SET}:9200
-      - ${W9_DB_ES_TCP_PORT_SET}:9300
-    env_file: .env
-    environment:
-      ELASTIC_USERNAME: ${W9_LOGIN_USER}
-      ELASTIC_PASSWORD: ${W9_LOGIN_PASSWORD}
-
-  logstash:
-    image: logstash:${W9_VERSION}
-    container_name: ${W9_ID}-logstash
-    restart: unless-stopped
-    volumes:
-      - ./src/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
-      - ./src/logstash/pipeline:/usr/share/logstash/pipeline
-    ports:
-      - ${W9_LOGSTASH_API_PORT_SET}:9600
-      - ${W9_LOGSTASH_TCP_PORT_SET}:5000/tcp
-      - ${W9_LOGSTASH_UDP_PORT_SET}:5000/udp
-      - ${W9_LOGSTASH_BEATS_PORT_SET}:5044
-    environment:
-      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
-    user: root
-    env_file: .env
-    depends_on:
-      - elasticsearch
-
-  agent:
-    image: elastic/elastic-agent-complete:${W9_VERSION}
-    container_name: ${W9_ID}-agent
-    restart: unless-stopped
-    env_file:
-      - .env
-    environment:
-      - FLEET_SERVER_ELASTICSEARCH_HOST=http://${W9_ID}-elasticsearch
-      - FLEET_SERVER_SERVICE_TOKEN=AAEAAWVsYXN0aWMva2liYW5hL3Rlc3Q6bU5CMTVuNEZTdG1BaHBvSWFjVXlHZw
-    user: root
-    depends_on:
-      - elasticsearch
 
 volumes:
   logstash:
-  kibana:
-  elasticsearch:
-  agent:
 
 networks:
   default:
