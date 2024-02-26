@@ -1,4 +1,5 @@
-# image,docs: https://hub.docker.com/_/wordpress/
+# image https://www.docker.elastic.co/r/kibana
+# docs: https://www.elastic.co/guide/en/kibana/current/docker.html
 
 version: '3.8'
 
@@ -8,8 +9,6 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     restart: unless-stopped
-    volumes:
-      - ./src/kibana.yml:/usr/share/kibana/config/kibana.yml
     ports:
       - ${W9_HTTP_PORT_SET}:5601
     env_file: .env

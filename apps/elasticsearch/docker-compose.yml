@@ -1,4 +1,4 @@
-# compose: https://github.com/elastic/elasticsearch/blob/main/distribution/docker/docker-compose.yml
+# compose: https://github.com/elastic/elasticsearch/blob/8.12/docs/reference/setup/install/docker/docker-compose.yml
 # image: https://hub.docker.com/_/elasticsearch
 # docs: https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-docker.html
 
@@ -10,6 +10,7 @@ services:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
+    cpu_percent: 80
     ulimits:
       nofile:
         soft: 65536
@@ -18,16 +19,22 @@ services:
         soft: 4096
         hard: 4096
     healthcheck:
-      start_period: 15s
-      test: ["CMD", "curl", "-f", "-u", "elastic:${ELASTIC_PASSWORD}", "-k", "http://localhost:9200"]
-      interval: 10s
-      timeout: 2s
+      test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
       retries: 5
+      start_period: 40s
     volumes:
       - elasticsearch:/usr/share/elasticsearch/data
     ports:
-      - ${W9_HTTP_PORT_SET}:9200
+      - ${W9_HTTP_PORT_SET}:9200 # api
+      #- 9300:9300  # cluster
     env_file: .env
+
+  busybox:
+    image: busybox
+    command: /bin/sh -c "sysctl -w vm.max_map_count=262144"
+    privileged: true
 
 volumes:
   elasticsearch:

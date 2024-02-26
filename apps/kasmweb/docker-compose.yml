@@ -10,6 +10,7 @@ services:
     container_name: $W9_ID
     restart: unless-stopped
     shm_size: '512m'
+    cpu_percent: 80
     env_file:
       - .env
     ports:
