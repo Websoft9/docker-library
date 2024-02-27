@@ -1,6 +1,6 @@
 {
   "name": "kong",
-  "trademark": "Kong",
+  "trademark": "Kong Gateway (OSS)",
   "release": true,
   "fork_url": "https://github.com/Kuari/kong-konga-docker-compose.git",
   "edition": [
