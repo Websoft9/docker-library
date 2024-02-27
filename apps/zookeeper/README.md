@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Zookeeper:
 
 
- - community:  3.9.1, latest
+ - community:  3.9, 3.8, 3.7, 3.6, latest
 
 
 ## System Requirements
