@@ -7,23 +7,16 @@ services:
   zookeeper:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
+    env_file: .env
     ports:
-      - "$W9_CLIENT_PORT_SET:2181"
-    environment:
-      ZOO_MY_ID: 1
-      ZOO_PORT: 2181
+      - $W9_HTTP_PORT_SET:8080 #AdminServer port
+      - "$W9_CLIENT_PORT_SET:2181"  #client port
+      #- 2888:2888 #follower port
+      #- 3888:3888 #election port
     volumes:
       - zookeeper_data:/data
       - zookeeper_datalog:/datalog
 
-  zoonavigator:
-    image: elkozmon/zoonavigator:latest
-    container_name: $W9_ID-gui
-    ports:
-      - "$W9_HTTP_PORT_SET:9000"
-    environment:
-      HTTP_PORT: 9000
-      
 volumes:
   zookeeper_data:
   zookeeper_datalog:
