@@ -9,6 +9,7 @@ services:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
+    user: root
     env_file: .env
     ports:
       - "$W9_HTTP_PORT_SET:5212"
@@ -25,6 +26,7 @@ services:
     image: p3terx/aria2-pro
     container_name: $W9_ID-aria2
     restart: unless-stopped
+    user: root
     environment:
       - RPC_SECRET=$W9_POWER_PASSWORD
       - RPC_PORT=6800
