@@ -1,6 +1,6 @@
 # refer repository: https://github.com/deviantony/docker-elk
-# image: https://hub.docker.com/_/elasticsearch
-# docs: https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-docker.html
+# image: https://hub.docker.com/_/logstash
+# docs: https://www.elastic.co/guide/en/logstash/current/docker.html#docker
 # docs: https://www.elastic.co/guide/en/logstash/current/docker-config.html
 
 version: '3.8'
