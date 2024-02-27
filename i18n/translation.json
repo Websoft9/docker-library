@@ -466,5 +466,9 @@
     "W9_DHT_PORT_SET": [
         "",
         ""
+    ],
+    "W9_LOGIN_RPC_SECRET_PASSWORD": [
+        "",
+        ""
     ]
 }
