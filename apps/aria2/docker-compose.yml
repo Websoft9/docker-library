@@ -7,7 +7,7 @@ version: "3.8"
 
 services:
 
-  Aria2-Pro:
+  aria2:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID-backend
     restart: unless-stopped
@@ -38,7 +38,7 @@ services:
       options:
         max-size: 1m
 
-  AriaNg:
+  ariang:
     image: p3terx/ariang
     container_name: $W9_ID
     command: --port 6880 --ipv6
