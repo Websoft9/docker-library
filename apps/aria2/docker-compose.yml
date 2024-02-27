@@ -29,8 +29,9 @@ services:
       - downloads:/downloads
     ports:
       - $W9_RPC_PORT_SET:6800
-      # - $W9_DHT_PORT_SET:6888
-      # - $W9_DHT_PORT_SET:6888/udp
+      # BT download port
+      - $W9_DHT_PORT_SET:6888
+      - $W9_DHT_PORT_SET:6888/udp
     # Since Aria2 will continue to generate logs, limit the log size to 1M to prevent your hard disk from running out of space.
     logging:
       driver: json-file

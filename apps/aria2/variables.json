@@ -1,7 +1,7 @@
 {
   "name": "aria2",
   "trademark": "Aria2",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/aria2/aria2",
   "edition": [
     {
