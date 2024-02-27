@@ -9,7 +9,6 @@ services:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
-    user: root
     env_file: .env
     ports:
       - "$W9_HTTP_PORT_SET:5212"
