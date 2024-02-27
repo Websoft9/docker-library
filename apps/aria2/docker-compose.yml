@@ -9,7 +9,7 @@ services:
 
   Aria2-Pro:
     image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    container_name: $W9_ID-backend
     restart: unless-stopped
     # Variables used in configuration file are not expanded, refer to: https://aria2.github.io/manual/en/html/aria2c.html#aria2-conf
     environment:
@@ -40,7 +40,7 @@ services:
 
   AriaNg:
     image: p3terx/ariang
-    container_name: $W9_ID-ariang
+    container_name: $W9_ID
     command: --port 6880 --ipv6
     ports:
       - $W9_HTTP_PORT_SET:6880
