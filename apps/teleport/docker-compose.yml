@@ -9,12 +9,11 @@ services:
   teleport:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
-    entrypoint: /bin/sh
     hostname: localhost
     ports:
-      - ${W9_SSH_PORT_SET}:3023
-      - ${W9_AUTH_PORT_SET}:3025
-      - ${W9_HTTPS_PORT_SET}:3080
+      - ${W9_HTTPS_PORT_SET}:3080 # HTTPS for API
+      #- 3025:3025 # SSH port
+      #- 3023:3023 # Node Tunneling
     volumes:
       - ./src/config:/etc/teleport
       - teleport_data:/var/lib/teleport
