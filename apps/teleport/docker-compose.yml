@@ -6,22 +6,11 @@
 version: '3.8'
 
 services:
-  teleport-configure:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID-configure
-    entrypoint: /bin/sh
-    hostname: localhost
-    command: -c "if [ ! -f /etc/teleport/teleport.yaml ]; then teleport configure > /etc/teleport/teleport.yaml; fi"
-    volumes:
-      - ./src/config:/etc/teleport
-    env_file: .env
-
   teleport:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     entrypoint: /bin/sh
     hostname: localhost
-    command: -c "sleep 1 && /usr/bin/dumb-init teleport start -c /etc/teleport/teleport.yaml"
     ports:
       - ${W9_SSH_PORT_SET}:3023
       - ${W9_AUTH_PORT_SET}:3025
@@ -29,8 +18,6 @@ services:
     volumes:
       - ./src/config:/etc/teleport
       - teleport_data:/var/lib/teleport
-    depends_on:
-      - teleport-configure
     env_file: .env
 
 networks:
