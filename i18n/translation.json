@@ -470,5 +470,9 @@
     "W9_LOGIN_RPC_SECRET_PASSWORD": [
         "",
         ""
+    ],
+    "W9_LOGIN_GET_USER": [
+        "",
+        ""
     ]
 }
