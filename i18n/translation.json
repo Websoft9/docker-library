@@ -474,5 +474,17 @@
     "W9_LOGIN_GET_USER": [
         "",
         ""
+    ],
+    "W9_LOGIN_aria2_RPC_URL": [
+        "",
+        ""
+    ],
+    "W9_LOGIN_aria2_RPC_PORT": [
+        "",
+        ""
+    ],
+    "W9_LOGIN_aria2_RPC_SECRET_PASSWORD": [
+        "",
+        ""
     ]
 }
