@@ -1,5 +1,6 @@
 # Aria2 
 
-## Set RPC secret  
-
-AriaNg 设置 -> RPC ( {domain or ip} ) -> Aria2 RPC 密钥  
+- RPC URL support IP and domain
+- HTTP(S) and Websocket can use
+- WebUI connect Aria2 need URL:port, not support container_name
+- BT not necessary
