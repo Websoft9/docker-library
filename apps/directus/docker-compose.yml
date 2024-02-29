@@ -1,6 +1,7 @@
 # image: https://hub.docker.com/r/directus/directus
 # docs: https://docs.directus.io/self-hosted/docker-guide.html
-# compose: https://docs.directus.io/self-hosted/quickstart.html#create-a-docker-compose-file
+# compose: https://docs.directus.io/self-hosted/docker-guide.html#example-docker-compose
+           
 
 version: '3.8'
 
