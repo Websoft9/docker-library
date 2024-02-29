@@ -16,6 +16,9 @@ services:
       - directus_extensions:/directus/extensions
       - directus_sqlite:/directus/database
     restart: unless-stopped
+    depends_on:
+      - cache
+      - postgresql
 
   postgresql:
     image: postgres:$W9_DB_POSTGRE_VERSION
@@ -27,6 +30,11 @@ services:
       POSTGRES_DB: $W9_ID
       POSTGRES_USER: $W9_ID
       POSTGRES_PASSWORD: $W9_POWER_PASSWORD
+
+  cache:
+    image: redis:6
+    container_name: $W9_ID-redis
+    restart: unless-stopped
 
 networks:
   default:
