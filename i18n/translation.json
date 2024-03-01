@@ -486,5 +486,9 @@
     "W9_LOGIN_aria2_RPC_SECRET_PASSWORD": [
         "",
         ""
+    ],
+    "W9_KAFKA_BROKERS_SET": [
+        "",
+        ""
     ]
 }
