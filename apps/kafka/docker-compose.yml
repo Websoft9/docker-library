@@ -5,7 +5,7 @@ version: "3.8"
 services:
   kafka:
     image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID-kafka
+    container_name: $W9_ID
     restart: unless-stopped
     ports:
       - "$W9_DB_PORT_SET:9092"
