@@ -13,11 +13,8 @@ services:
     ports:
       - "$W9_HTTP_PORT_SET:5212"
     volumes:
-      - avatar:/cloudreve/avatar
-      - uploads:/cloudreve/uploads
-      - download:/data #download by aria2
-      - ./src/conf.ini:/cloudreve/conf.ini
-      - ./src/cloudreve.db:/cloudreve/cloudreve.db
+      - download:/downloads #download by aria2
+      - cloudreve:/cloudreve
     depends_on:
       - aria2
 
@@ -47,4 +44,4 @@ volumes:
   uploads:
   download:
   config:
-
+  cloudreve:
