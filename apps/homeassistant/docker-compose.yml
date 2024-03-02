@@ -13,9 +13,12 @@ services:
     volumes:
       - hs_config:/config
       - /etc/localtime:/etc/localtime:ro
+      #- /run/dbus:/run/dbus:ro # For bluetooth integration
     restart: unless-stopped
+    # Not need for cloud server
+    #privileged: true
     env_file: .env
-
+  
 networks:
   default:
     name: ${W9_NETWORK}
