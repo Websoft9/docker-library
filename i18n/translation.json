@@ -152,88 +152,60 @@
         "Zero 应用 HTTP 端口"
     ],
     "W9_Alpha_gRPC_PORT_SET": [
-        "",
-        ""
+        "Alpha gRPC PORT",
+        "Alpha gRPC 端口"
     ],
     "W9_Zero_gRPC_PORT_SET": [
-        "",
-        ""
+        "Zero gRPC PORT",
+        "Zero gRPC 端口"
     ],
     "W9_LOGIN_ServerURL": [
-        "",
-        ""
+        "LOGIN ServerURL",
+        "登陆服务端地址"
     ],
     "W9_LOGIN_Auth_Token": [
-        "",
-        ""
-    ],
-    "W9_LOGSTASH_TCPUDP_PORT_SET": [
-        "",
-        ""
+        "LOGIN Auth Token",
+        "登陆认证令牌"
     ],
     "W9_LOGIN_GET_PASSWORD": [
         "GET Administrator Password",
         "获取管理员密码"
     ],
     "W9_GELF_TCP_PORT_SET": [
-        "",
-        ""
+        "GELF TCP PORT",
+        "GELF TCP 端口"
     ],
     "W9_GELF_UDP_PORT_SET": [
-        "",
-        ""
+        "GELF UDP PORT",
+        "GELF UDP 端口"
     ],
     "W9_Kong_Manager_PORT_SET": [
-        "",
-        ""
+        "Kong Manager PORT",
+        "Kong 管理端口"
     ],
     "W9_LOGIN_APP_SECRET_TOKEN": [
-        "",
-        ""
-    ],
-    "W9_XMPP_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_DOCS_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_SEARCH_PORT_SET": [
-        "",
-        ""
+        "APP SECRET TOKEN",
+        "应用密钥 TOKEN"
     ],
     "W9_LOGIN_JWT_SECRET": [
-        "",
-        ""
-    ],
-    "W9_RTMP_SET": [
-        "",
-        ""
-    ],
-    "W9_REMOTE_SET": [
-        "",
-        ""
-    ],
-    "W9_FLV_SET": [
-        "",
-        ""
+        "JWT SECRET",
+        "JWT 密钥"
     ],
     "W9_LOGIN_Oracle_SID": [
-        "",
-        ""
+        "Oracle SID",
+        "Oracle SID"
     ],
     "W9_LOGIN_Oracle_PDB": [
-        "",
-        ""
+        "Oracle PDB",
+        "Oracle PDB"
     ],
     "W9_RTMP_PORT_SET": [
-        "",
-        ""
+        "RTMP PORT",
+        "RTMP 端口"
     ],
     "W9_REMOTE_PORT_SET": [
-        "",
-        ""
+        "REMOTE PORT",
+        "远程端口"
     ],
     "W9_FLV_PORT_SET": [
         "FLV PORT",
@@ -245,11 +217,11 @@
     ],
     "W9_LOGIN_GET_TOKEN": [
         "GET TOKEN",
-        ""
+        "获取 TOKEN 方法"
     ],
     "W9_LOGIN_GET_Credential": [
         "GET CREDENTIAL",
-        ""
+        "获取密码方法"
     ],
     "W9_LOGIN_SHOW_PASSWORD": [
         "SHOW LOGIN PASSWORD",
