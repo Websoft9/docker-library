@@ -28,232 +28,92 @@
         "KAFKA 端口"
     ],
     "W9_EM_PORT_SET": [
-        "",
-        ""
+        "EMAIL PORT",
+        "邮件端口"
     ],
     "W9_SYSLOG_TCP_PORT_SET": [
-        "",
-        ""
+        "SYSLOG TCP PORT",
+        "系统日志 TCP 端口"
     ],
     "W9_SYSLOG_UDP_PORT_SET": [
-        "",
-        ""
+        "SYSLOG UDP PORT",
+        "系统日志 UDP 端口"
     ],
     "W9_GELE_TCP_PORT_SET": [
-        "",
-        ""
+        "GELE TCP PORT",
+        "GELE TCP 端口"
     ],
     "W9_GELE_UDP_PORT_SET": [
-        "",
-        ""
+        "GELE UDP PORT",
+        "GELE UDP 端口"
     ],
     "W9_TRANSFORM_PORT_SET": [
-        "",
-        ""
+        "TRANSFORM PORT",
+        "转换端口"
     ],
     "W9_SOLR_PORT_SET": [
-        "",
-        ""
+        "APACHE SOLR PORT",
+        "APACHE SOLR 端口"
     ],
     "W9_AMQP_PORT_SET": [
-        "",
-        ""
+        "AMQP PORT",
+        "消息队列服务端口"
     ],
     "W9_OPENWIRE_PORT_SET": [
-        "",
-        ""
+        "MQ OPENWIRE PORT",
+        "消息队列 OPENWIRE 端口"
     ],
     "W9_STOMP_PORT_SET": [
-        "",
-        ""
+        "MQ STOMP PORT",
+        "消息队列 STOMP 端口"
     ],
     "W9_HTTPS_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_DB_INFLUXDB_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_DB_INFLUXDB_GRAPHITE_PORT_SET": [
-        "",
-        ""
+        "App HTTPS Port",
+        "应用 HTTPS 端口"
     ],
     "W9_ZOOMKEEPER_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_STATS_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_MEM_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_PANEL_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_MAGE_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_DASH_PORT_SET": [
-        "",
-        ""
+        "ZOOMKEEPER PORT",
+        "ZOOMKEEPER 端口"
     ],
     "W9_GUI_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_SET_PORT_SET": [
-        "",
-        ""
+        "GUI PORT",
+        "WEB页面端口"
     ],
     "W9_MQ_PORT_SET": [
-        "",
-        ""
+        "MQ PORT",
+        "消息队列端口"
     ],
     "W9_ER_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_AUTH_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_WEBSOCKET_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_ES_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_GRPC_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_PORT_1_SET": [
-        "",
-        ""
-    ],
-    "W9_PORT_2_SET": [
-        "",
-        ""
-    ],
-    "W9_PORT_3_SET": [
-        "",
-        ""
-    ],
-    "W9_WEB_PORT_SET": [
-        "",
-        ""
+        "ER_PORT",
+        "消息队列 ER 端口"
     ],
     "W9_DASHBOARD_PORT_SET": [
-        "",
-        ""
+        "DASHBOARD PORT",
+        "面板页面端口"
     ],
     "W9_DB_POSTGRES_PORT_SET": [
-        "",
-        ""
+        "POSTGRES PORT",
+        "POSTGRES 数据库端口"
     ],
     "W9_CLIENT_PORT_SET": [
-        "",
-        ""
+        "CLIENT PORT",
+        "客户端端口"
     ],
     "W9_CLUSTER_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_ZERO_1_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_ZERO_2_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_ALPHA_1_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_ALPHA_2_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_RATEL_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_KIBANA_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_DB_ES_HTTP_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_DB_ES_TCP_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_LOGSTASH_BEATS_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_LOGSTASH_TCP_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_LOGSTASH_UDP_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_LOGSTASH_API_PORT_SET": [
-        "",
-        ""
+        "CLUSTER PORT",
+        "集群端口"
     ],
     "W9_MQTT_PORT_SET": [
-        "",
-        ""
+        "MQTT PORT",
+        "MQTT 端口"
     ],
     "W9_RPC_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_UDP1_PORT_SET": [
-        "",
-        ""
+        "RPC PORT",
+        "RPC 端口"
     ],
     "W9_UDP2_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_UDP3_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_UDP4_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_UDP5_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_UDP6_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_KAFKA_PORT_SET": [
-        "",
-        ""
-    ],
-    "W9_ZK_PORT_SET": [
-        "",
-        ""
+        "UDP2 PORT",
+        "UDP2 端口"
     ],
     "W9_LOGIN_USER": [
         "Administrator UserName",
@@ -268,28 +128,28 @@
         "Workspace"
     ],
     "W9_LOGIN_PASSWORD_INIT": [
-        "",
-        ""
+        "INIT PASSWORD",
+        "初始化密码"
     ],
     "W9_OPENAI_API_KEY_SET": [
         "OPENAI API KEY",
-        "OPENAI API KEY"
+        "OPENAI API 密钥"
     ],
     "W9_LOGIN_OPENAI_API_KEY": [
-        "OPENAI API KEY",
-        "OPENAI API KEY"
+        "OPENAI LOGIN KEY",
+        "OPENAI 登陆密码"
     ],
     "W9_SCAN_PATH_SET": [
-        "",
-        ""
+        "SCAN PATH",
+        "扫描路径"
     ],
     "W9_Alpha_HTTP_PORT_SET": [
-        "",
-        ""
+        "Alpha HTTP PORT",
+        "Alpha 应用 HTTP 端口"
     ],
     "W9_Zero_HTTP_PORT_SET": [
-        "",
-        ""
+        "Zero HTTP PORT",
+        "Zero 应用 HTTP 端口"
     ],
     "W9_Alpha_gRPC_PORT_SET": [
         "",
@@ -376,119 +236,119 @@
         ""
     ],
     "W9_FLV_PORT_SET": [
-        "",
-        ""
+        "FLV PORT",
+        "FLV 端口"
     ],
     "W9_LOGIN_API_KEY": [
-        "",
-        ""
+        "API KEY",
+        "API 密钥"
     ],
     "W9_LOGIN_GET_TOKEN": [
-        "",
+        "GET TOKEN",
         ""
     ],
     "W9_LOGIN_GET_Credential": [
-        "",
+        "GET CREDENTIAL",
         ""
     ],
     "W9_LOGIN_SHOW_PASSWORD": [
-        "",
-        ""
+        "SHOW LOGIN PASSWORD",
+        "展示登陆密码方法"
     ],
     "W9_UDP_PORT_SET": [
-        "",
-        ""
+        "UDP PORT",
+        "UDP 端口"
     ],
     "W9_KONG_ADMIN_LISTEN_PORT_SET": [
-        "",
-        ""
+        "KONG ADMIN LISTEN PORT",
+        "KONG 后台监听端口"
     ],
     "W9_KONG_MANAGER_LISTEN_PORT_SET": [
-        "",
-        ""
+        "KONG ADMIN LISTEN PORT",
+        "KONG 管理监听端口"
     ],
     "W9_ADMIN_API_PORT_SET": [
-        "",
-        ""
+        "ADMIN API PORT",
+        "管理 API 端口"
     ],
     "W9_ADMIN_GUI_PORT_SET": [
-        "",
-        ""
+        "ADMIN GUI PORT",
+        "管理页面端口"
     ],
     "W9_URI_SET": [
-        "",
-        ""
+        "URI",
+        "连接URI"
     ],
     "W9_TURN_PORT_SET": [
-        "",
-        ""
+        "TURN PORT",
+        "TURN 端口"
     ],
     "W9_TURN_PORT_RANGE_SET": [
-        "",
-        ""
+        "TURN PORT RANGE",
+        "TURN 端口范围"
     ],
     "W9_POSTGRESQL_URI_SET": [
-        "",
-        ""
+        "POSTGRESQL URI",
+        "POSTGRESQL 连接URI"
     ],
     "W9_LOGIN_RPC_PASSWORD": [
-        "",
-        ""
+        "RPC PASSWORD",
+        "RPC 密码"
     ],
     "W9_LOGIN_RPC_HOST": [
-        "",
-        ""
+        "RPC HOST",
+        "RPC 主机"
     ],
     "W9_LOGIN_RPC_DownloadPath": [
-        "",
-        ""
+        "RPC DOWNLOAD PATH",
+        "RPC 下载路径"
     ],
     "W9_TURN_PORT_RANGE1_SET": [
-        "",
-        ""
+        "TURN PORT RANGE1",
+        "TURN 端口范围1"
     ],
     "W9_TURN_PORT_RANGE2_SET": [
-        "",
-        ""
+        "TURN PORT RANGE2",
+        "TURN 端口范围2"
     ],
     "W9_TURN_PORT_RANGE3_SET": [
-        "",
-        ""
+        "TURN PORT RANGE3",
+        "TURN 端口范围3"
     ],
     "W9_KEY_SET": [
-        "",
-        ""
+        "KEY",
+        "键"
     ],
-    "W9_LOGIN_GET_Kibaba_TOKEN": [
-        "",
-        ""
+    "W9_LOGIN_GET_KIBANA_TOKEN": [
+        "KIBANA TOKEN",
+        "KIBANA 令牌"
     ],
     "W9_DHT_PORT_SET": [
-        "",
-        ""
+        "BT PORT",
+        "BT 端口"
     ],
     "W9_LOGIN_RPC_SECRET_PASSWORD": [
-        "",
-        ""
+        "RPC SECRET",
+        "RPC 密钥"
     ],
     "W9_LOGIN_GET_USER": [
-        "",
-        ""
+        "LOGIN GET USER",
+        "获取登陆用户方法"
     ],
     "W9_LOGIN_aria2_RPC_URL": [
-        "",
-        ""
+        "ARIA2 RPC URL",
+        "ARIA2 RPC 地址"
     ],
     "W9_LOGIN_aria2_RPC_PORT": [
-        "",
-        ""
+        "ARIA2 RPC PORT",
+        "ARIA2 RPC 端口"
     ],
     "W9_LOGIN_aria2_RPC_SECRET_PASSWORD": [
-        "",
-        ""
+        "ARIA2 RPC SECRET",
+        "ARIA2 RPC 密钥"
     ],
     "W9_KAFKA_BROKERS_SET": [
-        "",
-        ""
+        "KAFKA BROKERS",
+        "KAFKA BROKERS"
     ]
 }
