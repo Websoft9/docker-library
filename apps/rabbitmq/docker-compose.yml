@@ -13,6 +13,7 @@ services:
       - ${W9_ER_PORT_SET}:4369
       - ${W9_MQ_PORT_SET}:5672
       - ${W9_HTTP_PORT_SET}:15672
+      #- 1883:1883 #for MQTT
     env_file: .env
     volumes:
       - 'rabbitmq_data:/var/lib/rabbitmq'

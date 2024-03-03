@@ -1,0 +1,20 @@
+# docs: https://mqttx.app/web
+# image: https://hub.docker.com/r/emqx/mqttx-web
+
+version: '3.8'
+
+services:
+
+  mqttx:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    restart: unless-stopped
+    ports:
+      - $W9_HTTP_PORT_SET:80
+    env_file: .env
+
+    
+networks:
+  default:
+    name: $W9_NETWORK
+    external: true
