@@ -5,8 +5,8 @@ version: '3.8'
 
 services:
   mosquitto:
-    container_name: $W9_NAME
-    image: $W9_REPO:W9_VERSION
+    container_name: $W9_ID
+    image: $W9_REPO:$W9_VERSION
     ports:
       - $W9_MQTT_PORT_SET:1883
       - $W9_WS_PORT_SET:9001
@@ -16,6 +16,7 @@ services:
       - config:/mosquitto/config
       - log:/mosquitto/log
     restart: unless-stopped
+
 
 networks:
   default:
