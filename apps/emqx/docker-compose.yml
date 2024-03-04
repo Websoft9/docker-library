@@ -1,0 +1,33 @@
+# image: https://hub.docker.com/r/emqx/emqx
+# docs: https://www.emqx.io/docs/en/latest/deploy/install-docker.html
+
+version: '3.8'
+
+services:
+
+  emqx:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    restart: unless-stopped
+    ports:
+      - $W9_HTTP_PORT_SET:18083 #Web console
+      - $W9_MQTT_PORT_SET:1883 #default MQTT
+      #- 8883:8883 #default MQTT at TLS/SSL
+      #- 8083:8083 #WebSocket
+      #- 8084:8084 #WebSocket at TLS/SSL
+      #- 8080:8080 # HTTP Admin API 
+    env_file: .env
+    volumes:
+      - data:/opt/emqx/data
+      - etc:/opt/emqx/etc
+      - log:/opt/emqx/log
+
+volumes:
+  data:
+  etc:
+  log:
+    
+networks:
+  default:
+    name: $W9_NETWORK
+    external: true
