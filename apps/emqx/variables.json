@@ -1,7 +1,7 @@
 {
   "name": "emqx",
   "trademark": "EMQX",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/emqx/emqx",
   "edition": [
     {
