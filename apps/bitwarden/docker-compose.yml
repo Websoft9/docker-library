@@ -17,22 +17,21 @@ services:
       - bitwarden:/etc/bitwarden
       - logs:/var/log/bitwarden
     depends_on:
-      - db
+      - mariadb
 
-  db:
+  mariadb:
     environment:
-      MARIADB_USER: "bitwarden"
-      MARIADB_PASSWORD: "super_strong_password"
-      MARIADB_DATABASE: "bitwarden_vault"
-      MARIADB_RANDOM_ROOT_PASSWORD: "true"
-    image: mariadb:10
+      MARIADB_USER: $W9_ID
+      MARIADB_PASSWORD: $W9_POWER_PASSWORD
+      MARIADB_DATABASE: $W9_ID
+    image: mariadb:$W9_MARIADB_VERSION
     container_name: $W9_ID-mariadb
-    restart: always
+    restart: unless-stopped
     volumes:
-      - db:/var/lib/mysql
+      - mariadb_data:/var/lib/mysql
 
 volumes:
-  db:
+  mariadb_data:
   bitwarden:
   logs:
     
