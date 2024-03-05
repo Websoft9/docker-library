@@ -1,0 +1,23 @@
+# docs: https://github.com/louislam/uptime-kuma
+# image: https://hub.docker.com/r/louislam/uptime-kuma
+
+version: '3.8'
+
+services:
+  uptime-kuma:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    restart: unless-stopped
+    ports:
+      - $W9_HTTP_PORT_SET:3001
+    env_file: .env
+    volumes:
+      - uptime-kuma:/app/data
+
+volumes:
+  uptime-kuma:
+
+networks:
+  default:
+    name: $W9_NETWORK
+    external: true
