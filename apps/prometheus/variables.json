@@ -1,14 +1,12 @@
 {
   "name": "prometheus",
   "trademark": "Prometheus",
-  "release": false,
+  "release": true,
   "fork_url": "https://hub.docker.com/r/prom/prometheus/",
   "edition": [
     {
       "dist": "community",
-      "version": [
-        "latest"
-      ]
+      "version": ["v2.50.1","latest"]
     }
   ],
   "requirements": {

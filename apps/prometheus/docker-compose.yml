@@ -1,16 +1,37 @@
-# image: https://hub.docker.com/r/bitnami/suitecrm
+# image and docs: https://hub.docker.com/r/prom/prometheus/
+# pushgateway docs: https://github.com/prometheus/pushgateway
+# alertmanager docs: https://github.com/prometheus/alertmanager
 
 version: '3.8'
 
 services:
   prometheus:
     image: $W9_REPO:$W9_VERSION
-    container_name: $W9_NAME
+    container_name: $W9_ID
     restart: unless-stopped
+    volumes:
+      - ./src/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus:/prometheus
     env_file:
       - .env
     ports:
-      - '${W9_HTTP_PORT}:8080'
+      - '${W9_HTTP_PORT_SET}:9090'
+
+  prometheus-pushgateway:
+    image: prom/pushgateway
+    container_name: $W9_ID-pushgateway
+    restart: unless-stopped
+    #ports:
+    #  - '9091:9091'
+
+  prometheus-alertmanager:
+    image: prom/alertmanager
+    container_name: $W9_ID-alertmanager
+    restart: unless-stopped
+    volumes:
+      - alertmanager:/alertmanager
+    #ports:
+    #  - '9093:9093'
 
 networks:
   default:
@@ -19,3 +40,4 @@ networks:
 
 volumes:
   prometheus:
+  alertmanager:
