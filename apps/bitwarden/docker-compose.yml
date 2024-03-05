@@ -23,6 +23,7 @@ services:
     environment:
       MARIADB_USER: $W9_ID
       MARIADB_PASSWORD: $W9_POWER_PASSWORD
+      MARIADB_ROOT_PASSWORD: $W9_POWER_PASSWORD
       MARIADB_DATABASE: $W9_ID
     image: mariadb:$W9_MARIADB_VERSION
     container_name: $W9_ID-mariadb
