@@ -35,9 +35,9 @@ services:
       - PENPOT_FLAGS=enable-registration enable-login-with-password disable-email-verification enable-smtp enable-prepl-server disable-secure-session-cookies
       - PENPOT_PREPL_HOST=0.0.0.0
       - PENPOT_PUBLIC_URI=http://$W9_URL
-      - PENPOT_DATABASE_URI=postgresql://$W9_ID-postgresql/penpot
-      - PENPOT_DATABASE_USERNAME=penpot
-      - PENPOT_DATABASE_PASSWORD=penpot
+      - PENPOT_DATABASE_URI=postgresql://$W9_ID-postgresql/$W9_ID
+      - PENPOT_DATABASE_USERNAME=$W9_ID
+      - PENPOT_DATABASE_PASSWORD=$W9_POWER_PASSWORD
       - PENPOT_REDIS_URI=redis://$W9_ID-redis/0
       - PENPOT_ASSETS_STORAGE_BACKEND=assets-fs
       - PENPOT_STORAGE_ASSETS_FS_DIRECTORY=/opt/data/assets
@@ -53,10 +53,10 @@ services:
     environment:
       # Don't touch it; this uses internal docker network to
       # communicate with the frontend.
-      - PENPOT_PUBLIC_URI=http://penpot-frontend
+      - PENPOT_PUBLIC_URI=http://$W9_ID
 
       ## Redis is used for the websockets notifications.
-      - PENPOT_REDIS_URI=redis://penpot-redis/0
+      - PENPOT_REDIS_URI=redis://$W9_ID-redis/0
 
   redis:
     image: redis:7
@@ -66,7 +66,7 @@ services:
       - redis:/data
 
   postgres:
-    image: "postgres:15"
+    image: postgres:$W9_DB_VERSION
     container_name: $W9_ID-postgresql
     restart: unless-stopped
     stop_signal: SIGINT
@@ -74,9 +74,9 @@ services:
       - postgres:/var/lib/postgresql/data
     environment:
       - POSTGRES_INITDB_ARGS=--data-checksums
-      - POSTGRES_DB=penpot
-      - POSTGRES_USER=penpot
-      - POSTGRES_PASSWORD=penpot
+      - POSTGRES_DB=$W9_ID
+      - POSTGRES_USER=$W9_ID
+      - POSTGRES_PASSWORD=$W9_POWER_PASSWORD
 
 volumes:
   postgres:
