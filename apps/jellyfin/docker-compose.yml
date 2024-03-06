@@ -1,0 +1,27 @@
+# image: https://hub.docker.com/r/jellyfin/jellyfin
+# docs: https://jellyfin.org/docs/general/installation/container
+
+version: '3.8'
+
+services:
+  jellyfin:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    restart: unless-stopped
+    ports:
+      - $W9_HTTP_PORT_SET:8096
+    env_file: .env
+    volumes:
+      - config:/config
+      - cache:/cache
+      - media:/media #you can add more folder for media, e.g: music, movie
+
+volumes:
+  config:
+  cache:
+  media:
+    
+networks:
+  default:
+    name: $W9_NETWORK
+    external: true

@@ -34,6 +34,7 @@ services:
       # flags refer to: https://help.penpot.app/technical-guide/configuration/#advanced-configuration
       - PENPOT_FLAGS=enable-registration enable-login-with-password disable-email-verification enable-smtp enable-prepl-server disable-secure-session-cookies
       - PENPOT_PREPL_HOST=0.0.0.0
+      # if use IP access penport, need http://$W9_URL:W9_HTTP_PORT_SET
       - PENPOT_PUBLIC_URI=http://$W9_URL
       - PENPOT_DATABASE_URI=postgresql://$W9_ID-postgresql/$W9_ID
       - PENPOT_DATABASE_USERNAME=$W9_ID
