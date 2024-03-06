@@ -1,12 +1,12 @@
 {
   "name": "Bitwarden ",
   "trademark": "bitwarden ",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/bitwarden/server",
   "edition": [
     {
       "dist": "community",
-      "version": ["dev"]
+      "version": ["dev","beta"]
     }
   ],
   "requirements": {
