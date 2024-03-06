@@ -1,6 +1,6 @@
 {
-  "name": "Bitwarden ",
-  "trademark": "bitwarden ",
+  "name": "bitwarden ",
+  "trademark": "Bitwarden ",
   "release": true,
   "fork_url": "https://github.com/bitwarden/server",
   "edition": [
