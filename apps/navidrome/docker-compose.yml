@@ -1,0 +1,25 @@
+# image: https://hub.docker.com/r/deluan/navidrome
+# docs: https://www.navidrome.org/docs/installation/docker/
+
+version: '3.8'
+
+services:
+  navidrome:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    restart: unless-stopped
+    ports:
+      - $W9_HTTP_PORT_SET:4533
+    env_file: .env
+    volumes:
+      - data:/data
+      - music:/music:ro
+
+volumes:
+  data:
+  music:
+    
+networks:
+  default:
+    name: $W9_NETWORK
+    external: true
