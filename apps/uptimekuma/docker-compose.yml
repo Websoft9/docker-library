@@ -1,5 +1,6 @@
 # docs: https://github.com/louislam/uptime-kuma
 # image: https://hub.docker.com/r/louislam/uptime-kuma
+# compose: https://github.com/louislam/uptime-kuma/blob/master/compose.yaml
 
 version: '3.8'
 
