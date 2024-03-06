@@ -1,7 +1,7 @@
 {
   "name": "supabase",
   "trademark": "Supabase",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/supabase/supabase",
   "edition": [
     {
