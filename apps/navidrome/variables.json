@@ -1,7 +1,7 @@
 {
   "name": "Navidrome",
   "trademark": "navidrome",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/navidrome/navidrome/",
   "edition": [
     {
