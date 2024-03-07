@@ -1,58 +1,65 @@
-# compose from: https://github.com/getredash/setup/blob/master/data/docker-compose.yml
+# compose: https://github.com/getredash/setup/blob/master/data/docker-compose.yml
+# image: https://hub.docker.com/r/redash/redash
+# docs: https://github.com/getredash/setup/blob/master/setup.sh
 
 version: "3.8"
 x-redash-service: &redash-service
-  image: redash/redash:8.0.0.b32245
+  image: ${W9_REPO}:${W9_VERSION}
   depends_on:
     - postgres
     - redis
-  env_file: /opt/redash/env
-  restart: always
+  env_file: .env
+  restart: unless-stopped
   
 services:
   server:
     <<: *redash-service
     command: server
+    container_name: ${W9_ID}
     ports:
-      - "5000:5000"
+      - ${W9_HTTP_PORT_SET}:5000
     environment:
       REDASH_WEB_WORKERS: 4
+
   scheduler:
     <<: *redash-service
     command: scheduler
     environment:
       QUEUES: "celery"
       WORKERS_COUNT: 1
+
   scheduled_worker:
     <<: *redash-service
     command: worker
     environment:
       QUEUES: "scheduled_queries,schemas"
-      WORKERS_COUNT: 1
+      WORKERS_COUNT: 
+      
   adhoc_worker:
     <<: *redash-service
     command: worker
     environment:
       QUEUES: "queries"
       WORKERS_COUNT: 2
+
   redis:
     image: redis:5.0-alpine
+    container_name: ${W9_ID}-redis
     restart: always
+    volumes:
+      - redis:/data
+
   postgres:
     image: postgres:9.6-alpine
-    env_file: /opt/redash/env
+    container_name: ${W9_ID}-postgres
+    env_file: .env
     volumes:
-      - /opt/redash/postgres-data:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
     restart: always
-  nginx:
-    image: redash/nginx:latest
-    ports:
-      - "80:80"
-    depends_on:
-      - server
-    links:
-      - server:redash
-    restart: always
+
+volumes:
+  postgres:
+  redis:
 
 networks:
   default:
