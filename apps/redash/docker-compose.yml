@@ -1,6 +1,7 @@
 # compose: https://github.com/getredash/setup/blob/master/data/docker-compose.yml
 # image: https://hub.docker.com/r/redash/redash
-# docs: https://github.com/getredash/setup/blob/master/setup.sh
+# install method: https://github.com/getredash/setup/blob/master/setup.sh
+# docs: https://redash.io/help/open-source/setup
 
 version: "3.8"
 x-redash-service: &redash-service
@@ -56,6 +57,19 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
     restart: always
+
+  # add by Websoft9, it the same with sudo docker-compose run --rm server create_db
+  docker-cli:
+    image: alpinelinux/docker-cli
+    depends_on:
+      - server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: |
+      /bin/bash -c "
+      docker exec -i ${W9_ID} create_db
+      "
+
 
 volumes:
   postgres:

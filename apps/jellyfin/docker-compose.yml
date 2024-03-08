@@ -14,12 +14,17 @@ services:
     volumes:
       - config:/config
       - cache:/cache
-      - media:/media #you can add more folder for media, e.g: music, movie
+      - media:/media
+      #you can add more folder for media, e.g: music, movie
+      #- movie:/movie 
+      #- music:/music 
 
 volumes:
   config:
   cache:
   media:
+  #movie:
+  #music:
     
 networks:
   default:

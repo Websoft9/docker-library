@@ -1,3 +1,1 @@
 # navidrome
-
-- ND_BASEURL?

@@ -9,6 +9,11 @@ This repository include [200+ applications](https://github.com/Websoft9/docker-l
 
 You can use them for bussiness management, content management, data analysis, development, DevOps and any things you want to do.  
 
+## Where image from?
+
+All Docker image come from the Official of the software or an authoritative third party (such as: Bitnami), and Websoft9 does not maintain the image.  
+
+Websoft9 only verify and test the image or docker compose provided by the official to ensure that they can be run directly with **docker compose up** without any configuration.
 
 ## How to use it?
 
