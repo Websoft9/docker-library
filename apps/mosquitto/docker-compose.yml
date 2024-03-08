@@ -16,7 +16,7 @@ services:
       - config:/mosquitto/config
       - log:/mosquitto/log
     restart: unless-stopped
-
+    env_file: .env
 
 networks:
   default:
