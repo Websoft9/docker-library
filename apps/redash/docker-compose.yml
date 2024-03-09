@@ -66,7 +66,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: |
-      /bin/bash -c "
+      /bin/sh -c "
       docker exec -i ${W9_ID} create_db
       "
 
