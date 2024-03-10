@@ -1,7 +1,7 @@
 {
   "name": "redash",
   "trademark": "Redash",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/getredash/redash",
   "edition": [
     {
