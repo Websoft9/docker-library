@@ -25,13 +25,14 @@ services:
   scheduler:
     <<: *redash-service
     command: scheduler
+    container_name: ${W9_ID}-scheduler
     environment:
       QUEUES: "celery"
       WORKERS_COUNT: 1
-
   scheduled_worker:
     <<: *redash-service
     command: worker
+    container_name: ${W9_ID}-scheduled
     environment:
       QUEUES: "scheduled_queries,schemas"
       WORKERS_COUNT: 
@@ -39,6 +40,7 @@ services:
   adhoc_worker:
     <<: *redash-service
     command: worker
+    container_name: ${W9_ID}-adhoc
     environment:
       QUEUES: "queries"
       WORKERS_COUNT: 2
@@ -51,25 +53,20 @@ services:
       - redis:/data
 
   postgres:
-    image: postgres:9.6-alpine
+    image: postgres:15-alpine
     container_name: ${W9_ID}-postgres
     env_file: .env
     volumes:
       - postgres:/var/lib/postgresql/data
     restart: always
 
-  # add by Websoft9, it the same with sudo docker-compose run --rm server create_db
-  docker-cli:
-    image: alpinelinux/docker-cli
-    depends_on:
-      - server
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: |
-      /bin/sh -c "
-      docker exec -i ${W9_ID} create_db
-      "
-
+  create_db:  
+    <<: *redash-service  
+    command: create_db  
+    depends_on:  
+      - redis
+      - postgres  
+    restart: "no"
 
 volumes:
   postgres:
