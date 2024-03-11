@@ -13,6 +13,12 @@ x-redash-service: &redash-service
   restart: unless-stopped
   
 services:
+  # add by Websoft9
+  create_db:  
+    <<: *redash-service  
+    command: create_db   
+    restart: "no"
+
   server:
     <<: *redash-service
     command: server
@@ -21,6 +27,10 @@ services:
       - ${W9_HTTP_PORT_SET}:5000
     environment:
       REDASH_WEB_WORKERS: 4
+    depends_on:
+      - postgres
+      - redis
+      - create_db
 
   scheduler:
     <<: *redash-service
@@ -59,14 +69,6 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
     restart: always
-
-  create_db:  
-    <<: *redash-service  
-    command: create_db  
-    depends_on:  
-      - redis
-      - postgres  
-    restart: "no"
 
 volumes:
   postgres:
