@@ -36,7 +36,7 @@ services:
     expose:
       - '5601'
     environment:
-      OPENSEARCH_HOSTS: '["http://$W9_ID-node:9200"]'
+      OPENSEARCH_HOSTS: '["https://$W9_ID-node:9200"]'
 
   busybox:
     image: busybox
