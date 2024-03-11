@@ -4,7 +4,6 @@
 
 version: '3.8'
 
-
 services:
   opensearch-node:
     image: $W9_REPO:$W9_VERSION
@@ -26,14 +25,14 @@ services:
     volumes:
       - opensearch-data:/usr/share/opensearch/data
     ports:
-      - $W9_HTTP_PORT_SET:9200
+      - $W9_SEARCH_PORT_SET:9200
 
   opensearch-dashboards:
     image: $W9_REPO-dashboards:$W9_VERSION
     container_name: $W9_ID
     env_file: .env
     ports:
-      - $W9_DASHBOARD_PORT_SET:5601
+      - $W9_HTTP_PORT_SET:5601
     expose:
       - '5601'
     environment:
