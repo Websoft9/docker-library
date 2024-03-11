@@ -26,7 +26,7 @@ services:
     volumes:
       - opensearch-data:/usr/share/opensearch/data
     ports:
-      - $W9_HTTPS_PORT_SET:$W9_HTTPS_PORT
+      - $W9_HTTP_PORT_SET:9200
 
   opensearch-dashboards:
     image: $W9_REPO-dashboards:$W9_VERSION
@@ -37,7 +37,7 @@ services:
     expose:
       - '5601'
     environment:
-      OPENSEARCH_HOSTS: '["https://$W9_ID-node:9200"]'
+      OPENSEARCH_HOSTS: '["http://$W9_ID-node:9200"]'
 
   busybox:
     image: busybox
