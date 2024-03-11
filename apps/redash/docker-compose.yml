@@ -63,7 +63,7 @@ services:
       - redis:/data
 
   postgres:
-    image: postgres:15-alpine
+    image: postgres:$W9_DB_VERSION
     container_name: ${W9_ID}-postgres
     env_file: .env
     volumes:
