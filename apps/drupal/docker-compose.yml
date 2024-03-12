@@ -15,7 +15,7 @@ services:
     depends_on:
       - db
 
-  mysql:
+  db:
     image: mysql:$W9_MYSQL_VERSION
     container_name: $W9_ID-mysql
     restart: unless-stopped

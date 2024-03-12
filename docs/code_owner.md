@@ -189,3 +189,7 @@ You know there three type container for an application:
 - Independent Service: e.g database, mq, redis
 
 We suggest add Application container and Application assisting container 's environments to .env
+
+#### Which version should use?
+
+Try to use x.x, not recommend use x.x.x if not necessary.
