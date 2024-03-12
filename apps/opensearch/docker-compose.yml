@@ -7,10 +7,11 @@ version: '3.8'
 services:
   opensearch-node:
     image: $W9_REPO:$W9_VERSION
-    container_name: $W9_RCODE
+    container_name: $W9_ID
+    hostname: $W9_RCODE
     environment:
       - cluster.name=opensearch-cluster
-      - node.name=$W9_RCODE
+      #- node.name=$W9_ID
       - discovery.type=single-node
       - bootstrap.memory_lock=true              # along with the memlock settings below, disables swapping
       - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m  # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
