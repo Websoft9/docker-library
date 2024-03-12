@@ -1,0 +1,26 @@
+# docs: https://docs.gopeed.com/install.html
+
+version: '3.8'
+
+services:
+
+  gospeed:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    restart: unless-stopped
+    command: ["-u", "admin", "-p", "123456"]
+    ports:
+      - $W9_HTTP_PORT_SET:9999
+    env_file: .env
+    volumes:
+      - download:/root/Downloads
+      - storage:/app/storage
+
+volumes:
+  download:
+  storage:
+    
+networks:
+  default:
+    name: $W9_NETWORK
+    external: true
