@@ -1,3 +1,4 @@
+# image: https://hub.docker.com/r/liwei2633/gopeed
 # docs: https://docs.gopeed.com/install.html
 
 version: '3.8'
@@ -8,7 +9,7 @@ services:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
-    command: ["-u", "admin", "-p", "123456"]
+    command: ["-u", "$W9_LOGIN_USER", "-p", "$W9_POWER_PASSWORD"]
     ports:
       - $W9_HTTP_PORT_SET:9999
     env_file: .env
