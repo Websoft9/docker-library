@@ -1,0 +1,18 @@
+{
+  "name": "graphite",
+  "trademark": "Graphite",
+  "release": true,
+  "fork_url": "https://github.com/graphite-project/graphite-web",
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["latest"]
+    }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1",
+    "url": "https://graphite.readthedocs.io/en/latest/install.html"
+  }
+}

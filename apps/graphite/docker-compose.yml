@@ -1,0 +1,30 @@
+# image and docs: https://hub.docker.com/r/prom/prometheus/
+# pushgateway docs: https://github.com/prometheus/pushgateway
+# alertmanager docs: https://github.com/prometheus/alertmanager
+
+version: '3.8'
+
+services:
+  graphite:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    restart: unless-stopped
+    volumes:
+      - conf:/opt/graphite/conf
+      # add more
+    env_file:
+      - .env
+    ports:
+      - '${W9_HTTP_PORT_SET}:80'
+      #- 2003-2004:2003-2004 #For Carbon
+      #- 2023-2024:2023-2024
+      #- 8125:8125/udp #For StatsD
+      #- 8126:8126
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true
+
+volumes:
+  conf:
