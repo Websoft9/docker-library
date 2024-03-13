@@ -12,27 +12,11 @@ services:
     ports:
       - $W9_HTTP_PORT_SET:4440
     env_file: .env
-    links:
-      - mysql
     volumes:
       - rundeck:/home/rundeck/server/data
 
-  mysql:
-    image: mysql:5.7
-    container_name: $W9_ID-mysql
-    restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
-    volumes:
-      - mysql:/var/lib/mysql
-    environment:
-      MYSQL_DATABASE: $W9_ID
-      MYSQL_USER: $W9_ID
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
-
 volumes:
   rundeck:
-  mysql:
     
 networks:
   default:
