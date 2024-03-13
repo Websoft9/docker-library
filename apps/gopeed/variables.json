@@ -1,7 +1,7 @@
 {
   "name": "gopeed",
   "trademark": "Gopeed",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/GopeedLab/gopeed",
   "edition": [
     {
