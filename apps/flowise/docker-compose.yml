@@ -1,5 +1,6 @@
 # docs: https://github.com/FlowiseAI/Flowise/blob/main/docker/README.md
 # image: https://hub.docker.com/r/flowiseai/flowise
+# compose: https://github.com/FlowiseAI/Flowise/blob/main/docker/docker-compose.yml
 
 version: '3.8'
 
