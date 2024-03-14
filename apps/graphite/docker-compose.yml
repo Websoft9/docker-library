@@ -1,6 +1,5 @@
-# image and docs: https://hub.docker.com/r/prom/prometheus/
-# pushgateway docs: https://github.com/prometheus/pushgateway
-# alertmanager docs: https://github.com/prometheus/alertmanager
+# image: https://hub.docker.com/r/graphiteapp/graphite-statsd
+# docs: https://graphite.readthedocs.io/en/latest/install.html
 
 version: '3.8'
 
@@ -11,7 +10,13 @@ services:
     restart: unless-stopped
     volumes:
       - conf:/opt/graphite/conf
-      # add more
+      - storage:/opt/graphite/storage
+      - custom:/opt/graphite/webapp/graphite/functions/custom
+      - nginx:/etc/nginx
+      - config:/opt/statsd/config
+      - logrotate.d:/etc/logrotate.d
+      - log:/var/log
+      - redis:/var/lib/redis
     env_file:
       - .env
     ports:
@@ -28,3 +33,10 @@ networks:
 
 volumes:
   conf:
+  storage:
+  custom:
+  nginx:
+  config:
+  logrotate.d:
+  log:
+  redis:
