@@ -1,6 +1,6 @@
-# rundeck on Docker  
+# Rundeck on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for rundeck:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Rundeck:
 
 
  - community:  5.1.1
@@ -17,10 +17,10 @@ The following are the minimal [recommended requirements](https://docs.rundeck.co
 
 ## Install
 
-You can install this rundeck by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this Rundeck by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use rundeck with **Websoft9 Business Support** free, you can [subscribe rundeck](https://www.websoft9.com/apps) on Cloud platform
+If you want use Rundeck with **Websoft9 Business Support** free, you can [subscribe Rundeck](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[rundeck Administrator Guide](https://support.websoft9.com/docs/Rundeck) powered by Websoft9
+[Rundeck Administrator Guide](https://support.websoft9.com/docs/rundeck) powered by Websoft9
