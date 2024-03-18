@@ -33,7 +33,7 @@ services:
 
   postgrest:
     container_name: ${W9_ID}-postgrest
-    image: postgrest/postgrest:v10.1.1.20221215
+    image: postgrest/postgrest:latest
     restart: unless-stopped
     depends_on:
       - postgres
