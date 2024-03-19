@@ -1,4 +1,5 @@
-# image: https://hub.docker.com/r/portainer/portainer
+# image: https://hub.docker.com/r/portainer/portainer-ce
+# docs: https://docs.portainer.io/
 
 version: '3.8'
 
