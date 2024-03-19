@@ -1,6 +1,6 @@
-# AutoGPT-Next-Web on Docker  
+# AutoGPT.NextWeb on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for AutoGPT-Next-Web:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for AutoGPT.NextWeb:
 
 
  - community:  latest
@@ -17,10 +17,10 @@ The following are the minimal [recommended requirements](https://github.com/Conn
 
 ## Install
 
-You can install this AutoGPT-Next-Web by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this AutoGPT.NextWeb by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use AutoGPT-Next-Web with **Websoft9 Business Support** free, you can [subscribe AutoGPT-Next-Web](https://www.websoft9.com/apps) on Cloud platform
+If you want use AutoGPT.NextWeb with **Websoft9 Business Support** free, you can [subscribe AutoGPT.NextWeb](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[AutoGPT-Next-Web Administrator Guide](https://support.websoft9.com/docs/autogptnextweb) powered by Websoft9
+[AutoGPT.NextWeb Administrator Guide](https://support.websoft9.com/docs/autogptnextweb) powered by Websoft9
