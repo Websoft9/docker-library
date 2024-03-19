@@ -10,6 +10,11 @@ services:
     image: $W9_REPO:$W9_VERSION
     container_name: "$W9_ID"
     hostname: "$W9_URL"
+    logging:
+      driver: "json-file"
+      options:
+          max-file: "5"
+          max-size: 200m
     env_file: .env
     environment:
       GITLAB_OMNIBUS_CONFIG: |
