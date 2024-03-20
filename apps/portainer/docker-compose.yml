@@ -13,7 +13,7 @@ services:
       - ${W9_HTTP_PORT_SET}:9000
     volumes:
       - portainer:/data
-      - /var/run/docker.sock:/var/run/docker.sock
+      #- /var/run/docker.sock:/var/run/docker.sock
 
 networks:
   default:
