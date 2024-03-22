@@ -1,6 +1,6 @@
-# huginn on Docker  
+# Huginn on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for huginn:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Huginn:
 
 
  - community:  latest
@@ -17,10 +17,10 @@ The following are the minimal [recommended requirements](https://github.com/hugi
 
 ## Install
 
-You can install this huginn by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this Huginn by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use huginn with **Websoft9 Business Support** free, you can [subscribe huginn](https://www.websoft9.com/apps) on Cloud platform
+If you want use Huginn with **Websoft9 Business Support** free, you can [subscribe Huginn](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[huginn Administrator Guide](https://support.websoft9.com/docs/huginn) powered by Websoft9
+[Huginn Administrator Guide](https://support.websoft9.com/docs/huginn) powered by Websoft9
