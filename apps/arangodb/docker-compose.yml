@@ -1,5 +1,5 @@
+# image: https://hub.docker.com/_/arangodb
 # docs: https://www.arangodb.com/docs/stable/install-with-docker.html
-
 
 version: '3.8'
 
@@ -11,7 +11,7 @@ services:
     env_file:
       - .env
     ports:
-      - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
+      - '${W9_HTTP_PORT_SET}:8529'
     environment:
       - ARANGO_ROOT_PASSWORD=$W9_POWER_PASSWORD
     volumes:
