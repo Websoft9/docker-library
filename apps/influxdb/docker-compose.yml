@@ -9,6 +9,8 @@ services:
     container_name: ${W9_ID}
     ports:
       - '${W9_HTTP_PORT_SET}:8086'
+    env_file:
+      - .env
     volumes:
       - influxdb:/var/lib/influxdb2
     restart: unless-stopped
