@@ -1,6 +1,6 @@
-# focalboard on Docker  
+# Focalboard on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for focalboard:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Focalboard:
 
 
  - community:  latest
@@ -17,10 +17,10 @@ The following are the minimal [recommended requirements](https://hub.docker.com/
 
 ## Install
 
-You can install this focalboard by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this Focalboard by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use focalboard with **Websoft9 Business Support** free, you can [subscribe focalboard](https://www.websoft9.com/apps) on Cloud platform
+If you want use Focalboard with **Websoft9 Business Support** free, you can [subscribe Focalboard](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[focalboard Administrator Guide](https://support.websoft9.com/docs/Focalboard) powered by Websoft9
+[Focalboard Administrator Guide](https://support.websoft9.com/docs/focalboard) powered by Websoft9
