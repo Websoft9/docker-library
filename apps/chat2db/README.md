@@ -1,6 +1,6 @@
-# chat2 on Docker  
+# chat2DB on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for chat2:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for chat2DB:
 
 
  - community:  latest, 3.0.11
@@ -17,10 +17,10 @@ The following are the minimal [recommended requirements](https://github.com/only
 
 ## Install
 
-You can install this chat2 by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this chat2DB by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use chat2 with **Websoft9 Business Support** free, you can [subscribe chat2](https://www.websoft9.com/apps) on Cloud platform
+If you want use chat2DB with **Websoft9 Business Support** free, you can [subscribe chat2DB](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[chat2 Administrator Guide](https://support.websoft9.com/docs/chat2db) powered by Websoft9
+[chat2DB Administrator Guide](https://support.websoft9.com/docs/chat2db) powered by Websoft9
