@@ -1,4 +1,3 @@
-# Dgraph
 
 Dgraph 是一个分布式图数据库。
 
@@ -56,4 +55,5 @@ dgraph/standalone 是用于单机使用的（默认已经启动 zero 和 alpha �
 这些默认的端口可以根据需要进行更改，但你需要确保所有的 Dgraph Alpha 和 Dgraph Zero 节点都使用正确的端口，以便它们可以在集群中正确地找到并通信。  
 
 当你在浏览器中打开 Ratel 时，它会要求你输入 Dgraph Alpha 的 HTTP 端口的 URL。
+
 

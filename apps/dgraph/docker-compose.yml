@@ -1,7 +1,3 @@
-# image: https://hub.docker.com/r/dgraph/dgraph/
-# docs: https://dgraph.io/docs/deploy/installation
-# compose: https://github.com/dgraph-io/dgraph/blob/main/contrib/config/docker/docker-compose.yml
-# config: https://dgraph.io/docs/deploy/config/
 
 version: '3.8'
 
