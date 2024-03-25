@@ -57,20 +57,3 @@ dgraph/standalone 是用于单机使用的（默认已经启动 zero 和 alpha �
 
 当你在浏览器中打开 Ratel 时，它会要求你输入 Dgraph Alpha 的 HTTP 端口的 URL。
 
-### 账号 
-
-只有企业版才有 ACL 功能
-
-## FAQ
-
-#### Ratal 加载不完整？
-
-应用自身包含一些外部 js 导致
-
-#### Ratal 无密码即可访问？
-
-是的，需要通过 Nginx 进行密码控制
-
-#### whitelist and token 是用来控制？
-
-控制对数据库的管理操作，例如：建表。但是无法控制查询，即任何外部连接都可以查询。

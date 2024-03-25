@@ -144,20 +144,20 @@
         "扫描路径"
     ],
     "W9_Alpha_HTTP_PORT_SET": [
-        "Alpha HTTP PORT",
-        "Alpha 应用 HTTP 端口"
+        "Dgraph Alpha（Database） HTTP PORT",
+        "Dgraph Alpha （数据库） HTTP 端口"
     ],
     "W9_Zero_HTTP_PORT_SET": [
-        "Zero HTTP PORT",
-        "Zero 应用 HTTP 端口"
+        "Dgraph Zero(cluster) HTTP PORT",
+        "Dgraph Zero（集群）  HTTP 端口"
     ],
     "W9_Alpha_gRPC_PORT_SET": [
-        "Alpha gRPC PORT",
-        "Alpha gRPC 端口"
+        "Dgraph Alpha（Database） gRPC PORT",
+        "Dgraph Alpha （数据库） gRPC 端口"
     ],
     "W9_Zero_gRPC_PORT_SET": [
-        "Zero gRPC PORT",
-        "Zero gRPC 端口"
+        "Dgraph Zero(cluster) gRPC PORT",
+        "Dgraph Zero（集群） gRPC 端口"
     ],
     "W9_LOGIN_ServerURL": [
         "LOGIN ServerURL",

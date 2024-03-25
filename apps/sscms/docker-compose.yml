@@ -10,7 +10,7 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     ports:
-      - ${W9_HTTP_PORT_SET}:80
+      - ${W9_HTTP_PORT_SET}:8080
     volumes:
       - sscms:/app/wwwroot
     depends_on: 
@@ -25,8 +25,8 @@ services:
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: ${W9_ID}
-      MYSQL_USER: ${W9_ID}
+      MYSQL_DATABASE: sscms
+      MYSQL_USER: sscms
       MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
 

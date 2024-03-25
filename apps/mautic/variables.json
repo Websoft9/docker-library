@@ -6,7 +6,7 @@
   "edition": [
     {
       "dist": "community",
-      "version": ["latest"]
+      "version": ["v4-apache"]
     }
   ],
   "requirements": {
