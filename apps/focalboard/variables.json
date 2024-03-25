@@ -1,6 +1,6 @@
 {
-  "name": "Focalboard",
-  "trademark": "focalboard",
+  "name": "focalboard",
+  "trademark": "Focalboard",
   "release": true,
   "fork_url": "https://hub.docker.com/r/mattermost/focalboard",
   "edition": [

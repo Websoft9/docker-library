@@ -1,6 +1,5 @@
-# image: https://hub.docker.com/r/bitnami/suitecrm
-# docs: https://github.com/bitnami/bitnami-docker-suitecrm
-
+# image: https://hub.docker.com/r/kasmweb
+# docs: https://www.kasmweb.com/docs/latest/index.html
 
 version: '3.8'
 
