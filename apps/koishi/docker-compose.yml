@@ -1,0 +1,23 @@
+# docs: https://koishi.chat/zh-CN/manual/starter/docker.html
+# image: https://hub.docker.com/r/koishijs/koishi
+
+version: '3.8'
+
+services:
+  koishi:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    restart: unless-stopped
+    ports:
+      - $W9_HTTP_PORT_SET:5140
+    env_file: .env
+    volumes:
+      - koishi:/koishi
+
+volumes:
+  koishi:
+    
+networks:
+  default:
+    name: $W9_NETWORK
+    external: true
