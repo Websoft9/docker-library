@@ -1,4 +1,5 @@
-# imag: https://hub.docker.com/r/pasharp/pal_server
+# image: https://hub.docker.com/r/thijsvanloef/palworld-server-docker
+# docs: https://palworld-server-docker.loef.dev/
 
 version: '3.8'
 
@@ -7,22 +8,10 @@ services:
     image: $W9_REPO:$W9_VERSION
     restart: unless-stopped
     container_name: $W9_ID
+    stop_grace_period: 30s # Set to however long you are willing to wait for the container to gracefully stop
     ports:
       - $W9_UDP_PORT_SET:8211/udp
       - $W9_UDP2_PORT_SET:27015/udp
-    environment:
-        - PUID=1000
-        - PGID=1000
-        - PORT=8211 # Optional but recommended
-        #- PLAYERS=16 # Optional but recommended
-        #- SERVER_PASSWORD="worldofpals" # Optional but recommended
-        - MULTITHREADING=true
-        - RCON_ENABLED=true
-        - RCON_PORT=25575
-        - TZ=UTC
-        #- ADMIN_PASSWORD="adminPasswordHere"
-        - COMMUNITY=false  # Enable this if you want your server to show up in the community servers tab, USE WITH SERVER_PASSWORD!
-        - SERVER_NAME="World of Pals"
     volumes:
         - palworld_data:/palworld/
     env_file: .env

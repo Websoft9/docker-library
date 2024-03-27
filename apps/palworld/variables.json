@@ -2,12 +2,12 @@
   "name": "palworld",
   "trademark": "Palworld",
   "release": true,
-  "fork_url": "https://hub.docker.com/r/pasharp/pal_server",
+  "fork_url": "https://github.com/thijsvanloef/palworld-server-docker",
   "edition": [
     {
       "dist": "community",
       "version": [
-        "240125",
+        "v0.33",
         "latest"
       ]
     }
@@ -15,7 +15,7 @@
   "requirements": {
     "cpu": "4",
     "memory": "16",
-    "disk": "20",
-    "url": "https://hub.docker.com/r/pasharp/pal_server"
+    "disk": "8",
+    "url": "https://github.com/thijsvanloef/palworld-server-docker"
   }
 }
