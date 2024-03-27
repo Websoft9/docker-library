@@ -1,7 +1,7 @@
 {
   "name": "snapdrop",
   "trademark": "Snapdrop",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/RobinLinus/snapdrop",
   "edition": [
     {
