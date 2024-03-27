@@ -342,5 +342,9 @@
     "W9_SEARCH_PORT_SET": [
         "",
         ""
+    ],
+    "W9_LOGIN_ADMIN_PASSWORD": [
+        "",
+        ""
     ]
 }
