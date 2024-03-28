@@ -1,4 +1,5 @@
-# image,docs: https://github.com/RobinLinus/snapdrop/blob/master/docs/local-dev.md
+# image: https://hub.docker.com/r/linuxserver/snapdrop
+# docs: https://github.com/RobinLinus/snapdrop/blob/master/docs/local-dev.md
 
 version: '3.8'
 
