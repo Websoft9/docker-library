@@ -1,0 +1,21 @@
+services:
+  php:
+    container_name: ${W9_ID}
+    build:
+      context: src
+      dockerfile: Dockerfile
+      args:
+        - PHP_VERSION=${W9_VERSION}
+        - GIT_URL=${W9_GIT_URL_SET}
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes: 
+      - source:/var/www/html
+
+volumes:
+  source:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true
