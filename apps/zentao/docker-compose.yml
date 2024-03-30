@@ -25,7 +25,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: $W9_ID
+      MYSQL_DATABASE: zentao
       MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
       
 networks:
