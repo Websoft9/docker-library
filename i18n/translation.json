@@ -346,5 +346,9 @@
     "W9_LOGIN_ADMIN_PASSWORD": [
         "",
         ""
+    ],
+    "W9_GIT_URL_SET": [
+        "",
+        ""
     ]
 }
