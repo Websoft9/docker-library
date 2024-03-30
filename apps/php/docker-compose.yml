@@ -9,6 +9,8 @@ services:
         - GIT_URL=${W9_GIT_URL_SET}
     restart: unless-stopped
     working_dir: /var/www/html
+    env_file:
+      - .env
     ports:
      - $W9_HTTP_PORT_SET:80
     volumes: 
