@@ -11,22 +11,66 @@ LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
       org.opencontainers.image.version="${PHP_VERSION}"
 
 COPY --from=composer/composer /usr/bin/composer /usr/bin/composer
-RUN apt-get update && apt-get install -y --no-install-recommends git
-
-# Git clone and php composer, and add your commands
-
-RUN if [ -z "$GIT_URL" ]; then echo "GIT_URL not provided" && exit 1; fi && \
-    git clone "$GIT_URL" . ; \
-    ##################### customer commands start ##########################
-
-    #composer
-    if not have index.php, echo '<?php echo "It seam not have index.php at root directory"; ?>' > index.php
-
-    ##################### customer commands end ##########################
-
+COPY php_exra.ini /usr/local/etc/php/conf.d/php_exra.ini
+COPY script.sh /script.sh
+COPY os_packages.ini /os_packages.ini
+RUN chmod +x /script.sh
 
 # Install os common package for more PHP applications
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && \
+    apt-get install -y acl \
+		mosh  \
+		curl  \
+		gnupg2  \
+		ca-certificates  \
+		lsb-release  \
+		wget  \
+		openssl  \
+		unzip  \
+		bzip2  \
+		expect  \
+		at  \
+		tree  \
+		vim  \
+		screen  \
+		pwgen  \
+		git  \
+		htop  \
+		imagemagick  \
+		goaccess  \
+		jq  \
+		net-tools  \
+		mlocate  \
+		chrony  \
+		gnupg  \
+		dirmngr  \
+		ghostscript  \
+		unixodbc-dev  \
+		libfreetype6-dev  \
+		libjpeg-dev  \
+		libpng-dev  \
+		libpq-dev  \
+		libwebp-dev  \
+		libzip-dev  \
+		libcurl4-openssl-dev  \
+		libicu-dev  \
+		libldap2-dev  \
+		libmemcached-dev  \
+		libsnmp-dev  \
+		libtidy-dev  \
+		libmcrypt-dev  \
+		libgmp-dev  \
+		libmagickwand-dev  \
+		libmagickcore-dev  \
+		libc-client-dev  \
+		libkrb5-dev  \
+		libc-client-dev  \
+		libbz2-dev || true
+
+# Git clone and php composer, and add your commands
+RUN git clone "https://github.com/edysegura/php-sqlite-example.git" . && \
+    bash /script.sh
+
 
 # Install php module for more PHP applications
 RUN docker-php-ext-configure gd \
