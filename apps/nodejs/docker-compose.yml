@@ -1,0 +1,18 @@
+services:
+  php:
+    container_name: ${W9_ID}
+    image: $W9_REPO:$W9_VERSION-apache
+    restart: unless-stopped
+    env_file: .env
+    ports:
+     - $W9_HTTP_PORT_SET:80
+    volumes: 
+      - source:/var/www/html
+
+volumes:
+  source:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true
