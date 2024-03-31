@@ -1,17 +1,11 @@
 services:
-  node:
+  python:
     container_name: ${W9_ID}
     image: $W9_REPO:$W9_VERSION
     restart: unless-stopped
     env_file: .env
-    tty: true
     ports:
      - $W9_HTTP_PORT_SET:3000
-    volumes: 
-      - source:/app
-
-volumes:
-  source:
 
 networks:
   default:
