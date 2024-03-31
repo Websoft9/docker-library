@@ -1,0 +1,18 @@
+{
+  "name": "java",
+  "trademark": "Java",
+  "release": false,
+  "fork_url": "https://openjdk.org/",
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["23","22","21","20","19","18","17","15","14","11"]
+    }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1",
+    "url": "https://openjdk.org/"
+  }
+}
