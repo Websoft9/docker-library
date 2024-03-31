@@ -1,13 +1,14 @@
 services:
-  php:
+  node:
     container_name: ${W9_ID}
     image: $W9_REPO:$W9_VERSION-apache
     restart: unless-stopped
     env_file: .env
+    tty: true
     ports:
-     - $W9_HTTP_PORT_SET:80
+     - $W9_HTTP_PORT_SET:3000
     volumes: 
-      - source:/var/www/html
+      - source:/app
 
 volumes:
   source:
