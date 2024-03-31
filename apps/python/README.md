@@ -1,14 +1,14 @@
-# Node.js on Docker  
+# Python on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Node.js:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Python:
 
 
- - community:  21, 20, 19, 18, 17, 16, 15, 14
+ - community:  3.12, 3.11, 3.10, 3.9, 3.8, 3.7, 3.6
 
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://nodejs.org/docs/latest/api/documentation.html):
+The following are the minimal [recommended requirements](https://www.python.org/):
 
 * **RAM**: 1 GB or more
 * **CPU**: 1 cores or higher
@@ -17,10 +17,10 @@ The following are the minimal [recommended requirements](https://nodejs.org/docs
 
 ## Install
 
-You can install this Node.js by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this Python by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use Node.js with **Websoft9 Business Support** free, you can [subscribe Node.js](https://www.websoft9.com/apps) on Cloud platform
+If you want use Python with **Websoft9 Business Support** free, you can [subscribe Python](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[Node.js Administrator Guide](https://support.websoft9.com/docs/nodejs) powered by Websoft9
+[Python Administrator Guide](https://support.websoft9.com/docs/python) powered by Websoft9
