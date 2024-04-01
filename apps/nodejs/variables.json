@@ -2,17 +2,17 @@
   "name": "nodejs",
   "trademark": "Node.js",
   "release": true,
-  "fork_url": "https://nodejs.org/en",
+  "fork_url": "https://github.com/nodejs/docker-node",
   "edition": [
     {
       "dist": "community",
-      "version": ["21","20","19","18","17","16","15","14"]
+      "version": ["21","21-alpine","21-slim","20","20-alpine","20-slim","19","19-alpine","19-slim","18","18-alpine","18-slim","17","17-alpine","17-slim","16","16-alpine","16-slim","15","15-alpine","15-slim","14","14-alpine","14-slim"]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "1",
-    "url": "https://nodejs.org/docs/latest/api/documentation.html"
+    "url": "https://github.com/nodejs/docker-node"
   }
 }

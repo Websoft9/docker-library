@@ -1,17 +1,25 @@
+# Once you have install application at /home/node/app, you should check the correct application path, maybe /home/node/app or /home/node/app/folder
+# make sure set working_dir to your correct application path
+# make sure enable and set command to correct value
+
+
 services:
   node:
+    image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
-    image: $W9_REPO:$W9_VERSION
     restart: unless-stopped
     env_file: .env
-    tty: true
-    ports:
-     - $W9_HTTP_PORT_SET:3000
     volumes: 
-      - source:/app
+      - app:/home/node/app
+    #command: sh -c "cd /home/node/app/classic && npm run start -- --host 0.0.0.0"
+    environment:
+      - NODE_ENV=production
+    ports:
+     - $W9_HTTP_PORT_SET:$W9_HTTP_PORT  # replace this with your application's default port
+    tty: true
 
 volumes:
-  source:
+  app:
 
 networks:
   default:
