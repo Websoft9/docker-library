@@ -91,20 +91,17 @@ for setting in "${settings[@]}"; do
 done
 
 # Set custom PHP settings
-declare -A php_configurations
-php_configurations=(
-  [file_uploads]="On"
-  [max_input_time]="800"
-  [max_execution_time]="300"
-  [memory_limit]="600M"
-  [upload_max_filesize]="900M"
-  [post_max_size]="900M"
-  [max_file_uploads]="200"
-  [error_reporting]="E_ALL & ~E_DEPRECATED & ~E_STRICT"
+configurations=(
+    "file_uploads = On"
+    "max_input_time = 800"
+    "max_execution_time = 300"
+    "memory_limit = 600M"
+    "upload_max_filesize = 900M"
+    "post_max_size = 900M"
+    "max_file_uploads = 200"
+    "error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT"
 )
 
-{
-  for key in "${!php_configurations[@]}"; do
-    echo "$key = ${php_configurations[$key]}"
-  done
-} > /usr/local/etc/php/conf.d/php_exra.ini
+for config in "${configurations[@]}"; do
+    echo "$config" >> /usr/local/etc/php/conf.d/php_extra.ini
+done
