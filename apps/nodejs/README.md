@@ -3,12 +3,12 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Node.js:
 
 
- - community:  21, 20, 19, 18, 17, 16, 15, 14
+ - community:  21, 21-alpine, 21-slim, 20, 20-alpine, 20-slim, 19, 19-alpine, 19-slim, 18, 18-alpine, 18-slim, 17, 17-alpine, 17-slim, 16, 16-alpine, 16-slim, 15, 15-alpine, 15-slim, 14, 14-alpine, 14-slim
 
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://nodejs.org/docs/latest/api/documentation.html):
+The following are the minimal [recommended requirements](https://github.com/nodejs/docker-node):
 
 * **RAM**: 1 GB or more
 * **CPU**: 1 cores or higher
