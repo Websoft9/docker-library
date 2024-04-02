@@ -60,6 +60,7 @@ done
 # Install pecl packge
 declare -A pecl_extensions_inputs
 pecl_extensions_inputs=(
+  [mongodb]="no"
   [apcu]="no"
   [redis]="no"
   [memcached]="no"
@@ -67,8 +68,7 @@ pecl_extensions_inputs=(
   [imagick]="imagick"
 )
 
-pecl install mongodb || echo "Failed to install mongodb"
-pecl install xmlrpc || echo "Failed to install xmlrpc"
+pecl install xmlrpc-1.0.0RC3 || echo "Failed to install xmlrpc"
 
 for ext in "${!pecl_extensions_inputs[@]}"; do
   input=${pecl_extensions_inputs[$ext]}
