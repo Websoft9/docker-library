@@ -58,19 +58,10 @@ for ext in "${!special_extensions[@]}"; do
 done
 
 # Install pecl packge
-declare -A pecl_extensions_inputs
-pecl_extensions_inputs=(
-  [mongodb]="no"
-  [apcu]="no"
-  [redis]="no"
-  [memcached]="no"
-  [mcrypt]="mcrypt"
-  [imagick]="imagick"
-)
-
 pecl install xmlrpc-1.0.0RC3 || echo "Failed to install xmlrpc"
-
-for ext in "${!pecl_extensions_inputs[@]}"; do
-  input=${pecl_extensions_inputs[$ext]}
-  echo "$input" | pecl install "$ext" || echo "Failed to install $ext"
-done
+echo "no" | pecl install mongodb || echo "Failed to install mongodb"
+echo "no" | pecl install apcu || echo "Failed to install apcu"
+echo "no" | pecl install redis || echo "Failed to install redis"
+echo "no" | pecl install memcached || echo "Failed to install memcached"
+echo "no" | pecl install mcrypt || echo "Failed to install mcrypt"
+echo "no" | pecl install imagick || echo "Failed to install imagick"
