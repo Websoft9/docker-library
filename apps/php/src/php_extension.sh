@@ -74,34 +74,3 @@ for ext in "${!pecl_extensions_inputs[@]}"; do
   input=${pecl_extensions_inputs[$ext]}
   echo "$input" | pecl install "$ext" || echo "Failed to install $ext"
 done
-
-# Set recommended PHP.ini settings
-# See https://secure.php.net/manual/en/opcache.installation.php
-settings=(
-    'opcache.memory_consumption=128'
-    'opcache.interned_strings_buffer=8'
-    'opcache.max_accelerated_files=4000'
-    'opcache.revalidate_freq=60'
-    'opcache.fast_shutdown=1'
-)
-
-# Use a loop to write/append each setting to the file
-for setting in "${settings[@]}"; do
-    echo "$setting" >> /usr/local/etc/php/conf.d/opcache-recommended.ini
-done
-
-# Set custom PHP settings
-configurations=(
-    "file_uploads = On"
-    "max_input_time = 800"
-    "max_execution_time = 300"
-    "memory_limit = 600M"
-    "upload_max_filesize = 900M"
-    "post_max_size = 900M"
-    "max_file_uploads = 200"
-    "error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT"
-)
-
-for config in "${configurations[@]}"; do
-    echo "$config" >> /usr/local/etc/php/conf.d/php_extra.ini
-done

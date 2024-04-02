@@ -11,7 +11,9 @@ services:
     env_file: .env
     volumes: 
       - app:/home/node/app
-    #command: sh -c "cd /home/node/app/classic && npm run start -- --host 0.0.0.0"
+    command: >
+      sh -c "cd /home/node/app/classic &&
+      npm run start -- --host 0.0.0.0"
     environment:
       - NODE_ENV=production
     ports:
