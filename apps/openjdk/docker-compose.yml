@@ -5,9 +5,15 @@ services:
     restart: unless-stopped
     env_file: .env
     tty: true
+    volumes: 
+      - app:/home/openjdk/app
     ports:
      - $W9_HTTP_PORT_SET:8080
-
+    #command: sh -c "cd /home/openjdk/app && java -jar jenkins.war"
+    
+volumes:
+  app:
+  
 networks:
   default:
     name: ${W9_NETWORK}
