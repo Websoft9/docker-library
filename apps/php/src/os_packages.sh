@@ -9,7 +9,7 @@ export PATH
 # We should continue when install a package failed, so we use || to continue
 
 # You can delete any package you don't need
-tools_apt="git acl mosh curl wget gnupg2 ca-certificates  openssl unzip bzip2 at tree vim screen pwgen htop imagemagick goaccess jq net-tools mlocate chrony gnupg dirmngr ghostscript unixodbc-dev libfreetype6-dev libjpeg-dev libpng-dev libpq-dev libwebp-dev libzip-dev libcurl4-openssl-dev libicu-dev libldap2-dev libmemcached-dev libsnmp-dev libtidy-dev libmcrypt-dev libgmp-dev libmagickwand-dev libmagickcore-dev libc-client-dev libkrb5-dev libc-client-dev libbz2-dev libxml2-dev"
+tools_apt="git acl mosh wget gnupg2 ca-certificates unzip bzip2 at tree vim screen pwgen htop imagemagick goaccess jq net-tools mlocate chrony gnupg dirmngr ghostscript unixodbc-dev libfreetype6-dev libjpeg-dev libpng-dev libpq-dev libwebp-dev libzip-dev libcurl4-openssl-dev libicu-dev libldap2-dev libmemcached-dev libsnmp-dev libtidy-dev libmcrypt-dev libgmp-dev libmagickwand-dev libmagickcore-dev libc-client-dev libkrb5-dev libc-client-dev libbz2-dev libxml2-dev"
 
 apt-get update -y 1>/dev/null 2>&1
 for package in $tools_apt; do 

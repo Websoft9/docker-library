@@ -1,9 +1,9 @@
-# Java on Docker  
+# OpenJDK on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Java:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for OpenJDK:
 
 
- - community:  23, 22, 21, 20, 19, 18, 17, 15, 14, 11
+ - community:  22, 21, 20, 19, 18, 17, 16, 15, 14
 
 
 ## System Requirements
@@ -17,10 +17,10 @@ The following are the minimal [recommended requirements](https://openjdk.org/):
 
 ## Install
 
-You can install this Java by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this OpenJDK by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use Java with **Websoft9 Business Support** free, you can [subscribe Java](https://www.websoft9.com/apps) on Cloud platform
+If you want use OpenJDK with **Websoft9 Business Support** free, you can [subscribe OpenJDK](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[Java Administrator Guide](https://support.websoft9.com/docs/java) powered by Websoft9
+[OpenJDK Administrator Guide](https://support.websoft9.com/docs/openjdk) powered by Websoft9
