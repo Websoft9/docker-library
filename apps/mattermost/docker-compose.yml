@@ -33,7 +33,7 @@ services:
       - TZ
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=$W9_POWER_PASSWORD
-      - POSTGRES_DB=$W9_ID
+      - POSTGRES_DB=mattermost
 
 networks:
   default:
