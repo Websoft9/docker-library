@@ -16,7 +16,7 @@ services:
     volumes: 
       - "nocodb:/usr/app/data"
     environment:
-      NC_DB: "pg://${W9_ID}-postgresql:5432?u=postgres&p=${W9_POWER_PASSWORD}&d=${W9_ID}"
+      NC_DB: "pg://${W9_ID}-postgresql:5432?u=postgres&p=${W9_RCODE}&d=${W9_ID}"
     env_file: .env
 
   db:
@@ -27,7 +27,7 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
     environment:
-      POSTGRES_PASSWORD: ${W9_POWER_PASSWORD}
+      POSTGRES_PASSWORD: ${W9_RCODE}
       POSTGRES_USER: postgres
       POSTGRES_DB: ${W9_ID}
     healthcheck:
