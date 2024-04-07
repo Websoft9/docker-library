@@ -2,14 +2,12 @@
   "name": "tomcat",
   "trademark": "Tomcat ",
   "release": false,
-  "fork_url": "https://github.com/apache/tomcat",
+  "fork_url": "https://github.com/apache/tomee",
   "edition": [
     {
       "dist": "community",
       "version": [
-        "10",
-        "9",
-        "8.5.96"
+        "latest"
       ]
     }
   ],
@@ -17,6 +15,6 @@
     "cpu": "2",
     "memory": "4",
     "disk": "1",
-    "url": "https://tomcat.apache.org/"
+    "url": "https://tomee.apache.org/"
   }
 }

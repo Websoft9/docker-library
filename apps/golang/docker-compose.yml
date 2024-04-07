@@ -18,4 +18,3 @@ networks:
 
 volumes:
   tomcat:
-

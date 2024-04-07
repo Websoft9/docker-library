@@ -1,0 +1,24 @@
+{
+  "name": "maven",
+  "trademark": "Maven ",
+  "release": false,
+  "fork_url": "https://github.com/apache/maven-sources",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "3.9",
+        "3.8",
+        "3.6",
+        "3.5",
+        "3.3"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "1",
+    "url": "https://maven.apache.org/"
+  }
+}

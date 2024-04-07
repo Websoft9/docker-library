@@ -1,1 +1,831 @@
-
+[
+    {
+      "key": "database",
+      "position": 10,
+      "title": "数据库",
+      "linkedFrom": {
+        "catalogCollection": {
+          "items": [
+            {
+              "key": "graphdb",
+              "title": "图数据库",
+              "position": 5
+            },
+            {
+              "key": "timedbs",
+              "title": "时序数据库",
+              "position": 4
+            },
+            {
+              "key": "data-warehouse",
+              "title": "数据仓库",
+              "position": 11
+            },
+            {
+              "key": "nosql",
+              "title": "NoSQL 数据库",
+              "position": 2
+            },
+            {
+              "key": "rds",
+              "title": "SQL 数据库/关系数据库",
+              "position": 1
+            },
+            {
+              "key": "dbtools",
+              "title": "数据库管理工具",
+              "position": 21
+            },
+            {
+              "key": "newsql",
+              "title": "NewSQL 数据库",
+              "position": 3
+            },
+            {
+              "key": "memorydb",
+              "title": "缓存数据库",
+              "position": 6
+            },
+            {
+              "key": "data-lake",
+              "title": "数据湖",
+              "position": 12
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "ai",
+      "position": 1,
+      "title": "人工智能",
+      "linkedFrom": {
+        "catalogCollection": {
+          "items": [
+            {
+              "key": "ai-gateway",
+              "title": "AI 网关",
+              "position": 1
+            },
+            {
+              "key": "aiapps",
+              "title": "AI 仿真应用",
+              "position": null
+            },
+            {
+              "key": "mvi",
+              "title": "机器视觉",
+              "position": null
+            },
+            {
+              "key": "dl",
+              "title": "训练框架",
+              "position": 1
+            },
+            {
+              "key": "aigc",
+              "title": "AIGC",
+              "position": 1
+            },
+            {
+              "key": "aiops",
+              "title": "AIOps",
+              "position": 10
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "industry",
+      "position": 30,
+      "title": "行业",
+      "linkedFrom": {
+        "catalogCollection": {
+          "items": [
+            {
+              "key": "software-platform",
+              "title": "软件与平台",
+              "position": 10
+            },
+            {
+              "key": "education",
+              "title": "教育",
+              "position": 10
+            },
+            {
+              "key": "automotive",
+              "title": "汽车",
+              "position": 10
+            },
+            {
+              "key": "industrial-equipment",
+              "title": "工业设备",
+              "position": 10
+            },
+            {
+              "key": "construction",
+              "title": "建筑",
+              "position": 10
+            },
+            {
+              "key": "life",
+              "title": "生命科学",
+              "position": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "business-operation",
+      "position": 3,
+      "title": "企业运营",
+      "linkedFrom": {
+        "catalogCollection": {
+          "items": [
+            {
+              "key": "erp",
+              "title": "ERP/财税/后勤",
+              "position": 2.2
+            },
+            {
+              "key": "smart-manufacturing",
+              "title": "供应链/采购/生产/物流",
+              "position": 1.2
+            },
+            {
+              "key": "helpdesk",
+              "title": "客服/售后",
+              "position": 1
+            },
+            {
+              "key": "crm",
+              "title": "CRM/分销/订单",
+              "position": 1.1
+            },
+            {
+              "key": "strategy",
+              "title": "战略/合规/人事",
+              "position": 2.1
+            },
+            {
+              "key": "blockchain",
+              "title": "区块链",
+              "position": 12
+            },
+            {
+              "key": "plm",
+              "title": "产品生命周期",
+              "position": 5
+            },
+            {
+              "key": "marketing",
+              "title": "市场营销",
+              "position": 3
+            },
+            {
+              "key": "master-data",
+              "title": "企业主数据",
+              "position": 11
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "automation",
+      "position": 8,
+      "title": "自动化",
+      "linkedFrom": {
+        "catalogCollection": {
+          "items": [
+            {
+              "key": "pipeline",
+              "title": "流水线",
+              "position": 3
+            },
+            {
+              "key": "workflowauto",
+              "title": "工作流",
+              "position": 12
+            },
+            {
+              "key": "rpa",
+              "title": "流程机器人",
+              "position": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "games",
+      "position": 14,
+      "title": "游戏",
+      "linkedFrom": {
+        "catalogCollection": {
+          "items": [
+            {
+              "key": "games-server",
+              "title": "游戏私服",
+              "position": 10
+            },
+            {
+              "key": "game-engine",
+              "title": "游戏引擎",
+              "position": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "architecture",
+      "position": 22,
+      "title": "IT 应用架构",
+      "linkedFrom": {
+        "catalogCollection": {
+          "items": [
+            {
+              "key": "backup",
+              "title": "备份恢复",
+              "position": 10
+            },
+            {
+              "key": "workflow",
+              "title": "工作流",
+              "position": null
+            },
+            {
+              "key": "search",
+              "title": "搜索服务",
+              "position": 1
+            },
+            {
+              "key": "api",
+              "title": "API 网关",
+              "position": 1
+            },
+            {
+              "key": "gis",
+              "title": "地图服务",
+              "position": null
+            },
+            {
+              "key": "docs",
+              "title": "文档服务",
+              "position": null
+            },
+            {
+              "key": "mq",
+              "title": "消息队列",
+              "position": null
+            },
+            {
+              "key": "application-gateway",
+              "title": "应用网关",
+              "position": 10
+            },
+            {
+              "key": "baas",
+              "title": "后端即服务",
+              "position": 10
+            },
+            {
+              "key": "licensing",
+              "title": "授权许可",
+              "position": 10
+            },
+            {
+              "key": "subscriptions-and-billing",
+              "title": "订阅计费",
+              "position": 10
+            },
+            {
+              "key": "email",
+              "title": "企业邮箱",
+              "position": 1
+            },
+            {
+              "key": "balancer",
+              "title": "负载均衡 ",
+              "position": 1
+            },
+            {
+              "key": "container",
+              "title": "容器",
+              "position": null
+            },
+            {
+              "key": "game-engine",
+              "title": "游戏引擎",
+              "position": 1
+            },
+            {
+              "key": "oss",
+              "title": "对象存储",
+              "position": null
+            },
+            {
+              "key": "video-server",
+              "title": "视频服务",
+              "position": 10
+            },
+            {
+              "key": "httpserver",
+              "title": "HTTP 服务器",
+              "position": 1
+            },
+            {
+              "key": "key-management",
+              "title": "秘钥管理",
+              "position": 10
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "iot",
+      "position": 12,
+      "title": "物联网",
+      "linkedFrom": {
+        "catalogCollection": {
+          "items": [
+            {
+              "key": "mqtt",
+              "title": "MQTT",
+              "position": 10
+            },
+            {
+              "key": "device-security",
+              "title": "设备安全",
+              "position": 10
+            },
+            {
+              "key": "device-management",
+              "title": "设备管理",
+              "position": 10
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "itdeveloper",
+      "position": 21,
+      "title": "IT 开发者",
+      "linkedFrom": {
+        "catalogCollection": {
+          "items": [
+            {
+              "key": "repository",
+              "title": "源码仓库",
+              "position": 1
+            },
+            {
+              "key": "testing",
+              "title": "测试管理",
+              "position": 4
+            },
+            {
+              "key": "artifact-repository",
+              "title": "制品仓库",
+              "position": 2
+            },
+            {
+              "key": "agile",
+              "title": "需求/看板/缺陷",
+              "position": 10
+            },
+            {
+              "key": "softwarechain",
+              "title": "软件供应链",
+              "position": 11
+            },
+            {
+              "key": "devops",
+              "title": "开发全栈",
+              "position": 0
+            },
+            {
+              "key": "orchestration",
+              "title": "应用编排",
+              "position": 5
+            },
+            {
+              "key": "ide",
+              "title": "在线 IDE",
+              "position": 6
+            },
+            {
+              "key": "pipeline",
+              "title": "流水线",
+              "position": 3
+            },
+            {
+              "key": "webframework",
+              "title": "Web 开发框架",
+              "position": null
+            },
+            {
+              "key": "low-code",
+              "title": "低代码/零代码",
+              "position": 12
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "itdevops",
+      "position": 23,
+      "title": "IT 监控运维",
+      "linkedFrom": {
+        "catalogCollection": {
+          "items": [
+            {
+              "key": "backup",
+              "title": "备份恢复",
+              "position": 10
+            },
+            {
+              "key": "desktop",
+              "title": "系统面板",
+              "position": null
+            },
+            {
+              "key": "cpm",
+              "title": "多云管理",
+              "position": null
+            },
+            {
+              "key": "itsm",
+              "title": "云设施监控",
+              "position": null
+            },
+            {
+              "key": "logs",
+              "title": "日志管理",
+              "position": null
+            },
+            {
+              "key": "fullmonitor",
+              "title": "全面监控",
+              "position": null
+            },
+            {
+              "key": "apm",
+              "title": "应用性能分析",
+              "position": 10
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "security",
+      "position": 24,
+      "title": "IT 安全",
+      "linkedFrom": {
+        "catalogCollection": {
+          "items": [
+            {
+              "key": "softwarechain",
+              "title": "软件供应链",
+              "position": 11
+            },
+            {
+              "key": "teampassm",
+              "title": "密码管理",
+              "position": 1
+            },
+            {
+              "key": "access-control",
+              "title": "访问控制",
+              "position": 10
+            },
+            {
+              "key": "security-detection",
+              "title": "扫描监测",
+              "position": 10
+            },
+            {
+              "key": "firewall",
+              "title": "防火墙",
+              "position": 10
+            },
+            {
+              "key": "pam",
+              "title": "堡垒机",
+              "position": 10
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "communication",
+      "position": 6,
+      "title": "通信联络",
+      "linkedFrom": {
+        "catalogCollection": {
+          "items": [
+            {
+              "key": "chat",
+              "title": "团队聊天",
+              "position": null
+            },
+            {
+              "key": "email",
+              "title": "企业邮箱",
+              "position": 1
+            },
+            {
+              "key": "meeting",
+              "title": "会议/直播",
+              "position": 10
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "cms",
+      "position": 5,
+      "title": "网站",
+      "linkedFrom": {
+        "catalogCollection": {
+          "items": [
+            {
+              "key": "media-system",
+              "title": "视频音频",
+              "position": 6
+            },
+            {
+              "key": "website",
+              "title": "企业建站",
+              "position": 1
+            },
+            {
+              "key": "elearning",
+              "title": "在线学习",
+              "position": 5
+            },
+            {
+              "key": "kms",
+              "title": "知识管理",
+              "position": 3
+            },
+            {
+              "key": "ecommerce",
+              "title": "电子商务",
+              "position": 2
+            },
+            {
+              "key": "community",
+              "title": "社交/论坛",
+              "position": 4
+            },
+            {
+              "key": "headless-cms",
+              "title": "无头 CMS",
+              "position": 10
+            },
+            {
+              "key": "web-analytics",
+              "title": "访问统计",
+              "position": 11
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "create",
+      "position": 4,
+      "title": "设计创作",
+      "linkedFrom": {
+        "catalogCollection": {
+          "items": [
+            {
+              "key": "virtual-reality",
+              "title": "虚拟仿真",
+              "position": 10
+            },
+            {
+              "key": "industrial-design",
+              "title": "工业设计",
+              "position": 10
+            },
+            {
+              "key": "whiteboard-and-note",
+              "title": "白板/笔记",
+              "position": 10
+            },
+            {
+              "key": "dcreativity",
+              "title": "数字创意",
+              "position": 10
+            },
+            {
+              "key": "low-code",
+              "title": "低代码/零代码",
+              "position": 12
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "collaboration",
+      "position": 7,
+      "title": "协作办公",
+      "linkedFrom": {
+        "catalogCollection": {
+          "items": [
+            {
+              "key": "agile",
+              "title": "需求/看板/缺陷",
+              "position": 10
+            },
+            {
+              "key": "task",
+              "title": "任务协作",
+              "position": null
+            },
+            {
+              "key": "document",
+              "title": "文档协作",
+              "position": null
+            },
+            {
+              "key": "pm-task",
+              "title": "项目/任务",
+              "position": 1
+            },
+            {
+              "key": "teampassm",
+              "title": "密码管理",
+              "position": 1
+            },
+            {
+              "key": "files",
+              "title": "文件管理",
+              "position": 10
+            },
+            {
+              "key": "cloud-workspaces",
+              "title": "云桌面",
+              "position": 10
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "networking",
+      "position": 13,
+      "title": "网络",
+      "linkedFrom": {
+        "catalogCollection": {
+          "items": [
+            {
+              "key": "api",
+              "title": "API 网关",
+              "position": 1
+            },
+            {
+              "key": "dns",
+              "title": "DNS 服务",
+              "position": 10
+            },
+            {
+              "key": "balancer",
+              "title": "负载均衡 ",
+              "position": 1
+            },
+            {
+              "key": "application-gateway",
+              "title": "应用网关",
+              "position": 10
+            },
+            {
+              "key": "httpserver",
+              "title": "HTTP 服务器",
+              "position": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "analytics",
+      "position": 2,
+      "title": "大数据分析",
+      "linkedFrom": {
+        "catalogCollection": {
+          "items": [
+            {
+              "key": "etl",
+              "title": "数据连接与集成",
+              "position": 5
+            },
+            {
+              "key": "data-collection",
+              "title": "数据采集",
+              "position": 6
+            },
+            {
+              "key": "bi",
+              "title": "数据应用与可视化",
+              "position": 1
+            },
+            {
+              "key": "storage",
+              "title": "大数据存储",
+              "position": 4
+            },
+            {
+              "key": "search",
+              "title": "搜索服务",
+              "position": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "runtime",
+      "position": 11,
+      "title": "运行环境",
+      "linkedFrom": {
+        "catalogCollection": {
+          "items": [
+            {
+              "key": "php",
+              "title": "PHP",
+              "position": 10
+            },
+            {
+              "key": "java",
+              "title": "Java",
+              "position": 10
+            },
+            {
+                "key": "openjdk",
+                "title": "OpenJDK",
+                "position": 10
+            },
+            {
+                "key": "tomcat",
+                "title": "Tomcat",
+                "position": 10
+            },
+            {
+                "key": "tomee",
+                "title": "TomEE",
+                "position": 10
+            },
+            {
+                "key": "maven",
+                "title": "Maven",
+                "position": 10
+            },
+            {
+                "key": "jetty",
+                "title": "Jetty",
+                "position": 10
+            },
+            {
+              "key": "ruby",
+              "title": "Ruby",
+              "position": 10
+            },
+            {
+              "key": "python",
+              "title": "Python",
+              "position": 10
+            },
+            {
+              "key": "Staticfile",
+              "title": "静态文件",
+              "position": 10
+            },
+            {
+              "key": "node",
+              "title": "Node",
+              "position": 10
+            },
+            {
+              "key": "golang",
+              "title": "Golang",
+              "position": 10
+            }
+          ]
+        }
+      }
+    }
+  ]
+  
