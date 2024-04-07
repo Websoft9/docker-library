@@ -10,7 +10,7 @@ services:
       - '${W9_HTTP_PORT_SET}:8080'
     volumes:
       - src:/usr/src/app
-    command: mvn clean package
+    #command: mvn clean package
     tty: true
 
 networks:
