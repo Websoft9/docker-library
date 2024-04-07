@@ -2,14 +2,16 @@
 
 version: '3.8'
 services:
-  tomcat:
+  maven:
     container_name: ${W9_ID}
     image: $W9_REPO:$W9_VERSION
     restart: unless-stopped
     ports:
       - '${W9_HTTP_PORT_SET}:8080'
     volumes:
-     - tomcat:/usr/local/tomcat
+      - src:/usr/src/app
+    command: mvn clean package
+    tty: true
 
 networks:
   default:
@@ -17,4 +19,4 @@ networks:
     external: true
 
 volumes:
-  tomcat:
+  src:
