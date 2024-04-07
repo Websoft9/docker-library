@@ -8,6 +8,9 @@ services:
      - $W9_HTTP_PORT_SET:80
     volumes: 
       - source:/var/www/html
+      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
+      - ./src/opcache_recommended.ini:/usr/local/etc/php/conf.d/opcache_recommended.ini
+
 
 volumes:
   source:
