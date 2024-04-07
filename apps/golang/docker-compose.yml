@@ -2,14 +2,14 @@
 
 version: '3.8'
 services:
-  tomcat:
+  golang:
     container_name: ${W9_ID}
     image: $W9_REPO:$W9_VERSION
     restart: unless-stopped
     ports:
       - '${W9_HTTP_PORT_SET}:8080'
     volumes:
-     - tomcat:/usr/local/tomcat
+     - golang:/usr/local/golang
 
 networks:
   default:
@@ -17,4 +17,4 @@ networks:
     external: true
 
 volumes:
-  tomcat:
+  golang:
