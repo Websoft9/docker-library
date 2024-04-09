@@ -1,6 +1,6 @@
 {
-  "name": "tomcat",
-  "trademark": "Tomcat ",
+  "name": "tomee",
+  "trademark": "TomEE",
   "release": false,
   "fork_url": "https://github.com/apache/tomee",
   "edition": [
