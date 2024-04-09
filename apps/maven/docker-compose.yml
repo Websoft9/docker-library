@@ -6,6 +6,8 @@ services:
     container_name: ${W9_ID}
     image: $W9_REPO:$W9_VERSION
     restart: unless-stopped
+    env_file:
+      - .env
     ports:
       - '${W9_HTTP_PORT_SET}:8080'
     working_dir: /usr/src/app

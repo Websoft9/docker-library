@@ -1,3 +1,7 @@
+# image: https://hub.docker.com/_/python
+
+version: '3.8'
+
 services:
   python:
     container_name: ${W9_ID}
@@ -6,9 +10,16 @@ services:
     env_file: .env
     tty: true
     ports:
-     - $W9_HTTP_PORT_SET:3000
+     - $W9_HTTP_PORT_SET:5000
+    working_dir: /usr/src/app
+    volumes: 
+      - app:/usr/src/app
+      - ./src/cmd.sh:/usr/src/app/cmd.sh
 
 networks:
   default:
     name: ${W9_NETWORK}
     external: true
+    
+volumes:
+  app:
