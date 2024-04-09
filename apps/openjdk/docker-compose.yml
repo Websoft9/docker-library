@@ -5,11 +5,13 @@ services:
     restart: unless-stopped
     env_file: .env
     tty: true
+    working_dir: /usr/src/app
     volumes: 
-      - app:/home/openjdk/app
+      - app:/usr/src/app
+      - ./src/cmd.sh:/usr/src/app/cmd.sh
     ports:
      - $W9_HTTP_PORT_SET:8080
-    #command: sh -c "cd /home/openjdk/app && java -jar jenkins.war"
+    command: /bin/bash -c "bash /usr/src/app/cmd.sh && tail -f /dev/null"
     
 volumes:
   app:
