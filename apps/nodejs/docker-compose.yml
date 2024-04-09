@@ -2,6 +2,7 @@
 # make sure set working_dir to your correct application path
 # make sure enable and set command to correct value
 
+version: '3.8'
 
 services:
   node:
@@ -9,9 +10,11 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     env_file: .env
+    working_dir: /usr/src/app
     volumes: 
-      - app:/home/node/app
-    #command: sh -c "cd /home/node/app/classic && npm run start -- --host 0.0.0.0"
+      - app:/usr/src/app
+      - ./src/cmd.sh:/usr/src/app/cmd.sh
+    command: /bin/bash -c "bash /usr/src/app/cmd.sh && tail -f /dev/null"
     environment:
       - NODE_ENV=production
     ports:
