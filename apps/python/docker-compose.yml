@@ -15,6 +15,7 @@ services:
     volumes: 
       - app:/usr/src/app
       - ./src/cmd.sh:/usr/src/app/cmd.sh
+    command: /bin/bash -c "bash /usr/src/app/cmd.sh && tail -f /dev/null"
 
 networks:
   default:
