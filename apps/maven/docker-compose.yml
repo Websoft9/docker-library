@@ -8,9 +8,11 @@ services:
     restart: unless-stopped
     ports:
       - '${W9_HTTP_PORT_SET}:8080'
-    volumes:
-      - src:/usr/src/app
-    command: tail -f /dev/null
+    working_dir: /usr/src/app
+    volumes: 
+      - app:/usr/src/app
+      - ./src/cmd.sh:/usr/src/app/cmd.sh
+    command: /bin/bash -c "bash /usr/src/app/cmd.sh && tail -f /dev/null"
     tty: true
 
 networks:
