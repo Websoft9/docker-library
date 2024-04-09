@@ -21,4 +21,4 @@ networks:
     external: true
 
 volumes:
-  src:
+  app:
