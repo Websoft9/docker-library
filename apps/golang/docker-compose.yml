@@ -1,4 +1,4 @@
-# image: https://hub.docker.com/_/tomee
+# image: https://hub.docker.com/_/golang
 
 version: '3.8'
 services:
@@ -6,10 +6,14 @@ services:
     container_name: ${W9_ID}
     image: $W9_REPO:$W9_VERSION
     restart: unless-stopped
+    working_dir: /usr/src/app
     ports:
       - '${W9_HTTP_PORT_SET}:8080'
+    tty: true
+    command: /bin/bash -c "bash /usr/src/app/cmd.sh && tail -f /dev/null"
     volumes:
-     - golang:/usr/local/golang
+     - golang:/usr/src/app
+     - ./src/cmd.sh:/usr/src/app/cmd.sh
 
 networks:
   default:
