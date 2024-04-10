@@ -11,7 +11,9 @@ services:
       - '${W9_HTTP_PORT_SET}:8080'
     volumes:
      - tomcat:/usr/local/tomcat
-
+     - ./src/cmd.sh:/usr/src/app/cmd.sh
+    command: /bin/bash -c "bash /usr/src/app/cmd.sh && catalina.sh run"
+    
 networks:
   default:
     name: ${W9_NETWORK}
