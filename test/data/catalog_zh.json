@@ -774,31 +774,6 @@
               "position": 10
             },
             {
-                "key": "openjdk",
-                "title": "OpenJDK",
-                "position": 10
-            },
-            {
-                "key": "tomcat",
-                "title": "Tomcat",
-                "position": 10
-            },
-            {
-                "key": "tomee",
-                "title": "TomEE",
-                "position": 10
-            },
-            {
-                "key": "maven",
-                "title": "Maven",
-                "position": 10
-            },
-            {
-                "key": "jetty",
-                "title": "Jetty",
-                "position": 10
-            },
-            {
               "key": "ruby",
               "title": "Ruby",
               "position": 10

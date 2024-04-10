@@ -175,19 +175,6 @@
                 }
               ]
             }
-          },
-          {
-            "key": "runtime",
-            "title": "运行环境",
-            "catalogCollection": {
-              "items": [
-                {
-                  "key": "product",
-                  "title": "产品",
-                  "position": null
-                }
-              ]
-            }
           }
         ]
       }
@@ -246,19 +233,6 @@
                     "key": "runtime",
                     "title": "运行环境",
                     "position": 11
-                    }
-                ]
-                }
-            },
-            {
-                "key": "runtime",
-                "title": "运行环境",
-                "catalogCollection": {
-                "items": [
-                    {
-                    "key": "product",
-                    "title": "产品",
-                    "position": null
                     }
                 ]
                 }
@@ -332,19 +306,6 @@
                     "key": "runtime",
                     "title": "运行环境",
                     "position": 11
-                    }
-                ]
-                }
-            },
-            {
-                "key": "runtime",
-                "title": "运行环境",
-                "catalogCollection": {
-                "items": [
-                    {
-                    "key": "product",
-                    "title": "产品",
-                    "position": null
                     }
                 ]
                 }
@@ -423,19 +384,6 @@
                     }
                 ]
                 }
-            },
-            {
-                "key": "runtime",
-                "title": "运行环境",
-                "catalogCollection": {
-                "items": [
-                    {
-                    "key": "product",
-                    "title": "产品",
-                    "position": null
-                    }
-                ]
-                }
             }
             ]
         }
@@ -498,19 +446,6 @@
                     "key": "runtime",
                     "title": "运行环境",
                     "position": 11
-                    }
-                ]
-                }
-            },
-            {
-                "key": "runtime",
-                "title": "运行环境",
-                "catalogCollection": {
-                "items": [
-                    {
-                    "key": "product",
-                    "title": "产品",
-                    "position": null
                     }
                 ]
                 }
