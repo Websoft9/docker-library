@@ -1,3 +1,5 @@
+#image: https://container-registry.oracle.com/ords/ocr/ba/java/openjdk
+
 services:
   openjdk:
     container_name: ${W9_ID}

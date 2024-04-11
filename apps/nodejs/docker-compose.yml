@@ -1,3 +1,5 @@
+# image: https://hub.docker.com/_/node
+
 # Once you have install application at /home/node/app, you should check the correct application path, maybe /home/node/app or /home/node/app/folder
 # make sure set working_dir to your correct application path
 # make sure enable and set command to correct value

@@ -1,6 +1,6 @@
 {
-  "name": "golang",
-  "trademark": "Golang",
+  "name": "go",
+  "trademark": "Go",
   "release": false,
   "fork_url": "https://github.com/apache/tomee",
   "edition": [
