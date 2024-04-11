@@ -1,12 +1,12 @@
 {
-  "name": "ruby",
-  "trademark": "Ruby",
+  "name": "dotnet",
+  "trademark": ".NET SDK",
   "release": false,
-  "fork_url": "https://www.ruby-lang.org/",
+  "fork_url": "https://mcr.microsoft.com/en-us/product/dotnet/sdk/about",
   "edition": [
     {
       "dist": "community",
-      "version": ["3.3","3.2","3.1","3.0","2.7","2.6","2.5","2.4","2.3","2.3","2.2","2.1","2.0"]
+      "version": ["8.0","7.0","6.0","5.0","4.0"]
     }
   ],
   "requirements": {
