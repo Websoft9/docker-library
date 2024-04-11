@@ -1,0 +1,24 @@
+# image:https://mcr.microsoft.com/en-us/product/dotnet/sdk/about
+
+services:
+  dotnet:
+    container_name: ${W9_ID}
+    image: $W9_REPO:$W9_VERSION
+    restart: unless-stopped
+    env_file: .env
+    working_dir: /usr/src/app
+    tty: true
+    volumes:
+      - dotnet:/usr/src/app
+      - ./src/cmd.sh:/usr/src/app/cmd.sh
+    command: /bin/bash -c "bash /usr/src/app/cmd.sh && tail -f /dev/null"
+    ports:
+     - $W9_HTTP_PORT_SET:8080  # You should run application at port 8080
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true
+
+volumes:
+  dotnet:
