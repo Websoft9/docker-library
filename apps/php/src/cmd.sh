@@ -8,7 +8,7 @@ apt update -y && apt install unzip git -y
 curl -o /usr/local/bin/install-php-extensions -L https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions
 chmod 0755 /usr/local/bin/install-php-extensions
 
-## Install php extension, e.g Composer, mysqli
+## Install php extension, e.g Composer, mysqli,gd,imagick
 install-php-extensions @composer
 install-php-extensions mysqli
 

@@ -6,7 +6,7 @@
   "edition": [
     {
       "dist": "community",
-      "version": ["8.1","8.0","7.4","7.3","7.2","7.1","7.0","5.6"]
+      "version": ["8.3-apache","8.2-apache","8.1-apache","8.0-apache","7.4-apache","7.3-apache","7.2-apache","7.1-apache","7.0-apache","5.6-apache"]
     }
   ],
   "requirements": {
