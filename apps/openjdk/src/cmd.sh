@@ -10,3 +10,12 @@ echo "Add your CI code here, below is example"
 # echo 'export MAVEN_HOME=/usr/src/app/apache-maven-3.9.6' >> /root/.bashrc
 # echo 'export PATH=$PATH:$MAVEN_HOME/bin' >> /root/.bashrc
 # source /root/.bashrc
+
+## install gradle8.8:https://docs.gradle.org/current/userguide/installation.html#ex-installing-manually
+# curl  -L -O  https://services.gradle.org/distributions-snapshots/gradle-8.8-20240412020704+0000-bin.zip
+# yum install unzip
+# unzip gradle-8.8-20240412020704+0000-bin.zip
+# mv gradle-8.8-20240412020704+0000 gradle-8.8
+# echo 'export GRADLE_HOME=/usr/src/app/gradle-8.8' >> /root/.bashrc
+# echo 'export PATH=$PATH:$GRADLE_HOME/bin' >> /root/.bashrc
+
