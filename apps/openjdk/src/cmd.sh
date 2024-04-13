@@ -4,3 +4,9 @@ echo "Add your CI code here, below is example"
 #curl -L -O https://get.jenkins.io/war/latest/jenkins.war
 #java -jar jenkins.war --httpPort=8080
 
+## install maven3.9.6:https://maven.apache.org/install.html
+# curl -o maven.tar.gz https://dlcdn.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
+# tar xzvf maven.tar.gz
+# echo 'export MAVEN_HOME=/usr/src/app/apache-maven-3.9.6' >> /root/.bashrc
+# echo 'export PATH=$PATH:$MAVEN_HOME/bin' >> /root/.bashrc
+# source /root/.bashrc
