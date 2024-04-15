@@ -30,7 +30,15 @@ services:
     restart: unless-stopped
     ports:
       - ${W9_HTTP_PORT_SET}:80
-      
+
+  espocrm-daemon:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID-daemon
+    volumes:
+      - espocrm:/var/www/html
+    restart: unless-stopped
+    entrypoint: docker-daemon.sh
+          
 networks:
   default:
     name: ${W9_NETWORK}
