@@ -350,5 +350,13 @@
     "W9_GIT_URL_SET": [
         "",
         ""
+    ],
+    "W9_GEMINI_API_KEY_SET": [
+        "",
+        ""
+    ],
+    "W9_LOGIN_GEMINI_API_KEY": [
+        "",
+        ""
     ]
 }
