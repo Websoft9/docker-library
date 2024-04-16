@@ -31,6 +31,7 @@ services:
     ports:
       - ${W9_HTTP_PORT_SET}:80
 
+  # This is need for Cron
   espocrm-daemon:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID-daemon
