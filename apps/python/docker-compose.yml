@@ -10,7 +10,7 @@ services:
     env_file: .env
     tty: true
     ports:
-     - $W9_HTTP_PORT_SET:5000
+     - $W9_HTTP_PORT_SET:8080 # You should run application at port 8080
     working_dir: /usr/src/app
     volumes: 
       - app:/usr/src/app

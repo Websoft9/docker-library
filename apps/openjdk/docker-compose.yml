@@ -12,7 +12,7 @@ services:
       - app:/usr/src/app
       - ./src/cmd.sh:/usr/src/app/cmd.sh
     ports:
-     - $W9_HTTP_PORT_SET:8080
+     - $W9_HTTP_PORT_SET:8080 # You should run application at port 8080
     command: /bin/bash -c "bash /usr/src/app/cmd.sh && tail -f /dev/null"
     
 volumes:

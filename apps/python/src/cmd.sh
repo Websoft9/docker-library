@@ -16,4 +16,4 @@ echo "Add your CI code here, below is example"
 # def read_item(item_id: int, q: Union[str, None] = None):
 #     return {"item_id": item_id, "q": q}
 # EOF
-# uvicorn main:app --host 0.0.0.0 --port 5000
+# uvicorn main:app --host 0.0.0.0 --port 8080
