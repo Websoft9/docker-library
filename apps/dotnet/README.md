@@ -1,9 +1,9 @@
-# Ruby on Docker  
+# .NET SDK on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Ruby:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for .NET SDK:
 
 
- - community:  3.3, 3.2, 3.1, 3.0, 2.7, 2.6, 2.5, 2.4, 2.3, 2.3, 2.2, 2.1, 2.0
+ - community:  8.0, 7.0, 6.0, 5.0, 4.0
 
 
 ## System Requirements
@@ -17,10 +17,10 @@ The following are the minimal [recommended requirements](https://www.ruby-lang.o
 
 ## Install
 
-You can install this Ruby by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this .NET SDK by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use Ruby with **Websoft9 Business Support** free, you can [subscribe Ruby](https://www.websoft9.com/apps) on Cloud platform
+If you want use .NET SDK with **Websoft9 Business Support** free, you can [subscribe .NET SDK](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[Ruby Administrator Guide](https://support.websoft9.com/docs/ruby) powered by Websoft9
+[.NET SDK Administrator Guide](https://support.websoft9.com/docs/dotnet) powered by Websoft9
