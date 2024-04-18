@@ -5,10 +5,11 @@
 version: '3.8'
 
 services:
-  opensearch-node:
+  opensearch:
     image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID-node
+    container_name: $W9_ID
     hostname: $W9_RCODE
+    env_file: .env
     environment:
       - discovery.type=single-node
       - bootstrap.memory_lock=true              # along with the memlock settings below, disables swapping
@@ -28,8 +29,7 @@ services:
 
   opensearch-dashboards:
     image: $W9_REPO-dashboards:$W9_VERSION
-    container_name: $W9_ID
-    env_file: .env
+    container_name: $W9_ID-dashboards
     ports:
       - $W9_DASHBOARD_PORT_SET:5601
     expose:

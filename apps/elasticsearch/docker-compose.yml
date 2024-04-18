@@ -21,7 +21,7 @@ services:
     volumes:
       - elasticsearch:/usr/share/elasticsearch/data
     ports:
-      - ${W9_HTTP_PORT_SET}:9200 # api
+      - ${W9_HTTPS_PORT_SET}:9200 # api
       #- 9300:9300  # cluster
     env_file: .env
 
