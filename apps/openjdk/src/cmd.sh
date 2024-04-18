@@ -9,7 +9,8 @@ echo "Add your CI code here, below is example"
 ### Install maven sample
 
 # curl -o maven.tar.gz https://dlcdn.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
-# tar -xzf maven.tar.gz --transform 's/^apache-maven-3.9.6/maven/
+# tar -xzf maven.tar.gz
+# mv apache-maven* maven
 # echo 'export MAVEN_HOME=/usr/src/app/maven' >> /root/.bashrc
 # echo 'export PATH=$PATH:$MAVEN_HOME/bin' >> /root/.bashrc
 # source /root/.bashrc
