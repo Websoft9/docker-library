@@ -1,6 +1,6 @@
 echo "Add your CI code here, below is example"
 
-### Install java sample
+### Install java sample(Only for jdk11,17,21)
 
 #cd /usr/src/app
 #curl -L -O https://get.jenkins.io/war/latest/jenkins.war
