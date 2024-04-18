@@ -8,7 +8,7 @@ This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://github.com/Websoft9/docker-library/tree/main/apps/php):
+The following are the minimal [recommended requirements](https://hub.docker.com/_/php):
 
 * **RAM**: 1 GB or more
 * **CPU**: 1 cores or higher
