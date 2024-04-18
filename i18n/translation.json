@@ -324,43 +324,39 @@
         "KAFKA BROKERS"
     ],
     "W9_LOGIN_GET_Kibaba_TOKEN": [
-        "",
-        ""
+        "ES 获取 KIBANA TOKEN 方法",
+        "ES GET KIBANA TOKEN METHOD"
     ],
     "W9_WS_PORT_SET": [
-        "",
-        ""
+        "WEB SOCKET PORT",
+        "WEB SOCKET 端口"
     ],
     "W9_BW_INSTALLATION_ID_SET": [
-        "",
-        ""
+        "INSTALLATION ID",
+        "安装 ID"
     ],
     "W9_BW_INSTALLATION_KEY_SET": [
-        "",
-        ""
+        "INSTALLATION KEY",
+        "安装 KEY"
     ],
     "W9_SEARCH_PORT_SET": [
-        "",
-        ""
+        "SEARCH PORT",
+        "搜索端口"
     ],
     "W9_LOGIN_ADMIN_PASSWORD": [
-        "",
-        ""
+        "ADMIN PASSWORD",
+        "管理员密码"
     ],
     "W9_GIT_URL_SET": [
-        "",
-        ""
+        "GIT URL",
+        "仓库地址"
     ],
     "W9_GEMINI_API_KEY_SET": [
-        "",
-        ""
+        "GEMINI API KEY",
+        "GEMINI API KEY"
     ],
     "W9_LOGIN_GEMINI_API_KEY": [
-        "",
-        ""
-    ],
-    "W9_REPOandTAG_SET": [
-        "",
-        ""
+        "GEMINI LOGIN KEY",
+        "GEMINI 登陆密码"
     ]
 }

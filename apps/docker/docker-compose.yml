@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   webapp:
-    image: $W9_REPOandTAG_SET
+    image: busybox:latest
     container_name: $W9_ID
     restart: unless-stopped
     tty: true
