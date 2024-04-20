@@ -40,8 +40,6 @@ networks:
     external: true
 
 volumes:
-  avatar:
-  uploads:
   download:
   config:
   cloudreve:
