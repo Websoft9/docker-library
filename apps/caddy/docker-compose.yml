@@ -13,6 +13,7 @@ services:
     ports:
       - "$W9_HTTP_PORT_SET:80"
     volumes:
+      - ./site:/srv # Add your html site
       - ./src/Caddyfile:/etc/caddy/Caddyfile
       - data:/data
       - config:/config

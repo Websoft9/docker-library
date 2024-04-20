@@ -10,7 +10,7 @@
 
 :80 {
 	# Set this path to your site's directory.
-	root * /usr/share/caddy
+	root * /srv
 
 	# Enable the static file server.
 	file_server
