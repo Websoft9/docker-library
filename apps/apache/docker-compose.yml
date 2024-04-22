@@ -7,9 +7,10 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     restart: unless-stopped
     ports:
-     - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
+     - ${W9_HTTP_PORT_SET}:80
     volumes:
-     - apache:/usr/local/apache2/htdocs
+     - ./site:/usr/local/apache2/htdocs
+     #- ./src/httpd.conf:/usr/local/apache2/conf/httpd.conf   # Enable it if you want to set it
     env_file: .env
      
 networks:
