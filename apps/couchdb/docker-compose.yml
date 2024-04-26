@@ -15,6 +15,7 @@ services:
     volumes:
      - couchdb_data:/opt/couchdb/data
      - couchdb_config:/opt/couchdb/etc/local.d
+     - ./src/my.ini:/opt/couchdb/etc/local.d/my.ini
      - couchdb_log:/opt/couchdb/var/log
     env_file: .env
     environment:
