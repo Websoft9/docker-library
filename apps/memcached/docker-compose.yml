@@ -14,6 +14,17 @@ services:
       - '-m ${MAX_MEMORY}'
       - '-c ${MAX_CONNECTIONS}'
 
+  memcached-admin:
+    image: hatamiarash7/memcached-admin:master
+    container_name: ${W9_ID}-admin
+    restart: unless-stopped
+    ports:
+      - '8089:80' #set your host port
+    environment:
+      - MEMCACHED_HOST=${W9_ID}
+      - MEMCACHED_PORT='11211'
+    profiles:
+      - gui
 
 networks:
   default:
