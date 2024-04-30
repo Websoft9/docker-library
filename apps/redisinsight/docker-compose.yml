@@ -1,4 +1,4 @@
-# image: https://hub.docker.com/r/redislabs/redisinsight
+# image: https://hub.docker.com/r/redis/redisinsight
 # docs: https://docs.redis.com/latest/ri/installing/install-docker/
 
 
@@ -11,9 +11,9 @@ services:
     env_file:
       - .env
     ports:
-      - $W9_HTTP_PORT_SET:8001
+      - $W9_HTTP_PORT_SET:5540
     volumes:
-      - redisinsight:/db
+      - redisinsight:/data
     restart: unless-stopped
 
 networks:

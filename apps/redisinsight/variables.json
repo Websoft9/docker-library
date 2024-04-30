@@ -2,12 +2,12 @@
   "name": "redisinsight",
   "trademark": "RedisInsight",
   "release": true,
-  "fork_url": "https://docs.redis.com/latest/ri/installing/install-docker/",
+  "fork_url": "https://hub.docker.com/r/redis/redisinsight",
   "edition": [
     {
       "dist": "community",
       "version": [
-        "1.14.0",
+        "2.48",
         "latest"
       ]
     }
@@ -16,6 +16,6 @@
     "cpu": "1",
     "memory": "1",
     "disk": "1",
-    "url": "https://docs.redis.com/latest/ri/installing/install-docker/"
+    "url": "https://hub.docker.com/r/redis/redisinsight"
   }
 }
