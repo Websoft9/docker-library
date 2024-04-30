@@ -358,5 +358,13 @@
     "W9_LOGIN_GEMINI_API_KEY": [
         "GEMINI LOGIN KEY",
         "GEMINI 登陆密码"
+    ],
+    "W9_PROXY_PORT_SET": [
+        "",
+        ""
+    ],
+    "W9_LOGIN_ConnectURL": [
+        "",
+        ""
     ]
 }
