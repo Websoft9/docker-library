@@ -14,13 +14,6 @@ services:
       - typo3uploads:/var/www/html/uploads
       - typo3temp:/var/www/html/typo3temp
     restart: unless-stopped
-    environment:
-      TYPO3_DB_USER: ${W9_ID}
-      TYPO3_DB_PASSWORD: ${W9_POWER_PASSWORD}
-      TYPO3_DB_HOST: mysql
-    command: bash -c "cat /my_cmd > /cmd.sh && chmod +x /cmd.sh && /cmd.sh"
-    configs:
-      - source: my_cmd
     env_file: .env
       
   mysql:
@@ -31,8 +24,8 @@ services:
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: ${W9_ID}
-      MYSQL_USER: ${W9_ID}
+      MYSQL_DATABASE: typo3
+      MYSQL_USER: typo3
       MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
 
@@ -47,7 +40,3 @@ volumes:
   typo3uploads:
   typo3temp:
   mysql:
-
-configs:
-  my_cmd:
-    file: ./cmd.sh

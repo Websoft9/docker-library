@@ -47,8 +47,8 @@ services:
     container_name: ${W9_ID}-mysql
     environment:
       - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWORD}
-      - MYSQL_DATABASE=${W9_ID}
-      - MYSQL_USER=${W9_ID}
+      - MYSQL_DATABASE=teamcity
+      - MYSQL_USER=teamcity
       - MYSQL_PASSWORD=${W9_POWER_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
