@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Tensorflow:
 
 
- - community:  2.11.1-jupyter, latest
+ - community:  2.16.1-jupyter, latest-jupyter
 
 
 ## System Requirements
