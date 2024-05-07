@@ -14,7 +14,7 @@ services:
       - "MYSQL_USER=kodbox"
       - "MYSQL_PASSWORD=$W9_POWER_PASSWORD"
       - "MYSQL_ROOT_PASSWORD=$W9_POWER_PASSWORD"
-    restart: always
+    restart: unless-stopped
     volumes:
       - mysql_data:/var/lib/mysql
 
@@ -31,15 +31,13 @@ services:
       - "MYSQL_USER=kodbox"
       - "MYSQL_PASSWORD=$W9_POWER_PASSWORD"
       - "REDIS_HOST=$W9_ID-redis"
-      - "PUID=1050"
-      - "PGID=1051"
     env_file: .env
-    restart: always
-
+    restart: unless-stopped
+    
   redis:
     image: redis:alpine
     container_name: $W9_ID-redis
-    restart: always
+    restart: unless-stopped
 
 volumes:
   kodbox:

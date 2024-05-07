@@ -11,7 +11,7 @@
   ],
   "requirements": {
     "cpu": "1",
-    "memory": "2",
+    "memory": "1",
     "disk": "1",
     "url": "http://kodcloud.com"
   }
