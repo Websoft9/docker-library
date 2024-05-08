@@ -1,6 +1,6 @@
 {
   "name": "semaphore",
-  "trademark": "Semaphore",
+  "trademark": "Ansible Semaphore",
   "release": true,
   "fork_url": "https://hub.docker.com/r/semaphoreui/semaphore",
   "edition": [
