@@ -22,6 +22,7 @@ services:
     ports:
       - $W9_HTTP_PORT_SET:3000
     image: semaphoreui/semaphore:$W9_VERSION
+    env_file: .env
     depends_on:
       - mysql
 
