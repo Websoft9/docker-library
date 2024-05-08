@@ -1,0 +1,21 @@
+{
+  "name": "semaphore",
+  "trademark": "Semaphore",
+  "release": true,
+  "fork_url": "https://hub.docker.com/r/semaphoreui/semaphore",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "v2.9.75",
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "2",
+    "disk": "1",
+    "url": "https://docs.semui.co/"
+  }
+}

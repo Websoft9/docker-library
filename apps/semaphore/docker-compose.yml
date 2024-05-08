@@ -1,0 +1,34 @@
+# image: https://hub.docker.com/r/semaphoreui/semaphore
+# compose: https://docs.semui.co/administration-guide/installation#docker
+# docs: https://docs.semui.co/
+
+version: "3.8"
+
+services:
+  mysql:
+    restart: unless-stopped
+    image: mysql:$W9_DB_VERSION
+    container_name: $W9_ID-mysql
+    volumes:
+      - mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: $W9_ID
+      MYSQL_USER: $W9_ID
+      MYSQL_PASSWORD: $W9_POWER_PASSWORD
+      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+  semaphore:
+    restart: unless-stopped
+    container_name: $W9_ID
+    ports:
+      - $W9_HTTP_PORT_SET:3000
+    image: semaphoreui/semaphore:$W9_VERSION
+    depends_on:
+      - mysql
+
+volumes:
+  mysql:
+
+networks:
+ default:
+   name: ${W9_NETWORK}
+   external: true
