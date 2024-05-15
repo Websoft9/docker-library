@@ -6,6 +6,8 @@ services:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     env_file: .env
+    cpu_percent: 50
+    mem_limit: 4g
     volumes:
       - "code:/config"
     ports:
