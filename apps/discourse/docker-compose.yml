@@ -15,9 +15,9 @@ services:
     environment:
       - DISCOURSE_USERNAME=$W9_LOGIN_USER
       - DISCOURSE_PASSWORD=$W9_POWER_PASSWORD
-      - POSTGRESQL_CLIENT_POSTGRES_USER=postgres
-      - POSTGRESQL_CLIENT_POSTGRES_PASSWORD=$W9_POWER_PASSWORD
-      - POSTGRESQL_CLIENT_CREATE_DATABASE_NAME=$W9_ID
+      - POSTGRESQL_CLIENT_POSTGRES_USER=discourse
+      - POSTGRESQL_CLIENT_POSTGRES_PASSWORD=$W9_RCODE
+      - POSTGRESQL_CLIENT_CREATE_DATABASE_NAME=discourse
       - POSTGRESQL_CLIENT_CREATE_DATABASE_EXTENSIONS=hstore,pg_trgm
     depends_on:
       - postgresql
@@ -39,8 +39,9 @@ services:
     volumes:
       - 'postgresql_data:/bitnami/postgresql'
     environment:
-      - POSTGRESQL_DATABASE=$W9_ID
-      - POSTGRESQL_PASSWORD=$W9_POWER_PASSWORD
+      - POSTGRESQL_DATABASE=discourse
+      - POSTGRESQL_USERNAME=discourse
+      - POSTGRESQL_PASSWORD=$W9_RCODE
 
   redis:
     image: docker.io/bitnami/redis:7.0
