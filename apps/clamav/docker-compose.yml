@@ -9,6 +9,7 @@ services:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     privileged: true
+    tty: true
     volumes:
       - 'clamav:/var/lib/clamav'
       - '$W9_SCAN_PATH_SET:/scandir'
