@@ -360,11 +360,11 @@
         "GEMINI 登陆密码"
     ],
     "W9_PROXY_PORT_SET": [
-        "",
-        ""
+        "代理端口",
+        "PROXY PORT"
     ],
     "W9_LOGIN_ConnectURL": [
-        "",
-        ""
+        "登陆连接地址",
+        "LOGIN OONNECT URL"
     ]
 }
