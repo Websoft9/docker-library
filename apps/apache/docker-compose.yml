@@ -6,11 +6,14 @@ services:
     container_name: ${W9_ID}
     image: ${W9_REPO}:${W9_VERSION}
     restart: unless-stopped
+    working_dir: /usr/local/apache2/htdocs
     ports:
      - ${W9_HTTP_PORT_SET}:80
-    volumes:
-     - ./site:/usr/local/apache2/htdocs
-     #- ./src/httpd.conf:/usr/local/apache2/conf/httpd.conf   # Enable it if you want to set it
+    volumes: 
+      - apache:/usr/local/apache2/htdocs
+      - ./src/cmd.sh:/usr/local/bin/cmd.sh
+      #- ./src/httpd.conf:/usr/local/apache2/conf/httpd.conf   # Enable it if you want to set it
+    command: /bin/bash -c "bash /usr/local/bin/cmd.sh && httpd-foreground"  
     env_file: .env
      
 networks:

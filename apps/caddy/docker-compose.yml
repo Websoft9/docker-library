@@ -10,13 +10,16 @@ services:
     env_file:
       - .env
     restart: unless-stopped
+    working_dir: /srv
     ports:
       - "$W9_HTTP_PORT_SET:80"
     volumes:
-      - ./site:/srv # Add your html site
+      - site:/srv # Add your html site
       - ./src/Caddyfile:/etc/caddy/Caddyfile
+      - ./src/cmd.sh:/usr/local/bin/cmd.sh
       - data:/data
       - config:/config
+    command: /bin/sh -c "sh /usr/local/bin/cmd.sh && caddy run --config /etc/caddy/Caddyfile --adapter caddyfile"
     
 networks:
   default:
@@ -26,3 +29,4 @@ networks:
 volumes:
   data:
   config:
+  site:
