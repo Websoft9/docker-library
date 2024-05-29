@@ -2,6 +2,7 @@ echo "Add your CI code here, below is example"
 
 echo "Hello, Caddy!" > /srv/index.html
 
-# wget https://qiaofeng1227.github.io/html.zip -P /srv
-# rm -rf /srv/index.html
-# unzip /srv/html.zip -d /srv
+### Sample for reference
+# rm -rf /srv/*
+# wget https://websoft9.github.io/docker-library/apps/nginx/demo/demo.zip -P /srv
+# unzip /srv/demo.zip -d /usr/local/apache2/htdocs

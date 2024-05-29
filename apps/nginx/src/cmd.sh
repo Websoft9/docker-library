@@ -12,5 +12,5 @@ echo "Hello, Nginx!" > /usr/share/nginx/html/index.html
 
 ### Sample for reference
 # rm -rf /usr/share/nginx/html/*
-# wget https://qiaofeng1227.github.io/demo.zip -P /usr/share/nginx/html
+# wget https://websoft9.github.io/docker-library/apps/nginx/demo/demo.zip -P /usr/share/nginx/html
 # unzip /usr/share/nginx/html/demo.zip -d /usr/share/nginx/html
