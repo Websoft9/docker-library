@@ -221,11 +221,11 @@
     ],
     "W9_LOGIN_GET_Credential": [
         "GET CREDENTIAL",
-        "获取密码方法"
+        "管理员密码获取方法"
     ],
     "W9_LOGIN_SHOW_PASSWORD": [
         "SHOW LOGIN PASSWORD",
-        "展示登陆密码方法"
+        "管理员密码获取方法"
     ],
     "W9_UDP_PORT_SET": [
         "UDP PORT",
