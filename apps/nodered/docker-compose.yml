@@ -1,0 +1,23 @@
+# image: https://hub.docker.com/r/nodered/node-red
+# docs: https://nodered.org/docs/getting-started/docker
+
+version: "3.8"
+
+services:
+  nodered:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    ports:
+      - ${W9_HTTP_PORT_SET}:1880
+    volumes:
+      - nodered_data:/data
+    env_file: .env
+    restart: unless-stopped
+
+volumes:
+  nodered_data:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

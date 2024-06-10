@@ -1,0 +1,21 @@
+{
+  "name": "nodered",
+  "trademark": "Node-RED",
+  "release": true,
+  "fork_url": "https://hub.docker.com/r/nodered/node-red",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "3.1",
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "2",
+    "disk": "1",
+    "url": "https://nodered.org/docs/getting-started/docker"
+  }
+}
