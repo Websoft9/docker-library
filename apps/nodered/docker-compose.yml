@@ -11,6 +11,7 @@ services:
       - ${W9_HTTP_PORT_SET}:1880
     environment:
       - TZ=Europe/Amsterdam
+      - NODE_OPTIONS=--max_old_space_size=128
     volumes:
       - nodered_data:/data
     env_file: .env
