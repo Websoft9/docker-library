@@ -9,11 +9,9 @@ services:
     container_name: ${W9_ID}
     ports:
       - ${W9_HTTP_PORT_SET}:1880
-    environment:
-      - TZ=Europe/Amsterdam
-      - NODE_OPTIONS=--max_old_space_size=128
     volumes:
       - nodered_data:/data
+      #- ./src/my_flows.json:/data/my_flows.json
     env_file: .env
     restart: unless-stopped
 
