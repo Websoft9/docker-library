@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Bytebase:
 
 
- - community:  2.14.1
+ - community:  2.17.0, latest
 
 
 ## System Requirements
