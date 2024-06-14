@@ -1,0 +1,18 @@
+{
+  "name": "registry",
+  "trademark": "Registry",
+  "release": false,
+  "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["2","latest"]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "1",
+    "url": "https://github.com/onlyoffice/docker#recommended-system-requirements"
+  }
+}

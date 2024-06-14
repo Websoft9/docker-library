@@ -1,0 +1,22 @@
+# image: https://hub.docker.com/_/registry
+# github: https://github.com/distribution/distribution-library-image
+# docs: https://distribution.github.io/distribution/
+
+version: '3.8'
+
+services:
+  registry:
+    image: ${W9_REPO}:${W9_VERSION}
+    ports:
+      - $W9_HTTP_PORT_SET:5000
+    volumes:
+      - data:/var/lib/registry
+      #- ./src/config.yml:/etc/docker/registry/config.yml
+      
+volumes:
+  data:
+  
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true
