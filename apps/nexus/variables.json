@@ -1,12 +1,12 @@
 {
   "name": "nexus",
-  "trademark": "Sonatype Nexus Repository",
+  "trademark": "Nexus",
   "release": true,
   "fork_url": "https://hub.docker.com/r/sonatype/nexus3",
   "edition": [
     {
       "dist": "community",
-      "version": ["17.0.2","latest"]
+      "version": ["3.69.0","latest"]
     }
   ],
   "requirements": {
