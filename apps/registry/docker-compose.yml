@@ -11,7 +11,6 @@ services:
       - $W9_HTTP_PORT_SET:5000
     volumes:
       - data:/var/lib/registry
-      #- ./src/config.yml:/etc/docker/registry/config.yml
       
 volumes:
   data:
