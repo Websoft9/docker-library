@@ -7,10 +7,6 @@
     {
       "dist": "community",
       "version": ["17.0.2","latest"]
-    },
-    {
-      "dist": "jihu",
-      "version": ["16.6.2","latest"]
     }
   ],
   "requirements": {

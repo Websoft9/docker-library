@@ -1,0 +1,18 @@
+{
+  "name": "nexus",
+  "trademark": "Sonatype Nexus Repository",
+  "release": true,
+  "fork_url": "https://hub.docker.com/r/sonatype/nexus3",
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["17.0.2","latest"]
+    }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "2",
+    "disk": "1",
+    "url": "https://help.sonatype.com/en/installation-methods.html"
+  }
+}

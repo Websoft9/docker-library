@@ -1,0 +1,25 @@
+# image: https://hub.docker.com/r/sonatype/nexus3
+# github: https://github.com/sonatype/docker-nexus3
+# docs: https://help.sonatype.com/en/installation-methods.html
+
+version: '3.8'
+
+services:
+
+  nexus:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    env_file: .env
+    restart: unless-stopped
+    ports:
+      - '${W9_HTTP_PORT_SET}:8081'
+    volumes:
+      - nexus-data:/nexus-data
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true
+
+volumes:
+  nexus-data:
