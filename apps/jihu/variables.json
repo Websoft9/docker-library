@@ -1,12 +1,12 @@
 {
-  "name": "gitlabjh",
-  "trademark": "极狐GitLab",
+  "name": "jihu",
+  "trademark": "Jihu GitLab",
   "release": true,
   "fork_url": "https://github.com/gitlabhq/omnibus-gitlab",
   "edition": [
     {
       "dist": "community",
-      "version": ["16.9.3-ce.0","latest"]
+      "version": ["17.0.2","latest"]
     },
     {
       "dist": "jihu",
