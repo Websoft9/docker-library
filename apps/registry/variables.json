@@ -2,7 +2,7 @@
   "name": "registry",
   "trademark": "Registry",
   "release": false,
-  "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
+  "fork_url": "https://github.com/distribution/distribution-library-image",
   "edition": [
     {
       "dist": "community",
@@ -13,6 +13,6 @@
     "cpu": "2",
     "memory": "4",
     "disk": "1",
-    "url": "https://github.com/onlyoffice/docker#recommended-system-requirements"
+    "url": "https://distribution.github.io/distribution/"
   }
 }
