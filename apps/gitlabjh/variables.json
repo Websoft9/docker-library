@@ -1,0 +1,22 @@
+{
+  "name": "gitlabjh",
+  "trademark": "极狐GitLab",
+  "release": true,
+  "fork_url": "https://github.com/gitlabhq/omnibus-gitlab",
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["16.9.3-ce.0","latest"]
+    },
+    {
+      "dist": "jihu",
+      "version": ["16.6.2","latest"]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "8",
+    "disk": "1",
+    "url": "https://github.com/gitlab/docker#recommended-system-requirements"
+  }
+}
