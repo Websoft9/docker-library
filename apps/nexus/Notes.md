@@ -1,1 +1,1 @@
-# Nexus
+# Sonatype Nexus Repository

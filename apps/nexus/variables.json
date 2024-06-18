@@ -1,6 +1,6 @@
 {
   "name": "nexus",
-  "trademark": "Nexus",
+  "trademark": "Sonatype Nexus Repository",
   "release": true,
   "fork_url": "https://hub.docker.com/r/sonatype/nexus3",
   "edition": [
