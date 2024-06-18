@@ -3,12 +3,12 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Registry:
 
 
- - community:  2, latest
+ - community:  2.8, latest
 
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://github.com/onlyoffice/docker#recommended-system-requirements):
+The following are the minimal [recommended requirements](https://distribution.github.io/distribution/):
 
 * **RAM**: 4 GB or more
 * **CPU**: 2 cores or higher
