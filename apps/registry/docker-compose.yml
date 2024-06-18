@@ -7,11 +7,12 @@ version: '3.8'
 services:
   registry:
     image: ${W9_REPO}:${W9_VERSION}
+    restart: unless-stopped
+    env_file: .env
     ports:
       - $W9_HTTP_PORT_SET:5000
     volumes:
       - data:/var/lib/registry
-      #- ./src/config.yml:/etc/docker/registry/config.yml
       
 volumes:
   data:

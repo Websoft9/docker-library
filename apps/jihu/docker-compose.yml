@@ -1,0 +1,55 @@
+# image: registry.gitlab.cn/omnibus/gitlab-jh
+# docs: https://docs.gitlab.cn/jh/install/docker.html
+# postgresql is in this container
+
+version: '3.8'
+
+services:
+
+  jihu:
+    image: $W9_REPO:$W9_VERSION
+    container_name: "$W9_ID"
+    hostname: "$W9_URL"
+    logging:
+      driver: "json-file"
+      options:
+          max-file: "5"
+          max-size: 200m
+    env_file: .env
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        # external_url rule: the protocol must be http://, can not use https://
+        # external_url 'http://$W9_URL'
+        gitlab_rails['gitlab_shell_ssh_port'] = 22
+        gitlab_rails['initial_root_password'] = '${W9_LOGIN_PASSWORD}'
+        # Add any other gitlab.rb configuration here, each on its own line
+        # other
+    shm_size: '256m'
+    restart: unless-stopped
+    ports:
+      - '${W9_HTTP_PORT_SET}:80'
+      - '${W9_SSH_PORT_SET}:22'
+    volumes:
+      - gitlab_config:/etc/gitlab
+      - gitlab_logs:/var/log/gitlab
+      - gitlab_data:/var/opt/gitlab
+
+  runner:
+    image: gitlab/gitlab-runner:latest
+    container_name: $W9_ID-runner
+    restart: unless-stopped
+    volumes:
+      - gitlab_runner:/etc/gitlab-runner
+      - /var/run/docker.sock:/var/run/docker.sock
+    env_file: .env
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true
+
+volumes:
+  gitlab_config:
+  gitlab_logs:
+  gitlab_data:
+  gitlab_runner:
