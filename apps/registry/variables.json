@@ -1,6 +1,6 @@
 {
   "name": "registry",
-  "trademark": "Registry",
+  "trademark": "Docker Registry",
   "release": true,
   "fork_url": "https://github.com/distribution/distribution-library-image",
   "edition": [
