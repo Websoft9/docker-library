@@ -1,7 +1,7 @@
 {
   "name": "registry",
   "trademark": "Registry",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/distribution/distribution-library-image",
   "edition": [
     {
