@@ -1,0 +1,27 @@
+# image: https://hub.docker.com/r/manageiq/manageiq
+# docs: https://www.manageiq.org/docs/
+# github: https://github.com/ManageIQ/manageiq
+
+version: '3.8'
+
+services:
+  manageiq:
+    container_name: ${W9_ID}
+    image: $W9_REPO:$W9_VERSION
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - '${W9_HTTP_PORT_SET}:443'
+    volumes: 
+      - manageiq-data:/var/lib/manageiq
+      - manageiq-log:/var/log/manageiq
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true
+
+volumes:
+  manageiq-data:
+  manageiq-log:
