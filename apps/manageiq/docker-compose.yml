@@ -15,7 +15,6 @@ services:
       - '${W9_HTTP_PORT_SET}:443'
     volumes: 
       - manageiq-data:/var/lib/manageiq
-      - manageiq-log:/var/log/manageiq
 
 networks:
   default:
@@ -24,4 +23,3 @@ networks:
 
 volumes:
   manageiq-data:
-  manageiq-log:
