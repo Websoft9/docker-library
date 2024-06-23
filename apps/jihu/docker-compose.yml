@@ -22,7 +22,7 @@ services:
         # external_url 'http://$W9_URL'
         gitlab_rails['gitlab_shell_ssh_port'] = 22
         gitlab_rails['initial_root_password'] = '${W9_LOGIN_PASSWORD}'
-        gitlab_rails['init_license_file'] = '/etc/gitlab/gitlab.license'
+        gitlab_rails['initial_license_file'] = '/etc/gitlab/gitlab.license'
         # Add any other gitlab.rb configuration here, each on its own line
         # other
     shm_size: '256m'
