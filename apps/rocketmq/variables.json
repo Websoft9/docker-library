@@ -13,8 +13,8 @@
     }
   ],
   "requirements": {
-    "cpu": "1",
-    "memory": "1",
+    "cpu": "4",
+    "memory": "16",
     "disk": "1",
     "url": "https://rocketmq.apache.org/docs/"
   }
