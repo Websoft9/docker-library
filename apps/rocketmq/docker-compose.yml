@@ -53,8 +53,4 @@ networks:
   default:
     name: ${W9_NETWORK}
     external: true
-    
-volumes:
-  rabbitmq_data:
-  rabbitmq_plugins:
-  rabbitmq_config:
+
