@@ -1,0 +1,21 @@
+{
+  "name": "rocketmq",
+  "trademark": "RocketMQ",
+  "release": true,
+  "fork_url": "https://rocketmq.apache.org/docs/",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "5.2.0",
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1",
+    "url": "https://rocketmq.apache.org/docs/"
+  }
+}

@@ -1,0 +1,60 @@
+# image: https://hub.docker.com/r/apache/rocketmq
+# docs:https://rocketmq.apache.org/docs/quickStart/03quickstartWithDockercompose
+
+version: '3.8'
+
+services:
+  namesrv:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}-rmqnamesrv
+    restart: unless-stopped
+    # ports:
+    #   - 9876:9876
+    command: sh mqnamesrv
+  broker:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}-rmqbroker
+    restart: unless-stopped
+    ports:
+      - ${W9_BROKER_PORT_SET}:10909
+      # - 10911:10911
+      # - 10912:10912
+    environment:
+      - NAMESRV_ADDR=${W9_ID}-rmqnamesrv:9876
+    depends_on:
+      - namesrv
+    command: sh mqbroker
+  proxy:
+    image: apache/rocketmq:5.2.0
+    container_name: ${W9_ID}
+    depends_on:
+      - broker
+      - namesrv
+    ports:
+      - ${W9_HTTP_PORT_SET}:8080
+      # - 8081:8081
+    restart: unless-stopped
+    environment:
+      - NAMESRV_ADDR=${W9_ID}-rmqnamesrv:9876
+    command: sh mqproxy
+  dashboard:
+    image: apacherocketmq/rocketmq-dashboard:latest
+    container_name: ${W9_ID}-dashboard
+    depends_on:
+      - namesrv
+    ports:
+      - ${W9_DASHBOARD_PORT_SET}:8080
+      # - 8081:8081
+    restart: unless-stopped
+    environment:
+      - JAVA_OPTS=-Drocketmq.namesrv.addr=${W9_ID}-rmqnamesrv:9876
+      
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true
+    
+volumes:
+  rabbitmq_data:
+  rabbitmq_plugins:
+  rabbitmq_config:
