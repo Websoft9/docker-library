@@ -366,5 +366,9 @@
     "W9_LOGIN_ConnectURL": [
         "LOGIN OONNECT URL",
         "登陆连接地址"
+    ],
+    "W9_BROKER_PORT_SET": [
+        "",
+        ""
     ]
 }
