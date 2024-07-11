@@ -13,7 +13,7 @@ services:
     command: sh mqnamesrv
   broker:
     image: ${W9_REPO}:${W9_VERSION}
-    container_name: ${W9_ID}-brokerserver
+    container_name: ${W9_ID}-broker
     restart: unless-stopped
     ports:
       - ${W9_BROKER_PORT_SET}:10909
