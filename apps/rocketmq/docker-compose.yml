@@ -6,21 +6,21 @@ version: '3.8'
 services:
   namesrv:
     image: ${W9_REPO}:${W9_VERSION}
-    container_name: ${W9_ID}-rmqnamesrv
+    container_name: ${W9_ID}-nameserver
     restart: unless-stopped
     # ports:
     #   - 9876:9876
     command: sh mqnamesrv
   broker:
     image: ${W9_REPO}:${W9_VERSION}
-    container_name: ${W9_ID}-rmqbroker
+    container_name: ${W9_ID}-brokerserver
     restart: unless-stopped
     ports:
       - ${W9_BROKER_PORT_SET}:10909
       # - 10911:10911
       # - 10912:10912
     environment:
-      - NAMESRV_ADDR=${W9_ID}-rmqnamesrv:9876
+      - NAMESRV_ADDR=${W9_ID}-nameserver:9876
     depends_on:
       - namesrv
     command: sh mqbroker
@@ -36,7 +36,7 @@ services:
       # - 8081:8081
     restart: unless-stopped
     environment:
-      - NAMESRV_ADDR=${W9_ID}-rmqnamesrv:9876
+      - NAMESRV_ADDR=${W9_ID}-nameserver:9876
     command: sh mqproxy
   # dashboard:
   #   image: apacherocketmq/rocketmq-dashboard:latest
