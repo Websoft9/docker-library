@@ -1,5 +1,11 @@
 # Trivy
 
+#### how to scan
+
+Access into container, run command as following:
+```
+trivy fs /scandir
+```
 #### quickly scan
 
 ```

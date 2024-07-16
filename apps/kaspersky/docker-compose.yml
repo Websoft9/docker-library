@@ -1,0 +1,20 @@
+# image: https://hub.docker.com/r/tabledevil/kaspersky
+# docs: https://www.kaspersky.com/
+
+version: '3.8'
+
+services:
+
+  kaspersky:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - $W9_SCAN_PATH_SET:/data
+    entrypoint: tail -f /dev/null
+    
+networks:
+  default:
+    name: $W9_NETWORK
+    external: true

@@ -1,0 +1,18 @@
+{
+  "name": "kaspersky",
+  "trademark": "Kaspersky",
+  "release": false,
+  "fork_url": "https://www.kaspersky.com/",
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["latest"]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "1",
+    "url": "https://www.kaspersky.com/"
+  }
+}
