@@ -1,0 +1,18 @@
+{
+  "name": "trivy",
+  "trademark": "Trivy",
+  "release": false,
+  "fork_url": "https://aquasecurity.github.io/trivy/v0.53/getting-started/installation/#docker",
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["0.53.0","latest"]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "1",
+    "url": "https://aquasecurity.github.io/trivy/v0.53/docs/"
+  }
+}
