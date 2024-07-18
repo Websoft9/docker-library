@@ -13,7 +13,7 @@ services:
     volumes:
       # If you want to scan docker image, you can use the following mount
       #- /var/run/docker.sock:/var/run/docker.sock
-      - $W9_SCAN_PATH_SET:/mnt
+      - $W9_SCAN_PATH_SET:/myproject
     entrypoint: tail -f /dev/null
     
 networks:
