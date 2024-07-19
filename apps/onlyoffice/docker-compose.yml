@@ -1,7 +1,12 @@
-# image: https://hub.docker.com/r/onlyoffice/communityserver
-# docs: https://www.onlyoffice.com/workspace.aspx
-# compose: https://github.com/ONLYOFFICE/Docker-CommunityServer/blob/master/docker-compose.workspace.yml
+# image: https://hub.docker.com/r/onlyoffice/documentserver
+# docs: https://github.com/ONLYOFFICE/DocumentServer
+# compose: https://github.com/ONLYOFFICE/Docker-DocumentServer/blob/master/docker-compose.yml
 
+# license.lic should storaged to data
+# volumes cache,mq is define at image but documentation not mention them
+# volumes fonts,forgotten is special define
+# it starting need lots cpu and long time, so set cpu_percent: 50
+# Add RabbitMQ, otherwise Onlyofficedocs need long time to start because the inner rabbitmq some time not start: https://github.com/ONLYOFFICE/Docker-DocumentServer/issues/699
 version: '3'
 services:
   onlyoffice-mysql-server:
@@ -81,13 +86,14 @@ services:
       - "9300"
   onlyoffice-document-server:
     container_name: ${W9_ID}-document-server
-    image: onlyoffice/documentserver:7.1.1.23
+    image: onlyoffice/documentserver:latest
     stdin_open: true
     tty: true
     restart: unless-stopped
     depends_on:
      - rabbitmq
     environment:
+     - AMQP_URI=amqp://guest:guest@${W9_ID}-rabbitmq
      - JWT_ENABLED=true
      - JWT_SECRET=jwt_secret
      - JWT_HEADER=AuthorizationJwt
@@ -97,6 +103,7 @@ services:
     volumes:
        - document_data:/var/www/onlyoffice/Data
        - document_log:/var/log/onlyoffice
+       - document_fonts:/usr/share/fonts/truetype/custom
        - document_forgotten:/var/lib/onlyoffice/documentserver/App_Data/cache/files/forgotten
   onlyoffice-control-panel:
     container_name: ${W9_ID}-control-panel
@@ -131,6 +138,7 @@ networks:
 volumes:
   document_data:
   document_log:
+  document_fonts:
   document_forgotten:
   community_mysql:
   community_data:
