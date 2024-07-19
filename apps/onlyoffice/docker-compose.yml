@@ -1,3 +1,7 @@
+# image: https://hub.docker.com/r/onlyoffice/communityserver
+# docs: https://www.onlyoffice.com/workspace.aspx
+# compose: https://github.com/ONLYOFFICE/Docker-CommunityServer/blob/master/docker-compose.workspace.yml
+
 version: '3'
 services:
   onlyoffice-mysql-server:
@@ -18,7 +22,7 @@ services:
      - mysql_data:/var/lib/mysql
   onlyoffice-community-server:
     container_name: ${W9_ID}
-    image: onlyoffice/communityserver:${W9_VERSION}
+    image: $W9_REPO:${W9_VERSION}
     depends_on:
      - onlyoffice-mysql-server
      - onlyoffice-document-server
