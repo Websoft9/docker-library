@@ -18,15 +18,10 @@ services:
     volumes:
       - knowage:/home/knowage/apache-tomcat/resources
     env_file: .env
-    command: bash -c "cat /my_cmd > /home/knowage/cmd.sh && chmod +x /home/knowage/cmd.sh && /home/knowage/cmd.sh"
-    configs:
-      - source: my_cmd
 
-  # from Knowage8 need this service
   hazelcast:
-    image: hazelcast/hazelcast:3.6
+    image: hazelcast/hazelcast:3.6.5
     container_name: $W9_ID-hazelcast
-    env_file: .env
     environment:
       - JAVA_OPTS=-Dhazelcast.local.publicAddress=hazelcast -Dhazelcast.config=/opt/hazelcast/hazelcast.xml
     volumes:
@@ -36,7 +31,6 @@ services:
     image: mariadb:$W9_MARIADB_VERSION
     container_name: $W9_ID-mariadb
     restart: unless-stopped
-    env_file: .env
     environment:
       - MARIADB_USER=$W9_ID
       - MARIADB_PASSWORD=$W9_POWER_PASSWORD
@@ -49,7 +43,6 @@ services:
     image: mariadb:$W9_MARIADB_VERSION
     container_name: $W9_ID-cache
     restart: unless-stopped
-    env_file: .env
     environment:
       - MARIADB_USER=${W9_ID}_cache
       - MARIADB_PASSWORD=$W9_POWER_PASSWORD
@@ -62,15 +55,17 @@ services:
     container_name: $W9_ID-python
     image: knowagelabs/knowage-python-docker:$W9_VERSION
     restart: unless-stopped
-    env_file: .env
     environment:
-      - KNOWAGE_PUBLIC_ADDRESS=knowage
+      - HMAC_KEY=$HMAC_KEY
+      - KNOWAGE_PUBLIC_ADDRESS=$W9_ID
+      - PUBLIC_ADDRESS=$PUBLIC_ADDRESS
 
   knowager:
     container_name: $W9_ID-r
     image: knowagelabs/knowage-r-docker:$W9_VERSION
     restart: unless-stopped
-    env_file: .env
+    environment:
+      - HMAC_KEY=$HMAC_KEY    
 
 networks:
   default:
