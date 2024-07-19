@@ -120,12 +120,6 @@ services:
     image: rabbitmq:3.12-management
     container_name: ${W9_ID}-rabbitmq
     restart: unless-stopped
-   #ports:
-      # EXPOSE 4369 5671 5672 15691 15692 25672
-   #  - ${W9_ER_PORT_SET}:4369
-   #  - ${W9_MQ_PORT_SET}:5672
-   #  - ${W9_HTTP_PORT_SET}:15672
-      #- 1883:1883 #for MQTT
     volumes:
       - 'rabbitmq_data:/var/lib/rabbitmq'
       - 'rabbitmq_plugins:/plugins'
