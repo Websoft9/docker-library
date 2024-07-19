@@ -14,7 +14,7 @@
     "requirements": {
       "cpu": "2",
       "memory": "8",
-      "disk": "1",
+      "disk": "10",
       "url": "https://github.com/ONLYOFFICE/Docker-CommunityServer"
     }
   }
