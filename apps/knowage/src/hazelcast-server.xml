@@ -1,5 +1,3 @@
-# hazelcast image not have this file, it from: https://github.com/KnowageLabs/Knowage-Server-Docker/blob/master/Knowage-Server-Docker/hazelcast-server.xml
-
 <?xml version="1.0" encoding="UTF-8"?>
 <hazelcast xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-3.6.xsd"
            xmlns="http://www.hazelcast.com/schema/config"
