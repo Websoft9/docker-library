@@ -56,7 +56,6 @@ services:
      - community_letsencrypt:/etc/letsencrypt
      - document_data:/var/www/onlyoffice/DocumentServerData
      - /sys/fs/cgroup:/sys/fs/cgroup:rw
-     - ./src/certs:/var/www/onlyoffice/Data/certs
   onlyoffice-elasticsearch:
     image: onlyoffice/elasticsearch:7.16.3
     container_name: ${W9_ID}-elasticsearch
@@ -81,7 +80,7 @@ services:
       - "9200"
       - "9300"
   onlyoffice-document-server:
-    container_name: onlyoffice-document-server
+    container_name: ${W9_ID}-document-server
     image: onlyoffice/documentserver:7.1.1.23
     stdin_open: true
     tty: true
@@ -98,7 +97,6 @@ services:
     volumes:
        - document_data:/var/www/onlyoffice/Data
        - document_log:/var/log/onlyoffice
-       - ./src/document_fonts:/usr/share/fonts/truetype/custom
        - document_forgotten:/var/lib/onlyoffice/documentserver/App_Data/cache/files/forgotten
   onlyoffice-control-panel:
     container_name: ${W9_ID}-control-panel
