@@ -1,5 +1,7 @@
 # image: https://hub.docker.com/r/knowagelabs/knowage-server-docker
-# docs:https://github.com/KnowageLabs/Knowage-Server-Docker
+# compsoe:https://github.com/KnowageLabs/Knowage-Server-Docker
+# github: https://github.com/KnowageLabs/Knowage-Server
+# docs: https://knowage-suite.readthedocs.io/en/8.1/index.html#
 
 version: "3.8"
 services:

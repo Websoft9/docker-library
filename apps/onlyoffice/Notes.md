@@ -6,3 +6,4 @@
 
 
 Group + Email + Docs= Workspace
+- 设置cgroup: host (For working on Ubuntu 22.04 and Debian 11 or later, you need to use docker-compose versions v2.16.0 or later and uncomment the cgroup line in the yml file)

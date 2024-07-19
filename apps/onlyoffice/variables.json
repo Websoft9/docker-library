@@ -7,14 +7,14 @@
       {
         "dist": "community",
         "version": [
-          "12.0.1.1748"
+          "12.6.0.1900","latest"
         ]
       }
     ],
     "requirements": {
       "cpu": "2",
       "memory": "8",
-      "disk": "1",
+      "disk": "10",
       "url": "https://github.com/ONLYOFFICE/Docker-CommunityServer"
     }
   }
