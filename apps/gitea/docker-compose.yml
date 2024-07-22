@@ -31,8 +31,7 @@ services:
  
   mysql:
     image: mysql:$W9_DB_VERSION
-    container_name: ${W9_ID}-mysql
-    command: --default-authentication-plugin=mysql_native_password    
+    container_name: ${W9_ID}-mysql   
     environment:
       MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
       MYSQL_DATABASE: ${W9_ID}
