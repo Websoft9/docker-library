@@ -1,0 +1,20 @@
+[
+    {
+        "name": "activemq",
+        "dockerLink": "https://hub.docker.com/r/alfresco/alfresco-activemq/tags?page=1",
+        "libraryVersion": "5.18.2-jre17-rockylinux8",
+        "latestVersion": ""
+    },
+    {
+        "name": "aitable",
+        "dockerLink": "https://hub.docker.com/r/apitable/backend-server/tags?page=1",
+        "libraryVersion": "latest",
+        "latestVersion": "latest"
+    },
+    {
+        "name": "akaunting",
+        "dockerLink": "https://hub.docker.com/r/apitable/backend-server/tags?page=1",
+        "libraryVersion": "3.1",
+        "latestVersion": ""
+    }        
+]
