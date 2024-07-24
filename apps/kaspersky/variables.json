@@ -1,7 +1,7 @@
 {
   "name": "kaspersky",
   "trademark": "Kaspersky",
-  "release": false,
+  "release": true,
   "fork_url": "https://www.kaspersky.com/",
   "docker_url": "https://hub.docker.com/r/tabledevil/kaspersky/tags",
   "edition": [
