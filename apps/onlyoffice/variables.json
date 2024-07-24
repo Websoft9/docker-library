@@ -3,7 +3,7 @@
     "trademark": "ONLYOFFICE Workspace",
     "release": true,
     "fork_url": "https://github.com/ONLYOFFICE/Docker-CommunityServer.git",
-  "docker_url": "https://hub.docker.com/r/onlyoffice/communityserver/tags",
+    "docker_url": "https://hub.docker.com/r/onlyoffice/communityserver/tags",
     "edition": [
       {
         "dist": "community",
