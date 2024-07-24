@@ -3,6 +3,7 @@
   "trademark": "Redpanda Console",
   "release": true,
   "fork_url": "https://github.com/redpanda-data/console",
+  "docker_url": "https://hub.docker.com/r/redpandadata/console/tags",
   "edition": [
     {
       "dist": "community",

@@ -3,6 +3,7 @@
   "trademark": "Ckan",
   "release": false,
   "fork_url": "https://github.com/ckan/ckan",
+  "docker_url": "",
   "edition": [
     {
       "dist": "community",

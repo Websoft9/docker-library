@@ -3,6 +3,7 @@
   "trademark": "Odoo",
   "release": true,
   "fork_url": "https://github.com/odoo/docker",
+  "docker_url": "https://hub.docker.com/_/odoo/tags",
   "edition": [
     {
       "dist": "community",

@@ -3,6 +3,7 @@
   "trademark": "Traefik",
   "release": true,
   "fork_url": "https://hub.docker.com/_/traefik",
+  "docker_url": "https://hub.docker.com/_/traefik/tags",
   "edition": [
     {
       "dist": "community",

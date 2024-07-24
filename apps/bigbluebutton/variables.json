@@ -3,6 +3,7 @@
   "trademark": "BigBlueButton",
   "release": false,
   "fork_url": "https://github.com/bigbluebutton/docker",
+  "docker_url": "",
   "edition": [
     {
       "dist": "community",

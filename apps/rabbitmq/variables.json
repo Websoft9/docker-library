@@ -3,6 +3,7 @@
   "trademark": "RabbitQM",
   "release": true,
   "fork_url": "https://github.com/docker-library/rabbitmq",
+  "docker_url": "https://hub.docker.com/_/rabbitmq/tags",
   "edition": [
     {
       "dist": "community",

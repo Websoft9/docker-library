@@ -3,6 +3,7 @@
   "trademark": "AFFiNE",
   "release": false,
   "fork_url": "https://github.com/toeverything/AFFiNE",
+  "docker_url": "",
   "edition": [
     {
       "dist": "community",

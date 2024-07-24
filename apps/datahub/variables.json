@@ -3,6 +3,7 @@
   "trademark": "DataHub",
   "release": false,
   "fork_url": "https://github.com/datahub-project/datahub",
+  "docker_url": "",
   "edition": [
     {
       "dist": "community",

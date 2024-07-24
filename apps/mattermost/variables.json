@@ -3,6 +3,7 @@
   "trademark": "Mattermost",
   "release": true,
   "fork_url": "https://github.com/mattermost/docker",
+  "docker_url": "https://hub.docker.com/r/mattermost/mattermost-team-edition/tags",
   "edition": [
     {
       "dist": "community",

@@ -3,6 +3,7 @@
   "trademark": "Apisix",
   "release": false,
   "fork_url": "https://github.com/apache/apisix-docker",
+  "docker_url": "https://hub.docker.com/r/apache/apisix/tags",
   "edition": [
     {
       "dist": "community",

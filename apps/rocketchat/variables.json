@@ -3,6 +3,7 @@
   "trademark": "RocketChat",
   "release": true,
   "fork_url": "https://github.com/RocketChat",
+  "docker_url": "https://hub.docker.com/r/rocketchat/rocket.chat/tags",
   "edition": [
     {
       "dist": "community",

@@ -3,6 +3,7 @@
   "trademark": "JupyterHub",
   "release": true,
   "fork_url": "https://github.com/jupyter/docker-stacks",
+  "docker_url": "https://hub.docker.com/r/jupyterhub/jupyterhub/tags",
   "edition": [
     {
       "dist": "community",

@@ -3,6 +3,7 @@
   "trademark": "Zammad",
   "release": true,
   "fork_url": "https://github.com/zammad/zammad-docker-compose",
+  "docker_url": "https://hub.docker.com/r/zammad/zammad-docker-compose/tags",
   "edition": [
     {
       "dist": "community",

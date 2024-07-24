@@ -3,6 +3,7 @@
   "trademark": "ClamAV",
   "release": true,
   "fork_url": "https://hub.docker.com/r/clamav/clamav",
+  "docker_url": "https://hub.docker.com/r/clamav/clamav/tags",
   "edition": [
     {
       "dist": "community",

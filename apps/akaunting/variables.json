@@ -3,6 +3,7 @@
   "trademark": "Akaunting",
   "release": true,
   "fork_url": "https://github.com/akaunting/docker",
+  "docker_url": "https://hub.docker.com/r/akaunting/akaunting/tags",
   "edition": [
     {
       "dist": "community",

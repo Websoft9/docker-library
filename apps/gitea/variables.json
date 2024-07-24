@@ -3,6 +3,7 @@
   "trademark": "Gitea",
   "release": true,
   "fork_url": "https://github.com/go-gitea/gitea",
+  "docker_url": "https://hub.docker.com/r/gitea/gitea/tags",
   "edition": [
     {
       "dist": "community",

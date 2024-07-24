@@ -3,6 +3,7 @@
   "trademark": "Discourse",
   "release": true,
   "fork_url": "https://hub.docker.com/r/bitnami/discourse",
+  "docker_url": "https://hub.docker.com/r/bitnami/discourse/tags",
   "edition": [
     {
       "dist": "community",

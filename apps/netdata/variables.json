@@ -3,6 +3,7 @@
   "trademark": "Netdata",
   "release": true,
   "fork_url": "https://learn.netdata.cloud/docs/agent/packaging/docker",
+  "docker_url": "https://hub.docker.com/r/netdata/netdata/tags",
   "edition": [
     {
       "dist": "community",

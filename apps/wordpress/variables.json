@@ -3,6 +3,7 @@
   "trademark": "WordPress",
   "release": true,
   "fork_url": "https://github.com/docker-library/wordpress",
+  "docker_url": "https://hub.docker.com/_/wordpress/tags",
   "edition": [
     {
       "dist": "community",

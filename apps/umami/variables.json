@@ -3,6 +3,7 @@
   "trademark": "Umami",
   "release": true,
   "fork_url": "https://umami.is/docs/install",
+  "docker_url": "https://hub.docker.com/r/umamisoftware/umami/tags",
   "edition": [
     {
       "dist": "community",

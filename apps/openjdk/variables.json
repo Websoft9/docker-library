@@ -3,6 +3,7 @@
   "trademark": "OpenJDK",
   "release": true,
   "fork_url": "https://openjdk.org/",
+  "docker_url": "https://container-registry.oracle.com/ords/ocr/ba/java/openjdk",
   "edition": [
     {
       "dist": "community",

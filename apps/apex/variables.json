@@ -3,6 +3,7 @@
   "trademark": "Oracle APEX",
   "release": true,
   "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
+  "docker_url": "https://container-registry.oracle.com/ords/ocr/ba/database/ords",
   "edition": [
     {
       "dist": "community",

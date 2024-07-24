@@ -3,6 +3,7 @@
   "trademark": "Graylog",
   "release": true,
   "fork_url": "https://github.com/Graylog2/graylog-docker",
+  "docker_url": "https://hub.docker.com/r/graylog/graylog/tags",
   "edition": [
     {
       "dist": "community",

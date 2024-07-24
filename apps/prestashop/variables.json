@@ -3,6 +3,7 @@
   "trademark": "Prestashop",
   "release": true,
   "fork_url": "https://github.com/PrestaShop/docker",
+  "docker_url": "https://hub.docker.com/r/prestashop/prestashop/tags",
   "edition": [
     {
       "dist": "community",

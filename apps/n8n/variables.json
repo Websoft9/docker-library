@@ -3,6 +3,7 @@
   "trademark": "n8n",
   "release": true,
   "fork_url": "https://docs.n8n.io/hosting/installation/docker/",
+  "docker_url": "",
   "edition": [
     {
       "dist": "community",

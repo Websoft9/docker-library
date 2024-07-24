@@ -3,6 +3,7 @@
   "trademark": "HumHub",
   "release": true,
   "fork_url": "https://hub.docker.com/r/mriedmann/humhub",
+  "docker_url": "https://hub.docker.com/r/mriedmann/humhub/tags",
   "edition": [
     {
       "dist": "community",

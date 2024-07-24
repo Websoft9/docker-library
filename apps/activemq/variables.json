@@ -3,6 +3,7 @@
   "trademark": "ActiveMQ",
   "release": true,
   "fork_url": "https://github.com/apache/activemq-artemis/tree/main/artemis-docker",
+  "docker_url": "https://hub.docker.com/r/alfresco/alfresco-activemq/tags",
   "edition": [
     {
       "dist": "community",

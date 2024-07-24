@@ -3,6 +3,7 @@
   "trademark": "Aria2",
   "release": true,
   "fork_url": "https://github.com/aria2/aria2",
+  "docker_url": "https://hub.docker.com/r/p3terx/aria2-pro/tags",
   "edition": [
     {
       "dist": "community",

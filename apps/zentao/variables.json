@@ -3,6 +3,7 @@
   "trademark": "ZenTao",
   "release": true,
   "fork_url": "https://hub.docker.com/r/easysoft/zentao",
+  "docker_url": "https://hub.docker.com/r/easysoft/zentao/tags",
   "edition": [
     {
       "dist": "community",

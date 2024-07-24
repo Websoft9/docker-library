@@ -3,6 +3,7 @@
   "trademark": "PocketBase",
   "release": true,
   "fork_url": "https://hub.docker.com/r/spectado/pocketbase",
+  "docker_url": "https://hub.docker.com/r/spectado/pocketbase/tags",
   "edition": [
     {
       "dist": "community",

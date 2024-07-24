@@ -3,6 +3,7 @@
   "trademark": "Kafka",
   "release": true,
   "fork_url": "https://github.com/bitnami/bitnami-docker-kafka",
+  "docker_url": "https://hub.docker.com/r/bitnami/kafka/tags",
   "edition": [
     {
       "dist": "community",

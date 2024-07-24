@@ -3,6 +3,7 @@
   "trademark": "Redash",
   "release": true,
   "fork_url": "https://github.com/getredash/redash",
+  "docker_url": "https://hub.docker.com/r/redash/redash/tags",
   "edition": [
     {
       "dist": "community",

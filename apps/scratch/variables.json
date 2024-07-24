@@ -3,6 +3,7 @@
   "trademark": "Scratch",
   "release": true,
   "fork_url": "https://github.com/DarkMaguz/scratch3-docker",
+  "docker_url": "https://hub.docker.com/r/websoft9dev/scratch/tags",
   "edition": [
     {
       "dist": "community",

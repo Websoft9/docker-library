@@ -3,6 +3,7 @@
   "trademark": "Neo4j",
   "release": true,
   "fork_url": "https://github.com/neo4j/docker-neo4j",
+  "docker_url": "https://hub.docker.com/_/neo4j/tags",
   "edition": [
     {
       "dist": "community",

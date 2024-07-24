@@ -3,6 +3,7 @@
   "trademark": "phpMyAdmin",
   "release": true,
   "fork_url": "https://github.com/phpmyadmin/docker",
+  "docker_url": "https://hub.docker.com/_/phpmyadmin/tags",
   "edition": [
     {
       "dist": "community",

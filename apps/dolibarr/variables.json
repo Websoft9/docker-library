@@ -3,6 +3,7 @@
   "trademark": "Dolibarr",
   "release": true,
   "fork_url": "https://github.com/tuxgasy/docker-dolibarr",
+  "docker_url": "https://hub.docker.com/r/tuxgasy/dolibarr/tags",
   "edition": [
     {
       "dist": "community",

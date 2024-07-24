@@ -3,6 +3,7 @@
   "trademark": "MediaWiki",
   "release": true,
   "fork_url": "https://registry.hub.docker.com/r/bitnami/mediawiki",
+  "docker_url": "https://hub.docker.com/r/bitnami/mediawiki/tags",
   "edition": [
     {
       "dist": "community",

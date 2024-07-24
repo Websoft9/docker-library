@@ -3,6 +3,7 @@
   "trademark": "MongoDB",
   "release": true,
   "fork_url": "https://github.com/docker-library/mongo",
+  "docker_url": "https://hub.docker.com/_/mongo/tags",
   "edition": [
     {
       "dist": "community",

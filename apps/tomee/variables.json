@@ -3,6 +3,7 @@
   "trademark": "TomEE",
   "release": false,
   "fork_url": "https://github.com/apache/tomee",
+  "docker_url": "https://hub.docker.com/_/tomee/tags",
   "edition": [
     {
       "dist": "community",

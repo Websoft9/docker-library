@@ -3,6 +3,7 @@
   "trademark": "pgAdmin",
   "release": true,
   "fork_url": "https://github.com/postgres/pgadmin4",
+  "docker_url": "https://hub.docker.com/r/dpage/pgadmin4/tags",
   "edition": [
     {
       "dist": "community",

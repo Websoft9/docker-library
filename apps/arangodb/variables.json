@@ -3,6 +3,7 @@
   "trademark": "ArangoDB",
   "release": true,
   "fork_url": "https://github.com/arangodb/arangodb",
+  "docker_url": "https://hub.docker.com/_/arangodb/tags",
   "edition": [
     {
       "dist": "community",

@@ -3,6 +3,7 @@
   "trademark": "navidrome",
   "release": true,
   "fork_url": "https://github.com/navidrome/navidrome/",
+  "docker_url": "https://hub.docker.com/r/deluan/navidrome/tags",
   "edition": [
     {
       "dist": "community",

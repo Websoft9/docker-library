@@ -3,6 +3,7 @@
   "trademark": "ERPNext",
   "release": true,
   "fork_url": "https://github.com/frappe/frappe_docker.git",
+  "docker_url": "https://hub.docker.com/r/frappe/erpnext-worker/tags",
   "edition": [
     {
       "dist": "community",

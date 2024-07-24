@@ -3,6 +3,7 @@
   "trademark": "Bytebase",
   "release": true,
   "fork_url": "https://hub.docker.com/r/bytebase/bytebase",
+  "docker_url": "https://hub.docker.com/r/bytebase/bytebase/tags",
   "edition": [
     {
       "dist": "community",

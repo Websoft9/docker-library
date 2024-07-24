@@ -3,6 +3,7 @@
   "trademark": "Redis",
   "release": true,
   "fork_url": "https://github.com/docker-library/redis",
+  "docker_url": "https://hub.docker.com/r/redis/redisinsight/tags",
   "edition": [
     {
       "dist": "community",

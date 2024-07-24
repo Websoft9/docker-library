@@ -3,6 +3,7 @@
   "trademark": "Gitlab",
   "release": true,
   "fork_url": "https://github.com/gitlabhq/omnibus-gitlab",
+  "docker_url": "https://hub.docker.com/r/gitlab/gitlab-ce/tags",
   "edition": [
     {
       "dist": "community",

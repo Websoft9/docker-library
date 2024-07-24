@@ -3,6 +3,7 @@
   "trademark": "Palworld",
   "release": true,
   "fork_url": "https://github.com/thijsvanloef/palworld-server-docker",
+  "docker_url": "https://hub.docker.com/r/thijsvanloef/palworld-server-docker/tags",
   "edition": [
     {
       "dist": "community",

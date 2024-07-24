@@ -3,6 +3,7 @@
   "trademark": "Knowage",
   "release": true,
   "fork_url": "https://knowage-suite.readthedocs.io/en/7.4/installation-guide/knowage-ce-installer.html#server-side-requirements",
+  "docker_url": "https://hub.docker.com/r/knowagelabs/knowage-server-docker",
   "edition": [
     {
       "dist": "community",

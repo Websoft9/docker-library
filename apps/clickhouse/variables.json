@@ -3,6 +3,7 @@
   "trademark": "ClickHouse",
   "release": true,
   "fork_url": "https://hub.docker.com/r/clickhouse/clickhouse-server",
+  "docker_url": "https://hub.docker.com/r/clickhouse/clickhouse-server/tags",
   "edition": [
     {
       "dist": "community",

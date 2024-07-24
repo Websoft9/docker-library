@@ -3,6 +3,7 @@
   "trademark": "Kong Gateway (OSS)",
   "release": true,
   "fork_url": "https://github.com/Kuari/kong-konga-docker-compose.git",
+  "docker_url": "https://hub.docker.com/_/kong/tags",
   "edition": [
     {
       "dist": "community",

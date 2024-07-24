@@ -3,6 +3,7 @@
   "trademark": "Jenkins",
   "release": true,
   "fork_url": "https://github.com/jenkinsci/docker.git",
+  "docker_url": "https://hub.docker.com/r/jenkins/jenkins/tags",
   "edition": [
     {
       "dist": "community",

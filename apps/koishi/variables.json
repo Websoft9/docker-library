@@ -3,6 +3,7 @@
   "trademark": "Koishi",
   "release": true,
   "fork_url": "https://github.com/koishijs/koishi",
+  "docker_url": "https://hub.docker.com/r/koishijs/koishi/tags",
   "edition": [
     {
       "dist": "community",

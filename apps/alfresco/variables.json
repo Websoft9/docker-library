@@ -3,6 +3,7 @@
   "trademark": "Alfresco",
   "release": true,
   "fork_url": "https://docs.alfresco.com/content-services/latest/install/containers/docker-compose",
+  "docker_url": "https://hub.docker.com/r/alfresco/alfresco-acs-nginx/tags",
   "edition": [
     {
       "dist": "community",

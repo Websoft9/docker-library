@@ -3,6 +3,7 @@
   "trademark": "Oracle Database",
   "release": true,
   "fork_url": "https://container-registry.oracle.com/database/express",
+  "docker_url": "https://container-registry.oracle.com/ords/ocr/ba/database/express",
   "edition": [
     {
       "dist": "community",

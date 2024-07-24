@@ -3,6 +3,7 @@
   "trademark": "Prometheus",
   "release": true,
   "fork_url": "https://hub.docker.com/r/prom/prometheus/",
+  "docker_url": "https://hub.docker.com/r/prom/prometheus/tags",
   "edition": [
     {
       "dist": "community",

@@ -3,6 +3,7 @@
   "trademark": "Cadvisor",
   "release": false,
   "fork_url": "https://github.com/google/cadvisor.git",
+  "docker_url": "https://hub.docker.com/r/google/cadvisor/tags",
   "edition": [
     {
       "dist": "community",

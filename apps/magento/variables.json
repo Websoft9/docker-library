@@ -3,6 +3,7 @@
   "trademark": "Adobe Commerce (Magento)",
   "release": true,
   "fork_url": "https://hub.docker.com/r/bitnami/magento",
+  "docker_url": "https://hub.docker.com/r/bitnami/magento/tags",
   "edition": [
     {
       "dist": "community",

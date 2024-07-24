@@ -3,6 +3,7 @@
   "trademark": "Caddy",
   "release": true,
   "fork_url": "https://github.com/caddyserver/caddy-docker",
+  "docker_url": "https://hub.docker.com/_/caddy/tags",
   "edition": [
     {
       "dist": "community",

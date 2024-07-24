@@ -3,6 +3,7 @@
   "trademark": "Python",
   "release": false,
   "fork_url": "https://www.python.org/",
+  "docker_url": "https://hub.docker.com/_/python/tags",
   "edition": [
     {
       "dist": "community",

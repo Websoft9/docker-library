@@ -3,6 +3,7 @@
   "trademark": "MQTTX",
   "release": true,
   "fork_url": "https://github.com/emqx/MQTTX",
+  "docker_url": "https://hub.docker.com/r/emqx/mqttx-web/tags",
   "edition": [
     {
       "dist": "community",

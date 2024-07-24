@@ -3,6 +3,7 @@
   "trademark": "AITable",
   "release": true,
   "fork_url": "https://github.com/apitable/apitable/blob/develop/docker-compose.yaml",
+  "docker_url": "https://hub.docker.com/r/apitable/openresty/tags",
   "edition": [
     {
       "dist": "community",

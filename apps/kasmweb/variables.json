@@ -3,6 +3,7 @@
   "trademark": "Kasm Workspaces",
   "release": true,
   "fork_url": "https://hub.docker.com/r/kasmweb",
+  "docker_url": "https://hub.docker.com/r/kasmweb/desktop/tags",
   "edition": [
     {
       "dist": "community",

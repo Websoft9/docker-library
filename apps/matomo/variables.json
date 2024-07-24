@@ -3,6 +3,7 @@
   "trademark": "Matomo",
   "release": true,
   "fork_url": "https://matomo.org/faq/on-premise/installing-matomo/",
+  "docker_url": "https://hub.docker.com/_/matomo/tags",
   "edition": [
     {
       "dist": "community",

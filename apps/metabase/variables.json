@@ -3,6 +3,7 @@
   "trademark": "Metabase",
   "release": true,
   "fork_url": "https://github.com/metabase/metabase",
+  "docker_url": "https://hub.docker.com/r/metabase/metabase/tags",
   "edition": [
     {
       "dist": "community",

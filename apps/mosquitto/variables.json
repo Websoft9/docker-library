@@ -3,6 +3,7 @@
   "trademark": "Eclipse Mosquitto",
   "release": true,
   "fork_url": "https://github.com/eclipse/mosquitto",
+  "docker_url": "https://hub.docker.com/_/eclipse-mosquitto/tags",
   "edition": [
     {
       "dist": "community",

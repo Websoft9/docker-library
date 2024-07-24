@@ -3,6 +3,7 @@
   "trademark": "Elasticsearch",
   "release": true,
   "fork_url": "https://github.com/elastic/elasticsearch",
+  "docker_url": "https://hub.docker.com/_/elasticsearch/tags",
   "edition": [
     {
       "dist": "community",

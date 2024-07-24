@@ -3,6 +3,7 @@
   "trademark": "Theia",
   "release": false,
   "fork_url": "https://registry.hub.docker.com/r/theiaide/theia",
+  "docker_url": "",
   "edition": [
     {
       "dist": "community",

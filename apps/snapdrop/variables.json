@@ -3,6 +3,7 @@
   "trademark": "Snapdrop",
   "release": true,
   "fork_url": "https://github.com/RobinLinus/snapdrop",
+  "docker_url": "https://hub.docker.com/r/linuxserver/snapdrop/tags",
   "edition": [
     {
       "dist": "community",

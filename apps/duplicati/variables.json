@@ -3,6 +3,7 @@
   "trademark": "Duplicati",
   "release": true,
   "fork_url": "https://hub.docker.com/r/linuxserver/duplicati",
+  "docker_url": "https://hub.docker.com/r/linuxserver/duplicati/tags",
   "edition": [
     {
       "dist": "community",

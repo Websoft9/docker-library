@@ -3,6 +3,7 @@
   "trademark": "Superset",
   "release": true,
   "fork_url": "https://github.com/apache/superset.git",
+  "docker_url": "https://hub.docker.com/r/apache/superset/tags",
   "edition": [
     {
       "dist": "community",

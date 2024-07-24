@@ -3,6 +3,7 @@
   "trademark": "Directus",
   "release": true,
   "fork_url": "https://github.com/directus/directus",
+  "docker_url": "https://hub.docker.com/r/directus/directus/tags",
   "edition": [
     {
       "dist": "community",

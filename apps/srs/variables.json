@@ -3,6 +3,7 @@
   "trademark": "SRS",
   "release": true,
   "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
+  "docker_url": "https://hub.docker.com/r/ossrs/srs/tags",
   "edition": [
     {
       "dist": "community",

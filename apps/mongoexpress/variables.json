@@ -3,6 +3,7 @@
   "trademark": "mongo-express",
   "release": false,
   "fork_url": "https://github.com/mongo-express/mongo-express.git",
+  "docker_url": "https://hub.docker.com/_/mongo-express/tags",
   "edition": [
     {
       "dist": "community",

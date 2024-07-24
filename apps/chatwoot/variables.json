@@ -3,6 +3,7 @@
   "trademark": "Chatwoot",
   "release": true,
   "fork_url": "https://github.com/chatwoot",
+  "docker_url": "https://hub.docker.com/r/chatwoot/chatwoot/tags",
   "edition": [
     {
       "dist": "community",

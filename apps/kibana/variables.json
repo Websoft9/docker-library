@@ -3,6 +3,7 @@
   "trademark": "Kibana",
   "release": true,
   "fork_url": "https://hub.docker.com/_/kibana",
+  "docker_url": "https://www.docker.elastic.co/r/kibana",
   "edition": [
     {
       "dist": "community",

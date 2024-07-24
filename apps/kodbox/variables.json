@@ -3,6 +3,7 @@
   "trademark": "Kodbox",
   "release": true,
   "fork_url": "https://github.com/KodCloud-dev/docker/blob/master/compose/docker-compose.yml",
+  "docker_url": "https://hub.docker.com/r/kodcloud/kodbox/tags",
   "edition": [
     {
       "dist": "community",

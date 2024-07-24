@@ -3,6 +3,7 @@
   "trademark": "Seafile",
   "release": true,
   "fork_url": "https://github.com/haiwen/seafile-docker.git",
+  "docker_url": "https://hub.docker.com/r/seafileltd/seafile-mc/tags",
   "edition": [
     {
       "dist": "community",

@@ -3,6 +3,7 @@
   "trademark": "MariaDB",
   "release": true,
   "fork_url": "https://github.com/MariaDB/mariadb-docker",
+  "docker_url": "https://hub.docker.com/_/mariadb/tags",
   "edition": [
     {
       "dist": "community",

@@ -3,6 +3,7 @@
   "trademark": "Strapi",
   "release": true,
   "fork_url": "https://github.com/strapi/strapi-docker",
+  "docker_url": "https://hub.docker.com/r/strapi/strapi/tags",
   "edition": [
     {
       "dist": "community",
