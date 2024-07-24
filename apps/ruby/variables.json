@@ -3,6 +3,7 @@
   "trademark": "Ruby",
   "release": false,
   "fork_url": "https://www.ruby-lang.org/",
+  "docker_url": "https://hub.docker.com/_/ruby/tags",
   "edition": [
     {
       "dist": "community",

@@ -3,6 +3,7 @@
   "trademark": "GeoServer",
   "release": false,
   "fork_url": "https://github.com/geoserver/geoserver-cloud",
+  "docker_url": "",
   "edition": [
     {
       "dist": "community",

@@ -3,6 +3,7 @@
   "trademark": "Gopeed",
   "release": true,
   "fork_url": "https://github.com/GopeedLab/gopeed",
+  "docker_url": "https://hub.docker.com/r/liwei2633/gopeed/tags",
   "edition": [
     {
       "dist": "community",

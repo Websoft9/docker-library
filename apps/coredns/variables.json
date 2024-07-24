@@ -3,6 +3,7 @@
   "trademark": "CoreDNS",
   "release": false,
   "fork_url": "https://github.com/coredns",
+  "docker_url": "https://hub.docker.com/r/coredns/coredns/tags",
   "edition": [
     {
       "dist": "community",

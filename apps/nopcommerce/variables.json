@@ -3,6 +3,7 @@
   "trademark": "NopCommerce",
   "release": true,
   "fork_url": "https://github.com/nopSolutions/nopCommerce",
+  "docker_url": "https://hub.docker.com/r/nopcommerceteam/nopcommerce/tags",
   "edition": [
     {
       "dist": "community",

@@ -3,6 +3,7 @@
   "trademark": "Tensorflow",
   "release": true,
   "fork_url": "https://github.com/tensorflow/tensorflow",
+  "docker_url": "https://hub.docker.com/r/tensorflow/tensorflow/tags",
   "edition": [
     {
       "dist": "community",

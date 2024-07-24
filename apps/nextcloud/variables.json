@@ -3,6 +3,7 @@
   "trademark": "Nextcloud",
   "release": true,
   "fork_url": "https://github.com/nextcloud/docker",
+  "docker_url": "https://hub.docker.com/_/nextcloud/tags",
   "edition": [
     {
       "dist": "community",

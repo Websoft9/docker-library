@@ -3,6 +3,7 @@
   "trademark": "PostgreSQL",
   "release": true,
   "fork_url": "https://github.com/docker-library/postgres",
+  "docker_url": "https://hub.docker.com/_/postgres/tags",
   "edition": [
     {
       "dist": "community",

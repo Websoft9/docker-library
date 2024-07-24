@@ -3,6 +3,7 @@
   "trademark": "Nocodb",
   "release": true,
   "fork_url": "https://github.com/nocobase/nocobase",
+  "docker_url": "https://hub.docker.com/r/nocobase/nocobase/tags",
   "edition": [
     {
       "dist": "community",

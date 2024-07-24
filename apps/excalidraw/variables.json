@@ -3,6 +3,7 @@
   "trademark": "Excalidraw",
   "release": true,
   "fork_url": "https://excalidraw.com/",
+  "docker_url": "https://hub.docker.com/r/excalidraw/excalidraw/tags",
   "edition": [
     {
       "dist": "community",

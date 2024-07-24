@@ -3,6 +3,7 @@
   "trademark": "EspoCRM",
   "release": true,
   "fork_url": "https://github.com/espocrm/espocrm-docker",
+  "docker_url": "https://hub.docker.com/r/espocrm/espocrm/tags",
   "edition": [
     {
       "dist": "community",

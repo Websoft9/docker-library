@@ -3,6 +3,7 @@
   "trademark": "Mastodon",
   "release": false,
   "fork_url": "https://github.com/linuxserver/docker-mastodon",
+  "docker_url": "https://hub.docker.com/r/linuxserver/mastodon/tags",
   "edition": [
     {
       "dist": "community",

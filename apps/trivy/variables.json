@@ -3,6 +3,7 @@
   "trademark": "Trivy",
   "release": false,
   "fork_url": "https://aquasecurity.github.io/trivy/v0.53/getting-started/installation/#docker",
+  "docker_url": "https://hub.docker.com/r/aquasec/trivy/tags",
   "edition": [
     {
       "dist": "community",

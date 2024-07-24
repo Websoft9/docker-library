@@ -3,6 +3,7 @@
   "trademark": "Kopia",
   "release": true,
   "fork_url": "https://kopia.io/docs/installation/#docker-images",
+  "docker_url": "https://hub.docker.com/r/kopia/kopia/tags",
   "edition": [
     {
       "dist": "community",

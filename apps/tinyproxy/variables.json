@@ -3,6 +3,7 @@
   "trademark": "tinyproxy ",
   "release": true,
   "fork_url": "https://hub.docker.com/r/ajoergensen/tinyproxy",
+  "docker_url": "https://hub.docker.com/r/ajoergensen/tinyproxy/tags",
   "edition": [
     {
       "dist": "community",

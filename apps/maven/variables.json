@@ -3,6 +3,7 @@
   "trademark": "Maven ",
   "release": false,
   "fork_url": "https://github.com/apache/maven-sources",
+  "docker_url": "https://hub.docker.com/_/maven/tags",
   "edition": [
     {
       "dist": "community",

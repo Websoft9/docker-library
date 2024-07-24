@@ -3,6 +3,7 @@
   "trademark": "Zookeeper",
   "release": true,
   "fork_url": "https://zookeeper.apache.org/doc/r3.9.1/index.html",
+  "docker_url": "https://hub.docker.com/_/zookeeper/tags",
   "edition": [
     {
       "dist": "community",

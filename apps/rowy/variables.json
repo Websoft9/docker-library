@@ -3,6 +3,7 @@
   "trademark": "Rowy",
   "release": false,
   "fork_url": "",
+  "docker_url": "",
   "edition": [
     {
       "dist": "community",

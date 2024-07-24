@@ -3,6 +3,7 @@
   "trademark": "Cloudreve",
   "release": true,
   "fork_url": "https://docs.cloudreve.org/getting-started/install#docker-compose",
+  "docker_url": "https://hub.docker.com/r/cloudreve/cloudreve/tags",
   "edition": [
     {
       "dist": "community",

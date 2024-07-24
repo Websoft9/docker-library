@@ -3,6 +3,7 @@
   "trademark": "CodeServer",
   "release": true,
   "fork_url": "https://github.com/linuxserver/docker-code-server",
+  "docker_url": "https://hub.docker.com/r/linuxserver/code-server/tags",
   "edition": [
     {
       "dist": "community",

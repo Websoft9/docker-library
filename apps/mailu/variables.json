@@ -3,6 +3,7 @@
   "trademark": "Mailu",
   "release": false,
   "fork_url": "https://github.com/Mailu/Mailu",
+  "docker_url": "",
   "edition": [
     {
       "dist": "community",

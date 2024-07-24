@@ -3,6 +3,7 @@
   "trademark": "Syncthing",
   "release": true,
   "fork_url": "https://hub.docker.com/r/syncthing/syncthing",
+  "docker_url": "https://hub.docker.com/r/syncthing/syncthing/tags",
   "edition": [
     {
       "dist": "community",

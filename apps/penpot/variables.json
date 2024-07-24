@@ -3,6 +3,7 @@
   "trademark": "Penpot",
   "release": true,
   "fork_url": "https://github.com/penpot/penpot",
+  "docker_url": "https://hub.docker.com/r/penpotapp/frontend/tags",
   "edition": [
     {
       "dist": "community",

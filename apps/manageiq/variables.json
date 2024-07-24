@@ -3,6 +3,7 @@
   "trademark": "ManageIQ",
   "release": true,
   "fork_url": "https://github.com/ManageIQ/manageiq",
+  "docker_url": "https://hub.docker.com/r/manageiq/manageiq/tags",
   "edition": [
     {
       "dist": "community",

@@ -3,6 +3,7 @@
   "trademark": "ThingsBoard",
   "release": true,
   "fork_url": "https://github.com/thingsboard/thingsboard",
+  "docker_url": "https://hub.docker.com/r/thingsboard/tb-postgres/tags",
   "edition": [
     {
       "dist": "community",

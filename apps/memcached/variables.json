@@ -3,6 +3,7 @@
   "trademark": "Memcached",
   "release": true,
   "fork_url": "https://github.com/docker-library/memcached",
+  "docker_url": "https://hub.docker.com/_/memcached/tags",
   "edition": [
     {
       "dist": "community",

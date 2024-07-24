@@ -3,6 +3,7 @@
   "trademark": "Plausible",
   "release": true,
   "fork_url": "https://github.com/plausible/hosting",
+  "docker_url": "https://hub.docker.com/r/plausible/analytics/tags",
   "edition": [
     {
       "dist": "community",

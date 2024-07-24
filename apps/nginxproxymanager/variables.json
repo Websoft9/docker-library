@@ -3,6 +3,7 @@
   "trademark": "Nginx Proxy Manager",
   "release": false,
   "fork_url": "https://hub.docker.com/r/jc21/nginx-proxy-manager/",
+  "docker_url": "",
   "edition": [
     {
       "dist": "community",

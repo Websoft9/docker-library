@@ -3,6 +3,7 @@
   "trademark": "Gogs",
   "release": true,
   "fork_url": "https://github.com/gogs/gogs",
+  "docker_url": "https://hub.docker.com/r/gogs/gogs/tags",
   "edition": [
     {
       "dist": "community",

@@ -3,6 +3,7 @@
   "trademark": "Redmine",
   "release": true,
   "fork_url": "https://github.com/docker-library/redmine",
+  "docker_url": "https://hub.docker.com/_/redmine/tags",
   "edition": [
     {
       "dist": "community",

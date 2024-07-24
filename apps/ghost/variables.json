@@ -3,6 +3,7 @@
   "trademark": "Ghost",
   "release": true,
   "fork_url": "https://hub.docker.com/_/ghost",
+  "docker_url": "https://hub.docker.com/_/ghost/tags",
   "edition": [
     {
       "dist": "community",

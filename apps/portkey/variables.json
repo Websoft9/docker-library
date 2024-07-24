@@ -3,6 +3,7 @@
   "trademark": "Portkey",
   "release": false,
   "fork_url": "https://raw.githubusercontent.com/Portkey-AI/gateway/main/docker-compose.yaml",
+  "docker_url": "https://hub.docker.com/r/portkeyai/gateway/tags",
   "edition": [
     {
       "dist": "community",

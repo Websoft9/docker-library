@@ -3,6 +3,7 @@
   "trademark": "Teleport",
   "release": true,
   "fork_url": "https://gallery.ecr.aws/gravitational/teleport",
+  "docker_url": "",
   "edition": [
     {
       "dist": "community",

@@ -3,6 +3,7 @@
   "trademark": "Bitwarden ",
   "release": true,
   "fork_url": "https://github.com/bitwarden/server",
+  "docker_url": "https://hub.docker.com/r/bitwarden/self-host/tags",
   "edition": [
     {
       "dist": "community",

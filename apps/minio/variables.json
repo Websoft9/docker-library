@@ -3,6 +3,7 @@
   "trademark": "Minio",
   "release": true,
   "fork_url": "",
+  "docker_url": "https://hub.docker.com/r/minio/minio/tags",
   "edition": [
     {
       "dist": "community",

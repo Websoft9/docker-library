@@ -3,6 +3,7 @@
   "trademark": "Jellyfin",
   "release": true,
   "fork_url": "https://jellyfin.org/docs/general/installation/",
+  "docker_url": "https://hub.docker.com/r/jellyfin/jellyfin/tags",
   "edition": [
     {
       "dist": "community",

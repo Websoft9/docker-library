@@ -3,6 +3,7 @@
   "trademark": "ONLYOFFICE Docs",
   "release": true,
   "fork_url": "https://github.com/ONLYOFFICE/Docker-DocumentServer",
+  "docker_url": "https://hub.docker.com/r/onlyoffice/documentserver/tags",
   "edition": [
     {
       "dist": "community",

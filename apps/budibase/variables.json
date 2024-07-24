@@ -3,6 +3,7 @@
   "trademark": "Budibase",
   "release": true,
   "fork_url": "https://github.com/Budibase/budibase/tree/develop/hosting",
+  "docker_url": "https://hub.docker.com/r/budibase/proxy/tags",
   "edition": [
     {
       "dist": "community",

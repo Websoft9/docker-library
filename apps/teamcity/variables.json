@@ -3,6 +3,7 @@
   "trademark": "TeamCity",
   "release": true,
   "fork_url": "https://hub.docker.com/r/jetbrains/teamcity-server",
+  "docker_url": "https://hub.docker.com/r/jetbrains/teamcity-server/tags",
   "edition": [
     {
       "dist": "community",

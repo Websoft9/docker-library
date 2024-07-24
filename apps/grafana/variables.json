@@ -3,6 +3,7 @@
   "trademark": "Grafana",
   "release": true,
   "fork_url": "",
+  "docker_url": "https://hub.docker.com/r/grafana/grafana/tags",
   "edition": [
     {
       "dist": "community",

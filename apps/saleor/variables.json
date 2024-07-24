@@ -3,6 +3,7 @@
   "trademark": "Saleor",
   "release": false,
   "fork_url": "https://github.com/saleor/saleor-platform",
+  "docker_url": "",
   "edition": [
     {
       "dist": "community",

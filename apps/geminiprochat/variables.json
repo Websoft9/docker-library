@@ -3,6 +3,7 @@
   "trademark": "GeminiProChat",
   "release": true,
   "fork_url": "https://geminiprochat.com/",
+  "docker_url": "https://hub.docker.com/r/babaohuang/geminiprochat/tags",
   "edition": [
     {
       "dist": "community",

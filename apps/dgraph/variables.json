@@ -3,6 +3,7 @@
   "trademark": "Dgraph",
   "release": true,
   "fork_url": "https://hub.docker.com/r/dgraph/standalone",
+  "docker_url": "https://hub.docker.com/r/dgraph/dgraph/tags",
   "edition": [
     {
       "dist": "community",

@@ -3,6 +3,7 @@
   "trademark": "chat2DB",
   "release": true,
   "fork_url": "https://github.com/chat2db/Chat2DB",
+  "docker_url": "https://hub.docker.com/r/chat2db/chat2db/tags",
   "edition": [
     {
       "dist": "community",

@@ -3,6 +3,7 @@
   "trademark": "AutoGPT.NextWeb",
   "release": true,
   "fork_url": "https://github.com/ConnectAI-E/AutoGPT-Next-Web",
+  "docker_url": "https://hub.docker.com/r/dogtititi/autogpt-next-web/tags",
   "edition": [
     {
       "dist": "community",

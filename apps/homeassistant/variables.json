@@ -3,6 +3,7 @@
   "trademark": "Home Assistant",
   "release": true,
   "fork_url": "https://github.com/home-assistant/core",
+  "docker_url": "https://hub.docker.com/r/homeassistant/home-assistant/tags",
   "edition": [
     {
       "dist": "community",

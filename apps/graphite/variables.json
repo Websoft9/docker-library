@@ -3,6 +3,7 @@
   "trademark": "Graphite",
   "release": true,
   "fork_url": "https://github.com/graphite-project/graphite-web",
+  "docker_url": "https://hub.docker.com/r/graphiteapp/graphite-statsd/tags",
   "edition": [
     {
       "dist": "community",

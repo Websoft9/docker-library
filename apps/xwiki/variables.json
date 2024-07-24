@@ -3,6 +3,7 @@
   "trademark": "XWiki",
   "release": true,
   "fork_url": "https://github.com/xwiki/xwiki-docker",
+  "docker_url": "https://hub.docker.com/_/xwiki/tags",
   "edition": [
     {
       "dist": "community",

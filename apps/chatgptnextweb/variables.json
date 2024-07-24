@@ -3,6 +3,7 @@
   "trademark": "ChatGPT-Next-Web",
   "release": true,
   "fork_url": "https://github.com/Yidadaa/ChatGPT-Next-Web",
+  "docker_url": "https://hub.docker.com/r/yidadaa/chatgpt-next-web/tags",
   "edition": [
     {
       "dist": "community",

@@ -3,6 +3,7 @@
   "trademark": "ONLYOFFICE",
   "release": false,
   "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
+  "docker_url": "",
   "edition": [
     {
       "dist": "community",

@@ -3,6 +3,7 @@
   "trademark": "Countly",
   "release": false,
   "fork_url": "https://github.com/Countly/countly-server",
+  "docker_url": "",
   "edition": [
     {
       "dist": "community",

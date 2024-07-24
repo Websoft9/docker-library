@@ -3,6 +3,7 @@
   "trademark": "Flowise",
   "release": true,
   "fork_url": "https://github.com/FlowiseAI",
+  "docker_url": "https://hub.docker.com/r/flowiseai/flowise/tags",
   "edition": [
     {
       "dist": "community",

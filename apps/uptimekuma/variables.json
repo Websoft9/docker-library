@@ -3,6 +3,7 @@
   "trademark": "Uptime Kuma",
   "release": true,
   "fork_url": "https://github.com/louislam/uptime-kuma",
+  "docker_url": "https://hub.docker.com/r/louislam/uptime-kuma/tags",
   "edition": [
     {
       "dist": "community",

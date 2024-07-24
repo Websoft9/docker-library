@@ -3,6 +3,7 @@
   "trademark": "RethinkDB",
   "release": true,
   "fork_url": "https://github.com/rethinkdb/rethinkdb-dockerfiles",
+  "docker_url": "https://hub.docker.com/_/rethinkdb/tags",
   "edition": [
     {
       "dist": "community",

@@ -3,6 +3,7 @@
   "trademark": "Pydio Cells",
   "release": true,
   "fork_url": "https://hub.docker.com/r/pydio/cells",
+  "docker_url": "https://hub.docker.com/r/pydio/cells/tags",
   "edition": [
     {
       "dist": "community",

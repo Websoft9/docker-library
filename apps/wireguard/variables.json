@@ -3,6 +3,7 @@
   "trademark": "Wireguard",
   "release": false,
   "fork_url": "https://github.com/linuxserver/docker-wireguard",
+  "docker_url": "",
   "edition": [
     {
       "dist": "community",

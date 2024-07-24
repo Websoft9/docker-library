@@ -3,6 +3,7 @@
   "trademark": "OpenSearch",
   "release": true,
   "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
+  "docker_url": "https://hub.docker.com/r/opensearchproject/opensearch/tags",
   "edition": [
     {
       "dist": "community",

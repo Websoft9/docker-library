@@ -3,6 +3,7 @@
   "trademark": "Apache",
   "release": true,
   "fork_url": "https://github.com/docker-library/httpd",
+  "docker_url": "https://hub.docker.com/_/httpd/tags",
   "edition": [
     {
       "dist": "community",

@@ -3,6 +3,7 @@
   "trademark": "Ansible",
   "release": true,
   "fork_url": "",
+  "docker_url": "https://hub.docker.com/r/websoft9dev/ansible/tags",
   "edition": [
     {
       "dist": "community",

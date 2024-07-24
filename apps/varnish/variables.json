@@ -3,6 +3,7 @@
   "trademark": "Vanish ",
   "release": false,
   "fork_url": "https://github.com/varnish/docker-varnish",
+  "docker_url": "",
   "edition": [
     {
       "dist": "community",

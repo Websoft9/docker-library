@@ -3,6 +3,7 @@
   "trademark": "Collabora",
   "release": true,
   "fork_url": "https://github.com/CollaboraOnline/online",
+  "docker_url": "https://hub.docker.com/r/collabora/code/tags",
   "edition": [
     {
       "dist": "community",

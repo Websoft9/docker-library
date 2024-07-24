@@ -3,6 +3,7 @@
   "trademark": "Rainbond",
   "release": false,
   "fork_url": "https://www.rainbond.com/docs/installation/install-with-dind",
+  "docker_url": "",
   "edition": [
     {
       "dist": "community",

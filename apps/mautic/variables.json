@@ -3,6 +3,7 @@
   "trademark": "Mautic",
   "release": true,
   "fork_url": "https://github.com/mautic/docker-mautic",
+  "docker_url": "https://hub.docker.com/r/mautic/mautic/tags",
   "edition": [
     {
       "dist": "community",

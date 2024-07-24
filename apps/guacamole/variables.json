@@ -3,6 +3,7 @@
   "trademark": "Guacamole",
   "release": false,
   "fork_url": "https://github.com/boschkundendienst/guacamole-docker-compose",
+  "docker_url": "https://hub.docker.com/r/guacamole/guacamole/tags",
   "edition": [
     {
       "dist": "community",

@@ -3,6 +3,7 @@
   "trademark": "InfluxDB",
   "release": true,
   "fork_url": "https://github.com/influxdata/influxdata-docker",
+  "docker_url": "https://hub.docker.com/_/influxdb/tags",
   "edition": [
     {
       "dist": "community",

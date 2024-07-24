@@ -3,6 +3,7 @@
   "trademark": "Supabase",
   "release": true,
   "fork_url": "https://github.com/supabase/supabase",
+  "docker_url": "",
   "edition": [
     {
       "dist": "community",

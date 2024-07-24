@@ -3,6 +3,7 @@
   "trademark": "Umbraco",
   "release": false,
   "fork_url": "https://umbraco.com/",
+  "docker_url": "",
   "edition": [
     {
       "dist": "community",

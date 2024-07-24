@@ -3,6 +3,7 @@
   "trademark": "Rundeck",
   "release": true,
   "fork_url": "https://github.com/rundeck/docker-zoo",
+  "docker_url": "https://hub.docker.com/r/rundeck/rundeck/tags",
   "edition": [
     {
       "dist": "community",

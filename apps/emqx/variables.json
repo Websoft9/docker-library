@@ -3,6 +3,7 @@
   "trademark": "EMQX",
   "release": true,
   "fork_url": "https://github.com/emqx/emqx",
+  "docker_url": "https://hub.docker.com/r/emqx/emqx/tags",
   "edition": [
     {
       "dist": "community",

@@ -3,6 +3,7 @@
   "trademark": "Huginn",
   "release": true,
   "fork_url": "https://github.com/huginn/huginn",
+  "docker_url": "https://github.com/huginn/huginn/pkgs/container/huginn",
   "edition": [
     {
       "dist": "community",

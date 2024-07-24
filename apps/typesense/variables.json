@@ -3,6 +3,7 @@
   "trademark": "Typesense",
   "release": true,
   "fork_url": "https://github.com/typesense/typesense",
+  "docker_url": "https://hub.docker.com/r/typesense/typesense/tags",
   "edition": [
     {
       "dist": "community",

@@ -3,6 +3,7 @@
   "trademark": "Docker Registry",
   "release": true,
   "fork_url": "https://github.com/distribution/distribution-library-image",
+  "docker_url": "https://hub.docker.com/_/registry/tags",
   "edition": [
     {
       "dist": "community",

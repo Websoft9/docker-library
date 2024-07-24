@@ -3,6 +3,7 @@
   "trademark": "Go",
   "release": false,
   "fork_url": "https://github.com/apache/tomee",
+  "docker_url": "https://hub.docker.com/_/golang/tags",
   "edition": [
     {
       "dist": "community",

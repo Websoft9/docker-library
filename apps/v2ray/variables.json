@@ -3,6 +3,7 @@
   "trademark": "V2Ray",
   "release": false,
   "fork_url": "https://www.v2ray.com/",
+  "docker_url": "",
   "edition": [
     {
       "dist": "community",

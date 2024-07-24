@@ -3,6 +3,7 @@
   "trademark": "Vault",
   "release": true,
   "fork_url": "https://github.com/hashicorp/docker-vault",
+  "docker_url": "https://hub.docker.com/r/hashicorp/vault/tags",
   "edition": [
     {
       "dist": "community",

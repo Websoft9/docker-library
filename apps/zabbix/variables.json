@@ -3,6 +3,7 @@
   "trademark": "Zabbix",
   "release": true,
   "fork_url": "https://github.com/zabbix/zabbix-docker",
+  "docker_url": "",
   "edition": [
     {
       "dist": "community",

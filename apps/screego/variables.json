@@ -3,6 +3,7 @@
   "trademark": "screego",
   "release": true,
   "fork_url": "https://screego.net/",
+  "docker_url": "https://hub.docker.com/r/screego/server/tags",
   "edition": [
     {
       "dist": "community",

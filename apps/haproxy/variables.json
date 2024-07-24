@@ -3,6 +3,7 @@
   "trademark": "HAProxy",
   "release": true,
   "fork_url": "https://hub.docker.com/_/haproxy",
+  "docker_url": "https://hub.docker.com/_/haproxy/tags",
   "edition": [
     {
       "dist": "community",

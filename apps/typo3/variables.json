@@ -3,6 +3,7 @@
   "trademark": "Typo3",
   "release": true,
   "fork_url": "https://hub.docker.com/r/martinhelmich/typo3",
+  "docker_url": "https://hub.docker.com/r/martinhelmich/typo3/tags",
   "edition": [
     {
       "dist": "community",

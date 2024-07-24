@@ -3,6 +3,7 @@
   "trademark": "Next Terminal",
   "release": true,
   "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
+  "docker_url": "https://hub.docker.com/r/dushixiang/next-terminal/tags",
   "edition": [
     {
       "dist": "community",

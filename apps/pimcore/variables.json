@@ -3,6 +3,7 @@
   "trademark": "Pimcore ",
   "release": false,
   "fork_url": "https://github.com/pimcore/docker",
+  "docker_url": "https://hub.docker.com/r/pimcore/pimcore/tags",
   "edition": [
     {
       "dist": "community",

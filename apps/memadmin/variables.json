@@ -3,6 +3,7 @@
   "trademark": "MemAdmin",
   "release": false,
   "fork_url": "https://github.com/hatamiarash7/Memcached-Admin",
+  "docker_url": "https://hub.docker.com/r/hatamiarash7/memcached-admin/tags",
   "edition": [
     {
       "dist": "community",
