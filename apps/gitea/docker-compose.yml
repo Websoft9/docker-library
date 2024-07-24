@@ -11,11 +11,6 @@ services:
     environment:
       - USER_UID=1000
       - USER_GID=1000
-      - GITEA__database__DB_TYPE=mysql
-      - GITEA__database__HOST=${W9_ID}-mysql:3306
-      - GITEA__database__NAME=$W9_ID
-      - GITEA__database__USER=$W9_ID
-      - GITEA__database__PASSWD=$W9_POWER_PASSWORD
     restart: unless-stopped
     env_file:
       - .env
@@ -26,20 +21,6 @@ services:
     ports:
       - "$W9_HTTP_PORT_SET:3000"
       - "$W9_SSH_PORT_SET:$W9_SSH_PORT_SET"
-    depends_on:
-       - mysql
- 
-  mysql:
-    image: mysql:$W9_DB_VERSION
-    container_name: ${W9_ID}-mysql   
-    environment:
-      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
-      MYSQL_DATABASE: ${W9_ID}
-      MYSQL_USER: ${W9_ID}
-      MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
-    volumes:
-      - mysql:/var/lib/mysql
-    restart: unless-stopped
 
 networks:
   default:
@@ -47,5 +28,4 @@ networks:
     external: true
 
 volumes:
-  mysql:
   gitea:
