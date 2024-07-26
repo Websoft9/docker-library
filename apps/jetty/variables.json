@@ -1,7 +1,7 @@
 {
   "name": "jetty",
   "trademark": "Jetty",
-  "release": false,
+  "release": true,
   "fork_url": "",
   "docker_url": "https://hub.docker.com/_/jetty/tags",
   "edition": [

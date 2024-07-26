@@ -1,7 +1,7 @@
 {
   "name": "tomee",
   "trademark": "TomEE",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/apache/tomee",
   "docker_url": "https://hub.docker.com/_/tomee/tags",
   "edition": [

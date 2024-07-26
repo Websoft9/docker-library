@@ -1,7 +1,7 @@
 {
   "name": "maven",
   "trademark": "Maven ",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/apache/maven-sources",
   "docker_url": "https://hub.docker.com/_/maven/tags",
   "edition": [
