@@ -1,0 +1,18 @@
+# image: https://hub.docker.com/r/aquasec/trivy
+# docs: https://aquasecurity.github.io/trivy/v0.53/getting-started/installation/#docker
+
+version: '4.9.0'
+
+services:
+
+  trivy:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    ports: 
+    restart: unless-stopped
+    env_file: .env
+    
+networks:
+  default:
+    name: $W9_NETWORK
+    external: true

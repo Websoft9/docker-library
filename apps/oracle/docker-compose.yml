@@ -1,7 +1,7 @@
 # image: https://container-registry.oracle.com/ords/f?p=113:10::::::
 # docs: http://docs.oracle.com/en/database/
 
-version: '3.8'
+version: '4.9.0'
 
 services:
   oracleex:
