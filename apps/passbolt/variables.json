@@ -1,22 +1,22 @@
 {
-  "name": "appname",
-  "trademark": "AppName",
+  "name": "passbolt",
+  "trademark": "Passbolt",
   "release": false,
-  "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
-  "docker_url": "",
+  "fork_url": "https://github.com/passbolt/passbolt_api",
+  "docker_url": "https://hub.docker.com/r/passbolt/passbolt/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["2.2","latest"]
+      "version": ["4.9.0.1","latest"]
     },
     {
       "dist": "enterprise",
-      "version": ["1.8.2","latest"]
+      "version": ["4.9.0.1","latest"]
     }
   ],
   "requirements": {
-    "cpu": "2",
-    "memory": "4",
+    "cpu": "1",
+    "memory": "1",
     "disk": "1",
     "url": "https://github.com/onlyoffice/docker#recommended-system-requirements"
   }
