@@ -1,18 +1,40 @@
 # image: https://hub.docker.com/r/aquasec/trivy
 # docs: https://aquasecurity.github.io/trivy/v0.53/getting-started/installation/#docker
 
-version: '4.9.0.1'
+version: '3.9'
 
 services:
+  db:
+    image: mariadb:$W9_DB_VERSION
+    container_name: $W9_ID-db
+    restart: unless-stopped
+    ports:
+     - $W9_DB_PORT_SET:3306
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      MYSQL_DATABASE: $W9_ID
+      MYSQL_USER: $W9_ID
+      MYSQL_PASSWORD: $W9_POWER_PASSWORD
+    volumes:
+      - database_volume:/var/lib/mysql
 
-  trivy:
+  web:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
-    ports: 
+    ports:
+      - "$W9_HTTP_PORT_SET:80"
     restart: unless-stopped
     env_file: .env
+
+
     
 networks:
   default:
     name: $W9_NETWORK
     external: true
+
+
+volumes:
+  database_volume:
+  gpg_volume:
+  jwt_volume:

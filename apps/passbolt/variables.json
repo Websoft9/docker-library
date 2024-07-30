@@ -8,10 +8,6 @@
     {
       "dist": "community",
       "version": ["4.9.0.1","latest"]
-    },
-    {
-      "dist": "enterprise",
-      "version": ["4.9.0.1","latest"]
     }
   ],
   "requirements": {
