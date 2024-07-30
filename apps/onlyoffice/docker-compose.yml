@@ -1,6 +1,6 @@
 # image: https://hub.docker.com/r/onlyoffice/documentserver
-# docs: https://github.com/ONLYOFFICE/DocumentServer
-# compose: https://github.com/ONLYOFFICE/Docker-DocumentServer/blob/master/docker-compose.yml
+# docs: https://github.com/ONLYOFFICE/Docker-CommunityServer
+# compose: https://github.com/ONLYOFFICE/Docker-CommunityServer/blob/master/docker-compose.workspace.yml
 
 # license.lic should storaged to data
 # volumes cache,mq is define at image but documentation not mention them
