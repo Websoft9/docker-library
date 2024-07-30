@@ -14,7 +14,7 @@ services:
       MYSQL_USER: $W9_ID
       MYSQL_PASSWORD: $W9_POWER_PASSWORD
     volumes:
-      - database:/var/lib/mysql
+      - mariadb:/var/lib/mysql
 
   web:
     image: $W9_REPO:$W9_VERSION
@@ -22,13 +22,28 @@ services:
     ports:
       - "$W9_HTTP_PORT_SET:80"
     restart: unless-stopped
+    depends_on:
+      - mariadb
     env_file: .env
-
+    volumes:
+      - gpg:/etc/passbolt/gpg
+      - jwt:/etc/passbolt/jwt
+    command:
+      [
+        "/usr/bin/wait-for.sh",
+        "-t",
+        "0",
+        "$W9_ID-mariadb:3306",
+        "--",
+        "/docker-entrypoint.sh",
+      ]
+      
 networks:
   default:
     name: $W9_NETWORK
     external: true
 
-
 volumes:
-  database:
+  mariadb:
+  gpg:
+  jwt:
