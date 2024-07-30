@@ -14,7 +14,7 @@ services:
       MYSQL_USER: $W9_ID
       MYSQL_PASSWORD: $W9_POWER_PASSWORD
     volumes:
-      - database_volume:/var/lib/mysql
+      - database:/var/lib/mysql
 
   web:
     image: $W9_REPO:$W9_VERSION
