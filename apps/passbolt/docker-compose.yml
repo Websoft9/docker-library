@@ -1,17 +1,15 @@
-# image: https://hub.docker.com/r/aquasec/trivy
-# docs: https://aquasecurity.github.io/trivy/v0.53/getting-started/installation/#docker
+# image: https://hub.docker.com/r/passbolt/passbolt
+# docs: https://www.passbolt.com/docs/hosting/install/ce/docker/
 
 version: '3.9'
 
 services:
-  db:
+  mariadb:
     image: mariadb:$W9_DB_VERSION
     container_name: $W9_ID-db
     restart: unless-stopped
-    ports:
-     - $W9_DB_PORT_SET:3306
     environment:
-      MYSQL_RANDOM_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
       MYSQL_DATABASE: $W9_ID
       MYSQL_USER: $W9_ID
       MYSQL_PASSWORD: $W9_POWER_PASSWORD
@@ -26,8 +24,6 @@ services:
     restart: unless-stopped
     env_file: .env
 
-
-    
 networks:
   default:
     name: $W9_NETWORK
@@ -35,6 +31,4 @@ networks:
 
 
 volumes:
-  database_volume:
-  gpg_volume:
-  jwt_volume:
+  database:
