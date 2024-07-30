@@ -6,7 +6,7 @@ version: '3.9'
 services:
   mariadb:
     image: mariadb:$W9_DB_VERSION
-    container_name: $W9_ID-db
+    container_name: $W9_ID-mariadb
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
