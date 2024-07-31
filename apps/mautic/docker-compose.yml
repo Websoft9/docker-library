@@ -7,11 +7,11 @@ version: '3.8'
 
 x-mautic-volumes:
   &mautic-volumes
-  - mautic/config:/var/www/html/config
-  - mautic/logs:/var/www/html/var/logs
-  - mautic/media/files:/var/www/html/docroot/media/files
-  - mautic/media/images:/var/www/html/docroot/media/images
-  - mautic/cron:/opt/mautic/cron
+  - mautic-config:/var/www/html/config
+  - mautic-logs:/var/www/html/var/logs
+  - mautic-media-files:/var/www/html/docroot/media/files
+  - mautic-media-images:/var/www/html/docroot/media/images
+  - mautic-cron:/opt/mautic/cron
 
 
 services:
@@ -99,4 +99,9 @@ networks:
     external: true
 
 volumes:
+  mautic-config:
+  mautic-logs:
+  mautic-media-files:
+  mautic-media-images:
+  mautic-cron:
   mysql-data:
