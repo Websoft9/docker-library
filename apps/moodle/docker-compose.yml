@@ -1,5 +1,5 @@
-# refer to: https://github.com/bitnami/bitnami-docker-moodle
 # image: https://hub.docker.com/r/bitnami/moodle
+# compose: https://github.com/bitnami/containers/blob/main/bitnami/moodle/docker-compose.yml
 
 version: "3.8"
 
@@ -12,9 +12,9 @@ services:
       - ALLOW_EMPTY_PASSWORD=no
       - MOODLE_DATABASE_HOST=${W9_ID}-mariadb
       - MOODLE_DATABASE_PORT_NUMBER=3306
-      - MOODLE_DATABASE_USER=${W9_ID}
+      - MOODLE_DATABASE_USER=moodle
       - MOODLE_DATABASE_PASSWORD=${W9_POWER_PASSWORD}
-      - MOODLE_DATABASE_NAME=${W9_ID}
+      - MOODLE_DATABASE_NAME=moodle
       - MOODLE_USERNAME=${W9_LOGIN_USER}
       - MOODLE_PASSWORD=${W9_LOGIN_PASSWORD}
     ports:
@@ -33,10 +33,10 @@ services:
     restart: unless-stopped
     environment:
       - ALLOW_EMPTY_PASSWORD=no
-      - MARIADB_USER=${W9_ID}
+      - MARIADB_USER=moodle
       - MARIADB_PASSWORD=${W9_POWER_PASSWORD}
       - MARIADB_ROOT_PASSWORD=${W9_POWER_PASSWORD}
-      - MARIADB_DATABASE=${W9_ID}
+      - MARIADB_DATABASE=moodle
       - MARIADB_CHARACTER_SET=utf8mb4
       - MARIADB_COLLATE=utf8mb4_unicode_ci
     volumes:
