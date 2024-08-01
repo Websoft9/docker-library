@@ -1,9 +1,7 @@
 # image: https://hub.docker.com/r/mautic/mautic/tags
 # docs: https://github.com/mautic/docker-mautic
 
-
 version: '3.8'
-
 
 x-mautic-volumes:
   &mautic-volumes
@@ -12,7 +10,6 @@ x-mautic-volumes:
   - mautic-media-files:/var/www/html/docroot/media/files
   - mautic-media-images:/var/www/html/docroot/media/images
   - mautic-cron:/opt/mautic/cron
-
 
 services:
   db:
@@ -33,9 +30,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
-    networks:
-      - default
-
 
   mautic_web:
     image: ${W9_REPO}:${W9_VERSION}
@@ -58,8 +52,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    networks:
-      - default
 
   mautic_cron:
     image: ${W9_REPO}:${W9_VERSION}
@@ -73,8 +65,6 @@ services:
     depends_on:
       mautic_web:
         condition: service_healthy
-    networks:
-      - default
 
   mautic_worker:
     image: ${W9_REPO}:${W9_VERSION}
@@ -88,10 +78,6 @@ services:
     depends_on:
       mautic_web:
         condition: service_healthy
-    networks:
-      - default
-
-
 
 networks:
   default:
