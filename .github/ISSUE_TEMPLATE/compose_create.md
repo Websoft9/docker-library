@@ -17,7 +17,7 @@ assignees: ''
 - [ ] test at Appstore and nginx proxy testing
 - [ ] docs
 - [ ] siteurl or baseurl
-- [ ] more environments from
+- [ ] more environments from or configuration file
 - [ ] connetion URI
 - [ ] ports
 - [ ] credentials environment
