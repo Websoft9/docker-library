@@ -9,7 +9,7 @@ services:
     environment:
       # DOMAIN: "https://vaultwarden.example.com"  # required when using a reverse proxy; your domain; vaultwarden needs to know it's https to work properly with attachments
       - "SIGNUPS_ALLOWED=true" # Deactivate this with "false" after you have created your account so that no strangers can register
-      - "DATABASE_URL=mysql://vaultwarden:${VW_ENCODE_PWD}@${W9_ID}-mariadb:3306/vaultwarden"
+      - "DATABASE_URL=mysql://vaultwarden:${W9_RCODE}@${W9_ID}-mariadb:3306/vaultwarden"
       - "ADMIN_TOKEN=$VW_ADMIN_TOKEN"
       - "RUST_BACKTRACE=1"
     ports:
@@ -29,7 +29,7 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
     environment:
       - "MYSQL_ROOT_PASSWORD=$W9_POWER_PASSWORD"
-      - "MYSQL_PASSWORD=$W9_POWER_PASSWORD"
+      - "MYSQL_PASSWORD=$W9_RCODE"
       - "MYSQL_DATABASE=vaultwarden"
       - "MYSQL_USER=vaultwarden"
 volumes:

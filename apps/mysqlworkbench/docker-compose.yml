@@ -17,7 +17,6 @@ services:
       - config:/config
     ports:
       - $W9_HTTP_PORT_SET:$W9_HTTP_PORT
-      #- $W9_HTTPS_PORT_SET:$W9_HTTPS_PORT
     cap_add:
       - IPC_LOCK
 

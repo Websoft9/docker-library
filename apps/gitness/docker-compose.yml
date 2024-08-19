@@ -16,8 +16,11 @@ services:
       - $W9_HTTP_PORT_SET:3000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./src/data:/data
-    
+      - data:/data
+
+volumes:
+  data:
+
 networks:
   default:
     name: $W9_NETWORK
