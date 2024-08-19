@@ -1,5 +1,5 @@
 {
-  "name": "mysql-workbench",
+  "name": "mysqlworkbench",
   "trademark": "MySQL Workbench",
   "release": false,
   "fork_url": "https://hub.docker.com/r/linuxserver/mysql-workbench",

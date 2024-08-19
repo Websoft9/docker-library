@@ -1,4 +1,5 @@
-# image, docs: https://hub.docker.com/r/linuxserver/mysql-workbench
+# image: https://hub.docker.com/r/linuxserver/mysql-workbench
+# docs: https://www.mysql.com/products/workbench/
 
 version: '3.8'
 
