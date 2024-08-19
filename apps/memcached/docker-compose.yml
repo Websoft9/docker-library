@@ -22,7 +22,7 @@ services:
       - '8089:80' #set your host port
     environment:
       - MEMCACHED_HOST=${W9_ID}
-      - MEMCACHED_PORT='11211'
+      - MEMCACHED_PORT=11211
     profiles:
       - gui
 
