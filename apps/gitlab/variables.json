@@ -7,11 +7,7 @@
   "edition": [
     {
       "dist": "community",
-      "version": ["16.9.3-ce.0","latest"]
-    },
-    {
-      "dist": "jihu",
-      "version": ["16.6.2","latest"]
+      "version": ["17.3.0-ce.0","latest"]
     }
   ],
   "requirements": {
