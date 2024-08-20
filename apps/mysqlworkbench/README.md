@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for MySQL Workbench:
 
 
- - community:  8.0, latest
+ - community:  8.0.38, latest
 
 
 ## System Requirements
