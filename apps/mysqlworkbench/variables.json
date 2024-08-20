@@ -1,7 +1,7 @@
 {
   "name": "mysqlworkbench",
   "trademark": "MySQL Workbench",
-  "release": false,
+  "release": true,
   "fork_url": "https://hub.docker.com/r/linuxserver/mysql-workbench",
   "docker_url": "https://hub.docker.com/r/linuxserver/mysql-workbench/tags",
   "edition": [

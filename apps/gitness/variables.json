@@ -1,7 +1,7 @@
 {
   "name": "gitness",
   "trademark": "Gitness",
-  "release": false,
+  "release": true,
   "fork_url": "https://docs.gitness.com/installation/data",
   "docker_url": "https://hub.docker.com/r/harness/gitness/tags",
   "edition": [
