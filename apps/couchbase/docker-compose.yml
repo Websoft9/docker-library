@@ -1,0 +1,24 @@
+# image,docs: https://hub.docker.com/r/couchbase/server
+
+version: '3.8'
+
+services:
+
+  couchbase-server:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    restart: unless-stopped
+    ports:
+      - $W9_HTTP_PORT_SET:8091
+      # - 8091-8097:8091-8097
+      # - 9123:9123
+      # - 11207:11207
+      # - 11210:11210
+      # - 11280:11280
+      # - 18091-18097:18091-18097
+    env_file: .env
+
+networks:
+  default:
+    name: $W9_NETWORK
+    external: true
