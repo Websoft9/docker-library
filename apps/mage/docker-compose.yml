@@ -1,0 +1,27 @@
+# image: https://hub.docker.com/r/mageai/mageai
+# docs: https://docs.mage.ai/introduction/overview
+version: '3.8'
+
+services:
+
+  magic:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    restart: unless-stopped
+    command: |
+      mage start ${PROJECT_NAME}
+    ports:
+      - $W9_HTTP_PORT_SET:6789
+    env_file: .env
+    environment:
+      USER_CODE_PATH: /home/src/${PROJECT_NAME}
+    volumes:
+      - src:/home/src/
+
+volumes:
+  src:
+    
+networks:
+  default:
+    name: $W9_NETWORK
+    external: true

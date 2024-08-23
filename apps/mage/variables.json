@@ -1,0 +1,19 @@
+{
+  "name": "mage",
+  "trademark": "Mage",
+  "release": false,
+  "fork_url": "https://github.com/mage-ai/compose-quickstart",
+  "docker_url": "https://hub.docker.com/r/mageai/mageai/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["latest"]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "4",
+    "url": ""
+  }
+}
