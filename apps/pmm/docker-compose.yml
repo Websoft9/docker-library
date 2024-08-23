@@ -12,8 +12,7 @@ services:
     env_file: .env
     volumes:
       - pmm-data:/srv
-    restart: always
-
+    restart: unless-stopped
 
 volumes:
   pmm-data:
