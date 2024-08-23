@@ -12,14 +12,16 @@ services:
     restart: unless-stopped
     env_file: .env
 
-  postgres:
-    image: postgres:$W9_DB_VERSION
-    container_name: $W9_ID-postgres
+  mysql:
+    image: mysql:$W9_DB_VERSION
+    container_name: $W9_ID-mysql
     restart: unless-stopped
     environment:
-      - POSTGRES_USER=$W9_ID
-      - POSTGRES_DB=$W9_ID
-      - POSTGRES_PASSWORD=$W9_POWER_PASSWORD
+      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      MYSQL_DATABASE: drupal
+      MYSQL_USER: drupal
+      MYSQL_PASSWORD: $W9_POWER_PASSWORD
+     
 networks:
   default:
     name: $W9_NETWORK
