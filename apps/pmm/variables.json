@@ -1,0 +1,19 @@
+{
+  "name": "pmm",
+  "trademark": "Pmm",
+  "release": false,
+  "fork_url": "https://hub.docker.com/r/percona/pmm-server",
+  "docker_url": "https://hub.docker.com/r/percona/pmm-server/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["2.42.0","latest"]
+    }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1",
+    "url": "https://github.com/percona/pmm"
+  }
+}
