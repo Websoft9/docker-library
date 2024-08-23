@@ -1,4 +1,4 @@
-
+# image, docs: https://hub.docker.com/_/drupal
 version: '3.8'
 
 services:
