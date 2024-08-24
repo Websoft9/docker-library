@@ -7,13 +7,13 @@
   "edition": [
     {
       "dist": "community",
-      "version": ["v4-apache"]
+      "version": ["5-apache"]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
+    "disk": "2",
     "url": "https://www.mautic.org/docs/user_guide/en/install-requirements.html"
   }
 }

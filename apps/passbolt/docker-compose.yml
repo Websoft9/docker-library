@@ -1,0 +1,49 @@
+# image: https://hub.docker.com/r/passbolt/passbolt
+# docs: https://www.passbolt.com/docs/hosting/install/ce/docker/
+
+version: '3.9'
+
+services:
+  mariadb:
+    image: mariadb:$W9_DB_VERSION
+    container_name: $W9_ID-mariadb
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      MYSQL_DATABASE: $W9_ID
+      MYSQL_USER: $W9_ID
+      MYSQL_PASSWORD: $W9_POWER_PASSWORD
+    volumes:
+      - mariadb:/var/lib/mysql
+
+  web:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    ports:
+      - "$W9_HTTP_PORT_SET:80"
+    restart: unless-stopped
+    depends_on:
+      - mariadb
+    env_file: .env
+    volumes:
+      - gpg:/etc/passbolt/gpg
+      - jwt:/etc/passbolt/jwt
+    command:
+      [
+        "/usr/bin/wait-for.sh",
+        "-t",
+        "0",
+        "$W9_ID-mariadb:3306",
+        "--",
+        "/docker-entrypoint.sh",
+      ]
+      
+networks:
+  default:
+    name: $W9_NETWORK
+    external: true
+
+volumes:
+  mariadb:
+  gpg:
+  jwt:

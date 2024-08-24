@@ -3,9 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Gitlab:
 
 
- - community:  16.9.3-ce.0, latest
-
- - jihu:  16.6.2, latest
+ - community:  17.3.0-ce.0, latest
 
 
 ## System Requirements

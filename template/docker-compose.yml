@@ -8,6 +8,10 @@ services:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
+    #This is for access host from container
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    command: |
+      /bin/bash -c "ping -c 3 host.docker.internal"
     logging:
       driver: "json-file"
       options:

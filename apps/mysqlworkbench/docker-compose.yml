@@ -1,0 +1,30 @@
+# image: https://hub.docker.com/r/linuxserver/mysql-workbench
+# docs: https://www.mysql.com/products/workbench/
+
+version: '3.8'
+
+services:
+
+  mysqlworkbench:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - config:/config
+    ports:
+      - $W9_HTTP_PORT_SET:$W9_HTTP_PORT
+    cap_add:
+      - IPC_LOCK
+
+volumes:
+  config:
+    
+networks:
+  default:
+    name: $W9_NETWORK
+    external: true

@@ -1,0 +1,19 @@
+{
+  "name": "passbolt",
+  "trademark": "Passbolt",
+  "release": false,
+  "fork_url": "https://github.com/passbolt/passbolt_api",
+  "docker_url": "https://hub.docker.com/r/passbolt/passbolt/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["4.9.0-1-ce","latest"]
+    }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1",
+    "url": "https://github.com/passbolt/passbolt-docs"
+  }
+}

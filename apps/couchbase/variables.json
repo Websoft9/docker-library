@@ -1,0 +1,19 @@
+{
+  "name": "couchbase",
+  "trademark": "Couchbase",
+  "release": false,
+  "fork_url": "https://hub.docker.com/r/couchbase/server",
+  "docker_url": "https://hub.docker.com/r/couchbase/server/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["community-7.6.2","community"]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "8",
+    "url": "https://docs.couchbase.com/server/current/install/pre-install.html"
+  }
+}

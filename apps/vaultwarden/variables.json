@@ -1,0 +1,19 @@
+{
+  "name": "vaultwarden",
+  "trademark": "Vaultwarden",
+  "release": true,
+  "fork_url": "https://github.com/dani-garcia/vaultwarden/wiki/Using-the-MariaDB-%28MySQL%29-Backend",
+  "docker_url": "https://hub.docker.com/r/vaultwarden/server/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["1.32.0","latest"]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "1",
+    "url": ""
+  }
+}

@@ -1,6 +1,5 @@
 # image: https://hub.docker.com/r/bitnami/discourse
-# docs: https://hub.docker.com/r/bitnami/discourse
-
+# compose: https://github.com/bitnami/containers/blob/main/bitnami/discourse/docker-compose.yml
 
 version: '3.8'
 services:

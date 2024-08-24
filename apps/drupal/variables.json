@@ -2,14 +2,14 @@
   "name": "drupal",
   "trademark": "Drupal",
   "release": true,
-  "fork_url": "https://hub.docker.com/r/bitnami/drupal",
-  "docker_url": "https://hub.docker.com/r/bitnami/drupal/tags",
+  "fork_url": "https://hub.docker.com/_/drupal",
+  "docker_url": "https://hub.docker.com/_/drupal/tags",
   "edition": [
     {
       "dist": "community",
       "version": [
-        "10.2.5",
-        "latest"
+        "11.0.1-apache",
+        "10.3.2-apache"
       ]
     }
   ],
@@ -17,6 +17,6 @@
     "cpu": "1",
     "memory": "1",
     "disk": "1",
-    "url": "https://www.drupal.org/docs/user_guide/en/install-requirements.html"
+    "url": ""
   }
 }

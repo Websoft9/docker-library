@@ -1,43 +1,83 @@
 # image: https://hub.docker.com/r/mautic/mautic/tags
 # docs: https://github.com/mautic/docker-mautic
 
-
 version: '3.8'
 
+x-mautic-volumes:
+  &mautic-volumes
+  - mautic-config:/var/www/html/config
+  - mautic-logs:/var/www/html/var/logs
+  - mautic-media-files:/var/www/html/docroot/media/files
+  - mautic-media-images:/var/www/html/docroot/media/images
+  - mautic-cron:/opt/mautic/cron
+
 services:
-  mautic:
-    image: ${W9_REPO}:${W9_VERSION}
-    container_name: ${W9_ID}
-    ports:
-      - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
-    volumes:
-      - mautic:/var/www/html
-    env_file:
-      - .env
-    environment:
-      # MAUTIC_DB_USER must root, otherwise container error
-      - MAUTIC_DB_HOST=${W9_ID}-mysql
-      - MAUTIC_DB_USER=root
-      - MAUTIC_DB_PASSWORD=${W9_POWER_PASSWORD}
-      - MAUTIC_DB_NAME=${W9_ID}
-    depends_on:
-      - mysql
-    restart: unless-stopped
-
-
-  mysql:
-    image: mysql:5.7
+  db:
+    image: mysql:8.0
     container_name: ${W9_ID}-mysql
     restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-    volumes:
-      - mysql:/var/lib/mysql
     environment:
       MYSQL_DATABASE: ${W9_ID}
       MYSQL_USER: ${W9_ID}
       MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
-    env_file: .env
+    volumes: 
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: mysqladmin --user=$$MYSQL_USER --password=$$MYSQL_PASSWORD ping
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mautic_web:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    ports:
+      - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
+    volumes: *mautic-volumes
+    restart: unless-stopped
+    environment:
+      - DOCKER_MAUTIC_LOAD_TEST_DATA=${DOCKER_MAUTIC_LOAD_TEST_DATA}
+      - DOCKER_MAUTIC_RUN_MIGRATIONS=${DOCKER_MAUTIC_RUN_MIGRATIONS}
+    env_file:
+      - .env
+    healthcheck:
+      test: curl http://localhost
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 100
+    depends_on:
+      db:
+        condition: service_healthy
+
+  mautic_cron:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}-cron
+    volumes: *mautic-volumes
+    restart: unless-stopped
+    environment:
+      - DOCKER_MAUTIC_ROLE=mautic_cron
+    env_file:
+      - .env
+    depends_on:
+      mautic_web:
+        condition: service_healthy
+
+  mautic_worker:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}-worker
+    volumes: *mautic-volumes
+    restart: unless-stopped
+    environment:
+      - DOCKER_MAUTIC_ROLE=mautic_worker
+    env_file:
+      - .env
+    depends_on:
+      mautic_web:
+        condition: service_healthy
 
 networks:
   default:
@@ -45,5 +85,9 @@ networks:
     external: true
 
 volumes:
-  mautic:
-  mysql:
+  mautic-config:
+  mautic-logs:
+  mautic-media-files:
+  mautic-media-images:
+  mautic-cron:
+  mysql-data:

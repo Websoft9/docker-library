@@ -370,5 +370,9 @@
     "W9_BROKER_PORT_SET": [
         "BROKER PORT",
         "代理监听端口"
+    ],
+    "W9_CONTAINER_PT_INIT_SET": [
+        "CONTAINER PORT NEED EXPOSED",
+        "容器需暴露的端口"
     ]
 }
