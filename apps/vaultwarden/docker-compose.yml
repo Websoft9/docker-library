@@ -16,7 +16,7 @@ services:
     image: mariadb:$W9_DB_VERSION
     container_name: "$W9_ID-mariadb"
     hostname: "mariadb"
-    restart: always
+    restart: unless-stopped
     env_file:
       - .env
     volumes:
