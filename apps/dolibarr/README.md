@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Dolibarr:
 
 
- - community:  18, latest
+ - community:  19.0.2, latest
 
 
 ## System Requirements
