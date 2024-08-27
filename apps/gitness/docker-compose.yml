@@ -8,9 +8,6 @@ services:
     container_name: $W9_ID
     restart: unless-stopped
     extra_hosts: ["host.docker.internal:host-gateway"]
-    environment:
-      - GITNESS_USER_SIGNUP_ENABLED=false
-      - GITNESS_CI_CONTAINER_NETWORKS=websoft9
     env_file: .env
     ports: 
       - $W9_HTTP_PORT_SET:3000

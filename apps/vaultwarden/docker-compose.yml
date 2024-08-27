@@ -15,15 +15,12 @@ services:
   mariadb:
     image: mariadb:$W9_DB_VERSION
     container_name: "$W9_ID-mariadb"
-    hostname: "mariadb"
     restart: unless-stopped
-    env_file:
-      - .env
     volumes:
       - "mariadb_vol:/var/lib/mysql"
       - "/etc/localtime:/etc/localtime:ro"
     environment:
-      - "MYSQL_ROOT_PASSWORD=$W9_POWER_PASSWORD"
+      - "MYSQL_ROOT_PASSWORD=$W9_RCODE"
       - "MYSQL_PASSWORD=$W9_RCODE"
       - "MYSQL_DATABASE=vaultwarden"
       - "MYSQL_USER=vaultwarden"

@@ -13,8 +13,6 @@ services:
     ports:
       - $W9_HTTP_PORT_SET:6789
     env_file: .env
-    environment:
-      USER_CODE_PATH: /home/src/${PROJECT_NAME}
     volumes:
       - src:/home/src/
 
