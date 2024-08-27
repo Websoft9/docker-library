@@ -1,6 +1,6 @@
-# Pmm on Docker  
+# PMM on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Pmm:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for PMM:
 
 
  - community:  2.42, latest
@@ -17,10 +17,10 @@ The following are the minimal [recommended requirements](https://github.com/perc
 
 ## Install
 
-You can install this Pmm by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this PMM by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use Pmm with **Websoft9 Business Support** free, you can [subscribe Pmm](https://www.websoft9.com/apps) on Cloud platform
+If you want use PMM with **Websoft9 Business Support** free, you can [subscribe PMM](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[Pmm Administrator Guide](https://support.websoft9.com/docs/pmm) powered by Websoft9
+[PMM Administrator Guide](https://support.websoft9.com/docs/pmm) powered by Websoft9
