@@ -32,9 +32,10 @@ services:
     entrypoint: |
       /bin/sh -c "
       apt update -y
-      apt install -y --no-install-recommends wget
-      while [ ! -f /data/bin/magento ]; do
-        echo 'Waiting for bin/magento to be created...'
+      apt install -y --no-install-recommends wget curl
+      echo 'Waiting for Magento to be ready...'
+      while ! curl -s http://magento:$W9_HTTP_PORT > /dev/null; do
+        echo 'Waiting for Magento...'
         sleep 10
       done
       # This url is download from https://raw.githubusercontent.com/magento-l10n/language-zh_CN/master/zh_CN.csv
