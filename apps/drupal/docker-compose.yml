@@ -1,4 +1,6 @@
-# image, docs: https://hub.docker.com/_/drupal
+# image: https://hub.docker.com/_/drupal
+# docs:https://github.com/docker-library/docs/blob/master/drupal/README.md
+
 version: '3.8'
 
 services:
@@ -8,7 +10,10 @@ services:
     ports:
       - $W9_HTTP_PORT_SET:80
     volumes:
-      - data:/var/www/html
+      - modules:/var/www/html/modules
+      - profiles:/var/www/html/profiles
+      - themes:/var/www/html/themes
+      - sites:/var/www/html/sites
     restart: unless-stopped
     env_file: .env
 
@@ -28,4 +33,7 @@ networks:
     external: true
 
 volumes:
-  data:
+  modules:
+  profiles:
+  themes:
+  sites:
