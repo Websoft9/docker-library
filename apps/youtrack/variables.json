@@ -1,0 +1,19 @@
+{
+  "name": "youtrack",
+  "trademark": "YouTrack",
+  "release": false,
+  "fork_url": "",
+  "docker_url": "",
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["2024.2.41254","2024.1.32323"]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "1",
+    "disk": "1.5",
+    "url": "https://www.jetbrains.com/help/youtrack/server/youtrack-supported-environments.html#hardware-requirements"
+  }
+}

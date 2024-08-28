@@ -1,0 +1,28 @@
+#image: https://hub.docker.com/r/jetbrains/youtrack
+#docs: https://www.jetbrains.com/help/youtrack/server/youtrack-docker-installation.html
+
+version: '3.8'
+
+services:
+  youtrack:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    restart: unless-stopped
+    volumes:
+      - conf:/opt/youtrack/conf
+      - data:/opt/youtrack/data
+      - logs:/opt/youtrack/logs
+      - backups:/opt/youtrack/backups
+    ports:
+      - $W9_HTTP_PORT_SET:8080
+
+networks:
+  default:
+    name: $W9_NETWORK
+    external: true
+
+volumes:
+  conf:
+  data:
+  logs:
+  backups:
