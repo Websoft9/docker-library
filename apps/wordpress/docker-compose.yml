@@ -52,7 +52,6 @@ services:
     container_name: $W9_ID-mariadb
     restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
-    env_file: .env
     volumes:
       - mysql_data:/var/lib/mysql
     environment:
