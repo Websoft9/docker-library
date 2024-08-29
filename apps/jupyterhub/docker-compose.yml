@@ -14,6 +14,7 @@ services:
     volumes:
       - jupyterhub:/var/www/html
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./src/jupyterhub_config.py:/etc/jupyterhub/jupyterhub_config.py
     restart: unless-stopped
     command:
       - sh
@@ -21,7 +22,7 @@ services:
       - |
           [ ! -d /usr/local/lib/python3.10/dist-packages/jupyterlab ] && pip install jupyterlab
           [ -z "`grep -w ^$$USERNAME /etc/passwd`" ] && useradd $$USERNAME -m && echo $$USERNAME:$$PASSWORD | chpasswd
-          jupyterhub
+          jupyterhub -f /etc/jupyterhub/jupyterhub_config.py 
     environment:
       USERNAME: $W9_LOGIN_USER
       PASSWORD: $W9_POWER_PASSWORD
