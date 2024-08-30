@@ -1,4 +1,5 @@
-# image,docs: https://hub.docker.com/r/couchbase/server
+# image: https://hub.docker.com/r/couchbase/server
+# docs: https://docs.couchbase.com/server/current/getting-started/do-a-quick-install.html
 
 version: '3.8'
 
