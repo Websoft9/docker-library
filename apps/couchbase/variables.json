@@ -1,7 +1,7 @@
 {
   "name": "couchbase",
   "trademark": "Couchbase",
-  "release": false,
+  "release": true,
   "fork_url": "https://hub.docker.com/r/couchbase/server",
   "docker_url": "https://hub.docker.com/r/couchbase/server/tags",
   "edition": [

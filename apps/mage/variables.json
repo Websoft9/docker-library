@@ -1,7 +1,7 @@
 {
   "name": "mage",
   "trademark": "Mage",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/mage-ai/compose-quickstart",
   "docker_url": "https://hub.docker.com/r/mageai/mageai/tags",
   "edition": [
