@@ -15,20 +15,13 @@ services:
     env_file: .env
 
   mongo:
-    image: bitnami/mongodb:$W9_DB_VERSION
+    image: mongo:$W9_DB_VERSION
     container_name: ${W9_ID}-mongodb
     restart: unless-stopped
     volumes:
-      - mongodb_data:/bitnami/mongodb
+      - mongodb_data:/data/db
     environment:
-      MONGODB_REPLICA_SET_MODE: primary
-      MONGODB_REPLICA_SET_NAME: rs0
-      MONGODB_PORT_NUMBER: 27017
-      MONGODB_INITIAL_PRIMARY_HOST: ${W9_ID}-mongodb
-      MONGODB_INITIAL_PRIMARY_PORT_NUMBER: 27017
-      MONGODB_ADVERTISED_HOSTNAME:  ${W9_ID}-mongodb
-      MONGODB_ENABLE_JOURNAL: true
-      ALLOW_EMPTY_PASSWORD: yes
+      MONGO_INITDB_DATABASE: rocketchat
 
 networks:
   default:
