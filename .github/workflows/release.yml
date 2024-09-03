@@ -51,15 +51,15 @@ jobs:
           cp ${{ env.appname }}-${{ env.LIBRARY_TAG }}.zip artifacts
           cp artifacts/${{ env.appname }}-${{ env.LIBRARY_TAG }}.zip artifacts/${{ env.appname }}-latest.zip
 
-      - name: Upload zip files to Azure Blob
-        uses: LanceMcCarthy/Action-AzureBlobUpload@v2
+      - name: Upload To cloudflare r2
+        uses: ryand56/r2-upload-action@latest
         with:
-          connection_string: ${{ secrets.AZURE_STORAGE_ARTIFACT }}
-          container_name: ${{ env.CHANNEL }}
-          source_folder: artifacts/
-          destination_folder: ./websoft9/plugin/${{ env.appname }}
-          delete_if_exists: true
-          fail_if_source_empty: true
+          r2-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          r2-access-key-id: ${{ secrets.CLOUDFLARE_SECRET_ID }}
+          r2-secret-access-key: ${{ secrets.CLOUDFLARE_SECRET_KEY }}
+          r2-bucket: artifact
+          source-dir: artifacts
+          destination-dir: ./${{ env.CHANNEL }}/websoft9/plugin/${{ env.appname }}
 
       - name: Create Github Release from code
         uses: softprops/action-gh-release@v1
