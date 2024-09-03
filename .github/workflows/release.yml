@@ -59,7 +59,7 @@ jobs:
           r2-secret-access-key: ${{ secrets.CLOUDFLARE_SECRET_KEY }}
           r2-bucket: artifact
           source-dir: artifacts
-          destination-dir: ./${{ steps.convert_version.outputs.CHANNEL }}/websoft9/plugin/${{ env.appname }}
+          destination-dir: ./${{ env.CHANNEL }}/websoft9/plugin/${{ env.appname }}
 
       - name: Create Github Release from code
         uses: softprops/action-gh-release@v1
