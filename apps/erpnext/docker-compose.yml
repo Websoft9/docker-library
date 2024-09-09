@@ -94,6 +94,8 @@ services:
     depends_on:
       - websocket
     restart: unless-stopped
+    env_file: 
+      - .env
     command:
       - nginx-entrypoint.sh
     environment:
