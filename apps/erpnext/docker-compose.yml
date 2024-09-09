@@ -16,7 +16,7 @@ services:
   configurator:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID-configurator
-    restart: unless-stopped
+    restart: none
     entrypoint:
       - bash
       - -c
@@ -43,7 +43,7 @@ services:
   create-site:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID-create-site
-    restart: unless-stopped
+    restart: none
     volumes:
       - sites:/home/frappe/frappe-bench/sites
       - logs:/home/frappe/frappe-bench/logs
