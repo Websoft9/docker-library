@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for RocketChat:
 
 
- - community:  6.9.5, latest
+ - community:  6.11.1, latest
 
 
 ## System Requirements
