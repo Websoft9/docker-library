@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Flowise:
 
 
- - community:  latest
+ - community:  2.0.7, latest
 
 
 ## System Requirements
