@@ -10,7 +10,7 @@ services:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
-    command: /bin/sh -c "sleep 3; flowise start"
+    entrypoint: /bin/sh -c "sleep 3; flowise start"
     ports:
       - $W9_HTTP_PORT_SET:3000
     env_file: .env
