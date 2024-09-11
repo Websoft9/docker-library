@@ -3,9 +3,9 @@ version: '3.5'
 services:
     # Frontend
     web:
-        image: jitsi/web:${W9_VERSION:-stable-9646}
+        image: jitsi/web:${W9_VERSION}
         container_name: $W9_ID
-        restart: ${RESTART_POLICY:-unless-stopped}
+        restart: unless-stopped
         env_file: .env
         ports:
             - '${W9_HTTPS_PORT_SET}:443'
@@ -179,10 +179,9 @@ services:
 
     # XMPP server
     prosody:
-        image: jitsi/prosody:${W9_VERSION:-stable-9646}
+        image: jitsi/prosody:${W9_VERSION}
         container_name: $W9_ID-prosody
-        restart: ${RESTART_POLICY:-unless-stopped}
-        env_file: .env
+        restart: unless-stopped
         expose:
             - '${XMPP_PORT:-5222}'
             - '${PROSODY_S2S_PORT:-5269}'
@@ -317,10 +316,9 @@ services:
 
     # Focus component
     jicofo:
-        image: jitsi/jicofo:${W9_VERSION:-stable-9646}
+        image: jitsi/jicofo:${W9_VERSION}
         container_name: $W9_ID-jicofo
-        restart: ${RESTART_POLICY:-unless-stopped}
-        env_file: .env
+        restart: unless-stopped
         ports:
             - '127.0.0.1:${JICOFO_REST_PORT:-8888}:8888'
         volumes:
@@ -400,10 +398,9 @@ services:
 
     # Video bridge
     jvb:
-        image: jitsi/jvb:${W9_VERSION:-stable-9646}
+        image: jitsi/jvb:${W9_VERSION}
         container_name: $W9_ID-jvb
-        restart: ${RESTART_POLICY:-unless-stopped}
-        env_file: .env
+        restart: unless-stopped
         ports:
             - '${JVB_PORT:-10000}:${JVB_PORT:-10000}/udp'
             - '127.0.0.1:${JVB_COLIBRI_PORT:-8080}:8080'

@@ -10,8 +10,8 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_DATABASE: $W9_ID
-      MYSQL_USER: $W9_ID
+      MYSQL_DATABASE: passbolt
+      MYSQL_USER: passbolt
       MYSQL_PASSWORD: $W9_POWER_PASSWORD
     volumes:
       - mariadb:/var/lib/mysql

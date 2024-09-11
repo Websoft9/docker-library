@@ -1,7 +1,7 @@
 {
   "name": "jitsi",
   "trademark": "Jitsi",
-  "release": true,
+  "release": false,
   "fork_url": "https://github.com/jitsi/docker-jitsi-meet",
   "docker_url": "https://github.com/jitsi/docker-jitsi-meet",
   "edition": [
