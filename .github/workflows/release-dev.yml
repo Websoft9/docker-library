@@ -35,7 +35,7 @@ jobs:
           r2-secret-access-key: ${{ secrets.CLOUDFLARE_SECRET_KEY }}
           r2-bucket: artifact
           source-dir: artifacts
-          destination-dir: ./${{ env.CHANNEL }}/websoft9/plugin/library
+          destination-dir: ./dev/websoft9/plugin/library
 
       # release media(dev)
       - name: Trigger websoft9/media-dev.yml workflow
