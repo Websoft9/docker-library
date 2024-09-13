@@ -1,7 +1,7 @@
 # docker：https://hub.docker.com/r/zulip/docker-zulip
 # docs: https://github.com/zulip/docker-zulip/blob/main/README.md
 
-version: "2"
+version: "3.8"
 
 services:
   database:
