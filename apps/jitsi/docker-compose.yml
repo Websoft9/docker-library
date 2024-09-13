@@ -3,22 +3,185 @@ version: '3.5'
 services:
     # Frontend
     web:
-        image: jitsi/web:${W9_VERSION:-stable-9646}
-        restart: ${RESTART_POLICY:-unless-stopped}
+        image: jitsi/web:${W9_VERSION}
+        container_name: $W9_ID
+        restart: unless-stopped
         env_file: .env
         ports:
-            - '${W9_HTTP_PORT_SET}:80'
+            - '${W9_HTTPS_PORT_SET}:443'
         volumes:
             - web_config:/config:Z
             - web_crontabs:/var/spool/cron/crontabs:Z
             - web_transcripts:/usr/share/jitsi-meet/transcripts:Z
+        environment:
+            - AMPLITUDE_ID
+            - ANALYTICS_SCRIPT_URLS
+            - ANALYTICS_WHITELISTED_EVENTS
+            - AUDIO_QUALITY_OPUS_BITRATE
+            - AUTO_CAPTION_ON_RECORD
+            - BRANDING_DATA_URL
+            - BOSH_RELATIVE
+            - CHROME_EXTENSION_BANNER_JSON
+            - COLIBRI_WEBSOCKET_PORT
+            - COLIBRI_WEBSOCKET_JVB_LOOKUP_NAME
+            - COLIBRI_WEBSOCKET_REGEX
+            - CONFCODE_URL
+            - CORS_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN
+            - DEFAULT_LANGUAGE
+            - DEPLOYMENTINFO_ENVIRONMENT
+            - DEPLOYMENTINFO_ENVIRONMENT_TYPE
+            - DEPLOYMENTINFO_REGION
+            - DEPLOYMENTINFO_SHARD
+            - DEPLOYMENTINFO_USERREGION
+            - DESKTOP_SHARING_FRAMERATE_AUTO
+            - DESKTOP_SHARING_FRAMERATE_MIN
+            - DESKTOP_SHARING_FRAMERATE_MAX
+            - DIALIN_NUMBERS_URL
+            - DIALOUT_AUTH_URL
+            - DIALOUT_CODES_URL
+            - DISABLE_AUDIO_LEVELS
+            - DISABLE_COLIBRI_WEBSOCKET_JVB_LOOKUP
+            - DISABLE_DEEP_LINKING
+            - DISABLE_GRANT_MODERATOR
+            - DISABLE_HTTPS
+            - DISABLE_KICKOUT
+            - DISABLE_LOCAL_RECORDING
+            - DISABLE_POLLS
+            - DISABLE_PRIVATE_CHAT
+            - DISABLE_PROFILE
+            - DISABLE_REACTIONS
+            - DISABLE_REMOTE_VIDEO_MENU
+            - DISABLE_START_FOR_ALL
+            - DROPBOX_APPKEY
+            - DROPBOX_REDIRECT_URI
+            - DYNAMIC_BRANDING_URL
+            - ENABLE_AUDIO_PROCESSING
+            - ENABLE_AUTH
+            - ENABLE_AUTH_DOMAIN
+            - ENABLE_BREAKOUT_ROOMS
+            - ENABLE_CALENDAR
+            - ENABLE_COLIBRI_WEBSOCKET
+            - ENABLE_COLIBRI_WEBSOCKET_UNSAFE_REGEX
+            - ENABLE_E2EPING
+            - ENABLE_FILE_RECORDING_SHARING
+            - ENABLE_GUESTS
+            - ENABLE_HSTS
+            - ENABLE_HTTP_REDIRECT
+            - ENABLE_IPV6
+            - ENABLE_LETSENCRYPT
+            - ENABLE_NO_AUDIO_DETECTION
+            - ENABLE_NOISY_MIC_DETECTION
+            - ENABLE_OCTO
+            - ENABLE_OPUS_RED
+            - ENABLE_PREJOIN_PAGE
+            - ENABLE_P2P
+            - ENABLE_WELCOME_PAGE
+            - ENABLE_CLOSE_PAGE
+            - ENABLE_LIVESTREAMING
+            - ENABLE_LIVESTREAMING_DATA_PRIVACY_LINK
+            - ENABLE_LIVESTREAMING_HELP_LINK
+            - ENABLE_LIVESTREAMING_TERMS_LINK
+            - ENABLE_LIVESTREAMING_VALIDATOR_REGEXP_STRING
+            - ENABLE_LOAD_TEST_CLIENT
+            - ENABLE_LOCAL_RECORDING_NOTIFY_ALL_PARTICIPANT
+            - ENABLE_LOCAL_RECORDING_SELF_START
+            - ENABLE_RECORDING
+            - ENABLE_REMB
+            - ENABLE_REQUIRE_DISPLAY_NAME
+            - ENABLE_SERVICE_RECORDING
+            - ENABLE_SIMULCAST
+            - ENABLE_STATS_ID
+            - ENABLE_STEREO
+            - ENABLE_SUBDOMAINS
+            - ENABLE_TALK_WHILE_MUTED
+            - ENABLE_TCC
+            - ENABLE_TRANSCRIPTIONS
+            - ENABLE_XMPP_WEBSOCKET
+            - ENABLE_JAAS_COMPONENTS
+            - ETHERPAD_PUBLIC_URL
+            - ETHERPAD_URL_BASE
+            - E2EPING_NUM_REQUESTS
+            - E2EPING_MAX_CONFERENCE_SIZE
+            - E2EPING_MAX_MESSAGE_PER_SECOND
+            - GOOGLE_ANALYTICS_ID
+            - GOOGLE_API_APP_CLIENT_ID
+            - HIDE_PREMEETING_BUTTONS
+            - HIDE_PREJOIN_DISPLAY_NAME
+            - HIDE_PREJOIN_EXTRA_BUTTONS
+            - INVITE_SERVICE_URL
+            - JVB_PREFER_SCTP
+            - LETSENCRYPT_DOMAIN
+            - LETSENCRYPT_EMAIL
+            - LETSENCRYPT_USE_STAGING
+            - MATOMO_ENDPOINT
+            - MATOMO_SITE_ID
+            - MICROSOFT_API_APP_CLIENT_ID
+            - NGINX_RESOLVER
+            - NGINX_WORKER_PROCESSES
+            - NGINX_WORKER_CONNECTIONS
+            - PEOPLE_SEARCH_URL
+            - PREFERRED_LANGUAGE
+            - PUBLIC_URL
+            - P2P_PREFERRED_CODEC
+            - RESOLUTION
+            - RESOLUTION_MIN
+            - RESOLUTION_WIDTH
+            - RESOLUTION_WIDTH_MIN
+            - START_AUDIO_MUTED
+            - START_AUDIO_ONLY
+            - START_SILENT
+            - START_WITH_AUDIO_MUTED
+            - START_VIDEO_MUTED
+            - START_WITH_VIDEO_MUTED
+            - TESTING_AV1_SUPPORT
+            - TOKEN_AUTH_URL
+            - TOOLBAR_BUTTONS
+            - TRANSLATION_LANGUAGES
+            - TRANSLATION_LANGUAGES_HEAD
+            - TZ
+            - USE_APP_LANGUAGE
+            - VIDEOQUALITY_BITRATE_H264_LOW
+            - VIDEOQUALITY_BITRATE_H264_STANDARD
+            - VIDEOQUALITY_BITRATE_H264_HIGH
+            - VIDEOQUALITY_BITRATE_H264_FULL
+            - VIDEOQUALITY_BITRATE_H264_ULTRA
+            - VIDEOQUALITY_BITRATE_H264_SS_HIGH
+            - VIDEOQUALITY_BITRATE_VP8_LOW
+            - VIDEOQUALITY_BITRATE_VP8_STANDARD
+            - VIDEOQUALITY_BITRATE_VP8_HIGH
+            - VIDEOQUALITY_BITRATE_VP8_FULL
+            - VIDEOQUALITY_BITRATE_VP8_ULTRA
+            - VIDEOQUALITY_BITRATE_VP8_SS_HIGH
+            - VIDEOQUALITY_BITRATE_VP9_LOW
+            - VIDEOQUALITY_BITRATE_VP9_STANDARD
+            - VIDEOQUALITY_BITRATE_VP9_HIGH
+            - VIDEOQUALITY_BITRATE_VP9_FULL
+            - VIDEOQUALITY_BITRATE_VP9_ULTRA
+            - VIDEOQUALITY_BITRATE_VP9_SS_HIGH
+            - VIDEOQUALITY_BITRATE_AV1_LOW
+            - VIDEOQUALITY_BITRATE_AV1_STANDARD
+            - VIDEOQUALITY_BITRATE_AV1_HIGH
+            - VIDEOQUALITY_BITRATE_AV1_FULL
+            - VIDEOQUALITY_BITRATE_AV1_ULTRA
+            - VIDEOQUALITY_BITRATE_AV1_SS_HIGH
+            - VIDEOQUALITY_PREFERRED_CODEC
+            - XMPP_AUTH_DOMAIN
+            - XMPP_BOSH_URL_BASE
+            - XMPP_DOMAIN
+            - XMPP_GUEST_DOMAIN
+            - XMPP_MUC_DOMAIN
+            - XMPP_RECORDER_DOMAIN
+            - XMPP_PORT
+            - WHITEBOARD_COLLAB_SERVER_PUBLIC_URL
+            - WHITEBOARD_COLLAB_SERVER_URL_BASE
         depends_on:
             - jvb
 
     # XMPP server
     prosody:
-        image: jitsi/prosody:${W9_VERSION:-stable-9646}
-        restart: ${RESTART_POLICY:-unless-stopped}
+        image: jitsi/prosody:${W9_VERSION}
+        container_name: $W9_ID-prosody
+        restart: unless-stopped
         expose:
             - '${XMPP_PORT:-5222}'
             - '${PROSODY_S2S_PORT:-5269}'
@@ -153,8 +316,9 @@ services:
 
     # Focus component
     jicofo:
-        image: jitsi/jicofo:${W9_VERSION:-stable-9646}
-        restart: ${RESTART_POLICY:-unless-stopped}
+        image: jitsi/jicofo:${W9_VERSION}
+        container_name: $W9_ID-jicofo
+        restart: unless-stopped
         ports:
             - '127.0.0.1:${JICOFO_REST_PORT:-8888}:8888'
         volumes:
@@ -232,11 +396,11 @@ services:
         depends_on:
             - prosody
 
-
     # Video bridge
     jvb:
-        image: jitsi/jvb:${W9_VERSION:-stable-9646}
-        restart: ${RESTART_POLICY:-unless-stopped}
+        image: jitsi/jvb:${W9_VERSION}
+        container_name: $W9_ID-jvb
+        restart: unless-stopped
         ports:
             - '${JVB_PORT:-10000}:${JVB_PORT:-10000}/udp'
             - '127.0.0.1:${JVB_COLIBRI_PORT:-8080}:8080'
@@ -297,7 +461,6 @@ services:
         depends_on:
             - prosody
 
-
 volumes:
     web_config:
     web_crontabs:
@@ -307,8 +470,8 @@ volumes:
     jicofo_config:
     jvb_config:
 
+
 networks:
     default:
         external: true
         name: ${W9_NETWORK}
-

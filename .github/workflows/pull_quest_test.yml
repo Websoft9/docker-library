@@ -1,8 +1,8 @@
-name: Auto test apps
+name: Auto test by pull request of dev branch
 
 on:
-  push:
-    branches: [main]
+  pull_request:
+    branches: [dev]
     paths:
       - "apps/*/.env"
       - "apps/*/docker-compose.yml"
@@ -16,7 +16,8 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       with:
-        fetch-depth: 2
+        # 确保拉取的是 pull request 的代码
+        ref: ${{ github.event.pull_request.head.sha }}
 
     - name: Get applist
       id: getlist

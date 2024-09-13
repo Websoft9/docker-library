@@ -3,17 +3,19 @@
   "trademark": "Jitsi",
   "release": false,
   "fork_url": "https://github.com/jitsi/docker-jitsi-meet",
-  "docker_url": "",
+  "docker_url": "https://github.com/jitsi/docker-jitsi-meet",
   "edition": [
     {
       "dist": "community",
-      "version": ["latest"]
+      "version": [
+        "stable-9646"
+      ]
     }
   ],
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "1",
-    "url": "https://jitsi.github.io/handbook/docs/devops-guide/devops-guide-docker/"
+    "disk": "20",
+    "url": "https://jitsi.github.io/handbook/docs/devops-guide/devops-guide-requirements"
   }
 }

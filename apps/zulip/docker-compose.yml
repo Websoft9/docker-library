@@ -1,0 +1,84 @@
+# docker：https://hub.docker.com/r/zulip/docker-zulip
+# docs: https://github.com/zulip/docker-zulip/blob/main/README.md
+
+version: "3.8"
+
+services:
+  database:
+    image: "zulip/zulip-postgresql:14"
+    container_name: $W9_ID-postgresql
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: "zulip"
+      POSTGRES_USER: "zulip"
+      POSTGRES_PASSWORD: $W9_POWER_PASSWORD
+    volumes:
+      - "postgresql-14:/var/lib/postgresql/data:rw"
+
+  memcached:
+    image: "memcached:alpine"
+    container_name: $W9_ID-memcached
+    restart: unless-stopped
+    command:
+      - "sh"
+      - "-euc"
+      - |
+        echo 'mech_list: plain' > "$$SASL_CONF_PATH"
+        echo "zulip@$$HOSTNAME:$$MEMCACHED_PASSWORD" > "$$MEMCACHED_SASL_PWDB"
+        echo "zulip@localhost:$$MEMCACHED_PASSWORD" >> "$$MEMCACHED_SASL_PWDB"
+        exec memcached -S
+    environment:
+      SASL_CONF_PATH: "/home/memcache/memcached.conf"
+      MEMCACHED_SASL_PWDB: "/home/memcache/memcached-sasl-db"
+      MEMCACHED_PASSWORD: $W9_POWER_PASSWORD
+
+  rabbitmq:
+    image: "rabbitmq:3.7.7"
+    container_name: $W9_ID-rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: "zulip"
+      RABBITMQ_DEFAULT_PASS: $W9_POWER_PASSWORD
+    volumes:
+      - "rabbitmq:/var/lib/rabbitmq:rw"
+
+  redis:
+    image: "redis:alpine"
+    container_name: $W9_ID-redis
+    restart: unless-stopped
+    command:
+      - "sh"
+      - "-euc"
+      - |
+        echo "requirepass '$$REDIS_PASSWORD'" > /etc/redis.conf
+        exec redis-server /etc/redis.conf
+    environment:
+      REDIS_PASSWORD: $W9_POWER_PASSWORD
+    volumes:
+      - "redis:/data:rw"
+
+  zulip:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    restart: unless-stopped
+    ports:
+      - $W9_HTTPS_PORT_SET:443
+    env_file: .env
+    volumes:
+      - "zulip:/data:rw"
+    ulimits:
+      nofile:
+        soft: 1000000
+        hard: 1048576
+
+volumes:
+  zulip:
+  postgresql-14:
+  rabbitmq:
+  redis:
+
+
+networks:
+  default:
+    name: $W9_NETWORK
+    external: true
