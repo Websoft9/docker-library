@@ -39,7 +39,7 @@ for appname in appnames:
     
     url = f"http://localhost:{port}"
     retry = 0
-    while retry < 3:
+    while retry < 30:
         response = requests.get(url)
         if response.status_code == 200:
             print(f"{appname} is up and running.")
