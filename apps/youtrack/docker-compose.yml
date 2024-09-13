@@ -15,7 +15,8 @@ services:
       - backups:/opt/youtrack/backups
     ports:
       - $W9_HTTP_PORT_SET:8080
-
+    env_file: .env
+      
 networks:
   default:
     name: $W9_NETWORK
