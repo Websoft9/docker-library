@@ -1,7 +1,7 @@
 {
   "name": "passbolt",
   "trademark": "Passbolt",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/passbolt/passbolt_api",
   "docker_url": "https://hub.docker.com/r/passbolt/passbolt/tags",
   "edition": [
