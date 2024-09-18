@@ -38,7 +38,7 @@ services:
     restart: unless-stopped
     environment:
       RABBITMQ_DEFAULT_USER: "zulip"
-      RABBITMQ_DEFAULT_PASS: $W9_POWER_PASSWORD
+      RABBITMQ_DEFAULT_PASS: $W9_RCODE
     volumes:
       - "rabbitmq:/var/lib/rabbitmq:rw"
 
