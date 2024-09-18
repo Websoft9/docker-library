@@ -3,140 +3,75 @@
 version: '3.8'
 
 services:
- zabbix-server:
-  extends:
-   file: compose_zabbix_components.yaml
-   service: zabbix-server-mysql
-  image: "${ZABBIX_SERVER_MYSQL_IMAGE}:${ZABBIX_UBUNTU_IMAGE_TAG}${ZABBIX_IMAGE_TAG_POSTFIX}"
+  postgres:
+    image: postgres:16-alpine
+    container_name: $W9_ID-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: $POSTGRES_DB
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
 
-  depends_on:
-   - mysql-server
-  labels:
-   com.zabbix.os: "${UBUNTU_OS_TAG}"
+  zabbix-server:
+    image: zabbix/zabbix-server-pgsql:$W9_VERSION
+    container_name: $W9_ID
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_SERVER_HOST: $W9_ID-postgres
+      DB_SERVER_PORT: 5432
+      POSTGRES_DB: $POSTGRES_DB
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+    depends_on:
+      - postgres
+    volumes:
+      - zabbix-server-data:/var/lib/zabbix
+      - zabbix-snmptraps-data:/var/lib/zabbix/snmptraps
+      - zabbix-export-data:/var/lib/zabbix/export
 
- zabbix-proxy-sqlite3:
-  extends:
-   file: compose_zabbix_components.yaml
-   service: proxy-sqlite3
-  image: "${ZABBIX_PROXY_SQLITE3_IMAGE}:${ZABBIX_UBUNTU_IMAGE_TAG}${ZABBIX_IMAGE_TAG_POSTFIX}"
-  labels:
-   com.zabbix.os: "${UBUNTU_OS_TAG}"
+  zabbix-web-nginx-pgsql:
+    image: zabbix/zabbix-web-nginx-pgsql:$W9_VERSION
+    container_name: $W9_ID-web
+    restart: unless-stopped
+    ports:
+      - $W9_HTTP_PORT_SET:8080
+    environment:
+      DB_SERVER_HOST: $W9_ID-postgres
+      POSTGRES_DB: $POSTGRES_DB
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      ZBX_SERVER_HOST: $W9_ID
+      ZBX_SERVER_PORT: 10051
+    depends_on:
+      - postgres
+      - zabbix-server
+    volumes:
+      - zabbix-web-data:/usr/share/zabbix
 
- zabbix-proxy-mysql:
-  extends:
-   file: compose_zabbix_components.yaml
-   service: proxy-mysql
-  image: "${ZABBIX_PROXY_MYSQL_IMAGE}:${ZABBIX_UBUNTU_IMAGE_TAG}${ZABBIX_IMAGE_TAG_POSTFIX}"
-  depends_on:
-   - mysql-server
-  labels:
-   com.zabbix.os: "${UBUNTU_OS_TAG}"
+  zabbix-agent:
+    image: zabbix/zabbix-agent:$W9_VERSION
+    container_name: $W9_ID-agent
+    restart: unless-stopped
+    privileged: true
+    environment:
+      ZBX_SERVER_HOST: $W9_ID
+      ZBX_SERVER_PORT: 10051
+      ZBX_HOSTNAME: "Zabbix server"
+    depends_on:
+      - zabbix-server
 
- zabbix-web-apache-mysql:
-  extends:
-   file: compose_zabbix_components.yaml
-   service: web-apache-mysql
-  image: "${ZABBIX_WEB_APACHE_MYSQL_IMAGE}:${ZABBIX_UBUNTU_IMAGE_TAG}${ZABBIX_IMAGE_TAG_POSTFIX}"
-  depends_on:
-   - mysql-server
-  labels:
-   com.zabbix.os: "${UBUNTU_OS_TAG}"
+volumes:
+  postgres-data:
+  zabbix-server-data:
+  zabbix-snmptraps-data:
+  zabbix-export-data:
+  zabbix-web-data:
 
- zabbix-web-nginx-mysql:
-  extends:
-   file: compose_zabbix_components.yaml
-   service: web-nginx-mysql
-  image: "${ZABBIX_WEB_NGINX_MYSQL_IMAGE}:${ZABBIX_UBUNTU_IMAGE_TAG}${ZABBIX_IMAGE_TAG_POSTFIX}"
-  depends_on:
-   - mysql-server
-  labels:
-   com.zabbix.os: "${UBUNTU_OS_TAG}"
-
- zabbix-agent:
-  extends:
-   file: compose_zabbix_components.yaml
-   service: zabbix-agent
-  image: "${ZABBIX_AGENT_IMAGE}:${ZABBIX_UBUNTU_IMAGE_TAG}${ZABBIX_IMAGE_TAG_POSTFIX}"
-  labels:
-   com.zabbix.os: "${UBUNTU_OS_TAG}"
-
- zabbix-java-gateway:
-  extends:
-   file: compose_zabbix_components.yaml
-   service: zabbix-java-gateway
-  image: "${ZABBIX_JAVA_GATEWAY_IMAGE}:${ZABBIX_UBUNTU_IMAGE_TAG}${ZABBIX_IMAGE_TAG_POSTFIX}"
-  labels:
-   com.zabbix.os: "${UBUNTU_OS_TAG}"
-
- zabbix-snmptraps:
-  extends:
-   file: compose_zabbix_components.yaml
-   service: zabbix-snmptraps
-  image: "${ZABBIX_SNMPTRAPS_IMAGE}:${ZABBIX_UBUNTU_IMAGE_TAG}${ZABBIX_IMAGE_TAG_POSTFIX}"
-  labels:
-   com.zabbix.os: "${UBUNTU_OS_TAG}"
-
- zabbix-web-service:
-  extends:
-   file: compose_zabbix_components.yaml
-   service: zabbix-web-service
-  image: "${ZABBIX_WEB_SERVICE_IMAGE}:${ZABBIX_UBUNTU_IMAGE_TAG}${ZABBIX_IMAGE_TAG_POSTFIX}"
-  labels:
-   com.zabbix.os: "${UBUNTU_OS_TAG}"
-
- mysql-server:
-  image: "${MYSQL_IMAGE}:${MYSQL_IMAGE_TAG}"
-  command:
-   - mysqld
-   - --character-set-server=utf8mb4
-   - --collation-server=utf8mb4_bin
-# Only during upgrade from versions prior 6.4 and new installations (schema deployment)
-   - --log_bin_trust_function_creators=1
-# Use TLS encryption for connections to database
-#   - --require-secure-transport
-#   - --ssl-ca=/run/secrets/root-ca.pem
-#   - --ssl-cert=/run/secrets/server-cert.pem
-#   - --ssl-key=/run/secrets/server-key.pem
-  restart: "${RESTART_POLICY}"
-  volumes:
-   - ${DATA_DIRECTORY}/var/lib/mysql:/var/lib/mysql:rw
-   - ${ENV_VARS_DIRECTORY}/mysql_init/init_proxy_db.sql:/docker-entrypoint-initdb.d/mysql_init_proxy.sql:ro
-#   - dbsocket:/var/run/mysqld/
-  env_file:
-   - ${ENV_VARS_DIRECTORY}/.env_db_mysql
-  environment:
-   - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/MYSQL_ROOT_PASSWORD
-  secrets:
-   - MYSQL_USER
-   - MYSQL_PASSWORD
-   - MYSQL_ROOT_PASSWORD
-  stop_grace_period: 1m
-
- db-data-mysql:
-  extends:
-   file: compose_databases.yaml
-   service: db-data-mysql
-
-# elasticsearch:
-#  extends:
-#   file: compose_databases.yaml
-#   service: elasticsearch
 
 networks:
   default:
-    name: ${W9_NETWORK}
+    name: $W9_NETWORK
     external: true
-
-
-volumes:
-  snmptraps:
-
-secrets:
-  MYSQL_USER:
-    file: ${ENV_VARS_DIRECTORY}/.MYSQL_USER
-  MYSQL_PASSWORD:
-    file: ${ENV_VARS_DIRECTORY}/.MYSQL_PASSWORD
-  MYSQL_ROOT_USER:
-    file: ${ENV_VARS_DIRECTORY}/.MYSQL_ROOT_USER
-  MYSQL_ROOT_PASSWORD:
-    file: ${ENV_VARS_DIRECTORY}/.MYSQL_ROOT_PASSWORD

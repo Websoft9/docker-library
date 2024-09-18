@@ -3,14 +3,14 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Zabbix:
 
 
- - community:  6.4, 5.4
+ - community:  7.0, 6.4
 
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://github.com/zabbix/docker#recommended-system-requirements):
+The following are the minimal [recommended requirements](https://www.zabbix.com/documentation/current/en/manual/installation/requirements):
 
-* **RAM**: 4 GB or more
+* **RAM**: 8 GB or more
 * **CPU**: 2 cores or higher
 * **Disk**: at least 1 GB of free space
 * **bandwidth**: more fluent experience over 100M  

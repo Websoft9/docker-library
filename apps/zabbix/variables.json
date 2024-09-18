@@ -8,15 +8,16 @@
     {
       "dist": "community",
       "version": [
-        "6.4",
-        "5.4"
+        "latest",
+        "7.0",
+        "6.4"
       ]
     }
   ],
   "requirements": {
     "cpu": "2",
-    "memory": "4",
+    "memory": "8",
     "disk": "1",
-    "url": "https://github.com/zabbix/docker#recommended-system-requirements"
+    "url": "https://www.zabbix.com/documentation/current/en/manual/installation/requirements"
   }
 }
