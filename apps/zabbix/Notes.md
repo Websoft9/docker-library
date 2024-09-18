@@ -2,7 +2,7 @@
 
 ### Associating the Zabbix Agent with the Zabbix Server Host
 - Access Zabbix Frontend
-- Locate Your Zabbix Server Host: Head to “Configuration” > “Hosts” and find your Zabbix server in the host list.
+- Locate Your Zabbix Server Host: Head to “Monitoring” > “Hosts” and find your Zabbix server in the host list.
 - Edit Zabbix Server Host Settings: Click on the name of your Zabbix server host to access its settings.
 
 #### Configure Agent Details:
