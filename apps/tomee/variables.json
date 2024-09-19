@@ -27,11 +27,7 @@
         "9-jre11-webprofile",
         "9-jre11-microprofile",
         "9-jre11-plume",
-        "9-jre11-plus",
-        "9-jre8-webprofile",
-        "9-jre8-microprofile",
-        "9-jre8-plume",
-        "9-jre8-plus"
+        "9-jre11-plus"
       ]
     }
   ],
