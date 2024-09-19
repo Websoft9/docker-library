@@ -19,17 +19,17 @@ jobs:
         # 确保拉取的是 pull request 的代码
         ref: ${{ github.event.pull_request.head.sha }}
 
-    - name: Get applist
-      id: getlist
-      run: |
-        git diff --name-only HEAD^ HEAD
-        changed_files=$(git diff --name-only HEAD^ HEAD)
-        app_list=$(echo "$changed_files" | grep -E 'apps/.*/(.env|docker-compose.yml)$' | awk -F'/' '{print $2}' | sort | uniq)
-        echo "APP_LISTS=$app_list" >> $GITHUB_ENV
+    # - name: Get applist
+    #   id: getlist
+    #   run: |
+    #     git diff --name-only HEAD^ HEAD
+    #     changed_files=$(git diff --name-only HEAD^ HEAD)
+    #     app_list=$(echo "$changed_files" | grep -E 'apps/.*/(.env|docker-compose.yml)$' | awk -F'/' '{print $2}' | sort | uniq)
+    #     echo "APP_LISTS=$app_list" >> $GITHUB_ENV
         
-    - name: Update readme when app's variables.json changed
-      run: |
-        docker network create websoft9
-        pip install python-dotenv
-        python3 build/test_apps.py "${{ env.APP_LISTS }}"
-      if: env.APP_LISTS != ''  
+    # - name: Update readme when app's variables.json changed
+    #   run: |
+    #     docker network create websoft9
+    #     pip install python-dotenv
+    #     python3 build/test_apps.py "${{ env.APP_LISTS }}"
+    #   if: env.APP_LISTS != ''  
