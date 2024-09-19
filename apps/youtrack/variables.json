@@ -3,11 +3,11 @@
   "trademark": "YouTrack",
   "release": false,
   "fork_url": "",
-  "docker_url": "",
+  "docker_url": "https://hub.docker.com/r/jetbrains/youtrack/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["2024.2.41254","2024.1.32323"]
+      "version": ["2024.2.41254"]
     }
   ],
   "requirements": {

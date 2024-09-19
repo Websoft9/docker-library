@@ -1,7 +1,7 @@
 {
   "name": "zulip",
   "trademark": "Zulip",
-  "release": true,
+  "release": false,
   "fork_url": "https://github.com/zulip/docker-zulip/tree/main",
   "docker_url": "https://hub.docker.com/r/zulip/docker-zulip",
   "edition": [
