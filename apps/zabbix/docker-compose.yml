@@ -1,4 +1,5 @@
-# docs: https://github.com/zabbix/zabbix-docker
+# docs: https://www.zabbix.com/documentation/current/en/manual/installation/containers
+# compose: https://github.com/zabbix/zabbix-docker
 
 version: '3.8'
 
