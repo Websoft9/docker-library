@@ -1,6 +1,6 @@
 # Airflow on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for airflow:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Airflow:
 
 
  - community:  2.10.1, latest
