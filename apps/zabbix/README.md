@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Zabbix:
 
 
- - community:  latest, 7.0, 6.4
+ - community:  latest, 7.0-alpine-latest, 6.4-alpine-latest
 
 
 ## System Requirements

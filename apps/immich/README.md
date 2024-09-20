@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Immich:
 
 
- - community:  v1.115.0,release
+ - community:  v1.115.0, release
 
 
 ## System Requirements
@@ -13,7 +13,7 @@ The following are the minimal [recommended requirements](https://immich.app/docs
 * **RAM**: 4 GB or more
 * **CPU**: 2 cores or higher
 * **Disk**: at least 1 GB of free space
-* **bandwidth**: more fluent experience over 100M
+* **bandwidth**: more fluent experience over 100M  
 
 ## Install
 
