@@ -1,4 +1,6 @@
----
+# docs: https://airflow.apache.org/docs/apache-airflow/stable/index.html
+# image: https://hub.docker.com/r/apache/airflow
+
 x-airflow-common: &airflow-common
   image: $W9_REPO:$W9_VERSION
   # build: .
