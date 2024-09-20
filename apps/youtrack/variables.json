@@ -1,7 +1,7 @@
 {
   "name": "youtrack",
   "trademark": "YouTrack",
-  "release": false,
+  "release": true,
   "fork_url": "",
   "docker_url": "https://hub.docker.com/r/jetbrains/youtrack/tags",
   "edition": [
