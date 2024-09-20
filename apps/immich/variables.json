@@ -1,0 +1,22 @@
+{
+  "name": "immich",
+  "trademark": "Immich",
+  "release": true,
+  "fork_url": "https://github.com/immich-app/immich/tree/main/docker",
+  "docker_url": "https://github.com/orgs/immich-app/packages?repo_name=immich",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "v1.115.0",
+        "release"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "1",
+    "url": "https://immich.app/docs/install/requirements/"
+  }
+}
