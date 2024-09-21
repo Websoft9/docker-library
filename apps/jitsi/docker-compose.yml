@@ -1,9 +1,11 @@
-version: '3.5'
+# image: https://hub.docker.com/r/jitsi/web/
+# compose: https://github.com/jitsi/docker-jitsi-meet
+version: '3.8'
 
 services:
     # Frontend
     web:
-        image: jitsi/web:${W9_VERSION}
+        image: $W9_REPO:$W9_VERSION
         container_name: $W9_ID
         restart: unless-stopped
         env_file: .env
