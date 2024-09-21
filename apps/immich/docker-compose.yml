@@ -6,7 +6,7 @@ version: '3.8'
 services:
   immich-server:
     container_name: $W9_ID
-    image: ghcr.io/immich-app/immich-server:${W9_VERSION:-release}
+    image: ghcr.io/immich-app/immich-server:$W9_VERSION
     volumes:
       - ${UPLOAD_LOCATION}:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
@@ -23,7 +23,7 @@ services:
 
   immich-machine-learning:
     container_name: $W9_ID-ml
-    image: ghcr.io/immich-app/immich-machine-learning:${W9_VERSION:-release}
+    image: ghcr.io/immich-app/immich-machine-learning:$W9_VERSION
     volumes:
       - model-cache:/cache
     env_file:
@@ -48,7 +48,7 @@ services:
       POSTGRES_DB: ${DB_DATABASE_NAME}
       POSTGRES_INITDB_ARGS: '--data-checksums'
     volumes:
-      - ${DB_DATA_LOCATION}:/var/lib/postgresql/data
+      - postgresql_data:/var/lib/postgresql/data
     healthcheck:
       test: pg_isready --dbname='${DB_DATABASE_NAME}' --username='${DB_USERNAME}' || exit 1; Chksum="$$(psql --dbname='${DB_DATABASE_NAME}' --username='${DB_USERNAME}' --tuples-only --no-align --command='SELECT COALESCE(SUM(checksum_failures), 0) FROM pg_stat_database')"; echo "checksum failure count is $$Chksum"; [ "$$Chksum" = '0' ] || exit 1
       interval: 5m
@@ -59,6 +59,7 @@ services:
 
 volumes:
   model-cache:
+  postgresql_data:
 
 
 networks:
