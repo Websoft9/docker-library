@@ -6,9 +6,9 @@ version: '3.8'
 services:
   immich-server:
     container_name: $W9_ID
-    image: ghcr.io/immich-app/immich-server:$W9_VERSION
+    image: $W9_REPO:$W9_VERSION
     volumes:
-      - ${UPLOAD_LOCATION}:/usr/src/app/upload
+      - upload_data:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
     env_file:
       - .env
@@ -26,8 +26,6 @@ services:
     image: ghcr.io/immich-app/immich-machine-learning:$W9_VERSION
     volumes:
       - model-cache:/cache
-    env_file:
-      - .env
     restart: unless-stopped
     healthcheck:
       disable: false
@@ -60,7 +58,7 @@ services:
 volumes:
   model-cache:
   postgresql_data:
-
+  upload_data:
 
 networks:
   default:
