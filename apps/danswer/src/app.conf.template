@@ -17,7 +17,7 @@ upstream api_server {
 }
 
 upstream web_server {
-    server ${W9_ID}:3000 fail_timeout=0;
+    server ${W9_ID}-web-server:3000 fail_timeout=0;
 }
 
 server {
