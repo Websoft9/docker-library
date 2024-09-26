@@ -1,0 +1,37 @@
+# image: https://hub.docker.com/r/gladysassistant/gladys/
+# docs: https://github.com/GladysAssistant/Gladys
+
+version: '3.8'
+
+services:
+  gladys:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    restart: unless-stopped
+    privileged: true
+    ports:
+      - "${W9_HTTP_PORT_SET}:80"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+    env_file:
+      - .env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/gladysassistant:/var/lib/gladysassistant
+      - /dev:/dev
+      - /run/udev:/run/udev:ro
+
+  watchtower:
+    image: containrrr/watchtower
+    restart: unless-stopped
+    container_name: watchtower
+    command: --cleanup --include-restarting
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true
