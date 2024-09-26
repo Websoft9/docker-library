@@ -1,0 +1,22 @@
+{
+  "name": "danswer",
+  "trademark": "Danswer",
+  "release": true,
+  "fork_url": "https://github.com/danswer-ai/danswer/tree/main/deployment/docker_compose",
+  "docker_url": "https://github.com/danswer-ai/danswer/tree/main/deployment/docker_compose",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "v0.5.23",
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "4",
+    "memory": "10",
+    "disk": "50",
+    "url": "https://docs.danswer.dev/resourcing#running-locally"
+  }
+}
