@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Kafka:
 
 
- - community:  3.6, 3.2, 2.8, 2.7, 2.6, 2.5, 2.4, 2.3, latest
+ - community:  3.8, 3.6, 3.2, 2.8, latest
 
 
 ## System Requirements
