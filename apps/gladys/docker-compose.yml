@@ -1,7 +1,7 @@
 # image: https://hub.docker.com/r/gladysassistant/gladys/
 # docs: https://github.com/GladysAssistant/Gladys
 
-#version: '3.8'
+version: '3.8'
 
 services:
   gladys:
