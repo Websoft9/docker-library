@@ -19,18 +19,21 @@ services:
       - .env
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /var/lib/gladysassistant:/var/lib/gladysassistant
+      - gladysassistant:/var/lib/gladysassistant
       - /dev:/dev
       - /run/udev:/run/udev:ro
 
   watchtower:
     image: containrrr/watchtower
     restart: unless-stopped
-    container_name: watchtower
+    container_name: $W9_ID-watchtower
     command: --cleanup --include-restarting
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
+volumes:
+  gladysassistant:
+  
 networks:
   default:
     name: ${W9_NETWORK}
