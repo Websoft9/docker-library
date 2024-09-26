@@ -67,13 +67,54 @@ services:
     depends_on:
       - zabbix-server
 
+  zabbix-java-gateway:
+    image: zabbix/zabbix-java-gateway:$W9_VERSION
+    container_name: $W9_ID-javagateway
+    ports:
+      - 10052:10052
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    stop_grace_period: 5s
+    profiles:
+      - full
+      
+  snmptraps:
+    image: zabbix/zabbix-snmptraps:$W9_VERSION
+    container_name: $W9_ID-snmptraps
+    ports:
+      - 1162:1162
+    restart: unless-stopped
+    attach: false
+    read_only: true
+    volumes:
+      - zabbix-snmptraps:/var/lib/zabbix/snmptraps:rwz
+    tmpfs: /tmp
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    stop_grace_period: 5s
+    profiles:
+      - full
+
 volumes:
   postgres-data:
   zabbix-server-data:
   zabbix-snmptraps-data:
   zabbix-export-data:
   zabbix-web-data:
-
+  zabbix-snmptraps:
 
 networks:
   default:

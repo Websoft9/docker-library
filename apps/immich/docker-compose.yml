@@ -6,9 +6,9 @@ version: '3.8'
 services:
   immich-server:
     container_name: $W9_ID
-    image: ghcr.io/immich-app/immich-server:${W9_VERSION:-release}
+    image: $W9_REPO:$W9_VERSION
     volumes:
-      - ${UPLOAD_LOCATION}:/usr/src/app/upload
+      - upload_data:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
     env_file:
       - .env
@@ -17,18 +17,16 @@ services:
     depends_on:
       - redis
       - database
-    restart: always
+    restart: unless-stopped
     healthcheck:
       disable: false
 
   immich-machine-learning:
     container_name: $W9_ID-ml
-    image: ghcr.io/immich-app/immich-machine-learning:${W9_VERSION:-release}
+    image: ghcr.io/immich-app/immich-machine-learning:$W9_VERSION
     volumes:
       - model-cache:/cache
-    env_file:
-      - .env
-    restart: always
+    restart: unless-stopped
     healthcheck:
       disable: false
 
@@ -37,7 +35,7 @@ services:
     image: docker.io/redis:6.2-alpine@sha256:2d1463258f2764328496376f5d965f20c6a67f66ea2b06dc42af351f75248792
     healthcheck:
       test: redis-cli ping || exit 1
-    restart: always
+    restart: unless-stopped
 
   database:
     container_name: $W9_ID-postgres
@@ -48,18 +46,19 @@ services:
       POSTGRES_DB: ${DB_DATABASE_NAME}
       POSTGRES_INITDB_ARGS: '--data-checksums'
     volumes:
-      - ${DB_DATA_LOCATION}:/var/lib/postgresql/data
+      - postgresql_data:/var/lib/postgresql/data
     healthcheck:
       test: pg_isready --dbname='${DB_DATABASE_NAME}' --username='${DB_USERNAME}' || exit 1; Chksum="$$(psql --dbname='${DB_DATABASE_NAME}' --username='${DB_USERNAME}' --tuples-only --no-align --command='SELECT COALESCE(SUM(checksum_failures), 0) FROM pg_stat_database')"; echo "checksum failure count is $$Chksum"; [ "$$Chksum" = '0' ] || exit 1
       interval: 5m
       start_interval: 30s
       start_period: 5m
     command: [ "postgres", "-c", "shared_preload_libraries=vectors.so", "-c", 'search_path="$$user", public, vectors', "-c", "logging_collector=on", "-c", "max_wal_size=2GB", "-c", "shared_buffers=512MB", "-c", "wal_compression=on" ]
-    restart: always
+    restart: unless-stopped
 
 volumes:
   model-cache:
-
+  postgresql_data:
+  upload_data:
 
 networks:
   default:
