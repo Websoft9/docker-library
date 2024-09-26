@@ -5,7 +5,7 @@ envsubst '$DOMAIN $SSL_CERT_FILE_NAME $SSL_CERT_KEY_FILE_NAME $W9_ID' < "/etc/ng
 echo "Waiting for API server to boot up; this may take a minute or two..."
 echo "If this takes more than ~5 minutes, check the logs of the API server container for errors with the following command:"
 echo
-echo "docker logs ${$W9_ID}-api-server"
+echo "docker logs ${W9_ID}-api-server"
 echo
 
 while true; do
