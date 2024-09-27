@@ -10,7 +10,6 @@
       "version": [
         "12-jdk21-amazoncorretto",
         "12-jdk17-amazoncorretto",
-        "12-jdk11-amazoncorretto",
         "11-jdk21-amazoncorretto",
         "11-jdk17-amazoncorretto",
         "11-jdk11-amazoncorretto",
@@ -23,7 +22,6 @@
         "9-jdk8-amazoncorretto",
         "12-jdk21-eclipse-temurin",
         "12-jdk17-eclipse-temurin",
-        "12-jdk11-eclipse-temurin",
         "11-jdk21-eclipse-temurin",
         "11-jdk17-eclipse-temurin",
         "11-jdk11-eclipse-temurin",
