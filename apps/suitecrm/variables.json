@@ -1,0 +1,22 @@
+{
+  "name": "suitecrm",
+  "trademark": "SuiteCRM",
+  "release": true,
+  "fork_url": "https://github.com/bitnami/bitnami-docker-suitecrm",
+  "docker_url": "https://hub.docker.com/r/bitnami/suitecrm/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "8.6.2",
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "2",
+    "disk": "1",
+    "url": "https://screego.net/"
+  }
+}

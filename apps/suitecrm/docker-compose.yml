@@ -1,0 +1,38 @@
+# image: https://hub.docker.com/r/bitnami/suitecrm
+# docs: https://github.com/bitnami/bitnami-docker-suitecrm
+
+version: '3.8'
+
+services:
+  suitecrm:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: $W9_ID
+    restart: unless-stopped
+    ports:
+      - '${W9_HTTP_PORT_SET}:8080'
+    env_file: .env
+    volumes:
+      - suitecrm:/bitnami/suitecrm
+    depends_on:
+      - mariadb
+
+  mariadb:
+    image: mariadb:10.6
+    container_name: $W9_ID-mariadb 
+    environment:
+      - MARIADB_ROOT_PASSWORD=$W9_POWER_PASSWORD
+      - MARIADB_DATABASE=suitecrm
+      - MARIADB_USER=suitecrm
+      - MARIADB_PASSWORD=$W9_POWER_PASSWORD
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: unless-stopped
+
+networks:
+  default:
+    name: ${APP_NETWORK}
+    external: true
+
+volumes:
+  mysql_data:
+  suitecrm: 
