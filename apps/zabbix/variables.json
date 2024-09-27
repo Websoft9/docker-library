@@ -3,14 +3,12 @@
   "trademark": "Zabbix",
   "release": true,
   "fork_url": "https://github.com/zabbix/zabbix-docker",
-  "docker_url": "",
+  "docker_url": "https://hub.docker.com/r/zabbix/zabbix-web-nginx-pgsql/tags",
   "edition": [
     {
       "dist": "community",
       "version": [
-        "latest",
-        "7.0-alpine-latest",
-        "6.4-alpine-latest"
+        "latest"
       ]
     }
   ],
