@@ -15,8 +15,8 @@ services:
     volumes:
       - mariadb:/var/lib/mysql
     environment:
-      MARIADB_DATABASE: $W9_ID
-      MARIADB_USER: $W9_ID
+      MARIADB_DATABASE: espocrm
+      MARIADB_USER: espocrm
       MARIADB_PASSWORD: $W9_POWER_PASSWORD
       MARIADB_ROOT_PASSWORD: $W9_POWER_PASSWORD
 
