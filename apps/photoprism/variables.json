@@ -1,0 +1,22 @@
+{
+  "name": "zentao",
+  "trademark": "ZenTao",
+  "release": true,
+  "fork_url": "https://hub.docker.com/r/easysoft/zentao",
+  "docker_url": "https://hub.docker.com/r/easysoft/zentao/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "18.12",
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1",
+    "url": "https://hub.docker.com/r/easysoft/zentao"
+  }
+}
