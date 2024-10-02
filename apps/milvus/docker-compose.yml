@@ -1,7 +1,7 @@
 # image: https://hub.docker.com/r/milvusdb/milvus/tags
 # compose: https://milvus.io/docs/install_standalone-docker-compose.md
 
-#version: '3.8'
+version: '3.8'
 
 services:
   etcd:
