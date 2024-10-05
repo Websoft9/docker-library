@@ -1,0 +1,26 @@
+# image: https://github.com/mlflow/mlflow/pkgs/container/mlflow
+# compose: https://github.com/mlflow/mlflow/blob/master/.devcontainer/docker-compose.yml
+
+version: '3.8'
+
+services:
+  mlflow:
+    image: $W9_REPO
+    container_name: $W9_ID
+    working_dir: /workspaces/mlflow
+    env_file:
+      - .env
+    volumes:
+      - $PWD:/workspaces/mlflow
+      - build:/workspaces/mlflow/mlflow/server/js/build
+      
+  
+volumes:
+  build:
+
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true
+
