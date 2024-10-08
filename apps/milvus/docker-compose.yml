@@ -1,12 +1,13 @@
-# image: https://hub.docker.com/r/milvusdb/milvus/tags
+# image: https://hub.docker.com/r/milvusdb/milvus
 # compose: https://milvus.io/docs/install_standalone-docker-compose.md
+# docs: https://milvus.io/docs
 
 version: '3.8'
 
 services:
   etcd:
     container_name: $W9_ID-etcd
-    image: $W9_REPO:$W9_VERSION
+    image: quay.io/coreos/etcd:v3.5.5
     volumes:
       - etcd_data:/etcd
     command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
@@ -20,42 +21,36 @@ services:
   minio:
     container_name: $W9_ID-minio
     image: minio/minio:RELEASE.2023-03-20T20-16-18Z
-    ports:
-      - "${W9_MINIO_HTTP_PORT_SET}:9000"
-      - "${W9_MINIO_CONSOLE_PORT_SET}:9001"
     volumes:
       - minio_data:/minio_data
-    command: minio server /minio_data --console-address ":${W9_MINIO_CONSOLE_PORT}"
+    command: minio server /minio_data --console-address ":9001}"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${W9_MINIO_HTTP_PORT}/minio/health/live"]
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 30s
       timeout: 20s
       retries: 3
    
-
   standalone:
-    container_name: $W9_ID-standalone
-    image: milvusdb/milvus:v2.4.12
+    container_name: $W9_ID
+    image: $W9_REPO:$W9_VERSION
     command: ["milvus", "run", "standalone"]
     security_opt:
       - seccomp:unconfined
     volumes:
       - milvus_data:/var/lib/milvus
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${W9_ADMIN_PORT}/healthz"]
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
       interval: 30s
       start_period: 90s
       timeout: 20s
       retries: 3
     ports:
       - "${W9_HTTP_PORT_SET}:19530"
-      - "${W9_ADMIN_PORT_SET}:9091"
     depends_on:
       - etcd
       - minio
     env_file:
       - .env
-   
 
 networks:
   default:
@@ -64,11 +59,8 @@ networks:
 
 volumes:
   etcd_data:
-    driver: local
   minio_data:
-    driver: local
   milvus_data:
-    driver: local
 
    
 
