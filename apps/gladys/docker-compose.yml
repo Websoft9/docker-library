@@ -1,5 +1,6 @@
 # image: https://hub.docker.com/r/gladysassistant/gladys/
-# docs: https://github.com/GladysAssistant/Gladys
+# compose: https://gladysassistant.com/docs/installation/docker-compose/
+# docs: https://gladysassistant.com/docs/
 
 version: '3.8'
 
