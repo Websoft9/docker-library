@@ -34,6 +34,9 @@ services:
     container_name: $W9_ID
     image: $W9_REPO:$W9_VERSION
     command: ["milvus", "run", "standalone"]
+    environment:
+      ETCD_ENDPOINTS: $W9_ID-etcd:2379
+      MINIO_ADDRESS: $W9_ID-minio:9000
     security_opt:
       - seccomp:unconfined
     volumes:
@@ -49,8 +52,7 @@ services:
     depends_on:
       - etcd
       - minio
-    env_file:
-      - .env
+    env_file: .env
 
 networks:
   default:
