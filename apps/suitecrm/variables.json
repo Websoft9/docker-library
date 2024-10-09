@@ -2,13 +2,13 @@
   "name": "suitecrm",
   "trademark": "SuiteCRM",
   "release": true,
-  "fork_url": "https://github.com/bitnami/bitnami-docker-suitecrm",
+  "fork_url": "https://github.com/bitnami/containers/blob/main/bitnami/suitecrm/docker-compose.yml",
   "docker_url": "https://hub.docker.com/r/bitnami/suitecrm/tags",
   "edition": [
     {
       "dist": "community",
       "version": [
-        "8.6.2",
+        "8.7.0",
         "latest"
       ]
     }

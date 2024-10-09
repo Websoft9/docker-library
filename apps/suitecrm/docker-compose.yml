@@ -1,5 +1,5 @@
 # image: https://hub.docker.com/r/bitnami/suitecrm
-# docs: https://github.com/bitnami/bitnami-docker-suitecrm
+# docs: https://github.com/bitnami/containers/blob/main/bitnami/suitecrm/README.md
 
 version: '3.8'
 
