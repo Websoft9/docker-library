@@ -1,0 +1,19 @@
+{
+  "name": "mlflow",
+  "trademark": "MLflow",
+  "release": true,
+  "fork_url": "https://github.com/mlflow/mlflow/fork",
+  "docker_url": "https://hub.docker.com/r/mlflow/mlflow",
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["latest"]
+    }
+  ],
+  "requirements": {
+    "cpu": "4",
+    "memory": "8",
+    "disk": "20",
+    "url": "https://mlflow.org/docs/latest/index.html"
+  }
+}

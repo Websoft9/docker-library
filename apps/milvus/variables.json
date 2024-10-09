@@ -1,0 +1,20 @@
+{
+    "name": "milvus",
+    "trademark": "Milvus",
+    "release": false,
+    "fork_url": "https://github.com/milvus-io/milvus",
+    "docker_url": "https://hub.docker.com/r/milvusdb/milvus/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": ["v2.4.12","latest"]
+      }
+    ],
+    "requirements": {
+      "cpu": "8",
+      "memory": "32",
+      "disk": "4",
+      "url": "https://milvus.io/docs/prerequisite-docker.md"
+    }
+  }
+  
