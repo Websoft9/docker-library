@@ -29,6 +29,9 @@ services:
     volumes:
       - minio_data:/minio_data
     command: minio server /minio_data --console-address ":9001"
+    # ports:
+    #   - "9001:9001"
+    #   - "9000:9000"
     environment:
       MINIO_ACCESS_KEY: $W9_POWER_PASSWORD
       MINIO_SECRET_KEY: $W9_POWER_PASSWORD
@@ -57,6 +60,7 @@ services:
       retries: 3
     ports:
       - "${W9_HTTP_PORT_SET}:19530"
+      # - "9091:9091"
     depends_on:
       - etcd
       - minio
