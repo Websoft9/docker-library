@@ -5,19 +5,19 @@ version: '3.8'
 
 services:
   mlflow:
-    image: $W9_REPO
+    image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     working_dir: /workspaces/mlflow
-    env_file:
-      - .env
+    env_file: .env
+    ports:
+      - $W9_HTTP_PORT_SET:5000    
     volumes:
-      - $PWD:/workspaces/mlflow
+      - mlflow_data:/workspaces/mlflow
       - build:/workspaces/mlflow/mlflow/server/js/build
-      
-  
+
 volumes:
   build:
-
+  mlflow_data:
 
 networks:
   default:

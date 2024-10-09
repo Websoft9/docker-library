@@ -1,13 +1,13 @@
 {
   "name": "mlflow",
   "trademark": "MLflow",
-  "release": true,
-  "fork_url": "https://github.com/mlflow/mlflow/fork",
-  "docker_url": "https://hub.docker.com/r/mlflow/mlflow",
+  "release": false,
+  "fork_url": "https://github.com/mlflow/mlflow",
+  "docker_url": "https://github.com/mlflow/mlflow/pkgs/container/mlflow",
   "edition": [
     {
       "dist": "community",
-      "version": ["latest"]
+      "version": ["v2.16.2","latest"]
     }
   ],
   "requirements": {
