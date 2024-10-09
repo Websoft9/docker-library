@@ -1,14 +1,13 @@
 {
   "name": "photoprism",
-  "trademark": "ZenTao",
-  "release": true,
-  "fork_url": "https://hub.docker.com/r/easysoft/zentao",
-  "docker_url": "https://hub.docker.com/r/easysoft/zentao/tags",
+  "trademark": "PhotoPrism",
+  "release": false,
+  "fork_url": "https://github.com/photoprism/photoprism",
+  "docker_url": "https://hub.docker.com/r/photoprism/photoprism/tags",
   "edition": [
     {
       "dist": "community",
       "version": [
-        "18.12",
         "latest"
       ]
     }
@@ -17,6 +16,6 @@
     "cpu": "1",
     "memory": "1",
     "disk": "1",
-    "url": "https://hub.docker.com/r/easysoft/zentao"
+    "url": "https://www.photoprism.app/"
   }
 }
