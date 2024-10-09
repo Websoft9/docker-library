@@ -8,6 +8,7 @@ services:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     working_dir: /workspaces/mlflow
+    command: ["sh", "-c", "mlflow server --host 0.0.0.0 --port 5000"]
     env_file: .env
     ports:
       - $W9_HTTP_PORT_SET:5000    
