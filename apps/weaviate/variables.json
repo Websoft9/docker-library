@@ -1,0 +1,23 @@
+{
+    "name": "weaviate",
+    "trademark": "Weaviate",
+    "release": true,
+    "fork_url": "https://github.com/semi-technologies/weaviate",
+    "docker_url": "https://hub.docker.com/r/semitechnologies/weaviate",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "1.26.6",
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://weaviate.io/developers/weaviate/current/"
+    }
+  }
+  

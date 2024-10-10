@@ -1,0 +1,21 @@
+{
+  "name": "docuseal",
+  "trademark": "DocuSeal",
+  "release": true,
+  "fork_url": "https://github.com/docusealco/docuseal",
+  "docker_url": "https://hub.docker.com/r/docuseal/docuseal",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "6",
+    "url": "https://www.docuseal.co/docs/on-premises-server-requirements"
+  }
+}
