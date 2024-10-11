@@ -16,6 +16,7 @@ services:
     ports:
       - $W9_HTTP_PORT_SET:2342
     working_dir: "/photoprism" # do not change or remove
+    env_file: .env
     volumes:
       # "/host/folder:/photoprism/folder"                # Example
       - photoprism-picture:/photoprism/originals             # Original media files (DO NOT REMOVE)
