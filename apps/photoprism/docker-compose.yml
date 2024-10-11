@@ -24,7 +24,7 @@ services:
       - photoprism-storage:/photoprism/storage                  # *Writable* storage folder for cache, database, and sidecar files (DO NOT REMOVE)
 
   mariadb:
-    image: mariadb:11
+    image: mariadb:10.6
     container_name: $W9_ID-mariadb
     restart: unless-stopped
     stop_grace_period: 5s
