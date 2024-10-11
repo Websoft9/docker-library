@@ -33,7 +33,7 @@ services:
       - apparmor:unconfined
     command: --innodb-buffer-pool-size=512M --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=120
     volumes:
-      - mariadb_data:/var/lib/mysql # DO NOT REMOVE
+      - mariadb_data:/var/lib/mysql
     environment:
       MARIADB_AUTO_UPGRADE: "1"
       MARIADB_INITDB_SKIP_TZINFO: "1"    
