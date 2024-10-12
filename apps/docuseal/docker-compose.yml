@@ -1,0 +1,47 @@
+# image: https://hub.docker.com/r/docuseal/docuseal
+# docs: https://github.com/docusealco/docuseal
+# compose: https://github.com/docusealco/docuseal/blob/master/docker-compose.yml
+
+version: '3.8'
+
+services:
+  docuseal:
+    container_name: $W9_ID
+    image: $W9_REPO:$W9_VERSION
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - $W9_HTTP_PORT_SET:3000
+    volumes:
+      - docuseal_data:/data/docuseal
+    
+    restart: unless-stopped
+
+  postgres:
+    container_name: $W9_ID-postgres
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: docuseal
+      POSTGRES_PASSWORD: $W9_POWER_PASSWORD
+      POSTGRES_DB: docuseal
+    
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+
+volumes:
+  docuseal_data:
+  postgres_data:
+  
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

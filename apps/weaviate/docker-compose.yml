@@ -1,0 +1,42 @@
+# image: https://hub.docker.com/r/semitechnologies/weaviate
+# doc: https://weaviate.io/developers/weaviate
+
+version: '3.8'
+
+services:
+  weaviate:
+    container_name: $W9_ID
+    image: cr.weaviate.io/semitechnologies/weaviate:$W9_VERSION
+    command:
+    - --host
+    - 0.0.0.0
+    - --port
+    - '8080'
+    - --scheme
+    - http
+    ports:
+    - $W9_HTTP_PORT_SET:8080
+    
+    volumes:
+    - weaviate_data:/var/lib/weaviate
+    restart: unless-stopped
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      DEFAULT_VECTORIZER_MODULE: 'none'
+      ENABLE_API_BASED_MODULES: 'true'
+      CLUSTER_HOSTNAME: 'node1'
+    env_file:
+      - .env
+    
+volumes:
+  weaviate_data:
+
+  
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true
+
+
