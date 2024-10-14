@@ -1,0 +1,40 @@
+# image: https://hub.docker.com/r/vespaengine/vespa
+# doc: https://github.com/vespa-engine/vespa
+
+version: '3.8'
+
+services:
+  vespa:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    hostname: vespa-app
+    command: services
+    depends_on:
+      - configserver
+    volumes:
+      - vespa-data:/var/lib/vespa
+    environment:
+      VESPA_CONFIGSERVERS: vespa-config-server
+    
+    restart: unless-stopped
+
+  configserver:
+    image: $W9_REPO:$W9_VERSION  
+    container_name: $W9_ID-config-server
+    hostname: vespa-config-server
+    command: configserver
+    ports:
+      - $W9_HTTP_PORT_SET:19071
+    volumes:
+      - vespa-config:/etc/vespa
+    environment:
+      VESPA_CONFIGSERVERS: vespa-config-server
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true
+
+volumes:
+  vespa-config:
+  vespa-data:
