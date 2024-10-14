@@ -1,0 +1,19 @@
+{
+    "name": "vespa",
+    "trademark": "Vespa",
+    "release": true,
+    "fork_url": "https://github.com/vespa-engine/vespa",
+    "docker_url": "https://github.com/vespa-engine/vespa",
+    "edition": [
+      {
+        "dist": "community",
+        "version": ["latest"]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "8",
+      "disk": "128",
+      "url": "https://github.com/vespa-engine/docker-image-dev#vespa-development-on-almalinux-8"
+    }
+  }
