@@ -1,5 +1,5 @@
 # image: https://hub.docker.com/r/docuseal/docuseal
-# docs: https://github.com/docusealco/docuseal
+# docs: https://www.docuseal.co/docs
 # compose: https://github.com/docusealco/docuseal/blob/master/docker-compose.yml
 
 version: '3.8'
@@ -11,6 +11,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    env_file: .env
     ports:
       - $W9_HTTP_PORT_SET:3000
     volumes:
@@ -27,7 +28,6 @@ services:
       POSTGRES_USER: docuseal
       POSTGRES_PASSWORD: $W9_POWER_PASSWORD
       POSTGRES_DB: docuseal
-    
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
