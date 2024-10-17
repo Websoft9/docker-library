@@ -3,16 +3,16 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for DataHub:
 
 
- - community:  0.10.4
+ - community:  v0.14.1
 
 
 ## System Requirements
 
 The following are the minimal [recommended requirements](https://github.com/datahub-project/datahub):
 
-* **RAM**: 1 GB or more
-* **CPU**: 1 cores or higher
-* **Disk**: at least 1 GB of free space
+* **RAM**: 8 GB or more
+* **CPU**: 2 cores or higher
+* **Disk**: at least 10 GB of free space
 * **bandwidth**: more fluent experience over 100M  
 
 ## Install

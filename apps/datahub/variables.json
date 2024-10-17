@@ -8,14 +8,14 @@
     {
       "dist": "community",
       "version": [
-        "0.10.4"
+        "v0.14.1"
       ]
     }
   ],
   "requirements": {
-    "cpu": "1",
-    "memory": "1",
-    "disk": "1",
-    "url": "https://github.com/datahub-project/datahub"
+    "cpu": "2",
+    "memory": "8",
+    "disk": "10",
+    "url": "https://datahubproject.io/docs/quickstart/#prerequisites"
   }
 }
