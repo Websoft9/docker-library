@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-versions:
+  get-apps-versions:
     runs-on: ubuntu-latest
 
     steps:
