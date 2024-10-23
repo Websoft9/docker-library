@@ -14,9 +14,10 @@ def get_dockerhub_latest_version(api_url):
 
 def convert_to_dockerhub_api_url(version_from_url):
     try:
-        # Example URL: https://hub.docker.com/r/knowagelabs/knowage-server-docker/tags
+        # Example official URL: https://hub.docker.com/_/logstash/tags
+        # Example non-official URL: https://hub.docker.com/r/knowagelabs/knowage-server-docker/tags
         path_parts = version_from_url.split('/')
-        if 'library' in path_parts:
+        if '_/' in version_from_url:
             # Official image
             image_name = path_parts[-2]
             return f"https://hub.docker.com/v2/repositories/library/{image_name}/tags"
