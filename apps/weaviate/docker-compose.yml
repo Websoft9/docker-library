@@ -1,12 +1,7 @@
-# image: https://hub.docker.com/r/semitechnologies/weaviate
-# doc: https://weaviate.io/developers/weaviate
-
-version: '3.8'
-
 services:
   weaviate:
+    image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
-    image: cr.weaviate.io/semitechnologies/weaviate:$W9_VERSION
     command:
     - --host
     - 0.0.0.0
@@ -29,14 +24,13 @@ services:
       CLUSTER_HOSTNAME: 'node1'
     env_file:
       - .env
-    
-volumes:
-  weaviate_data:
 
   
 networks:
   default:
-    name: ${W9_NETWORK}
+    name: $W9_NETWORK
     external: true
 
 
+volumes:
+  weaviate_data:
