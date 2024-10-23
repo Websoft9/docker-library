@@ -67,4 +67,28 @@ def main():
                                     'current_version': current_version,
                                     'latest_version': 'N/A',
                                     'last_updated': 'N/A',
-                                    'error': f"Failed to fetch l
+                                    'error': f"Failed to fetch latest version: {last_updated}"
+                                })
+                        else:
+                            output.append({
+                                'name': name,
+                                'current_version': 'N/A',
+                                'latest_version': 'N/A',
+                                'last_updated': 'N/A',
+                                'error': 'Invalid version_from URL or not a Docker Hub URL'
+                            })
+                    else:
+                        output.append({
+                            'name': name,
+                            'current_version': 'N/A',
+                            'latest_version': 'N/A',
+                            'last_updated': 'N/A',
+                            'error': 'Release is set to false'
+                        })
+
+    output_path = 'output.json'
+    with open(output_path, 'w') as outfile:
+        json.dump(output, outfile, indent=4)
+
+if __name__ == '__main__':
+    main()
