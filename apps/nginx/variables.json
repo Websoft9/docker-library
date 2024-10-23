@@ -3,7 +3,7 @@
   "trademark": "NGINX",
   "release": true,
   "fork_url": "https://github.com/nginxinc/docker-nginx",
-  "docker_url": "https://hub.docker.com/_/nginx/tags",
+  "version_from": "https://hub.docker.com/_/nginx/tags",
   "edition": [
     {
       "dist": "community",

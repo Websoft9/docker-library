@@ -3,7 +3,7 @@
   "trademark": "RocketMQ",
   "release": true,
   "fork_url": "https://rocketmq.apache.org/docs/",
-  "docker_url": "https://hub.docker.com/r/apache/rocketmq/tags",
+  "version_from": "https://hub.docker.com/r/apache/rocketmq/tags",
   "edition": [
     {
       "dist": "community",

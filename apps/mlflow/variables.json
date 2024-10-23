@@ -3,7 +3,7 @@
   "trademark": "MLflow",
   "release": false,
   "fork_url": "https://github.com/mlflow/mlflow",
-  "docker_url": "https://github.com/mlflow/mlflow/pkgs/container/mlflow",
+  "version_from": "https://github.com/mlflow/mlflow/pkgs/container/mlflow",
   "edition": [
     {
       "dist": "community",

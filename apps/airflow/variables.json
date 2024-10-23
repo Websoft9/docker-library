@@ -3,7 +3,7 @@
   "trademark": "Airflow",
   "release": true,
   "fork_url": "https://airflow.apache.org/docs/apache-airflow/2.10.1/docker-compose.yaml",
-  "docker_url": "https://hub.docker.com/r/apache/airflow",
+  "version_from": "https://hub.docker.com/r/apache/airflow",
   "edition": [
     {
       "dist": "community",

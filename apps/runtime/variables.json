@@ -3,7 +3,7 @@
   "trademark": "Web Runtime",
   "release": false,
   "fork_url": "",
-  "docker_url": "",
+  "version_from": "",
   "edition": [
     {
       "dist": "community",

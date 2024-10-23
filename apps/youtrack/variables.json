@@ -3,7 +3,7 @@
   "trademark": "YouTrack",
   "release": true,
   "fork_url": "",
-  "docker_url": "https://hub.docker.com/r/jetbrains/youtrack/tags",
+  "version_from": "https://hub.docker.com/r/jetbrains/youtrack/tags",
   "edition": [
     {
       "dist": "community",

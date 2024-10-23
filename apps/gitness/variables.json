@@ -3,7 +3,7 @@
   "trademark": "Gitness",
   "release": true,
   "fork_url": "https://docs.gitness.com/installation/data",
-  "docker_url": "https://hub.docker.com/r/harness/gitness/tags",
+  "version_from": "https://hub.docker.com/r/harness/gitness/tags",
   "edition": [
     {
       "dist": "community",

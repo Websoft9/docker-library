@@ -3,7 +3,7 @@
   "trademark": "Focalboard",
   "release": true,
   "fork_url": "https://hub.docker.com/r/mattermost/focalboard",
-  "docker_url": "https://hub.docker.com/r/mattermost/focalboard/tags",
+  "version_from": "https://hub.docker.com/r/mattermost/focalboard/tags",
   "edition": [
     {
       "dist": "community",

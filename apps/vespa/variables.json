@@ -3,7 +3,7 @@
     "trademark": "Vespa",
     "release": true,
     "fork_url": "https://github.com/vespa-engine/vespa",
-    "docker_url": "https://github.com/vespa-engine/vespa",
+    "version_from": "https://github.com/vespa-engine/vespa",
     "edition": [
       {
         "dist": "community",

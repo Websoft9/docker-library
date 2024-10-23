@@ -3,7 +3,7 @@
   "trademark": "Jitsi",
   "release": true,
   "fork_url": "https://github.com/jitsi/docker-jitsi-meet",
-  "docker_url": "https://github.com/jitsi/docker-jitsi-meet",
+  "version_from": "https://github.com/jitsi/docker-jitsi-meet",
   "edition": [
     {
       "dist": "community",

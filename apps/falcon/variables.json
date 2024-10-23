@@ -3,7 +3,7 @@
   "trademark": "Falcon",
   "release": false,
   "fork_url": "https://github.com/open-falcon/falcon-plus",
-  "docker_url": "",
+  "version_from": "",
   "edition": [
     {
       "dist": "community",

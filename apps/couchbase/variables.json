@@ -3,7 +3,7 @@
   "trademark": "Couchbase",
   "release": true,
   "fork_url": "https://hub.docker.com/r/couchbase/server",
-  "docker_url": "https://hub.docker.com/r/couchbase/server/tags",
+  "version_from": "https://hub.docker.com/r/couchbase/server/tags",
   "edition": [
     {
       "dist": "community",

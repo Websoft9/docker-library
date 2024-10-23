@@ -3,7 +3,7 @@
   "trademark": "Jihu GitLab",
   "release": true,
   "fork_url": "https://github.com/gitlabhq/omnibus-gitlab",
-  "docker_url": "",
+  "version_from": "",
   "edition": [
     {
       "dist": "community",
