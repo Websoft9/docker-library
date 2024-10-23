@@ -14,15 +14,16 @@ def get_dockerhub_latest_version(api_url):
 
 def convert_to_dockerhub_api_url(version_from_url):
     try:
+        # Example URL: https://hub.docker.com/r/knowagelabs/knowage-server-docker/tags
         path_parts = version_from_url.split('/')
         if 'library' in path_parts:
             # Official image
-            image_name = path_parts[-1]
+            image_name = path_parts[-2]
             return f"https://hub.docker.com/v2/repositories/library/{image_name}/tags"
         else:
             # Non-official image
-            namespace = path_parts[-2]
-            image_name = path_parts[-1]
+            namespace = path_parts[-3]
+            image_name = path_parts[-2]
             return f"https://hub.docker.com/v2/repositories/{namespace}/{image_name}/tags"
     except Exception as e:
         return None
