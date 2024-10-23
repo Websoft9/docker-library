@@ -39,6 +39,13 @@ We define all the names that need to be mounted at the end of docker-compose.yml
 
 Whether the container starts normally through [Health check](https://docs.docker.com/engine/reference/builder/#healthcheck)
 
+### Container name
+
+The main container is named $W9_ID, and other containers add a suffix to $W9_ID, such as $W9_ID-mysql.When container connections cannot be adapted to the common rules above, there are two ways to correspond:
+
+  - Add hostname, named $W9_RCODE
+  - Container named servicename-$W9_RCODE
+ 
 ### Logs limit
 
 Some application have lots of logs which will need storages. If you want to limit it, below is referance
