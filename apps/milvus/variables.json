@@ -3,7 +3,7 @@
     "trademark": "Milvus",
     "release": false,
     "fork_url": "https://github.com/milvus-io/milvus",
-    "docker_url": "https://hub.docker.com/r/milvusdb/milvus/tags",
+    "version_from": "https://hub.docker.com/r/milvusdb/milvus/tags",
     "edition": [
       {
         "dist": "community",

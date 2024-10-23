@@ -3,7 +3,7 @@
   "trademark": "Danswer",
   "release": true,
   "fork_url": "https://github.com/danswer-ai/danswer/tree/main/deployment/docker_compose",
-  "docker_url": "https://github.com/danswer-ai/danswer/tree/main/deployment/docker_compose",
+  "version_from": "https://github.com/danswer-ai/danswer/tree/main/deployment/docker_compose",
   "edition": [
     {
       "dist": "community",

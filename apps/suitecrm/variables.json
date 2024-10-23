@@ -3,7 +3,7 @@
   "trademark": "SuiteCRM",
   "release": true,
   "fork_url": "https://github.com/bitnami/containers/blob/main/bitnami/suitecrm/docker-compose.yml",
-  "docker_url": "https://hub.docker.com/r/bitnami/suitecrm/tags",
+  "version_from": "https://hub.docker.com/r/bitnami/suitecrm/tags",
   "edition": [
     {
       "dist": "community",

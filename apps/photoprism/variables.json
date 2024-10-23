@@ -3,7 +3,7 @@
   "trademark": "PhotoPrism",
   "release": false,
   "fork_url": "https://github.com/photoprism/photoprism",
-  "docker_url": "https://hub.docker.com/r/photoprism/photoprism/tags",
+  "version_from": "https://hub.docker.com/r/photoprism/photoprism/tags",
   "edition": [
     {
       "dist": "community",

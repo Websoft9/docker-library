@@ -3,7 +3,7 @@
   "trademark": "DocuSeal",
   "release": true,
   "fork_url": "https://github.com/docusealco/docuseal",
-  "docker_url": "https://hub.docker.com/r/docuseal/docuseal",
+  "version_from": "https://hub.docker.com/r/docuseal/docuseal",
   "edition": [
     {
       "dist": "community",

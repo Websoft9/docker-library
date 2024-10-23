@@ -3,7 +3,7 @@
   "trademark": "SSCMS",
   "release": true,
   "fork_url": "https://github.com/siteserver/cms",
-  "docker_url": "https://hub.docker.com/r/sscms/core/tags",
+  "version_from": "https://hub.docker.com/r/sscms/core/tags",
   "edition": [
     {
       "dist": "community",

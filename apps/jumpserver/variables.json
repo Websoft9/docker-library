@@ -3,7 +3,7 @@
   "trademark": "JumpServer",
   "release": false,
   "fork_url": "https://github.com/jumpserver/installer",
-  "docker_url": "",
+  "version_from": "",
   "edition": [
     {
       "dist": "community",

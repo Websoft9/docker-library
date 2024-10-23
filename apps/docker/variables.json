@@ -3,7 +3,7 @@
   "trademark": "Docker",
   "release": true,
   "fork_url": "https://docker.com",
-  "docker_url": "",
+  "version_from": "",
   "edition": [
     {
       "dist": "community",

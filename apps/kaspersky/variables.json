@@ -3,7 +3,7 @@
   "trademark": "Kaspersky",
   "release": true,
   "fork_url": "https://www.kaspersky.com/",
-  "docker_url": "https://hub.docker.com/r/tabledevil/kaspersky/tags",
+  "version_from": "https://hub.docker.com/r/tabledevil/kaspersky/tags",
   "edition": [
     {
       "dist": "community",

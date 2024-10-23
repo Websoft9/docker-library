@@ -3,7 +3,7 @@
   "trademark": "PMM",
   "release": true,
   "fork_url": "",
-  "docker_url": "https://hub.docker.com/r/percona/pmm-server/tags",
+  "version_from": "https://hub.docker.com/r/percona/pmm-server/tags",
   "edition": [
     {
       "dist": "community",

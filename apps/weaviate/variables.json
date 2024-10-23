@@ -3,7 +3,7 @@
     "trademark": "Weaviate",
     "release": true,
     "fork_url": "https://github.com/semi-technologies/weaviate",
-    "docker_url": "https://hub.docker.com/r/semitechnologies/weaviate",
+    "version_from": "https://hub.docker.com/r/semitechnologies/weaviate",
     "edition": [
       {
         "dist": "community",

@@ -3,7 +3,7 @@
   "trademark": "Joomla",
   "release": true,
   "fork_url": "https://github.com/joomla-docker/docker-joomla",
-  "docker_url": "https://hub.docker.com/r/bitnami/joomla/tags",
+  "version_from": "https://hub.docker.com/r/bitnami/joomla/tags",
   "edition": [
     {
       "dist": "community",

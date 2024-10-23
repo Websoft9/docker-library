@@ -3,7 +3,7 @@
   "trademark": "Zabbix",
   "release": true,
   "fork_url": "https://github.com/zabbix/zabbix-docker",
-  "docker_url": "https://hub.docker.com/r/zabbix/zabbix-web-nginx-pgsql/tags",
+  "version_from": "https://hub.docker.com/r/zabbix/zabbix-web-nginx-pgsql/tags",
   "edition": [
     {
       "dist": "community",

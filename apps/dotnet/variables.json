@@ -3,7 +3,7 @@
   "trademark": ".NET SDK",
   "release": true,
   "fork_url": "https://mcr.microsoft.com/en-us/product/dotnet/sdk/about",
-  "docker_url": "https://mcr.microsoft.com/en-us/product/dotnet/sdk/tags",
+  "version_from": "https://mcr.microsoft.com/en-us/product/dotnet/sdk/tags",
   "edition": [
     {
       "dist": "community",

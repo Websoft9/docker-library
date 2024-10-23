@@ -3,7 +3,7 @@
   "trademark": "Drupal",
   "release": true,
   "fork_url": "https://hub.docker.com/_/drupal",
-  "docker_url": "https://hub.docker.com/_/drupal/tags",
+  "version_from": "https://hub.docker.com/_/drupal/tags",
   "edition": [
     {
       "dist": "community",
