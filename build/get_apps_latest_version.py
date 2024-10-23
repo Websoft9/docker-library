@@ -15,14 +15,15 @@ def get_dockerhub_latest_version(api_url):
 def convert_to_dockerhub_api_url(version_from_url):
     try:
         path_parts = version_from_url.split('/')
-        if '_/' in path_parts:
+        if 'library' in path_parts:
             # Official image
-            image_name = path_parts[-2]
-            return f"https://hub.docker.com/v2/repositories/library/{image_name}/tags?page_size=1"
+            image_name = path_parts[-1]
+            return f"https://hub.docker.com/v2/repositories/library/{image_name}/tags"
         else:
             # Non-official image
-            repo = f"{path_parts[-3]}/{path_parts[-2]}"
-            return f"https://hub.docker.com/v2/repositories/{repo}/tags?page_size=1"
+            namespace = path_parts[-2]
+            image_name = path_parts[-1]
+            return f"https://hub.docker.com/v2/repositories/{namespace}/{image_name}/tags"
     except Exception as e:
         return None
 
@@ -30,8 +31,6 @@ def get_current_version(edition):
     for ed in edition:
         if ed['dist'] == 'community':
             versions = ed['version']
-            if 'latest' in versions:
-                versions.remove('latest')
             return ', '.join(versions)
     return None
 
@@ -59,7 +58,8 @@ def main():
                                     'name': name,
                                     'current_version': current_version,
                                     'latest_version': latest_version,
-                                    'last_updated': last_updated
+                                    'last_updated': last_updated,
+                                    'version_from': version_from
                                 })
                             else:
                                 output.append({
@@ -67,6 +67,7 @@ def main():
                                     'current_version': current_version,
                                     'latest_version': 'N/A',
                                     'last_updated': 'N/A',
+                                    'version_from': version_from,
                                     'error': f"Failed to fetch latest version: {last_updated}"
                                 })
                         else:
@@ -75,20 +76,14 @@ def main():
                                 'current_version': 'N/A',
                                 'latest_version': 'N/A',
                                 'last_updated': 'N/A',
+                                'version_from': version_from,
                                 'error': 'Invalid version_from URL or not a Docker Hub URL'
                             })
-                    else:
-                        output.append({
-                            'name': name,
-                            'current_version': 'N/A',
-                            'latest_version': 'N/A',
-                            'last_updated': 'N/A',
-                            'error': 'Release is set to false'
-                        })
 
     output_path = 'output.json'
-    with open(output_path, 'w') as outfile:
-        json.dump(output, outfile, indent=4)
+    if output:
+        with open(output_path, 'w') as outfile:
+            json.dump(output, outfile, indent=4)
 
 if __name__ == '__main__':
     main()
