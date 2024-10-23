@@ -8,7 +8,7 @@ This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://github.com/datahub-project/datahub):
+The following are the minimal [recommended requirements](https://datahubproject.io/docs/quickstart/#prerequisites):
 
 * **RAM**: 8 GB or more
 * **CPU**: 2 cores or higher
