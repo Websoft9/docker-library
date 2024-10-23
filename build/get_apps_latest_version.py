@@ -3,24 +3,28 @@ import json
 import requests
 
 def get_dockerhub_latest_version(api_url):
-    response = requests.get(api_url)
-    if response.status_code == 200:
+    try:
+        response = requests.get(api_url)
+        response.raise_for_status()
         data = response.json()
         latest_tag = data['results'][0]['name']
         return latest_tag, data['results'][0]['last_updated']
-    else:
-        raise Exception(f"Failed to fetch data from {api_url}")
+    except Exception as e:
+        return None, str(e)
 
 def convert_to_dockerhub_api_url(version_from_url):
-    path_parts = version_from_url.split('/')
-    if '_/' in path_parts:
-        # Official image
-        image_name = path_parts[-2]
-        return f"https://hub.docker.com/v2/repositories/library/{image_name}/tags?page_size=1"
-    else:
-        # Non-official image
-        repo = f"{path_parts[-3]}/{path_parts[-2]}"
-        return f"https://hub.docker.com/v2/repositories/{repo}/tags?page_size=1"
+    try:
+        path_parts = version_from_url.split('/')
+        if '_/' in path_parts:
+            # Official image
+            image_name = path_parts[-2]
+            return f"https://hub.docker.com/v2/repositories/library/{image_name}/tags?page_size=1"
+        else:
+            # Non-official image
+            repo = f"{path_parts[-3]}/{path_parts[-2]}"
+            return f"https://hub.docker.com/v2/repositories/{repo}/tags?page_size=1"
+    except Exception as e:
+        return None
 
 def get_current_version(edition):
     for ed in edition:
@@ -43,23 +47,24 @@ def main():
                 with open(variables_path, 'r') as file:
                     variables = json.load(file)
                     name = variables['name']
-                    version_from = variables['version_from']
-                    api_url = convert_to_dockerhub_api_url(version_from)
-                    try:
-                        latest_version, last_updated = get_dockerhub_latest_version(api_url)
-                        current_version = get_current_version(variables['edition'])
-                        output.append({
-                            'name': name,
-                            'current_version': current_version,
-                            'latest_version': latest_version,
-                            'last_updated': last_updated
-                        })
-                    except Exception as e:
-                        print(f"Error processing {name}: {e}")
-
-    output_path = 'output.json'
-    with open(output_path, 'w') as outfile:
-        json.dump(output, outfile, indent=4)
-
-if __name__ == '__main__':
-    main()
+                    release = variables.get('release', False)
+                    version_from = variables.get('version_from', '')
+                    if release:
+                        api_url = convert_to_dockerhub_api_url(version_from)
+                        if api_url:
+                            latest_version, last_updated = get_dockerhub_latest_version(api_url)
+                            current_version = get_current_version(variables['edition'])
+                            if latest_version:
+                                output.append({
+                                    'name': name,
+                                    'current_version': current_version,
+                                    'latest_version': latest_version,
+                                    'last_updated': last_updated
+                                })
+                            else:
+                                output.append({
+                                    'name': name,
+                                    'current_version': current_version,
+                                    'latest_version': 'N/A',
+                                    'last_updated': 'N/A',
+                                    'error': f"Failed to fetch l
