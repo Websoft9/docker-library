@@ -23,3 +23,9 @@ jobs:
 
     - name: Run version update script
       run: python build/get_apps_latest_version.py
+
+    - name: Upload output as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: output-json
+        path: output.json
