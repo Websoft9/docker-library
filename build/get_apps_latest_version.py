@@ -1,7 +1,15 @@
 import os
 import json
 import requests
-from packaging import version
+import subprocess
+import sys
+
+# Ensure the 'packaging' module is installed
+try:
+    from packaging import version
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "packaging"])
+    from packaging import version
 
 def get_dockerhub_tags(api_url, min_date=None):
     tags = []
@@ -35,11 +43,16 @@ def convert_to_dockerhub_api_url(version_from_url):
         return None
 
 def get_current_version(edition):
+    valid_versions = []
     for ed in edition:
         if ed['dist'] == 'community':
             versions = ed['version']
-            return max(versions, key=version.parse)
-    return None
+            for v in versions:
+                try:
+                    valid_versions.append(version.parse(v))
+                except version.InvalidVersion:
+                    continue
+    return str(max(valid_versions)) if valid_versions else None
 
 def filter_versions(tags, current_version):
     current_ver = version.parse(current_version)
@@ -53,7 +66,7 @@ def filter_versions(tags, current_version):
                     'version': tag_name,
                     'last_updated': tag['last_updated']
                 })
-        except:
+        except version.InvalidVersion:
             continue
     return higher_versions
 
