@@ -47,10 +47,13 @@ def get_current_versions(edition):
         if ed['dist'] == 'community':
             versions = ed['version']
             for v in versions:
-                try:
-                    valid_versions.append(version.parse(v))
-                except version.InvalidVersion:
-                    continue
+                if v.lower() == 'latest':
+                    valid_versions.append('latest')
+                else:
+                    try:
+                        valid_versions.append(version.parse(v))
+                    except version.InvalidVersion:
+                        continue
     return valid_versions
 
 def find_latest_version(tags, current_version):
@@ -119,7 +122,8 @@ def main():
                             })
                             continue
 
-                        highest_version = max(v for v in current_versions if v != version.parse('latest'))
+                        # Filter out 'latest' and find the highest version
+                        highest_version = max(v for v in current_versions if v != 'latest')
                         highest_version_str = str(highest_version)
 
                         api_url = convert_to_dockerhub_api_url(version_from)
