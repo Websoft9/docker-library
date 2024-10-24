@@ -67,22 +67,19 @@ def find_latest_version(tags, current_version):
             tag_ver = version.parse(tag_name)
             all_versions.append(tag_name)
             if tag_ver > current_ver:
-                print(f"Comparing {tag_name} with current version {current_version}:")
                 if latest_version is None or tag_ver > version.parse(latest_version['version']):
-                    print(f"New latest version found: {tag_name}")
                     latest_version = {
                         'version': tag_name,
                         'last_updated': tag['last_updated']
                     }
         except version.InvalidVersion:
-            print(f"Invalid version format found: {tag_name}")
             continue
 
     return latest_version, all_versions
 
 def main():
     parser = argparse.ArgumentParser(description='Fetch Docker Hub tags and find the latest version.')
-    parser.add_argument('--max-pages', type=int, default=5, help='Maximum number of pages to fetch from Docker Hub API')
+    parser.add_argument('--max-pages', type=int, default=1, help='Maximum number of pages to fetch from Docker Hub API')
     parser.add_argument('--page-size', type=int, default=100, help='Number of tags to fetch per page from Docker Hub API')
     args = parser.parse_args()
 
@@ -106,7 +103,6 @@ def main():
                                 'name': name,
                                 'current_version': 'N/A',
                                 'latest_version': None,
-                                'all_versions': [],
                                 'version_from': version_from,
                                 'error': 'No valid current versions found'
                             })
@@ -141,18 +137,14 @@ def main():
                             output.append({
                                 'name': name,
                                 'current_version': current_version_strs,
-                                'highest_version': highest_version_str,
                                 'latest_version': latest_version,
-                                'all_versions': all_versions,
                                 'version_from': version_from
                             })
                         else:
                             output.append({
                                 'name': name,
                                 'current_version': current_version_strs,
-                                'highest_version': highest_version_str,
                                 'latest_version': None,
-                                'all_versions': [],
                                 'version_from': version_from,
                                 'error': 'Invalid version_from URL or not a Docker Hub URL'
                             })
