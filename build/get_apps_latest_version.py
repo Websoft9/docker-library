@@ -6,7 +6,7 @@ import sys
 import time
 import argparse
 
-def get_dockerhub_tags(api_url, max_pages=5, page_size=100, delay=1):
+def get_dockerhub_tags(api_url, max_pages=1, page_size=100, delay=1):
     tags = []
     next_url = f"{api_url}?page_size={page_size}"
     pages_fetched = 0
