@@ -5,15 +5,9 @@ import subprocess
 import sys
 import time
 import argparse
+from packaging import version
 
-# Ensure the 'packaging' module is installed
-try:
-    from packaging import version
-except ImportError:
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "packaging"])
-    from packaging import version
-
-def get_dockerhub_tags(api_url, max_pages=5, page_size=100, delay=1):
+def get_dockerhub_tags(api_url, max_pages=1, page_size=100, delay=1):
     tags = []
     next_url = f"{api_url}?page_size={page_size}"
     pages_fetched = 0
