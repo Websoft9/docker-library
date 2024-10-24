@@ -13,6 +13,10 @@ assignees: ''
    - delete container and volumes
    - edit version and recreate app
 - [ ] when latest app error, go to official url to update compose
-- [ ] test OK
+- [ ] test it util app is normally running
 - [ ] pull request to docker-library
+   ```
+   docker exec -it websoft9-apphub bash
+   apphub subimt --appid wordpress_77juue--appname wordpress --github_email  --github_user
+   ```  
 - [ ] release and final test
