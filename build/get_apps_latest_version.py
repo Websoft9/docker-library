@@ -4,15 +4,9 @@ import requests
 import subprocess
 import sys
 import time
+import argparse
 
-# Ensure the 'packaging' module is installed
-try:
-    from packaging import version
-except ImportError:
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "packaging"])
-    from packaging import version
-
-def get_dockerhub_tags(api_url, max_pages=5, page_size=10, delay=1):
+def get_dockerhub_tags(api_url, max_pages=5, page_size=100, delay=1):
     tags = []
     next_url = f"{api_url}?page_size={page_size}"
     pages_fetched = 0
@@ -78,6 +72,11 @@ def find_latest_version(tags, current_version):
     return latest_version
 
 def main():
+    parser = argparse.ArgumentParser(description='Fetch Docker Hub tags and find the latest version.')
+    parser.add_argument('--max-pages', type=int, default=5, help='Maximum number of pages to fetch from Docker Hub API')
+    parser.add_argument('--page-size', type=int, default=100, help='Number of tags to fetch per page from Docker Hub API')
+    args = parser.parse_args()
+
     apps_dir = 'apps'
     output = []
 
@@ -94,7 +93,7 @@ def main():
                     if release:
                         api_url = convert_to_dockerhub_api_url(version_from)
                         if api_url:
-                            tags, error = get_dockerhub_tags(api_url)
+                            tags, error = get_dockerhub_tags(api_url, max_pages=args.max_pages, page_size=args.page_size)
                             if error:
                                 output.append({
                                     'name': name,
