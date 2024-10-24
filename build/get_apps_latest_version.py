@@ -1,8 +1,6 @@
 import os
 import json
 import requests
-import subprocess
-import sys
 import time
 import argparse
 from packaging import version
@@ -49,22 +47,13 @@ def get_current_version(edition):
         if ed['dist'] == 'community':
             versions = ed['version']
             for v in versions:
+                if v.lower() == 'latest':
+                    return 'latest'
                 try:
                     valid_versions.append(version.parse(v))
                 except version.InvalidVersion:
                     continue
     return str(max(valid_versions)) if valid_versions else None
-
-def version_has_same_format_or_higher(v1, v2):
-    v1_parts = v1.split('.')
-    v2_parts = v2.split('.')
-    
-    # 如果 v1 是 v2 的前缀，且 v1 的部分数量少于或等于 v2 的部分数量，则认为它们格式相同或更高
-    if len(v1_parts) <= len(v2_parts):
-        return v1_parts == v2_parts[:len(v1_parts)]
-    elif len(v1_parts) > len(v2_parts):
-        return v2_parts == v1_parts[:len(v2_parts)]
-    return False
 
 def find_latest_version(tags, current_version):
     current_ver = version.parse(current_version)
@@ -76,7 +65,7 @@ def find_latest_version(tags, current_version):
         try:
             tag_ver = version.parse(tag_name)
             all_versions.append(tag_name)
-            if tag_ver > current_ver and version_has_same_format_or_higher(current_version, tag_name):
+            if tag_ver > current_ver:
                 print(f"Comparing {tag_name} with current version {current_version}:")
                 if latest_version is None or tag_ver > version.parse(latest_version['version']):
                     print(f"New latest version found: {tag_name}")
@@ -124,14 +113,24 @@ def main():
                             current_version = get_current_version(variables['edition'])
                             if current_version:
                                 print(f"Current version for {name}: {current_version}")
-                                latest_version, all_versions = find_latest_version(tags, current_version)
-                                output.append({
-                                    'name': name,
-                                    'current_version': current_version,
-                                    'latest_version': latest_version,
-                                    'all_versions': all_versions,
-                                    'version_from': version_from
-                                })
+                                if current_version.lower() == 'latest':
+                                    output.append({
+                                        'name': name,
+                                        'current_version': current_version,
+                                        'latest_version': None,
+                                        'all_versions': [tag['name'] for tag in tags],
+                                        'version_from': version_from,
+                                        'note': 'Current version is set to latest, skipping version comparison'
+                                    })
+                                else:
+                                    latest_version, all_versions = find_latest_version(tags, current_version)
+                                    output.append({
+                                        'name': name,
+                                        'current_version': current_version,
+                                        'latest_version': latest_version,
+                                        'all_versions': all_versions,
+                                        'version_from': version_from
+                                    })
                             else:
                                 output.append({
                                     'name': name,
