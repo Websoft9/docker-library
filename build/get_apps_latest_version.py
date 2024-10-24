@@ -5,9 +5,15 @@ import subprocess
 import sys
 import time
 import argparse
-from packaging import version
 
-def get_dockerhub_tags(api_url, max_pages=1, page_size=100, delay=1):
+# Ensure the 'packaging' module is installed
+try:
+    from packaging import version
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "packaging"])
+    from packaging import version
+
+def get_dockerhub_tags(api_url, max_pages=5, page_size=100, delay=1):
     tags = []
     next_url = f"{api_url}?page_size={page_size}"
     pages_fetched = 0
@@ -68,12 +74,15 @@ def find_latest_version(tags, current_version):
         try:
             tag_ver = version.parse(tag_name)
             if tag_ver > current_ver and version_has_same_format(current_version, tag_name):
+                print(f"Comparing {tag_name} with current version {current_version}:")
                 if latest_version is None or tag_ver > version.parse(latest_version['version']):
+                    print(f"New latest version found: {tag_name}")
                     latest_version = {
                         'version': tag_name,
                         'last_updated': tag['last_updated']
                     }
         except version.InvalidVersion:
+            print(f"Invalid version format found: {tag_name}")
             continue
     return latest_version
 
@@ -99,6 +108,7 @@ def main():
                     if release:
                         api_url = convert_to_dockerhub_api_url(version_from)
                         if api_url:
+                            print(f"Fetching tags for {name} from {api_url}")
                             tags, error = get_dockerhub_tags(api_url, max_pages=args.max_pages, page_size=args.page_size)
                             if error:
                                 output.append({
@@ -109,6 +119,7 @@ def main():
 
                             current_version = get_current_version(variables['edition'])
                             if current_version:
+                                print(f"Current version for {name}: {current_version}")
                                 latest_version = find_latest_version(tags, current_version)
                                 output.append({
                                     'name': name,
