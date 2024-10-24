@@ -5,6 +5,7 @@ import subprocess
 import sys
 import time
 import argparse
+from packaging import version
 
 def get_dockerhub_tags(api_url, max_pages=1, page_size=100, delay=1):
     tags = []
