@@ -55,6 +55,11 @@ def get_current_version(edition):
                     continue
     return str(max(valid_versions)) if valid_versions else None
 
+def version_has_same_format(v1, v2):
+    v1_parts = v1.split('.')
+    v2_parts = v2.split('.')
+    return len(v1_parts) == len(v2_parts)
+
 def find_latest_version(tags, current_version):
     current_ver = version.parse(current_version)
     latest_version = None
@@ -62,7 +67,7 @@ def find_latest_version(tags, current_version):
         tag_name = tag['name']
         try:
             tag_ver = version.parse(tag_name)
-            if tag_ver > current_ver and not tag_name.endswith('-SNAPSHOT'):
+            if tag_ver > current_ver and version_has_same_format(current_version, tag_name):
                 if latest_version is None or tag_ver > version.parse(latest_version['version']):
                     latest_version = {
                         'version': tag_name,
