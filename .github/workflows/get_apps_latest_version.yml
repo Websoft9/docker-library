@@ -19,7 +19,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install requests
+        pip install requests packaging        
 
     - name: Run version update script
       run: python build/get_apps_latest_version.py
@@ -28,4 +28,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: output-json
-        path: output.json
+        path: latest-versions.json
