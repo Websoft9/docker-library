@@ -3,6 +3,7 @@ import json
 import requests
 import subprocess
 import sys
+import time
 
 # Ensure the 'packaging' module is installed
 try:
@@ -11,18 +12,23 @@ except ImportError:
     subprocess.check_call([sys.executable, "-m", "pip", "install", "packaging"])
     from packaging import version
 
-def get_dockerhub_tags(api_url, min_date=None):
+def get_dockerhub_tags(api_url, max_pages=5, page_size=10, delay=1):
     tags = []
-    next_url = api_url
-    while next_url:
+    next_url = f"{api_url}?page_size={page_size}"
+    pages_fetched = 0
+
+    while next_url and pages_fetched < max_pages:
         try:
             response = requests.get(next_url)
+            if response.status_code == 429:
+                time.sleep(delay)
+                continue
             response.raise_for_status()
             data = response.json()
-            for tag in data['results']:
-                if min_date is None or tag['last_updated'] > min_date:
-                    tags.append(tag)
-            next_url = data['next']
+            tags.extend(data['results'])
+            next_url = data.get('next')
+            pages_fetched += 1
+            time.sleep(delay)  # Delay between requests
         except Exception as e:
             return tags, str(e)
     return tags, None
@@ -54,21 +60,22 @@ def get_current_version(edition):
                     continue
     return str(max(valid_versions)) if valid_versions else None
 
-def filter_versions(tags, current_version):
+def find_latest_version(tags, current_version):
     current_ver = version.parse(current_version)
-    higher_versions = []
+    latest_version = None
     for tag in tags:
         tag_name = tag['name']
         try:
             tag_ver = version.parse(tag_name)
             if tag_ver > current_ver and not tag_name.endswith('-SNAPSHOT'):
-                higher_versions.append({
-                    'version': tag_name,
-                    'last_updated': tag['last_updated']
-                })
+                if latest_version is None or tag_ver > version.parse(latest_version['version']):
+                    latest_version = {
+                        'version': tag_name,
+                        'last_updated': tag['last_updated']
+                    }
         except version.InvalidVersion:
             continue
-    return higher_versions
+    return latest_version
 
 def main():
     apps_dir = 'apps'
@@ -97,39 +104,18 @@ def main():
 
                             current_version = get_current_version(variables['edition'])
                             if current_version:
-                                # 查找当前版本的发布时间
-                                current_version_info = next((tag for tag in tags if tag['name'] == current_version), None)
-                                if current_version_info:
-                                    min_date = current_version_info['last_updated']
-                                    # 获取在当前版本发布之后的所有版本
-                                    tags, error = get_dockerhub_tags(api_url, min_date)
-                                    if error:
-                                        output.append({
-                                            'name': name,
-                                            'error': f"Failed to fetch tags after {min_date}: {error}"
-                                        })
-                                        continue
-
-                                    higher_versions = filter_versions(tags, current_version)
-                                    output.append({
-                                        'name': name,
-                                        'current_version': current_version,
-                                        'higher_versions': higher_versions,
-                                        'version_from': version_from
-                                    })
-                                else:
-                                    output.append({
-                                        'name': name,
-                                        'current_version': current_version,
-                                        'higher_versions': [],
-                                        'version_from': version_from,
-                                        'error': 'Current version not found in tags'
-                                    })
+                                latest_version = find_latest_version(tags, current_version)
+                                output.append({
+                                    'name': name,
+                                    'current_version': current_version,
+                                    'latest_version': latest_version,
+                                    'version_from': version_from
+                                })
                             else:
                                 output.append({
                                     'name': name,
                                     'current_version': 'N/A',
-                                    'higher_versions': [],
+                                    'latest_version': None,
                                     'version_from': version_from,
                                     'error': 'No current version found'
                                 })
@@ -137,7 +123,7 @@ def main():
                             output.append({
                                 'name': name,
                                 'current_version': 'N/A',
-                                'higher_versions': [],
+                                'latest_version': None,
                                 'version_from': version_from,
                                 'error': 'Invalid version_from URL or not a Docker Hub URL'
                             })
