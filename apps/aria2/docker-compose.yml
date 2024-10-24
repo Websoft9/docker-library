@@ -16,7 +16,7 @@ services:
       - PUID=65534
       - PGID=65534
       - UMASK_SET=022
-      - RPC_SECRET=$W9_POWER_PASSWORD
+      - RPC_SECRET=$W9_RCODE
       - RPC_PORT=6800
       - LISTEN_PORT=6888
       - DISK_CACHE=64M
