@@ -1,21 +1,26 @@
 import os
 import json
 import requests
+from packaging import version
 
-def get_dockerhub_latest_version(api_url):
-    try:
-        response = requests.get(api_url)
-        response.raise_for_status()
-        data = response.json()
-        latest_tag = data['results'][0]['name']
-        return latest_tag, data['results'][0]['last_updated']
-    except Exception as e:
-        return None, str(e)
+def get_dockerhub_tags(api_url, min_date=None):
+    tags = []
+    next_url = api_url
+    while next_url:
+        try:
+            response = requests.get(next_url)
+            response.raise_for_status()
+            data = response.json()
+            for tag in data['results']:
+                if min_date is None or tag['last_updated'] > min_date:
+                    tags.append(tag)
+            next_url = data['next']
+        except Exception as e:
+            return tags, str(e)
+    return tags, None
 
 def convert_to_dockerhub_api_url(version_from_url):
     try:
-        # Example official URL: https://hub.docker.com/_/logstash/tags
-        # Example non-official URL: https://hub.docker.com/r/knowagelabs/knowage-server-docker/tags
         path_parts = version_from_url.split('/')
         if '_/' in version_from_url:
             # Official image
@@ -33,8 +38,24 @@ def get_current_version(edition):
     for ed in edition:
         if ed['dist'] == 'community':
             versions = ed['version']
-            return ', '.join(versions)
+            return max(versions, key=version.parse)
     return None
+
+def filter_versions(tags, current_version):
+    current_ver = version.parse(current_version)
+    higher_versions = []
+    for tag in tags:
+        tag_name = tag['name']
+        try:
+            tag_ver = version.parse(tag_name)
+            if tag_ver > current_ver and not tag_name.endswith('-SNAPSHOT'):
+                higher_versions.append({
+                    'version': tag_name,
+                    'last_updated': tag['last_updated']
+                })
+        except:
+            continue
+    return higher_versions
 
 def main():
     apps_dir = 'apps'
@@ -53,31 +74,57 @@ def main():
                     if release:
                         api_url = convert_to_dockerhub_api_url(version_from)
                         if api_url:
-                            latest_version, last_updated = get_dockerhub_latest_version(api_url)
-                            current_version = get_current_version(variables['edition'])
-                            if latest_version:
+                            tags, error = get_dockerhub_tags(api_url)
+                            if error:
                                 output.append({
                                     'name': name,
-                                    'current_version': current_version,
-                                    'latest_version': latest_version,
-                                    'last_updated': last_updated,
-                                    'version_from': version_from
+                                    'error': f"Failed to fetch tags: {error}"
                                 })
+                                continue
+
+                            current_version = get_current_version(variables['edition'])
+                            if current_version:
+                                # 查找当前版本的发布时间
+                                current_version_info = next((tag for tag in tags if tag['name'] == current_version), None)
+                                if current_version_info:
+                                    min_date = current_version_info['last_updated']
+                                    # 获取在当前版本发布之后的所有版本
+                                    tags, error = get_dockerhub_tags(api_url, min_date)
+                                    if error:
+                                        output.append({
+                                            'name': name,
+                                            'error': f"Failed to fetch tags after {min_date}: {error}"
+                                        })
+                                        continue
+
+                                    higher_versions = filter_versions(tags, current_version)
+                                    output.append({
+                                        'name': name,
+                                        'current_version': current_version,
+                                        'higher_versions': higher_versions,
+                                        'version_from': version_from
+                                    })
+                                else:
+                                    output.append({
+                                        'name': name,
+                                        'current_version': current_version,
+                                        'higher_versions': [],
+                                        'version_from': version_from,
+                                        'error': 'Current version not found in tags'
+                                    })
                             else:
                                 output.append({
                                     'name': name,
-                                    'current_version': current_version,
-                                    'latest_version': 'N/A',
-                                    'last_updated': 'N/A',
+                                    'current_version': 'N/A',
+                                    'higher_versions': [],
                                     'version_from': version_from,
-                                    'error': f"Failed to fetch latest version: {last_updated}"
+                                    'error': 'No current version found'
                                 })
                         else:
                             output.append({
                                 'name': name,
                                 'current_version': 'N/A',
-                                'latest_version': 'N/A',
-                                'last_updated': 'N/A',
+                                'higher_versions': [],
                                 'version_from': version_from,
                                 'error': 'Invalid version_from URL or not a Docker Hub URL'
                             })
