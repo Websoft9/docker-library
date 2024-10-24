@@ -41,19 +41,17 @@ def convert_to_dockerhub_api_url(version_from_url):
     except Exception as e:
         return None
 
-def get_current_version(edition):
+def get_current_versions(edition):
     valid_versions = []
     for ed in edition:
         if ed['dist'] == 'community':
             versions = ed['version']
             for v in versions:
-                if v.lower() == 'latest':
-                    return 'latest'
                 try:
                     valid_versions.append(version.parse(v))
                 except version.InvalidVersion:
                     continue
-    return str(max(valid_versions)) if valid_versions else None
+    return valid_versions
 
 def find_latest_version(tags, current_version):
     current_ver = version.parse(current_version)
@@ -99,6 +97,31 @@ def main():
                     release = variables.get('release', False)
                     version_from = variables.get('version_from', '')
                     if release:
+                        current_versions = get_current_versions(variables['edition'])
+                        if not current_versions:
+                            output.append({
+                                'name': name,
+                                'current_version': 'N/A',
+                                'latest_version': None,
+                                'all_versions': [],
+                                'version_from': version_from,
+                                'error': 'No valid current versions found'
+                            })
+                            continue
+
+                        current_version_strs = [str(v) for v in current_versions]
+                        if 'latest' in current_version_strs and len(current_version_strs) == 1:
+                            print(f"Skipping {name} as current version is set to latest and no other versions are available.")
+                            output.append({
+                                'name': name,
+                                'current_version': 'latest',
+                                'note': 'Current version is set to latest, skipping version comparison'
+                            })
+                            continue
+
+                        highest_version = max(v for v in current_versions if v != version.parse('latest'))
+                        highest_version_str = str(highest_version)
+
                         api_url = convert_to_dockerhub_api_url(version_from)
                         if api_url:
                             print(f"Fetching tags for {name} from {api_url}")
@@ -110,40 +133,20 @@ def main():
                                 })
                                 continue
 
-                            current_version = get_current_version(variables['edition'])
-                            if current_version:
-                                print(f"Current version for {name}: {current_version}")
-                                if current_version.lower() == 'latest':
-                                    output.append({
-                                        'name': name,
-                                        'current_version': current_version,
-                                        'latest_version': None,
-                                        'all_versions': [tag['name'] for tag in tags],
-                                        'version_from': version_from,
-                                        'note': 'Current version is set to latest, skipping version comparison'
-                                    })
-                                else:
-                                    latest_version, all_versions = find_latest_version(tags, current_version)
-                                    output.append({
-                                        'name': name,
-                                        'current_version': current_version,
-                                        'latest_version': latest_version,
-                                        'all_versions': all_versions,
-                                        'version_from': version_from
-                                    })
-                            else:
-                                output.append({
-                                    'name': name,
-                                    'current_version': 'N/A',
-                                    'latest_version': None,
-                                    'all_versions': [tag['name'] for tag in tags],
-                                    'version_from': version_from,
-                                    'error': 'No current version found'
-                                })
+                            latest_version, all_versions = find_latest_version(tags, highest_version_str)
+                            output.append({
+                                'name': name,
+                                'current_version': current_version_strs,
+                                'highest_version': highest_version_str,
+                                'latest_version': latest_version,
+                                'all_versions': all_versions,
+                                'version_from': version_from
+                            })
                         else:
                             output.append({
                                 'name': name,
-                                'current_version': 'N/A',
+                                'current_version': current_version_strs,
+                                'highest_version': highest_version_str,
                                 'latest_version': None,
                                 'all_versions': [],
                                 'version_from': version_from,
