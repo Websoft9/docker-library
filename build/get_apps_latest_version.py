@@ -55,10 +55,14 @@ def get_current_version(edition):
                     continue
     return str(max(valid_versions)) if valid_versions else None
 
-def version_has_same_format(v1, v2):
+def version_has_same_format_or_higher(v1, v2):
     v1_parts = v1.split('.')
     v2_parts = v2.split('.')
-    return len(v1_parts) == len(v2_parts)
+    
+    # 如果 v1 是 v2 的前缀，且 v1 的部分数量少于或等于 v2 的部分数量，则认为它们格式相同或更高
+    if len(v1_parts) <= len(v2_parts):
+        return v1_parts == v2_parts[:len(v1_parts)]
+    return False
 
 def find_latest_version(tags, current_version):
     current_ver = version.parse(current_version)
@@ -67,7 +71,7 @@ def find_latest_version(tags, current_version):
         tag_name = tag['name']
         try:
             tag_ver = version.parse(tag_name)
-            if tag_ver > current_ver and version_has_same_format(current_version, tag_name):
+            if tag_ver > current_ver and version_has_same_format_or_higher(current_version, tag_name):
                 print(f"Comparing {tag_name} with current version {current_version}:")
                 if latest_version is None or tag_ver > version.parse(latest_version['version']):
                     print(f"New latest version found: {tag_name}")
