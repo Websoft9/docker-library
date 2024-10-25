@@ -5,14 +5,15 @@ services:
   php:
     container_name: ${W9_ID}
     image: $W9_REPO:$W9_VERSION
+    build:
+      context: .
+      dockerfile: DOCKERFILE
     restart: unless-stopped
     env_file: .env
-    command: /bin/bash -c "bash /usr/local/bin/cmd.sh && apache2-foreground"
     ports:
      - $W9_HTTP_PORT_SET:80
     volumes: 
       - source:/var/www/html
-      - ./src/cmd.sh:/usr/local/bin/cmd.sh  #for CI
       - ./src/php_extra.ini:/usr/local/etc/php/conf.d/php_extra.ini #for custom php.ini
       - ./src/opcache_recommended.ini:/usr/local/etc/php/conf.d/opcache_recommended.ini   # for custom opcache
 

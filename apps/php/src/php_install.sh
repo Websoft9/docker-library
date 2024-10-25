@@ -12,6 +12,17 @@ export PATH
 # You must confige PHP GD before other PHP extensions which is dependent on GD
 docker-php-ext-configure gd --with-freetype --with-jpeg=/usr --with-webp || true
 
+
+## Install install-php-extensions cli
+curl -o /usr/local/bin/install-php-extensions -L https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions
+chmod 0755 /usr/local/bin/install-php-extensions
+
+## Install php extension, e.g Composer, mysqli,gd,imagick
+install-php-extensions @composer
+install-php-extensions mysqli
+
+
+
 # Install PHP extensions
 extensions=(
   bcmath
