@@ -10,27 +10,18 @@ services:
     - --scheme
     - http
     ports:
-    - $W9_HTTP_PORT_SET:8080
+      - $W9_HTTP_PORT_SET:8080
     
     volumes:
-    - weaviate_data:/var/lib/weaviate
+      - weaviate_data:/var/lib/weaviate
     restart: unless-stopped
-    environment:
-      QUERY_DEFAULTS_LIMIT: 25
-      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
-      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
-      DEFAULT_VECTORIZER_MODULE: 'none'
-      ENABLE_API_BASED_MODULES: 'true'
-      CLUSTER_HOSTNAME: 'node1'
     env_file:
       - .env
-
   
 networks:
   default:
     name: $W9_NETWORK
     external: true
-
 
 volumes:
   weaviate_data:
