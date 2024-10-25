@@ -1,25 +1,21 @@
-## This file is for your CI
+## This script is always excused after PHP container running
+## If you upload your PHP application source code to container, you should consider migration exist data
+
+## Sample for you
+
+if [ -z "$(ls -A /var/www/html)" ]; then
+  echo "<?php phpinfo(); ?>" > /var/www/html/index.php
+  chown -R www-data:www-data /var/www/html
+  echo "Commands executed: index.php created and ownership changed."
+else
+  echo "/var/www/html is not empty. No actions taken."
+fi
 
 
-## Install Linux packages, e.g unzip git
-apt update -y && apt install unzip git -y
-
-## Install install-php-extensions cli
-curl -o /usr/local/bin/install-php-extensions -L https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions
-chmod 0755 /usr/local/bin/install-php-extensions
-
-## Install php extension, e.g Composer, mysqli,gd,imagick
-install-php-extensions @composer
-install-php-extensions mysqli
-
-## create php sample by default
-echo "<?php phpinfo(); ?>" > /var/www/html/index.php
-
-## Install WordPress for your reference
+## Install WordPress for your reference, you should improve it for migration exist data
 
 # cd /var/www/html 
 # curl -O https://wordpress.org/latest.zip
 # unzip latest.zip
 # mv wordpress/* ./
 # chown -R www-data:www-data /var/www/html
-
