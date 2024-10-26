@@ -1,4 +1,3 @@
-# 使用 ARG 来读取环境变量
 ARG PHP_VERSION
 
 FROM php:${PHP_VERSION}

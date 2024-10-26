@@ -27,5 +27,5 @@ peclExtensions=$(crudini --get "$INI_FILE" php-extension pecl)
 peclExtensions=$(echo "$peclExtensions" | tr ',' ' ')
 for extension in $peclExtensions; do
     echo "Start to install $extension by pecl"
-    echo "no" | pecl install $extension
+    echo "no" | pecl install $extension && docker-php-ext-enable $extension
 done
