@@ -12,6 +12,7 @@ phpExtensions=$(echo "$phpExtensions" | tr ',' ' ')
 for extension in $phpExtensions; do
     echo "Start to install $extension by install-php-extensions"
     install-php-extensions $extension
+    docker-php-ext-enable $extension
 done
 
 # Install PHP extension by docker-php-ext-install
@@ -20,6 +21,7 @@ dockerExtensions=$(echo "$dockerExtensions" | tr ',' ' ')
 for extension in $dockerExtensions; do
     echo "Start to install $extension  by docker-php-ext-install"
     docker-php-ext-install $extension
+    docker-php-ext-enable $extension
 done
 
 # Install PHP extension by pecl
@@ -27,5 +29,6 @@ peclExtensions=$(crudini --get "$INI_FILE" php-extension pecl)
 peclExtensions=$(echo "$peclExtensions" | tr ',' ' ')
 for extension in $peclExtensions; do
     echo "Start to install $extension by pecl"
-    echo "no" | pecl install $extension && docker-php-ext-enable $extension
+    yes '' | pecl install $extension
+    docker-php-ext-enable $extension
 done
