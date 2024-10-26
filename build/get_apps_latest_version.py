@@ -43,10 +43,12 @@ def convert_to_dockerhub_api_url(version_from_url):
 
 def get_current_versions(edition):
     valid_versions = []
+    all_versions = []
     for ed in edition:
         if ed['dist'] == 'community':
             versions = ed['version']
             for v in versions:
+                all_versions.append(v)
                 if v.lower() == 'latest':
                     valid_versions.append('latest')
                 else:
@@ -54,7 +56,7 @@ def get_current_versions(edition):
                         valid_versions.append(version.parse(v))
                     except version.InvalidVersion:
                         continue
-    return valid_versions
+    return valid_versions, all_versions
 
 def find_latest_version(tags, current_version):
     current_ver = version.parse(current_version)
@@ -96,12 +98,13 @@ def main():
                     name = variables['name']
                     release = variables.get('release', False)
                     version_from = variables.get('version_from', '')
+                    current_versions, all_versions = get_current_versions(variables['edition'])
+
                     if release:
-                        current_versions = get_current_versions(variables['edition'])
                         if not current_versions:
                             output.append({
                                 'name': name,
-                                'current_version': 'N/A',
+                                'current_version': all_versions,
                                 'latest_version': None,
                                 'version_from': version_from,
                                 'error': 'No valid current versions found'
