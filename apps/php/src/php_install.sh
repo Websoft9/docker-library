@@ -7,26 +7,25 @@ INI_FILE="/usr/local/bin/config.ini"
 ## Install install-php-extensions cli
 curl -o /usr/local/bin/install-php-extensions -L https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions
 chmod 0755 /usr/local/bin/install-php-extensions
-
-install-php-extensions=$(crudini --get "$INI_FILE" php-extension install-php-extensions)
-install-php-extensions=$(echo "$install-php-extensions" | tr ',' ' ')
-for extension in $install-php-extensions; do
-    echo "Start to install $extension"
+phpExtensions=$(crudini --get "$INI_FILE" php-extension install-php-extensions)
+phpExtensions=$(echo "$phpExtensions" | tr ',' ' ')
+for extension in $phpExtensions; do
+    echo "Start to install $extension by install-php-extensions"
     install-php-extensions $extension
 done
 
 # Install PHP extension by docker-php-ext-install
-docker-php-extensions=$(crudini --get "$INI_FILE" php-extension docker-php-ext-install)
-docker-php-extensions=$(echo "$docker-php-extensions" | tr ',' ' ')
-for extension in $docker-php-extensions; do
-    echo "Start to install $extension"
+dockerExtensions=$(crudini --get "$INI_FILE" php-extension docker-php-ext-install)
+dockerExtensions=$(echo "$dockerExtensions" | tr ',' ' ')
+for extension in $dockerExtensions; do
+    echo "Start to install $extension  by docker-php-ext-install"
     docker-php-ext-install $extension
 done
 
 # Install PHP extension by pecl
-pecl-extensions=$(crudini --get "$INI_FILE" php-extension pecl)
-pecl-extensions=$(echo "$pecl-extensions" | tr ',' ' ')
-for extension in $pecl-extensions; do
-    echo "Start to install $extension"
+peclExtensions=$(crudini --get "$INI_FILE" php-extension pecl)
+peclExtensions=$(echo "$peclExtensions" | tr ',' ' ')
+for extension in $peclExtensions; do
+    echo "Start to install $extension by pecl"
     echo "no" | pecl install $extension
 done
