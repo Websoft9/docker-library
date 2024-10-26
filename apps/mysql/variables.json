@@ -3,11 +3,11 @@
   "trademark": "MySQL",
   "release": true,
   "fork_url": "https://github.com/docker-library/mysql/",
-  "version_from": "https://hub.docker.com/_/mysql/tags",
+  "docker_url": "https://hub.docker.com/_/mysql/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["8.2","8.1","8.0","5.7","5.6","5.5","latest"]
+      "version": ["9.1","8.2","8.1","8.0","5.7","5.6","5.5","latest"]
     }
   ],
   "requirements": {
