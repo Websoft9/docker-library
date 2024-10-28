@@ -101,7 +101,9 @@ def main():
                     current_versions, all_versions = get_current_versions(variables['edition'])
 
                     if release:
-                        if not current_versions or ('latest' in [str(v) for v in current_versions] and len(current_versions) == 1):
+                        current_version_strs = [str(v) for v in current_versions]
+                        
+                        if not current_versions or ('latest' in current_version_strs and len(current_version_strs) == 1):
                             output.append({
                                 'name': name,
                                 'current_version': all_versions,
