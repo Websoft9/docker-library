@@ -3,12 +3,12 @@
   "trademark": "Ckan",
   "release": false,
   "fork_url": "https://github.com/ckan/ckan",
-  "version_from": "",
+  "version_from": "https://hub.docker.com/r/ckan/ckan-base/tags",
   "edition": [
     {
       "dist": "community",
       "version": [
-        "latest"
+        "2.11.0"
       ]
     }
   ],
