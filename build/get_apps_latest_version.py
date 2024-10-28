@@ -116,8 +116,10 @@ def main():
                             print(f"Skipping {name} as current version is set to latest and no other versions are available.")
                             output.append({
                                 'name': name,
-                                'current_version': 'latest',
-                                'note': 'Current version is set to latest, skipping version comparison'
+                                'current_version': all_versions,
+                                'latest_version': None,
+                                'version_from': version_from,
+                                'note': 'No valid current versions found'
                             })
                             continue
 
