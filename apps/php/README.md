@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for PHP:
 
 
- - community:  8.3-apache, 8.2-apache, 8.1-apache, 8.0-apache, 7.4-apache, 7.3-apache, 7.2-apache, 7.1-apache, 7.0-apache, 5.6-apache
+ - community:  8.3-apache, 8.2-apache, 8.1-apache, 8.0-apache8.0-apache, 7.4-apache, 7.3-apache, 7.2-apache, 7.1-apache, 7.0-apache, 5.6-apache
 
 
 ## System Requirements
