@@ -1,6 +1,6 @@
 # image: https://hub.docker.com/r/ckan/ckan-base
 # compose refer to: https://github.com/ckan/ckan-docker/blob/master/docker-compose.yml
-# docs:  https://docs.ckan.org/en/2.10/maintaining/installing/index.html
+# docs:  https://docs.ckan.org/en/2.11/maintaining/installing/index.html
 
 version: "3.8"
 
@@ -10,15 +10,10 @@ services:
     image: $W9_REPO:$W9_VERSION
     env_file:
       - .env
-    links:
-      - db
-      - solr
-      - redis
     ports:
       - $W9_HTTP_PORT_SET:5000
     volumes:
       - ckan_storage:/var/lib/ckan
-      - ./src:/srv/app/src_extensions
       - pip_cache:/root/.cache/pip
       - site_packages:/usr/lib/python3.10/site-packages
       - vscode_server:/root/.vscode-server
@@ -71,6 +66,7 @@ services:
       test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:8983/solr/"]
 
   redis:
+    container_name: $W9_ID-redis
     image: redis:${REDIS_VERSION}
     restart: unless-stopped
     healthcheck:
