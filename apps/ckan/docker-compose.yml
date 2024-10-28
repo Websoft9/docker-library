@@ -1,20 +1,13 @@
-volumes:
-  ckan_storage:
-  pg_data:
-  solr_data:
-  pip_cache:
-  site_packages:
-  vscode_server:
+# image: https://hub.docker.com/r/ckan/ckan-base
+# compose refer to: https://github.com/ckan/ckan-docker/blob/master/docker-compose.yml
+# docs:  https://docs.ckan.org/en/2.10/maintaining/installing/index.html
+
+version: "3.8"
 
 services:
-
   ckan-dev:
-    #build:
-    #  context: ckan/
-    #  dockerfile: Dockerfile.dev
-    #  args:
-    #    - TZ=${TZ}
-    image: ckan/ckan-base:2.11.0
+    container_name: $W9_ID
+    image: $W9_REPO:$W9_VERSION
     env_file:
       - .env
     links:
@@ -22,7 +15,7 @@ services:
       - solr
       - redis
     ports:
-      - "0.0.0.0:${CKAN_PORT_HOST}:5000"
+      - $W9_HTTP_PORT_SET:5000
     volumes:
       - ckan_storage:/var/lib/ckan
       - ./src:/srv/app/src_extensions
@@ -37,7 +30,8 @@ services:
       retries: 3
 
   datapusher:
-    image: ckan/ckan-base-datapusher:${DATAPUSHER_VERSION}
+    container_name: $W9_ID-datapusher
+    image: $W9_REPO-datapusher:${DATAPUSHER_VERSION}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:8800"]
@@ -46,8 +40,7 @@ services:
       retries: 3
 
   db:
-    #build:
-    #  context: postgresql/
+    container_name: $W9_ID-postgres
     image: ckan/ckan-postgres-dev:2.11
     environment:
       - POSTGRES_USER
@@ -69,6 +62,7 @@ services:
       test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
      
   solr:
+    container_name: $W9_ID-solr
     image: ckan/ckan-solr:${SOLR_IMAGE_VERSION}
     volumes:
       - solr_data:/var/solr
@@ -81,3 +75,16 @@ services:
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "-e", "QUIT"]
+
+volumes:
+  ckan_storage:
+  pg_data:
+  solr_data:
+  pip_cache:
+  site_packages:
+  vscode_server:
+
+networks:
+  default:
+    name: $W9_NETWORK
+    external: true
