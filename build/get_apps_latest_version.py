@@ -101,25 +101,13 @@ def main():
                     current_versions, all_versions = get_current_versions(variables['edition'])
 
                     if release:
-                        if not current_versions:
+                        if not current_versions or ('latest' in [str(v) for v in current_versions] and len(current_versions) == 1):
                             output.append({
                                 'name': name,
                                 'current_version': all_versions,
                                 'latest_version': None,
                                 'version_from': version_from,
                                 'error': 'No valid current versions found'
-                            })
-                            continue
-
-                        current_version_strs = [str(v) for v in current_versions]
-                        if 'latest' in current_version_strs and len(current_version_strs) == 1:
-                            print(f"Skipping {name} as current version is set to latest and no other versions are available.")
-                            output.append({
-                                'name': name,
-                                'current_version': all_versions,
-                                'latest_version': None,
-                                'version_from': version_from,
-                                'note': 'No valid current versions found'
                             })
                             continue
 
