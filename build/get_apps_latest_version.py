@@ -151,7 +151,7 @@ def main():
                                 'version_from': version_from,
                                 'error': 'Invalid version_from URL or not a Docker Hub URL'
                             })
-
+    output.sort(key=lambda x: x['name'])
     output_path = 'output.json'
     if output:
         with open(output_path, 'w') as outfile:
