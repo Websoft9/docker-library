@@ -112,8 +112,12 @@ def main():
                             continue
 
                         # Filter out 'latest' and find the highest version
-                        highest_version = max(v for v in current_versions if v != 'latest')
-                        highest_version_str = str(highest_version)
+                        non_latest_versions = [v for v in current_versions if v != 'latest']
+                        if non_latest_versions:
+                            highest_version = max(non_latest_versions)
+                            highest_version_str = str(highest_version)
+                        else:
+                            highest_version_str = 'latest'
 
                         api_url = convert_to_dockerhub_api_url(version_from)
                         if api_url:
