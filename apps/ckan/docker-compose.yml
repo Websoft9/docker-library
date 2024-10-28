@@ -5,7 +5,7 @@
 version: "3.8"
 
 services:
-  ckan-dev:
+  ckan-base:
     container_name: $W9_ID
     image: $W9_REPO:$W9_VERSION
     env_file:
