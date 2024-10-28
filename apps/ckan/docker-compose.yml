@@ -1,93 +1,86 @@
 # image: https://hub.docker.com/r/ckan/ckan-base
 # compose refer to: https://github.com/ckan/ckan-docker/blob/master/docker-compose.yml
-# docs:  https://docs.ckan.org/en/2.10/maintaining/installing/index.html
+# docs:  https://docs.ckan.org/en/2.11/maintaining/installing/index.html
 
 version: "3.8"
 
 services:
- ckan:
-   container_name: $W9_ID
-   image: $W9_REPO:$W9_VERSION
-   env_file: .env
-   ports:
-     - $W9_HTTP_PORT_SET:5000
-   depends_on:
-     db:
-       condition: service_healthy
-     solr:
-       condition: service_healthy
-     redis:
-       condition: service_healthy
-   volumes:
-     - ckan_storage:/var/lib/ckan
-   restart: unless-stopped
-   healthcheck:
-     test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:5000/api/action/status_show"]
-     interval: 60s
-     timeout: 10s
-     retries: 3
-   
- datapusher:
-   container_name: $W9_ID-datapusher
-   image: $W9_REPO-datapusher:0.0.20
-   restart: unless-stopped
-   healthcheck:
-     test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:8800"]
-     interval: 60s
-     timeout: 10s
-     retries: 3
+  ckan-base:
+    container_name: $W9_ID
+    image: $W9_REPO:$W9_VERSION
+    env_file:
+      - .env
+    ports:
+      - $W9_HTTP_PORT_SET:5000
+    volumes:
+      - ckan_storage:/var/lib/ckan
+      - pip_cache:/root/.cache/pip
+      - site_packages:/usr/lib/python3.10/site-packages
+      - vscode_server:/root/.vscode-server
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:5000"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
 
- db:
-   container_name: $W9_ID-postgres
-   image: ckan/ckan-postgres-dev:2.10
-   env_file: .env
-   environment:
-    POSTGRES_USER: ckan
-    POSTGRES_PASSWORD: $W9_POWER_PASSWORD
-    POSTGRES_DB: ckan
-    CKAN_DB_USER: ckandbuser
-    CKAN_DB_PASSWORD: $W9_POWER_PASSWORD
-    CKAN_DB: ckandb
-    DATASTORE_READONLY_USER: datastore_ro
-    DATASTORE_READONLY_PASSWORD: $W9_POWER_PASSWORD
-    DATASTORE_DB: datastore
-   volumes:
-     - postgres_data:/var/lib/postgresql/data
-   restart: unless-stopped
-   healthcheck:
-     test: ["CMD", "pg_isready", "-U", "ckan", "-d", "ckan"]
-     interval: 30s
-     timeout: 10s
-     retries: 5
+  datapusher:
+    container_name: $W9_ID-datapusher
+    image: $W9_REPO-datapusher:${DATAPUSHER_VERSION}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:8800"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
 
- solr:
-   container_name: $W9_ID-solr
-   image: ckan/ckan-solr:2.10-solr9
-   volumes:
-     - solr_data:/var/solr
-   restart: unless-stopped
-   healthcheck:
-     test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:8983/solr/"]
-     interval: 30s
-     timeout: 10s
-     retries: 5
+  db:
+    container_name: $W9_ID-postgres
+    image: ckan/ckan-postgres-dev:2.11
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+      - CKAN_DB_USER
+      - CKAN_DB_PASSWORD
+      - CKAN_DB
+      - DATASTORE_READONLY_USER
+      - DATASTORE_READONLY_PASSWORD
+      - DATASTORE_DB
+    volumes:
+      - ./src/postgresql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - pg_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    env_file: 
+      - .env
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
+     
+  solr:
+    container_name: $W9_ID-solr
+    image: ckan/ckan-solr:${SOLR_IMAGE_VERSION}
+    volumes:
+      - solr_data:/var/solr
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:8983/solr/"]
 
- redis:
-   container_name: $W9_ID-redis
-   image: redis:6
-   restart: unless-stopped
-   healthcheck:
-     test: ["CMD", "redis-cli", "-e", "QUIT"]
-     interval: 30s
-     timeout: 10s
-     retries: 5
+  redis:
+    container_name: $W9_ID-redis
+    image: redis:${REDIS_VERSION}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "-e", "QUIT"]
 
 volumes:
- ckan_storage:
- postgres_data:
- solr_data:
-   
+  ckan_storage:
+  pg_data:
+  solr_data:
+  pip_cache:
+  site_packages:
+  vscode_server:
+
 networks:
- default:
-   name: ${W9_NETWORK}
-   external: true
+  default:
+    name: $W9_NETWORK
+    external: true

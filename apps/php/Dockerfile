@@ -1,5 +1,4 @@
-# 使用 ARG 来读取环境变量
-ARG PHP_VERSION=${W9_VERSION}
+ARG PHP_VERSION=8.0-apache
 
 FROM php:${PHP_VERSION}
 
@@ -10,25 +9,27 @@ LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
       org.opencontainers.image.vendor="Websoft9 Inc." \
       org.opencontainers.image.version="${PHP_VERSION}"
 
-# 设置环境变量以避免交互式配置
+# Set environment variables to avoid interactive configuration
 ENV DEBIAN_FRONTEND=noninteractive
 
-# 安装必要的工具，包括 crudini 和 bash
-RUN apt-get update && \
-    apt-get install -y \
-    crudini \
-    bash \
-    && apt-get clean
 
-# 复制脚本和配置文件到容器中
-COPY src/extensions.ini /usr/local/bin/extensions.ini
+# replace apt repository for php7.0/5.6 image
+RUN sed -i 's|deb http://deb.debian.org/debian stretch|deb http://archive.debian.org/debian stretch|g' /etc/apt/sources.list && \
+    sed -i '/stretch-updates/d' /etc/apt/sources.list && \
+    sed -i 's|deb http://security.debian.org/debian-security stretch/updates|deb http://archive.debian.org/debian-security stretch/updates|g' /etc/apt/sources.list && \
+    apt update
+
+RUN apt install -y crudini
+
+
+COPY src/extensions.ini /usr/local/bin/config.ini
 COPY src/apt_install.sh /usr/local/bin/apt_install.sh
-COPY src/apt_install.sh /usr/local/bin/php_install.sh
+COPY src/php_install.sh /usr/local/bin/php_install.sh
 
-# 给予脚本执行权限
 RUN chmod +x /usr/local/bin/apt_install.sh
 RUN chmod +x /usr/local/bin/php_install.sh
 
-# 运行脚本
 RUN /usr/local/bin/apt_install.sh
 RUN /usr/local/bin/php_install.sh
+
+RUN apt clean
