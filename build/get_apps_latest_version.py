@@ -101,23 +101,29 @@ def main():
                     current_versions, all_versions = get_current_versions(variables['edition'])
 
                     if release:
+                        if not current_versions:
+                            output.append({
+                                'name': name,
+                                'current_version': all_versions,
+                                'latest_version': None,
+                                'version_from': version_from,
+                                'error': 'No valid current versions found'
+                            })
+                            continue
+
                         current_version_strs = [str(v) for v in current_versions]
                         if 'latest' in current_version_strs and len(current_version_strs) == 1:
                             print(f"Skipping {name} as current version is set to latest and no other versions are available.")
                             output.append({
                                 'name': name,
-                                'current_version': all_versions,
+                                'current_version': 'latest',
                                 'note': 'Current version is set to latest, skipping version comparison'
                             })
                             continue
 
                         # Filter out 'latest' and find the highest version
-                        non_latest_versions = [v for v in current_versions if v != 'latest']
-                        if non_latest_versions:
-                            highest_version = max(non_latest_versions)
-                            highest_version_str = str(highest_version)
-                        else:
-                            highest_version_str = 'latest'
+                        highest_version = max(v for v in current_versions if v != 'latest')
+                        highest_version_str = str(highest_version)
 
                         api_url = convert_to_dockerhub_api_url(version_from)
                         if api_url:
@@ -133,30 +139,20 @@ def main():
                             latest_version, all_versions = find_latest_version(tags, highest_version_str)
                             output.append({
                                 'name': name,
-                                'current_version': all_versions,
+                                'current_version': current_version_strs,
                                 'latest_version': latest_version,
                                 'version_from': version_from
                             })
                         else:
                             output.append({
                                 'name': name,
-                                'current_version': all_versions,
+                                'current_version': current_version_strs,
                                 'latest_version': None,
                                 'version_from': version_from,
                                 'error': 'Invalid version_from URL or not a Docker Hub URL'
                             })
-                    else:
-                        output.append({
-                            'name': name,
-                            'current_version': all_versions,
-                            'latest_version': None,
-                            'version_from': version_from,
-                            'note': 'Release is set to False'
-                        })
 
-    # Sort the output by 'name' in ascending order
     output.sort(key=lambda x: x['name'])
-
     output_path = 'output.json'
     if output:
         with open(output_path, 'w') as outfile:
