@@ -1,22 +1,30 @@
 ---
-name: update docker compose 
-about: update version or docker-compose this project
-title: 'update docker-compose.yml for [appname]'
-labels: 'feature'
+name: Update application's version
+about: Update application's version
+title: 'Update version to [x.x.x] for [appname]'
+labels: 'update,S-research'
 assignees: ''
 ---
 
 **What type of your feature request?**  
 
-- [ ] Install app with latest version in websoft9
-   - Install app in websoft9
-   - delete container and volumes
-   - edit version and recreate app
-- [ ] when latest app error, go to official url to update compose
-- [ ] test it util app is normally running
-- [ ] pull request to docker-library
+Change the W9_VERSION to target version number at `.env` and test it
+
+**Research and development steps your need to do**  
+
+- [ ] Check the official installation docs of this application
+- [ ] Add a comment with docker logs
+- [ ] If need to update documentation, add issue at [Websoft9 docs](https://github.com/websoft9/doc.websoft9.com)
+
+**How to commit your change to [docker-library](https://github.com/Websoft9/docker-library)?**   
+
    ```
    docker exec -it websoft9-apphub bash
-   apphub subimt --appid wordpress_77juue--appname wordpress --github_email  --github_user
-   ```  
-- [ ] release and final test
+   apphub subimt --appid --github_token
+   ```
+
+**Testing steps**   
+
+- [ ] Upload your sreenshoot to PR
+- [ ] Automation testing when submit PR to dev branch
+- [ ] System testing for dev branch
