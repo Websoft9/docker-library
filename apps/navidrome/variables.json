@@ -1,6 +1,6 @@
 {
-  "name": "Navidrome",
-  "trademark": "navidrome",
+  "name": "navidrome",
+  "trademark": "Navidrome",
   "release": true,
   "fork_url": "https://github.com/navidrome/navidrome/",
   "version_from": "https://hub.docker.com/r/deluan/navidrome/tags",
