@@ -23,4 +23,4 @@ If you want use AITable with **Websoft9 Business Support** free, you can [subscr
 
 ## Documentation
 
-[AITable Administrator Guide](https://support.websoft9.com/docs/aitable ) powered by Websoft9
+[AITable Administrator Guide](https://support.websoft9.com/docs/aitable) powered by Websoft9

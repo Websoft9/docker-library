@@ -1,6 +1,6 @@
-# navidrome on Docker  
+# Navidrome on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for navidrome:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Navidrome:
 
 
  - community:  latest
@@ -17,10 +17,10 @@ The following are the minimal [recommended requirements](https://www.navidrome.o
 
 ## Install
 
-You can install this navidrome by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this Navidrome by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use navidrome with **Websoft9 Business Support** free, you can [subscribe navidrome](https://www.websoft9.com/apps) on Cloud platform
+If you want use Navidrome with **Websoft9 Business Support** free, you can [subscribe Navidrome](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[navidrome Administrator Guide](https://support.websoft9.com/docs/Navidrome) powered by Websoft9
+[Navidrome Administrator Guide](https://support.websoft9.com/docs/navidrome) powered by Websoft9
