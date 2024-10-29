@@ -22,7 +22,7 @@ jobs:
         pip install requests packaging        
 
     - name: Run version update script
-      run: python build/get_apps_latest_version.py
+      run: python build/get_apps_latest_version.py --max-pages 1 --page-size 100
 
     - name: Upload output as artifact
       uses: actions/upload-artifact@v3
