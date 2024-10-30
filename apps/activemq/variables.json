@@ -8,7 +8,7 @@
     {
       "dist": "community",
       "version": [
-        "5.18.2-jre17-rockylinux8"
+        "5.18-jre17-rockylinux8"
       ]
     },
     {
