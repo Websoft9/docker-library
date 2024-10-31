@@ -20,7 +20,7 @@ Change the W9_VERSION to target version number at `.env` and test it
 
    ```
    docker exec -it websoft9-apphub bash
-   apphub subimt --appid --github_token
+   apphub commit --appid --github_token
    ```
 
 **Testing steps**   
