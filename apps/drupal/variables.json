@@ -8,7 +8,7 @@
     {
       "dist": "community",
       "version": [
-        "11.0.1-apache",
+        "11.0.5-apache",
         "10.3.2-apache"
       ]
     }
