@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Gitlab:
 
 
- - community:  17.3.0-ce.0, latest
+ - community:  17.5.1-ce.0, latest
 
 
 ## System Requirements
@@ -12,7 +12,7 @@ The following are the minimal [recommended requirements](https://github.com/gitl
 
 * **RAM**: 8 GB or more
 * **CPU**: 2 cores or higher
-* **Disk**: at least 1 GB of free space
+* **Disk**: at least 2 GB of free space
 * **bandwidth**: more fluent experience over 100M  
 
 ## Install

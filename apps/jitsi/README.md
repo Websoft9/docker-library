@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Jitsi:
 
 
- - community:  stable-9646
+ - community:  stable-9779
 
 
 ## System Requirements
@@ -12,7 +12,7 @@ The following are the minimal [recommended requirements](https://jitsi.github.io
 
 * **RAM**: 4 GB or more
 * **CPU**: 2 cores or higher
-* **Disk**: at least 20 GB of free space
+* **Disk**: at least 10 GB of free space
 * **bandwidth**: more fluent experience over 100M  
 
 ## Install

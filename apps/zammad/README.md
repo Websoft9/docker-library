@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Zammad:
 
 
- - community:  6.2, latest
+ - community:  6.3, latest
 
 
 ## System Requirements
@@ -12,7 +12,7 @@ The following are the minimal [recommended requirements](https://github.com/zamm
 
 * **RAM**: 2 GB or more
 * **CPU**: 1 cores or higher
-* **Disk**: at least 1 GB of free space
+* **Disk**: at least 2 GB of free space
 * **bandwidth**: more fluent experience over 100M  
 
 ## Install

@@ -3,16 +3,16 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Discourse:
 
 
- - community:  3.3.1, latest
+ - community:  3.3.2, latest
 
 
 ## System Requirements
 
 The following are the minimal [recommended requirements](https://github.com/discourse/discourse/blob/main/docs/INSTALL.md#hardware-requirements):
 
-* **RAM**: 1 GB or more
+* **RAM**: 2 GB or more
 * **CPU**: 1 cores or higher
-* **Disk**: at least 1 GB of free space
+* **Disk**: at least 2 GB of free space
 * **bandwidth**: more fluent experience over 100M  
 
 ## Install
