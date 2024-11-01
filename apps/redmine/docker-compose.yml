@@ -11,7 +11,6 @@ services:
     ports:
      - $W9_HTTP_PORT_SET:3000
     volumes: 
-     - redmine:/usr/src/redmine
      - redmine_files:/usr/src/redmine/files
     env_file: .env
     environment:
@@ -19,6 +18,7 @@ services:
       REDMINE_DB_USERNAME: $W9_ID
       REDMINE_DB_DATABASE: $W9_ID
       REDMINE_DB_PASSWORD: $W9_POWER_PASSWORD
+      REDMINE_PLUGINS_MIGRATE: 1
       REDMINE_SECRET_KEY_BASE: supersecretkey
     depends_on:
       - mysql
@@ -38,7 +38,6 @@ services:
       
 volumes:
   mysql:
-  redmine:
   redmine_files:
   
 networks:
