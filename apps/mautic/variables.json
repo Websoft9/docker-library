@@ -7,7 +7,7 @@
   "edition": [
     {
       "dist": "community",
-      "version": ["5-apache"]
+      "version": ["5.1.1-apache"]
     }
   ],
   "requirements": {
