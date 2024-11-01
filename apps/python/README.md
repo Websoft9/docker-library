@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Python:
 
 
- - community:  3.12, 3.11, 3.10, 3.9, 3.8, 3.7, 3.6
+ - community:  3.13, 3.12, 3.11, 3.10, 3.9, 3.8, 3.7, 3.6
 
 
 ## System Requirements
