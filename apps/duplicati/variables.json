@@ -13,7 +13,7 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
+    "disk": "2",
     "url": "https://duplicati.readthedocs.io/en/latest/02-installation/#prerequisites"
   }
 }

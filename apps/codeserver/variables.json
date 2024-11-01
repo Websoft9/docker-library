@@ -16,7 +16,7 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
+    "disk": "2",
     "url": "https://github.com/cdr/code-server/blob/main/docs/guide.md#requirements"
   }
 }

@@ -13,7 +13,7 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
+    "disk": "2",
     "url": "https://docs.flowiseai.com/getting-started"
   }
 }

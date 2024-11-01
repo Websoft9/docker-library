@@ -15,8 +15,8 @@
   ],
   "requirements": {
     "cpu": "1",
-    "memory": "1",
-    "disk": "1",
+    "memory": "2",
+    "disk": "2",
     "url": "https://github.com/discourse/discourse/blob/main/docs/INSTALL.md#hardware-requirements"
   }
 }
