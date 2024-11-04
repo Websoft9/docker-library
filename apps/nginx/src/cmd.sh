@@ -1,4 +1,3 @@
-
 ### Default Demo which you can delete it
 
 echo "Add your CI code here, below is example"
