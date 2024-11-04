@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Metabase:
 
 
- - community:  v0.49.3, latest
+ - community:  v0.51.1, latest
 
 
 ## System Requirements
