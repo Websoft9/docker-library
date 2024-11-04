@@ -3,8 +3,8 @@
 
 services:
   php:
-    container_name: ${W9_ID}${DEPLOY_TIME}
-    image: $W9_REPO:$W9_VERSION
+    container_name: ${W9_ID}
+    image: $W9_REPO:$W9_VERSION${DEPLOY_TIME}
     build:
       context: .
       dockerfile: Dockerfile
