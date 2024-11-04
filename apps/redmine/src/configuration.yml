@@ -1,0 +1,12 @@
+# Below is only a sample
+production:
+delivery_method: :smtp
+smtp_settings:
+   address: smtp.websoft9.com
+   port: 465
+   ssl: true
+   enable_starttls_auto: true
+   domain: websoft9.com
+   authentication: :login
+   user_name: help@websoft9.com
+   password: mywebsoft9

@@ -12,6 +12,7 @@ services:
      - $W9_HTTP_PORT_SET:3000
     volumes: 
      - redmine_files:/usr/src/redmine/files
+     - ./src/configuration.yml:/usr/src/redmine/config/configuration.yml
     env_file: .env
     environment:
       REDMINE_DB_MYSQL: $W9_ID-mysql
