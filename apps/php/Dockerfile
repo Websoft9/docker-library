@@ -14,12 +14,11 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 
 # replace apt repository for php7.0/5.6 image
-RUN sed -i 's|deb http://deb.debian.org/debian stretch|deb http://archive.debian.org/debian stretch|g' /etc/apt/sources.list && \
-    sed -i '/stretch-updates/d' /etc/apt/sources.list && \
-    sed -i 's|deb http://security.debian.org/debian-security stretch/updates|deb http://archive.debian.org/debian-security stretch/updates|g' /etc/apt/sources.list && \
-    apt update
+RUN sed -i  's|deb http://deb.debian.org/debian stretch|deb http://archive.debian.org/debian stretch|g' /etc/apt/sources.list || true && \
+    sed -i  '/stretch-updates/d' /etc/apt/sources.list || true && \
+    sed -i  's|deb http://security.debian.org/debian-security stretch/updates|deb http://archive.debian.org/debian-security stretch/updates|g' /etc/apt/sources.list || true
 
-RUN apt install -y crudini
+RUN apt update && apt install -y crudini
 
 
 COPY src/extensions.ini /usr/local/bin/config.ini
