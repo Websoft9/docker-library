@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Node-RED:
 
 
- - community:  3.1, latest
+ - community:  4.0, latest
 
 
 ## System Requirements

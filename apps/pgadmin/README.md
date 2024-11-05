@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for pgAdmin:
 
 
- - community:  8.1, latest
+ - community:  8.12, latest
 
 
 ## System Requirements
