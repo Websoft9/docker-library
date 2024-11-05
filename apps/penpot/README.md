@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Penpot:
 
 
- - community:  1.19.3, latest
+ - community:  2.2.1, latest
 
 
 ## System Requirements

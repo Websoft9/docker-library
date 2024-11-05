@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for RocketMQ:
 
 
- - community:  5.2.0, latest
+ - community:  5.3.1, latest
 
 
 ## System Requirements
