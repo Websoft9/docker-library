@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for ONLYOFFICE Workspace:
 
 
- - community:  12.6.0.1900, latest
+ - community:  12.7.0.1936, latest
 
 
 ## System Requirements
