@@ -8,6 +8,7 @@
     {
       "dist": "community",
       "version": [
+        "ubuntu-7.0-latest",
         "latest"
       ]
     }
