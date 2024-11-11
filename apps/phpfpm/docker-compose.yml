@@ -14,7 +14,7 @@ services:
     command: ["sh", "-c", "chmod +x /usr/local/bin/cmd.sh && /usr/local/bin/cmd.sh && service nginx start && php-fpm"]
     env_file: .env
     ports:
-     - $W9_HTTP_PORT_SET:9000
+     - $W9_HTTP_PORT_SET:80
     volumes: 
       - source:/var/www/html
       - ./src/cmd.sh:/usr/local/bin/cmd.sh  #for CI
