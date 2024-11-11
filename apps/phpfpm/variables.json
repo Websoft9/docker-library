@@ -1,7 +1,7 @@
 {
-  "name": "php",
-  "trademark": "PHP",
-  "release": false,
+  "name": "phpfpm",
+  "trademark": "PHPFPM",
+  "release": true,
   "fork_url": "https://github.com/Websoft9/docker-library/tree/main/apps/php",
   "version_from": "https://hub.docker.com/_/php/tags",
   "edition": [
