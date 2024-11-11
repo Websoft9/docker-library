@@ -1,6 +1,6 @@
 # image: https://hub.docker.com/_/redmine
 # docs: https://github.com/docker-library/redmine
-# plugins is not a volume of image, but you can mount it
+# /usr/src/redmine/plugins is not a volume of image, but you can mount it, and when update Redmine it need backup and delete first
 
 version: '3.8'
 services:
@@ -14,7 +14,7 @@ services:
     volumes: 
      - redmine_files:/usr/src/redmine/files
      - ./src/configuration.yml:/usr/src/redmine/config/configuration.yml
-     #- redmine_files:/usr/src/redmine/files/plugins
+     #- redmine_files:/usr/src/redmine/plugins
     env_file: .env
     environment:
       REDMINE_DB_MYSQL: $W9_ID-mysql
