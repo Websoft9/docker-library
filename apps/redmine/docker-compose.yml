@@ -1,5 +1,6 @@
 # image: https://hub.docker.com/_/redmine
 # docs: https://github.com/docker-library/redmine
+# plugins is not a volume of image, but you can mount it
 
 version: '3.8'
 services:
@@ -13,6 +14,7 @@ services:
     volumes: 
      - redmine_files:/usr/src/redmine/files
      - ./src/configuration.yml:/usr/src/redmine/config/configuration.yml
+     #- redmine_files:/usr/src/redmine/files/plugins
     env_file: .env
     environment:
       REDMINE_DB_MYSQL: $W9_ID-mysql
@@ -40,6 +42,7 @@ services:
 volumes:
   mysql:
   redmine_files:
+  redmine_plugins:
   
 networks:
   default:
