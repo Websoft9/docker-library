@@ -14,7 +14,7 @@ services:
     volumes: 
      - redmine_files:/usr/src/redmine/files
      - ./src/configuration.yml:/usr/src/redmine/config/configuration.yml
-     #- redmine_files:/usr/src/redmine/plugins
+     #- redmine_plugins:/usr/src/redmine/plugins
     env_file: .env
     environment:
       REDMINE_DB_MYSQL: $W9_ID-mysql
