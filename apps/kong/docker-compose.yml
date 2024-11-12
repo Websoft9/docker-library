@@ -26,6 +26,9 @@ services:
   kong:
     image: $W9_REPO:${W9_VERSION}
     container_name: ${W9_ID}
+    depends_on:
+      kong-migrations-up: 
+        condition: service_completed_successfully
     user: "${KONG_USER:-kong}"
     env_file: .env
     ports:
