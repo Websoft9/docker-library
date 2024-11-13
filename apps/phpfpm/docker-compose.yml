@@ -17,11 +17,13 @@ services:
      - $W9_HTTP_PORT_SET:80
     volumes: 
       - source:/var/www/html
+      - nginx_conf:/etc/nginx/conf.d
       - ./src/cmd.sh:/usr/local/bin/cmd.sh  #for CI
       - ./src/php_extra.ini:/usr/local/etc/php/conf.d/php_extra.ini #for custom php.ini
 
 volumes:
   source:
+  nginx_conf:
 
 networks:
   default:
