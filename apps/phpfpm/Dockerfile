@@ -36,6 +36,8 @@ RUN /usr/local/bin/php_install.sh
 
 RUN apt clean
 
+VOLUME /etc/nginx/conf.d
+
 EXPOSE 80 9000
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
