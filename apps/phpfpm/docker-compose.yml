@@ -11,7 +11,7 @@ services:
       args:
         PHP_VERSION: $W9_VERSION
     restart: unless-stopped
-    command: ["sh", "-c", "chmod +x /usr/local/bin/cmd.sh && /usr/local/bin/cmd.sh && service nginx start && php-fpm"]
+    #command: ["sh", "-c", "chmod +x /usr/local/bin/cmd.sh && /usr/local/bin/cmd.sh && service nginx start && php-fpm"]
     env_file: .env
     ports:
      - $W9_HTTP_PORT_SET:80
