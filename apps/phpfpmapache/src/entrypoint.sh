@@ -8,6 +8,6 @@ else
 fi
 
 supervisord
-supervisorctl start nginx
+supervisorctl start apache
 supervisorctl start phpfpm
 tail -n 1000 -f /var/log/supervisord.log
