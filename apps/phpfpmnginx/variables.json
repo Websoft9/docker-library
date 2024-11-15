@@ -1,0 +1,19 @@
+{
+  "name": "phpfpmnginx",
+  "trademark": "PHP-FPM-NGINX",
+  "release": true,
+  "fork_url": "https://github.com/docker-library/php",
+  "version_from": "https://hub.docker.com/_/php/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["8.3-fpm","8.2-fpm","8.1-fpm","8.0-fpm","7.4-fpm","7.3-fpm","7.2-fpm","7.1-fpm","7.0-fpm","5.6-fpm"]
+    }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "2",
+    "url": "https://hub.docker.com/_/php"
+  }
+}

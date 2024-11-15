@@ -1,6 +1,6 @@
 {
-  "name": "phpfpm",
-  "trademark": "PHP-FPM",
+  "name": "phpfpmnginx",
+  "trademark": "PHP-FPM-NGINX",
   "release": true,
   "fork_url": "https://github.com/docker-library/php",
   "version_from": "https://hub.docker.com/_/php/tags",
