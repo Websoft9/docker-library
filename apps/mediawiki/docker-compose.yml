@@ -24,8 +24,8 @@ services:
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: $W9_ID
-      MYSQL_USER: $W9_LOGIN_USER
+      MYSQL_DATABASE: mediawiki
+      MYSQL_USER: mediawiki
       MYSQL_PASSWORD: $W9_POWER_PASSWORD
       MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
 
