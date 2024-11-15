@@ -7,11 +7,11 @@ services:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     ports:
-      - ${W9_HTTP_PORT_SET}:8080
+      - ${W9_HTTP_PORT_SET}:80
     env_file:
       - .env
     volumes:
-      - mediawiki:/bitnami/mediawiki
+      - mediawiki:/var/www/html/mediawiki
     depends_on:
       - mysql
     restart: unless-stopped
