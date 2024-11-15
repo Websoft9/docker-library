@@ -18,7 +18,6 @@ RUN sed -i  's|deb http://deb.debian.org/debian stretch|deb http://archive.debia
     sed -i  's|deb http://security.debian.org/debian-security stretch/updates|deb http://archive.debian.org/debian-security stretch/updates|g' /etc/apt/sources.list || true
 
 RUN apt update && apt install -y crudini apache2 supervisor
-RUN rm -f /var/www/html/index.nginx-debian.html
 
 COPY src/extensions.ini /usr/local/bin/config.ini
 COPY src/apt_install.sh /usr/local/bin/apt_install.sh
