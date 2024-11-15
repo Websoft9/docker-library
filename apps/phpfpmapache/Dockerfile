@@ -17,7 +17,7 @@ RUN sed -i  's|deb http://deb.debian.org/debian stretch|deb http://archive.debia
     sed -i  '/stretch-updates/d' /etc/apt/sources.list || true && \
     sed -i  's|deb http://security.debian.org/debian-security stretch/updates|deb http://archive.debian.org/debian-security stretch/updates|g' /etc/apt/sources.list || true
 
-RUN apt update && apt install -y crudini nginx supervisor
+RUN apt update && apt install -y crudini apache2 libapache2-mod-php supervisor
 RUN rm -f /var/www/html/index.nginx-debian.html
 
 COPY src/extensions.ini /usr/local/bin/config.ini
@@ -25,8 +25,8 @@ COPY src/apt_install.sh /usr/local/bin/apt_install.sh
 COPY src/php_install.sh /usr/local/bin/php_install.sh
 COPY src/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY src/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY src/nginx.conf /etc/nginx/sites-available/default
-
+COPY src/000-default.conf /etc/apache2/sites-available/000-default.conf
+RUN a2enmod rewrite
 RUN chmod +x /usr/local/bin/apt_install.sh
 RUN chmod +x /usr/local/bin/php_install.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
@@ -35,8 +35,6 @@ RUN /usr/local/bin/apt_install.sh
 RUN /usr/local/bin/php_install.sh
 
 RUN apt clean
-
-VOLUME /etc/nginx/conf.d
 
 EXPOSE 80 9000
 
