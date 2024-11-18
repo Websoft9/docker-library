@@ -4,7 +4,7 @@
 INI_FILE="/usr/local/bin/config.ini"
 
 # Install PHP extension by install-php-extensions
-## Install install-php-extensions cli
+## Install install-php-extensions Cli
 curl -o /usr/local/bin/install-php-extensions -L https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions
 chmod 0755 /usr/local/bin/install-php-extensions
 phpExtensions=$(crudini --get "$INI_FILE" php-extension install-php-extensions)
