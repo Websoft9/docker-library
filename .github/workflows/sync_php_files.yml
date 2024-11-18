@@ -1,40 +1,44 @@
 name: Sync PHP Files
-
 on:
   push:
     branches:
       - dev
     paths:
-      - "apps/php/src/apt_install.sh"
-      - "apps/php/src/cmd.sh"
-      - "apps/php/src/extensions.ini"
-      - "apps/php/src/php_extra.ini"
-      - "apps/php/src/php_install.sh"
-
+      - 'apps/php/src/apt_install.sh'
+      - 'apps/php/src/cmd.sh'
+      - 'apps/php/src/extensions.ini'
+      - 'apps/php/src/php_extra.ini'
+      - 'apps/php/src/php_install.sh'
 jobs:
   sync-php-files:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout source code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
       with:
         ref: dev
 
-    - name: Sync changed files
+    - name: Sync files to apps/phpfpmapache/src
       run: |
-        src_dir="apps/php/src"
-        dest_dirs=("apps/phpfpmapache/src" "apps/phpfpmnginx/src")
+        root_dir=$(pwd)
+        source_files_dir="$root_dir/apps/php/src"
+        destination_dir="$root_dir/apps/phpfpmapache/src"
+        file_list="apt_install.sh,cmd.sh,extensions.ini,php_extra.ini,php_install.sh"
+        for file in $(echo $file_list | tr ',' '\n'); do
+          cp -f "$source_files_dir/$file" "$destination_dir"
+        done
 
-        for dest_dir in "${dest_dirs[@]}"; do
-          mkdir -p "$dest_dir"
-          cp "$src_dir/apt_install.sh" "$dest_dir/apt_install.sh"
-          cp "$src_dir/cmd.sh" "$dest_dir/cmd.sh"
-          cp "$src_dir/extensions.ini" "$dest_dir/extensions.ini"
-          cp "$src_dir/php_extra.ini" "$dest_dir/php_extra.ini"
-          cp "$src_dir/php_install.sh" "$dest_dir/php_install.sh"
+    - name: Sync files to apps/phpfpmnginx/src
+      run: |
+        root_dir=$(pwd)
+        source_files_dir="$root_dir/apps/php/src"
+        destination_dir="$root_dir/apps/phpfpmnginx/src"
+        file_list="apt_install.sh,cmd.sh,extensions.ini,php_extra.ini,php_install.sh"
+        for file in $(echo $file_list | tr ',' '\n'); do
+          cp -f "$source_files_dir/$file" "$destination_dir"
         done
 
     - name: Commit and push changes
       uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Build Plugin For Release
+      with:
+        commit_message: Sync PHP Files
