@@ -1,0 +1,39 @@
+name: Sync PHP Files
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - "apps/php/src/apt_install.sh"
+      - "apps/php/src/cmd.sh"
+      - "apps/php/src/extensions.ini"
+      - "apps/php/src/php_extra.ini"
+      - "apps/php/src/php_install.sh"
+
+jobs:
+  sync-files:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Sync changed files
+        run: |
+          src_dir="apps/php/src"
+          dest_dirs=("apps/phpfpmapache/src" "apps/phpfpmnginx/src")
+
+          for dest_dir in "${dest_dirs[@]}"; do
+            mkdir -p "$dest_dir"
+            cp "$src_dir/apt_install.sh" "$dest_dir/apt_install.sh"
+            cp "$src_dir/cmd.sh" "$dest_dir/cmd.sh"
+            cp "$src_dir/extensions.ini" "$dest_dir/extensions.ini"
+            cp "$src_dir/php_extra.ini" "$dest_dir/php_extra.ini"
+            cp "$src_dir/php_install.sh" "$dest_dir/php_install.sh"
+          done
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+          with:
+            commit_message: Build Plugin For Release
