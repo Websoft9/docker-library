@@ -22,7 +22,7 @@ services:
       REDMINE_DB_DATABASE: $W9_ID
       REDMINE_DB_PASSWORD: $W9_POWER_PASSWORD
       REDMINE_PLUGINS_MIGRATE: 1
-      REDMINE_SECRET_KEY_BASE: supersecretkey
+      SECRET_KEY_BASE: supersecretkey
     depends_on:
       - mysql
 
