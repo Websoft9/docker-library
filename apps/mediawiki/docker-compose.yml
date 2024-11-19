@@ -1,4 +1,4 @@
-# image: https://hub.docker.com/r/bitnami/mediawiki
+# image: https://hub.docker.com/_/mediawiki
 
 version: '3.8'
 
@@ -11,7 +11,8 @@ services:
     env_file:
       - .env
     volumes:
-      - mediawiki:/var/www/html/mediawiki
+      - images:/var/www/html/images
+      # - ./src/LocalSettings.php:/var/www/html/LocalSettings.php
     depends_on:
       - mysql
     restart: unless-stopped
@@ -35,5 +36,5 @@ networks:
     external: true
 
 volumes:
-  mediawiki:
+  images:
   mysql:
