@@ -16,7 +16,7 @@
   "requirements": {
     "cpu": "2",
     "memory": "8",
-    "disk": "1",
+    "disk": "2",
     "url": "https://www.zabbix.com/documentation/current/en/manual/installation/requirements"
   }
 }
