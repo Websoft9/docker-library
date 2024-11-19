@@ -12,7 +12,7 @@ The following are the minimal [recommended requirements](https://www.zabbix.com/
 
 * **RAM**: 8 GB or more
 * **CPU**: 2 cores or higher
-* **Disk**: at least 1 GB of free space
+* **Disk**: at least 2 GB of free space
 * **bandwidth**: more fluent experience over 100M  
 
 ## Install
