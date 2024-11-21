@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Kong Gateway (OSS):
 
 
- - community:  3.5, latest
+ - community:  3.8, latest
 
 
 ## System Requirements
