@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Jenkins:
 
 
- - community:  2.479, latest
+ - community:  2.486, latest
 
 
 ## System Requirements

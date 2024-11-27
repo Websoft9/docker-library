@@ -3,9 +3,9 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for ActiveMQ:
 
 
- - community:  5.18-jre17-rockylinux8
+ - community:  5.18.6-jre17-rockylinux8
 
- - classic:  5.18.2-jre17-rockylinux8
+ - classic:  5.18.6-jre17-rockylinux8
 
  - artemis:  2.21.0
 

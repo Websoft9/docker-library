@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Zammad:
 
 
- - community:  6.3, latest
+ - community:  6.4, latest
 
 
 ## System Requirements
