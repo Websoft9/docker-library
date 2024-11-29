@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Mattermost:
 
 
- - community:  10.1
+ - community:  10.2
 
 
 ## System Requirements

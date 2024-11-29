@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for CodeServer:
 
 
- - community:  4.93.1, latest
+ - community:  4.95.3, latest
 
 
 ## System Requirements
