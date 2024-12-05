@@ -3,12 +3,12 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Graylog:
 
 
- - community:  5.1
+ - community:  6.1
 
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://docs.graylog.org/en/5.1/pages/installation.html#system-requirements):
+The following are the minimal [recommended requirements](https://go2docs.graylog.org/current/downloading_and_installing_graylog/docker_installation.htm?tocpath=Install%20Graylog%7C_____2#Prerequisites):
 
 * **RAM**: 4 GB or more
 * **CPU**: 2 cores or higher
