@@ -3,6 +3,22 @@
 Graylog数据节点是Graylog架构的一个组件，负责管理OpenSearch。此功能允许Graylog管理您的搜索后端，这样您就不必单独安装和管理OpenSearch。
 Data Node通过实现证书、管理集群成员资格和促进添加新节点来增强Graylog中数据层的安全性。此外，它还确保安装了正确版本的OpenSearch及其必要的扩展，以使Graylog能够正常运行。
 
+## 安装错误
+```
+org.graylog2.bootstrap.preflight.PreflightCheckException: /proc/sys/vm/max_map_count value should be at least 262144 but is 65530 (set via "vm.max_map_count" sysctl)
+```
+原因：Graylog Data Node 在启动时进行了预检查，发现系统的 vm.max_map_count 值低于所需的最小值 262144，导致启动失败。 
+
+解决方法： 
+
+1、打开 /etc/sysctl.conf 文件
+
+2、加入行：vm.max_map_count=262144
+
+3、应用：sudo sysctl -p
+
+
+
 ## 初始化
 Graylog安装完成以后需要进行初始化：
 
