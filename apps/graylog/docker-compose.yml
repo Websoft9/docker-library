@@ -1,65 +1,78 @@
-# this docker-compose make from https://go2docs.graylog.org/5-2/downloading_and_installing_graylog/docker_installation.htm
-# Graylog: https://hub.docker.com/r/graylog/graylog/
+# docker-compose: https://github.com/Graylog2/docker-compose/blob/main/open-core/docker-compose.yml
+# image: https://hub.docker.com/r/graylog/graylog/
 
 version: '3.8'
 services:
+  mongodb:
+    image: mongo:${W9_MONGO_VERSION}
+    container_name: ${W9_ID}-mongodb
+    restart: "on-failure"
+    volumes:
+      - mongodb_data:/data/db
+
+  datanode:
+    image: graylog/graylog-datanode:${W9_DATANODE_VERSION}
+    container_name: ${W9_ID}-datanode
+    environment:
+      GRAYLOG_DATANODE_NODE_ID_FILE: "/var/lib/graylog-datanode/node-id"
+      GRAYLOG_DATANODE_PASSWORD_SECRET: ${GRAYLOG_PASSWORD_SECRET}
+      GRAYLOG_DATANODE_ROOT_PASSWORD_SHA2: ${GRAYLOG_ROOT_PASSWORD_SHA2}
+      GRAYLOG_DATANODE_MONGODB_URI: ${GRAYLOG_MONGODB_URI}
+    ulimits:
+      memlock:
+        hard: -1
+        soft: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    # ports:
+    #   - "8999:8999/tcp" # DataNode API
+    #   - "9200:9200/tcp"
+    #   - "9300:9300/tcp"
+    volumes:
+      - "graylog-datanode:/var/lib/graylog-datanode"
+    restart: "on-failure"
+
   graylog:
     image: $W9_REPO:${W9_VERSION}
     container_name: ${W9_ID}
     env_file: .env
-    entrypoint: /usr/bin/tini -- wait-for-it ${W9_ID}-elasticsearch:9200 --  /docker-entrypoint.sh
+    entrypoint: "/usr/bin/tini --  /docker-entrypoint.sh"
+    environment:
+      GRAYLOG_NODE_ID_FILE: "/usr/share/graylog/data/data/node-id"
+      GRAYLOG_PASSWORD_SECRET: ${GRAYLOG_PASSWORD_SECRET}
+      GRAYLOG_ROOT_PASSWORD_SHA2: ${GRAYLOG_ROOT_PASSWORD_SHA2}
+      GRAYLOG_HTTP_BIND_ADDRESS: "0.0.0.0:9000"
+      GRAYLOG_HTTP_EXTERNAL_URI: "http://localhost:9000/"
+      GRAYLOG_MONGODB_URI: ${GRAYLOG_MONGODB_URI}
     restart: unless-stopped
     depends_on:
-      - mongo
-      - elasticsearch
+      mongodb:
+        condition: "service_started"
     ports:
-      # Graylog web interface and REST API
-      - ${W9_HTTP_PORT_SET}:9000
-      # Syslog TCP
-      - ${W9_SYSLOG_TCP_PORT_SET}:1514
-      # Syslog UDP
-      - ${W9_SYSLOG_UDP_PORT_SET}:1514/udp
-      # GELF TCP
-      - ${W9_GELF_TCP_PORT_SET}:12201
-      # GELF UDP
-      - ${W9_GELF_UDP_PORT_SET}:12201/udp
-    volumes: 
+      - "${W9_BEATS_TCP_PORT_SET}:5044/tcp" # Beats
+      - "${W9_SYSLOG_TCP_PORT_SET}:5140/udp" # Syslog
+      - "${W9_SYSLOG_TCP_PORT_SET}:5140/tcp" # Syslog
+      - "${W9_RAW_TCP_PORT_SET}:5555/tcp" # RAW TCP
+      - "${W9_RAW_TCP_PORT_SET}:5555/udp" # RAW UDP
+      - "${W9_HTTP_PORT_SET}:9000/tcp" # Server API
+      - "${W9_GELF_TCP_PORT_SET}:12201/tcp" # GELF TCP
+      - "${W9_GELF_TCP_PORT_SET}:12201/udp" # GELF UDP
+      #- "10000:10000/tcp" # Custom TCP port
+      #- "10000:10000/udp" # Custom UDP port
+      - "${W9_FORWARDER_DATA_TCP_PORT_SET}:13301/tcp" # Forwarder data
+      - "${W9_FORWARDER_CONFIG_TCP_PORT_SET}:13302/tcp" # Forwarder config
+    volumes:
       - graylog_data:/usr/share/graylog/data/
       - graylog_plugin:/usr/share/graylog/plugin
 
-  mongo:
-    image: mongo:$W9_MONGO_VERSION
-    container_name: ${W9_ID}-mongodb
-    restart: unless-stopped
-    volumes: 
-      - mongo:/data/db
-
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:$W9_ES_VERSION
-    container_name: ${W9_ID}-elasticsearch
-    environment:
-      - http.host=0.0.0.0
-      - transport.host=localhost
-      - network.host=0.0.0.0
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    deploy:
-      resources:
-        limits:
-          memory: 1g
-    restart: unless-stopped
-    volumes: 
-      - elasticsearch:/usr/share/elasticsearch/data
-
-volumes: 
+volumes:
   graylog_data:
   graylog_plugin:
-  elasticsearch:
-  mongo:
-  
+  graylog-datanode:
+  mongodb_data:
+
+
 networks:
   default:
     name: ${W9_NETWORK}

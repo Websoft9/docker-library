@@ -7,13 +7,15 @@
   "edition": [
     {
       "dist": "community",
-      "version": ["5.1"]
+      "version": [
+        "6.1"
+      ]
     }
   ],
   "requirements": {
     "cpu": "2",
     "memory": "4",
     "disk": "1",
-    "url": "https://docs.graylog.org/en/5.1/pages/installation.html#system-requirements"
+    "url": "https://go2docs.graylog.org/current/downloading_and_installing_graylog/docker_installation.htm?tocpath=Install%20Graylog%7C_____2#Prerequisites"
   }
 }

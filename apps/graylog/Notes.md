@@ -1,31 +1,27 @@
 # Graylog
+## 数据节点(DataNode)
+Graylog数据节点是Graylog架构的一个组件，负责管理OpenSearch。此功能允许Graylog管理您的搜索后端，这样您就不必单独安装和管理OpenSearch。
+Data Node通过实现证书、管理集群成员资格和促进添加新节点来增强Graylog中数据层的安全性。此外，它还确保安装了正确版本的OpenSearch及其必要的扩展，以使Graylog能够正常运行。
 
-从5.2开始，引入了一个叫数据节点的组件，并需要在登录前先完成初始化，需进一步研究。
+## 初始化
+Graylog安装完成以后需要进行初始化：
 
+1、到主容器查看用户名和密码，内容大致如下：
 
-> 目前只能使用5.1  
+========================================================================================================
 
-## URL
+It seems you are starting Graylog for the first time. To set up a fresh install, a setup interface has
 
-Graylog 是前后端分离的系统，我们访问的 Web 界面是通过 API 与后端交互。
+been started. You must log in to it to perform the initial configuration and continue.
 
-Graylog 有如下几个 URL/URI，它们都是 HTTP API 的设置
+Initial configuration is accessible at 0.0.0.0:9000, with username 'admin' and password 'dGFfTTxFiN'.
 
-* http_bind_address 是 Graylog HTTP API 监听的网址，建议设置为：0.0.0.0:9000
-* http_publish_uri 是集群内部使用的 URL，默认为：http://$http_bind_address/
-* http_external_uri 是外部访问的URL，默认为为： $http_publish_uri
+Try clicking on http://admin:dGFfTTxFiN@0.0.0.0:9000
 
-以上理解还无法形成通俗易懂的逻辑关系，有待进一步学习
+======================================================================================================== 
 
-## FAQ
+2、通过http://Ip:Prot 访问Graylog，输入上一步骤获取的用户和密码后进入初始化页面，安装提示进行初始化即可
 
-#### 如何访问 API？
+3、在未完成初始化前，主容器的状态标识为：unhealthy，初始化完成后自动变成：health
 
-https://Internet IP:9000/api/api-browser/global/index.html
-
-#### 管理员密码怎么设置？
-运行 echo -n 'admin' | sha256sum | awk '{ print $1 }' 命令，得到密文后传递给容器
-
-#### 如何设置反向代理？
-
-https://go2docs.graylog.org/5-2/setting_up_graylog/web_interface.htm
+4、初始化完成以后，不要进行“重建”，这样会导致数据节点和Graylog之间的连接验证证书破坏，导致不能连接
