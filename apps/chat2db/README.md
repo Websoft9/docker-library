@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for chat2DB:
 
 
- - community:  latest, 3.4.0
+ - community:  latest, 3.4.1
 
 
 ## System Requirements
