@@ -374,5 +374,25 @@
     "W9_CONTAINER_PT_INIT_SET": [
         "CONTAINER PORT NEED EXPOSED",
         "容器需暴露的端口"
+    ],
+    "W9_BEATS_TCP_PORT_SET": [
+        "",
+        ""
+    ],
+    "W9_RAW_TCP_PORT_SET": [
+        "",
+        ""
+    ],
+    "W9_RAW_UDP_PORT_SET": [
+        "",
+        ""
+    ],
+    "W9_FORWARDER_DATA_TCP_PORT_SET": [
+        "",
+        ""
+    ],
+    "W9_FORWARDER_CONFIG_TCP_PORT_SET": [
+        "",
+        ""
     ]
 }
