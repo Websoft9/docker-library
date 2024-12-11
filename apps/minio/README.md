@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Minio:
 
 
- - community:  RELEASE.2024-10-13T13-34-11Z, latest
+ - community:  RELEASE.2024-11-07T00-52-20Z, latest
 
 
 ## System Requirements
