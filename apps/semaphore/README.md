@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Ansible Semaphore:
 
 
- - community:  v2.10.35, latest
+ - community:  v2.10.43, latest
 
 
 ## System Requirements

@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Prometheus:
 
 
- - community:  v3.0.0, latest
+ - community:  v3.0.1, latest
 
 
 ## System Requirements

@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Portainer:
 
 
- - community:  2.24.0, latest
+ - community:  2.24.1, latest
 
 
 ## System Requirements
