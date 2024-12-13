@@ -17,7 +17,7 @@
 #
 
 set -eo pipefail
-
+pip install sqlalchemy-drill psycopg2-binary
 REQUIREMENTS_LOCAL="/app/docker/requirements-local.txt"
 # If Cypress run – overwrite the password for admin and export env variables
 if [ "$CYPRESS_CONFIG" == "true" ]; then
@@ -35,18 +35,11 @@ else
   echo "Skipping local overrides"
 fi
 
-#
-# playwright is an optional package - run only if it is installed
-#
-if command -v playwright > /dev/null 2>&1; then
-  playwright install-deps
-  playwright install chromium
-fi
-
 case "${1}" in
   worker)
     echo "Starting Celery worker..."
-    celery --app=superset.tasks.celery_app:app worker -O fair -l INFO
+    # setting up only 2 workers by default to contain memory usage in dev environments
+    celery --app=superset.tasks.celery_app:app worker -O fair -l INFO --concurrency=${CELERYD_CONCURRENCY:-2}
     ;;
   beat)
     echo "Starting Celery beat..."
