@@ -1,7 +1,7 @@
 {
     "name": "weaviate",
     "trademark": "Weaviate",
-    "release": true,
+    "release": false,
     "fork_url": "https://github.com/semi-technologies/weaviate",
     "version_from": "https://hub.docker.com/r/semitechnologies/weaviate",
     "edition": [
