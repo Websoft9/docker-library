@@ -18,7 +18,6 @@ jobs:
 
             - name: Process add_apps.json
               run: |
-                  mkdir -p apps
                   for row in $(jq -c '.[]' add_apps.json); do
                     name=$(echo $row | jq -r '.name')
                     if [ ! -d "apps/$name" ]; then
