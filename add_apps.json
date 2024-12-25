@@ -1,40 +1,46 @@
 [
-    {
-      "name": "mysql",
-      "trademark": "MySQL",
-      "release": false,
-      "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
-      "version_from": "",
-      "edition": [
-        {
-          "dist": "community",
-          "version": ["2.2","latest"]
-        }
-      ],
-      "requirements": {
-        "cpu": "2",
-        "memory": "4",
-        "disk": "1",
-        "url": "https://github.com/onlyoffice/docker#recommended-system-requirements"
+  {
+    "name": "aaaa111",
+    "trademark": "MySQL",
+    "release": false,
+    "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
+    "version_from": "",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "2.2",
+          "latest"
+        ]
       }
-    },
-    {
-      "name": "wordpresss",
-      "trademark": "Wordpress",
-      "release": false,
-      "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
-      "version_from": "",
-      "edition": [
-        {
-          "dist": "community",
-          "version": ["6.7","latest"]
-        }
-      ],
-      "requirements": {
-        "cpu": "2",
-        "memory": "4",
-        "disk": "1",
-        "url": "https://github.com/onlyoffice/docker#recommended-system-requirements"
-      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "1",
+      "url": "https://github.com/onlyoffice/docker#recommended-system-requirements"
     }
-    ]
+  },
+  {
+    "name": "aaaa222",
+    "trademark": "Wordpress",
+    "release": false,
+    "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
+    "version_from": "",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "6.7",
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "1",
+      "url": "https://github.com/onlyoffice/docker#recommended-system-requirements"
+    }
+  }
+]
