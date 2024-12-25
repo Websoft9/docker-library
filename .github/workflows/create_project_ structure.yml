@@ -1,0 +1,39 @@
+name: Create app project structure from template
+
+on:
+    push:
+        paths:
+            - "add_apps.json"
+
+jobs:
+    process-apps:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v2
+              with:
+                  node-version: "14"
+
+            - name: Install jq
+              run: sudo apt-get install jq
+
+            - name: Process add_apps.json
+              run: |
+                  mkdir -p apps
+                  for row in $(jq -c '.[]' add_apps.json); do
+                    name=$(echo $row | jq -r '.name')
+                    if [ ! -d "apps/$name" ]; then
+                      cp -r template "apps/$name"
+                      echo $row | jq '.' > "apps/$name/variables.json"
+                      sed -i "s/W9_ID/$name/g" "apps/$name/.env"
+                    fi
+                  done
+
+            - name: Commit and push changes
+              uses: stefanzweifel/git-auto-commit-action@v4
+              with:
+                  commit_message: Create app project structure from template
