@@ -1,7 +1,7 @@
 [
   {
     "name": "aaaa111",
-    "trademark": "MySQL",
+    "trademark": "aaaa111",
     "release": false,
     "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
     "version_from": "",
@@ -9,7 +9,7 @@
       {
         "dist": "community",
         "version": [
-          "2.2",
+          "1.0",
           "latest"
         ]
       }
@@ -23,7 +23,7 @@
   },
   {
     "name": "aaaa222",
-    "trademark": "Wordpress",
+    "trademark": "aaaa222",
     "release": false,
     "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
     "version_from": "",
@@ -31,7 +31,7 @@
       {
         "dist": "community",
         "version": [
-          "6.7",
+          "1.2",
           "latest"
         ]
       }
