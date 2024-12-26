@@ -2,6 +2,8 @@ name: Create app project structure from template
 
 on:
     push:
+        branches:
+            - dev
         paths:
             - "add_apps.json"
 
