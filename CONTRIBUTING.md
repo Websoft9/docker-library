@@ -2,9 +2,29 @@
 
 From opening a bug report to creating a pull request: every contribution is appreciated and welcome.
 
-If you're planning to implement a new feature or change the docker-library repository, please [create an issue](https://github.com/websoft9/docker-library/issues/new/choose) first. This way we can ensure that your precious work is not in vain.
+If you're planning to implement a new feature or change this repository, please [create an issue](https://github.com/websoft9/docker-library/issues/new/choose) first. This way we can ensure that your precious work is not in vain.
 
-## Process
+## Quick start for contributing new application
+
+Below is the steps for contributing new application:  
+
+1. Create issue by template **New docker compose request**
+2. Waiting for Maintainers/owner Assessment until it is completed.
+3. Install Websoft9 at your server or apply online development account from Websoft9
+4. SSH to develoment host machine and running below command
+   ```
+   docker exec -it websoft9-apphub bash /websoft9/script/update_zip.sh --channel dev --package_name "media-dev.zip" --sync_to "/websoft9/media" && docker exec -it websoft9-apphub bash /websoft9/script/update_zip.sh --channel dev --package_name "library-dev.zip" --sync_to "/websoft9/library"
+   ```
+5. Login to Websoft9 Console and install this application from **App Store**
+6. Develop and test it by **[App compose](https://support.websoft9.com/en/docs/next/app-compose/)** at Websoft9 Console
+7. Complete your issue checklist
+8. Docker exec **websoft9-apphub** container and pull request to repository
+   ```
+   # sample for your
+   docker exec -it websoft9-apphub  apphub commit --appid "wordpress" --github_token "yourgithubtoken"
+   ```
+
+## Process diagram
 
 [Bug report flow](https://www.canva.cn/design/DAFrBuGNCNs/-WGd-D0mQHBu1eZM07d8vQ/edit) as following:
 
@@ -14,22 +34,18 @@ If you're planning to implement a new feature or change the docker-library repos
 
 ![Alt text](./docs/image/feature_request_flow.png)
 
-## Development
+## Development Specification
 
 If you want to start to develop this repository, it is very useful for you to read [the develop documentation](docs/code_owner.md)
-
-## Fork
-
-Contributor only allow to fork [main branch](https://github.com/Websoft9/docker-library/tree/main) and pull request for it. Maintainers don't accept any pr to **production branch**
 
 ## Branch
 
 This repository have these branchs:
 
-- **Contributor's branch**: Develpoer can fork main branch as their delelopment branch anytime
-- **main branch**: The only branch that accepts PR from Contributors's branch
+- **dev branch**: Contributor only allow to fork [dev branch](https://github.com/Websoft9/docker-library/tree/dev) and pull request for it. 
+- **main branch**: It is expected to contain code that is stable and ready for deployment.
 
-Flow: Contributor's branch → main branch
+> Maintainers/owner don't accept any pr to **main branch** from developer directly.
 
 ## Pull request
 
@@ -37,7 +53,7 @@ Flow: Contributor's branch → main branch
 
 #### When is PR produced?
 
-- Contributor commit to main branch
+- Contributor commit to dev branch
 
 #### How to deal with PR?
 
@@ -63,8 +79,8 @@ Websoft9 use below [Artifact](https://jfrog.com/devops-tools/article/what-is-a-s
 
 ### Tags
 
-- Type tags: Bug, enhancement, Documetation
-- Stages Tags: PRD, Dev, QA(include deployment), Documentation
+- Type tags: RRD, Bug, enhancement, Documetation
+- Stages Tags: S-develop, S-fixed and all tags started with `S-`
 
 ### WorkFlow
 
