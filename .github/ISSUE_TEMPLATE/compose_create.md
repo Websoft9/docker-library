@@ -58,4 +58,5 @@ Developer should develop this application's docker compose project at **Websoft9
 
 - [ ] system test
 - [ ] docs
+- [ ] add Notes content to docs
 - [ ] publish to RC release
