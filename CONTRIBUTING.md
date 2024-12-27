@@ -20,8 +20,8 @@ Below is the steps for contributing new application:
 7. Complete your issue checklist
 8. Docker exec **websoft9-apphub** container and pull request to repository
    ```
-   # sample for your
-   docker exec -it websoft9-apphub  apphub commit --appid "wordpress" --github_token "yourgithubtoken"
+   # sample for your, --appid get from Websoft9 Console, it not appname
+   docker exec -it websoft9-apphub  apphub commit --appid "wordpress_o2qjz" --github_token "yourgithubtoken"
    ```
 
 ## Process diagram
