@@ -34,7 +34,7 @@ Before deveopment, repository owner should complete below Assessment:
 
 - [ ] This application have **3** containers
 - [ ] official architecture research
-- [ ] Complete the Contentful data for 
+- [ ] Complete the Contentful data
 - [ ] Create app project structure from template
 
 
