@@ -1,7 +1,5 @@
 # image,docs: https://hub.docker.com/_/wordpress/
 
-version: '3.8'
-
 services:
 
   wordpress:
