@@ -13,8 +13,8 @@
     }
   ],
   "requirements": {
-    "cpu": "2",
-    "memory": "4",
+    "cpu": "1",
+    "memory": "2",
     "disk": "6",
     "url": "https://www.docuseal.co/docs/on-premises-server-requirements"
   }
