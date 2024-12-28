@@ -1,10 +1,10 @@
 [
   {
-    "name": "neko",
-    "trademark": "Neko",
+    "name": "lobechat",
+    "trademark": "LobeChat",
     "release": false,
-    "fork_url": "https://github.com/m1k1o/neko",
-    "version_from": "https://hub.docker.com/r/elestio/neko/tags",
+    "fork_url": "https://github.com/lobehub/lobe-chat",
+    "version_from": "https://hub.docker.com/r/lobehub/lobe-chat-database/tags",
     "edition": [
       {
         "dist": "community",
@@ -17,7 +17,91 @@
       "cpu": "2",
       "memory": "4",
       "disk": "1",
-      "url": "https://github.com/onlyoffice/docker#recommended-system-requirements"
+      "url": "https://lobehub.com/"
+    }
+  },
+  {
+    "name": "listmonk",
+    "trademark": "listmonk",
+    "release": false,
+    "fork_url": "https://github.com/knadh/listmonk/blob/master/docker-compose.yml",
+    "version_from": "https://hub.docker.com/r/listmonk/listmonk/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "1",
+      "url": "https://listmonk.app"
+    }
+  },
+  {
+    "name": "freshrss",
+    "trademark": "FreshRSS",
+    "release": false,
+    "fork_url": "https://github.com/FreshRSS/FreshRSS/tree/edge/Docker",
+    "version_from": "https://hub.docker.com/r/freshrss/freshrss/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "1",
+      "url": "https://freshrss.org"
+    }
+  },
+  {
+    "name": "commafeed",
+    "trademark": "CommaFeed",
+    "release": false,
+    "fork_url": "https://hub.docker.com/r/athou/commafeed",
+    "version_from": "https://hub.docker.com/r/athou/commafeed/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "1",
+      "url": "https://www.commafeed.com/"
+    }
+  },
+  {
+    "name": "ttrss",
+    "trademark": "Tiny Tiny RSS",
+    "release": false,
+    "fork_url": "https://tt-rss.org/wiki/InstallationNotes/",
+    "version_from": "https://hub.docker.com/r/cthulhoo/ttrss-fpm-pgsql-static/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "1",
+      "url": "https://tt-rss.org/"
     }
   }
 ]
