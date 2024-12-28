@@ -1,10 +1,10 @@
 [
   {
-    "name": "lobechat",
-    "trademark": "LobeChat",
+    "name": "freshrss",
+    "trademark": "FreshRSS",
     "release": false,
-    "fork_url": "https://github.com/lobehub/lobe-chat",
-    "version_from": "https://hub.docker.com/r/lobehub/lobe-chat-database/tags",
+    "fork_url": "https://github.com/FreshRSS/FreshRSS/tree/edge/Docker",
+    "version_from": "https://hub.docker.com/r/freshrss/freshrss/tags",
     "edition": [
       {
         "dist": "community",
@@ -17,15 +17,15 @@
       "cpu": "2",
       "memory": "4",
       "disk": "1",
-      "url": "https://lobehub.com/"
+      "url": "https://freshrss.org"
     }
   },
   {
-    "name": "listmonk",
-    "trademark": "listmonk",
+    "name": "commafeed",
+    "trademark": "CommaFeed",
     "release": false,
-    "fork_url": "https://github.com/knadh/listmonk/blob/master/docker-compose.yml",
-    "version_from": "https://hub.docker.com/r/listmonk/listmonk/tags",
+    "fork_url": "https://hub.docker.com/r/athou/commafeed",
+    "version_from": "https://hub.docker.com/r/athou/commafeed/tags",
     "edition": [
       {
         "dist": "community",
@@ -38,7 +38,28 @@
       "cpu": "2",
       "memory": "4",
       "disk": "1",
-      "url": "https://listmonk.app"
+      "url": "https://www.commafeed.com/"
+    }
+  },
+  {
+    "name": "ttrss",
+    "trademark": "Tiny Tiny RSS",
+    "release": false,
+    "fork_url": "https://tt-rss.org/wiki/InstallationNotes/",
+    "version_from": "https://hub.docker.com/r/cthulhoo/ttrss-fpm-pgsql-static/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "1",
+      "url": "https://tt-rss.org/"
     }
   }
 ]
