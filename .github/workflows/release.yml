@@ -15,22 +15,34 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         name: Check out code
+        with:
+          ref: ${{ github.ref }}  # 使用触发事件的分支
 
       - name: Version convert
         id: convert_version      
         run: |
-          curl https://raw.githubusercontent.com/Websoft9/websoft9/main/docker/apphub/Dockerfile -o Dockerfile
+          curl https://raw.githubusercontent.com/Websoft9/websoft9/${{ github.ref_name }}/docker/apphub/Dockerfile -o Dockerfile
 
           library_tag=$(grep 'ARG LIBRARY_VERSION' "Dockerfile" | cut -d'"' -f2 | xargs)
           apphub_tag=$(grep 'LABEL version' "Dockerfile" | cut -d'"' -f2 | xargs)
 
+          # Determine the channel based on the branch and apphub_tag
+          if [[ "${GITHUB_REF##*/}" == "dev" ]]; then
+            echo "CHANNEL=dev" >> $GITHUB_ENV
+          elif [[ "${GITHUB_REF##*/}" == "main" ]]; then
+            if [[ "$apphub_tag" == *"-"* ]]; then
+              echo "CHANNEL=rc" >> $GITHUB_ENV
+            else
+              echo "CHANNEL=release" >> $GITHUB_ENV
+            fi
+          fi
+
+          # Set library_tag_gh based on apphub_tag
           if [[ "$apphub_tag" == *"-"* ]]; then
             suffix="${apphub_tag#*-}"
             library_tag_gh="${library_tag}-${suffix}"
-            echo "CHANNEL=dev" >> $GITHUB_ENV
           else
             library_tag_gh=$library_tag
-            echo "CHANNEL=release" >> $GITHUB_ENV
           fi
 
           echo "LIBRARY_TAG=$library_tag" >> $GITHUB_ENV
@@ -84,16 +96,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}  # 使用触发事件的分支
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
-        with:
-          # Upload entire repository
-          path: '.'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v3
+        uses: actions

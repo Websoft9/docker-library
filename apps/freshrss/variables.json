@@ -1,0 +1,21 @@
+{
+  "name": "freshrss",
+  "trademark": "FreshRSS",
+  "release": false,
+  "fork_url": "https://github.com/FreshRSS/FreshRSS/tree/edge/Docker",
+  "version_from": "https://hub.docker.com/r/freshrss/freshrss/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "1",
+    "url": "https://freshrss.org"
+  }
+}

@@ -1,8 +1,6 @@
 # image: https://hub.docker.com/r/photoprism/photoprism
 # docs: https://docs.photoprism.app/getting-started/docker-compose
 
-version: '3.8'
-
 services:
   photoprism:
     image: $W9_REPO:$W9_VERSION
@@ -25,7 +23,7 @@ services:
       - photoprism-storage:/photoprism/storage                  # *Writable* storage folder for cache, database, and sidecar files (DO NOT REMOVE)
 
   mariadb:
-    image: mariadb:10.6
+    image: mariadb:11
     container_name: $W9_ID-mariadb
     restart: unless-stopped
     stop_grace_period: 5s
@@ -43,17 +41,6 @@ services:
       MARIADB_PASSWORD: $W9_POWER_PASSWORD 
       MARIADB_ROOT_PASSWORD: $W9_POWER_PASSWORD
 
-  watchtower:
-    restart: unless-stopped
-    image: containrrr/watchtower
-    container_name: $W9_ID-watchtower
-    profiles: ["update"]
-    environment:
-      WATCHTOWER_CLEANUP: "true"
-      WATCHTOWER_POLL_INTERVAL: 7200 # checks for updates every two hours
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      #- "~/.docker/config.json:/config.json" # optional, for authentication if you have a Docker Hub account
      
 networks:
   default:

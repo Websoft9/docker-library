@@ -1,10 +1,10 @@
 [
   {
-    "name": "neko",
-    "trademark": "Neko",
+    "name": "ttrss",
+    "trademark": "TinyTinyRSS",
     "release": false,
-    "fork_url": "https://github.com/m1k1o/neko",
-    "version_from": "https://hub.docker.com/r/elestio/neko/tags",
+    "fork_url": "https://tt-rss.org/wiki/InstallationNotes/",
+    "version_from": "https://hub.docker.com/r/cthulhoo/ttrss-fpm-pgsql-static/tags",
     "edition": [
       {
         "dist": "community",
@@ -17,7 +17,7 @@
       "cpu": "2",
       "memory": "4",
       "disk": "1",
-      "url": "https://github.com/onlyoffice/docker#recommended-system-requirements"
+      "url": "https://tt-rss.org/"
     }
   }
 ]

@@ -1,0 +1,21 @@
+{
+  "name": "ttrss",
+  "trademark": "Tiny Tiny RSS",
+  "release": false,
+  "fork_url": "https://tt-rss.org/wiki/InstallationNotes/",
+  "version_from": "https://hub.docker.com/r/cthulhoo/ttrss-fpm-pgsql-static/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://tt-rss.org/"
+  }
+}
