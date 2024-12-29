@@ -3,16 +3,16 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for MLflow:
 
 
- - community:  v2.16.2, latest
+ - community:  v2.19.0, latest
 
 
 ## System Requirements
 
 The following are the minimal [recommended requirements](https://mlflow.org/docs/latest/index.html):
 
-* **RAM**: 8 GB or more
-* **CPU**: 2 cores or higher
-* **Disk**: at least 20 GB of free space
+* **RAM**: 1 GB or more
+* **CPU**: 1 cores or higher
+* **Disk**: at least 2 GB of free space
 * **bandwidth**: more fluent experience over 100M  
 
 ## Install
