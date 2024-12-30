@@ -13,26 +13,30 @@ jobs:
       CI: false
       appname: library
     steps:
-      - uses: actions/checkout@v3
-        name: Check out code
+      - name: Check out code
+        uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.client_payload.ref }}  # 使用触发事件的分支
+          ref: ${{ github.event.client_payload.branch }}
 
       - name: Version convert
         id: convert_version      
         run: |
-          curl https://raw.githubusercontent.com/Websoft9/websoft9/${{ github.event.client_payload.ref_name }}/docker/apphub/Dockerfile -o Dockerfile
+          BRANCH_NAME=${{ github.event.client_payload.branch }}
+          curl https://raw.githubusercontent.com/Websoft9/websoft9/${BRANCH_NAME}/docker/apphub/Dockerfile -o Dockerfile
 
           library_tag=$(grep 'ARG LIBRARY_VERSION' "Dockerfile" | cut -d'"' -f2 | xargs)
           apphub_tag=$(grep 'LABEL version' "Dockerfile" | cut -d'"' -f2 | xargs)
 
           # Determine the channel based on the branch and apphub_tag
-          if [[ "${{ github.event.client_payload.ref_name }}" == "dev" ]]; then
+          if [[ "$BRANCH_NAME" == "dev" ]]; then
             echo "CHANNEL=dev" >> $GITHUB_ENV
-          elif [[ "${{ github.event.client_payload.ref_name }}" == "main" ]]; then
+          elif [[ "$BRANCH_NAME" == "main" ]]; then
             if [[ "$apphub_tag" == *"-"* ]]; then
+              suffix="${apphub_tag#*-}"
+              library_tag_gh="${library_tag}-${suffix}"
               echo "CHANNEL=rc" >> $GITHUB_ENV
             else
+              library_tag_gh=$library_tag
               echo "CHANNEL=release" >> $GITHUB_ENV
             fi
           fi
@@ -74,6 +78,7 @@ jobs:
           destination-dir: ./${{ env.CHANNEL }}/websoft9/plugin/${{ env.appname }}
 
       - name: Create Github Release from code
+        if: env.CHANNEL != 'dev'
         uses: softprops/action-gh-release@v1
         with:
           files: |
@@ -85,6 +90,7 @@ jobs:
 
   pages:
     name: Build Github Pages
+    if: env.CHANNEL != 'dev'
     permissions:
       contents: read
       pages: write
