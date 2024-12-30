@@ -2,6 +2,7 @@
 # docs: https://tt-rss.org/wiki/InstallationNotes
 
 services:
+
   app:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID-app
@@ -35,6 +36,10 @@ services:
     depends_on:
       - app
 
+  postgres:
+    image: postgres:15-alpine
+    container_name: $W9_ID-postgresql
+    restart: unless-stopped
   postgres:
     image: postgres:15-alpine
     container_name: $W9_ID-postgresql
