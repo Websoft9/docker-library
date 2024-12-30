@@ -1,48 +1,57 @@
-# image,docs: https://hub.docker.com/_/wordpress/
+# image: https://hub.docker.com/r/cthulhoo/ttrss-fpm-pgsql-static
+# docs: https://tt-rss.org/wiki/InstallationNotes
 
 services:
-
-  wordpress:
-    image: $W9_REPO:$W9_VERSION
+  web-nginx:
+    image: cthulhoo/ttrss-web-nginx:latest
     container_name: $W9_ID
     restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
-    logging:
-      driver: "json-file"
-      options:
-          max-file: "5"
-          max-size: 10m
-    deploy:
-      resources:
-        limits:
-          memory: 5g
-          cpus: '0.7'
+    env_file:
+      - .env
     ports:
       - $W9_HTTP_PORT_SET:80
-    env_file: .env
     volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
+      - ttrss-data:/var/www/html:ro
+    depends_on:
+      - app
 
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
+  app:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID-app
     restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
+    env_file:
+      - .env
     volumes:
-      - mysql_data:/var/lib/mysql
-    environment:
-      MYSQL_DATABASE: $W9_ID
-      MYSQL_USER: $W9_ID
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      - ttrss-data:/var/www/html
+      - ttrss-config:/opt/tt-rss/config.d
+      
+  updater:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID-updater
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ttrss-data:/var/www/html
+      - ttrss-config:/opt/tt-rss/config.d
+    depends_on:
+      - app
+    command: /opt/tt-rss/updater.sh
 
+  postgres:
+    image: postgres:15-alpine
+    container_name: $W9_ID-postgresql
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=$TTRSS_DB_USER
+      - POSTGRES_PASSWORD=$TTRSS_DB_PASS
+      - POSTGRES_DB=$TTRSS_DB_NAME
+    volumes:
+      - db:/var/lib/postgresql/data
 volumes:
-  wordpress:
-  mysql_data:
+  ttrss-data:
+  ttrss-config:
+  db:
     
 networks:
   default:
