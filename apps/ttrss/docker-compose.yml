@@ -2,6 +2,27 @@
 # docs: https://tt-rss.org/wiki/InstallationNotes
 
 services:
+
+  app:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID-app
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ttrss-data:/var/www/html
+      - ttrss-config:/opt/tt-rss/config.d
+  updater:
+    image: $W9_REPO:$W9_VERSION
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ttrss-data:/var/www/html
+      - ttrss-config:/opt/tt-rss/config.d
+    depends_on:
+      - app
+    command: /opt/tt-rss/updater.sh
+
   web-nginx:
     image: cthulhoo/ttrss-web-nginx:latest
     container_name: $W9_ID
@@ -15,29 +36,10 @@ services:
     depends_on:
       - app
 
-  app:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID-app
+  postgres:
+    image: postgres:15-alpine
+    container_name: $W9_ID-postgresql
     restart: unless-stopped
-    env_file:
-      - .env
-    volumes:
-      - ttrss-data:/var/www/html
-      - ttrss-config:/opt/tt-rss/config.d
-      
-  updater:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID-updater
-    restart: unless-stopped
-    env_file:
-      - .env
-    volumes:
-      - ttrss-data:/var/www/html
-      - ttrss-config:/opt/tt-rss/config.d
-    depends_on:
-      - app
-    command: /opt/tt-rss/updater.sh
-
   postgres:
     image: postgres:15-alpine
     container_name: $W9_ID-postgresql
