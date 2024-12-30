@@ -30,14 +30,17 @@ jobs:
           # Determine the channel based on the branch and apphub_tag
           if [[ "$BRANCH_NAME" == "dev" ]]; then
             echo "CHANNEL=dev" >> $GITHUB_ENV
+            echo "::set-output name=channel::dev"  # Set output for CHANNEL
           elif [[ "$BRANCH_NAME" == "main" ]]; then
             if [[ "$apphub_tag" == *"-"* ]]; then
               suffix="${apphub_tag#*-}"
               library_tag_gh="${library_tag}-${suffix}"
               echo "CHANNEL=rc" >> $GITHUB_ENV
+              echo "::set-output name=channel::rc"  # Set output for CHANNEL
             else
               library_tag_gh=$library_tag
               echo "CHANNEL=release" >> $GITHUB_ENV
+              echo "::set-output name=channel::release"  # Set output for CHANNEL
             fi
           fi
 
@@ -90,7 +93,7 @@ jobs:
 
   pages:
     name: Build Github Pages
-    if: env.CHANNEL != 'dev'
+    if: needs.release.outputs.channel != 'dev'
     permissions:
       contents: read
       pages: write
