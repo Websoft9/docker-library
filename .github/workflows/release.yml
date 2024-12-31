@@ -13,43 +13,24 @@ jobs:
       CI: false
       appname: library
     steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.client_payload.branch }}
+      - uses: actions/checkout@v3
+        name: Check out code
 
       - name: Version convert
         id: convert_version      
         run: |
-          BRANCH_NAME=${{ github.event.client_payload.branch }}
-          curl https://raw.githubusercontent.com/Websoft9/websoft9/${BRANCH_NAME}/docker/apphub/Dockerfile -o Dockerfile
+          curl https://raw.githubusercontent.com/Websoft9/websoft9/main/docker/apphub/Dockerfile -o Dockerfile
 
           library_tag=$(grep 'ARG LIBRARY_VERSION' "Dockerfile" | cut -d'"' -f2 | xargs)
           apphub_tag=$(grep 'LABEL version' "Dockerfile" | cut -d'"' -f2 | xargs)
 
-          # Determine the channel based on the branch and apphub_tag
-          if [[ "$BRANCH_NAME" == "dev" ]]; then
-            echo "CHANNEL=dev" >> $GITHUB_ENV
-            echo "::set-output name=channel::dev"  # Set output for CHANNEL
-          elif [[ "$BRANCH_NAME" == "main" ]]; then
-            if [[ "$apphub_tag" == *"-"* ]]; then
-              suffix="${apphub_tag#*-}"
-              library_tag_gh="${library_tag}-${suffix}"
-              echo "CHANNEL=rc" >> $GITHUB_ENV
-              echo "::set-output name=channel::rc"  # Set output for CHANNEL
-            else
-              library_tag_gh=$library_tag
-              echo "CHANNEL=release" >> $GITHUB_ENV
-              echo "::set-output name=channel::release"  # Set output for CHANNEL
-            fi
-          fi
-
-          # Set library_tag_gh based on apphub_tag
           if [[ "$apphub_tag" == *"-"* ]]; then
             suffix="${apphub_tag#*-}"
             library_tag_gh="${library_tag}-${suffix}"
+            echo "CHANNEL=dev" >> $GITHUB_ENV
           else
             library_tag_gh=$library_tag
+            echo "CHANNEL=release" >> $GITHUB_ENV
           fi
 
           echo "LIBRARY_TAG=$library_tag" >> $GITHUB_ENV
@@ -81,7 +62,6 @@ jobs:
           destination-dir: ./${{ env.CHANNEL }}/websoft9/plugin/${{ env.appname }}
 
       - name: Create Github Release from code
-        if: env.CHANNEL != 'dev'
         uses: softprops/action-gh-release@v1
         with:
           files: |
@@ -93,7 +73,6 @@ jobs:
 
   pages:
     name: Build Github Pages
-    if: needs.release.outputs.channel != 'dev'
     permissions:
       contents: read
       pages: write
