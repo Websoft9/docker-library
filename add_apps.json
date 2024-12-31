@@ -1,10 +1,10 @@
 [
   {
-    "name": "ttrss",
-    "trademark": "TinyTinyRSS",
+    "name": "ollama",
+    "trademark": "Ollama",
     "release": false,
-    "fork_url": "https://tt-rss.org/wiki/InstallationNotes/",
-    "version_from": "https://hub.docker.com/r/cthulhoo/ttrss-fpm-pgsql-static/tags",
+    "fork_url": "https://github.com/ollama/ollama",
+    "version_from": "https://hub.docker.com/r/ollama/ollama/tags",
     "edition": [
       {
         "dist": "community",
@@ -17,7 +17,7 @@
       "cpu": "2",
       "memory": "4",
       "disk": "1",
-      "url": "https://tt-rss.org/"
+      "url": "https://ollama.com"
     }
   }
 ]
