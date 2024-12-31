@@ -3,7 +3,7 @@
 version: '3.8'
 
 services:
-  chatgpt-next-web: 
+  nextchat: 
     image: $W9_REPO:${W9_VERSION}
     container_name: ${W9_ID}
     restart: unless-stopped

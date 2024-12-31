@@ -1,6 +1,6 @@
 {
-  "name": "chatgptnextweb",
-  "trademark": "ChatGPT-Next-Web",
+  "name": "nextchat",
+  "trademark": "NextChat",
   "release": true,
   "fork_url": "https://github.com/Yidadaa/ChatGPT-Next-Web",
   "version_from": "https://hub.docker.com/r/yidadaa/chatgpt-next-web/tags",
