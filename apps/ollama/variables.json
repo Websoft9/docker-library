@@ -1,0 +1,21 @@
+{
+  "name": "ollama",
+  "trademark": "Ollama",
+  "release": false,
+  "fork_url": "https://github.com/ollama/ollama",
+  "version_from": "https://hub.docker.com/r/ollama/ollama/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "1",
+    "url": "https://ollama.com"
+  }
+}
