@@ -15,7 +15,7 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "1",
+    "disk": "10",
     "url": "https://ollama.com"
   }
 }
