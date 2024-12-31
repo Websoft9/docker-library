@@ -40,10 +40,6 @@ services:
     image: postgres:15-alpine
     container_name: $W9_ID-postgresql
     restart: unless-stopped
-  postgres:
-    image: postgres:15-alpine
-    container_name: $W9_ID-postgresql
-    restart: unless-stopped
     environment:
       - POSTGRES_USER=$TTRSS_DB_USER
       - POSTGRES_PASSWORD=$TTRSS_DB_PASS
