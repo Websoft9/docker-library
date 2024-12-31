@@ -1,8 +1,8 @@
 name: Release library and media to artifact(dev)
 
 on:
-  push:
-    branches: [dev]
+  # push:
+  #   branches: [dev]
   workflow_dispatch:
 
 jobs:
