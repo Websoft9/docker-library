@@ -1,7 +1,7 @@
 {
   "name": "mlflow",
   "trademark": "MLflow",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/mlflow/mlflow",
   "version_from": "https://github.com/mlflow/mlflow/pkgs/container/mlflow",
   "edition": [
