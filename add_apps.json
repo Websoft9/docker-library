@@ -1,10 +1,10 @@
 [
   {
-    "name": "ollama",
-    "trademark": "Ollama",
+    "name": "outline",
+    "trademark": "Outline",
     "release": false,
-    "fork_url": "https://github.com/ollama/ollama",
-    "version_from": "https://hub.docker.com/r/ollama/ollama/tags",
+    "fork_url": "https://github.com/outline",
+    "version_from": "https://hub.docker.com/r/outlinewiki/outline/tags",
     "edition": [
       {
         "dist": "community",
@@ -17,7 +17,112 @@
       "cpu": "2",
       "memory": "4",
       "disk": "1",
-      "url": "https://ollama.com"
+      "url": "https://www.getoutline.com"
+    }
+  },
+  {
+    "name": "anythingllm",
+    "trademark": "AnythingLLM",
+    "release": false,
+    "fork_url": "https://github.com/Mintplex-Labs/anything-llm",
+    "version_from": "https://hub.docker.com/r/mintplexlabs/anythingllm/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "1",
+      "url": "https://anythingllm.com"
+    }
+  },
+  {
+    "name": "openwebui",
+    "trademark": "OpenWebUI",
+    "release": false,
+    "fork_url": "https://github.com/open-webui/open-webui",
+    "version_from": "https://github.com/open-webui/open-webui/pkgs/container/open-webui",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "1",
+      "url": "https://openwebui.com"
+    }
+  },
+  {
+    "name": "langflow",
+    "trademark": "Langflow",
+    "release": false,
+    "fork_url": "https://github.com/langflow-ai/langflow",
+    "version_from": "https://dockerhub.websoft9.com/r/langflowai/langflow/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "1",
+      "url": "https://www.langflow.org"
+    }
+  },
+  {
+    "name": "langflow",
+    "trademark": "Langflow",
+    "release": false,
+    "fork_url": "https://github.com/langflow-ai/langflow",
+    "version_from": "https://dockerhub.websoft9.com/r/langflowai/langflow/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "1",
+      "url": "https://www.langflow.org"
+    }
+  },
+  {
+    "name": "heyform",
+    "trademark": "HeyForm",
+    "release": false,
+    "fork_url": "https://github.com/heyform/heyform",
+    "version_from": "https://dockerhub.websoft9.com/r/heyform/community-edition/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "1",
+      "url": "https://heyform.net"
     }
   }
 ]
