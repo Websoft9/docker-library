@@ -1,0 +1,21 @@
+{
+  "name": "outline",
+  "trademark": "Outline",
+  "release": false,
+  "fork_url": "https://github.com/outline",
+  "version_from": "https://hub.docker.com/r/outlinewiki/outline/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "1",
+    "url": "https://www.getoutline.com"
+  }
+}

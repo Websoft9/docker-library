@@ -1,0 +1,21 @@
+{
+  "name": "heyform",
+  "trademark": "HeyForm",
+  "release": false,
+  "fork_url": "https://github.com/heyform/heyform",
+  "version_from": "https://dockerhub.websoft9.com/r/heyform/community-edition/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "1",
+    "url": "https://heyform.net"
+  }
+}
