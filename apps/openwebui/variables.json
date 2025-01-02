@@ -1,6 +1,6 @@
 {
   "name": "openwebui",
-  "trademark": "OpenWebUI",
+  "trademark": "Open WebUI",
   "release": false,
   "fork_url": "https://github.com/open-webui/open-webui",
   "version_from": "https://github.com/open-webui/open-webui/pkgs/container/open-webui",
