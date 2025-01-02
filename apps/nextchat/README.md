@@ -1,6 +1,6 @@
-# ChatGPT-Next-Web on Docker  
+# NextChat on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for ChatGPT-Next-Web:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for NextChat:
 
 
  - community:  latest, v2.15.8
@@ -17,10 +17,10 @@ The following are the minimal [recommended requirements](https://github.com/Yida
 
 ## Install
 
-You can install this ChatGPT-Next-Web by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this NextChat by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use ChatGPT-Next-Web with **Websoft9 Business Support** free, you can [subscribe ChatGPT-Next-Web](https://www.websoft9.com/apps) on Cloud platform
+If you want use NextChat with **Websoft9 Business Support** free, you can [subscribe NextChat](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[ChatGPT-Next-Web Administrator Guide](https://support.websoft9.com/docs/chatgptnextweb) powered by Websoft9
+[NextChat Administrator Guide](https://support.websoft9.com/docs/nextchat) powered by Websoft9
