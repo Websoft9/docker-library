@@ -1,48 +1,50 @@
-# image,docs: https://hub.docker.com/_/wordpress/
+# image and docs: https://hub.docker.com/r/ollama/ollama
+# docs: https://github.com/ollama/ollama/blob/main/docs/docker.md
 
 services:
 
-  wordpress:
+  app-nogpu:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
-    logging:
-      driver: "json-file"
-      options:
-          max-file: "5"
-          max-size: 10m
     deploy:
       resources:
         limits:
           memory: 5g
-          cpus: '0.7'
+          cpus: '2'
     ports:
-      - $W9_HTTP_PORT_SET:80
-    env_file: .env
+      - $W9_HTTP_PORT_SET:11434
+    env_file: 
+      - .env
     volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
+      - ollama:/root/.ollama
 
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
+  app-nvidia:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
     restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
+    deploy:
+      resources:
+        limits:
+          memory: 5g
+          cpus: '2'
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    runtime: nvidia
+    ports:
+      - $W9_HTTP_PORT_SET:11434
+    env_file: 
+      - .env
     volumes:
-      - mysql_data:/var/lib/mysql
-    environment:
-      MYSQL_DATABASE: $W9_ID
-      MYSQL_USER: $W9_ID
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      - ollama:/root/.ollama
+    profiles:
+      - nvidia
 
 volumes:
-  wordpress:
-  mysql_data:
+  ollama:
     
 networks:
   default:
