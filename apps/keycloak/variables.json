@@ -1,0 +1,21 @@
+{
+  "name": "keycloak",
+  "trademark": "Keycloak",
+  "release": false,
+  "fork_url": "https://github.com/keycloak/keycloak",
+  "version_from": "",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://www.keycloak.org"
+  }
+}

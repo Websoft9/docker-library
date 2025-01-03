@@ -1,0 +1,21 @@
+{
+  "name": "calcom",
+  "trademark": "Cal.com",
+  "release": false,
+  "fork_url": "https://github.com/calcom/docker",
+  "version_from": "",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://cal.com"
+  }
+}

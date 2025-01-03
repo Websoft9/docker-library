@@ -1,0 +1,21 @@
+{
+  "name": "activepieces",
+  "trademark": "Activepieces",
+  "release": false,
+  "fork_url": "https://github.com/activepieces/activepieces",
+  "version_from": "https://hub.docker.com/r/activepieces/activepieces/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://www.activepieces.com"
+  }
+}

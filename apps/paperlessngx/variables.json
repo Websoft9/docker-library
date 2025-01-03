@@ -1,0 +1,21 @@
+{
+  "name": "paperlessngx",
+  "trademark": "Paperless-ngx",
+  "release": false,
+  "fork_url": "https://github.com/paperless-ngx/paperless-ngx",
+  "version_from": "",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://docs.paperless-ngx.com"
+  }
+}

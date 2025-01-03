@@ -1,0 +1,21 @@
+{
+  "name": "huggingchat",
+  "trademark": "HuggingChat",
+  "release": false,
+  "fork_url": "https://github.com/huggingface/chat-ui",
+  "version_from": "",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://huggingface.co/chat"
+  }
+}

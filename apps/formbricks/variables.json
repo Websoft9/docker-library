@@ -1,0 +1,21 @@
+{
+  "name": "formbricks",
+  "trademark": "Formbricks",
+  "release": false,
+  "fork_url": "https://github.com/formbricks/formbricks",
+  "version_from": "https://hub.docker.com/r/formbricks/formbricks/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://formbricks.com"
+  }
+}
