@@ -1,10 +1,10 @@
 [
   {
-    "name": "outline",
-    "trademark": "Outline",
+    "name": "gotify",
+    "trademark": "Gotify",
     "release": false,
-    "fork_url": "https://github.com/outline",
-    "version_from": "https://hub.docker.com/r/outlinewiki/outline/tags",
+    "fork_url": "https://github.com/gotify",
+    "version_from": "https://hub.docker.com/r/gotify/server/tags",
     "edition": [
       {
         "dist": "community",
@@ -16,16 +16,16 @@
     "requirements": {
       "cpu": "2",
       "memory": "4",
-      "disk": "1",
-      "url": "https://www.getoutline.com"
+      "disk": "10",
+      "url": "https://gotify.net/"
     }
   },
   {
-    "name": "anythingllm",
-    "trademark": "AnythingLLM",
+    "name": "lago",
+    "trademark": "Lago",
     "release": false,
-    "fork_url": "https://github.com/Mintplex-Labs/anything-llm",
-    "version_from": "https://hub.docker.com/r/mintplexlabs/anythingllm/tags",
+    "fork_url": "https://github.com/getlago/lago",
+    "version_from": "https://hub.docker.com/r/getlago/api/tags",
     "edition": [
       {
         "dist": "community",
@@ -37,16 +37,37 @@
     "requirements": {
       "cpu": "2",
       "memory": "4",
-      "disk": "1",
-      "url": "https://anythingllm.com"
+      "disk": "10",
+      "url": "https://getlago.com"
+    }
+  },  
+  {
+    "name": "formbricks",
+    "trademark": "Formbricks",
+    "release": false,
+    "fork_url": "https://github.com/formbricks/formbricks",
+    "version_from": "https://hub.docker.com/r/formbricks/formbricks/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://formbricks.com"
     }
   },
   {
-    "name": "openwebui",
-    "trademark": "OpenWebUI",
+    "name": "khoj",
+    "trademark": "Khoj",
     "release": false,
-    "fork_url": "https://github.com/open-webui/open-webui",
-    "version_from": "https://github.com/open-webui/open-webui/pkgs/container/open-webui",
+    "fork_url": "https://github.com/formbricks/formbricks",
+    "version_from": "",
     "edition": [
       {
         "dist": "community",
@@ -58,16 +79,16 @@
     "requirements": {
       "cpu": "2",
       "memory": "4",
-      "disk": "1",
-      "url": "https://openwebui.com"
+      "disk": "10",
+      "url": "https://khoj.dev"
     }
   },
   {
-    "name": "langflow",
-    "trademark": "Langflow",
+    "name": "komga",
+    "trademark": "Komga",
     "release": false,
-    "fork_url": "https://github.com/langflow-ai/langflow",
-    "version_from": "https://dockerhub.websoft9.com/r/langflowai/langflow/tags",
+    "fork_url": "https://github.com/gotson/komga",
+    "version_from": "https://hub.docker.com/r/gotson/komga/tags",
     "edition": [
       {
         "dist": "community",
@@ -79,16 +100,16 @@
     "requirements": {
       "cpu": "2",
       "memory": "4",
-      "disk": "1",
-      "url": "https://www.langflow.org"
+      "disk": "10",
+      "url": "https://komga.org"
     }
   },
   {
-    "name": "langflow",
-    "trademark": "Langflow",
+    "name": "activepieces",
+    "trademark": "Activepieces",
     "release": false,
-    "fork_url": "https://github.com/langflow-ai/langflow",
-    "version_from": "https://dockerhub.websoft9.com/r/langflowai/langflow/tags",
+    "fork_url": "https://github.com/activepieces/activepieces",
+    "version_from": "https://hub.docker.com/r/activepieces/activepieces/tags",
     "edition": [
       {
         "dist": "community",
@@ -100,16 +121,16 @@
     "requirements": {
       "cpu": "2",
       "memory": "4",
-      "disk": "1",
-      "url": "https://www.langflow.org"
+      "disk": "10",
+      "url": "https://www.activepieces.com"
     }
   },
   {
-    "name": "heyform",
-    "trademark": "HeyForm",
+    "name": "pocketbase",
+    "trademark": "PocketBase",
     "release": false,
-    "fork_url": "https://github.com/heyform/heyform",
-    "version_from": "https://dockerhub.websoft9.com/r/heyform/community-edition/tags",
+    "fork_url": "https://github.com/pocketbase/pocketbase",
+    "version_from": "https://hub.docker.com/r/elestio/pocketbase/tags",
     "edition": [
       {
         "dist": "community",
@@ -121,8 +142,386 @@
     "requirements": {
       "cpu": "2",
       "memory": "4",
-      "disk": "1",
-      "url": "https://heyform.net"
+      "disk": "10",
+      "url": "https://pocketbase.io"
+    }
+  },
+  {
+    "name": "stirlingpdf",
+    "trademark": "StirlingPDF",
+    "release": false,
+    "fork_url": "https://github.com/Stirling-Tools/Stirling-PDF",
+    "version_from": "https://hub.docker.com/r/stirlingtools/stirling-pdf/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://stirlingpdf.io"
+    }
+  },
+  {
+    "name": "dashy",
+    "trademark": "Dashy",
+    "release": false,
+    "fork_url": "https://github.com/lissy93/dashy",
+    "version_from": "https://hub.docker.com/r/lissy93/dashy/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://dashy.to"
+    }
+  },
+  {
+    "name": "bunkerWeb",
+    "trademark": "BunkerWeb",
+    "release": false,
+    "fork_url": "https://github.com/bunkerity/bunkerweb",
+    "version_from": "https://hub.docker.com/r/bunkerity/bunkerweb/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://www.bunkerweb.io"
+    }
+  },
+  {
+    "name": "libreChat",
+    "trademark": "LibreChat",
+    "release": false,
+    "fork_url": "https://github.com/danny-avila/LibreChat",
+    "version_from": "https://hub.docker.com/r/librechat/librechat/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://www.librechat.ai/"
+    }
+  },
+  {
+    "name": "huggingchat",
+    "trademark": "HuggingChat",
+    "release": false,
+    "fork_url": "https://github.com/huggingface/chat-ui",
+    "version_from": "",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://huggingface.co/chat"
+    }
+  },
+  {
+    "name": "keila",
+    "trademark": "Keila",
+    "release": false,
+    "fork_url": "https://github.com/pentacent/keila",
+    "version_from": "",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://www.keila.io"
+    }
+  },
+  {
+    "name": "openhands",
+    "trademark": "OpenHands",
+    "release": false,
+    "fork_url": "https://github.com/All-Hands-AI/OpenHands",
+    "version_from": "",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://www.all-hands.dev"
+    }
+  }, 
+  {
+    "name": "frp",
+    "trademark": "frp",
+    "release": false,
+    "fork_url": "https://github.com/fatedier/frp",
+    "version_from": "",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://gofrp.org"
+    }
+  }, 
+  {
+    "name": "nodenbb",
+    "trademark": "NodeBB",
+    "release": false,
+    "fork_url": "https://github.com/NodeBB/NodeBB",
+    "version_from": "",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://nodebb.org"
+    }
+  },
+  {
+    "name": "posthog",
+    "trademark": "PostHog",
+    "release": false,
+    "fork_url": "https://github.com/PostHog/posthog",
+    "version_from": "",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://posthog.com"
+    }
+  },
+  {
+    "name": "keycloak",
+    "trademark": "Keycloak",
+    "release": false,
+    "fork_url": "https://github.com/keycloak/keycloak",
+    "version_from": "",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://www.keycloak.org"
+    }
+  },
+  {
+    "name": "opengauss",
+    "trademark": "openGauss",
+    "release": false,
+    "fork_url": "https://gitee.com/opengauss/openGauss-server",
+    "version_from": "",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://opengauss.org"
+    }
+  },
+  {
+    "name": "calcom",
+    "trademark": "Cal.com",
+    "release": false,
+    "fork_url": "https://github.com/calcom/docker",
+    "version_from": "",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://cal.com"
+    }
+  },  
+  {
+    "name": "plex",
+    "trademark": "Plex Media Server",
+    "release": false,
+    "fork_url": "https://github.com/plexinc/pms-docker",
+    "version_from": "",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://www.plex.tv/media-server-downloads"
+    }
+  },
+  {
+    "name": "wikijs",
+    "trademark": "Wiki.js",
+    "release": false,
+    "fork_url": "https://github.com/Requarks/wiki",
+    "version_from": "",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://js.wiki"
+    }
+  },
+  {
+    "name": "sonarqube",
+    "trademark": "SonarQube",
+    "release": false,
+    "fork_url": "https://github.com/SonarSource/sonarqube",
+    "version_from": "",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://www.sonarsource.com"
+    }
+  },
+  {
+    "name": "paperlessngx",
+    "trademark": "Paperless-ngx",
+    "release": false,
+    "fork_url": "https://github.com/paperless-ngx/paperless-ngx",
+    "version_from": "",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://docs.paperless-ngx.com"
+    }
+  },
+  {
+    "name": "supertokens",
+    "trademark": "Supertokens",
+    "release": false,
+    "fork_url": "https://github.com/supertokens/supertokens-core",
+    "version_from": "",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://supertokens.com"
     }
   }
 ]
