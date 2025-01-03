@@ -421,7 +421,7 @@
   },  
   {
     "name": "plex",
-    "trademark": "Plex Media Server",
+    "trademark": "PlexMediaServer",
     "release": false,
     "fork_url": "https://github.com/plexinc/pms-docker",
     "version_from": "",
