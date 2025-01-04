@@ -3,19 +3,20 @@
   "trademark": "openGauss",
   "release": false,
   "fork_url": "https://gitee.com/opengauss/openGauss-server",
-  "version_from": "",
+  "version_from": "https://hub.docker.com/r/enmotech/opengauss/tags",
   "edition": [
     {
       "dist": "community",
       "version": [
+        "6.0.0",
         "latest"
       ]
     }
   ],
   "requirements": {
-    "cpu": "2",
-    "memory": "4",
-    "disk": "10",
+    "cpu": "1",
+    "memory": "1",
+    "disk": "2",
     "url": "https://opengauss.org"
   }
 }
