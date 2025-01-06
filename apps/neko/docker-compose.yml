@@ -1,4 +1,4 @@
-# image,docs: https://hub.docker.com/_/wordpress/
+# image,docs: https://hub.docker.com/r/m1k1o/neko/tags
 
 version: '3.8'
 
@@ -12,14 +12,7 @@ services:
     ports:
       - "$W9_HTTP_PORT_SET:8080"
       - "52000-52100:52000-52100/udp"
-    environment:
-      NEKO_SCREEN: 1920x1080@30
-      NEKO_EPR: 52000-52100
-      NEKO_ICELITE: 1
-      NEKO_PASSWORD: $W9_POWER_PASSWORD
-      NEKO_PASSWORD_ADMIN: $W9_LOGIN_USER
     env_file: .env
-
       
 volumes:
   neko:
