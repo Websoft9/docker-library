@@ -8,6 +8,8 @@
     {
       "dist": "community",
       "version": [
+        "5.26.0",
+        "5.26.0-enterprise",
         "5.25",
         "5.25-enterprise",
         "5.24",
