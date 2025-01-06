@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for PostgreSQL:
 
 
- - community:  17, 16, 15, 14, 13, 12, 11, 9.6, latest
+ - community:  17.2, 16, 15, 14, 13, 12, 11, 9.6, latest
 
 
 ## System Requirements

@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Gogs:
 
 
- - community:  0.13, latest
+ - community:  0.13.2, latest
 
 
 ## System Requirements
