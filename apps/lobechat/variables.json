@@ -1,7 +1,7 @@
 {
   "name": "lobechat",
   "trademark": "LobeChat",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/lobehub/lobe-chat",
   "version_from": "https://hub.docker.com/r/lobehub/lobe-chat-database/tags",
   "edition": [
