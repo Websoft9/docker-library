@@ -5,7 +5,7 @@ version: '3.8'
 services:
 
   neko:
-    image: $W9_REPO
+    image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
     shm_size: "2gb"
@@ -13,9 +13,6 @@ services:
       - "$W9_HTTP_PORT_SET:8080"
       - "52000-52100:52000-52100/udp"
     env_file: .env
-      
-volumes:
-  neko:
     
 networks:
   default:
