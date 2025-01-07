@@ -1,16 +1,15 @@
-# image: https://hub.docker.com/r/spectado/pocketbase
-
-version: '3.8'
+# image: https://hub.docker.com/r/elestio/pocketbase
 
 services:
-
   pocketbase:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
+    user: 0:0
     restart: unless-stopped
     ports:
-      - $W9_HTTP_PORT_SET:80
-    env_file: .env
+      - $W9_HTTP_PORT_SET:8090
+    env_file: 
+      - .env
     volumes:
       - pocketbase:/pb_data
 
