@@ -12,7 +12,7 @@ services:
       - .env
     volumes:
       - images:/var/www/html/images
-      # - ./src/LocalSettings.php:/var/www/html/LocalSettings.php
+      #- ./src/LocalSettings.php:/var/www/html/LocalSettings.php
     depends_on:
       - mysql
     restart: unless-stopped
