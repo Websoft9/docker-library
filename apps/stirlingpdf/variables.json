@@ -1,6 +1,6 @@
 {
   "name": "stirlingpdf",
-  "trademark": "StirlingPDF",
+  "trademark": "Stirling PDF",
   "release": false,
   "fork_url": "https://github.com/Stirling-Tools/Stirling-PDF",
   "version_from": "https://hub.docker.com/r/stirlingtools/stirling-pdf/tags",
