@@ -1,0 +1,21 @@
+{
+  "name": "g4f",
+  "trademark": "GPT4Free",
+  "release": false,
+  "fork_url": "https://github.com/xtekky/gpt4free",
+  "version_from": "https://hub.docker.com/r/hlohaus789/g4f/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://github.com/xtekky/gpt4free"
+  }
+}
