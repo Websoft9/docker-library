@@ -13,8 +13,8 @@
     }
   ],
   "requirements": {
-    "cpu": "2",
-    "memory": "4",
+    "cpu": "1",
+    "memory": "2",
     "disk": "10",
     "url": "https://github.com/xtekky/gpt4free"
   }
