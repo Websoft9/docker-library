@@ -1,15 +1,11 @@
-# image,docs: https://hub.docker.com/_/wordpress/
+# image,docs: https://github.com/xtekky/gpt4free
 
 services:
 
-  wordpress:
+  gpt4free:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
     logging:
       driver: "json-file"
       options:
@@ -18,31 +14,20 @@ services:
     deploy:
       resources:
         limits:
-          memory: 5g
-          cpus: '0.7'
+          memory: 2g
     ports:
-      - $W9_HTTP_PORT_SET:80
+      - $W9_HTTP_PORT_SET:8080
+      #- 1337:1337  #api
+      #- 7900:7900  #desktop
     env_file: .env
     volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
+      - har_and_cookies:/app/har_and_cookies
+      - generated_images:/app/generated_images
 
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
-    restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
-    volumes:
-      - mysql_data:/var/lib/mysql
-    environment:
-      MYSQL_DATABASE: $W9_ID
-      MYSQL_USER: $W9_ID
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
 
 volumes:
-  wordpress:
-  mysql_data:
+  har_and_cookies:
+  generated_images:
     
 networks:
   default:
