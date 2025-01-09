@@ -1,2 +1,2 @@
-# Appname
-## FAQ
+# Dashy
+## Multi language support
