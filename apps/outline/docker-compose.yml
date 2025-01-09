@@ -1,48 +1,50 @@
-# image,docs: https://hub.docker.com/_/wordpress/
+# docs: https://docs.getoutline.com/s/hosting/doc/docker-7pfeLP5a8t
 
 services:
 
-  wordpress:
+  app:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
-    logging:
-      driver: "json-file"
-      options:
-          max-file: "5"
-          max-size: 10m
-    deploy:
-      resources:
-        limits:
-          memory: 5g
-          cpus: '0.7'
     ports:
-      - $W9_HTTP_PORT_SET:80
-    env_file: .env
+      - $W9_HTTP_PORT_SET:3000
+    env_file: 
+      - .env
     volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
+      - outline:/var/lib/outline/data
+    depends_on:
+      - postgres
+      - redis
 
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
-    restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
+  postgres:
+    image: postgres
+    container_name: $W9_ID-postgresql
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "outline", "-U", "postgres"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
     environment:
-      MYSQL_DATABASE: $W9_ID
-      MYSQL_USER: $W9_ID
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'postgres'
+      POSTGRES_DB: 'outline'
+
+  redis:
+    image: redis
+    container_name: $W9_ID-redis
+    command: redis-server --bind 0.0.0.0 --loglevel verbose
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 30s
+      retries: 3
 
 volumes:
-  wordpress:
-  mysql_data:
+  outline:
+  postgres:
+  redis:
     
 networks:
   default:
