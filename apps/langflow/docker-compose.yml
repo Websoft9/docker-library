@@ -1,48 +1,31 @@
-# image,docs: https://hub.docker.com/_/wordpress/
+# image:https://dockerhub.websoft9.com/r/langflowai/langflow
+# docs: https://docs.langflow.org/
 
 services:
-
-  wordpress:
+  langflow:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
-    logging:
-      driver: "json-file"
-      options:
-          max-file: "5"
-          max-size: 10m
-    deploy:
-      resources:
-        limits:
-          memory: 5g
-          cpus: '0.7'
     ports:
-      - $W9_HTTP_PORT_SET:80
+      - $W9_HTTP_PORT_SET:7860
     env_file: .env
     volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
+      - langflow-data:/app/langflow
 
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
-    restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
-    volumes:
-      - mysql_data:/var/lib/mysql
+  postgres:
+    image: postgres:$W9_DB_VERSION
     environment:
-      MYSQL_DATABASE: $W9_ID
-      MYSQL_USER: $W9_ID
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      POSTGRES_USER: langflow
+      POSTGRES_PASSWORD: ${W9_RCODE}
+      POSTGRES_DB: langflow
+    expose:
+      - 5432
+    volumes:
+      - langflow-postgres:/var/lib/postgresql/data
 
 volumes:
-  wordpress:
-  mysql_data:
+  langflow-postgres:
+  langflow-data:
     
 networks:
   default:
