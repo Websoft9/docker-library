@@ -1,2 +1,2 @@
-# Appname
-## FAQ
+# Kavita
+## Support for multiple languages
