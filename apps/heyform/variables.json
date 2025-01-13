@@ -1,7 +1,7 @@
 {
   "name": "heyform",
   "trademark": "HeyForm",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/heyform/heyform",
   "version_from": "https://hub.docker.com/r/heyform/community-edition/tags",
   "edition": [

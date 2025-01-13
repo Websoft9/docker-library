@@ -1,7 +1,7 @@
 {
   "name": "keycloak",
   "trademark": "Keycloak",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/keycloak/keycloak",
   "version_from": "",
   "edition": [

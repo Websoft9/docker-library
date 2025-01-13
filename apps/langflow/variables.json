@@ -1,7 +1,7 @@
 {
   "name": "langflow",
   "trademark": "Langflow",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/langflow-ai/langflow",
   "version_from": "https://dockerhub.websoft9.com/r/langflowai/langflow/tags",
   "edition": [

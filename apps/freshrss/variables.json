@@ -1,7 +1,7 @@
 {
   "name": "freshrss",
   "trademark": "FreshRSS",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/FreshRSS/FreshRSS/tree/edge/Docker",
   "version_from": "https://hub.docker.com/r/freshrss/freshrss/tags",
   "edition": [
