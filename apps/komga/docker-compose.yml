@@ -1,5 +1,5 @@
 # image: https://hub.docker.com/r/gotson/komga
-# docs:
+# docs: https://komga.org/docs/installation/docker
 
 services:
 
