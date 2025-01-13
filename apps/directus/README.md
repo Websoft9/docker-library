@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Directus:
 
 
- - community:  11.3.2, latest
+ - community:  11.3.5, latest
 
 
 ## System Requirements

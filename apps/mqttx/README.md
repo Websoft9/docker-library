@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for MQTTX:
 
 
- - community:  v1.11.0, latest
+ - community:  v1.11.1, latest
 
 
 ## System Requirements

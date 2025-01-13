@@ -8,7 +8,7 @@ This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://github.com/onlyoffice/docker#recommended-system-requirements):
+The following are the minimal [recommended requirements](https://neko.m1k1o.net):
 
 * **RAM**: 4 GB or more
 * **CPU**: 2 cores or higher

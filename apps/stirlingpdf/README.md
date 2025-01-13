@@ -1,6 +1,6 @@
-# StirlingPDF on Docker  
+# Stirling PDF on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for StirlingPDF:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Stirling PDF:
 
 
  - community:  latest
@@ -17,10 +17,10 @@ The following are the minimal [recommended requirements](https://stirlingpdf.io)
 
 ## Install
 
-You can install this StirlingPDF by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this Stirling PDF by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use StirlingPDF with **Websoft9 Business Support** free, you can [subscribe StirlingPDF](https://www.websoft9.com/apps) on Cloud platform
+If you want use Stirling PDF with **Websoft9 Business Support** free, you can [subscribe Stirling PDF](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[StirlingPDF Administrator Guide](https://support.websoft9.com/docs/stirlingpdf) powered by Websoft9
+[Stirling PDF Administrator Guide](https://support.websoft9.com/docs/stirlingpdf) powered by Websoft9
