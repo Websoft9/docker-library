@@ -3,11 +3,12 @@
   "trademark": "NodeBB",
   "release": false,
   "fork_url": "https://github.com/NodeBB/NodeBB",
-  "version_from": "",
+  "version_from": "https://github.com/NodeBB/NodeBB/releases",
   "edition": [
     {
       "dist": "community",
       "version": [
+        "3.12",
         "latest"
       ]
     }
