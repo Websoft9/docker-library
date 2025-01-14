@@ -1,4 +1,6 @@
-# image,docs: https://hub.docker.com/_/wordpress/
+# image: https://github.com/NodeBB/NodeBB/pkgs/container/nodebb
+# docs: https://docs.nodebb.org/
+
 version: '3.8'
 
 services:
