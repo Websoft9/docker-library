@@ -8,13 +8,13 @@ services:
 
   db:
     image: docker.io/library/postgres:16
-    container_name: $W9_ID-postgres
+    container_name: $W9_ID-postgresql
     restart: unless-stopped
     volumes:
       - dbdata:/var/lib/mysql
     environment:
       POSTGRES_DB: paperlessngx
-      POSTGRES_USER: postgres
+      POSTGRES_USER: paperlessngx
       POSTGRES_PASSWORD: $W9_POWER_PASSWORD
 
   webserver:
@@ -37,9 +37,9 @@ services:
     environment:
       PAPERLESS_REDIS: redis://$W9_ID-redis:6379
       PAPERLESS_DBENGINE: postgresql
-      PAPERLESS_DBHOST: $W9_ID-postgres
+      PAPERLESS_DBHOST: $W9_ID-postgresql
       PAPERLESS_DBNAME: paperlessngx
-      PAPERLESS_DBUSER: postgres
+      PAPERLESS_DBUSER: paperlessngx
       PAPERLESS_DBPASS: $W9_POWER_PASSWORD
       PAPERLESS_DBPORT: 5432
       PAPERLESS_TIKA_ENABLED: 1
