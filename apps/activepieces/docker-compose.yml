@@ -1,49 +1,48 @@
-# image,docs: https://hub.docker.com/_/wordpress/
-
 services:
-
-  wordpress:
+  activepieces:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
-    logging:
-      driver: "json-file"
-      options:
-          max-file: "5"
-          max-size: 10m
-    deploy:
-      resources:
-        limits:
-          memory: 5g
-          cpus: '0.7'
     ports:
       - $W9_HTTP_PORT_SET:80
+    depends_on:
+      - postgres
+      - redis
     env_file: .env
-    volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
-
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
-    restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
-    volumes:
-      - mysql_data:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: $W9_ID
-      MYSQL_USER: $W9_ID
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      AP_POSTGRES_HOST: $W9_ID-postgresql
+      AP_POSTGRES_DATABASE: activepieces
+      AP_POSTGRES_PORT: 5432
+      AP_POSTGRES_USERNAME: postgres
+      AP_POSTGRES_PASSWORD: $W9_POWER_PASSWORD
+      AP_REDIS_HOST: $W9_ID-redis
+      AP_REDIS_PORT: 6379
+    volumes:
+      - activepieces_cache:/usr/src/app/cache
+
+  postgres:
+    image: postgres:14.4
+    container_name: $W9_ID-postgresql
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: activepieces
+      POSTGRES_PASSWORD: $W9_POWER_PASSWORD
+      POSTGRES_USER: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7.0.7
+    container_name: $W9_ID-redis
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
 
 volumes:
-  wordpress:
-  mysql_data:
-    
+  postgres_data:
+  redis_data:
+  activepieces_cache:
+
 networks:
   default:
     name: $W9_NETWORK
