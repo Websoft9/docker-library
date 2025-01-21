@@ -1,7 +1,7 @@
 {
   "name": "komga",
   "trademark": "Komga",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/gotson/komga",
   "version_from": "https://hub.docker.com/r/gotson/komga/tags",
   "edition": [

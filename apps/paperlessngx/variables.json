@@ -1,7 +1,7 @@
 {
   "name": "paperlessngx",
   "trademark": "Paperless-ngx",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/paperless-ngx/paperless-ngx",
   "version_from": "",
   "edition": [

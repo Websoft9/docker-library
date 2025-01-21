@@ -1,7 +1,7 @@
 {
   "name": "nodebb",
   "trademark": "NodeBB",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/NodeBB/NodeBB",
   "version_from": "https://github.com/NodeBB/NodeBB/releases",
   "edition": [
