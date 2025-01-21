@@ -1,0 +1,21 @@
+{
+  "name": "keep",
+  "trademark": "Keep",
+  "release": false,
+  "fork_url": "https://github.com/keephq/keep",
+  "version_from": "us-central1-docker.pkg.dev/keephq/keep/keep-api",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://www.keephq.dev/"
+  }
+}
