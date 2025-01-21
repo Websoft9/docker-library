@@ -1,10 +1,10 @@
 [
   {
-    "name": "localai",
-    "trademark": "LocalAI",
+    "name": "keep",
+    "trademark": "Keep",
     "release": false,
-    "fork_url": "https://github.com/mudler/LocalAI",
-    "version_from": "https://hub.docker.com/r/localai/localai/tags",
+    "fork_url": "https://github.com/keephq/keep",
+    "version_from": "us-central1-docker.pkg.dev/keephq/keep/keep-api",
     "edition": [
       {
         "dist": "community",
@@ -17,91 +17,7 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://localai.io"
-    }
-  },
-  {
-    "name": "kavita",
-    "trademark": "Kavita",
-    "release": false,
-    "fork_url": "https://github.com/Kareadita/Kavita",
-    "version_from": "https://hub.docker.com/r/jvmilazz0/kavita/tags",
-    "edition": [
-      {
-        "dist": "community",
-        "version": [
-          "latest"
-        ]
-      }
-    ],
-    "requirements": {
-      "cpu": "2",
-      "memory": "4",
-      "disk": "10",
-      "url": "https://www.kavitareader.com"
-    }
-  },  
-  {
-    "name": "linkwarden",
-    "trademark": "Linkwarden",
-    "release": false,
-    "fork_url": "https://github.com/linkwarden/linkwarden",
-    "version_from": "https://ghcr.io/linkwarden/linkwarden",
-    "edition": [
-      {
-        "dist": "community",
-        "version": [
-          "latest"
-        ]
-      }
-    ],
-    "requirements": {
-      "cpu": "2",
-      "memory": "4",
-      "disk": "10",
-      "url": "https://linkwarden.app"
-    }
-  },
-  {
-    "name": "taskingai",
-    "trademark": "TaskingAI",
-    "release": false,
-    "fork_url": "https://github.com/TaskingAI/TaskingAI",
-    "version_from": "https://hub.docker.com/r/taskingai/taskingai-server/tags",
-    "edition": [
-      {
-        "dist": "community",
-        "version": [
-          "latest"
-        ]
-      }
-    ],
-    "requirements": {
-      "cpu": "2",
-      "memory": "4",
-      "disk": "10",
-      "url": "https://www.tasking.ai"
-    }
-  },
-  {
-    "name": "g4f",
-    "trademark": "GPT4Free",
-    "release": false,
-    "fork_url": "https://github.com/xtekky/gpt4free",
-    "version_from": "https://hub.docker.com/r/hlohaus789/g4f/tags",
-    "edition": [
-      {
-        "dist": "community",
-        "version": [
-          "latest"
-        ]
-      }
-    ],
-    "requirements": {
-      "cpu": "2",
-      "memory": "4",
-      "disk": "10",
-      "url": "https://github.com/xtekky/gpt4free"
+      "url": "https://www.keephq.dev/"
     }
   }
 ]
