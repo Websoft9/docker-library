@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for NodeBB:
 
 
- - community:  latest
+ - community:  3.12, latest
 
 
 ## System Requirements
@@ -23,4 +23,4 @@ If you want use NodeBB with **Websoft9 Business Support** free, you can [subscri
 
 ## Documentation
 
-[NodeBB Administrator Guide](https://support.websoft9.com/docs/nodenbb) powered by Websoft9
+[NodeBB Administrator Guide](https://support.websoft9.com/docs/nodebb) powered by Websoft9
