@@ -1,10 +1,10 @@
 [
   {
-    "name": "keep",
-    "trademark": "Keep",
+    "name": "openproject",
+    "trademark": "OpenProject",
     "release": false,
-    "fork_url": "https://github.com/keephq/keep",
-    "version_from": "us-central1-docker.pkg.dev/keephq/keep/keep-api",
+    "fork_url": "https://github.com/opf/openproject",
+    "version_from": "",
     "edition": [
       {
         "dist": "community",
@@ -17,7 +17,7 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://www.keephq.dev/"
+      "url": "https://www.openproject.org"
     }
   }
 ]
