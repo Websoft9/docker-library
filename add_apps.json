@@ -1,10 +1,10 @@
 [
   {
-    "name": "openproject",
-    "trademark": "OpenProject",
+    "name": "trafficserver",
+    "trademark": "ApacheTrafficServer",
     "release": false,
-    "fork_url": "https://github.com/opf/openproject",
-    "version_from": "",
+    "fork_url": "",
+    "version_from": "https://hub.docker.com/r/trafficserver/trafficserver/tags",
     "edition": [
       {
         "dist": "community",
@@ -17,7 +17,28 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://www.openproject.org"
+      "url": "https://trafficserver.apache.org"
+    }
+  },
+  {
+    "name": "squid",
+    "trademark": "Squid",
+    "release": false,
+    "fork_url": "https://github.com/squid-cache/squid",
+    "version_from": "https://hub.docker.com/r/ubuntu/squid/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://www.squid-cache.org"
     }
   }
 ]
