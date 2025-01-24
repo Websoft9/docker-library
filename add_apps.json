@@ -1,10 +1,10 @@
 [
   {
-    "name": "nomad",
-    "trademark": "Nomad",
+    "name": "puter",
+    "trademark": "Puter",
     "release": false,
-    "fork_url": "https://github.com/hashicorp/nomad",
-    "version_from": "https://hub.docker.com/r/hashicorp/nomad/tags",
+    "fork_url": "https://github.com/HeyPuter/puter",
+    "version_from": "ghcr.io/heyputer/puter:latest",
     "edition": [
       {
         "dist": "community",
@@ -17,15 +17,15 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://www.hashicorp.com/products/nomad"
+      "url": "https://puter.com"
     }
   },
   {
-    "name": "k0s",
-    "trademark": "k0s",
+    "name": "plane",
+    "trademark": "Plane",
     "release": false,
-    "fork_url": "https://github.com/k0sproject/k0s",
-    "version_from": "https://hub.docker.com/r/k0sproject/k0s/tags",
+    "fork_url": "https://github.com/makeplane/plane",
+    "version_from": "",
     "edition": [
       {
         "dist": "community",
@@ -38,7 +38,49 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://k0sproject.io"
+      "url": "https://plane.so"
+    }
+  },
+  {
+    "name": "frigate",
+    "trademark": "Frigate",
+    "release": false,
+    "fork_url": "https://github.com/blakeblackshear/frigate",
+    "version_from": "",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://frigate.video"
+    }
+  },
+  {
+    "name": "matlab",
+    "trademark": "MATLAB",
+    "release": false,
+    "fork_url": "",
+    "version_from": "https://hub.docker.com/r/mathworks/matlab/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://www.mathworks.com/help/cloudcenter/ug/matlab-container-on-docker-hub.html"
     }
   }
 ]
