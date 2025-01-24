@@ -1,0 +1,21 @@
+{
+  "name": "k0s",
+  "trademark": "k0s",
+  "release": false,
+  "fork_url": "https://github.com/k0sproject/k0s",
+  "version_from": "https://hub.docker.com/r/k0sproject/k0s/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://k0sproject.io"
+  }
+}
