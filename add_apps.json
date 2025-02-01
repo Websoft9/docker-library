@@ -1,10 +1,10 @@
 [
   {
-    "name": "puter",
-    "trademark": "Puter",
+    "name": "Twenty",
+    "trademark": "twenty",
     "release": false,
-    "fork_url": "https://github.com/HeyPuter/puter",
-    "version_from": "ghcr.io/heyputer/puter:latest",
+    "fork_url": "https://github.com/twentyhq/twenty",
+    "version_from": "https://hub.docker.com/r/twentycrm/twenty/tags",
     "edition": [
       {
         "dist": "community",
@@ -17,15 +17,15 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://puter.com"
+      "url": "https://twenty.com"
     }
   },
   {
-    "name": "plane",
-    "trademark": "Plane",
+    "name": "Mixpost",
+    "trademark": "mixpost",
     "release": false,
-    "fork_url": "https://github.com/makeplane/plane",
-    "version_from": "",
+    "fork_url": "https://github.com/inovector/mixpost",
+    "version_from": "https://hub.docker.com/r/inovector/mixpost/tags",
     "edition": [
       {
         "dist": "community",
@@ -38,15 +38,15 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://plane.so"
+      "url": "https://mixpost.app"
     }
   },
   {
-    "name": "frigate",
+    "name": "Consul",
     "trademark": "Frigate",
     "release": false,
-    "fork_url": "https://github.com/blakeblackshear/frigate",
-    "version_from": "",
+    "fork_url": "https://github.com/hashicorp/consul",
+    "version_from": "https://hub.docker.com/r/hashicorp/consul",
     "edition": [
       {
         "dist": "community",
@@ -59,15 +59,15 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://frigate.video"
+      "url": "https://www.consul.io"
     }
   },
   {
-    "name": "matlab",
-    "trademark": "MATLAB",
+    "name": "azimutt",
+    "trademark": "Azimutt",
     "release": false,
-    "fork_url": "",
-    "version_from": "https://hub.docker.com/r/mathworks/matlab/tags",
+    "fork_url": "https://github.com/azimuttapp/azimutt",
+    "version_from": "https://hub.docker.com/r/loicknuchel/azimutt/tags",
     "edition": [
       {
         "dist": "community",
@@ -80,7 +80,28 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://www.mathworks.com/help/cloudcenter/ug/matlab-container-on-docker-hub.html"
+      "url": "https://azimutt.app"
+    }
+  },
+  {
+    "name": "compreface",
+    "trademark": "CompreFace",
+    "release": false,
+    "fork_url": "https://github.com/exadel-inc/CompreFace",
+    "version_from": "https://hub.docker.com/r/exadel/compreface-core/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://exadel.com/accelerator-showcase/compreface"
     }
   }
 ]
