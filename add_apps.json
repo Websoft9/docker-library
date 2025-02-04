@@ -1,10 +1,10 @@
 [
   {
-    "name": "Twenty",
-    "trademark": "twenty",
+    "name": "glance",
+    "trademark": "Glance",
     "release": false,
-    "fork_url": "https://github.com/twentyhq/twenty",
-    "version_from": "https://hub.docker.com/r/twentycrm/twenty/tags",
+    "fork_url": "https://github.com/glanceapp/glance",
+    "version_from": "https://hub.docker.com/r/glanceapp/glance/tags",
     "edition": [
       {
         "dist": "community",
@@ -17,15 +17,15 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://twenty.com"
+      "url": "https://github.com/glanceapp/glance"
     }
   },
   {
-    "name": "Mixpost",
-    "trademark": "mixpost",
+    "name": "lemmy",
+    "trademark": "Lemmy",
     "release": false,
-    "fork_url": "https://github.com/inovector/mixpost",
-    "version_from": "https://hub.docker.com/r/inovector/mixpost/tags",
+    "fork_url": "https://github.com/LemmyNet/lemmy",
+    "version_from": "https://hub.docker.com/r/dessalines/lemmy/tags",
     "edition": [
       {
         "dist": "community",
@@ -38,15 +38,15 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://mixpost.app"
+      "url": "https://join-lemmy.org"
     }
   },
   {
-    "name": "Consul",
-    "trademark": "Frigate",
+    "name": "web-check",
+    "trademark": "Web-Check",
     "release": false,
-    "fork_url": "https://github.com/hashicorp/consul",
-    "version_from": "https://hub.docker.com/r/hashicorp/consul",
+    "fork_url": "https://github.com/Lissy93/web-check",
+    "version_from": "https://hub.docker.com/r/lissy93/web-check/tags",
     "edition": [
       {
         "dist": "community",
@@ -59,15 +59,15 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://www.consul.io"
+      "url": "https://web-check.xyz"
     }
   },
   {
-    "name": "azimutt",
-    "trademark": "Azimutt",
+    "name": "nexterm",
+    "trademark": "Nexterm",
     "release": false,
-    "fork_url": "https://github.com/azimuttapp/azimutt",
-    "version_from": "https://hub.docker.com/r/loicknuchel/azimutt/tags",
+    "fork_url": "https://github.com/gnmyt/Nexterm",
+    "version_from": "https://hub.docker.com/r/germannewsmaker/nexterm/tags",
     "edition": [
       {
         "dist": "community",
@@ -80,15 +80,15 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://azimutt.app"
+      "url": "https://docs.nexterm.dev"
     }
   },
   {
-    "name": "compreface",
-    "trademark": "CompreFace",
+    "name": "crowdsec",
+    "trademark": "CrowdSec",
     "release": false,
-    "fork_url": "https://github.com/exadel-inc/CompreFace",
-    "version_from": "https://hub.docker.com/r/exadel/compreface-core/tags",
+    "fork_url": "https://github.com/crowdsecurity/crowdsec",
+    "version_from": "https://hub.docker.com/r/crowdsecurity/crowdsec/tags",
     "edition": [
       {
         "dist": "community",
@@ -101,7 +101,7 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://exadel.com/accelerator-showcase/compreface"
+      "url": "https://www.crowdsec.net/"
     }
   }
 ]
