@@ -7,15 +7,13 @@
   "edition": [
     {
       "dist": "community",
-      "version": [
-        "latest"
-      ]
+      "version": ["1.4","latest"]
     }
   ],
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "1",
+    "disk": "10",
     "url": "https://anythingllm.com"
   }
 }
