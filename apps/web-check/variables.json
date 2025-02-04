@@ -1,0 +1,21 @@
+{
+  "name": "web-check",
+  "trademark": "Web-Check",
+  "release": false,
+  "fork_url": "https://github.com/Lissy93/web-check",
+  "version_from": "https://hub.docker.com/r/lissy93/web-check/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://web-check.xyz"
+  }
+}
