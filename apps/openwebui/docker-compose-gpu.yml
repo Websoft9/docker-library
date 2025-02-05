@@ -11,6 +11,12 @@ services:
     env_file: .env
     volumes:
       - open-webui:/app/backend/data
+    deploy:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
 
   ollama:
     image: ollama/ollama
@@ -21,6 +27,11 @@ services:
         limits:
           memory: 5g
           cpus: '2'
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
     volumes:
       - ollama:/root/.ollama
 
