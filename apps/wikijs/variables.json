@@ -1,7 +1,7 @@
 {
   "name": "wikijs",
   "trademark": "Wiki.js",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/Requarks/wiki",
   "version_from": "",
   "edition": [
