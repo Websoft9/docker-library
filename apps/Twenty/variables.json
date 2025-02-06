@@ -1,6 +1,6 @@
 {
-  "name": "Twenty",
-  "trademark": "twenty",
+  "name": "twenty",
+  "trademark": "Twenty",
   "release": false,
   "fork_url": "https://github.com/twentyhq/twenty",
   "version_from": "https://hub.docker.com/r/twentycrm/twenty/tags",
