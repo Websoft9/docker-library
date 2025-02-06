@@ -1,6 +1,6 @@
-# twenty on Docker  
+# Twenty on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for twenty:
+This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Twenty:
 
 
  - community:  latest
@@ -17,10 +17,10 @@ The following are the minimal [recommended requirements](https://twenty.com):
 
 ## Install
 
-You can install this twenty by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this Twenty by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use twenty with **Websoft9 Business Support** free, you can [subscribe twenty](https://www.websoft9.com/apps) on Cloud platform
+If you want use Twenty with **Websoft9 Business Support** free, you can [subscribe Twenty](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[twenty Administrator Guide](https://support.websoft9.com/docs/Twenty) powered by Websoft9
+[Twenty Administrator Guide](https://support.websoft9.com/docs/twenty) powered by Websoft9
