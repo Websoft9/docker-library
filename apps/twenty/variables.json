@@ -1,0 +1,21 @@
+{
+  "name": "twenty",
+  "trademark": "Twenty",
+  "release": false,
+  "fork_url": "https://github.com/twentyhq/twenty",
+  "version_from": "https://hub.docker.com/r/twentycrm/twenty/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://twenty.com"
+  }
+}
