@@ -1,10 +1,10 @@
 [
   {
-    "name": "glance",
-    "trademark": "Glance",
+    "name": "dify",
+    "trademark": "Dify",
     "release": false,
-    "fork_url": "https://github.com/glanceapp/glance",
-    "version_from": "https://hub.docker.com/r/glanceapp/glance/tags",
+    "fork_url": "https://github.com/langgenius/dify",
+    "version_from": "https://hub.docker.com/r/langgenius/dify-api/tags",
     "edition": [
       {
         "dist": "community",
@@ -17,15 +17,15 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://github.com/glanceapp/glance"
+      "url": "https://dify.ai"
     }
   },
   {
-    "name": "lemmy",
-    "trademark": "Lemmy",
+    "name": "xinference",
+    "trademark": "Xinference",
     "release": false,
-    "fork_url": "https://github.com/LemmyNet/lemmy",
-    "version_from": "https://hub.docker.com/r/dessalines/lemmy/tags",
+    "fork_url": "https://github.com/xorbitsai/inference",
+    "version_from": "https://hub.docker.com/r/xprobe/xinference/tags",
     "edition": [
       {
         "dist": "community",
@@ -38,15 +38,15 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://join-lemmy.org"
+      "url": "https://inference.readthedocs.io"
     }
   },
   {
-    "name": "web-check",
-    "trademark": "Web-Check",
+    "name": "windmill",
+    "trademark": "Windmill",
     "release": false,
-    "fork_url": "https://github.com/Lissy93/web-check",
-    "version_from": "https://hub.docker.com/r/lissy93/web-check/tags",
+    "fork_url": "https://github.com/windmill-labs/windmill",
+    "version_from": "ghcr.io/windmill-labs/windmill",
     "edition": [
       {
         "dist": "community",
@@ -59,15 +59,15 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://web-check.xyz"
+      "url": "https://www.windmill.dev"
     }
   },
   {
-    "name": "nexterm",
-    "trademark": "Nexterm",
+    "name": "bigagi",
+    "trademark": "Big-AGI",
     "release": false,
-    "fork_url": "https://github.com/gnmyt/Nexterm",
-    "version_from": "https://hub.docker.com/r/germannewsmaker/nexterm/tags",
+    "fork_url": "https://github.com/enricoros/big-agi",
+    "version_from": "ghcr.io/enricoros/big-agi",
     "edition": [
       {
         "dist": "community",
@@ -80,28 +80,7 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://docs.nexterm.dev"
-    }
-  },
-  {
-    "name": "crowdsec",
-    "trademark": "CrowdSec",
-    "release": false,
-    "fork_url": "https://github.com/crowdsecurity/crowdsec",
-    "version_from": "https://hub.docker.com/r/crowdsecurity/crowdsec/tags",
-    "edition": [
-      {
-        "dist": "community",
-        "version": [
-          "latest"
-        ]
-      }
-    ],
-    "requirements": {
-      "cpu": "2",
-      "memory": "4",
-      "disk": "10",
-      "url": "https://www.crowdsec.net/"
+      "url": "https://big-agi.com"
     }
   }
 ]
