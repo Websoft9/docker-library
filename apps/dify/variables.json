@@ -1,0 +1,21 @@
+{
+  "name": "dify",
+  "trademark": "Dify",
+  "release": false,
+  "fork_url": "https://github.com/langgenius/dify",
+  "version_from": "https://hub.docker.com/r/langgenius/dify-api/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://dify.ai"
+  }
+}

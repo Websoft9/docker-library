@@ -16,11 +16,6 @@ services:
     image: ollama/ollama
     container_name: $W9_ID-ollama
     restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          memory: 5g
-          cpus: '2'
     volumes:
       - ollama:/root/.ollama
 
