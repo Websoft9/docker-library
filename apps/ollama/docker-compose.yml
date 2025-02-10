@@ -7,11 +7,6 @@ services:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          memory: 5g
-          cpus: '2'
     ports:
       - $W9_HTTP_PORT_SET:11434
     env_file: 
@@ -25,9 +20,6 @@ services:
     restart: unless-stopped
     deploy:
       resources:
-        limits:
-          memory: 5g
-          cpus: '2'
         reservations:
           devices:
             - driver: nvidia
