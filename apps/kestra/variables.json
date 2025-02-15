@@ -1,0 +1,21 @@
+{
+  "name": "kestra",
+  "trademark": "Kestra",
+  "release": false,
+  "fork_url": "https://github.com/kestra-io/kestra",
+  "version_from": "https://hub.docker.com/r/kestra/kestra/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://kestra.io"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "automatisch",
+  "trademark": "Automatisch",
+  "release": false,
+  "fork_url": "https://github.com/automatisch/automatisch",
+  "version_from": "https://hub.docker.com/r/automatischio/automatisch/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://automatisch.io"
+  }
+}
