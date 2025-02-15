@@ -1,10 +1,10 @@
 [
   {
-    "name": "dify",
-    "trademark": "Dify",
+    "name": "automatisch",
+    "trademark": "Automatisch",
     "release": false,
-    "fork_url": "https://github.com/langgenius/dify",
-    "version_from": "https://hub.docker.com/r/langgenius/dify-api/tags",
+    "fork_url": "https://github.com/automatisch/automatisch",
+    "version_from": "https://hub.docker.com/r/automatischio/automatisch/tags",
     "edition": [
       {
         "dist": "community",
@@ -17,15 +17,15 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://dify.ai"
+      "url": "https://automatisch.io"
     }
   },
   {
-    "name": "xinference",
-    "trademark": "Xinference",
+    "name": "kestra",
+    "trademark": "Kestra",
     "release": false,
-    "fork_url": "https://github.com/xorbitsai/inference",
-    "version_from": "https://hub.docker.com/r/xprobe/xinference/tags",
+    "fork_url": "https://github.com/kestra-io/kestra",
+    "version_from": "https://hub.docker.com/r/kestra/kestra/tags",
     "edition": [
       {
         "dist": "community",
@@ -38,15 +38,15 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://inference.readthedocs.io"
+      "url": "https://kestra.io"
     }
   },
   {
-    "name": "windmill",
-    "trademark": "Windmill",
+    "name": "nifi",
+    "trademark": "ApacheNiFi",
     "release": false,
-    "fork_url": "https://github.com/windmill-labs/windmill",
-    "version_from": "ghcr.io/windmill-labs/windmill",
+    "fork_url": "https://github.com/apache/nifi",
+    "version_from": "https://hub.docker.com/r/apache/nifi/tags",
     "edition": [
       {
         "dist": "community",
@@ -59,28 +59,7 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://www.windmill.dev"
-    }
-  },
-  {
-    "name": "bigagi",
-    "trademark": "Big-AGI",
-    "release": false,
-    "fork_url": "https://github.com/enricoros/big-agi",
-    "version_from": "ghcr.io/enricoros/big-agi",
-    "edition": [
-      {
-        "dist": "community",
-        "version": [
-          "latest"
-        ]
-      }
-    ],
-    "requirements": {
-      "cpu": "2",
-      "memory": "4",
-      "disk": "10",
-      "url": "https://big-agi.com"
+      "url": "https://nifi.apache.org"
     }
   }
 ]
