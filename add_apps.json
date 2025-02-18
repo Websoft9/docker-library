@@ -1,10 +1,10 @@
 [
   {
-    "name": "automatisch",
-    "trademark": "Automatisch",
+    "name": "ragflow",
+    "trademark": "RAGFlow",
     "release": false,
-    "fork_url": "https://github.com/automatisch/automatisch",
-    "version_from": "https://hub.docker.com/r/automatischio/automatisch/tags",
+    "fork_url": "https://github.com/infiniflow/ragflow",
+    "version_from": "https://hub.docker.com/r/infiniflow/ragflow/tags",
     "edition": [
       {
         "dist": "community",
@@ -17,49 +17,7 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://automatisch.io"
-    }
-  },
-  {
-    "name": "kestra",
-    "trademark": "Kestra",
-    "release": false,
-    "fork_url": "https://github.com/kestra-io/kestra",
-    "version_from": "https://hub.docker.com/r/kestra/kestra/tags",
-    "edition": [
-      {
-        "dist": "community",
-        "version": [
-          "latest"
-        ]
-      }
-    ],
-    "requirements": {
-      "cpu": "2",
-      "memory": "4",
-      "disk": "10",
-      "url": "https://kestra.io"
-    }
-  },
-  {
-    "name": "nifi",
-    "trademark": "ApacheNiFi",
-    "release": false,
-    "fork_url": "https://github.com/apache/nifi",
-    "version_from": "https://hub.docker.com/r/apache/nifi/tags",
-    "edition": [
-      {
-        "dist": "community",
-        "version": [
-          "latest"
-        ]
-      }
-    ],
-    "requirements": {
-      "cpu": "2",
-      "memory": "4",
-      "disk": "10",
-      "url": "https://nifi.apache.org"
+      "url": "https://ragflow.io"
     }
   }
 ]
