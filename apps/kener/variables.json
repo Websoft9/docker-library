@@ -1,0 +1,21 @@
+{
+  "name": "kener",
+  "trademark": "kener",
+  "release": false,
+  "fork_url": "https://github.com/rajnandan1/kener",
+  "version_from": "https://hub.docker.com/r/rajnandan1/kener/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://kener.ing"
+  }
+}
