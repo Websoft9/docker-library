@@ -1,32 +1,10 @@
 [
   {
-    "name": "chroma",
-    "trademark": "Chroma",
+    "name": "kener",
+    "trademark": "kener",
     "release": false,
-    "fork_url": "https://github.com/chroma-core/chroma",
-    "version_from": "ghcr.io/chroma-core/chroma",
-    "edition": [
-      {
-        "dist": "community",
-        "version": [
-          "0.6.3",
-          "latest"
-        ]
-      }
-    ],
-    "requirements": {
-      "cpu": "2",
-      "memory": "4",
-      "disk": "10",
-      "url": "https://www.trychroma.com"
-    }
-  },
-  {
-    "name": "rancher",
-    "trademark": "Rancher",
-    "release": false,
-    "fork_url": "https://github.com/rancher/rancher",
-    "version_from": "https://hub.docker.com/r/rancher/rancher/tags",
+    "fork_url": "https://github.com/rajnandan1/kener",
+    "version_from": "https://hub.docker.com/r/rajnandan1/kener/tags",
     "edition": [
       {
         "dist": "community",
@@ -39,7 +17,7 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://www.rancher.com"
+      "url": "https://kener.ing"
     }
   }
 ]
