@@ -1,0 +1,22 @@
+{
+  "name": "chroma",
+  "trademark": "Chroma",
+  "release": false,
+  "fork_url": "https://github.com/chroma-core/chroma",
+  "version_from": "ghcr.io/chroma-core/chroma",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "0.6.3",
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://www.trychroma.com"
+  }
+}
