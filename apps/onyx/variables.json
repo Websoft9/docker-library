@@ -1,0 +1,21 @@
+{
+  "name": "onyx",
+  "trademark": "Onyx",
+  "release": false,
+  "fork_url": "https://github.com/onyx-dot-app/onyx/blob/main/deployment/docker_compose",
+  "version_from": "https://hub.docker.com/r/onyxdotapp/onyx-backend/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "4",
+    "memory": "10",
+    "disk": "50",
+    "url": "https://www.onyx.app/"
+  }
+}
