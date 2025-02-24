@@ -11,4 +11,5 @@ assignees: ''
 - [ ] docker-library update
 - [ ] contentful update
 - [ ] docs update
+- [ ] aliyun oss image update
 
