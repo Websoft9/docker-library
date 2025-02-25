@@ -1,0 +1,21 @@
+{
+  "name": "browserless",
+  "trademark": "Browserless",
+  "release": false,
+  "fork_url": "https://github.com/browserless/browserless",
+  "version_from": "ghcr.io/browserless/chromium",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://www.browserless.io"
+  }
+}
