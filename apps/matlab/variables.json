@@ -1,7 +1,7 @@
 {
   "name": "matlab",
   "trademark": "MATLAB",
-  "release": false,
+  "release": true,
   "fork_url": "",
   "version_from": "https://hub.docker.com/r/mathworks/matlab/tags",
   "edition": [

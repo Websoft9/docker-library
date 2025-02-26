@@ -1,7 +1,7 @@
 {
   "name": "glance",
   "trademark": "Glance",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/glanceapp/glance",
   "version_from": "https://hub.docker.com/r/glanceapp/glance/tags",
   "edition": [

@@ -1,7 +1,7 @@
 {
   "name": "nexterm",
   "trademark": "Nexterm",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/gnmyt/Nexterm",
   "version_from": "https://hub.docker.com/r/germannewsmaker/nexterm/tags",
   "edition": [
