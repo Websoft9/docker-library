@@ -23,4 +23,4 @@ If you want use Web-Check with **Websoft9 Business Support** free, you can [subs
 
 ## Documentation
 
-[Web-Check Administrator Guide](https://support.websoft9.com/docs/web-check) powered by Websoft9
+[Web-Check Administrator Guide](https://support.websoft9.com/docs/webcheck) powered by Websoft9
