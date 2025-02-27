@@ -3,12 +3,12 @@
   "trademark": "n8n",
   "release": true,
   "fork_url": "https://docs.n8n.io/hosting/installation/docker/",
-  "version_from": "",
+  "version_from": "https://hub.docker.com/r/n8nio/n8n/tags",
   "edition": [
     {
       "dist": "community",
       "version": [
-        "1.79.3",
+        "1.81.0",
         "latest"
       ]
     }
