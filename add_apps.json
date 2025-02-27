@@ -1,10 +1,10 @@
 [
   {
-    "name": "browserless",
-    "trademark": "Browserless",
+    "name": "litellm",
+    "trademark": "LiteLLM",
     "release": false,
-    "fork_url": "https://github.com/browserless/browserless",
-    "version_from": "ghcr.io/browserless/chromium",
+    "fork_url": "https://github.com/BerriAI/litellm",
+    "version_from": "ghcr.io/berriai/litellm",
     "edition": [
       {
         "dist": "community",
@@ -17,7 +17,28 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://www.browserless.io"
+      "url": "https://www.litellm.ai"
+    }
+  },
+  {
+    "name": "oneapi",
+    "trademark": "OneAPI",
+    "release": false,
+    "fork_url": "https://github.com/songquanpeng/one-api",
+    "version_from": "https://hub.docker.com/r/justsong/one-api/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://openai.justsong.cn"
     }
   }
 ]
