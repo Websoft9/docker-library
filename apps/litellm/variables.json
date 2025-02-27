@@ -1,0 +1,21 @@
+{
+  "name": "litellm",
+  "trademark": "LiteLLM",
+  "release": false,
+  "fork_url": "https://github.com/BerriAI/litellm",
+  "version_from": "ghcr.io/berriai/litellm",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://www.litellm.ai"
+  }
+}
