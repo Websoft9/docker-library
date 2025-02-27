@@ -1,7 +1,7 @@
 {
   "name": "portkey",
   "trademark": "Portkey",
-  "release": false,
+  "release": true,
   "fork_url": "https://raw.githubusercontent.com/Portkey-AI/gateway/main/docker-compose.yaml",
   "version_from": "https://hub.docker.com/r/portkeyai/gateway/tags",
   "edition": [
