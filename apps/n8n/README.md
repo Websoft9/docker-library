@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for n8n:
 
 
- - community:  1.79.3, latest
+ - community:  1.81.0, latest
 
 
 ## System Requirements

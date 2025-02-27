@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Portkey:
 
 
- - community:  1.5.2, latest
+ - community:  1.8.6, latest
 
 
 ## System Requirements
