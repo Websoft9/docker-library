@@ -1,10 +1,10 @@
 [
   {
-    "name": "zitadel",
-    "trademark": "ZITADEL",
+    "name": "bookstack",
+    "trademark": "BookStack",
     "release": false,
-    "fork_url": "https://github.com/zitadel/zitadel",
-    "version_from": "ghcr.io/zitadel/zitadel",
+    "fork_url": "https://github.com/BookStackApp/BookStack",
+    "version_from": "https://hub.docker.com/r/solidnerd/bookstack/tags",
     "edition": [
       {
         "dist": "community",
@@ -17,15 +17,15 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://zitadel.com"
+      "url": "https://www.bookstackapp.com"
     }
   },
   {
-    "name": "opencost",
-    "trademark": "OpenCost",
+    "name": "selenium",
+    "trademark": "selenium",
     "release": false,
-    "fork_url": "https://github.com/opencost/opencost",
-    "version_from": "ghcr.io/opencost/opencost",
+    "fork_url": "https://github.com/seleniumhq/selenium",
+    "version_from": "https://hub.docker.com/r/selenium/standalone-chrome/tags",
     "edition": [
       {
         "dist": "community",
@@ -38,28 +38,7 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://opencost.io"
-    }
-  },
-  {
-    "name": "unleash",
-    "trademark": "Unleash",
-    "release": false,
-    "fork_url": "https://github.com/Unleash/unleash",
-    "version_from": "https://hub.docker.com/r/unleashorg/unleash-server/tags",
-    "edition": [
-      {
-        "dist": "community",
-        "version": [
-          "latest"
-        ]
-      }
-    ],
-    "requirements": {
-      "cpu": "2",
-      "memory": "4",
-      "disk": "10",
-      "url": "https://getunleash.io"
+      "url": "https://www.selenium.dev"
     }
   }
 ]
