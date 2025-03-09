@@ -13,9 +13,9 @@
     }
   ],
   "requirements": {
-    "cpu": "2",
-    "memory": "4",
-    "disk": "10",
+    "cpu": "1",
+    "memory": "2",
+    "disk": "2",
     "url": "https://openai.justsong.cn"
   }
 }
