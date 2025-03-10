@@ -1,7 +1,7 @@
 {
   "name": "bookstack",
   "trademark": "BookStack",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/linuxserver/docker-bookstack",
   "version_from": "https://github.com/linuxserver/docker-bookstack/pkgs/container/bookstack",
   "edition": [
