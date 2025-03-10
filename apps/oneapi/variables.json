@@ -1,7 +1,7 @@
 {
   "name": "oneapi",
   "trademark": "One API",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/songquanpeng/one-api",
   "version_from": "https://hub.docker.com/r/justsong/one-api/tags",
   "edition": [

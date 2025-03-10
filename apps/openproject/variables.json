@@ -1,7 +1,7 @@
 {
   "name": "openproject",
   "trademark": "OpenProject",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/opf/openproject",
   "version_from": "",
   "edition": [

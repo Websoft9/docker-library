@@ -1,7 +1,7 @@
 {
   "name": "automatisch",
   "trademark": "Automatisch",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/automatisch/automatisch",
   "version_from": "https://hub.docker.com/r/elestio/automatisch/tags",
   "edition": [

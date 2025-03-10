@@ -1,7 +1,7 @@
 {
   "name": "kestra",
   "trademark": "Kestra",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/kestra-io/kestra",
   "version_from": "https://hub.docker.com/r/kestra/kestra/tags",
   "edition": [
