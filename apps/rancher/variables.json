@@ -2,20 +2,12 @@
   "name": "rancher",
   "trademark": "Rancher",
   "release": false,
-  "fork_url": "",
-  "version_from": "",
+  "fork_url": "https://github.com/rancher/rancher",
+  "version_from": "https://hub.docker.com/r/rancher/rancher/tags",
   "edition": [
     {
       "dist": "community",
       "version": [
-        "2.2",
-        "latest"
-      ]
-    },
-    {
-      "dist": "enterprise",
-      "version": [
-        "1.8.2",
         "latest"
       ]
     }
