@@ -1,10 +1,10 @@
 [
   {
-    "name": "bookstack",
-    "trademark": "BookStack",
+    "name": "snipeit",
+    "trademark": "Snipe-IT",
     "release": false,
-    "fork_url": "https://github.com/BookStackApp/BookStack",
-    "version_from": "https://hub.docker.com/r/solidnerd/bookstack/tags",
+    "fork_url": "https://github.com/snipe/snipe-it",
+    "version_from": "https://hub.docker.com/r/snipe/snipe-it/tags",
     "edition": [
       {
         "dist": "community",
@@ -17,15 +17,15 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://www.bookstackapp.com"
+      "url": "https://snipeitapp.com"
     }
   },
   {
-    "name": "selenium",
-    "trademark": "selenium",
+    "name": "wazuh",
+    "trademark": "Wazuh",
     "release": false,
-    "fork_url": "https://github.com/seleniumhq/selenium",
-    "version_from": "https://hub.docker.com/r/selenium/standalone-chrome/tags",
+    "fork_url": "https://github.com/wazuh/wazuh",
+    "version_from": "https://hub.docker.com/r/wazuh/wazuh-manager/tags",
     "edition": [
       {
         "dist": "community",
@@ -38,7 +38,7 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://www.selenium.dev"
+      "url": "https://wazuh.com"
     }
   }
 ]
