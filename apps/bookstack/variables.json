@@ -2,8 +2,8 @@
   "name": "bookstack",
   "trademark": "BookStack",
   "release": false,
-  "fork_url": "https://github.com/BookStackApp/BookStack",
-  "version_from": "https://hub.docker.com/r/solidnerd/bookstack/tags",
+  "fork_url": "https://github.com/linuxserver/docker-bookstack",
+  "version_from": "https://github.com/linuxserver/docker-bookstack/pkgs/container/bookstack",
   "edition": [
     {
       "dist": "community",
@@ -13,8 +13,8 @@
     }
   ],
   "requirements": {
-    "cpu": "2",
-    "memory": "4",
+    "cpu": "1",
+    "memory": "2",
     "disk": "10",
     "url": "https://www.bookstackapp.com"
   }
