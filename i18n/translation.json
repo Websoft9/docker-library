@@ -394,5 +394,9 @@
     "W9_FORWARDER_CONFIG_TCP_PORT_SET": [
         "",
         ""
+    ],
+    "W9_LOGIN_TOKEN": [
+        "",
+        ""
     ]
 }
