@@ -1,7 +1,7 @@
 {
   "name": "scmmanager",
   "trademark": "SCM-Manager",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/scm-manager/scm-manager",
   "version_from": "https://hub.docker.com/r/scmmanager/scm-manager/tags",
   "edition": [
