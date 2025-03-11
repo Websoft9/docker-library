@@ -14,7 +14,7 @@ services:
       - ${W9_HTTP_PORT_SET}:443
     restart: unless-stopped
     volumes:
-      - /opt/rancher:/var/lib/rancher
+      - rancher:/var/lib/rancher
 
 networks:
   default:

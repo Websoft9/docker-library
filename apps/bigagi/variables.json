@@ -1,7 +1,7 @@
 {
   "name": "bigagi",
   "trademark": "Big-AGI",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/enricoros/big-agi",
   "version_from": "ghcr.io/enricoros/big-agi",
   "edition": [

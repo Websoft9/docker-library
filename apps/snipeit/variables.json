@@ -1,7 +1,7 @@
 {
   "name": "snipeit",
   "trademark": "Snipe-IT",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/snipe/snipe-it",
   "version_from": "https://hub.docker.com/r/snipe/snipe-it/tags",
   "edition": [
