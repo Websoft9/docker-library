@@ -8,12 +8,13 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     privileged: true
-    env_file: .env
+    env_file: 
+      - .env
     ports:
-      - ${W9_HTTP_PORT_SET}:80
-      #- ${W9_HTTPS_PORT}:443
+      - ${W9_HTTP_PORT_SET}:443
     restart: unless-stopped
-    command: --no-cacerts
+    volumes:
+      - /opt/rancher:/var/lib/rancher
 
 networks:
   default:
