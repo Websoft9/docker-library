@@ -1,252 +1,50 @@
-# compose: https://github.com/geoserver/geoserver-cloud
+# image,docs: https://hub.docker.com/_/wordpress/
 
-version: "3.8"
+services:
+
+  wordpress:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    restart: unless-stopped
+    #This is for access host from container
+    # extra_hosts: ["host.docker.internal:host-gateway"]
+    # command: |
+    #   /bin/bash -c "ping -c 3 host.docker.internal"
+    logging:
+      driver: "json-file"
+      options:
+          max-file: "5"
+          max-size: 10m
+    deploy:
+      resources:
+        limits:
+          memory: 5g
+          cpus: '0.7'
+    ports:
+      - $W9_HTTP_PORT_SET:80
+    env_file: .env
+    volumes:
+      - wordpress:/var/www/html
+      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
+
+  mariadb:
+    image: mariadb:10.4
+    container_name: $W9_ID-mariadb
+    restart: unless-stopped
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: $WORDPRESS_DB_NAME
+      MYSQL_USER: $WORDPRESS_DB_USER
+      MYSQL_PASSWORD: $W9_POWER_PASSWORD
+      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
 
 volumes:
-  postgresql_config_data: # volume for postgresql data, used to store the geoserver config through jdbcconfig
-  rabbitmq_data: # volume for rabbitmq data, so it doesn't create an anonymous one on each container
-  
+  wordpress:
+  mysql_data:
+    
 networks:
   default:
-    name: ${W9_NETWORK}
+    name: $W9_NETWORK
     external: true
-#    driver: bridge
-        
-services:
-  rabbitmq:
-    image: rabbitmq:3.9-management
-    restart: unless-stopped
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
-    networks:
-      - gs-cloud-network
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 1G
-
-  database:
-    image: geoservercloud/geoserver-cloud-postgres-jdbcconfig:${TAG}
-    environment:
-      POSTGRES_DB: "${JDBCCONFIG_DBNAME}"
-      POSTGRES_USER: "${JDBCCONFIG_USERNAME}"
-      POSTGRES_PASSWORD: "${JDBCCONFIG_PASSWORD}"
-    ports:
-      - 5432:5432
-    networks:
-      - gs-cloud-network
-    volumes:
-      - postgresql_config_data:/var/lib/postgresql/data
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 1G
-
-  # Eureka service discovery. This is a Discovery First Bootstrap configuration.
-  # The discovery service is the only fixed entry point.
-  # Browse to http://localhost:8761 to check all services are registered.
-  # Run docker-compose -f docker-compose.yml -f docker-compose-discovery-ha.yml to run extra discovery service instances for HA
-  discovery:
-    image: geoservercloud/geoserver-cloud-discovery:${TAG}
-    environment:
-      SERVER_PORT: 8761
-      EUREKA_INSTANCE_HOSTNAME: discovery
-      JAVA_OPTS: "${DISCOVERY_JAVA_OPTS}"
-    ports:
-      - 8761:8761 # for development, so services can be run from localhost and find the discovery service running on docker
-    networks:
-      - gs-cloud-network
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 512M
-
-  # Spring Cloud Config service, provides centralized configuration to all
-  # microservices. Being a Discovery First Bootstrap configuration, it'll
-  # register itself with the Eureka discovery service and can be scaled
-  config:
-    image: geoservercloud/geoserver-cloud-config:${TAG}
-    depends_on:
-      - discovery
-    environment:
-      EUREKA_SERVER_URL: ${EUREKA_SERVER_URL}
-      JAVA_OPTS: "${CONFIG_JAVA_OPTS}"
-      RABBITMQ_HOST: rabbitmq
-      # Either 'git' or 'native'. Use the default sample git repository to download the services configuration from
-      # If 'git', BEWARE config server will look for a branch called "master", and github changed the default branch name to "main"
-      # For more information, see https://cloud.spring.io/spring-cloud-config/multi/multi__spring_cloud_config_server.html#_git_backend
-      SPRING_PROFILES_ACTIVE: native
-      # 'git' profile config
-      CONFIG_GIT_URI: https://github.com/groldan/geoserver-cloud-config
-      CONFIG_GIT_BASEDIR: /opt/app/git_config
-      # 'native' profile config
-      CONFIG_NATIVE_PATH: /opt/app/config
-    networks:
-      - gs-cloud-network
-    volumes:
-      - ./src/config:/opt/app/config
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 512M
-
-  # Application facade, provides a single entry point routing to all
-  # microservices (e.g. http://localhost:9090/geoserver/wms, http://localhost:9090/geoserver/wfs, etc)
-  gateway:
-    image: geoservercloud/geoserver-cloud-gateway:${TAG}
-    depends_on:
-      - discovery
-      - config
-    environment:
-      EUREKA_SERVER_URL: ${EUREKA_SERVER_URL}
-      JAVA_OPTS: ${GATEWAY_JAVA_OPTS}
-      SPRING_PROFILES_ACTIVE: dev #exposes the catalog and config API at /api/v1/**
-    ports:
-      - 9090:8080
-    networks:
-      - gs-cloud-network
-    deploy:
-      resources:
-        limits:
-          cpus: '4.0'
-          memory: 1G
-
-  # catalog microservice, provides a unified catalog backend to all services
-  catalog:
-    image: geoservercloud/geoserver-cloud-catalog:${TAG}
-    depends_on:
-      - discovery
-      - config
-      - database
-      - rabbitmq
-    environment:
-      # Force the max RAM (-XX:MaxRAM) seen by the JVM in case --compatibility wasn't used to launch the composition
-      JAVA_OPTS: "${CATALOG_JAVA_OPTS}"
-      EUREKA_SERVER_URL: ${EUREKA_SERVER_URL}
-      RABBITMQ_HOST: rabbitmq
-      CATALOG_IO_THREADS: 8
-      CATALOG_IO_MAX_QUEUED: 10000
-      BACKEND_JDBCCONFIG: "true"
-      JDBCCONFIG_URL: "${JDBCCONFIG_URL}"
-      JDBCCONFIG_USERNAME: "${JDBCCONFIG_USERNAME}"
-      JDBCCONFIG_PASSWORD: "${JDBCCONFIG_PASSWORD}"
-      JDBCCONFIG_MIN_CONNECTIONS: 2
-      JDBCCONFIG_MAX_CONNECTIONS: 16 # 2 x CATALOG_IO_THREADS
-    networks:
-      - gs-cloud-network
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 1G
-
-  # WFS microservice, port dynamically allocated to allow scaling (e.g docker-compose scale wfs=5)
-  wfs:
-    image: geoservercloud/geoserver-cloud-wfs:${TAG}
-    depends_on:
-      - catalog
-    environment:
-      EUREKA_SERVER_URL: ${EUREKA_SERVER_URL}
-      JAVA_OPTS: "${WFS_JAVA_OPTS}"
-      RABBITMQ_HOST: rabbitmq
-    networks:
-      - gs-cloud-network
-    #tmpfs: #TODO: avoid runs creating volumes at all
-    #  - /tmp
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 1G
-
-  # WMS microservice, port dynamically allocated to allow scaling (e.g docker-compose scale wms=5)
-  wms:
-    image: geoservercloud/geoserver-cloud-wms:${TAG}
-    depends_on:
-      - catalog
-    environment:
-      EUREKA_SERVER_URL: ${EUREKA_SERVER_URL}
-      JAVA_OPTS: "${WMS_JAVA_OPTS}"
-      RABBITMQ_HOST: rabbitmq
-    networks:
-      - gs-cloud-network
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 1G
-
-  # WCS microservice, port dynamically allocated to allow scaling (e.g docker-compose scale wcs=5)
-  wcs:
-    image: geoservercloud/geoserver-cloud-wcs:${TAG}
-    depends_on:
-      - catalog
-    environment:
-      EUREKA_SERVER_URL: ${EUREKA_SERVER_URL}
-      JAVA_OPTS: "${WCS_JAVA_OPTS}"
-      RABBITMQ_HOST: rabbitmq
-    networks:
-      - gs-cloud-network
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 1G
-
-#  # WPS microservice, port dynamically allocated to allow scaling (e.g docker-compose scale wps=5)
-#  wps:
-#    image: geoservercloud/geoserver-cloud-wps:${TAG}
-#    depends_on:
-#      - rabbitmq
-#      - catalog
-#    environment:
-#      EUREKA_SERVER_URL: ${EUREKA_SERVER_URL}
-#      JAVA_OPTS: ${WPS_JAVA_OPTS}
-#      RABBITMQ_HOST: rabbitmq
-#    networks:
-#      - gs-cloud-network
-
-  # REST config microservice, port dynamically allocated to allow scaling (e.g docker-compose scale rest=5)
-  rest:
-    image: geoservercloud/geoserver-cloud-rest:${TAG}
-    depends_on:
-      - rabbitmq
-      - catalog
-    environment:
-      EUREKA_SERVER_URL: ${EUREKA_SERVER_URL}
-      JAVA_OPTS: "${REST_JAVA_OPTS}"
-      RABBITMQ_HOST: rabbitmq
-    networks:
-      - gs-cloud-network
-    deploy:
-      mode: replicated
-      replicas: 1
-      resources:
-        limits:
-          cpus: '1.5'
-          memory: 1G
-
-  # WEB UI microservice
-  webui:
-    image: geoservercloud/geoserver-cloud-webui:${TAG}
-    depends_on:
-      - rabbitmq
-      - catalog
-    environment:
-      EUREKA_SERVER_URL: ${EUREKA_SERVER_URL}
-      JAVA_OPTS: "${WEBUI_JAVA_OPTS}"
-      RABBITMQ_HOST: rabbitmq
-    networks:
-      - gs-cloud-network
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 1G
