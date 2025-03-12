@@ -1,48 +1,91 @@
-# image,docs: https://hub.docker.com/_/wordpress/
+# composefile: https://github.com/danny-avila/LibreChat/blob/main/docker-compose.yml
+# docs: https://www.librechat.ai/docs/local/docker
 
 services:
-
-  wordpress:
+  api:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
-    restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
-    logging:
-      driver: "json-file"
-      options:
-          max-file: "5"
-          max-size: 10m
-    deploy:
-      resources:
-        limits:
-          memory: 5g
-          cpus: '0.7'
     ports:
-      - $W9_HTTP_PORT_SET:80
-    env_file: .env
-    volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
-
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
+      - $W9_HTTP_PORT_SET:3080
+    depends_on:
+      - mongodb
+      - rag_api
     restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
-    volumes:
-      - mysql_data:/var/lib/mysql
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    env_file:
+      - .env
     environment:
-      MYSQL_DATABASE: $W9_ID
-      MYSQL_USER: $W9_ID
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      - HOST=0.0.0.0
+      - NODE_ENV=production
+      - MONGO_URI=mongodb://${W9_ID}-mongodb:27017/LibreChat
+      - MEILI_HOST=http://${W9_ID}-meilisearch:7700
+      - RAG_PORT=8000
+      - RAG_API_URL=http://${W9_ID}-8000
+    volumes:
+      - ./src/librechat.yaml:/app/librechat.yaml
+      - app-images:/app/client/public/images
+      - app-uploads:/app/uploads
+      - app-logs:/app/api/logs
+
+  mongodb:
+    image: mongo
+    container_name: ${W9_ID}-mongodb
+    # ports:  # Uncomment this to access mongodb from outside docker, not safe in deployment
+    #   - 27018:27017
+    restart: unless-stopped
+    volumes:
+      - mongodata:/data/db
+    command: mongod --noauth
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.12.3
+    container_name: ${W9_ID}-meilisearch
+    restart: unless-stopped
+    # ports: # Uncomment this to access meilisearch from outside docker
+    #   - 7700:7700 # if exposing these ports, make sure your master key is not the default value
+    env_file:
+      - .env
+    environment:
+      - MEILI_HOST=http://${W9_ID}-meilisearch:7700
+      - MEILI_NO_ANALYTICS=true
+      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY}
+    volumes:
+      - meilisearch:/meili_data
+
+  vectordb:
+    image: ankane/pgvector:latest
+    container_name: ${W9_ID}-postgresql
+    environment:
+      POSTGRES_DB: librechat
+      POSTGRES_USER: librechat
+      POSTGRES_PASSWORD: ${W9_POWER_PASSWORD}
+    restart: unless-stopped
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  rag_api:
+    image: ghcr.io/danny-avila/librechat-rag-api-dev-lite:latest
+    container_name: ${W9_ID}-rag
+    environment:
+      - DB_HOST=${W9_ID}-postgresql
+      - POSTGRES_DB=librechat
+      - POSTGRES_USER=librechat
+      - POSTGRES_PASSWORD=${W9_POWER_PASSWORD}
+      - RAG_PORT=8000
+    restart: unless-stopped
+    depends_on:
+      - vectordb
+    env_file:
+      - .env
 
 volumes:
-  wordpress:
-  mysql_data:
+  app-images:
+  app-uploads:
+  app-logs:
+  mongodata:
+  pgdata:
+  meilisearch:
     
 networks:
   default:
