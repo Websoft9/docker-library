@@ -1,10 +1,10 @@
 [
   {
-    "name": "snipeit",
-    "trademark": "Snipe-IT",
+    "name": "meilisearch",
+    "trademark": "Meilisearch",
     "release": false,
-    "fork_url": "https://github.com/snipe/snipe-it",
-    "version_from": "https://hub.docker.com/r/snipe/snipe-it/tags",
+    "fork_url": "https://github.com/meilisearch/meilisearch",
+    "version_from": "https://hub.docker.com/r/getmeili/meilisearch/tags",
     "edition": [
       {
         "dist": "community",
@@ -17,28 +17,7 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://snipeitapp.com"
-    }
-  },
-  {
-    "name": "wazuh",
-    "trademark": "Wazuh",
-    "release": false,
-    "fork_url": "https://github.com/wazuh/wazuh",
-    "version_from": "https://hub.docker.com/r/wazuh/wazuh-manager/tags",
-    "edition": [
-      {
-        "dist": "community",
-        "version": [
-          "latest"
-        ]
-      }
-    ],
-    "requirements": {
-      "cpu": "2",
-      "memory": "4",
-      "disk": "10",
-      "url": "https://wazuh.com"
+      "url": "https://www.meilisearch.com"
     }
   }
 ]
