@@ -1,7 +1,7 @@
 {
   "name": "browserless",
   "trademark": "Browserless",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/browserless/browserless",
   "version_from": "ghcr.io/browserless/chromium",
   "edition": [
