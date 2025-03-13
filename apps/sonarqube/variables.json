@@ -7,15 +7,13 @@
   "edition": [
     {
       "dist": "community",
-      "version": [
-        "latest"
-      ]
+      "version": ["community", "latest"]
     }
   ],
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
+    "disk": "15",
     "url": "https://www.sonarsource.com"
   }
 }
