@@ -1,7 +1,7 @@
 {
   "name": "openhands",
   "trademark": "OpenHands",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/All-Hands-AI/OpenHands",
   "version_from": "https://github.com/All-Hands-AI/OpenHands/pkgs/container/openhands",
   "edition": [
