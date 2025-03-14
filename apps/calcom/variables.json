@@ -1,7 +1,7 @@
 {
   "name": "calcom",
   "trademark": "Cal.com",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/calcom/docker",
   "version_from": "",
   "edition": [
