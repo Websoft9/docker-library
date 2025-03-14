@@ -1,7 +1,7 @@
 {
   "name": "sonarqube",
   "trademark": "SonarQube",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/SonarSource/sonarqube",
   "version_from": "",
   "edition": [

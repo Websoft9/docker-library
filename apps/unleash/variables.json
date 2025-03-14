@@ -1,7 +1,7 @@
 {
   "name": "unleash",
   "trademark": "Unleash",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/Unleash/unleash",
   "version_from": "https://hub.docker.com/r/unleashorg/unleash-server/tags",
   "edition": [
