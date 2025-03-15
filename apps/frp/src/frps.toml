@@ -1,0 +1,10 @@
+# configuration from: https://github.com/fatedier/frp/blob/dev/conf/frps_full_example.toml
+
+bindPort = 7000
+
+# Configure the web server to enable the dashboard for frps.
+# dashboard is available only if webServer.port is set.
+webServer.addr = "0.0.0.0"
+webServer.port = 7500
+webServer.user = "admin"
+webServer.password = "admin"
