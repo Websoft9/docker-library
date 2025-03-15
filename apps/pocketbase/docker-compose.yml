@@ -1,17 +1,21 @@
-# image: https://hub.docker.com/r/elestio/pocketbase
+# image: https://hub.docker.com/r/adrianmusante/pocketbase
 
 services:
   pocketbase:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
-    user: 0:0
     restart: unless-stopped
     ports:
       - $W9_HTTP_PORT_SET:8090
     env_file: 
       - .env
     volumes:
-      - pocketbase:/pb_data
+      - pocketbase:/pocketbase
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8090/api/health" ]
+      interval: 2s
+      timeout: 10s
+      retries: 10
 
 volumes:
   pocketbase:
