@@ -1,49 +1,19 @@
-# image,docs: https://hub.docker.com/_/wordpress/
+# image,docs: https://hub.docker.com/r/snowdreamtech/frpc
 
 services:
 
-  wordpress:
+  frp:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
-    logging:
-      driver: "json-file"
-      options:
-          max-file: "5"
-          max-size: 10m
-    deploy:
-      resources:
-        limits:
-          memory: 5g
-          cpus: '0.7'
     ports:
-      - $W9_HTTP_PORT_SET:80
+      - $W9_HTTP_PORT_SET:7500  # for server's dashboard, related to frps.toml file
+      - $W9_SERVER_PORT_SET:7000 # for server's basic service port, related to frps.toml file
     env_file: .env
     volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
+      - ./src/frps.toml:/etc/frp/frps.toml # server
+      #- ./src/frpc.toml:/etc/frp/frpc.toml # client
 
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
-    restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
-    volumes:
-      - mysql_data:/var/lib/mysql
-    environment:
-      MYSQL_DATABASE: $W9_ID
-      MYSQL_USER: $W9_ID
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
-
-volumes:
-  wordpress:
-  mysql_data:
-    
 networks:
   default:
     name: $W9_NETWORK
