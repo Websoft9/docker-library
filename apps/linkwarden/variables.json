@@ -7,15 +7,13 @@
   "edition": [
     {
       "dist": "community",
-      "version": [
-        "latest"
-      ]
+      "version": ["v2.9.3","latest"]
     }
   ],
   "requirements": {
-    "cpu": "2",
-    "memory": "4",
-    "disk": "10",
+    "cpu": "1",
+    "memory": "2",
+    "disk": "1",
     "url": "https://linkwarden.app"
   }
 }
