@@ -1,13 +1,36 @@
 # image: https://hub.docker.com/r/milvusdb/milvus
-# compose: https://milvus.io/docs/install_standalone-docker-compose.md
-# docs: https://milvus.io/docs
+# compose: https://github.com/milvus-io/milvus/blob/master/deployments/docker/standalone/docker-compose.yml
+# docs: https://milvus.io/docs/zh/install_standalone-docker-compose.md
 
 version: '3.8'
 
 services:
+  standalone:
+    container_name: $W9_ID
+    image: $W9_REPO:$W9_VERSION
+    command: ["milvus", "run", "standalone"]
+    security_opt:
+      - seccomp:unconfined  
+    env_file: .env       
+    volumes:
+      - milvus_data:/var/lib/milvus
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 30s
+      start_period: 90s
+      timeout: 20s
+      retries: 3
+    ports:
+      - "${W9_HTTP_PORT_SET}:9091" # webui port
+      - "${W9_DB_PORT_SET}:19530" # server port
+    depends_on:
+      - etcd
+      - minio
+
   etcd:
     container_name: $W9_ID-etcd
-    image: quay.io/coreos/etcd:v3.5.5
+    image: quay.io/coreos/etcd:v3.5.18
+    hostname: ${W9_RCODE}etcd
     environment:
       - ETCD_AUTO_COMPACTION_MODE=revision
       - ETCD_AUTO_COMPACTION_RETENTION=1000
@@ -15,16 +38,16 @@ services:
       - ETCD_SNAPSHOT_COUNT=50000
     volumes:
       - etcd_data:/etcd
-    command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
+    command: etcd -advertise-client-urls=http://${W9_RCODE}etcd:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
     healthcheck:
       test: ["CMD", "etcdctl", "endpoint", "health"]
       interval: 30s
       timeout: 20s
       retries: 3
-  
 
   minio:
     container_name: $W9_ID-minio
+    hostname: ${W9_RCODE}minio
     image: minio/minio:RELEASE.2023-03-20T20-16-18Z
     volumes:
       - minio_data:/minio_data
@@ -40,31 +63,6 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
-   
-  standalone:
-    container_name: $W9_ID
-    image: $W9_REPO:$W9_VERSION
-    command: ["milvus", "run", "standalone"]
-    environment:
-      ETCD_ENDPOINTS: $W9_ID-etcd:2379
-      MINIO_ADDRESS: $W9_ID-minio:9000
-    security_opt:
-      - seccomp:unconfined
-    volumes:
-      - milvus_data:/var/lib/milvus
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
-      interval: 30s
-      start_period: 90s
-      timeout: 20s
-      retries: 3
-    ports:
-      - "${W9_HTTP_PORT_SET}:19530"
-      # - "9091:9091"
-    depends_on:
-      - etcd
-      - minio
-    env_file: .env
 
 networks:
   default:
