@@ -398,5 +398,13 @@
     "W9_LOGIN_TOKEN": [
         "",
         ""
+    ],
+    "W9_SERVER_PORT_SET": [
+        "",
+        ""
+    ],
+    "W9_HTTP_VNC_SET": [
+        "",
+        ""
     ]
 }
