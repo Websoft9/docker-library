@@ -1,7 +1,7 @@
 {
     "name": "milvus",
     "trademark": "Milvus",
-    "release": false,
+    "release": true,
     "fork_url": "https://github.com/milvus-io/milvus",
     "version_from": "https://hub.docker.com/r/milvusdb/milvus/tags",
     "edition": [
