@@ -1,4 +1,4 @@
-# image: https://hub.docker.com/r/adrianmusante/pocketbase
+# image: https://hub.docker.com/r/elestio/pocketbase
 
 services:
   pocketbase:
@@ -10,15 +10,10 @@ services:
     env_file: 
       - .env
     volumes:
-      - pocketbase:/pocketbase
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8090/api/health" ]
-      interval: 2s
-      timeout: 10s
-      retries: 10
+      - pb_data:/pb_data
 
 volumes:
-  pocketbase:
+  pb_data:
     
 networks:
   default:
