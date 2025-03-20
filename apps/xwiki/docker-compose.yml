@@ -29,7 +29,7 @@ services:
       - mysql:/var/lib/mysql
     environment:
       MYSQL_DATABASE: xwiki
-      MYSQL_USER: ${W9_ID}
+      MYSQL_USER: xwiki
       MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
 
