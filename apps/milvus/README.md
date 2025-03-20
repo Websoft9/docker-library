@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Milvus:
 
 
- - community:  v2.4.12, latest
+ - community:  v2.5.5, latest
 
 
 ## System Requirements

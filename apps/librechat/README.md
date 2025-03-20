@@ -23,4 +23,4 @@ If you want use LibreChat with **Websoft9 Business Support** free, you can [subs
 
 ## Documentation
 
-[LibreChat Administrator Guide](https://support.websoft9.com/docs/libreChat) powered by Websoft9
+[LibreChat Administrator Guide](https://support.websoft9.com/docs/librechat) powered by Websoft9
