@@ -5,7 +5,7 @@
 
 # Awesome Docker Compose Examples
 
-This repository include [200+ Examples](https://github.com/Websoft9/docker-library/tree/main/apps) based on [Docker compose](https://docs.docker.com/compose/), e.g WordPress, MySQL, Odoo, MongoDB, GitLab, Elastic, Ghost, Grafana, Graylog, Kafka, n8n, Moodle, Nextcloud, ONLYOFFICE, phpMyAdmin...
+This repository include [300+ Examples](https://github.com/Websoft9/docker-library/tree/main/apps) based on [Docker compose](https://docs.docker.com/compose/), e.g WordPress, MySQL, Odoo, MongoDB, GitLab, Elastic, Ghost, Grafana, Graylog, Kafka, n8n, Moodle, Nextcloud, ONLYOFFICE, phpMyAdmin...
 
 You can use them for bussiness management, content management, data analysis, development, DevOps and any things you want to do.  
 
