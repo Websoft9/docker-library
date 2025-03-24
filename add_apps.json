@@ -1,10 +1,10 @@
 [
   {
-    "name": "meilisearch",
-    "trademark": "Meilisearch",
+    "name": "rclone",
+    "trademark": "Rclone",
     "release": false,
-    "fork_url": "https://github.com/meilisearch/meilisearch",
-    "version_from": "https://hub.docker.com/r/getmeili/meilisearch/tags",
+    "fork_url": "https://github.com/rclone/rclone",
+    "version_from": "https://hub.docker.com/r/rclone/rclone/tags",
     "edition": [
       {
         "dist": "community",
@@ -17,7 +17,175 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://www.meilisearch.com"
+      "url": "https://rclone.org"
+    }
+  },
+  {
+    "name": "rudderstack",
+    "trademark": "RudderStack",
+    "release": false,
+    "fork_url": "https://github.com/rudderlabs/rudder-server",
+    "version_from": "https://hub.docker.com/r/rudderlabs/rudder-server/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://www.rudderstack.com"
+    }
+  },
+  {
+    "name": "fluentd",
+    "trademark": "Fluentd",
+    "release": false,
+    "fork_url": "https://github.com/fluent/fluentd",
+    "version_from": "https://hub.docker.com/r/fluent/fluentd/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://www.fluentd.org"
+    }
+  },
+  {
+    "name": "fluentd",
+    "trademark": "Fluentd",
+    "release": false,
+    "fork_url": "https://github.com/fluent/fluentd",
+    "version_from": "https://hub.docker.com/r/fluent/fluentd/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://www.fluentd.org"
+    }
+  },
+  {
+    "name": "fluentbit",
+    "trademark": "FluentBit",
+    "release": false,
+    "fork_url": "https://github.com/fluent/fluent-bit",
+    "version_from": "https://hub.docker.com/r/fluent/fluent-bit/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://fluentbit.io"
+    }
+  },
+  {
+    "name": "jitsu",
+    "trademark": "Jitsu",
+    "release": false,
+    "fork_url": "https://github.com/jitsucom/jitsu",
+    "version_from": "https://hub.docker.com/r/jitsucom/bulker/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://jitsu.com"
+    }
+  },
+  {
+    "name": "filepizza",
+    "trademark": "FilePizza",
+    "release": false,
+    "fork_url": "https://github.com/kern/filepizza",
+    "version_from": "https://hub.docker.com/r/kern/filepizza/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://file.pizza"
+    }
+  },
+  {
+    "name": "streampipes",
+    "trademark": "ApacheStreamPipes",
+    "release": false,
+    "fork_url": "https://github.com/apache/streampipes",
+    "version_from": "",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://streampipes.apache.org"
+    }
+  },
+  {
+    "name": "ejbca",
+    "trademark": "EJBCA",
+    "release": false,
+    "fork_url": "https://github.com/Keyfactor/ejbca-ce",
+    "version_from": "https://hub.docker.com/r/keyfactor/ejbca-ce/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://www.ejbca.org"
     }
   }
 ]
