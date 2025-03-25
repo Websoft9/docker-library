@@ -11,9 +11,9 @@ Below is the steps for contributing new application:
 1. Create issue by template **New docker compose request**
 2. Waiting for Maintainers/owner Assessment until it is completed.
 3. Install Websoft9 at your server or apply online development account from Websoft9
-4. SSH to develoment host machine and running below command
+4. SSH to develoment host machine and running below command to upgrade latest Apps listing
    ```
-   docker exec -it websoft9-apphub bash /websoft9/script/update_zip.sh --channel dev --package_name "media-dev.zip" --sync_to "/websoft9/media" && docker exec -it websoft9-apphub bash /websoft9/script/update_zip.sh --channel dev --package_name "library-dev.zip" --sync_to "/websoft9/library"
+   docker exec -it websoft9-apphub apphub upgrade apps --dev
    ```
 5. Login to Websoft9 Console and install this application from **App Store**
 6. Develop and test it by **[App compose](https://support.websoft9.com/en/docs/next/app-compose/)** at Websoft9 Console
