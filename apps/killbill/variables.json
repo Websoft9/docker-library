@@ -1,0 +1,21 @@
+{
+  "name": "killbill",
+  "trademark": "KillBill",
+  "release": false,
+  "fork_url": "https://github.com/killbill/killbill",
+  "version_from": "https://hub.docker.com/r/killbill/killbill/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://killbill.io/"
+  }
+}
