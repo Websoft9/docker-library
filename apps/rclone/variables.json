@@ -1,7 +1,7 @@
 {
   "name": "rclone",
   "trademark": "Rclone",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/rclone/rclone",
   "version_from": "https://hub.docker.com/r/rclone/rclone/tags",
   "edition": [

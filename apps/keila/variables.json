@@ -1,7 +1,7 @@
 {
   "name": "keila",
   "trademark": "Keila",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/pentacent/keila",
   "version_from": "",
   "edition": [
