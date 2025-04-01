@@ -1,4 +1,5 @@
 # image compose and docs: https://hub.docker.com/_/nextcloud
+# add depends_on because that nextcloud may wait for db service starting
 
 version: '3.8'
 
@@ -14,14 +15,16 @@ services:
     env_file: .env
     environment:
       - MYSQL_PASSWORD=${W9_POWER_PASSWORD}
-      - MYSQL_DATABASE=${W9_ID}
-      - MYSQL_USER=${W9_ID}
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
       - MYSQL_HOST=${W9_ID}-mysql
-    links:
-      - mysql
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
     restart: unless-stopped
 
-  mysql:
+  db:
     image: mysql:${W9_DB_VERSION}
     container_name: ${W9_ID}-mysql
     restart: unless-stopped
@@ -29,10 +32,15 @@ services:
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: ${W9_ID}
-      MYSQL_USER: ${W9_ID}
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
       MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
 volumes:
   nextcloud:

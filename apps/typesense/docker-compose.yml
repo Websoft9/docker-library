@@ -32,6 +32,11 @@ services:
       options:
           max-file: "5"
           max-size: 10m
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+          cpus: '0.5'
     environment:
       - TYPESENSE_API_KEY=${W9_LOGIN_API_KEY}
       - TYPESENSE_HOST=${W9_ID}
