@@ -25,7 +25,7 @@ jobs:
       run: python build/get_apps_latest_version.py --max-pages 1 --page-size 100
 
     - name: Upload output as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: output-json
         path: output.json
