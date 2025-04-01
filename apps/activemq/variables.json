@@ -26,8 +26,8 @@
   ],
   "requirements": {
     "cpu": "1",
-    "memory": "1",
-    "disk": "2",
+    "memory": "2",
+    "disk": "24",
     "url": "https://github.com/apache/activemq-artemis"
   }
 }
