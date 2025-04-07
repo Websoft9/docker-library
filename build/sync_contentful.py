@@ -14,7 +14,7 @@ client = Client(ACCESS_TOKEN)
 def update_contentful(product_name, editions, requirements, production):
     try:
         # 获取 Contentful 中的 Product entry
-        entries = client.entries(SPACE_ID, 'dev').all({'content_type': 'product', 'fields.key': product_name})
+        entries = client.entries(SPACE_ID, 'master').all({'content_type': 'product', 'fields.key': product_name})
 
         if entries:
             entry = entries[0]

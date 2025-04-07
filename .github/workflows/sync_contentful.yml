@@ -6,7 +6,7 @@ name: Sync data to Contentful
 on:
   workflow_dispatch:
   push:
-    branches: [dev]
+    branches: [main]
     paths:
       - "apps/*/variables.json"
       
