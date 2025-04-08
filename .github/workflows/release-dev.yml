@@ -50,4 +50,4 @@ jobs:
           repository: websoft9/websoft9
           event-type: media_dev_event
           token: ${{secrets.MYGITHUB_ADMIN_TOKEN}}
-          client-payload: '{"artifact_name": "library-dev.zip"}'
+          client-payload: '{"artifact_name": "library-dev.zip","source_repo": "websoft9/docker-library"}'
