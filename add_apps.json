@@ -1,10 +1,10 @@
 [
   {
-    "name": "zerotier",
-    "trademark": "ZeroTier",
+    "name": "headscale",
+    "trademark": "Headscale",
     "release": false,
-    "fork_url": "https://github.com/zerotier/ZeroTierOne",
-    "version_from": "https://hub.docker.com/r/zerotier/zerotier/tags",
+    "fork_url": "https://github.com/juanfont/headscale",
+    "version_from": "ghcr.io/juanfont/headscale:latest",
     "edition": [
       {
         "dist": "community",
@@ -17,28 +17,7 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://www.zerotier.com"
-    }
-  },
-  {
-    "name": "firecrawl",
-    "trademark": "Firecrawl",
-    "release": false,
-    "fork_url": "https://github.com/mendableai/firecrawl",
-    "version_from": "ghcr.io/mendableai/firecrawl:latest",
-    "edition": [
-      {
-        "dist": "community",
-        "version": [
-          "latest"
-        ]
-      }
-    ],
-    "requirements": {
-      "cpu": "2",
-      "memory": "4",
-      "disk": "10",
-      "url": "https://www.firecrawl.dev"
+      "url": "https://headscale.net"
     }
   }
 ]
