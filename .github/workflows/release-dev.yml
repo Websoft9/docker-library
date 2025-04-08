@@ -31,7 +31,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.appname }}-dev
-          path: ${{ env.appname }}-dev.zip
+          path: ${{ env.appname }}
 
       - name: Upload To cloudflare r2
         uses: ryand56/r2-upload-action@latest
