@@ -30,7 +30,7 @@ jobs:
       - name: Upload library-dev.zip to artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.appname }}-dev.zip
+          name: ${{ env.appname }}-dev
           path: ${{ env.appname }}-dev.zip
 
       - name: Upload To cloudflare r2
