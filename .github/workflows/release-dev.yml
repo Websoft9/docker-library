@@ -44,11 +44,19 @@ jobs:
           destination-dir: ./dev/websoft9/plugin/library
 
       # release media(dev)
+      # - name: Trigger websoft9/media-dev.yml workflow
+      #   uses: peter-evans/repository-dispatch@v2
+      #   with:
+      #     repository: websoft9/websoft9
+      #     event-type: media_dev_event
+      #     token: ${{secrets.MYGITHUB_ADMIN_TOKEN}}
+      #     ref: dev
+      #     client-payload: '{"artifact_name": "library-dev.zip","source_repo": "websoft9/docker-library"}'
+
       - name: Trigger websoft9/media-dev.yml workflow
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          repository: websoft9/websoft9
-          event-type: media_dev_event
-          token: ${{secrets.MYGITHUB_ADMIN_TOKEN}}
-          ref: dev
-          client-payload: '{"artifact_name": "library-dev.zip","source_repo": "websoft9/docker-library"}'
+        uses: benc-uk/workflow-dispatch@v1
+        with: 
+            workflow: media_dev.yml
+            repo: websoft9/websoft9
+            ref: dev
+            token: ${{secrets.MYGITHUB_ADMIN_TOKEN}}
