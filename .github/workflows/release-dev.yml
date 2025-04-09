@@ -27,11 +27,11 @@ jobs:
           zip -r ${{ env.appname }}-dev.zip ${{ env.appname }}
           cp ${{ env.appname }}-dev.zip artifacts
 
-      - name: Upload library-dev.zip to artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.appname }}-dev
-          path: ${{ env.appname }}
+      # - name: Upload library-dev.zip to artifacts
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: ${{ env.appname }}-dev
+      #     path: ${{ env.appname }}
 
       - name: Upload To cloudflare r2
         uses: ryand56/r2-upload-action@latest
