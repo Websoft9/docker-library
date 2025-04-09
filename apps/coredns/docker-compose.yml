@@ -5,11 +5,11 @@ version: '3.8'
 services:
   coredns:
     image: coredns/coredns:${W9_VERSION}
-    container_name: ${W9_NAME}
+    container_name: ${W9_ID}
     expose:
       - '53'
     ports:
-      - '${W9_HTTP_PORT}:53'
+      - '${W9_HTTP_PORT_SET}:53'
     volumes:
       - './src/config:/etc/coredns'
 
