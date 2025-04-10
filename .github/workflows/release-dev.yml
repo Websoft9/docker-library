@@ -43,16 +43,13 @@ jobs:
           source-dir: artifacts
           destination-dir: ./dev/websoft9/plugin/library
 
-      # release media(dev)
-      # - name: Trigger websoft9/media-dev.yml workflow
-      #   uses: peter-evans/repository-dispatch@v2
-      #   with:
-      #     repository: websoft9/websoft9
-      #     event-type: media_dev_event
-      #     token: ${{secrets.MYGITHUB_ADMIN_TOKEN}}
-      #     ref: dev
-      #     client-payload: '{"artifact_name": "library-dev.zip","source_repo": "websoft9/docker-library"}'
-
+      - name: Purge Cloudflare Cache
+        uses: jakejarvis/cloudflare-purge-action@master
+        env:
+          CLOUDFLARE_ZONE: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          PURGE_URLS: '["https://artifact.websoft9.com/dev/websoft9/plugin/library/library-dev.zip"]'
+  
       - name: Trigger websoft9/media-dev.yml workflow
         uses: benc-uk/workflow-dispatch@v1
         with: 
