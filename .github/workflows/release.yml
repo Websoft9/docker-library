@@ -60,7 +60,14 @@ jobs:
           r2-bucket: artifact
           source-dir: artifacts
           destination-dir: ./${{ env.CHANNEL }}/websoft9/plugin/${{ env.appname }}
-
+          
+      - name: Purge Cloudflare Cache
+        uses: jakejarvis/cloudflare-purge-action@master
+        env:
+          CLOUDFLARE_ZONE: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          PURGE_URLS: '["https://artifact.websoft9.com/${{ env.CHANNEL }}/websoft9/plugin/library/library-latest.zip"]'
+          
       - name: Create Github Release from code
         uses: softprops/action-gh-release@v1
         with:
