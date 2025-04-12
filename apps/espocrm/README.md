@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for EspoCRM:
 
 
- - community:  8.4.2, latest
+ - community:  9.0.6, latest
 
 
 ## System Requirements

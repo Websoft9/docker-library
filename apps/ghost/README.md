@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Ghost:
 
 
- - community:  5.110.1, latest
+ - community:  5.115.1, latest
 
 
 ## System Requirements
