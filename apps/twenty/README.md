@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Twenty:
 
 
- - community:  v0.43, latest
+ - community:  v0.50.5, latest
 
 
 ## System Requirements

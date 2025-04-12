@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Trivy:
 
 
- - community:  0.58.1, latest
+ - community:  0.61.0, latest
 
 
 ## System Requirements
