@@ -82,7 +82,7 @@ services:
       - 'mariadb_data:/bitnami/mariadb'
 
   elasticsearch:
-    image: docker.io/bitnami/elasticsearch:7
+    image: docker.io/bitnami/elasticsearch:7.17.26
     restart: unless-stopped
     container_name: $W9_ID-elasticsearch
     volumes:
