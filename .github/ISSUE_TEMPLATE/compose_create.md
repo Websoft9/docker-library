@@ -18,10 +18,10 @@ source_code_url: "https://gitlab.com/websoft9/websoft9"
 # a brief and concise statementthat presents the main points for this application, shorter than 10 characters
 summary: "Open source Application self-hosting platform"
 # description of what the software does, shorter than 250 characters, sentence case
-description: "GitOps-driven, multi-application hosting for cloud servers and home servers, one-click deployment of 200+ open source apps."
+description: ""
 # list of license identifiers, see https://opensource.org/licenses for the full list of licenses
 licenses:
-  - LGPL-3.0
+  - MIT
 # (optional, true/false, default true) whether this application have Docker image
 Docker_image: true
 # (optional) link to an interactive demo of the software

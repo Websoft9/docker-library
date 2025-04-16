@@ -7,7 +7,7 @@
   "edition": [
     {
       "dist": "community",
-      "version": ["3", "latest"]
+      "version": ["3.2.13", "latest"]
     }
   ],
   "requirements": {

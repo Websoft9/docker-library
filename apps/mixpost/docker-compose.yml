@@ -1,48 +1,52 @@
-# image,docs: https://hub.docker.com/_/wordpress/
+# compose: https://docs.mixpost.app/lite/installation/docker#3-create-docker-compose-file
 
 services:
-
-  wordpress:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
-    restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
-    logging:
-      driver: "json-file"
-      options:
-          max-file: "5"
-          max-size: 10m
-    deploy:
-      resources:
-        limits:
-          memory: 5g
-          cpus: '0.7'
-    ports:
-      - $W9_HTTP_PORT_SET:80
-    env_file: .env
-    volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
-
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
-    restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
-    volumes:
-      - mysql_data:/var/lib/mysql
-    environment:
-      MYSQL_DATABASE: $WORDPRESS_DB_NAME
-      MYSQL_USER: $WORDPRESS_DB_USER
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+    mixpost:
+      container_name: $W9_ID
+      image: $W9_REPO:$W9_VERSION
+      env_file: .env
+      ports:
+          - $W9_HTTP_PORT_SET:80
+      volumes:
+          - storage:/var/www/html/storage/app
+          - logs:/var/www/html/storage/logs
+      depends_on:
+          - mysql
+          - redis 
+      restart: unless-stopped
+    mysql:
+      image: 'mysql/mysql-server:8.0'
+      environment:
+          MYSQL_DATABASE: ${DB_DATABASE}
+          MYSQL_USER: ${DB_USERNAME}
+          MYSQL_PASSWORD: ${DB_PASSWORD}
+      volumes:
+          - 'mysql:/var/lib/mysql'
+      healthcheck:
+          test: ["CMD", "mysqladmin", "ping", "-p ${DB_PASSWORD}"]
+          retries: 3
+          timeout: 5s
+      restart: unless-stopped
+    redis:
+      image: 'redis:latest'
+      command: redis-server --appendonly yes --replica-read-only no
+      volumes:
+          - 'redis:/data'
+      healthcheck:
+          test: ["CMD", "redis-cli", "ping"]
+          retries: 3
+          timeout: 5s
+      restart: unless-stopped  
 
 volumes:
-  wordpress:
-  mysql_data:
+  mysql:
+      driver: local
+  redis:
+      driver: local
+  storage:
+      driver: local
+  logs:
+      driver: local
     
 networks:
   default:
