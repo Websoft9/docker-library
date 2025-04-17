@@ -1,7 +1,7 @@
 {
   "name": "webcheck",
   "trademark": "Web-Check",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/Lissy93/web-check",
   "version_from": "https://hub.docker.com/r/lissy93/web-check/tags",
   "edition": [
