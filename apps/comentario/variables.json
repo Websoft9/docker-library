@@ -1,0 +1,21 @@
+{
+  "name": "comentario",
+  "trademark": "Comentario",
+  "release": false,
+  "fork_url": "https://gitlab.com/comentario/comentario",
+  "version_from": "registry.gitlab.com/comentario/comentario-ci-tools/test-site",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://comentario.app"
+  }
+}

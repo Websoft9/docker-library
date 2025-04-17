@@ -1,0 +1,21 @@
+{
+  "name": "dockermailserver",
+  "trademark": "DockerMailserver",
+  "release": false,
+  "fork_url": "https://github.com/docker-mailserver/docker-mailserver",
+  "version_from": "https://hub.docker.com/r/mailserver/docker-mailserver/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://docker-mailserver.github.io/docker-mailserver/latest/"
+  }
+}

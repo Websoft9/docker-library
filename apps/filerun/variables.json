@@ -1,0 +1,21 @@
+{
+  "name": "filerun",
+  "trademark": "FileRun",
+  "release": false,
+  "fork_url": "",
+  "version_from": "https://hub.docker.com/r/filerun/filerun/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://filerun.com"
+  }
+}

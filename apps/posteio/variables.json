@@ -1,0 +1,21 @@
+{
+  "name": "posteio",
+  "trademark": "Poste.io",
+  "release": false,
+  "fork_url": "https://poste.io/doc/getting-started",
+  "version_from": "https://hub.docker.com/r/analogic/poste.io/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://poste.io/"
+  }
+}
