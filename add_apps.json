@@ -1,10 +1,10 @@
 [
   {
-    "name": "ddnsgo",
-    "trademark": "ddns-go",
+    "name": "comentario",
+    "trademark": "Comentario",
     "release": false,
-    "fork_url": "https://github.com/jeessy2/ddns-go",
-    "version_from": "https://hub.docker.com/r/jeessy/ddns-go/tags",
+    "fork_url": "https://gitlab.com/comentario/comentario",
+    "version_from": "registry.gitlab.com/comentario/comentario-ci-tools/test-site",
     "edition": [
       {
         "dist": "community",
@@ -17,7 +17,154 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://github.com/jeessy2/ddns-go"
+      "url": "https://comentario.app"
+    }
+  },
+  {
+    "name": "miniflux",
+    "trademark": "Miniflux",
+    "release": false,
+    "fork_url": "https://github.com/miniflux/v2",
+    "version_from": "https://hub.docker.com/r/miniflux/miniflux/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://miniflux.app"
+    }
+  },
+  {
+    "name": "filerun",
+    "trademark": "FileRun",
+    "release": false,
+    "fork_url": "",
+    "version_from": "https://hub.docker.com/r/filerun/filerun/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://filerun.com"
+    }
+  },
+  {
+    "name": "adguardhome",
+    "trademark": "AdguardHome",
+    "release": false,
+    "fork_url": "https://github.com/AdguardTeam/AdguardHome",
+    "version_from": "https://hub.docker.com/r/adguard/adguardhome/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://adguard.com/en/adguard-home/overview.html"
+    }
+  },
+  {
+    "name": "dockermailserver",
+    "trademark": "DockerMailserver",
+    "release": false,
+    "fork_url": "https://github.com/docker-mailserver/docker-mailserver",
+    "version_from": "https://hub.docker.com/r/mailserver/docker-mailserver/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://docker-mailserver.github.io/docker-mailserver/latest/"
+    }
+  },
+  {
+    "name": "traccar",
+    "trademark": "Traccar",
+    "release": false,
+    "fork_url": "https://github.com/traccar/traccar-docker",
+    "version_from": "https://hub.docker.com/r/traccar/traccar/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://www.traccar.org"
+    }
+  },
+  {
+    "name": "traccar",
+    "trademark": "Traccar",
+    "release": false,
+    "fork_url": "https://github.com/traccar/traccar-docker",
+    "version_from": "https://hub.docker.com/r/traccar/traccar/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://www.traccar.org"
+    }
+  },
+  {
+    "name": "posteio",
+    "trademark": "Poste.io",
+    "release": false,
+    "fork_url": "https://poste.io/doc/getting-started",
+    "version_from": "https://hub.docker.com/r/analogic/poste.io/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://poste.io/"
     }
   }
 ]
