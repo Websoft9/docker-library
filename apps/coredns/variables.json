@@ -1,21 +1,19 @@
 {
-  "name": "coredns",
-  "trademark": "CoreDNS",
-  "release": false,
-  "fork_url": "https://github.com/coredns",
-  "version_from": "https://hub.docker.com/r/coredns/coredns/tags",
+  "name": "docker",
+  "trademark": "Docker",
+  "release": true,
+  "fork_url": "https://docker.com",
+  "version_from": "",
   "edition": [
     {
       "dist": "community",
-      "version": [
-        "latest"
-      ]
+      "version": ["latest"]
     }
   ],
   "requirements": {
-    "cpu": "2",
-    "memory": "4",
+    "cpu": "1",
+    "memory": "1",
     "disk": "1",
-    "url": "https://github.com/onlyoffice/docker#recommended-system-requirements"
+    "url": "https://docker.com"
   }
 }

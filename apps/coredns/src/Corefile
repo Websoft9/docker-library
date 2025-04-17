@@ -1,0 +1,14 @@
+# 处理 inner.local 域
+inner.local:53 {
+    file /etc/coredns/db.inner.local {  # 加载区域文件
+        reload 30s  # 每 30 秒检查文件变化
+    }
+    log         #显示日志
+    errors      # 显示错误日志
+}
+
+# 处理其他域，转发到上游 DNS
+.:53 {
+    forward . 222.246.129.80 59.51.78.210 1.1.1.1 8.8.8.8 1.0.0.1   # 外部查询转发到公共 DNS
+    errors
+}
