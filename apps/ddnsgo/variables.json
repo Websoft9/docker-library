@@ -1,21 +1,19 @@
 {
-  "name": "ddnsgo",
-  "trademark": "ddns-go",
-  "release": false,
-  "fork_url": "https://github.com/jeessy2/ddns-go",
-  "version_from": "https://hub.docker.com/r/jeessy/ddns-go/tags",
+  "name": "docker",
+  "trademark": "Docker",
+  "release": true,
+  "fork_url": "https://docker.com",
+  "version_from": "",
   "edition": [
     {
       "dist": "community",
-      "version": [
-        "latest"
-      ]
+      "version": ["latest"]
     }
   ],
   "requirements": {
-    "cpu": "2",
-    "memory": "4",
-    "disk": "10",
-    "url": "https://github.com/jeessy2/ddns-go"
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1",
+    "url": "https://docker.com"
   }
 }
