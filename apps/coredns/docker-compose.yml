@@ -1,22 +1,18 @@
-# image: https://hub.docker.com/r/coredns
-# docs: https://github.com/coredns/coredns
-version: '3.8'
-
 services:
   coredns:
-    image: coredns/coredns:${W9_VERSION}
-    container_name: ${W9_ID}
-    expose:
-      - '53'
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    env_file: .env
+    restart: always
+    command: -conf /etc/coredns/Corefile -dns.port 53
     ports:
-      - '${W9_HTTP_PORT_SET}:53'
+      - "$W9_INNERIP_SET:$W9_HTTP_PORT_SET:53"
+      - "$W9_INNERIP_SET:53:53/udp"
     volumes:
-      - './src/config:/etc/coredns'
-
+      - ./src/Corefile:/etc/coredns/Corefile
+      - ./src/db.inner.local:/etc/coredns/db.inner.local
+      
 networks:
   default:
-    name: ${W9_NETWORK}
+    name: $W9_NETWORK
     external: true
-
-volumes:
-  coredns:
