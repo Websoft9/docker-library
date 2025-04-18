@@ -1,100 +1,65 @@
-# image: https://hub.docker.com/r/bitnami/magento
+# docs: https://experienceleague.adobe.com/zh-hans/docs/commerce-operations/installation-guide
 
 version: '3.8'
 
 services:
   magento:
-    image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
+    image: $W9_REPO:8.3-apache${DEPLOY_TIME}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PHP_VERSION: 8.3-apache
     restart: unless-stopped
+    command: /bin/bash -c "bash /usr/local/bin/cmd.sh && apache2-foreground"
+    env_file: .env
     ports:
-      - $W9_HTTP_PORT_SET:80
-    env_file:
-      - .env
-    environment:
-      - MAGENTO_HOST=$W9_URL
-      - MAGENTO_DATABASE_USER=$W9_ID
-      - MAGENTO_DATABASE_NAME=$W9_ID
-      - MAGENTO_DATABASE_PASSWORD=$W9_POWER_PASSWORD
-    volumes:
-      - 'magento_data:/bitnami/magento'
+     - $W9_HTTP_PORT_SET:80
+    volumes: 
+      - source:/var/www/html
+      - ./src/000-default.conf:/etc/apache2/sites-available/000-default.conf
+      - ./src/cmd.sh:/usr/local/bin/cmd.sh  #for CI
+      - ./src/php_extra.ini:/usr/local/etc/php/conf.d/php_extra.ini #for custom php.ini
     depends_on:
+      - opensearch
       - mariadb
-      - elasticsearch
-
-  magentocli:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID-cli
-    volumes:
-      - magento_data:/data
-    depends_on:
-      - magento
-    entrypoint: |
-      /bin/sh -c "
-      apt update -y
-      apt install -y --no-install-recommends wget curl
-      echo 'Waiting for Magento to be ready...'
-      while ! curl -s http://$W9_ID > /dev/null; do
-        echo 'Waiting for Magento...'
-        sleep 10
-      done
-      # This url is download from https://raw.githubusercontent.com/magento-l10n/language-zh_CN/master/zh_CN.csv
-      # When update magento, you should update src/zh_CN.csv file
-      while [ ! -f /data/vendor/magento/language-zh_hans_cn/zh_CN.csv ]; do
-        echo 'try to download zh_CN.csv...'
-        wget https://websoft9.github.io/docker-library/apps/magento/src/zh_CN.csv -O /data/vendor/magento/language-zh_hans_cn/zh_CN.csv
-        sleep 10
-      done
-      cd /data
-      bin/magento setup:static-content:deploy zh_Hans_CN
-      bin/magento indexer:reindex
-      echo 'Set zh_Hans_CN ok ...'
-      if [ -z \"$W9_URL\" ]; then
-        echo 'W9_URL is empty, not need to change, exiting...'
-        exit 0
-      fi
-      echo $W9_URL
-      if echo \"\$W9_URL\" | grep -qE '^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\$'; then
-        wp_url=$W9_URL:$W9_HTTP_PORT_SET
-        echo 'URL is IP'
-      else
-        wp_url=$W9_URL
-        echo 'URL is not IP'
-      fi
-      echo 'Start to set URL ...'
-      bin/magento setup:store-config:set --base-url=\"http://$$wp_url\"
-      # base-url-secure is for https url
-      #bin/magento setup:store-config:set --base-url-secure=\"https://$$wp_url\"
-      bin/magento cache:clean
-      bin/magento cache:flush
-      "
-
+      
   mariadb:
-    image: docker.io/bitnami/mariadb:$W9_MARIADB_VERSION
+    image: mariadb:$W9_MARIADB_VERSION
     container_name: $W9_ID-mariadb
     restart: unless-stopped
     environment:
-      - MARIADB_USER=$W9_ID
-      - MARIADB_DATABASE=$W9_ID
+      - MARIADB_USER=magento
+      - MARIADB_DATABASE=magento
       - MARIADB_PASSWORD=$W9_POWER_PASSWORD
       - MARIADB_ROOT_PASSWORD=$W9_POWER_PASSWORD
     volumes:
       - 'mariadb_data:/bitnami/mariadb'
-
-  elasticsearch:
-    image: docker.io/bitnami/elasticsearch:7.17.26
-    restart: unless-stopped
-    container_name: $W9_ID-elasticsearch
+      
+  opensearch:
+    image: opensearchproject/opensearch:2.19.1
+    container_name: $W9_ID-opensearch
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true              # along with the memlock settings below, disables swapping
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m  # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
+      #- OPENSEARCH_INITIAL_ADMIN_PASSWORD=${W9_POWER_PASSWORD}    # Sets the demo admin user password when using demo configuration, required for OpenSearch 2.12 and higher
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536  # maximum number of open files for the OpenSearch user, set to at least 65536 on modern systems
+        hard: 65536
     volumes:
-      - 'elasticsearch_data:/bitnami/elasticsearch/data'
+      - opensearch-data:/usr/share/opensearch/data
 
 volumes:
   mariadb_data:
-    driver: local
-  magento_data:
-    driver: local
-  elasticsearch_data:
-    driver: local
+  source:
+  opensearch_data:
+
 
 networks:
   default:
