@@ -60,7 +60,6 @@ volumes:
   source:
   opensearch_data:
 
-
 networks:
   default:
     name: $W9_NETWORK
