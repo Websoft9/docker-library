@@ -24,11 +24,13 @@ RUN apt update && apt install -y crudini
 COPY src/extensions.ini /usr/local/bin/config.ini
 COPY src/apt_install.sh /usr/local/bin/apt_install.sh
 COPY src/php_install.sh /usr/local/bin/php_install.sh
+COPY src/magento_init.sh /usr/local/bin/magento_init.sh
 
 RUN chmod +x /usr/local/bin/apt_install.sh
 RUN chmod +x /usr/local/bin/php_install.sh
 
 RUN /usr/local/bin/apt_install.sh
 RUN /usr/local/bin/php_install.sh
+RUN /usr/local/bin/magento_init.sh
 
 RUN apt clean

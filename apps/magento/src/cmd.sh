@@ -9,6 +9,7 @@ if [ -z "$(ls -A /var/www/html)" ]; then
   echo "Commands executed: index.php created and ownership changed."
 else
   echo "/var/www/html is not empty. No actions taken."
+  chown -R www-data:www-data /var/www/html
 fi
 
 

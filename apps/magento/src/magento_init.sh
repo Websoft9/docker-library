@@ -1,0 +1,2 @@
+composer config -g http-basic.repo.magento.com 37bb3b989cea3977c859efc7f6a22f74 a5b8ceac57dbeabf0a3a6f4d6301803f
+composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=2.4.8 /var/www/html
