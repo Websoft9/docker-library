@@ -28,6 +28,7 @@ COPY src/magento_init.sh /usr/local/bin/magento_init.sh
 
 RUN chmod +x /usr/local/bin/apt_install.sh
 RUN chmod +x /usr/local/bin/php_install.sh
+RUN chmod +x /usr/local/bin/magento_init.sh
 
 RUN /usr/local/bin/apt_install.sh
 RUN /usr/local/bin/php_install.sh
