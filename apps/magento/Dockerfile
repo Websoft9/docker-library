@@ -35,4 +35,6 @@ RUN /usr/local/bin/apt_install.sh
 RUN /usr/local/bin/php_install.sh
 RUN /usr/local/bin/magento_init.sh
 
+RUN a2enmod expires headers rewrite security2
+
 RUN apt clean
