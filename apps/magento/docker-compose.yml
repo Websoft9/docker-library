@@ -11,6 +11,7 @@ services:
       dockerfile: Dockerfile
       args:
         PHP_VERSION: 8.3-apache
+        W9_VERSION: $W9_VERSION
     restart: unless-stopped
     command: /bin/bash -c "bash /usr/local/bin/cmd.sh && apache2-foreground"
     env_file: .env
