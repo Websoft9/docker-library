@@ -7,6 +7,8 @@ if [ -z "$(ls -A /var/www/html)" ]; then
   echo "Commands executed: index.php created and ownership changed."
 else
   echo "Start to create magento site..."
+  
+  # magento create site
   bin/magento setup:install \
   --base-url=http://${W9_URL} \
   --db-host=${W9_ID}-mariadb \
@@ -29,4 +31,6 @@ else
   --opensearch-index-prefix=magento2 \
   --opensearch-timeout=15 \
   --disable-modules=Magento_TwoFactorAuth 
+  
+  chown -R www-data:www-data /var/www/html
 fi
