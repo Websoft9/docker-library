@@ -19,7 +19,6 @@ services:
      - $W9_HTTP_PORT_SET:80
     volumes: 
       - source:/var/www/html
-      #- ./src/000-default.conf:/etc/apache2/sites-available/000-default.conf
       - ./src/cmd.sh:/usr/local/bin/cmd.sh  #for CI
       - ./src/php_extra.ini:/usr/local/etc/php/conf.d/php_extra.ini #for custom php.ini
     depends_on:
