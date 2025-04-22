@@ -3,33 +3,8 @@
 
 # Check MySQL connection
 check_mysql() {
-  echo "Verifying MySQL connection via PHP..."
-  php -r '
-  $host = getenv("W9_ID")."-mariadb";
-  $user = "magento";
-  $pass = getenv("W9_RCODE");
-  $db = "magento";
-  $max_retries = 5;
-  $retry_delay = 5;
-
-  for ($i=1; $i<=$max_retries; $i++) {
-    try {
-      $conn = new mysqli($host, $user, $pass, $db);
-      if ($conn->connect_error) {
-        throw new Exception("Connection failed: " . $conn->connect_error);
-      }
-      echo "MySQL connection successful!";
-      $conn->close();
-      exit(0);
-    } catch (Exception $e) {
-      if ($i == $max_retries) {
-        fwrite(STDERR, "MySQL connection failed: " . $e->getMessage());
-        exit(1);
-      }
-      sleep($retry_delay);
-    }
-  }
-  '
+  echo "Verifying MySQL connection..."
+  mysql -h "${W9_ID}-mariadb" -u magento -p"${W9_RCODE}" -e 'SELECT 1' magento &>/dev/null
   return $?
 }
 
@@ -48,11 +23,11 @@ else
   echo "Start to create magento site..."
 
   # DB and OpenSearch must ready before create site
-  until check_opensearch; do
+  until check_mysql; do
     sleep 5
   done
   
-  until check_mysql; do
+  until check_opensearch; do
     sleep 5
   done
 
