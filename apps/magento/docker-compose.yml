@@ -5,12 +5,12 @@ version: '3.8'
 services:
   magento:
     container_name: $W9_ID
-    image: $W9_REPO:8.3-apache${DEPLOY_TIME}
+    image: $W9_REPO:$PHP_VERSION${DEPLOY_TIME}
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        PHP_VERSION: 8.3-apache
+        PHP_VERSION: $PHP_VERSION
         W9_VERSION: $W9_VERSION
     restart: unless-stopped
     command: /bin/bash -c "bash /usr/local/bin/cmd.sh && apache2-foreground"
@@ -39,7 +39,7 @@ services:
       - 'mariadb_data:/bitnami/mariadb'
       
   opensearch:
-    image: opensearchproject/opensearch:2.19.1
+    image: opensearchproject/opensearch:$W9_OPENSEARCH_VERSION
     container_name: $W9_ID-opensearch
     environment:
       - plugins.security.disabled=true
