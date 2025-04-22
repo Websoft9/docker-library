@@ -2,25 +2,31 @@
 
  
 version: '3.8'
-services:        
+
+services:
+  guacd:
+    container_name: ${W9_ID}-guacd
+    image: dushixiang/guacd:1.5.5
+    volumes:
+      - guacd:/usr/local/next-terminal/data
+    restart:
+      always
+
   next-terminal:
-    image: ${W9_REPO}:$W9_VERSION
-    container_name: ${W9_ID}
+    env_file: .env
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
     ports:
       - "${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}"
     volumes:
       - /etc/localtime:/etc/localtime
       - next_terminal:/usr/local/next-terminal/data
-    restart: unless-stopped
-    env_file: .env
+      - ./src/config.yaml:/etc/next-terminal/config.yaml
+    depends_on:
+      - guacd
+    restart:
+      always
 
-  guacd:
-    image: dushixiang/guacd:latest
-    container_name: ${W9_ID}-guacd
-    volumes:
-      - guacd:/usr/local/next-terminal/data
-    restart: unless-stopped
-      
 networks:
   default:
     name: ${W9_NETWORK}
