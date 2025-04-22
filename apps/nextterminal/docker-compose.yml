@@ -17,7 +17,7 @@ services:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     ports:
-      - "${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}"
+      - "${W9_HTTP_PORT_SET}:8088"
     volumes:
       - /etc/localtime:/etc/localtime
       - next_terminal:/usr/local/next-terminal/data
