@@ -7,6 +7,7 @@ if [ -f "/var/www/html/vendor/magento/language-zh_hans_cn/zh_CN.csv" ]; then
 else
 
   echo "Start to create magento site..."
+  sleep 3
   # magento create site
   bin/magento setup:install \
   --base-url=http://${W9_URL} \
@@ -34,9 +35,6 @@ else
   wget https://websoft9.github.io/docker-library/apps/magento/src/zh_CN.csv -O /var/www/html/vendor/magento/language-zh_hans_cn/zh_CN.csv
   bin/magento setup:static-content:deploy -f zh_Hans_CN
   bin/magento indexer:reindex
-  
-  a2ensite 000-default.conf
-  apache2ctl graceful 
   
   chown -R www-data:www-data /var/www/html
 fi
