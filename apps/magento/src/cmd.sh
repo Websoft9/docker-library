@@ -1,13 +1,12 @@
 ## This script is always excused after PHP container running
 ## If you upload your PHP application source code to container, you should consider migration exist data
 
-if [ -z "$(ls -A /var/www/html)" ]; then
-  echo "<?php phpinfo(); ?>" > /var/www/html/index.php
+if [ -f "/var/www/html/vendor/magento/language-zh_hans_cn/zh_CN.csv" ]; then
+  echo "magento site already created, skip it"
   chown -R www-data:www-data /var/www/html
-  echo "Commands executed: index.php created and ownership changed."
 else
+
   echo "Start to create magento site..."
-  
   # magento create site
   bin/magento setup:install \
   --base-url=http://${W9_URL} \
@@ -31,6 +30,13 @@ else
   --opensearch-index-prefix=magento2 \
   --opensearch-timeout=15 \
   --disable-modules=Magento_TwoFactorAuth 
+  
+  wget https://websoft9.github.io/docker-library/apps/magento/src/zh_CN.csv -O /var/www/html/vendor/magento/language-zh_hans_cn/zh_CN.csv
+  bin/magento setup:static-content:deploy -f zh_Hans_CN
+  bin/magento indexer:reindex
+  
+  a2ensite 000-default.conf
+  apache2ctl graceful 
   
   chown -R www-data:www-data /var/www/html
 fi
