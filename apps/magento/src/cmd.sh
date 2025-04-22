@@ -7,7 +7,7 @@ if [ -f "/var/www/html/vendor/magento/language-zh_hans_cn/zh_CN.csv" ]; then
 else
 
   echo "Start to create magento site..."
-  sleep 3
+  sleep 30
   # magento create site
   bin/magento setup:install \
   --base-url=http://${W9_URL} \
