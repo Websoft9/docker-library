@@ -1,7 +1,11 @@
 FROM php:8.3-apache
 
-LABEL maintainer="Websoft9<help@websoft9.com>"
-LABEL version="2.4.8"
+LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
+      org.opencontainers.image.description="PHP runtime by Websoft9" \
+      org.opencontainers.image.source="https://github.com/Websoft9/docker-library/tree/main/apps/php" \
+      org.opencontainers.image.title="php" \
+      org.opencontainers.image.vendor="Websoft9 Inc." \
+      org.opencontainers.image.version="2.4.8"
 
 # Set environment variables to avoid interactive configuration
 ENV DEBIAN_FRONTEND=noninteractive
