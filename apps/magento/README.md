@@ -3,7 +3,7 @@
 This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Adobe Commerce (Magento):
 
 
- - community:  2.4.7, latest
+ - community:  2.4.8
 
 
 ## System Requirements

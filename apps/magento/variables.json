@@ -2,12 +2,12 @@
   "name": "magento",
   "trademark": "Adobe Commerce (Magento)",
   "release": true,
-  "fork_url": "https://hub.docker.com/r/bitnami/magento",
-  "version_from": "https://hub.docker.com/r/bitnami/magento/tags",
+  "fork_url": "https://hub.docker.com/r/websoft9dev/magento",
+  "version_from": "https://hub.docker.com/r/websoft9dev/magento/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["2.4.8"]
+      "version": ["2.4.8","latest"]
     }
   ],
   "requirements": {

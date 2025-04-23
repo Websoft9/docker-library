@@ -1,39 +1,28 @@
-ARG PHP_VERSION=8.3-apache
+FROM php:8.3-apache
 
-FROM php:${PHP_VERSION}
-
-LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
-      org.opencontainers.image.description="PHP runtime by Websoft9" \
-      org.opencontainers.image.source="https://github.com/Websoft9/docker-library/tree/main/apps/php" \
-      org.opencontainers.image.title="php" \
-      org.opencontainers.image.vendor="Websoft9 Inc." \
-      org.opencontainers.image.version="${PHP_VERSION}"
+LABEL maintainer="Websoft9<help@websoft9.com>"
+LABEL version="2.4.8"
 
 # Set environment variables to avoid interactive configuration
 ENV DEBIAN_FRONTEND=noninteractive
-
-
-# replace apt repository for php7.0/5.6 image
-RUN sed -i  's|deb http://deb.debian.org/debian stretch|deb http://archive.debian.org/debian stretch|g' /etc/apt/sources.list || true && \
-    sed -i  '/stretch-updates/d' /etc/apt/sources.list || true && \
-    sed -i  's|deb http://security.debian.org/debian-security stretch/updates|deb http://archive.debian.org/debian-security stretch/updates|g' /etc/apt/sources.list || true
-
 RUN apt update && apt install -y crudini
-
 
 COPY src/extensions.ini /usr/local/bin/config.ini
 COPY src/apt_install.sh /usr/local/bin/apt_install.sh
 COPY src/php_install.sh /usr/local/bin/php_install.sh
-COPY src/magento_init.sh /usr/local/bin/magento_init.sh
+COPY src/cmd.sh /usr/local/bin/cmd.sh
 
 RUN chmod +x /usr/local/bin/apt_install.sh
 RUN chmod +x /usr/local/bin/php_install.sh
-RUN chmod +x /usr/local/bin/magento_init.sh
+RUN chmod +x /usr/local/bin/cmd.sh
 
 RUN /usr/local/bin/apt_install.sh
 RUN /usr/local/bin/php_install.sh
-RUN /usr/local/bin/magento_init.sh
+RUN composer config -g http-basic.repo.magento.com 37bb3b989cea3977c859efc7f6a22f74 a5b8ceac57dbeabf0a3a6f4d6301803f
+RUN composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=2.4.8 /var/www/html
 
 RUN a2enmod expires headers rewrite security2
 
 RUN apt clean
+
+CMD ["/bin/bash", "-c", "bash /usr/local/bin/cmd.sh && apache2-foreground"]

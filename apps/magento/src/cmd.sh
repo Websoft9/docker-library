@@ -3,15 +3,15 @@
 
 # Check MySQL connection
 check_mysql() {
-  echo "Verifying MySQL connection..."
-  mysql -h "${W9_ID}-mariadb" -u magento -p"${W9_RCODE}" -e 'SELECT 1' magento &>/dev/null
+  echo "[$(date +'%Y-%m-%d %H:%M:%S')] Verifying MySQL connection..."
+  mysql -h "${MAGENTO_DB_HOST}" -u magento -p"${MAGENTO_PASSWORD}" -e 'SELECT 1' magento &>/dev/null
   return $?
 }
 
 # Check OpenSearch health
 check_opensearch() {
-  echo "Verifying OpenSearch health..."
-  curl -sSf http://${W9_ID}-opensearch:9200/_cluster/health?pretty | grep -q '"status" : "green"'
+  echo "[$(date +'%Y-%m-%d %H:%M:%S')] Verifying OpenSearch health..."
+  curl -sSf http://${MAGENTO_OPENSEARCH_HOST}:9200/_cluster/health?pretty | grep -q '"status" : "green"'
   return $?
 }
   
@@ -33,23 +33,23 @@ else
 
   # magento create site
   bin/magento setup:install \
-  --base-url=http://${W9_URL} \
-  --db-host=${W9_ID}-mariadb \
-  --db-name=magento \
-  --db-user=magento \
-  --db-password=${W9_RCODE} \
+  --base-url=http://${MAGENTO_URL} \
+  --db-host=${MAGENTO_DB_HOST} \
+  --db-name=${MAGENTO_DB_NAME} \
+  --db-user=${MAGENTO_DB_USER} \
+  --db-password=${MAGENTO_PASSWORD} \
   --backend-frontname=admin  \
   --admin-firstname=admin \
   --admin-lastname=admin \
   --admin-email=admin@admin.com \
   --admin-user=admin \
-  --admin-password=${W9_RCODE} \
+  --admin-password=${MAGENTO_PASSWORD} \
   --language=en_US \
   --currency=USD \
   --timezone=America/Chicago \
   --use-rewrites=1 \
   --search-engine=opensearch \
-  --opensearch-host=${W9_ID}-opensearch \
+  --opensearch-host=${MAGENTO_OPENSEARCH_HOST} \
   --opensearch-port=9200 \
   --opensearch-index-prefix=magento2 \
   --opensearch-timeout=15 \
