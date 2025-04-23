@@ -21,8 +21,6 @@ if [ -f "/var/www/html/vendor/magento/language-zh_hans_cn/zh_CN.csv" ]; then
 else
 
   echo "Start to create magento site..."
-  echo "test environment variables:${MAGENTO_DB_HOST},${MAGENTO_DB_NAME},${MAGENTO_PASSWORD}"
-  sleep 20s
 
   # DB and OpenSearch must ready before create site
   until check_mysql; do
