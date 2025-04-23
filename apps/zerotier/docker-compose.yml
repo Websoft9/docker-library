@@ -1,48 +1,18 @@
-# image,docs: https://hub.docker.com/_/wordpress/
+# image,docs: https://hub.docker.com/r/zerotier/zerotier
 
 services:
 
-  wordpress:
+  zerotier:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
+    network_mode: host #Delete this if you only want container connect the zerotier Network
     restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
-    logging:
-      driver: "json-file"
-      options:
-          max-file: "5"
-          max-size: 10m
-    deploy:
-      resources:
-        limits:
-          memory: 5g
-          cpus: '0.7'
-    ports:
-      - $W9_HTTP_PORT_SET:80
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+    command: ${W9_NETWORKID_SET}
     env_file: .env
-    volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
-
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
-    restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
-    volumes:
-      - mysql_data:/var/lib/mysql
-    environment:
-      MYSQL_DATABASE: $WORDPRESS_DB_NAME
-      MYSQL_USER: $WORDPRESS_DB_USER
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
-
-volumes:
-  wordpress:
-  mysql_data:
     
 networks:
   default:
