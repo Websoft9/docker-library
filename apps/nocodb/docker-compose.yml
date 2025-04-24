@@ -1,5 +1,6 @@
 # compose: https://github.com/nocodb/nocodb/blob/master/docker-compose/pg/docker-compose.yml
 # docs: https://docs.nocodb.com/getting-started/installation
+# image: https://hub.docker.com/r/nocodb/nocodb/tags
 
 version: '3.8'
 
