@@ -3,11 +3,12 @@
   "trademark": "Paperless-ngx",
   "release": true,
   "fork_url": "https://github.com/paperless-ngx/paperless-ngx",
-  "version_from": "",
+  "version_from": "https://hub.docker.com/r/paperlessngx/paperless-ngx/tags",
   "edition": [
     {
       "dist": "community",
       "version": [
+        "2.15.3",
         "latest"
       ]
     }
