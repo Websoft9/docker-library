@@ -26,7 +26,6 @@ RUN composer config -g http-basic.repo.magento.com 37bb3b989cea3977c859efc7f6a22
 RUN composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=2.4.8 /var/www/html
 
 RUN a2enmod expires headers rewrite security2
-
 RUN apt clean
 
 CMD ["/bin/bash", "-c", "bash /usr/local/bin/cmd.sh && apache2-foreground"]

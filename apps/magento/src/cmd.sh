@@ -4,7 +4,7 @@
 # Check MySQL connection
 check_mysql() {
   echo "[$(date +'%Y-%m-%d %H:%M:%S')] Verifying MySQL connection..."
-  mysql -h "${MAGENTO_DB_HOST}" -u magento -p"${MAGENTO_PASSWORD}" -e 'SELECT 1' magento &>/dev/null
+  mysql -h "${MAGENTO_DB_HOST}" -u magento -p"${MAGENTO_DB_PASSWORD}" -e 'SELECT 1' magento &>/dev/null
   return $?
 }
 
@@ -37,13 +37,13 @@ else
   --db-host=${MAGENTO_DB_HOST} \
   --db-name=${MAGENTO_DB_NAME} \
   --db-user=${MAGENTO_DB_USER} \
-  --db-password=${MAGENTO_PASSWORD} \
-  --backend-frontname=admin  \
-  --admin-firstname=admin \
-  --admin-lastname=admin \
+  --db-password=${MAGENTO_DB_PASSWORD} \
+  --backend-frontname=${MAGENTO_ADMIN_PATH}  \
+  --admin-firstname=James \
+  --admin-lastname=Smith \
   --admin-email=admin@admin.com \
-  --admin-user=admin \
-  --admin-password=${MAGENTO_PASSWORD} \
+  --admin-user=${MAGENTO_ADMIN_USER} \
+  --admin-password=${MAGENTO_ADMIN_PASSWORD} \
   --language=en_US \
   --currency=USD \
   --timezone=America/Chicago \
