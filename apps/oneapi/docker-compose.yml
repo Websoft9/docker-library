@@ -1,4 +1,5 @@
-# image,docs: https://github.com/songquanpeng/one-api
+# image: https://hub.docker.com/r/justsong/one-api/tags
+# docs: https://github.com/songquanpeng/one-api
 
 services:
   app:
