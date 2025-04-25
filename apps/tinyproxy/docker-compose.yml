@@ -8,6 +8,7 @@ services:
     env_file: .env
     volumes:
       - 'config:/config'
+      - './src/tinyproxy.conf:/etc/tinyproxy.conf:ro'
     restart: unless-stopped
     ports:
      - '${W9_TCP_PORT_SET}:8888'
