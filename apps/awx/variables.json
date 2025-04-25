@@ -1,0 +1,21 @@
+{
+  "name": "awx",
+  "trademark": "AWX",
+  "release": false,
+  "fork_url": "https://github.com/ansible/awx",
+  "version_from": "https://hub.docker.com/r/elestio/automatisch/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "22.5.0"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "1",
+    "url": "https://github.com/awx/docker#recommended-system-requirements"
+  }
+}
