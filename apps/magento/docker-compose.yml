@@ -13,6 +13,8 @@ services:
     volumes: 
       - magento_source:/var/www/html
       - ./src/php_extra.ini:/usr/local/etc/php/conf.d/php_extra.ini
+    labels:
+      - "upgrade-available=false"
     depends_on:
       - opensearch
       - mariadb
