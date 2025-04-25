@@ -1,6 +1,6 @@
 # TomEE on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for TomEE:
+This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for TomEE:
 
 
  - community:  8-jre17-webprofile, 8-jre17-microprofile, 8-jre17-plume, 8-jre17-plus, 8-jre11-webprofile, 8-jre11-microprofile, 8-jre11-plume, 8-jre11-plus, 8-jre8-webprofile, 8-jre8-microprofile, 8-jre8-plume, 8-jre8-plus, 9-jre17-webprofile, 9-jre17-microprofile, 9-jre17-plume, 9-jre17-plus, 9-jre11-webprofile, 9-jre11-microprofile, 9-jre11-plume, 9-jre11-plus

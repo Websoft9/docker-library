@@ -1,6 +1,6 @@
 # Node.js on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Node.js:
+This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Node.js:
 
 
  - community:  23, 23-alpine, 23-slim, 22, 22-alpine, 22-slim, 21, 21-alpine, 21-slim, 20, 20-alpine, 20-slim, 19, 19-alpine, 19-slim, 18, 18-alpine, 18-slim, 17, 17-alpine, 17-slim

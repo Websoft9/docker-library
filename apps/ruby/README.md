@@ -1,6 +1,6 @@
 # Ruby on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Ruby:
+This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Ruby:
 
 
  - community:  3.4, 3.3, 3.2, 3.1, 3.0, 2.7, 2.6, 2.5

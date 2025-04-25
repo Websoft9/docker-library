@@ -1,6 +1,6 @@
 # PHP-FPM-APACHE on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for PHP-FPM-APACHE:
+This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for PHP-FPM-APACHE:
 
 
  - community:  8.3-fpm, 8.2-fpm, 8.1-fpm, 8.0-fpm, 7.4-fpm, 7.3-fpm, 7.2-fpm, 7.1-fpm, 7.0-fpm, 5.6-fpm

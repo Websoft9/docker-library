@@ -1,9 +1,9 @@
 # Portainer on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Portainer:
+This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Portainer:
 
 
- - community:  2.27.1, latest
+ - community:  2.28.1, latest
 
 
 ## System Requirements

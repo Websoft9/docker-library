@@ -1,6 +1,6 @@
 # MySQL Workbench on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for MySQL Workbench:
+This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for MySQL Workbench:
 
 
  - community:  8.0.40, latest

@@ -1,6 +1,6 @@
 # MongoDB on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for MongoDB:
+This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for MongoDB:
 
 
  - community:  8.0.3, 7.0.4, 6.0.12, 5.0.23, 4.4.26, 4.2.24-rc2, 4.2.24, 4.0.28, 3.6.23, 3.4.24, 3.2.21, 3.0.15, latest

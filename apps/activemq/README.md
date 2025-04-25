@@ -1,6 +1,6 @@
 # ActiveMQ on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for ActiveMQ:
+This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for ActiveMQ:
 
 
  - community:  5.18.6-jre17-rockylinux8

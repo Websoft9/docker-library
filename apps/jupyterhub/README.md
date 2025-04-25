@@ -1,6 +1,6 @@
 # JupyterHub on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for JupyterHub:
+This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for JupyterHub:
 
 
  - community:  5.2.1, latest

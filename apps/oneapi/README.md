@@ -1,9 +1,9 @@
 # One API on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for One API:
+This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for One API:
 
 
- - community:  latest
+ - community:  v0.6.10, latest
 
 
 ## System Requirements

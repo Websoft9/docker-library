@@ -1,9 +1,9 @@
 # Mattermost on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Mattermost:
+This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Mattermost:
 
 
- - community:  10.3
+ - community:  10.7
 
 
 ## System Requirements

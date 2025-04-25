@@ -1,9 +1,9 @@
 # Cal.com on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Cal.com:
+This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Cal.com:
 
 
- - community:  latest
+ - community:  v5.0.19, latest
 
 
 ## System Requirements

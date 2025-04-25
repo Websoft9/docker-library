@@ -1,9 +1,9 @@
 # Neo4j on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Neo4j:
+This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Neo4j:
 
 
- - community:  5.26.0, 5.26.0-enterprise, 5.25, 5.25-enterprise, 5.24, 5.24-enterprise, 5.23, 5.23-enterprise, 4.4, 4.4-enterprise, latest
+ - community:  5.26.5, 5.26.5-enterprise, 5.26.0, 5.26.0-enterprise, 5.25, 5.25-enterprise, 5.24, 5.24-enterprise, 5.23, 5.23-enterprise, 4.4, 4.4-enterprise, latest
 
 
 ## System Requirements

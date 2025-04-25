@@ -1,6 +1,6 @@
 # Tomcat  on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Tomcat :
+This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Tomcat :
 
 
  - community:  11.0-jdk21-temurin, 10-jdk21-temurin, 10-jdk17-temurin, 10-jdk11-temurin, 9-jdk21-temurin, 9-jdk17-temurin, 9-jdk11-temurin, 9-jdk8-temurin, 9-jdk21-corretto, 9-jdk17-corretto, 9-jdk11-corretto, 9-jdk8-corretto

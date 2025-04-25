@@ -1,9 +1,9 @@
 # Seafile on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Seafile:
+This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Seafile:
 
 
- - community:  12.0.11, 12.0-latest
+ - community:  11.0.12, 12.0-latest
 
 
 ## System Requirements

@@ -1,9 +1,9 @@
 # Kong Gateway (OSS) on Docker  
 
-This is an **Docker Compose solution** powered by [Websoft9](https://www.websoft9.com) based on Docker for Kong Gateway (OSS):
+This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Kong Gateway (OSS):
 
 
- - community:  3.8, latest
+ - community:  3.9, latest
 
 
 ## System Requirements
