@@ -8,6 +8,7 @@
     {
       "dist": "community",
       "version": [
+        "v5.0.19",
         "latest"
       ]
     }
