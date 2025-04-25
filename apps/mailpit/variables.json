@@ -1,0 +1,21 @@
+{
+  "name": "mailpit",
+  "trademark": "Mailpit",
+  "release": false,
+  "fork_url": "https://github.com/axllent/mailpit",
+  "version_from": "https://hub.docker.com/r/axllent/mailpit/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://mailpit.axllent.org"
+  }
+}
