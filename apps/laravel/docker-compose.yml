@@ -1,0 +1,22 @@
+# image:https://hub.docker.com/_/php
+# How to use? Modify ./src/cmd.sh for CI/CD or Access docker to run your commands
+
+services:
+  laravel:
+    container_name: ${W9_ID}
+    image: $W9_REPO:$W9_VERSION
+    restart: unless-stopped
+    env_file: .env
+    ports:
+     - $W9_HTTP_PORT_SET:8000
+    volumes: 
+      - source:/var/www/html
+      - ./src/php_extra.ini:/usr/local/etc/php/conf.d/php_extra.ini #for custom php.ini
+
+volumes:
+  source:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true
