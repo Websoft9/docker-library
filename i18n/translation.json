@@ -414,5 +414,9 @@
     "W9_INNERIP_SET": [
         "",
         ""
+    ],
+    "W9_NETWORKID_SET": [
+        "",
+        ""
     ]
 }
