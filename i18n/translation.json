@@ -376,47 +376,47 @@
         "容器需暴露的端口"
     ],
     "W9_BEATS_TCP_PORT_SET": [
-        "",
-        ""
+        "BEATS TCP PORT",
+        "BEATS TCP 端口"
     ],
     "W9_RAW_TCP_PORT_SET": [
-        "",
-        ""
+        "RAW TCP PORT",
+        "原始 TCP 端口"
     ],
     "W9_RAW_UDP_PORT_SET": [
-        "",
-        ""
+        "RAW UDP PORT",
+        "原始 UDP 端口"
     ],
     "W9_FORWARDER_DATA_TCP_PORT_SET": [
-        "",
-        ""
+        "DATA TCP PORT",
+        "数据 TCP 端口"
     ],
     "W9_FORWARDER_CONFIG_TCP_PORT_SET": [
-        "",
-        ""
+        "CONFIG TCP PORT",
+        "配置 TCP 端口"
     ],
     "W9_LOGIN_TOKEN": [
-        "",
-        ""
+        "LOGIN TOKEN",
+        "登陆 TOKEN"
     ],
     "W9_SERVER_PORT_SET": [
-        "",
-        ""
+        "SERVER PORT",
+        "服务端口"
     ],
     "W9_HTTP_VNC_SET": [
-        "",
-        ""
+        "HTTP VNC",
+        "网络 VNC"
     ],
     "W9_APP_KEY_SET": [
-        "",
-        ""
+        "APP KEY",
+        "应用密钥"
     ],
     "W9_INNERIP_SET": [
-        "",
-        ""
+        "INNER IP",
+        "内网 IP"
     ],
     "W9_NETWORKID_SET": [
-        "",
-        ""
+        "NETWORK ID",
+        "网络 ID"
     ]
 }
