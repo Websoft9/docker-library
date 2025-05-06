@@ -1,4 +1,4 @@
-# image:https://github.com/lissy93/dashy
+# image: https://hub.docker.com/r/lissy93/dashy/tags
 # docs: https://dashy.to/docs/deployment#using-docker-compose
 
 services:
