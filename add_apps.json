@@ -1,10 +1,10 @@
 [
   {
-    "name": "mailpit",
-    "trademark": "Mailpit",
+    "name": "papermc",
+    "trademark": "PaperMC",
     "release": false,
-    "fork_url": "https://github.com/axllent/mailpit",
-    "version_from": "https://hub.docker.com/r/axllent/mailpit/tags",
+    "fork_url": "https://github.com/PaperMC/Paper",
+    "version_from": "https://hub.docker.com/r/magnia/papermc/tags",
     "edition": [
       {
         "dist": "community",
@@ -17,7 +17,7 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://mailpit.axllent.org"
+      "url": "https://papermc.io"
     }
   }
 ]
