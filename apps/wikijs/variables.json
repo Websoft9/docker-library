@@ -3,11 +3,12 @@
   "trademark": "Wiki.js",
   "release": true,
   "fork_url": "https://github.com/Requarks/wiki",
-  "version_from": "",
+  "version_from": "https://hub.docker.com/r/requarks/wiki/tags",
   "edition": [
     {
       "dist": "community",
       "version": [
+        "2.5.307",
         "latest"
       ]
     }
