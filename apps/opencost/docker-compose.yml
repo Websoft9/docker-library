@@ -14,6 +14,8 @@ services:
  opencost-ui:
   image: ghcr.io/opencost/opencost-ui:$W9_VERSION
   container_name: $W9_ID
+  env_file: 
+      - .env
   ports:
    - "$W9_HTTP_PORT_SET:9090"
   environment:

@@ -4,7 +4,7 @@ services:
 
   app:
     image: $W9_REPO:$W9_VERSION
-    : $W9_ID
+    container_name: $W9_ID
     extra_hosts:
       host.docker.internal: host-gateway
     restart: unless-stopped
