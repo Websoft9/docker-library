@@ -1,7 +1,7 @@
 {
   "name": "opencost",
   "trademark": "OpenCost",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/opencost/opencost",
   "version_from": "ghcr.io/opencost/opencost",
   "edition": [
