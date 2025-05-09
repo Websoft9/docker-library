@@ -1,6 +1,6 @@
-# Docker on Docker  
+# Firecrawl on Docker  
 
-This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Docker:
+This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Firecrawl:
 
 
  - community:  latest
@@ -8,7 +8,7 @@ This is an **[Docker Compose template](https://github.com/Websoft9/docker-librar
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://docker.com):
+The following are the minimal [recommended requirements](https://docs.firecrawl.dev/contributing/self-host):
 
 * **RAM**: 1 GB or more
 * **CPU**: 1 cores or higher
@@ -17,10 +17,10 @@ The following are the minimal [recommended requirements](https://docker.com):
 
 ## Install
 
-You can install this Docker by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+You can install this Firecrawl by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use Docker with **Websoft9 Business Support** free, you can [subscribe Docker](https://www.websoft9.com/apps) on Cloud platform
+If you want use Firecrawl with **Websoft9 Business Support** free, you can [subscribe Firecrawl](https://www.websoft9.com/apps) on Cloud platform
 
 ## Documentation
 
-[Docker Administrator Guide](https://support.websoft9.com/docs/docker) powered by Websoft9
+[Firecrawl Administrator Guide](https://support.websoft9.com/docs/firecrawl) powered by Websoft9

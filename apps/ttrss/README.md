@@ -3,7 +3,7 @@
 This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Tiny Tiny RSS:
 
 
- - community:  latest
+ - community:  4cb8a84d, latest
 
 
 ## System Requirements

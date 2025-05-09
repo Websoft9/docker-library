@@ -3,7 +3,7 @@
 This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Jellyfin:
 
 
- - community:  latest
+ - community:  10.10.7, latest
 
 
 ## System Requirements

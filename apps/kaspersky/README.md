@@ -3,7 +3,7 @@
 This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Kaspersky:
 
 
- - community:  latest
+ - community:  20250429, latest
 
 
 ## System Requirements
