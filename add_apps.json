@@ -1,10 +1,10 @@
 [
   {
-    "name": "airbyte",
-    "trademark": "Airbyte",
+    "name": "gocd",
+    "trademark": "GoCD",
     "release": false,
-    "fork_url": "https://github.com/airbytehq/airbyte",
-    "version_from": "https://hub.docker.com/r/airbyte/webapp/tags",
+    "fork_url": "https://github.com/gocd/gocd",
+    "version_from": "https://hub.docker.com/r/gocd/gocd-server/tags",
     "edition": [
       {
         "dist": "community",
@@ -17,7 +17,7 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://airbyte.com"
+      "url": "https://www.gocd.org"
     }
   }
 ]
