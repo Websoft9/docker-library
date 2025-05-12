@@ -8,6 +8,7 @@
     {
       "dist": "community",
       "version": [
+        "3.0.4",
         "latest"
       ]
     }
@@ -16,6 +17,6 @@
     "cpu": "2",
     "memory": "4",
     "disk": "10",
-    "url": "https://zitadel.com"
+    "url": "https://zitadel.com/docs/self-hosting/manage/production#minimum-system-requirements"
   }
 }
