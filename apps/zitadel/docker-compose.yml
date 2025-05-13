@@ -1,8 +1,11 @@
+# docs: https://zitadel.com/docs
+# compose: https://zitadel.com/docs/self-hosting/deploy/compose
+
 services:
   zitadel:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
-    restart: 'always'
+    restart: unless-stopped
     command: 'start-from-init --masterkey "MasterkeyNeedsToHave32Characters" --tlsMode disabled'
     env_file: .env
     depends_on:
@@ -14,7 +17,7 @@ services:
   db:
     image: postgres:17-alpine
     container_name: $W9_ID-postgresql
-    restart: 'always'
+    restart: unless-stopped
     environment:
       PGUSER: $ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME
       POSTGRES_PASSWORD: $ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD
