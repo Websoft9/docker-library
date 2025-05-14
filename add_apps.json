@@ -1,10 +1,10 @@
 [
   {
-    "name": "gocd",
-    "trademark": "GoCD",
+    "name": "tyk",
+    "trademark": "Tyk",
     "release": false,
-    "fork_url": "https://github.com/gocd/gocd",
-    "version_from": "https://hub.docker.com/r/gocd/gocd-server/tags",
+    "fork_url": "https://github.com/TykTechnologies/tyk",
+    "version_from": "https://hub.docker.com/r/tykio/tyk-gateway/tags",
     "edition": [
       {
         "dist": "community",
@@ -17,7 +17,28 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://www.gocd.org"
+      "url": "https://tyk.io/"
+    }
+  },
+  {
+    "name": "krakend",
+    "trademark": "KrakenD",
+    "release": false,
+    "fork_url": "https://github.com/krakend/krakend-ce",
+    "version_from": "https://hub.docker.com/_/krakend",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://www.krakend.io"
     }
   }
 ]
