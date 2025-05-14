@@ -1,50 +1,98 @@
-# image,docs: https://hub.docker.com/_/wordpress/
+x-ui-env: &bw-ui-env
+  AUTOCONF_MODE: "yes"
+  API_WHITELIST_IP: "127.0.0.0/24 10.20.30.0/24"
+  DATABASE_URI: "mariadb+pymysql://${MYSQL_USER}:${W9_POWER_PASSWORD}@${W9_ID}-mariadb:3306/${MYSQL_DATABASE}"
 
 services:
-
-  wordpress:
+  bunkerweb:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
-    restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
-    logging:
-      driver: "json-file"
-      options:
-          max-file: "5"
-          max-size: 10m
-    deploy:
-      resources:
-        limits:
-          memory: 5g
-          cpus: '0.7'
-    ports:
-      - $W9_HTTP_PORT_SET:80
     env_file: .env
-    volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
-
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
-    restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
-    volumes:
-      - mysql_data:/var/lib/mysql
+    ports:
+      #- "$W9_HTTP_PORT_SET:8080/tcp"
+      - "$W9_HTTPS_PORT_SET:8443/tcp"
+      - "$W9_HTTPS_PORT_SET:8443/udp"
+    labels:
+      - "bunkerweb.INSTANCE=yes"
     environment:
-      MYSQL_DATABASE: $W9_ID
-      MYSQL_USER: $W9_ID
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
+      <<: *bw-ui-env
+    restart: "unless-stopped"
+    networks:
+      - bw-universe
+      - default
+
+  bw-scheduler:
+    image: bunkerity/bunkerweb-scheduler:$W9_VERSION
+    container_name: $W9_ID-scheduler
+    environment:
+      <<: *bw-ui-env
+      BUNKERWEB_INSTANCES: ""
+      SERVER_NAME: ""
+      MULTISITE: "no"
+      UI_HOST: "http://${W9_ID}-ui:7000"
+    volumes:
+      - bw-storage:/data
+    restart: "unless-stopped"
+    networks:
+      - bw-universe
+      - default
+
+  bw-autoconf:
+    image: bunkerity/bunkerweb-autoconf:$W9_VERSION
+    container_name: $W9_ID-autoconf
+    depends_on:
+      - bw-docker
+    environment:
+      <<: *bw-ui-env
+      DOCKER_HOST: "tcp://${W9_ID}-docker:2375"
+    restart: "unless-stopped"
+    networks:
+      - bw-universe
+      - default
+
+  bw-docker:
+    image: tecnativa/docker-socket-proxy:nightly
+    container_name: $W9_ID-docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      CONTAINERS: "1"
+      LOG_LEVEL: "warning"
+
+  bw-ui:
+    image: bunkerity/bunkerweb-ui:1.6.1
+    container_name: $W9_ID-ui
+    environment:
+      <<: *bw-ui-env
+      TOTP_SECRETS: $TOTP_SECRETS
+    restart: "unless-stopped"
+    networks:
+      - bw-universe
+      - default
+
+  bw-db:
+    image: mariadb:11
+    container_name: $W9_ID-mariadb
+    environment:
       MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      MYSQL_DATABASE: $MYSQL_DATABASE
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $W9_POWER_PASSWORD
+    volumes:
+      - bw-data:/var/lib/mysql
+    restart: "unless-stopped"
 
 volumes:
-  wordpress:
-  mysql_data:
-    
+  bw-data:
+  bw-storage:
+
 networks:
   default:
     name: $W9_NETWORK
     external: true
+  bw-universe:
+    name: bw-universe
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.20.30.0/24
