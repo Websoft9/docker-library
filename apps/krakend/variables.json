@@ -1,0 +1,21 @@
+{
+  "name": "krakend",
+  "trademark": "KrakenD",
+  "release": false,
+  "fork_url": "https://github.com/krakend/krakend-ce",
+  "version_from": "https://hub.docker.com/_/krakend",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://www.krakend.io"
+  }
+}
