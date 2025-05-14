@@ -8,6 +8,7 @@
     {
       "dist": "community",
       "version": [
+        "1.6.1",
         "latest"
       ]
     }
@@ -16,6 +17,6 @@
     "cpu": "2",
     "memory": "4",
     "disk": "10",
-    "url": "https://www.bunkerweb.io"
+    "url": "https://docs.bunkerweb.io/latest/quickstart-guide/"
   }
 }
