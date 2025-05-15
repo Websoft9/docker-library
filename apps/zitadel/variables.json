@@ -1,7 +1,7 @@
 {
   "name": "zitadel",
   "trademark": "ZITADEL",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/zitadel/zitadel",
   "version_from": "ghcr.io/zitadel/zitadel",
   "edition": [
