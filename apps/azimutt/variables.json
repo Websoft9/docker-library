@@ -1,7 +1,7 @@
 {
   "name": "azimutt",
   "trademark": "Azimutt",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/azimuttapp/azimutt",
   "version_from": "https://github.com/azimuttapp/azimutt/pkgs/container/azimutt",
   "edition": [
