@@ -3,11 +3,12 @@
   "trademark": "Chroma",
   "release": false,
   "fork_url": "https://github.com/chroma-core/chroma",
-  "version_from": "ghcr.io/chroma-core/chroma",
+  "version_from": "https://hub.docker.com/r/chromadb/chroma/tags",
   "edition": [
     {
       "dist": "community",
       "version": [
+        "1.0.9",
         "latest"
       ]
     }
