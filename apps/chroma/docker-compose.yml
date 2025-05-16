@@ -1,50 +1,19 @@
-# image,docs: https://hub.docker.com/_/wordpress/
-
 services:
-
-  wordpress:
+  chromadb:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
-    restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
-    logging:
-      driver: "json-file"
-      options:
-          max-file: "5"
-          max-size: 10m
-    deploy:
-      resources:
-        limits:
-          memory: 5g
-          cpus: '0.7'
+    volumes:
+      - ./src/config.yaml:/config.yaml
+      - chroma_data:/data
     ports:
-      - $W9_HTTP_PORT_SET:80
+      - $W9_DB_PORT_SET:8000
     env_file: .env
-    volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
+    restart: always
 
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
-    restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
-    volumes:
-      - mysql_data:/var/lib/mysql
-    environment:
-      MYSQL_DATABASE: $WORDPRESS_DB_NAME
-      MYSQL_USER: $WORDPRESS_DB_USER
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
-
-volumes:
-  wordpress:
-  mysql_data:
-    
 networks:
   default:
     name: $W9_NETWORK
     external: true
+
+volumes:
+  chroma_data:
