@@ -3,11 +3,12 @@
   "trademark": "Consul",
   "release": false,
   "fork_url": "https://github.com/hashicorp/consul",
-  "version_from": "https://hub.docker.com/r/hashicorp/consul",
+  "version_from": "https://hub.docker.com/r/hashicorp/consul/tags",
   "edition": [
     {
       "dist": "community",
       "version": [
+        "1.21",
         "latest"
       ]
     }
