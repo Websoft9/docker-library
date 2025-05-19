@@ -3,12 +3,12 @@
 This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for ZITADEL:
 
 
- - community:  latest
+ - community:  v3.0.4, latest
 
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://zitadel.com):
+The following are the minimal [recommended requirements](https://zitadel.com/docs/self-hosting/manage/production#minimum-system-requirements):
 
 * **RAM**: 4 GB or more
 * **CPU**: 2 cores or higher

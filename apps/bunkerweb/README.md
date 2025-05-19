@@ -3,12 +3,12 @@
 This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for BunkerWeb:
 
 
- - community:  latest
+ - community:  1.6.1, latest
 
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://www.bunkerweb.io):
+The following are the minimal [recommended requirements](https://docs.bunkerweb.io/latest/quickstart-guide/):
 
 * **RAM**: 4 GB or more
 * **CPU**: 2 cores or higher
@@ -23,4 +23,4 @@ If you want use BunkerWeb with **Websoft9 Business Support** free, you can [subs
 
 ## Documentation
 
-[BunkerWeb Administrator Guide](https://support.websoft9.com/docs/bunkerWeb) powered by Websoft9
+[BunkerWeb Administrator Guide](https://support.websoft9.com/docs/bunkerweb) powered by Websoft9
