@@ -1,3 +1,6 @@
+# image: https://hub.docker.com/r/killbill/killbill
+# docs: https://docs.killbill.io/latest/getting_started
+
 services:
   killbill:
     image: $W9_REPO:$W9_VERSION
