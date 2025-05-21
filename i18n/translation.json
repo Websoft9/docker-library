@@ -418,5 +418,13 @@
     "W9_NETWORKID_SET": [
         "NETWORK ID",
         "网络 ID"
+    ],
+    "W9_DNS_TCP_PORT_SET": [
+        "",
+        ""
+    ],
+    "W9_DNS_UDP_PORT_SET": [
+        "",
+        ""
     ]
 }
