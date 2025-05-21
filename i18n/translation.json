@@ -420,11 +420,11 @@
         "网络 ID"
     ],
     "W9_DNS_TCP_PORT_SET": [
-        "",
-        ""
+        "DNS TCP PORT",
+        "DNS TCP 端口"
     ],
     "W9_DNS_UDP_PORT_SET": [
-        "",
-        ""
+        "DNS UDP PORT",
+        "DNS UDP 端口"
     ]
 }
