@@ -1,3 +1,6 @@
+# image: https://hub.docker.com/r/chromadb/chroma
+# docs: https://docs.trychroma.com/
+
 services:
   chromadb:
     image: $W9_REPO:$W9_VERSION
