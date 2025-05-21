@@ -1,49 +1,43 @@
-# image,docs: https://hub.docker.com/_/wordpress/
-
 services:
-
-  wordpress:
+  killbill:
     image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
-    restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
-    logging:
-      driver: "json-file"
-      options:
-          max-file: "5"
-          max-size: 10m
-    deploy:
-      resources:
-        limits:
-          memory: 5g
-          cpus: '0.7'
+    container_name: $W9_ID-api
+    hostname: $W9_RCODE
     ports:
-      - $W9_HTTP_PORT_SET:80
-    env_file: .env
-    volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
-
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
-    restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
-    volumes:
-      - mysql_data:/var/lib/mysql
+      - $W9_API_PORT_SET:8080
     environment:
-      MYSQL_DATABASE: $WORDPRESS_DB_NAME
-      MYSQL_USER: $WORDPRESS_DB_USER
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      - KILLBILL_DAO_URL=jdbc:mysql://$W9_ID-mariadb:3306/killbill
+      - KILLBILL_DAO_USER=root
+      - KILLBILL_DAO_PASSWORD=$W9_POWER_PASSWORD
+      - KILLBILL_CATALOG_URI=SpyCarAdvanced.xml
+
+  kaui:
+    image: $W9_KAUI_REPO:$W9_KAUI_VERSION
+    container_name: $W9_ID
+    env_file: .env
+    ports:
+      - $W9_HTTP_PORT_SET:8080
+    environment:
+      - KAUI_CONFIG_DAO_URL=jdbc:mysql://$W9_ID-mariadb:3306/kaui
+      - KAUI_CONFIG_DAO_USER=root
+      - KAUI_CONFIG_DAO_PASSWORD=$W9_POWER_PASSWORD
+      - KAUI_KILLBILL_URL=http://$W9_RCODE:8080
+
+  db:
+    image: killbill/mariadb:0.24
+    container_name: $W9_ID-mariadb
+    volumes:
+      - type: volume
+        source: db
+        target: /var/lib/mysql
+    expose:
+      - "3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=$W9_POWER_PASSWORD
 
 volumes:
-  wordpress:
-  mysql_data:
-    
+  db:
+
 networks:
   default:
     name: $W9_NETWORK
