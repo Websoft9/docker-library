@@ -1,10 +1,10 @@
 [
   {
-    "name": "weblate",
-    "trademark": "Weblate",
+    "name": "rustdesk",
+    "trademark": "RustDesk",
     "release": false,
-    "fork_url": "https://github.com/WeblateOrg/weblate",
-    "version_from": "https:/hub.docker.com/r/weblate/weblate/tags",
+    "fork_url": "https://github.com/rustdesk/rustdesk",
+    "version_from": "https://hub.docker.com/r/linuxserver/rustdesk/tags",
     "edition": [
       {
         "dist": "community",
@@ -17,28 +17,7 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://weblate.org"
-    }
-  },
-  {
-    "name": "drawio",
-    "trademark": "draw.io",
-    "release": false,
-    "fork_url": "https://github.com/jgraph/drawio-desktop",
-    "version_from": "https://hub.docker.com/r/jgraph/drawio/tags",
-    "edition": [
-      {
-        "dist": "community",
-        "version": [
-          "latest"
-        ]
-      }
-    ],
-    "requirements": {
-      "cpu": "2",
-      "memory": "4",
-      "disk": "10",
-      "url": "https://www.drawio.com"
+      "url": "https://rustdesk.com"
     }
   }
 ]
