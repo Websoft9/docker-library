@@ -57,7 +57,7 @@ services:
     command: ['bundle', 'exec', 'sidekiq', '-C', 'config/sidekiq.yml']
 
   postgres:
-    image: postgres:$W9_DB_VERSION
+    image: pgvector/pgvector:pg16
     container_name: $W9_ID-postgresql
     restart: unless-stopped
     volumes:
