@@ -18,8 +18,13 @@ RUN sed -i  's|deb http://deb.debian.org/debian stretch|deb http://archive.debia
     sed -i  '/stretch-updates/d' /etc/apt/sources.list || true && \
     sed -i  's|deb http://security.debian.org/debian-security stretch/updates|deb http://archive.debian.org/debian-security stretch/updates|g' /etc/apt/sources.list || true
 
-RUN apt update && apt install -y crudini
+RUN apt-get update -oAcquire::AllowInsecureRepositories=true && \
+    apt-get install -y --allow-unauthenticated gnupg && \
+    apt-get install -y --allow-unauthenticated debian-archive-keyring && \
+    apt-key update && \
+    apt-get update
 
+RUN apt-get install -y crudini
 
 COPY src/extensions.ini /usr/local/bin/config.ini
 COPY src/apt_install.sh /usr/local/bin/apt_install.sh
