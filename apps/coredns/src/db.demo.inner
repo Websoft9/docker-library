@@ -1,0 +1,24 @@
+; Zone file: db.demo.inner
+$TTL 3600        ; Default TTL is 1 hour
+@ IN SOA  ns1.demo.inner. help.websoft9.com. (
+            2025041701 ; Serial number (format: YYYYMMDD+number, e.g., 2024052001)
+            7200       ; Refresh time (2 hours)
+            3600       ; Retry time (1 hour)
+            1209600    ; Expiry time (2 weeks)
+            3600       ; Minimum TTL (1 hour)
+)
+
+; ------------------------------
+; NS records (mandatory)
+; ------------------------------
+@ IN NS ns1.demo.inner.
+
+; ------------------------------
+; A records
+; ------------------------------
+; 1. Main domain resolution
+@          IN A 192.168.2.131
+ns1        IN A 192.168.2.131
+
+; 2. Wildcard domain resolution
+*.demo.inner. IN A 192.168.2.131

@@ -10,7 +10,7 @@ services:
       - "$W9_INNERIP_SET:53:53/udp"
     volumes:
       - ./src/Corefile:/etc/coredns/Corefile
-      - ./src/db.inner.local:/etc/coredns/db.inner.local
+      - ./src/db.demo.inner:/etc/coredns/db.demo.inner
       
 networks:
   default:
