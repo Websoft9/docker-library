@@ -78,6 +78,14 @@ jobs:
           draft: false
           prerelease: false
 
+      - name: Trigger websoft9/json2md.yml workflow
+        uses: benc-uk/workflow-dispatch@v1
+        with: 
+            workflow: json2md.yml
+            repo: websoft9/doc.websoft9.com
+            ref: dev
+            token: ${{secrets.MYGITHUB_ADMIN_TOKEN}}
+
   pages:
     name: Build Github Pages
     permissions:
