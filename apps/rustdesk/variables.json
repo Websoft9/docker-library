@@ -3,11 +3,12 @@
   "trademark": "RustDesk",
   "release": false,
   "fork_url": "https://github.com/rustdesk/rustdesk",
-  "version_from": "https://hub.docker.com/r/linuxserver/rustdesk/tags",
+  "version_from": "https://hub.docker.com/r/rustdesk/rustdesk-server/tags",
   "edition": [
     {
       "dist": "community",
       "version": [
+        "1.1.14",
         "latest"
       ]
     }

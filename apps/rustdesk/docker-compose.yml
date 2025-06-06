@@ -1,10 +1,11 @@
-# image: https://hub.docker.com/r/linuxserver/rustdesk
+# image: https://hub.docker.com/r/rustdesk/rustdesk-server
+# compose: https://github.com/rustdesk/rustdesk-server/blob/master/docker-compose.yml
 
 services:
   hbbs:
-    container_name: hbbs
+    container_name: $W9_ID
     image: rustdesk/rustdesk-server:latest
-    command: hbbs -r hbbr:21117
+    command: hbbs -r $W9_ID-hbbr:21117
     ports:
       - 21115:21115
       - 21116:21116
@@ -17,7 +18,7 @@ services:
     restart: unless-stopped
 
   hbbr:
-    container_name: hbbr
+    container_name: $W9_ID-hbbr
     image: rustdesk/rustdesk-server:latest
     command: hbbr
     ports:
