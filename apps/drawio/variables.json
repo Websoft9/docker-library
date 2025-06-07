@@ -1,7 +1,7 @@
 {
   "name": "drawio",
   "trademark": "draw.io",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/jgraph/drawio-desktop",
   "version_from": "https://hub.docker.com/r/jgraph/drawio/tags",
   "edition": [
