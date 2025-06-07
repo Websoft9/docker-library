@@ -4,10 +4,11 @@ services:
   db:
     image: postgres:17-alpine
     restart: unless-stopped
+    container_name: $W9_ID-postgresql
     environment:
       POSTGRES_DB: comentario
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: $W9_POWER_PASSWORD
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
