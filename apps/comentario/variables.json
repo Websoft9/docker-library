@@ -1,7 +1,7 @@
 {
   "name": "comentario",
   "trademark": "Comentario",
-  "release": false,
+  "release": true,
   "fork_url": "https://gitlab.com/comentario/comentario",
   "version_from": "registry.gitlab.com/comentario/comentario-ci-tools/test-site",
   "edition": [
