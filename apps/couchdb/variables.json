@@ -15,8 +15,8 @@
   ],
   "requirements": {
     "cpu": "1",
-    "memory": "1",
-    "disk": "2",
+    "memory": "2",
+    "disk": "4",
     "url": "https://docs.couchdb.org/en/latest/install/index.html"
   }
 }

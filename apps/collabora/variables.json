@@ -16,7 +16,7 @@
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "1",
+    "disk": "4",
     "url": "https://sdk.collaboraonline.com/docs/installation/index.html"
   }
 }

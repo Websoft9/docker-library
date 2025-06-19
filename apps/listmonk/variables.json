@@ -16,7 +16,7 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "1",
+    "disk": "8",
     "url": "https://listmonk.app"
   }
 }

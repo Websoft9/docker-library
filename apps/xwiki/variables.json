@@ -16,7 +16,7 @@
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "4",
+    "disk": "8",
     "url": "https://github.com/xwiki-contrib/docker-xwiki/blob/master/README.md"
   }
 }

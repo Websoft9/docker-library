@@ -13,7 +13,7 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "2",
+    "disk": "4",
     "url": "https://www.mautic.org/docs/user_guide/en/install-requirements.html"
   }
 }
