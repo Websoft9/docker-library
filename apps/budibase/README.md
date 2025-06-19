@@ -10,7 +10,7 @@ This is an **[Docker Compose template](https://github.com/Websoft9/docker-librar
 
 The following are the minimal [recommended requirements](https://github.com/Budibase/budibase/tree/develop/hosting):
 
-* **RAM**: 6 GB or more
+* **RAM**: 8 GB or more
 * **CPU**: 2 cores or higher
 * **Disk**: at least 1 GB of free space
 * **bandwidth**: more fluent experience over 100M  

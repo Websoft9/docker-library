@@ -10,9 +10,9 @@ This is an **[Docker Compose template](https://github.com/Websoft9/docker-librar
 
 The following are the minimal [recommended requirements](https://docs.couchdb.org/en/latest/install/index.html):
 
-* **RAM**: 1 GB or more
+* **RAM**: 2 GB or more
 * **CPU**: 1 cores or higher
-* **Disk**: at least 2 GB of free space
+* **Disk**: at least 4 GB of free space
 * **bandwidth**: more fluent experience over 100M  
 
 ## Install
