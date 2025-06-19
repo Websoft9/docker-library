@@ -12,7 +12,7 @@
   ],
   "requirements": {
     "cpu": "1",
-    "memory": "1",
+    "memory": "2",
     "disk": "1",
     "url": "https://mariadb.org/documentation"
   }
