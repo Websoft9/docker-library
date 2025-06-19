@@ -3,7 +3,7 @@
 This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for ddns-go:
 
 
- - community:  v6.9.1, latest
+ - community:  v6.10.0, latest
 
 
 ## System Requirements

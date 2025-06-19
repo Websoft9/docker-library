@@ -3,7 +3,7 @@
 This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for ClickHouse:
 
 
- - community:  25.3.2.39, latest
+ - community:  25.5.2.47, latest
 
 
 ## System Requirements

@@ -3,7 +3,7 @@
 This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for MySQL:
 
 
- - community:  9.2, 9.1, 8.2, 8.1, 8.0, 5.7, 5.6, 5.5, latest
+ - community:  9.3, 9.2, 9.1, 8.2, 8.1, 8.0, 5.7, 5.6, 5.5, latest
 
 
 ## System Requirements

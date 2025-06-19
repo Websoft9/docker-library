@@ -3,14 +3,14 @@
 This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for MariaDB:
 
 
- - community:  11.7.2, 11.6.2, 11.5, 11.2, 10.11, 10.10, 10.9, 10.8, 10.7, 10.6, 10.5, 10.4, 10.3
+ - community:  11.8, 11.7, 11.6, 11.5, 11.2, 10.11, 10.10, 10.9, 10.8, 10.7, 10.6, 10.5, 10.4, 10.3
 
 
 ## System Requirements
 
 The following are the minimal [recommended requirements](https://mariadb.org/documentation):
 
-* **RAM**: 1 GB or more
+* **RAM**: 2 GB or more
 * **CPU**: 1 cores or higher
 * **Disk**: at least 1 GB of free space
 * **bandwidth**: more fluent experience over 100M  

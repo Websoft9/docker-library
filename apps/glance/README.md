@@ -3,7 +3,7 @@
 This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Glance:
 
 
- - community:  v0.7.13, latest
+ - community:  v0.8.4, latest
 
 
 ## System Requirements

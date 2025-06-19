@@ -3,7 +3,7 @@
 This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Gitlab:
 
 
- - community:  17.5.1-ce.0, latest
+ - community:  18.0.2-ce.0, latest
 
 
 ## System Requirements

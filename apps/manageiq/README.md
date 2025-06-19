@@ -3,7 +3,7 @@
 This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for ManageIQ:
 
 
- - community:  quinteros-2.1
+ - community:  quinteros-2.2
 
 
 ## System Requirements
