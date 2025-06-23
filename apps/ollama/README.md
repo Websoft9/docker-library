@@ -3,7 +3,7 @@
 This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Ollama:
 
 
- - community:  0.6.6, latest
+ - community:  0.9.1, latest
 
 
 ## System Requirements
