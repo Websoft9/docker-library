@@ -3,7 +3,7 @@
 This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for YouTrack:
 
 
- - community:  2025.1.67057
+ - community:  2025.1.76253
 
 
 ## System Requirements
