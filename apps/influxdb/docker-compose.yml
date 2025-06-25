@@ -1,4 +1,4 @@
-# image: https://hub.docker.com/_/influxdb
+# image: https://hub.docker.com/_/chronograf
 # docs: https://docs.influxdata.com/influxdb/latest/install/?t=Docker
 
 version: '3.8'
@@ -7,13 +7,13 @@ services:
   influxdb:
     image: $W9_REPO:$W9_VERSION
     container_name: ${W9_ID}
+    command: --storage-wal-fsync-delay=15m
     ports:
       - '${W9_HTTP_PORT_SET}:8086'
     env_file:
       - .env
     volumes:
-      - influxdb2-data:/var/lib/influxdb2
-      - influxdb2-config:/etc/influxdb2
+      - influxdb:/var/lib/influxdb2
     restart: unless-stopped
 
 networks:
@@ -22,5 +22,4 @@ networks:
     external: true
 
 volumes:
-  influxdb2-data:
-  influxdb2-config:
+  influxdb:
