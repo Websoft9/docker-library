@@ -3,7 +3,7 @@
 This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Grafana:
 
 
- - community:  11.6.0, latest
+ - community:  12.0.2, latest
 
 
 ## System Requirements
