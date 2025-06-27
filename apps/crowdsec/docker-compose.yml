@@ -1,5 +1,5 @@
 # image: https://hub.docker.com/r/crowdsecurity/crowdsec/tags
-# docs: https://app.crowdsec.net/security-engines
+# docs: https://doc.crowdsec.net/u/getting_started/installation/docker
 
 services:
 
@@ -11,13 +11,14 @@ services:
       - $W9_HTTP_PORT_SET:8080
     env_file: .env
     volumes:
-      - crowdsec_data:/var/lib/crowdsec/data/
-      - /etc/crowdsec:/etc/crowdsec
-      - /var/log:/var/log:ro
-
+      - crowdsec_data:/var/lib/crowdsec/data
+      - crowdsec_config:/etc/crowdsec
+      - crowdsec_log:/var/log:ro
 
 volumes:
   crowdsec_data:
+  crowdsec_config:
+  crowdsec_log:
     
 networks:
   default:
