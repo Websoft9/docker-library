@@ -1,0 +1,21 @@
+{
+  "name": "varnish",
+  "trademark": "Varnish",
+  "release": false,
+  "fork_url": "https://github.com/varnishcache/varnish-cache",
+  "version_from": "https://hub.docker.com/_/varnish/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "8",
+    "url": "https://varnish-cache.org"
+  }
+}
