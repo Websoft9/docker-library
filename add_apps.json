@@ -1,10 +1,10 @@
 [
   {
-    "name": "saleor",
-    "trademark": "Saleor",
+    "name": "mathesar",
+    "trademark": "Mathesar",
     "release": false,
-    "fork_url": "https://github.com/saleor/saleor",
-    "version_from": "ghcr.io/saleor/saleor",
+    "fork_url": "https://github.com/mathesar-foundation/mathesar",
+    "version_from": "https://hub.docker.com/r/mathesar/mathesar/tags",
     "edition": [
       {
         "dist": "community",
@@ -17,7 +17,7 @@
       "cpu": "2",
       "memory": "4",
       "disk": "8",
-      "url": "https://saleor.io/"
+      "url": "https://mathesar.org/"
     }
   }
 ]
