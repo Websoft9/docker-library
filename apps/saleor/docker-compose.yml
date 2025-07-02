@@ -27,9 +27,9 @@ services:
 
   api:
     image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    container_name: $W9_ID-api
     ports:
-      - 8000:8000
+      - $W9_API_PORT_SET:8000
     restart: unless-stopped
     stdin_open: true
     tty: true
@@ -51,8 +51,8 @@ services:
       - ALLOWED_HOSTS=$SALEOR_ALLOWED_HOSTS
 
   dashboard:
-    image: ghcr.io/saleor/saleor-dashboard:latest
-    container_name: $W9_ID-dashboard
+    image: ghcr.io/saleor/saleor-dashboard:3.21
+    container_name: $W9_ID
     ports:
       - $W9_HTTP_PORT_SET:80
     restart: unless-stopped
@@ -67,7 +67,6 @@ services:
     image: library/postgres:15-alpine
     container_name: $W9_ID-postgres
     restart: unless-stopped
-    env_file: .env
     volumes:
       - saleor-db:/var/lib/postgresql/data
       - ./src/replica_user.sql:/docker-entrypoint-initdb.d/replica_user.sql:ro,z
@@ -78,20 +77,17 @@ services:
   redis:
     image: library/redis:7.0-alpine
     container_name: $W9_ID-redis
-    ports:
-      - 6379:6379
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 5s
       retries: 5
-    env_file: .env
     restart: unless-stopped
     volumes:
       - saleor-redis:/data
 
   worker:
-    image: ghcr.io/saleor/saleor:3.21
+    image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID-worker
     command: celery -A saleor --app=saleor.celeryconf:app worker --loglevel=info -B
     restart: unless-stopped
@@ -108,14 +104,13 @@ services:
       - saleor-media:/app/media
 
   jaeger:
-    image: jaegertracing/jaeger
+    image: jaegertracing/jaeger:2.7.0
     container_name: $W9_ID-jaeger
-    ports:
-      - "16686:16686"
-      - "4317:4317"
-      - "4318:4318"
+    #ports:
+      #- "16686:16686"
+      #- "4317:4317"
+      #- "4318:4318"
     restart: unless-stopped
-    env_file: .env
     depends_on:
       init:
         condition: service_completed_successfully
@@ -124,13 +119,12 @@ services:
         target: /tmp
 
   mailpit:
-    image: axllent/mailpit
+    image: axllent/mailpit:v1.27
     container_name: $W9_ID-mailpit
-    ports:
-      - 1025:1025 # smtp server
-      - 8025:8025 # web ui. Visit http://localhost:8025/ to check emails
+    #ports:
+      #- 1025:1025 # smtp server
+      #- 8025:8025 # web ui. Visit http://localhost:8025/ to check emails
     restart: unless-stopped
-    env_file: .env
     depends_on:
       init:
         condition: service_completed_successfully
