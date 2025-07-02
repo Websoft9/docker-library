@@ -1,50 +1,89 @@
-# image,docs: https://hub.docker.com/_/wordpress/
+# image: https://hub.docker.com/r/dessalines/lemmy
+# docs: https://join-lemmy.org/docs/administration/install_docker.html
 
 services:
 
-  wordpress:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
-    restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
-    logging:
-      driver: "json-file"
-      options:
-          max-file: "5"
-          max-size: 10m
-    deploy:
-      resources:
-        limits:
-          memory: 5g
-          cpus: '0.7'
+  proxy:
+    image: nginx:1-alpine
+    container_name: ${W9_ID}
+    env_file:
+      - .env
     ports:
-      - $W9_HTTP_PORT_SET:80
-    env_file: .env
+      - "${W9_HTTP_PORT_SET}:8536"
     volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
-
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
+      - ./src/nginx_internal.conf:/etc/nginx/nginx.conf
+      - ./src/proxy_params:/etc/nginx/proxy_params
     restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
-    volumes:
-      - mysql_data:/var/lib/mysql
-    environment:
-      MYSQL_DATABASE: $WORDPRESS_DB_NAME
-      MYSQL_USER: $WORDPRESS_DB_USER
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+    depends_on:
+      - pictrs
+      - lemmy-ui
 
-volumes:
-  wordpress:
-  mysql_data:
-    
+  lemmy:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}-lemmy
+    restart: unless-stopped
+    environment:
+      - RUST_LOG="warn"
+    volumes:
+      - ./src/lemmy.hjson:/config/config.hjson
+    depends_on:
+      - postgres
+      - pictrs
+
+  lemmy-ui:
+    image: dessalines/lemmy-ui:${W9_VERSION}
+    container_name: ${W9_ID}-lemmy-ui
+    environment:
+      - LEMMY_UI_LEMMY_INTERNAL_HOST=lemmy:8536
+      - LEMMY_UI_LEMMY_EXTERNAL_HOST=${W9_URL}:${W9_HTTP_PORT_SET}
+      - LEMMY_UI_HTTPS=false
+    volumes:
+      - lemmy-ui-extra-themes:/app/extra_themes
+    depends_on:
+      - lemmy
+    restart: unless-stopped
+
+  pictrs:
+    image: asonix/pictrs:0.5.19
+    container_name: ${W9_ID}-pictrs
+    environment:
+      - PICTRS_OPENTELEMETRY_URL=http://otel:4137
+      - PICTRS__SERVER__API_KEY=!KwCBb2c2zWxcgkN
+      - RUST_BACKTRACE=full
+      - PICTRS__MEDIA__VIDEO__VIDEO_CODEC=vp9
+      - PICTRS__MEDIA__ANIMATION__MAX_WIDTH=256
+      - PICTRS__MEDIA__ANIMATION__MAX_HEIGHT=256
+      - PICTRS__MEDIA__ANIMATION__MAX_FRAME_COUNT=400
+    user: 991:991
+    volumes:
+      - pictrs:/mnt
+    restart: unless-stopped
+
+  postgres:
+    image: pgautoupgrade/pgautoupgrade:17-alpine
+    container_name: ${W9_ID}-postgres
+    environment:
+      - POSTGRES_USER=lemmy
+      - POSTGRES_PASSWORD=!KwCBb2c2zWxcgkN
+      - POSTGRES_DB=lemmy
+    shm_size: 1g
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  postfix:
+    image: mwader/postfix-relay
+    container_name: ${W9_ID}-postfix
+    environment:
+      - POSTFIX_myhostname=localhost
+    restart: unless-stopped
+
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true
+
+volumes:
+  postgres-data:
+  pictrs:
+  lemmy-ui-extra-themes:
