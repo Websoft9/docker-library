@@ -1,49 +1,145 @@
-# image,docs: https://hub.docker.com/_/wordpress/
+# image,docs: https://docs.saleor.io/setup/docker-compose
 
 services:
+  init:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID-init
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_started
+      redis:
+        condition: service_healthy
+    volumes:
+      - saleor-media:/app/media
+    env_file: .env
+    command: >
+      sh -c "
+        if [ ! -f /app/media/init-completed ]; then
+          python3 manage.py migrate &&
+          python3 manage.py populatedb --createsuperuser &&
+          touch /app/media/init-completed &&
+          exit 0
+        else
+          echo 'init already completed' &&
+          exit 0
+        fi"
 
-  wordpress:
+  api:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
+    ports:
+      - 8000:8000
     restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
-    logging:
-      driver: "json-file"
-      options:
-          max-file: "5"
-          max-size: 10m
-    deploy:
-      resources:
-        limits:
-          memory: 5g
-          cpus: '0.7'
+    stdin_open: true
+    tty: true
+    depends_on:
+      db:
+        condition: service_started
+      redis:
+        condition: service_started
+      jaeger:
+        condition: service_started
+      init:
+        condition: service_completed_successfully
+    volumes:
+      # shared volume between worker and api for media
+      - saleor-media:/app/media
+    env_file: .env
+    environment:
+      - DASHBOARD_URL=$SALEOR_DASHBOARD_URL
+      - ALLOWED_HOSTS=$SALEOR_ALLOWED_HOSTS
+
+  dashboard:
+    image: ghcr.io/saleor/saleor-dashboard:latest
+    container_name: $W9_ID-dashboard
     ports:
       - $W9_HTTP_PORT_SET:80
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    environment:
+      - API_URL=$SALEOR_API_URL
+
+  db:
+    image: library/postgres:15-alpine
+    container_name: $W9_ID-postgres
+    restart: unless-stopped
     env_file: .env
     volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
-
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
-    restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
-    volumes:
-      - mysql_data:/var/lib/mysql
+      - saleor-db:/var/lib/postgresql/data
+      - ./src/replica_user.sql:/docker-entrypoint-initdb.d/replica_user.sql:ro,z
     environment:
-      MYSQL_DATABASE: $WORDPRESS_DB_NAME
-      MYSQL_USER: $WORDPRESS_DB_USER
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      - POSTGRES_USER=$SALEOR_POSTGRES_USER
+      - POSTGRES_PASSWORD=$SALEOR_POSTGRES_PASSWORD
+
+  redis:
+    image: library/redis:7.0-alpine
+    container_name: $W9_ID-redis
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    env_file: .env
+    restart: unless-stopped
+    volumes:
+      - saleor-redis:/data
+
+  worker:
+    image: ghcr.io/saleor/saleor:3.21
+    container_name: $W9_ID-worker
+    command: celery -A saleor --app=saleor.celeryconf:app worker --loglevel=info -B
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      redis:
+        condition: service_started
+      mailpit:
+        condition: service_started
+      init:
+        condition: service_completed_successfully
+    volumes:
+      # shared volume between worker and api for media
+      - saleor-media:/app/media
+
+  jaeger:
+    image: jaegertracing/jaeger
+    container_name: $W9_ID-jaeger
+    ports:
+      - "16686:16686"
+      - "4317:4317"
+      - "4318:4318"
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    volumes:
+      - type: tmpfs
+        target: /tmp
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: $W9_ID-mailpit
+    ports:
+      - 1025:1025 # smtp server
+      - 8025:8025 # web ui. Visit http://localhost:8025/ to check emails
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      init:
+        condition: service_completed_successfully
 
 volumes:
-  wordpress:
-  mysql_data:
-    
+  saleor-db:
+  saleor-redis:
+  saleor-media:
+
 networks:
   default:
     name: $W9_NETWORK
