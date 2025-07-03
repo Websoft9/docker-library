@@ -34,7 +34,7 @@ services:
     image: dessalines/lemmy-ui:${W9_VERSION}
     container_name: ${W9_ID}-lemmy-ui
     environment:
-      - LEMMY_UI_LEMMY_INTERNAL_HOST=lemmy:8536
+      - LEMMY_UI_LEMMY_INTERNAL_HOST=${W9_ID}-lemmy:8536
       - LEMMY_UI_LEMMY_EXTERNAL_HOST=${W9_URL}:${W9_HTTP_PORT_SET}
       - LEMMY_UI_HTTPS=false
     volumes:
