@@ -1,7 +1,7 @@
 {
   "name": "saleor",
   "trademark": "Saleor",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/saleor/saleor",
   "version_from": "ghcr.io/saleor/saleor",
   "edition": [
