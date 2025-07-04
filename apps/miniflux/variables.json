@@ -1,7 +1,7 @@
 {
   "name": "miniflux",
   "trademark": "Miniflux",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/miniflux/v2",
   "version_from": "https://hub.docker.com/r/miniflux/miniflux/tags",
   "edition": [
