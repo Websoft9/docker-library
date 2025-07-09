@@ -1,98 +1,73 @@
-x-ui-env: &bw-ui-env
-  AUTOCONF_MODE: "yes"
-  API_WHITELIST_IP: "127.0.0.0/24 10.20.30.0/24"
-  DATABASE_URI: "mariadb+pymysql://${MYSQL_USER}:${W9_POWER_PASSWORD}@${W9_ID}-mariadb:3306/${MYSQL_DATABASE}"
+# image,docs: https://docs.bunkerweb.io/latest/quickstart-guide/
+
+x-bw-env: &bw-env
+  API_WHITELIST_IP: "127.0.0.0/8 172.19.0.0/16"
+  DATABASE_URI: "mariadb+pymysql://$BUNKERWEB_MYSQL_USER:$BUNKERWEB_MYSQL_PASSWORD@bw-db:3306/db"
 
 services:
   bunkerweb:
-    image: $W9_REPO:$W9_VERSION
+    image: $W9_REPO:$W9_VERSION # bunkerity/bunkerweb:1.6.2
     container_name: $W9_ID
-    env_file: .env
-    ports:
-      #- "$W9_HTTP_PORT_SET:8080/tcp"
-      - "$W9_HTTPS_PORT_SET:8443/tcp"
-      - "$W9_HTTPS_PORT_SET:8443/udp"
-    labels:
-      - "bunkerweb.INSTANCE=yes"
-    environment:
-      <<: *bw-ui-env
     restart: "unless-stopped"
-    networks:
-      - bw-universe
-      - default
+    ports:
+      # - "$W9_HTTP_PORT_SET:8080/tcp"  # 
+      - "$W9_HTTPS_PORT_SET:8443/tcp"
+      - "$W9_HTTPS_PORT_SET:8443/udp" # For QUIC / HTTP3 support
+    env_file: .env
 
   bw-scheduler:
-    image: bunkerity/bunkerweb-scheduler:$W9_VERSION
+    image: bunkerity/bunkerweb-scheduler:1.6.2
     container_name: $W9_ID-scheduler
+    restart: "unless-stopped"
     environment:
-      <<: *bw-ui-env
-      BUNKERWEB_INSTANCES: ""
+      <<: *bw-env
+      BUNKERWEB_INSTANCES: "bunkerweb"
       SERVER_NAME: ""
-      MULTISITE: "no"
-      UI_HOST: "http://${W9_ID}-ui:7000"
+      MULTISITE: "yes"
+      UI_HOST: "http://bw-ui:7000"
+      USE_REDIS: "yes"
+      REDIS_HOST: "$W9_ID-redis"
     volumes:
       - bw-storage:/data
-    restart: "unless-stopped"
-    networks:
-      - bw-universe
-      - default
-
-  bw-autoconf:
-    image: bunkerity/bunkerweb-autoconf:$W9_VERSION
-    container_name: $W9_ID-autoconf
-    depends_on:
-      - bw-docker
-    environment:
-      <<: *bw-ui-env
-      DOCKER_HOST: "tcp://${W9_ID}-docker:2375"
-    restart: "unless-stopped"
-    networks:
-      - bw-universe
-      - default
-
-  bw-docker:
-    image: tecnativa/docker-socket-proxy:nightly
-    container_name: $W9_ID-docker
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    environment:
-      CONTAINERS: "1"
-      LOG_LEVEL: "warning"
 
   bw-ui:
-    image: bunkerity/bunkerweb-ui:1.6.1
+    image: bunkerity/bunkerweb-ui:1.6.2
     container_name: $W9_ID-ui
-    environment:
-      <<: *bw-ui-env
-      TOTP_SECRETS: $TOTP_SECRETS
     restart: "unless-stopped"
-    networks:
-      - bw-universe
-      - default
+    environment:
+      <<: *bw-env
 
   bw-db:
     image: mariadb:11
     container_name: $W9_ID-mariadb
+    restart: "unless-stopped"
     environment:
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_DATABASE: $MYSQL_DATABASE
-      MYSQL_USER: $MYSQL_USER
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_DATABASE: $BUNKERWEB_MYSQL_DATABASE
+      MYSQL_USER: $BUNKERWEB_MYSQL_USER
+      MYSQL_PASSWORD: $BUNKERWEB_MYSQL_PASSWORD
     volumes:
       - bw-data:/var/lib/mysql
+
+  redis:
+    image: redis:7-alpine
+    container_name: $W9_ID-redis
+    command: >
+      redis-server
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --save 60 1000
+      --appendonly yes      
+    volumes:
+      - redis-data:/data
     restart: "unless-stopped"
 
 volumes:
   bw-data:
   bw-storage:
+  redis-data:
 
 networks:
   default:
     name: $W9_NETWORK
     external: true
-  bw-universe:
-    name: bw-universe
-    ipam:
-      driver: default
-      config:
-        - subnet: 10.20.30.0/24

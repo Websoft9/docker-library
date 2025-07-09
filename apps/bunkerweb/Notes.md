@@ -1,2 +1,7 @@
-## 问题
-该应用必须准备域名，并且使用https，故需要绑定443端口，与Websoft9的Nginx Proxy Manager冲突
+# bunkerweb
+
+1、Websoft9 控制台安装完 bunkerweb 之后，需配置HTTPS来访问。
+
+2、访问 URL 进入UI界面。
+
+- 支持多语言
