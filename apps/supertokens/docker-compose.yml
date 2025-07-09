@@ -1,50 +1,48 @@
-# image,docs: https://hub.docker.com/_/wordpress/
+# image: https://hub.docker.com/r/supertokens/supertokens-postgresql
+# docs: https://supertokens.com/docs/deployment/self-host-supertokens
 
 services:
-
-  wordpress:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
-    restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
-    logging:
-      driver: "json-file"
-      options:
-          max-file: "5"
-          max-size: 10m
-    deploy:
-      resources:
-        limits:
-          memory: 5g
-          cpus: '0.7'
+  supertokens:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
-      - $W9_HTTP_PORT_SET:80
-    env_file: .env
-    volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
-
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
-    restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
-    volumes:
-      - mysql_data:/var/lib/mysql
+      - ${W9_HTTP_PORT_SET}:3567
     environment:
-      MYSQL_DATABASE: $W9_ID
-      MYSQL_USER: $W9_ID
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      - POSTGRESQL_USER=postgres
+      - POSTGRESQL_PASSWORD=${W9_POWER_PASSWORD}
+      - POSTGRESQL_DATABASE_NAME=supertokens
+      - POSTGRESQL_HOST=${W9_ID}-db
+      - POSTGRESQL_PORT=5432
+      - API_KEYS=${W9_LOGIN_API_KEY}
+    restart: unless-stopped
 
-volumes:
-  wordpress:
-  mysql_data:
-    
+  db:
+    image: postgres:latest
+    container_name: ${W9_ID}-db
+    ports:
+      - ${W9_DB_PORT_SET:-5432}:5432
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${W9_POWER_PASSWORD}
+      - POSTGRES_DB=supertokens
+    healthcheck:
+      test: [ 'CMD', 'pg_isready', '-U', 'postgres', '-d', 'supertokens' ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true
+
+volumes:
+  db-data:
