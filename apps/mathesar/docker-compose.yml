@@ -1,11 +1,10 @@
+#docker:https://docs.mathesar.org/latest/administration/install-via-docker-compose/
+#image:https://hub.docker.com/r/mathesar/mathesar/tags
 services:
   mathesar:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     restart: unless-stopped
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-
     ports:
       - "${W9_HTTP_PORT_SET}:8000"
     env_file: .env
@@ -13,16 +12,7 @@ services:
     volumes:
       - static:/code/static  
       - media:/code/media
-    depends_on:
-      db:
-        condition: service_healthy
-    healthcheck:
-      test: curl -f http://localhost:8000 || exit 1
-      interval: 10s
-      timeout: 5s
-      retries: 30
-      start_period: 30s
-
+   
   db:
     image: pgautoupgrade/pgautoupgrade:17-bookworm  
     container_name: ${W9_ID}-db  
@@ -35,21 +25,12 @@ services:
       POSTGRES_DB: ${W9_DB_NAME}
       POSTGRES_USER: ${W9_DB_USER}
       POSTGRES_PASSWORD: ${W9_DB_PASSWORD}
-    healthcheck:
-      test: pg_isready -U ${W9_DB_USER} -d ${W9_DB_NAME}
-      interval: 5s
-      timeout: 5s
-      retries: 10
 
 
 volumes:
   static:
-    name: ${W9_VOLUME_PREFIX}static
   media:
-    name: ${W9_VOLUME_PREFIX}media
   pgdata:
-    name: ${W9_VOLUME_PREFIX}pgdata
-
 
 networks:
   default:
