@@ -2,7 +2,7 @@
 
 x-bw-env: &bw-env
   API_WHITELIST_IP: "127.0.0.0/8 172.19.0.0/16"
-  DATABASE_URI: "mariadb+pymysql://$BUNKERWEB_MYSQL_USER:$BUNKERWEB_MYSQL_PASSWORD@bw-db:3306/db"
+  DATABASE_URI: "mariadb+pymysql://$BUNKERWEB_MYSQL_USER:$BUNKERWEB_MYSQL_PASSWORD@$W9_ID-mariadb:3306/db"
 
 services:
   bunkerweb:
