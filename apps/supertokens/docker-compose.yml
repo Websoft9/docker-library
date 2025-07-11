@@ -12,20 +12,11 @@ services:
         condition: service_healthy
     ports:
       - ${W9_HTTP_PORT_SET}:3567
-    environment:
-      - POSTGRESQL_USER=postgres
-      - POSTGRESQL_PASSWORD=${W9_POWER_PASSWORD}
-      - POSTGRESQL_DATABASE_NAME=supertokens
-      - POSTGRESQL_HOST=${W9_ID}-db
-      - POSTGRESQL_PORT=5432
-      - API_KEYS=${W9_LOGIN_API_KEY}
     restart: unless-stopped
 
   db:
     image: postgres:latest
     container_name: ${W9_ID}-db
-    ports:
-      - ${W9_DB_PORT_SET:-5432}:5432
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
