@@ -1,7 +1,7 @@
 {
   "name": "mathesar",
   "trademark": "Mathesar",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/mathesar-foundation/mathesar",
   "version_from": "https://hub.docker.com/r/mathesar/mathesar/tags",
   "edition": [

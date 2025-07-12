@@ -1,7 +1,7 @@
 {
   "name": "supertokens",
   "trademark": "Supertokens",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/supertokens/supertokens-core",
   "version_from": "",
   "edition": [
