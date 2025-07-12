@@ -1,7 +1,7 @@
 {
   "name": "bunkerweb",
   "trademark": "BunkerWeb",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/bunkerity/bunkerweb",
   "version_from": "https://hub.docker.com/r/bunkerity/bunkerweb/tags",
   "edition": [
