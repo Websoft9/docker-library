@@ -1,10 +1,10 @@
 [
   {
-    "name": "mathesar",
-    "trademark": "Mathesar",
+    "name": "pangolin",
+    "trademark": "Pangolin",
     "release": false,
-    "fork_url": "https://github.com/mathesar-foundation/mathesar",
-    "version_from": "https://hub.docker.com/r/mathesar/mathesar/tags",
+    "fork_url": "https://github.com/fosrl/pangolin",
+    "version_from": "https://hub.docker.com/r/fosrl/pangolin/tags",
     "edition": [
       {
         "dist": "community",
@@ -17,7 +17,28 @@
       "cpu": "2",
       "memory": "4",
       "disk": "8",
-      "url": "https://mathesar.org/"
+      "url": "https://digpangolin.com"
+    }
+  },
+  {
+    "name": "checkmate",
+    "trademark": "Checkmate",
+    "release": false,
+    "fork_url": "https://github.com/bluewave-labs/Checkmate",
+    "version_from": "ghcr.io/bluewave-labs/checkmate-backend",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "8",
+      "url": "https://checkmate.so"
     }
   }
 ]
