@@ -1,10 +1,10 @@
 [
   {
-    "name": "pangolin",
-    "trademark": "Pangolin",
+    "name": "triggerdev",
+    "trademark": "Trigger.dev",
     "release": false,
-    "fork_url": "https://github.com/fosrl/pangolin",
-    "version_from": "https://hub.docker.com/r/fosrl/pangolin/tags",
+    "fork_url": "https://github.com/triggerdotdev/trigger.dev",
+    "version_from": "ghcr.io/triggerdotdev/trigger.dev:main",
     "edition": [
       {
         "dist": "community",
@@ -17,15 +17,15 @@
       "cpu": "2",
       "memory": "4",
       "disk": "8",
-      "url": "https://digpangolin.com"
+      "url": "https://trigger.dev"
     }
   },
   {
-    "name": "checkmate",
-    "trademark": "Checkmate",
+    "name": "opentelemetry",
+    "trademark": "OpenTelemetry",
     "release": false,
-    "fork_url": "https://github.com/bluewave-labs/Checkmate",
-    "version_from": "ghcr.io/bluewave-labs/checkmate-backend",
+    "fork_url": "https://github.com/open-telemetry/opentelemetry-go",
+    "version_from": "",
     "edition": [
       {
         "dist": "community",
@@ -38,7 +38,28 @@
       "cpu": "2",
       "memory": "4",
       "disk": "8",
-      "url": "https://checkmate.so"
+      "url": "https://opentelemetry.io/"
+    }
+  },
+  {
+    "name": "signoz",
+    "trademark": "SigNoz",
+    "release": false,
+    "fork_url": "https://github.com/SigNoz/signoz",
+    "version_from": "https://hub.docker.com/r/signoz/signoz/tags",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "8",
+      "url": "https://signoz.io"
     }
   }
 ]
