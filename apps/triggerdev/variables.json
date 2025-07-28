@@ -1,0 +1,21 @@
+{
+  "name": "triggerdev",
+  "trademark": "Trigger.dev",
+  "release": false,
+  "fork_url": "https://github.com/triggerdotdev/trigger.dev",
+  "version_from": "ghcr.io/triggerdotdev/trigger.dev:main",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "8",
+    "url": "https://trigger.dev"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "signoz",
+  "trademark": "SigNoz",
+  "release": false,
+  "fork_url": "https://github.com/SigNoz/signoz",
+  "version_from": "https://hub.docker.com/r/signoz/signoz/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "8",
+    "url": "https://signoz.io"
+  }
+}
