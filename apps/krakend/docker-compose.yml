@@ -12,6 +12,7 @@ services:
       - ${W9_HTTP_PORT_SET}:8080
     volumes:
       - krakend:/etc/krakend
+      - ./src/krakend.json:/etc/krakend/krakend.json
     restart: unless-stopped
 
 networks:
