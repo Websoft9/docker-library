@@ -1,50 +1,137 @@
-# image,docs: https://hub.docker.com/_/wordpress/
+# image: https://hub.docker.com/u/taskingai
+# docs: https://docs.tasking.ai/docs/guide/self-hosting-with-docker#2-launch-with-docker-compose
 
 services:
-
-  wordpress:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+  nginx:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    env_file:
+      - .env
     restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
-    logging:
-      driver: "json-file"
-      options:
-          max-file: "5"
-          max-size: 10m
-    deploy:
-      resources:
-        limits:
-          memory: 5g
-          cpus: '0.7'
     ports:
-      - $W9_HTTP_PORT_SET:80
-    env_file: .env
+      - "${W9_HTTP_PORT_SET}:80"
     volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
-
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
+      - ./src/proxy.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - frontend
+      - backend-web
+      - backend-api
+  
+  frontend:
+    image: taskingai/taskingai-console:v0.3.0
+    container_name: frontend-${W9_ID}
     restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
-    volumes:
-      - mysql_data:/var/lib/mysql
-    environment:
-      MYSQL_DATABASE: $W9_ID
-      MYSQL_USER: $W9_ID
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+    depends_on:
+      - backend-web
+      - backend-api
 
-volumes:
-  wordpress:
-  mysql_data:
-    
+  backend-inference:
+    image: taskingai/taskingai-inference:v0.2.14
+    container_name: backend-inference-${W9_ID}
+    restart: unless-stopped
+    environment:
+      AES_ENCRYPTION_KEY: ${AES_ENCRYPTION_KEY}
+      ICON_URL_PREFIX: ${W9_URL}:${W9_HTTP_PORT_SET}
+      PROJECT_ID: taskingai
+
+  backend-plugin:
+    image: taskingai/taskingai-plugin:v0.2.10
+    container_name: backend-plugin-${W9_ID}
+    restart: unless-stopped
+    environment:
+      AES_ENCRYPTION_KEY: ${AES_ENCRYPTION_KEY}
+      ICON_URL_PREFIX: ${W9_URL}:${W9_HTTP_PORT_SET}
+      OBJECT_STORAGE_TYPE: local
+      HOST_URL: ${W9_URL}:${W9_HTTP_PORT_SET}
+      PATH_TO_VOLUME: /var/lib/data
+      PROJECT_ID: taskingai
+    volumes:
+      - object-storage:/var/lib/data
+    depends_on:
+      - backend-inference
+
+  backend-api:
+    image: taskingai/taskingai-server:v0.3.0
+    container_name: backend-api-${W9_ID}
+    restart: unless-stopped
+    environment:
+      POSTGRES_URL: postgres://${POSTGRESQL_USER}:${POSTGRESQL_PASSWORD}@${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/${POSTGRESQL_DATABASE_NAME}
+      REDIS_URL: redis://:TaskingAI321@cache-${W9_ID}:6379/0
+      TASKINGAI_INFERENCE_URL: http://backend-inference-${W9_ID}:8000
+      TASKINGAI_PLUGIN_URL: http://backend-plugin-${W9_ID}:8000
+      AES_ENCRYPTION_KEY: ${AES_ENCRYPTION_KEY}
+      OBJECT_STORAGE_TYPE: local
+      HOST_URL: ${W9_URL}:${W9_HTTP_PORT_SET}
+      PATH_TO_VOLUME: /var/lib/data
+      PROJECT_ID: taskingai
+    volumes:
+      - object-storage:/var/lib/data
+    depends_on:
+      - db
+      - cache
+      - backend-inference
+      - backend-plugin
+
+  backend-web:
+    image: taskingai/taskingai-server:v0.3.0
+    container_name: backend-web-${W9_ID}
+    restart: unless-stopped
+    environment:
+      POSTGRES_URL: postgres://${POSTGRESQL_USER}:${POSTGRESQL_PASSWORD}@${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/${POSTGRESQL_DATABASE_NAME}
+      REDIS_URL: redis://:TaskingAI321@cache-${W9_ID}:6379/0
+      TASKINGAI_INFERENCE_URL: http://backend-inference-${W9_ID}:8000
+      TASKINGAI_PLUGIN_URL: http://backend-plugin-${W9_ID}:8000
+      AES_ENCRYPTION_KEY: ${AES_ENCRYPTION_KEY}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      PURPOSE: WEB
+      DEFAULT_ADMIN_USERNAME: ${W9_LOGIN_USER}
+      DEFAULT_ADMIN_PASSWORD: ${W9_LOGIN_PASSWORD}
+      OBJECT_STORAGE_TYPE: local
+      HOST_URL: ${W9_URL}:${W9_HTTP_PORT_SET}
+      PATH_TO_VOLUME: /var/lib/data
+      PROJECT_ID: taskingai
+    volumes:
+      - object-storage:/var/lib/data
+    depends_on:
+      - db
+      - cache
+      - backend-inference
+      - backend-plugin
+  db:
+    image: ankane/pgvector:v0.5.1
+    container_name: db-${W9_ID}
+    environment:
+      POSTGRES_DB: ${POSTGRESQL_DATABASE_NAME}
+      POSTGRES_USER: ${POSTGRESQL_USER}
+      POSTGRES_PASSWORD: ${POSTGRESQL_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  cache:
+    image: redis:7-alpine
+    container_name: cache-${W9_ID}
+    command: [ "redis-server", "--requirepass", "TaskingAI321" ]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "auth", "TaskingAI321", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true
+
+volumes:
+  postgres-data:
+  redis-data:
+  object-storage:
