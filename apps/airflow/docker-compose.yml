@@ -6,15 +6,17 @@ x-airflow-common: &airflow-common
   # build: .
   environment: &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
+    AIRFLOW__CORE__AUTH_MANAGER: airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://$POSTGRES_USER:$POSTGRES_PASSWORD@$W9_ID-postgres/$POSTGRES_DB
     AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$W9_ID-postgres/$POSTGRES_DB
     AIRFLOW__CELERY__BROKER_URL: redis://:@$W9_ID-redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'true'
-    AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session'
+    AIRFLOW__CORE__EXECUTION_API_SERVER_URL: 'http://$W9_ID:8080/execution/'
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
+    AIRFLOW_CONFIG: '/opt/airflow/config/airflow.cfg'
   volumes:
     - airflow-dags:/opt/airflow/dags
     - airflow-logs:/opt/airflow/logs
@@ -57,15 +59,15 @@ services:
       start_period: 30s
     restart: always
 
-  airflow-webserver:
+  airflow-apiserver:
     <<: *airflow-common
     container_name: $W9_ID
-    command: webserver
+    command: api-server
     ports:
       - $W9_HTTP_PORT_SET:8080
     env_file: .env
     healthcheck:
-      test: [ "CMD", "curl", "--fail", "http://localhost:8080/health" ]
+      test: [ "CMD", "curl", "--fail", "http://localhost:8080/api/v2/version" ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -82,6 +84,22 @@ services:
     command: scheduler
     healthcheck:
       test: [ "CMD", "curl", "--fail", "http://localhost:8974/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: always
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-dag-processor:
+    <<: *airflow-common
+    container_name: $W9_ID-dag-processor
+    command: dag-processor
+    healthcheck:
+      test: ["CMD-SHELL", 'airflow jobs check --job-type DagProcessorJob --hostname "$${HOSTNAME}"']
       interval: 30s
       timeout: 10s
       retries: 5
@@ -204,6 +222,9 @@ services:
       - bash
       - -c
       - airflow
+    depends_on:
+      <<: *airflow-common-depends-on
+    
   # flower:
   #   <<: *airflow-common
   #   container_name: $W9_ID-flower
