@@ -8,7 +8,7 @@ services:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     ports:
-      - $W9_HTTP_PORT_SET:80
+      - $W9_HTTPS_PORT_SET:8443
     env_file: .env
     volumes:
       - pmm-data:/srv
