@@ -1,0 +1,89 @@
+# image,docs: https://hub.docker.com/_/wordpress/
+
+services:
+
+  wordpress:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+          max-file: "5"
+          max-size: 10m
+    ports:
+      - $W9_HTTP_PORT_SET:80
+    env_file: .env
+    volumes:
+      - wordpress:/var/www/html
+      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
+    depends_on:
+      - redis
+
+  wordpress-cli:
+    image: $W9_REPO:cli
+    container_name: $W9_ID-cli
+    restart: on-failure
+    env_file: .env
+    volumes:
+      - wordpress:/var/www/html
+    depends_on:
+      - wordpress
+    command: |
+      /bin/bash -c "
+      if [ -z \"$W9_URL\" ]; then
+        echo 'W9_URL is empty, not need to change, exiting...'
+        exit 0
+      fi
+      if [[ $W9_URL =~ ^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; then
+        wp_url=$W9_URL:$W9_HTTP_PORT_SET
+        echo 'URL is IP'
+      else
+        wp_url=$W9_URL
+        echo 'URL is not IP'
+      fi
+      sleep 5
+      wp option update home \"http://$wp_url\"
+      wp option update siteurl \"http://$wp_url\"
+      "
+      
+  mariadb:
+    image: mariadb:$W9_DB_VERSION
+    container_name: $W9_ID-mariadb
+    restart: unless-stopped
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: $W9_ID
+      MYSQL_USER: $W9_ID
+      MYSQL_PASSWORD: $W9_POWER_PASSWORD
+      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+
+  redis:
+    image: redis:alpine
+    container_name: $W9_ID-redis
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+      
+  varnish:
+    image: varnish:latest
+    container_name: $W9_ID-cache
+    restart: unless-stopped
+    ports:
+      - $W9_PROXY_PORT_SET:80
+    volumes:
+      - ./src/default.vcl:/etc/varnish/default.vcl:ro
+    env_file: .env
+    tmpfs:
+      - /var/lib/varnish/varnishd:exec
+volumes:
+  wordpress:
+  mysql_data:
+  redis_data:
+
+networks:
+  default:
+    name: $W9_NETWORK
+    external: true

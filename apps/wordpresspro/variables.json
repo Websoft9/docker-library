@@ -1,0 +1,22 @@
+{
+  "name": "wordpresspro",
+  "trademark": "WordPressPro",
+  "release": true,
+  "fork_url": "https://github.com/docker-library/wordpress",
+  "version_from": "https://hub.docker.com/_/wordpress/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "6.8",
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1",
+    "url": "https://www.wordpress.org/docs/user_guide/en/install-requirements.html"
+  }
+}
