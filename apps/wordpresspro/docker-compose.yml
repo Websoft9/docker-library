@@ -59,13 +59,6 @@ services:
       MYSQL_USER: $W9_ID
       MYSQL_PASSWORD: $W9_POWER_PASSWORD
       MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
-
-  redis:
-    image: redis:alpine
-    container_name: $W9_ID-redis
-    restart: unless-stopped
-    volumes:
-      - redis_data:/data
       
   varnish:
     image: varnish:latest

@@ -1,6 +1,6 @@
 {
   "name": "wordpresspro",
-  "trademark": "WordPressPro",
+  "trademark": "WordPress Pro",
   "release": true,
   "fork_url": "https://github.com/docker-library/wordpress",
   "version_from": "https://hub.docker.com/_/wordpress/tags",
