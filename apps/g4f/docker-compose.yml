@@ -17,17 +17,21 @@ services:
           memory: 2g
     ports:
       - $W9_HTTP_PORT_SET:8080
-      #- 1337:1337  #api
       #- 7900:7900  #desktop
     env_file: .env
     volumes:
       - har_and_cookies:/app/har_and_cookies
-      - generated_images:/app/generated_images
+      - generated_media:/app/generated_media
+    command: |
+      sh -c "
+      sudo chown -R 1200:1201 /app/har_and_cookies /app/generated_media
+      exec /opt/bin/entry_point.sh
+      "
 
 
 volumes:
   har_and_cookies:
-  generated_images:
+  generated_media:
     
 networks:
   default:
