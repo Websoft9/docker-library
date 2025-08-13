@@ -33,7 +33,7 @@ services:
     command: /opt/bitnami/scripts/discourse-sidekiq/run.sh
 
   postgresql:
-    image: docker.io/bitnami/postgresql:16
+    image: bitnami/postgresql:16
     container_name: $W9_ID-postgresql
     volumes:
       - 'postgresql_data:/bitnami/postgresql'
@@ -43,7 +43,7 @@ services:
       - POSTGRESQL_PASSWORD=$W9_RCODE
 
   redis:
-    image: docker.io/bitnami/redis:7.0
+    image: bitnami/redis:7.0
     container_name: $W9_ID-redis
     environment:
       # ALLOW_EMPTY_PASSWORD is recommended only for development.
