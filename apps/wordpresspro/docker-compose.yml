@@ -1,6 +1,57 @@
 # image,docs: https://hub.docker.com/_/wordpress/
 
 services:
+  init:
+    image: docker:latest
+    container_name: $W9_ID-init
+    restart: on-failure
+    user: root
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - init_data:/mnt
+      - ./src/default.vcl:/mnt/default.vcl
+    depends_on:
+      - wordpress
+      - varnish
+    working_dir: /mnt
+    command: |
+      sh -c "
+      # 初始化（仅第一次启动时执行）
+      if [ -f /mnt/already_init.lock ]; then
+        echo \"already inital...\"
+      else
+        # 修改varnish配置文件
+        sed 's#.host = \".*\";#.host = \"$W9_ID-wordpress\";#g' /mnt/default.vcl > /mnt/tmpfile
+        cat /mnt/tmpfile > /mnt/default.vcl
+        docker restart $W9_ID
+        # 安装cli
+        docker exec $W9_ID-wordpress curl -o wp-cli.phar 'http://proxy.websoft9.com/?url=https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar'
+        docker exec $W9_ID-wordpress chmod +x wp-cli.phar
+        docker exec $W9_ID-wordpress mv wp-cli.phar /usr/local/bin/wp
+        # 完成初始化
+        touch /mnt/already_init.lock
+      fi
+
+      # 等待wordpress完成引导
+      until docker exec $W9_ID-wordpress wp core is-installed; do
+        echo \"wait for WordPress...\"
+        sleep 5
+      done
+
+      # 设置home
+      if [ \"`docker exec $W9_ID-wordpress wp option get home | cut -d: -f1`\" == \"https\" ];then
+        docker exec $W9_ID-wordpress wp option update home \"https://$W9_URL\"
+      else
+        docker exec $W9_ID-wordpress wp option update home \"$WORDPRESS_ROOT_URL\"
+      fi
+
+      # 设置siteurl
+      if [ \"`docker exec $W9_ID-wordpress wp option get siteurl | cut -d: -f1`\" == \"https\" ];then
+        docker exec $W9_ID-wordpress wp option update siteurl \"https://$W9_URL\"
+      else
+        docker exec $W9_ID-wordpress wp option update siteurl \"$WORDPRESS_ROOT_URL\"
+      fi
+      "
 
   wordpress:
     image: $W9_REPO:$W9_VERSION
@@ -12,25 +63,11 @@ services:
           max-file: "5"
           max-size: 10m
     env_file: .env
+    depends_on:
+      - mariadb
     volumes:
       - wordpress:/var/www/html
       - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
-
-  wordpress-cli:
-    image: $W9_REPO:cli
-    container_name: $W9_ID-cli
-    restart: on-failure
-    env_file: .env
-    volumes:
-      - wordpress:/var/www/html
-    depends_on:
-      - wordpress
-    command: |
-      /bin/bash -c "
-      sleep 5
-      wp option update home \"$WORDPRESS_ROOT_URL\"
-      wp option update siteurl \"$WORDPRESS_ROOT_URL\"
-      "
       
   mariadb:
     image: mariadb:$W9_DB_VERSION
@@ -49,16 +86,19 @@ services:
     image: varnish:latest
     container_name: $W9_ID
     restart: unless-stopped
+    user: root
     ports:
       - $W9_HTTP_PORT_SET:80
     volumes:
-      - ./src/default.vcl:/etc/varnish/default.vcl:ro
+      - ./src/default.vcl:/etc/varnish/default.vcl
     env_file: .env
     tmpfs:
       - /var/lib/varnish/varnishd:exec
+
 volumes:
   wordpress:
   mysql_data:
+  init_data:
 
 networks:
   default:
