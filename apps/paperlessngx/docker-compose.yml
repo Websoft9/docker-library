@@ -1,13 +1,13 @@
 services:
   broker:
-    image: docker.io/library/redis:7
+    image: redis:7
     container_name: $W9_ID-redis
     restart: unless-stopped
     volumes:
       - redisdata:/data
 
   db:
-    image: docker.io/library/postgres:16
+    image: postgres:16
     container_name: $W9_ID-postgresql
     restart: unless-stopped
     volumes:
@@ -47,7 +47,7 @@ services:
       PAPERLESS_TIKA_ENDPOINT: http://$W9_ID-tika:9998
 
   gotenberg:
-    image: docker.io/gotenberg/gotenberg:8.7
+    image: gotenberg/gotenberg:8.7
     container_name: $W9_ID-gotenberg
     restart: unless-stopped
 
@@ -59,7 +59,7 @@ services:
       - "--chromium-allow-list=file:///tmp/.*"
 
   tika:
-    image: docker.io/apache/tika:latest
+    image: apache/tika:latest
     container_name: $W9_ID-tika
     restart: unless-stopped
 

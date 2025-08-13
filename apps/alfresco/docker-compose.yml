@@ -52,7 +52,7 @@ services:
         -XX:MaxRAMPercentage=80
 
   share:
-    image: docker.io/alfresco/alfresco-share:23.1.1
+    image: alfresco/alfresco-share:23.1.1
     mem_limit: 1g
     container_name: $W9_ID-share # add by Websoft9
     environment:
@@ -79,7 +79,7 @@ services:
       - postgres:/var/lib/postgresql
 
   solr6:
-    image: docker.io/alfresco/alfresco-search-services:2.0.8.2
+    image: alfresco/alfresco-search-services:2.0.8.2
     mem_limit: 2g
     container_name: $W9_ID-solr6
     environment:
