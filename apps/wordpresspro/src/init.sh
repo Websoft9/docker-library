@@ -5,9 +5,9 @@ if [ -f already_init.lock ]; then
   echo "already inital..."
 else
   # 修改varnish配置文件
-  docker cp wordpresspro_87vfp:/etc/varnish/default.vcl .
+  docker cp $W9_ID:/etc/varnish/default.vcl .
   sed -i "s#.host = \".*\";#.host = \"$W9_ID-wordpress\";#g" default.vcl
-  docker exec -i wordpresspro_87vfp sh -c 'cat > /etc/varnish/default.vcl' < default.vcl
+  docker exec -i $W9_ID sh -c 'cat > /etc/varnish/default.vcl' < default.vcl
   docker restart $W9_ID
   # 安装cli
   docker exec $W9_ID-wordpress curl -o wp-cli.phar 'http://proxy.websoft9.com/?url=https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar'
