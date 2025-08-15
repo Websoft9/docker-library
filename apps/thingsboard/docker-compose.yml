@@ -2,39 +2,39 @@
 # docs: https://thingsboard.io/docs/user-guide/install/docker/
 
 
-version: '3.8'
-
 services:
-  thingsboard:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+  postgres:
     restart: unless-stopped
-    env_file: .env
-    ports:
-      - ${W9_HTTP_PORT_SET}:9090
-      #- "1883:1883" # For MQTT 
-      #- "7070:7070" # For Edge RPC
-      #- "5683-5688:5683-5688/udp" # UDP for COAP and LwM2M
+    image: postgres:16
+    container_name: ${W9_ID}-postgres
     environment:
-      TB_QUEUE_TYPE: rabbitmq
-      TB_QUEUE_RABBIT_MQ_USERNAME: guest
-      TB_QUEUE_RABBIT_MQ_PASSWORD: guest
-      TB_QUEUE_RABBIT_MQ_HOST: ${W9_ID}-rabbitmq
-      TB_QUEUE_RABBIT_MQ_PORT: 5672
-    depends_on:
-      - rabbitmq
+      POSTGRES_USER: postgres
+      POSTGRES_DB: thingsboard
+      POSTGRES_PASSWORD: postgres
     volumes:
-      - 'data:/data'
-      - 'logs:/var/log/thingsboard'
+      - postgres-data:/var/lib/postgresql/data
 
-  rabbitmq:
-    container_name: ${W9_ID}-rabbitmq
-    image: rabbitmq
+  thingsboard-ce:
     restart: unless-stopped
-    expose:
-      - '5672'
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    env_file:
+      - .env
+    ports:
+      - ${W9_HTTP_PORT_SET}:8080
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+    environment:
+      TB_SERVICE_ID: tb-ce-node
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${W9_ID}-postgres:5432/thingsboard
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      - postgres
+
 
 networks:
   default:
@@ -42,6 +42,4 @@ networks:
     external: true
 
 volumes:
-  data:
-  logs:
-  rabbitmq_data:
+  postgres-data:
