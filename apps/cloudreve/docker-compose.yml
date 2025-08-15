@@ -1,8 +1,6 @@
 # image: https://hub.docker.com/r/cloudreve/cloudreve
-# compose: https://docs.cloudreve.org/getting-started/install#docker-compose
+# compose: https://github.com/cloudreve/Cloudreve/blob/master/docker-compose.yml
 # cloudreve just only connect aria2 at the Console by user
-
-version: "3.8"
 
 services:
   cloudreve:
@@ -13,33 +11,40 @@ services:
     ports:
       - "$W9_HTTP_PORT_SET:5212"
     volumes:
-      - download:/downloads #download by aria2
-      - cloudreve:/cloudreve
+      - backend_data:/cloudreve/data
     depends_on:
-      - aria2
+      - postgresql
+      - redis
 
-  aria2:
-    image: p3terx/aria2-pro
-    container_name: $W9_ID-aria2
-    restart: unless-stopped
+  postgresql:
+    # Best practice: Pin to major version. 
+    # NOTE: For major version jumps:
+    # backup & consult https://www.postgresql.org/docs/current/pgupgrade.html 
+    image: postgres:17
+    container_name: $W9_ID-postgresql
     environment:
-      - RPC_SECRET=$W9_RCODE
-      - RPC_PORT=6800
+      - POSTGRES_USER=cloudreve
+      - POSTGRES_DB=cloudreve
+      - POSTGRES_HOST_AUTH_METHOD=trust
     volumes:
-      - config:/config
-      - download:/downloads
-    # Since Aria2 will continue to generate logs, limit the log size to 1M to prevent your hard disk from running out of space.
-    logging:
-      driver: json-file
-      options:
-        max-size: 1m
+      - database_postgres:/var/lib/postgresql/data
+    
+  redis:
+    image: redis:latest
+    container_name: $W9_ID-redis
+    volumes:
+      - redis_data:/data
 
+
+
+  
 networks:
   default:
     name: ${W9_NETWORK}
     external: true
 
 volumes:
-  download:
-  config:
-  cloudreve:
+  backend_data:
+  database_postgres:
+  redis_data:
+
