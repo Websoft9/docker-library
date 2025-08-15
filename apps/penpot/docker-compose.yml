@@ -12,7 +12,7 @@ services:
     container_name: $W9_ID
     restart: unless-stopped
     ports:
-      - $W9_HTTP_PORT_SET:80
+      - $W9_HTTP_PORT_SET:8080
     env_file: .env
     volumes:
       - penpot_assets:/opt/data/assets
