@@ -16,7 +16,7 @@ services:
     env_file: .env
     environment:
       HOST: ${W9_ID}-postgresql
-      USER: ${W9_ID}
+      USER: postgres
       PASSWORD: ${W9_POWER_PASSWORD}
     depends_on:
       - postgresql
@@ -30,7 +30,7 @@ services:
       - postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: postgres
-      POSTGRES_USER: ${W9_ID}
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${W9_POWER_PASSWORD}
       POSTGRES_INITDB_ARGS: --data-checksums
       POSTGRES_HOST_AUTH_METHOD: trust
