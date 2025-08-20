@@ -3,17 +3,6 @@
 
 
 services:
-  postgres:
-    restart: unless-stopped
-    image: postgres:16
-    container_name: ${W9_ID}-postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_DB: thingsboard
-      POSTGRES_PASSWORD: postgres
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-
   thingsboard-ce:
     restart: unless-stopped
     image: ${W9_REPO}:${W9_VERSION}
@@ -28,13 +17,40 @@ services:
         max-size: "100m"
         max-file: "10"
     environment:
-      TB_SERVICE_ID: tb-ce-node
-      SPRING_DATASOURCE_URL: jdbc:postgresql://${W9_ID}-postgres:5432/thingsboard
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      - TB_SERVICE_ID=tb-ce-node
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/${POSTGRESQL_DATABASE_NAME}
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
+  postgres:
+    restart: unless-stopped
+    image: postgres:16
+    container_name: ${W9_ID}-postgres
+    environment:
+      - POSTGRES_USER=${POSTGRESQL_USER}
+      - POSTGRES_DB=${POSTGRESQL_DATABASE_NAME}
+      - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRESQL_USER}", "-d", "${POSTGRESQL_DATABASE_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  init:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}-init
+    environment:
+      - INSTALL_TB=true
+      - LOAD_DEMO=true
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/${POSTGRESQL_DATABASE_NAME}
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 networks:
   default:
