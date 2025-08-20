@@ -12,15 +12,24 @@ LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
 # Set environment variables to avoid interactive configuration
 ENV DEBIAN_FRONTEND=noninteractive
 
-# replace apt repository for php7.0/5.6 image
-RUN sed -i  's|deb http://deb.debian.org/debian stretch|deb http://archive.debian.org/debian stretch|g' /etc/apt/sources.list || true && \
-    sed -i  '/stretch-updates/d' /etc/apt/sources.list || true && \
-    sed -i  's|deb http://security.debian.org/debian-security stretch/updates|deb http://archive.debian.org/debian-security stretch/updates|g' /etc/apt/sources.list || true
+# replace apt repository for php5.6/7.0-8.0 image
+RUN sed -i  '/stretch-updates/d' /etc/apt/sources.list || true && \
+    sed -i  '/buster-updates/d' /etc/apt/sources.list || true && \
+    sed -i  '/bullseye-updates/d' /etc/apt/sources.list || true && \
+    sed -i  '/debian-security/d' /etc/apt/sources.list || true && \
+    sed -i  's|http://deb.debian.org/debian|http://archive.debian.org/debian|g' /etc/apt/sources.list || true
+
+# replace apt repository for php8.1-8.3 image
+RUN if [ ! -f /etc/apt/sources.list ]; then \
+      rm -rf /etc/apt/sources.list.d/ && \
+      echo 'deb http://deb.debian.org/debian trixie main contrib non-free' > /etc/apt/sources.list && \
+      echo 'deb http://mirrors.aliyun.com/debian trixie main contrib non-free' >> /etc/apt/sources.list ; \
+    fi
 
 RUN apt-get update -oAcquire::AllowInsecureRepositories=true && \
     apt-get install -y --allow-unauthenticated gnupg && \
     apt-get install -y --allow-unauthenticated debian-archive-keyring && \
-    apt-key update && \
+    apt-key update || true && \
     apt-get update
     
 RUN apt install -y crudini nginx supervisor
