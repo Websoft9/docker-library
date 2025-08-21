@@ -50,13 +50,12 @@ services:
     user: root
     ports:
       - $W9_HTTP_PORT_SET:80
-    volumes:
-      - ./src/default.vcl:/etc/varnish/default.vcl
     env_file: .env
     depends_on:
       - wordpress
     tmpfs:
       - /var/lib/varnish/varnishd:exec
+    command: varnishd -F -b $W9_ID-wordpress:80 -a :80 -s malloc,$VARNISH_SIZE
 
 volumes:
   wordpress:
