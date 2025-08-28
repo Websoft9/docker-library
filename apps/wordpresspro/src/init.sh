@@ -4,11 +4,6 @@
 if [ -f already_init.lock ]; then
   echo "already inital..."
 else
-  # 修改varnish配置文件
-  docker cp $W9_ID:/etc/varnish/default.vcl .
-  sed -i "s#.host = \".*\";#.host = \"$W9_ID-wordpress\";#g" default.vcl
-  docker exec -i $W9_ID sh -c 'cat > /etc/varnish/default.vcl' < default.vcl
-  docker restart $W9_ID
   # 安装cli
   docker exec $W9_ID-wordpress curl -o wp-cli.phar 'http://proxy.websoft9.com/?url=https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar'
   docker exec $W9_ID-wordpress chmod +x wp-cli.phar
@@ -18,7 +13,7 @@ else
 fi
 
 # 等待wordpress完成引导
-until docker exec $W9_ID-wordpress wp core is-installed; do
+until docker exec $W9_ID-wordpress wp core is-installed &>/dev/null; do
   echo "wait for WordPress..."
   sleep 5
 done
