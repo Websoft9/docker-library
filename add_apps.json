@@ -1,10 +1,10 @@
 [
   {
-    "name": "triggerdev",
-    "trademark": "Trigger.dev",
+    "name": "modsecurity",
+    "trademark": "ModSecurity",
     "release": false,
-    "fork_url": "https://github.com/triggerdotdev/trigger.dev",
-    "version_from": "ghcr.io/triggerdotdev/trigger.dev:main",
+    "fork_url": "https://github.com/owasp-modsecurity/ModSecurity",
+    "version_from": "https://hub.docker.com/r/owasp/modsecurity/tags",
     "edition": [
       {
         "dist": "community",
@@ -17,49 +17,7 @@
       "cpu": "2",
       "memory": "4",
       "disk": "8",
-      "url": "https://trigger.dev"
-    }
-  },
-  {
-    "name": "opentelemetry",
-    "trademark": "OpenTelemetry",
-    "release": false,
-    "fork_url": "https://github.com/open-telemetry/opentelemetry-go",
-    "version_from": "",
-    "edition": [
-      {
-        "dist": "community",
-        "version": [
-          "latest"
-        ]
-      }
-    ],
-    "requirements": {
-      "cpu": "2",
-      "memory": "4",
-      "disk": "8",
-      "url": "https://opentelemetry.io/"
-    }
-  },
-  {
-    "name": "signoz",
-    "trademark": "SigNoz",
-    "release": false,
-    "fork_url": "https://github.com/SigNoz/signoz",
-    "version_from": "https://hub.docker.com/r/signoz/signoz/tags",
-    "edition": [
-      {
-        "dist": "community",
-        "version": [
-          "latest"
-        ]
-      }
-    ],
-    "requirements": {
-      "cpu": "2",
-      "memory": "4",
-      "disk": "8",
-      "url": "https://signoz.io"
+      "url": "https://modsecurity.org"
     }
   }
 ]
