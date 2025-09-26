@@ -1,0 +1,33 @@
+#!/bin/sh
+
+# 初始化（仅第一次启动时执行）
+if [ -f already_init.lock ]; then
+  echo "already inital..."
+else
+  # 安装cli
+  docker exec $W9_ID curl -o wp-cli.phar 'http://proxy.websoft9.com/?url=https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar'
+  docker exec $W9_ID chmod +x wp-cli.phar
+  docker exec $W9_ID mv wp-cli.phar /usr/local/bin/wp
+  # 完成初始化
+  touch already_init.lock
+fi
+
+# 等待wordpress完成引导
+until docker exec $W9_ID wp core is-installed &>/dev/null; do
+  echo "wait for WordPress..."
+  sleep 5
+done
+
+# 设置home
+if [ "`docker exec $W9_ID wp option get home | cut -d: -f1`" == "https" ];then
+  docker exec $W9_ID wp option update home "https://$W9_URL"
+else
+  docker exec $W9_ID wp option update home "$WORDPRESS_ROOT_URL"
+fi
+
+# 设置siteurl
+if [ "`docker exec $W9_ID wp option get siteurl | cut -d: -f1`" == "https" ];then
+  docker exec $W9_ID wp option update siteurl "https://$W9_URL"
+else
+  docker exec $W9_ID wp option update siteurl "$WORDPRESS_ROOT_URL"
+fi
