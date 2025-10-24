@@ -10,7 +10,7 @@ services:
     ports:
      - ${W9_DB_PORT_SET}:5432
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql
     env_file: .env
     environment:
       POSTGRES_DB: ${W9_ID}
