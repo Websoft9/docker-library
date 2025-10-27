@@ -15,7 +15,7 @@
   "requirements": {
     "cpu": "2",
     "memory": "8",
-    "disk": "10",
+    "disk": "5",
     "url": "https://go2docs.graylog.org/current/downloading_and_installing_graylog/docker_installation.htm?tocpath=Install%20Graylog%7C_____2#Prerequisites"
   }
 }
