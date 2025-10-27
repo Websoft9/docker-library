@@ -11,8 +11,8 @@
     }
   ],
   "requirements": {
-    "cpu": "1",
-    "memory": "2",
+    "cpu": "2",
+    "memory": "4",
     "disk": "2",
     "url": "https://grafana.com/docs/grafana/latest/installation/requirements/#grafana-requirements"
   }
