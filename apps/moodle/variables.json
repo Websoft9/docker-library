@@ -13,7 +13,7 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "6",
+    "disk": "4",
     "url": "https://github.com/moodle/docker#recommended-system-requirements"
   }
 }
