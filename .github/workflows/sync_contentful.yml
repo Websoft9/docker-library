@@ -23,18 +23,9 @@ jobs:
       id: getlist
       run: |
         if [[ "${{ github.event_name }}" == "push" ]]; then
-          # 检查是否为merge commit
-          if git show --no-patch --format="%P" HEAD | grep -q " "; then
-            echo "Merge commit detected, checking all changes in the merge"
-            # 对于merge commit，获取merge base和当前HEAD之间的所有变更
-            MERGE_BASE=$(git merge-base HEAD~1 HEAD^2 2>/dev/null || git merge-base HEAD~1 HEAD)
-            git diff --name-only $MERGE_BASE HEAD -- 'apps/*/variables.json'
-            echo "APP_LISTS=$(git diff --name-only $MERGE_BASE HEAD -- 'apps/*/variables.json' | awk -F/ '{print $2}' | tr '\n' ',' | sed 's/,$//')" >> $GITHUB_ENV
-          else
-            echo "Regular commit detected"
-            git diff --name-only HEAD^ HEAD -- 'apps/*/variables.json'
-            echo "APP_LISTS=$(git diff --name-only HEAD^ HEAD -- 'apps/*/variables.json' | awk -F/ '{print $2}' | tr '\n' ',' | sed 's/,$//')" >> $GITHUB_ENV
-          fi
+          # 使用GitHub提供的前后提交SHA
+          git diff --name-only ${{ github.event.before }} ${{ github.event.after }}
+          echo "APP_LISTS=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} -- 'apps/*/variables.json' | awk -F/ '{print $2}' | tr '\n' ',' | sed 's/,$//')" >> $GITHUB_ENV
         elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
           echo "APP_LISTS=$(ls -d apps/*/ | cut -f2 -d'/' | tr '\n' ',' | sed 's/,$//')" >> $GITHUB_ENV
         fi
