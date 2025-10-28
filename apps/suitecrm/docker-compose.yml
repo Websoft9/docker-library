@@ -17,7 +17,7 @@ services:
       - mariadb
 
   mariadb:
-    image: mariadb:10.6
+    image: bitnamilegacy/mariadb:10.6
     container_name: $W9_ID-mariadb 
     environment:
       - MARIADB_ROOT_PASSWORD=$W9_POWER_PASSWORD
@@ -25,7 +25,7 @@ services:
       - MARIADB_USER=suitecrm
       - MARIADB_PASSWORD=$W9_POWER_PASSWORD
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mariadb_data:/bitnami/mariadb
     restart: unless-stopped
 
 networks:
@@ -34,5 +34,5 @@ networks:
     external: true
 
 volumes:
-  mysql_data:
+  mariadb_data:
   suitecrm: 
