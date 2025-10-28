@@ -16,7 +16,7 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "8",
+    "disk": "9",
     "url": "https://dify.ai"
   }
 }
