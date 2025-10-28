@@ -317,7 +317,7 @@ services:
 
   # The DifySandbox
   sandbox:
-    image: langgenius/dify-sandbox:0.2.10
+    image: langgenius/dify-sandbox:0.2.12
     container_name: $W9_ID-sandbox
     restart: always
     environment:
@@ -336,7 +336,7 @@ services:
 
   # plugin daemon
   plugin_daemon:
-    image: langgenius/dify-plugin-daemon:0.0.6-local
+    image: langgenius/dify-plugin-daemon:0.3.3-local
     container_name: $W9_ID-plugin
     restart: always
     environment:
@@ -418,7 +418,7 @@ services:
 
   # The Weaviate vector store.
   weaviate:
-    image: semitechnologies/weaviate:1.19.0
+    image: semitechnologies/weaviate:1.27.0
     container_name: $W9_ID-weaviate
     restart: always
     volumes:
