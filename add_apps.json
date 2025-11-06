@@ -1,10 +1,31 @@
 [
   {
-    "name": "modsecurity",
-    "trademark": "ModSecurity",
+    "name": "monkeycode",
+    "trademark": "MonkeyCode",
     "release": false,
-    "fork_url": "https://github.com/owasp-modsecurity/ModSecurity",
-    "version_from": "https://hub.docker.com/r/owasp/modsecurity/tags",
+    "fork_url": "https://github.com/chaitin/MonkeyCode",
+    "version_from": "chaitin-registry.cn-hangzhou.cr.aliyuncs.com/monkeycode/backend",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "1",
+      "memory": "2",
+      "disk": "5",
+      "url": "https://monkeycode-ai.com/"
+    }
+  },
+  {
+    "name": "debezium",
+    "trademark": "Debezium",
+    "release": false,
+    "fork_url": "https://github.com/debezium/debezium",
+    "version_from": "",
     "edition": [
       {
         "dist": "community",
@@ -17,7 +38,28 @@
       "cpu": "2",
       "memory": "4",
       "disk": "8",
-      "url": "https://modsecurity.org"
+      "url": "https://debezium.io"
+    }
+  },
+  {
+    "name": "coze",
+    "trademark": "Coze",
+    "release": false,
+    "fork_url": "https://github.com/coze-dev/coze-studio",
+    "version_from": "https://hub.docker.com/r/cozedev/coze-studio-server",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "latest"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "8",
+      "url": "https://www.coze.cn/"
     }
   }
 ]
