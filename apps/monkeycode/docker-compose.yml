@@ -1,5 +1,5 @@
 # image: chaitin-registry.cn-hangzhou.cr.aliyuncs.com/monkeycode
-# docs：https://monkeycode.docs.baizhi.cloud/node/0197c080-6439-72cd-b0d5-5ce3a3221942
+# docs: https://monkeycode.docs.baizhi.cloud/node/0197c080-6439-72cd-b0d5-5ce3a3221942
 
 services:
   db:
@@ -51,6 +51,8 @@ services:
     image: chaitin-registry.cn-hangzhou.cr.aliyuncs.com/monkeycode/frontend:v1.22.3
     container_name: ${W9_ID}
     restart: unless-stopped
+    env_file:
+      - .env
     ports:
       - "$W9_HTTP_PORT_SET:80"
         
