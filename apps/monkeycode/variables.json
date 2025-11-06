@@ -1,7 +1,7 @@
 {
   "name": "monkeycode",
   "trademark": "MonkeyCode",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/chaitin/MonkeyCode",
   "version_from": "chaitin-registry.cn-hangzhou.cr.aliyuncs.com/monkeycode/backend",
   "edition": [
