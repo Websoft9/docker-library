@@ -3,16 +3,16 @@
 This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for RAGFlow:
 
 
- - community:  latest
+ - community:  v0.21.1
 
 
 ## System Requirements
 
 The following are the minimal [recommended requirements](https://ragflow.io):
 
-* **RAM**: 4 GB or more
-* **CPU**: 2 cores or higher
-* **Disk**: at least 10 GB of free space
+* **RAM**: 16 GB or more
+* **CPU**: 4 cores or higher
+* **Disk**: at least 50 GB of free space
 * **bandwidth**: more fluent experience over 100M  
 
 ## Install
