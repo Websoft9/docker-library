@@ -5,11 +5,9 @@
 version: "3.8"
 
 services:
-  ragflow-cpu:
+  ragflow:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
-    profiles:
-      - cpu
     restart: unless-stopped
     env_file: .env
     ports:
@@ -31,72 +29,39 @@ services:
       mysql:
         condition: service_healthy
     
-  ragflow-gpu:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
-    profiles:
-      - gpu
-    restart: unless-stopped
-    runtime: nvidia
-    env_file: .env
-    ports:
-      - '$W9_HTTP_PORT_SET:80'
-      #- '$ADMIN_SVR_HTTP_PORT:9381'
-      #- '$SVR_HTTP_PORT:9380'
-      #- '$SVR_HTTP_PORT:9380'
-      #- 'SVR_MCP_PORT:9382' # entry for MCP (host_port:docker_port). The docker_port must match the value you set for `mcp-port` above.
-    volumes:
-      - ragflow_logs:/ragflow/logs
-      - ./src/nginx/ragflow.conf:/etc/nginx/conf.d/ragflow.conf
-      - ./src/nginx/proxy.conf:/etc/nginx/proxy.conf
-      - ./src/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./src/service_conf.yaml.template:/ragflow/conf/service_conf.yaml.template
-      - ./src/entrypoint.sh:/ragflow/entrypoint.sh
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    depends_on:
-      mysql:
-        condition: service_healthy
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
 
-  es01:
-    container_name: $W9_ID-es-01
-    profiles:
-      - elasticsearch
-    image: elasticsearch:$STACK_VERSION
-    volumes:
-      - esdata01:/usr/share/elasticsearch/data
-    #ports:
-    #  - $ES_PORT_SET:9200
-    env_file: .env
-    environment:
-      - node.name=es01
-      - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
-      - bootstrap.memory_lock=false
-      - discovery.type=single-node
-      - xpack.security.enabled=true
-      - xpack.security.http.ssl.enabled=false
-      - xpack.security.transport.ssl.enabled=false
-      - cluster.routing.allocation.disk.watermark.low=5gb
-      - cluster.routing.allocation.disk.watermark.high=3gb
-      - cluster.routing.allocation.disk.watermark.flood_stage=2gb
-    mem_limit: $MEM_LIMIT
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    healthcheck:
-      test: ["CMD-SHELL", "curl http://localhost:9200"]
-      interval: 10s
-      timeout: 10s
-      retries: 120
-    restart: on-failure
+  # es01:
+  #   container_name: $W9_ID-es-01
+  #   profiles:
+  #     - elasticsearch
+  #   image: elasticsearch:$STACK_VERSION
+  #   volumes:
+  #     - esdata01:/usr/share/elasticsearch/data
+  #   #ports:
+  #   #  - $ES_PORT_SET:9200
+  #   env_file: .env
+  #   environment:
+  #     - node.name=es01
+  #     - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
+  #     - bootstrap.memory_lock=false
+  #     - discovery.type=single-node
+  #     - xpack.security.enabled=true
+  #     - xpack.security.http.ssl.enabled=false
+  #     - xpack.security.transport.ssl.enabled=false
+  #     - cluster.routing.allocation.disk.watermark.low=5gb
+  #     - cluster.routing.allocation.disk.watermark.high=3gb
+  #     - cluster.routing.allocation.disk.watermark.flood_stage=2gb
+  #   mem_limit: $MEM_LIMIT
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "curl http://localhost:9200"]
+  #     interval: 10s
+  #     timeout: 10s
+  #     retries: 120
+  #   restart: on-failure
 
   opensearch01:
     container_name: $W9_ID-opensearch-01
@@ -133,58 +98,58 @@ services:
       retries: 120
     restart: on-failure
 
-  infinity:
-    container_name: $W9_ID-infinity
-    profiles:
-      - infinity
-    image: infiniflow/infinity:v0.6.2
-    volumes:
-      - infinity_data:/var/infinity
-      - ./src/infinity_conf.toml:/infinity_conf.toml
-    command: ["-f", "/infinity_conf.toml"]
-    #ports:
-    #  - $INFINITY_THRIFT_PORT_SET:23817
-    #  - $INFINITY_HTTP_PORT_SET:23820
-    #  - $INFINITY_PSQL_PORT_SET:5432
-    env_file: .env
-    mem_limit: $MEM_LIMIT
-    ulimits:
-      nofile:
-        soft: 500000
-        hard: 500000
-    healthcheck:
-      test: ["CMD", "curl", "http://localhost:23820/admin/node/current"]
-      interval: 10s
-      timeout: 10s
-      retries: 120
-    restart: on-failure
+  # infinity:
+  #   container_name: $W9_ID-infinity
+  #   profiles:
+  #     - infinity
+  #   image: infiniflow/infinity:v0.6.2
+  #   volumes:
+  #     - infinity_data:/var/infinity
+  #     - ./src/infinity_conf.toml:/infinity_conf.toml
+  #   command: ["-f", "/infinity_conf.toml"]
+  #   #ports:
+  #   #  - $INFINITY_THRIFT_PORT_SET:23817
+  #   #  - $INFINITY_HTTP_PORT_SET:23820
+  #   #  - $INFINITY_PSQL_PORT_SET:5432
+  #   env_file: .env
+  #   mem_limit: $MEM_LIMIT
+  #   ulimits:
+  #     nofile:
+  #       soft: 500000
+  #       hard: 500000
+  #   healthcheck:
+  #     test: ["CMD", "curl", "http://localhost:23820/admin/node/current"]
+  #     interval: 10s
+  #     timeout: 10s
+  #     retries: 120
+  #   restart: on-failure
 
-  sandbox-executor-manager:
-    container_name: $W9_ID-sandbox-executor-manager
-    profiles:
-      - sandbox
-    image: $SANDBOX_EXECUTOR_MANAGER_IMAGE
-    privileged: true
-    ports:
-      - $SANDBOX_EXECUTOR_MANAGER_PORT:9385
-    env_file: .env
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    security_opt:
-      - no-new-privileges:true
-    environment:
-      - SANDBOX_EXECUTOR_MANAGER_POOL_SIZE=$SANDBOX_EXECUTOR_MANAGER_POOL_SIZE
-      - SANDBOX_BASE_PYTHON_IMAGE=$SANDBOX_BASE_PYTHON_IMAGE
-      - SANDBOX_BASE_NODEJS_IMAGE=$SANDBOX_BASE_NODEJS_IMAGE
-      - SANDBOX_ENABLE_SECCOMP=$SANDBOX_ENABLE_SECCOMP
-      - SANDBOX_MAX_MEMORY=$SANDBOX_MAX_MEMORY
-      - SANDBOX_TIMEOUT=$SANDBOX_TIMEOUT
-    healthcheck:
-      test: ["CMD", "curl", "http://localhost:9385/healthz"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: on-failure
+  # sandbox-executor-manager:
+  #   container_name: $W9_ID-sandbox-executor-manager
+  #   profiles:
+  #     - sandbox
+  #   image: $SANDBOX_EXECUTOR_MANAGER_IMAGE
+  #   privileged: true
+  #   ports:
+  #     - $SANDBOX_EXECUTOR_MANAGER_PORT:9385
+  #   env_file: .env
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   security_opt:
+  #     - no-new-privileges:true
+  #   environment:
+  #     - SANDBOX_EXECUTOR_MANAGER_POOL_SIZE=$SANDBOX_EXECUTOR_MANAGER_POOL_SIZE
+  #     - SANDBOX_BASE_PYTHON_IMAGE=$SANDBOX_BASE_PYTHON_IMAGE
+  #     - SANDBOX_BASE_NODEJS_IMAGE=$SANDBOX_BASE_NODEJS_IMAGE
+  #     - SANDBOX_ENABLE_SECCOMP=$SANDBOX_ENABLE_SECCOMP
+  #     - SANDBOX_MAX_MEMORY=$SANDBOX_MAX_MEMORY
+  #     - SANDBOX_TIMEOUT=$SANDBOX_TIMEOUT
+  #   healthcheck:
+  #     test: ["CMD", "curl", "http://localhost:9385/healthz"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+  #   restart: on-failure
 
   mysql:
     # mysql:5.7 linux/arm64 image is unavailable.
@@ -251,11 +216,11 @@ services:
       retries: 3
       start_period: 10s    
 
-  #tei-cpu:
+  #tei:
   #  container_name: $W9_ID-tei
   #  profiles:
-  #    - tei-cpu
-  #  image: ${TEI_IMAGE_CPU}
+  #    - tei
+  #  image: ${TEI_IMAGE}
   #  hostname: tei
   #  ports:
   #    - ${TEI_PORT-6380}:80
@@ -264,44 +229,25 @@ services:
   #  restart: on-failure
 
 
-  #tei-gpu:
-  #  container_name: $W9_ID-tei
-  #  profiles:
-  #    - tei-gpu
-  #  image: ${TEI_IMAGE_GPU}
-  #  hostname: tei
-  #  ports:
-  #    - ${TEI_PORT-6380}:80
-  #  env_file: .env
-  #  command: ["--model-id", "/data/${TEI_MODEL}", "--auto-truncate"]
-  #  deploy:
-  #    resources:
-  #      reservations:
-  #        devices:
-  #          - driver: nvidia
-  #            count: all
-  #            capabilities: [gpu]
-  #  restart: on-failure
-
-  kibana:
-    container_name: $W9_ID-kibana
-    profiles:
-      - kibana
-    image: kibana:$STACK_VERSION
-    ports:
-      - $KIBANA_PORT:5601
-    env_file: .env
-    volumes:
-      - kibana_data:/usr/share/kibana/data
-    depends_on:
-      es01:
-        condition: service_started
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5601/api/status"]
-      interval: 10s
-      timeout: 10s
-      retries: 120
-    restart: on-failure
+  # kibana:
+  #   container_name: $W9_ID-kibana
+  #   profiles:
+  #     - kibana
+  #   image: kibana:$STACK_VERSION
+  #   ports:
+  #     - $KIBANA_PORT:5601
+  #   env_file: .env
+  #   volumes:
+  #     - kibana_data:/usr/share/kibana/data
+  #   depends_on:
+  #     es01:
+  #       condition: service_started
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:5601/api/status"]
+  #     interval: 10s
+  #     timeout: 10s
+  #     retries: 120
+  #   restart: on-failure
 
 volumes:
   esdata01:
