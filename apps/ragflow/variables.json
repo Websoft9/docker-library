@@ -8,14 +8,14 @@
     {
       "dist": "community",
       "version": [
-        "latest"
+        "v0.21.1"
       ]
     }
   ],
   "requirements": {
-    "cpu": "2",
-    "memory": "4",
-    "disk": "10",
+    "cpu": "4",
+    "memory": "16",
+    "disk": "50",
     "url": "https://ragflow.io"
   }
 }
