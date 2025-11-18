@@ -1,7 +1,7 @@
 {
   "name": "checkmate",
   "trademark": "Checkmate",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/bluewave-labs/Checkmate",
   "version_from": "ghcr.io/bluewave-labs/checkmate-backend",
   "edition": [
