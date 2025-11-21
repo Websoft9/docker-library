@@ -4,6 +4,60 @@ This repository contains 300+ Docker Compose examples for applications like Word
 
 Always reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.
 
+## 🎯 Core Configuration Rules (READ FIRST)
+
+### Rule 1: Conditional Login Credentials (.env)
+**W9_LOGIN_USER and W9_LOGIN_PASSWORD**
+- ✅ **INCLUDE** only when the application has explicit built-in user authentication
+  - Examples: WordPress, GitLab, Odoo, Joomla, Drupal
+- ❌ **EXCLUDE** when:
+  - No built-in authentication (nginx, Apache, static sites)
+  - Database-only services (MySQL, PostgreSQL, MongoDB)
+  - Token/API key only authentication
+  - No user management system
+
+### Rule 2: Conditional URL Replacement (.env)
+**W9_URL and W9_URL_REPLACE**
+- **W9_URL**: Always keep this variable as `W9_URL=internet_ip:$W9_HTTP_PORT_SET` (standard pattern)
+  - This provides a placeholder for the application's external URL
+  - Will be replaced by actual IP/domain during deployment
+  
+- **W9_URL_REPLACE**: ✅ **INCLUDE** `W9_URL_REPLACE=true` ONLY when:
+  - `W9_URL` is actually referenced/used in docker-compose.yml or application environment variables
+  - Application needs external URL for proper operation (callbacks, webhooks, email links, trusted domains)
+  - Examples: 
+    - Nextcloud: `NEXTCLOUD_TRUSTED_DOMAINS=$W9_URL`
+    - GitLab: `GITLAB_OMNIBUS_CONFIG` with `external_url`
+    - Joomla: `JOOMLA_SITE_URL=$W9_URL`
+    
+- **W9_URL_REPLACE**: ❌ **EXCLUDE** when:
+  - `W9_URL` variable exists but is NOT referenced anywhere in docker-compose.yml
+  - Application doesn't use external URL in its configuration
+  - The variable is defined "just in case" but never actually consumed
+
+### Rule 3: Volume Mappings Require src/ Files (docker-compose.yml)
+**src/ Directory Requirements**
+- ✅ **ALWAYS CREATE** matching files/folders in `src/` when docker-compose.yml maps configuration files
+  - If volumes contains: `./src/nginx.conf:/etc/nginx/nginx.conf`
+  - Then MUST create: `apps/appname/src/nginx.conf`
+- ✅ **INCLUDE** sensible defaults that work out-of-the-box
+- ✅ **DOCUMENT** configuration files in `src/README.md`
+- ❌ **NEVER** reference non-existent files in volume mappings
+
+**Quick Validation Before Committing:**
+```bash
+# Check 1: Does app have user authentication? If NO, remove W9_LOGIN_*
+grep -q "W9_LOGIN_USER" apps/myapp/.env && echo "Has login - verify if needed"
+
+# Check 2: Is W9_URL actually used in config? If NO, remove W9_URL_REPLACE
+grep "\$W9_URL" apps/myapp/docker-compose.yml || echo "W9_URL not used - remove W9_URL_REPLACE (keep W9_URL)"
+
+# Check 3: Do all volume-mapped files exist?
+for vol in $(grep "./src/" apps/myapp/docker-compose.yml | cut -d: -f1 | tr -d ' -'); do
+  [ -f "apps/myapp/$vol" ] || echo "Missing: $vol"
+done
+```
+
 ## Working Effectively
 
 ### Prerequisites and Setup
@@ -92,13 +146,81 @@ template/             # Jinja2 templates for generated files
 .github/workflows/    # CI/CD automation
 ```
 
+#### CRITICAL: src/ Directory and Volume Mappings
+
+**When to Create Files in src/**
+- **ALWAYS** create matching files/folders in `src/` when docker-compose.yml references configuration files in volumes
+- The `src/` directory contains custom configuration files that get mounted into containers
+- Common examples:
+  - `src/nginx.conf` → mapped to `/etc/nginx/nginx.conf`
+  - `src/php.ini` → mapped to `/usr/local/etc/php/conf.d/php.ini`
+  - `src/config.yaml` → mapped to `/app/config.yaml`
+  - `src/templates/` → mapped to `/app/templates/`
+
+**Volume Mapping Requirements**
+- If docker-compose.yml has: `./src/myconfig.conf:/etc/app/myconfig.conf`
+- Then you MUST create: `apps/appname/src/myconfig.conf`
+- The file should contain appropriate default configuration
+- Document any required customization in Notes.md
+
+**Examples of Required src/ Files**
+```yaml
+# If docker-compose.yml contains:
+volumes:
+  - ./src/nginx.conf:/etc/nginx/nginx.conf
+  - ./src/php.ini:/usr/local/etc/php/conf.d/php.ini
+  - ./src/settings.json:/app/config/settings.json
+
+# Then you MUST create:
+apps/appname/src/nginx.conf
+apps/appname/src/php.ini
+apps/appname/src/settings.json
+```
+
+**src/ Directory Best Practices**
+- Include a `src/README.md` explaining the purpose of each configuration file
+- Provide sensible defaults that work out-of-the-box
+- Comment configuration files to guide users
+- Test that the application starts successfully with the provided config files
+
 ### Environment Variables Pattern
 All applications use standardized environment variables:
 - `W9_HTTP_PORT_SET`: External port mapping (default: 9001)
 - `W9_POWER_PASSWORD`: Default password for all services
 - `W9_ID`: Application instance identifier  
 - `W9_NETWORK`: Docker network name (always: websoft9)
-- `W9_URL`: External URL for application (optional)
+- `W9_URL`: External URL for application (always included as `internet_ip:$W9_HTTP_PORT_SET`)
+
+#### IMPORTANT: Conditional Environment Variables
+
+**Login Credentials (W9_LOGIN_USER and W9_LOGIN_PASSWORD)**
+- **ONLY** include `W9_LOGIN_USER=admin` and `W9_LOGIN_PASSWORD=$W9_POWER_PASSWORD` when:
+  - The application has explicit built-in authentication with username/password
+  - The application requires initial admin credentials during setup
+  - Examples: WordPress, GitLab, Odoo, Joomla, Drupal, Coze Studio
+- **DO NOT** include these variables for:
+  - Applications without built-in authentication (nginx, Apache, static sites)
+  - Database-only services (MySQL, PostgreSQL, MongoDB)
+  - Applications that use token/API key authentication only (HuggingChat)
+  - Services that don't have user management
+
+**URL Replacement Flag (W9_URL_REPLACE)**
+- **W9_URL is ALWAYS included** in .env as: `W9_URL=internet_ip:$W9_HTTP_PORT_SET`
+  - This provides a standard placeholder for external URL
+  - Will be replaced with actual IP/domain during deployment
+  
+- **W9_URL_REPLACE=true is ONLY included when:**
+  - The `W9_URL` variable is actually referenced/used in docker-compose.yml
+  - Application passes W9_URL to container environment variables
+  - Examples with W9_URL_REPLACE=true:
+    - Nextcloud: `NEXTCLOUD_TRUSTED_DOMAINS=$W9_URL`
+    - GitLab: `GITLAB_OMNIBUS_CONFIG` includes `external_url '$W9_URL'`
+    - Joomla: `JOOMLA_SITE_URL=$W9_URL`
+    
+- **W9_URL_REPLACE is EXCLUDED when:**
+  - W9_URL exists in .env but is NOT used in docker-compose.yml
+  - Application doesn't reference external URL in configuration
+  - Examples without W9_URL_REPLACE: HuggingChat, Coze Studio, basic containers
 
 ### Working with Applications
 - Browse available apps: `ls apps/`
@@ -137,6 +259,29 @@ Key GitHub Actions workflows:
 - Various other workflows for version management and syncing
 
 ## Common Gotchas
+
+### Configuration Validation Checklist
+
+Before finalizing any application configuration, verify:
+
+**✅ .env File Validation**
+- [ ] `W9_LOGIN_USER` and `W9_LOGIN_PASSWORD` are ONLY included if the app has built-in user authentication
+- [ ] `W9_URL_REPLACE=true` is ONLY included if `W9_URL` is actually used in docker-compose.yml or app config
+- [ ] All required passwords use `$W9_POWER_PASSWORD` for consistency
+- [ ] Port settings (`W9_HTTP_PORT_SET`) don't conflict with common ports
+
+**✅ docker-compose.yml Validation**
+- [ ] All volume mappings to `./src/*` have corresponding files created in the `src/` directory
+- [ ] Container names use `$W9_ID` or `$W9_ID-servicename` pattern
+- [ ] All services use `restart: unless-stopped`
+- [ ] Network configuration includes `external: true` for websoft9 network
+- [ ] Health checks are configured for critical services (databases, etc.)
+
+**✅ src/ Directory Validation**
+- [ ] All configuration files referenced in volumes exist
+- [ ] Configuration files have sensible defaults
+- [ ] A `src/README.md` explains the purpose of each file
+- [ ] Files are properly commented for user guidance
 
 ### Docker Compose Version
 - This repository requires Docker Compose v2 (`docker compose` not `docker-compose`)
@@ -220,10 +365,40 @@ cp template/.env apps/newapp/
 cp template/docker-compose.yml apps/newapp/
 cp template/variables.json apps/newapp/
 
-# 2. Edit configuration files as needed
-# 3. Test deployment
+# 2. Edit configuration files following these rules:
+# .env file:
+#   - Set W9_REPO and W9_VERSION to correct image
+#   - ONLY add W9_LOGIN_USER/PASSWORD if app has built-in auth
+#   - ONLY add W9_URL_REPLACE=true if W9_URL is actually used
+#   - Add app-specific environment variables below the separator line
+
+# docker-compose.yml:
+#   - Configure services with appropriate images
+#   - Use $W9_ID for container names
+#   - Add volume mappings for configuration files
+#   - Ensure network: websoft9 is external
+
+# 3. Create src/ files for any volume mappings
+mkdir -p apps/newapp/src
+# Create each file referenced in docker-compose.yml volumes
+# Example: if volumes has ./src/config.ini:/app/config.ini
+# Then create: apps/newapp/src/config.ini
+
+# 4. Update variables.json with app metadata
+# 5. Test deployment
 cd apps/newapp && docker compose up -d
-# 4. Generate README
+# Wait appropriate time, test connectivity, check logs
+docker compose logs
+curl http://localhost:9001
+docker compose down -v
+
+# 6. Validate configuration
+# - Check .env for unnecessary variables
+# - Verify all src/ files exist
+# - Confirm app authentication requirements
+
+# 7. Generate README
+cd ../..
 python3 build/update_readme.py "newapp"
 ```
 

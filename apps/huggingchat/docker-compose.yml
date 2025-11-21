@@ -1,49 +1,51 @@
-# image,docs: https://hub.docker.com/_/wordpress/
+# image: https://github.com/huggingface/chat-ui/pkgs/container/chat-ui
+# docs: https://github.com/huggingface/chat-ui
 
 services:
+  mongodb:
+    image: mongo:8
+    container_name: $W9_ID-mongodb
+    restart: unless-stopped
+    command: --replSet rs0 --bind_ip_all
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=$W9_POWER_PASSWORD
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: |
+        test $$(mongosh --quiet --eval 'try {rs.status().ok} catch(e) {rs.initiate({_id:"rs0",members:[{_id:0,host:"127.0.0.1:27017"}]}).ok}') -eq 1
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
-  wordpress:
+  chat-ui:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
-    logging:
-      driver: "json-file"
-      options:
-          max-file: "5"
-          max-size: 10m
-    deploy:
-      resources:
-        limits:
-          memory: 5g
-          cpus: '0.7'
     ports:
-      - $W9_HTTP_PORT_SET:80
+      - $W9_HTTP_PORT_SET:3000
     env_file: .env
-    volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
-
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
-    restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
-    volumes:
-      - mysql_data:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: $W9_ID
-      MYSQL_USER: $W9_ID
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      - MONGODB_URL=mongodb://admin:${W9_POWER_PASSWORD}@$W9_ID-mongodb:27017
+      - MONGODB_DB_NAME=chat-ui
+      - OPENAI_BASE_URL=${W9_OPENAI_BASE_URL_SET}
+      - OPENAI_API_KEY=${W9_OPENAI_API_KEY_SET}
+      - PUBLIC_APP_NAME=${W9_APP_NAME_SET:-HuggingChat}
+      - PUBLIC_APP_ASSETS=huggingchat
+      - PUBLIC_APP_DESCRIPTION=Making the community's best AI chat models available to everyone.
+      - COOKIE_NAME=hf-chat
+      - ENABLE_CONFIG_MANAGER=true
+      - LLM_SUMMARIZATION=true
+      - ALLOW_IFRAME=true
+    depends_on:
+      mongodb:
+        condition: service_healthy
 
 volumes:
-  wordpress:
-  mysql_data:
-    
+  mongodb_data:
+
 networks:
   default:
     name: $W9_NETWORK

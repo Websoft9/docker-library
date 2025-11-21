@@ -3,7 +3,7 @@
   "trademark": "HuggingChat",
   "release": false,
   "fork_url": "https://github.com/huggingface/chat-ui",
-  "version_from": "",
+  "version_from": "https://github.com/huggingface/chat-ui/pkgs/container/chat-ui",
   "edition": [
     {
       "dist": "community",
