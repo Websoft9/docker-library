@@ -1,49 +1,184 @@
-# image,docs: https://hub.docker.com/_/wordpress/
+# image: https://hub.docker.com/u/cozedev
+# docs: https://github.com/coze-dev/coze-studio
 
 services:
-
-  wordpress:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+  mysql:
+    image: mysql:8.4.5
+    container_name: $W9_ID-mysql
     restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
-    logging:
-      driver: "json-file"
-      options:
-          max-file: "5"
-          max-size: 10m
-    deploy:
-      resources:
-        limits:
-          memory: 5g
-          cpus: '0.7'
-    ports:
-      - $W9_HTTP_PORT_SET:80
-    env_file: .env
-    volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
-
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
-    restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
+    environment:
+      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-opencoze}
+      MYSQL_USER: ${MYSQL_USER:-coze}
+      MYSQL_PASSWORD: $W9_POWER_PASSWORD
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u${MYSQL_USER}", "-p${W9_POWER_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  redis:
+    image: bitnami/redis:8.0
+    container_name: $W9_ID-redis
+    restart: unless-stopped
     environment:
-      MYSQL_DATABASE: $WORDPRESS_DB_NAME
-      MYSQL_USER: $WORDPRESS_DB_USER
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      - REDIS_AOF_ENABLED=no
+      - REDIS_IO_THREADS=4
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - redis_data:/bitnami/redis/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
+
+  elasticsearch:
+    image: bitnamilegacy/elasticsearch:8.18.0
+    container_name: $W9_ID-elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+    volumes:
+      - elasticsearch_data:/bitnami/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cat/health || exit 1"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+
+  minio:
+    image: minio/minio:RELEASE.2025-06-13T11-33-47Z-cpuv1
+    container_name: $W9_ID-minio
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: $W9_POWER_PASSWORD
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD-SHELL", "mc ready local || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  etcd:
+    image: bitnami/etcd:3.5
+    container_name: $W9_ID-etcd
+    restart: unless-stopped
+    environment:
+      - ETCD_AUTO_COMPACTION_MODE=revision
+      - ETCD_AUTO_COMPACTION_RETENTION=1000
+      - ETCD_QUOTA_BACKEND_BYTES=4294967296
+      - ALLOW_NONE_AUTHENTICATION=yes
+    volumes:
+      - etcd_data:/bitnami/etcd
+    healthcheck:
+      test: ["CMD", "etcdctl", "endpoint", "health"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
+
+  milvus:
+    image: milvusdb/milvus:v2.5.10
+    container_name: $W9_ID-milvus
+    restart: unless-stopped
+    environment:
+      ETCD_ENDPOINTS: $W9_ID-etcd:2379
+      MINIO_ADDRESS: $W9_ID-minio:9000
+      MINIO_BUCKET_NAME: ${MINIO_DEFAULT_BUCKETS:-milvus}
+      MINIO_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_SECRET_ACCESS_KEY: $W9_POWER_PASSWORD
+      MINIO_USE_SSL: false
+    volumes:
+      - milvus_data:/var/lib/milvus
+    command: milvus run standalone
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
+    depends_on:
+      etcd:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+
+  nsqlookupd:
+    image: nsqio/nsq:v1.2.1
+    container_name: $W9_ID-nsqlookupd
+    restart: unless-stopped
+    command: /nsqlookupd
+    healthcheck:
+      test: ["CMD-SHELL", "nsqlookupd --version"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
+
+  nsqd:
+    image: nsqio/nsq:v1.2.1
+    container_name: $W9_ID-nsqd
+    restart: unless-stopped
+    command: /nsqd --lookupd-tcp-address=$W9_ID-nsqlookupd:4160 --broadcast-address=$W9_ID-nsqd
+    healthcheck:
+      test: ["CMD-SHELL", "/nsqd --version"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
+    depends_on:
+      nsqlookupd:
+        condition: service_healthy
+
+  coze-server:
+    image: cozedev/coze-studio-server:latest
+    container_name: $W9_ID-server
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - .env:/app/.env
+    command: ['/app/opencoze']
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      milvus:
+        condition: service_healthy
+
+  coze-web:
+    image: cozedev/coze-studio-web:latest
+    container_name: $W9_ID
+    restart: unless-stopped
+    ports:
+      - $W9_HTTP_PORT_SET:80
+    depends_on:
+      - coze-server
 
 volumes:
-  wordpress:
   mysql_data:
-    
+  redis_data:
+  elasticsearch_data:
+  minio_data:
+  etcd_data:
+  milvus_data:
+
 networks:
   default:
     name: $W9_NETWORK
