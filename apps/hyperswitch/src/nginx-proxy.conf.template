@@ -1,0 +1,57 @@
+proxy_busy_buffers_size   512k;
+proxy_buffers   4 512k;
+proxy_buffer_size   256k;
+client_max_body_size 50m;
+# override default location /
+location / {
+        add_header       X-Served-By $host;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Scheme $scheme;
+        proxy_set_header X-Forwarded-Proto  $scheme;
+        proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
+        proxy_set_header X-Real-IP          $remote_addr;
+        proxy_pass       $forward_scheme://$server:$port$request_uri;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection upgrade;
+    }
+
+location /console {
+    proxy_pass http://$server:8080; 
+    proxy_http_version 1.1;
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+
+# for echo some useful information
+location / {
+    default_type text/plain;
+    return 200 'Hello World';
+}
+
+location /oida/ {
+# this is the address and port of the ORDS installation
+proxy_pass http://127.0.0.1:8080/ords/;
+
+# set Origin to blank to avoid Chrome problems with CORS
+proxy_set_header Origin "" ;
+
+# pass along some header variables with the public host name/port/and so on
+proxy_set_header Host $host;
+proxy_set_header X-Forwarded-Host $host:$server_port;
+proxy_set_header X-Real-IP $remote_addr;
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+proxy_set_header X-Forwarded-Proto $scheme;
+
+# this reverse proxies any "location" headers being passed in the response
+proxy_redirect http://$host/ords/ https://$host/oida/;
+
+# also tell cookies their public path
+proxy_cookie_path /ords/ /oida/;
+
+# reverse proxy links included in response (ie from ORDS webservice)
+sub_filter_types application/json ;
+sub_filter http://$host/ords/ https://$host/oida/;
+sub_filter_once off;
+}

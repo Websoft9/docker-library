@@ -1,0 +1,21 @@
+{
+  "name": "hyperswitch",
+  "trademark": "Hyperswitch",
+  "release": false,
+  "fork_url": "https://github.com/juspay/hyperswitch",
+  "version_from": "docker.juspay.io/juspaydotin/hyperswitch-router",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "2",
+    "disk": "5",
+    "url": "https://hyperswitch.io/"
+  }
+}
