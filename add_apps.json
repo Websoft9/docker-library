@@ -1,10 +1,10 @@
 [
   {
-    "name": "monkeycode",
-    "trademark": "MonkeyCode",
+    "name": "hyperswitch",
+    "trademark": "Hyperswitch",
     "release": false,
-    "fork_url": "https://github.com/chaitin/MonkeyCode",
-    "version_from": "chaitin-registry.cn-hangzhou.cr.aliyuncs.com/monkeycode/backend",
+    "fork_url": "https://github.com/juspay/hyperswitch",
+    "version_from": "docker.juspay.io/juspaydotin/hyperswitch-router",
     "edition": [
       {
         "dist": "community",
@@ -17,49 +17,7 @@
       "cpu": "1",
       "memory": "2",
       "disk": "5",
-      "url": "https://monkeycode-ai.com/"
-    }
-  },
-  {
-    "name": "debezium",
-    "trademark": "Debezium",
-    "release": false,
-    "fork_url": "https://github.com/debezium/debezium",
-    "version_from": "",
-    "edition": [
-      {
-        "dist": "community",
-        "version": [
-          "latest"
-        ]
-      }
-    ],
-    "requirements": {
-      "cpu": "2",
-      "memory": "4",
-      "disk": "8",
-      "url": "https://debezium.io"
-    }
-  },
-  {
-    "name": "coze",
-    "trademark": "Coze",
-    "release": false,
-    "fork_url": "https://github.com/coze-dev/coze-studio",
-    "version_from": "https://hub.docker.com/r/cozedev/coze-studio-server",
-    "edition": [
-      {
-        "dist": "community",
-        "version": [
-          "latest"
-        ]
-      }
-    ],
-    "requirements": {
-      "cpu": "2",
-      "memory": "4",
-      "disk": "8",
-      "url": "https://www.coze.cn/"
+      "url": "https://hyperswitch.io/"
     }
   }
 ]
