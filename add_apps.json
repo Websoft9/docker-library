@@ -1,10 +1,10 @@
 [
   {
-    "name": "hyperswitch",
-    "trademark": "Hyperswitch",
+    "name": "istio",
+    "trademark": "Istio",
     "release": false,
-    "fork_url": "https://github.com/juspay/hyperswitch",
-    "version_from": "docker.juspay.io/juspaydotin/hyperswitch-router",
+    "fork_url": "https://github.com/istio/istio",
+    "version_from": "https://hub.docker.com/r/istio/proxyv2/tags",
     "edition": [
       {
         "dist": "community",
@@ -14,10 +14,10 @@
       }
     ],
     "requirements": {
-      "cpu": "1",
-      "memory": "2",
-      "disk": "5",
-      "url": "https://hyperswitch.io/"
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://istio.io"
     }
   }
 ]
