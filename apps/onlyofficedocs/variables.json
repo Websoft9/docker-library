@@ -7,15 +7,15 @@
   "edition": [
     {
       "dist": "community",
-      "version": ["9.0","latest"]
+      "version": ["9.1","latest"]
     },
     {
       "dist": "enterprise",
-      "version": ["9.0","latest"]
+      "version": ["9.1","latest"]
     },
     {
       "dist": "developer ",
-      "version": ["9.0","latest"]
+      "version": ["9.1","latest"]
     }
   ],
   "requirements": {
