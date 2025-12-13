@@ -3,7 +3,7 @@
 
 services:
   nginx:
-    image: ${W9_REPO}:${W9_VERSION}
+    image: nginx:1.24
     container_name: ${W9_ID}
     env_file:
       - .env
@@ -51,7 +51,7 @@ services:
       - backend-inference
 
   backend-api:
-    image: taskingai/taskingai-server:v0.3.0
+    image: $W9_REPO:$W9_VERSION
     container_name: backend-api-${W9_ID}
     restart: unless-stopped
     environment:
@@ -73,7 +73,7 @@ services:
       - backend-plugin
 
   backend-web:
-    image: taskingai/taskingai-server:v0.3.0
+    image: $W9_REPO:$W9_VERSION
     container_name: backend-web-${W9_ID}
     restart: unless-stopped
     environment:
