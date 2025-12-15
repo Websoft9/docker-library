@@ -30,7 +30,7 @@ services:
       - MONGODB_DB_NAME=chat-ui
       - OPENAI_BASE_URL=${OPENAI_BASE_URL_SET}
       - OPENAI_API_KEY=${OPENAI_API_KEY_SET}
-      - PUBLIC_APP_NAME=${W9_APP_NAME_SET:-HuggingChat}
+      - PUBLIC_APP_NAME=HuggingChat
       - PUBLIC_APP_ASSETS=huggingchat
       - PUBLIC_APP_DESCRIPTION=Making the community's best AI chat models available to everyone.
       - COOKIE_NAME=hf-chat
