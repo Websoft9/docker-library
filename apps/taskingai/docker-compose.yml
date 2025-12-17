@@ -3,7 +3,7 @@
 
 services:
   nginx:
-    image: ${W9_REPO}:${W9_VERSION}
+    image: nginx:1.24
     container_name: ${W9_ID}
     env_file:
       - .env
@@ -19,7 +19,7 @@ services:
   
   frontend:
     image: taskingai/taskingai-console:v0.3.0
-    container_name: frontend-${W9_ID}
+    container_name: ${W9_ID}-frontend
     restart: unless-stopped
     depends_on:
       - backend-web
@@ -27,7 +27,7 @@ services:
 
   backend-inference:
     image: taskingai/taskingai-inference:v0.2.14
-    container_name: backend-inference-${W9_ID}
+    container_name: ${W9_ID}-backend-inference
     restart: unless-stopped
     environment:
       AES_ENCRYPTION_KEY: ${AES_ENCRYPTION_KEY}
@@ -36,7 +36,7 @@ services:
 
   backend-plugin:
     image: taskingai/taskingai-plugin:v0.2.10
-    container_name: backend-plugin-${W9_ID}
+    container_name: ${W9_ID}-backend-plugin
     restart: unless-stopped
     environment:
       AES_ENCRYPTION_KEY: ${AES_ENCRYPTION_KEY}
@@ -51,14 +51,14 @@ services:
       - backend-inference
 
   backend-api:
-    image: taskingai/taskingai-server:v0.3.0
-    container_name: backend-api-${W9_ID}
+    image: $W9_REPO:$W9_VERSION
+    container_name: ${W9_ID}-backend-api
     restart: unless-stopped
     environment:
       POSTGRES_URL: postgres://${POSTGRESQL_USER}:${POSTGRESQL_PASSWORD}@${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/${POSTGRESQL_DATABASE_NAME}
-      REDIS_URL: redis://:TaskingAI321@cache-${W9_ID}:6379/0
-      TASKINGAI_INFERENCE_URL: http://backend-inference-${W9_ID}:8000
-      TASKINGAI_PLUGIN_URL: http://backend-plugin-${W9_ID}:8000
+      REDIS_URL: redis://:TaskingAI321@${W9_ID}-cache:6379/0
+      TASKINGAI_INFERENCE_URL: http://${W9_ID}-backend-inference:8000
+      TASKINGAI_PLUGIN_URL: http://${W9_ID}-backend-plugin:8000
       AES_ENCRYPTION_KEY: ${AES_ENCRYPTION_KEY}
       OBJECT_STORAGE_TYPE: local
       HOST_URL: ${W9_URL}:${W9_HTTP_PORT_SET}
@@ -73,14 +73,14 @@ services:
       - backend-plugin
 
   backend-web:
-    image: taskingai/taskingai-server:v0.3.0
-    container_name: backend-web-${W9_ID}
+    image: $W9_REPO:$W9_VERSION
+    container_name: ${W9_ID}-backend-web
     restart: unless-stopped
     environment:
       POSTGRES_URL: postgres://${POSTGRESQL_USER}:${POSTGRESQL_PASSWORD}@${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/${POSTGRESQL_DATABASE_NAME}
-      REDIS_URL: redis://:TaskingAI321@cache-${W9_ID}:6379/0
-      TASKINGAI_INFERENCE_URL: http://backend-inference-${W9_ID}:8000
-      TASKINGAI_PLUGIN_URL: http://backend-plugin-${W9_ID}:8000
+      REDIS_URL: redis://:TaskingAI321@${W9_ID}-cache:6379/0
+      TASKINGAI_INFERENCE_URL: http://${W9_ID}-backend-inference:8000
+      TASKINGAI_PLUGIN_URL: http://${W9_ID}-backend-plugin:8000
       AES_ENCRYPTION_KEY: ${AES_ENCRYPTION_KEY}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       PURPOSE: WEB
@@ -99,7 +99,7 @@ services:
       - backend-plugin
   db:
     image: ankane/pgvector:v0.5.1
-    container_name: db-${W9_ID}
+    container_name: ${W9_ID}-db
     environment:
       POSTGRES_DB: ${POSTGRESQL_DATABASE_NAME}
       POSTGRES_USER: ${POSTGRESQL_USER}
@@ -115,7 +115,7 @@ services:
 
   cache:
     image: redis:7-alpine
-    container_name: cache-${W9_ID}
+    container_name: ${W9_ID}-cache
     command: [ "redis-server", "--requirepass", "TaskingAI321" ]
     volumes:
       - redis-data:/data

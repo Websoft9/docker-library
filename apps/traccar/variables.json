@@ -1,7 +1,7 @@
 {
   "name": "traccar",
   "trademark": "Traccar",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/traccar/traccar-docker",
   "version_from": "https://hub.docker.com/r/traccar/traccar/tags",
   "edition": [

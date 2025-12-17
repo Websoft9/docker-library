@@ -9,15 +9,16 @@ services:
     container_name: ${W9_ID}
     env_file: .env
     command:
+      - "--api.insecure=true"
       - "--api.dashboard=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedByDefault=false"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
     ports:
-      - ${W9_HTTP_PORT_SET}:80  # For HTTP traffic
+      - ${W9_HTTP_PORT_SET}:80 # For HTTP traffic
       #- 4433:443  # For HTTPS traffic
-      #- 8080:8080 # For Dashboard and API
+      - 8080:8080   # ← 已启用 Dashboard 端口
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./src/traefik.yml:/etc/traefik/traefik.yml

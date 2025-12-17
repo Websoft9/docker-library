@@ -28,9 +28,9 @@ services:
     environment:
       - MONGODB_URL=mongodb://admin:${W9_POWER_PASSWORD}@$W9_ID-mongodb:27017
       - MONGODB_DB_NAME=chat-ui
-      - OPENAI_BASE_URL=${W9_OPENAI_BASE_URL_SET}
-      - OPENAI_API_KEY=${W9_OPENAI_API_KEY_SET}
-      - PUBLIC_APP_NAME=${W9_APP_NAME_SET:-HuggingChat}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL_SET}
+      - OPENAI_API_KEY=${OPENAI_API_KEY_SET}
+      - PUBLIC_APP_NAME=HuggingChat
       - PUBLIC_APP_ASSETS=huggingchat
       - PUBLIC_APP_DESCRIPTION=Making the community's best AI chat models available to everyone.
       - COOKIE_NAME=hf-chat

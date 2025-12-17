@@ -1,0 +1,21 @@
+{
+  "name": "akeneo",
+  "trademark": "Akeneo",
+  "release": true,
+  "fork_url": "https://github.com/akeneo/pim-community-dev",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "v7.0.22",
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "1",
+    "url": "https://github.com/akeneo/docker"
+  }
+}
