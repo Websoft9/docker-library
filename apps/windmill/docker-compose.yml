@@ -1,3 +1,5 @@
+#image:ghcr.io/windmill-labs/windmill:dev
+#docs:https://github.com/windmill-labs/windmill/blob/main/docker-compose.yml
 x-logging: &default-logging
   driver: "json-file"
   options:
