@@ -1,7 +1,7 @@
 {
   "name": "windmill",
   "trademark": "Windmill",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/windmill-labs/windmill",
   "version_from": "ghcr.io/windmill-labs/windmill",
   "edition": [
