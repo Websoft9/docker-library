@@ -1,4 +1,4 @@
-# kafka image: https://hub.docker.com/r/bitnami/kafka
+# kafka image: https://hub.docker.com/r/bitnamilegacy/kafka
 
 version: "3.8"
 
