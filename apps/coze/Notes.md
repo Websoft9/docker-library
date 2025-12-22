@@ -4,74 +4,61 @@
 
 ### Required Configuration
 
-Before using Coze Studio, you **must** configure at least one AI model provider:
+在使用coze之前，你需要提供至少一个AI模型供应商:
 
-1. **For Agent & Workflow**: Configure the model settings via environment variables:
-   - `W9_MODEL_PROTOCOL_SET`: Model protocol (e.g., "ark", "openai", "ollama")
-   - `W9_MODEL_NAME_SET`: Display name for the model
-   - `W9_MODEL_ID_SET`: Model ID for API calls
-   - `W9_MODEL_API_KEY_SET`: API key for authentication
-   - `W9_MODEL_BASE_URL_SET`: Base URL for the model API
+1. **适用于代理和工作流**：通过环境变量配置模型设置：
+   - `W9_MODEL_PROTOCOL_SET`: 模型协议 (如： "ark", "openai", "ollama")
+   - `W9_MODEL_NAME_SET`: 模型显示名称
+   - `W9_MODEL_ID_SET`: 用于 API 调用的模型 ID
+   - `W9_MODEL_API_KEY_SET`: 用于认证的 API 密钥
+   - `W9_MODEL_BASE_URL_SET`: 模型 API 的基础 URL  
+      (以上配置在安装前会被要求输入，并且代入到以下配置：)
+      ```
+      MODEL_PROTOCOL_0="${W9_MODEL_PROTOCOL_SET:-ark}"
+      MODEL_OPENCOZE_ID_0="100001"
+      MODEL_NAME_0="${W9_MODEL_NAME_SET:-}"
+      MODEL_ID_0="${W9_MODEL_ID_SET:-}"
+      MODEL_API_KEY_0="${W9_MODEL_API_KEY_SET:-}"
+      MODEL_BASE_URL_0="${W9_MODEL_BASE_URL_SET:-}"
+      ```
+      (你可以通过复制并修改后面的数字以及内容来配置多个模型)
+   
 
-2. **For Knowledge Base (Embedding)**: Configure embedding settings:
-   - `EMBEDDING_TYPE`: Type of embedding provider (ark/openai/ollama/gemini)
-   - Provider-specific settings (API key, base URL, model name, dimensions)
+2. **用于知识库（嵌入）**：配置嵌入设置：
+   - `EMBEDDING_TYPE`: 嵌入提供商类型 (ark/openai/ollama/gemini)
+   - 特定于提供商的设置 (API key, base URL, model name, dimensions)
 
-### Supported Model Providers
+### 支持的模型提供商
 
-- **Ark (ByteDance/Volcengine)**: Recommended for best compatibility
-- **OpenAI**: Including Azure OpenAI
-- **Ollama**: For local model deployment
-- **Gemini**: Google's AI models
-- **DeepSeek**: Alternative AI provider
-- **Qwen**: Alibaba's AI models
+- **Ark (ByteDance/Volcengine)**: 推荐以获得最佳兼容性
+- **OpenAI**: 包括 Azure OpenAI
+- **Ollama**: 用于本地模型部署
+- **Gemini**: 谷歌的人工智能模型
+- **DeepSeek**
+- **Qwen**: 阿里巴巴的AI模型
 
 ## FAQ
 
-### How to access Coze Studio?
 
-After deployment, access the web interface at: `http://your-server-ip:9001`
+### 怎么配置模型?
 
-### How to configure models?
+1. 在应用页面点击编排-马上修改，进入.env文件
+2. 修改模型配置相关变量 (W9_MODEL_*)
+3. 重建应用
 
-1. Go to the application environment variables
-2. Update the model configuration variables (W9_MODEL_*)
-3. Restart the application
+### 故障排查
 
-### What are the minimum system requirements?
+**服务没有启动:**
+- 检查所有必需的环境变量是否已配置
+- 验证 Docker 是否分配了足够的资源
+- 检查日志: `docker logs coze_{ID}-server`
 
-- CPU: 4 cores
-- Memory: 8 GB
-- Disk: 20 GB
-- Recommended: 8 cores, 16 GB memory for production use
+**知识库无法使用:**
+- 确保嵌入配置设置正确
+- 验证嵌入式 API 密钥是否有效
+- 检查 Milvus 和 Elasticsearch 是否正在运行
 
-### How to enable SSL/HTTPS?
-
-Configure through Websoft9's proxy manager (Nginx Proxy Manager).
-
-### How to backup data?
-
-Backup the following Docker volumes:
-- mysql_data
-- redis_data
-- elasticsearch_data
-- minio_data
-- etcd_data
-- milvus_data
-
-### Troubleshooting
-
-**Service not starting:**
-- Check if all required environment variables are configured
-- Verify Docker has enough resources allocated
-- Check logs: `docker logs coze-server`
-
-**Knowledge base not working:**
-- Ensure embedding configuration is properly set
-- Verify the embedding API key is valid
-- Check Milvus and Elasticsearch are running
-
-**Model not responding:**
-- Verify model API key and base URL
-- Check network connectivity to model provider
-- Review server logs for error messages
+**模型无响应:**
+- 验证模型 API 密钥和基础 URL
+- 检查与模型提供商的网络连接
+- 查看服务器日志中的错误信息
