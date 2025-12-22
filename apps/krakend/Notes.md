@@ -7,27 +7,21 @@ KrakenD 是一个高效、开源的 API 网关，旨在简化微服务架构中 
 # 使用教程
 
 1. 安装后访问应用URL返回健康检测数据即安装成功
-2. 通过官方工具[KrakenDesigner](https://designer.krakend.io) 生成配置文件
-    - 在 Service settings 标签页的 Hosts 下添加上游API服务器
-    - 在 Endpoints 标签页添加API路由，配置请求的源URL、目标服务器、目标URL等信息
-    - 配置完成后点击右上角Download config下载配置文件
-    > **注意**：该应用为社区开源版，带有`Enterprise`标签的功能无法使用
-3. 将生成的配置文件替换仓库中的`src/krakend.json`文件，然后重建应用生效
-4. 如果需要增加端点，可在endpoints中添加一项，以下是最简单的一项配置：
+2. 如果需要增加端点，可在endpoints中添加一项，以下是最简单的一项配置：
     ```
     {
-      "endpoint": "/",                      # kraend 端点
-      "method": "GET",                      # 请求方法
-      "output_encoding": "json",            # 响应编码
+      "endpoint": "/todos/{id}",                            # kraend 端点
+      "method": "GET",                                      # 请求方法
+      "output_encoding": "json",                            # 响应编码
       "backend": [
         {
-          "url_pattern": "/__health",       # 上游url
-          "encoding": "json",               # 上游响应编码
+          "url_pattern": "/todos/{id}",                     # 上游url
+          "encoding": "json",                               # 上游响应编码
           "sd": "static",
-          "method": "GET",                  # 上游请求方法
+          "method": "GET",                                  # 上游请求方法
           "disable_host_sanitize": false,
           "host": [
-            "http://localhost:8080"         # 上游服务器
+            "https://jsonplaceholder.typicode.com"          # 上游服务器
           ]
         }
       ]
