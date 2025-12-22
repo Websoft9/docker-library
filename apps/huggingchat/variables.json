@@ -1,7 +1,7 @@
 {
   "name": "huggingchat",
   "trademark": "HuggingChat",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/huggingface/chat-ui",
   "version_from": "https://github.com/huggingface/chat-ui/pkgs/container/chat-ui",
   "edition": [
