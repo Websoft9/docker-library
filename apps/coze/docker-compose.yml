@@ -354,8 +354,9 @@ services:
     image: cozedev/coze-studio-web:latest
     container_name: $W9_ID
     restart: unless-stopped
+    env_file: .env
     ports:
-      - 0.0.0.0:$W9_HTTP_PORT_SET:80
+      - $W9_HTTP_PORT_SET:80
     volumes:
       - ./src/nginx/nginx.conf:/etc/nginx/nginx.conf:ro  # Main nginx config
       - ./src/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro  # Proxy config
