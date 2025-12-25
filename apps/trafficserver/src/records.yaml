@@ -1,0 +1,57 @@
+# Apache Traffic Server records.yaml
+# Modern YAML configuration for TrafficServer
+
+# HTTP server configuration
+proxy:
+  config:
+    http:
+      server_ports: "8080:ipv4 8443:ssl:ipv4"
+      cache:
+        http: 1
+        ignore_client_cc_max_age: 1
+        required_headers: 0
+      keep_alive_enabled_in: 1
+      keep_alive_enabled_out: 1
+      chunking_enabled: 1
+      server_session_sharing:
+        match: both
+      session_auth_cache:
+        enabled: 1
+
+    # Cache settings
+    cache:
+      ram_cache:
+        size: 268435456  # 256MB
+      disk_space: 10737418240  # 10GB
+
+    # Reverse proxy mode
+    reverse_proxy:
+      enabled: 1
+
+    # Logging configuration
+    log:
+      logging_enabled: 3
+      max_secs_per_buffer: 5
+      max_space_mb_for_logs: 25000
+      max_space_mb_headroom: 1000
+      rolling_enabled: 1
+
+    # Management interface
+    admin:
+      synthetic_port: 8088
+      autoconf_port: 8080
+
+    # SSL settings
+    ssl:
+      client:
+        verify:
+          server: 0
+      server:
+        cert:
+          load_elevated: 1
+
+    # Performance tuning
+    net:
+      connections_throttle: 30000
+    accept_threads: 1
+    task_threads: 2

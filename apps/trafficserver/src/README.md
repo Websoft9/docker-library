@@ -4,8 +4,10 @@ This folder includes files mount to container and used by Websoft9
 
 ## Configuration Files
 
-- `records.config`: Main configuration file for Apache Traffic Server
+- `records.config`: Traditional configuration file for Apache Traffic Server
+- `records.yaml`: Modern YAML configuration file (preferred by newer versions)
 - `remap.config`: URL remapping rules for reverse proxy configuration
+- `hosting.config`: Origin server configuration
 
 ## Usage
 

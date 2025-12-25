@@ -17,7 +17,9 @@ services:
       - trafficserver_logs:/var/log/trafficserver
       - trafficserver_cache:/var/cache/trafficserver
       - ./src/records.config:/etc/trafficserver/records.config:ro
+      - ./src/records.yaml:/etc/trafficserver/records.yaml:ro
       - ./src/remap.config:/etc/trafficserver/remap.config:ro
+      - ./src/hosting.config:/etc/trafficserver/hosting.config:ro
     environment:
       - TS_ROOT_PASSWORD=$W9_POWER_PASSWORD
     # Health check

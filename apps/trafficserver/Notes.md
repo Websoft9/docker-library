@@ -18,9 +18,14 @@
 
 ### Common Issues
 
-1. **Container fails to start**: Check port conflicts (8080, 8443, 8088)
-2. **Configuration errors**: Validate syntax in `records.config` and `remap.config`
-3. **Permission issues**: Ensure proper file permissions for mounted configuration files
+1. **"Not Found on Accelerator" Error**: 
+   - Check that remap.config has correct mapping rules
+   - Ensure the client URL matches the mapping pattern
+   - Verify that the origin server in remap.config is accessible
+
+2. **Container fails to start**: Check port conflicts (8080, 8443, 8088)
+3. **Configuration errors**: Validate syntax in `records.config`, `records.yaml` and `remap.config`
+4. **Permission issues**: Ensure proper file permissions for mounted configuration files
 
 ### Logs
 
