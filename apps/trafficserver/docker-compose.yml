@@ -9,7 +9,6 @@ services:
     restart: unless-stopped
     ports:
       - $W9_HTTP_PORT_SET:8080
-      - $W9_HTTPS_PORT_SET:8443
       # Management port
       - 8088:8088
     env_file: .env
