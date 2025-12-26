@@ -8,11 +8,10 @@ Always reference these instructions first and fallback to search or bash command
 
 ### Rule 1: Conditional Login Credentials (.env)
 **W9_LOGIN_USER and W9_LOGIN_PASSWORD**
-- ✅ **INCLUDE** only when the application has explicit built-in user authentication
-  - Examples: WordPress, GitLab, Odoo, Joomla, Drupal
+- ✅ **INCLUDE** only when the application has built-in administrator credentials that can be pre-configured via container environment variables
+  - Key indicator: The application's official Docker image provides environment variables for setting initial admin credentials
 - ❌ **EXCLUDE** when:
   - No built-in authentication (nginx, Apache, static sites)
-  - Database-only services (MySQL, PostgreSQL, MongoDB)
   - Token/API key only authentication
   - No user management system
 
