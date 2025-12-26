@@ -1,7 +1,7 @@
 {
   "name": "coze",
   "trademark": "Coze Studio",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/coze-dev/coze-studio",
   "version_from": "https://hub.docker.com/r/cozedev/coze-studio-server",
   "edition": [
