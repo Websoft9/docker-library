@@ -330,7 +330,7 @@ services:
         condition: service_healthy
 
   coze-server:
-    image: cozedev/coze-studio-server:latest
+    image: cozedev/coze-studio-server:${W9_VERSION}
     container_name: $W9_ID-server
     restart: unless-stopped
     env_file: .env
@@ -351,7 +351,7 @@ services:
         condition: service_healthy
 
   coze-web:
-    image: cozedev/coze-studio-web:latest
+    image: ${W9_REPO}:${W9_VERSION}
     container_name: $W9_ID
     restart: unless-stopped
     env_file: .env
