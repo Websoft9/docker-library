@@ -1,7 +1,7 @@
 {
   "name": "trafficserver",
   "trademark": "Apache Traffic Server",
-  "release": false,
+  "release": true,
   "fork_url": "",
   "version_from": "https://hub.docker.com/r/trafficserver/trafficserver/tags",
   "edition": [
