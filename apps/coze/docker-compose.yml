@@ -184,6 +184,7 @@ services:
   minio:
     image: minio/minio:RELEASE.2025-06-13T11-33-47Z-cpuv1
     container_name: $W9_ID-minio
+    hostname: ${W9_RCODE}minio
     restart: unless-stopped
     env_file: .env
     environment:
@@ -230,6 +231,7 @@ services:
   etcd:
     image: bitnamilegacy/etcd:3.5
     container_name: $W9_ID-etcd
+    hostname: ${W9_RCODE}etcd
     restart: unless-stopped
     env_file: .env
     environment:
@@ -272,8 +274,8 @@ services:
       - seccomp:unconfined
     env_file: .env
     environment:
-      ETCD_ENDPOINTS: etcd:2379
-      MINIO_ADDRESS: minio:9000
+      ETCD_ENDPOINTS: ${W9_RCODE}etcd:2379
+      MINIO_ADDRESS: ${W9_RCODE}minio:9000
       MINIO_BUCKET_NAME: ${MINIO_DEFAULT_BUCKETS:-milvus}
       MINIO_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-minioadmin}
       MINIO_SECRET_ACCESS_KEY: $W9_POWER_PASSWORD
@@ -309,7 +311,7 @@ services:
     image: nsqio/nsq:v1.2.1
     container_name: $W9_ID-nsqd
     restart: unless-stopped
-    command: /nsqd --lookupd-tcp-address=nsqlookupd:4160 --broadcast-address=nsqd
+    command: /nsqd --lookupd-tcp-address=$W9_ID-nsqlookupd:4160 --broadcast-address=nsqd
     healthcheck:
       test: ["CMD-SHELL", "/nsqd --version"]
       interval: 5s
@@ -323,14 +325,14 @@ services:
   nsqadmin:
     image: nsqio/nsq:v1.2.1
     container_name: $W9_ID-nsqadmin
-    command: /nsqadmin --lookupd-http-address=nsqlookupd:4161
+    command: /nsqadmin --lookupd-http-address=$W9_ID-nsqlookupd:4161
     restart: unless-stopped
     depends_on:
       nsqlookupd:
         condition: service_healthy
 
   coze-server:
-    image: cozedev/coze-studio-server:${W9_VERSION}
+    image: cozedev/coze-studio-server:latest
     container_name: $W9_ID-server
     restart: unless-stopped
     env_file: .env
@@ -351,15 +353,22 @@ services:
         condition: service_healthy
 
   coze-web:
-    image: ${W9_REPO}:${W9_VERSION}
+    image: cozedev/coze-studio-web:latest
     container_name: $W9_ID
     restart: unless-stopped
     env_file: .env
+    environment: 
+      W9_RCODE: $W9_RCODE
     ports:
       - $W9_HTTP_PORT_SET:80
     volumes:
       - ./src/nginx/nginx.conf:/etc/nginx/nginx.conf:ro  # Main nginx config
-      - ./src/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro  # Proxy config
+      - ./src/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf.template
+    command: >
+      sh -c "
+        envsubst '$${W9_RCODE}' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf &&
+        nginx -g 'daemon off;'
+      "
     depends_on:
       - coze-server
 
