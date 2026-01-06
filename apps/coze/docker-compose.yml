@@ -72,8 +72,8 @@ services:
         ]
       interval: 10s
       timeout: 5s
-      retries: 5
-      start_period: 30s
+      retries: 10
+      start_period: 120s
 
   redis:
     image: bitnamilegacy/redis:8.0
@@ -122,10 +122,10 @@ services:
           'CMD-SHELL',
           'curl -f http://localhost:9200 && [ -f /tmp/es_plugins_ready ] && [ -f /tmp/es_init_complete ]',
         ]
-      interval: 5s
+      interval: 10s
       timeout: 10s
-      retries: 10
-      start_period: 30s
+      retries: 20
+      start_period: 180s
     command: >
       bash -c "
         /opt/bitnami/scripts/elasticsearch/setup.sh
