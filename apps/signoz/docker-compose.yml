@@ -1,50 +1,214 @@
-# image,docs: https://hub.docker.com/_/wordpress/
+# docs: https://signoz.io/docs/install/docker/
+# github: https://github.com/SigNoz/signoz
+# dockerhub: https://hub.docker.com/r/signoz/signoz
 
 services:
-
-  wordpress:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
-    restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
+  init-clickhouse:
+    image: clickhouse/clickhouse-server:25.5.6
+    container_name: ${W9_ID}-init-clickhouse
+    restart: on-failure
     logging:
       driver: "json-file"
       options:
-          max-file: "5"
-          max-size: 10m
-    deploy:
-      resources:
-        limits:
-          memory: 5g
-          cpus: '0.7'
-    ports:
-      - $W9_HTTP_PORT_SET:80
-    env_file: .env
+        max-file: "3"
+        max-size: 50m
+    command:
+      - bash
+      - -c
+      - |
+        version="v0.0.1"
+        node_os=$$(uname -s | tr '[:upper:]' '[:lower:]')
+        node_arch=$$(uname -m | sed s/aarch64/arm64/ | sed s/x86_64/amd64/)
+        echo "Fetching histogram-binary for $${node_os}/$${node_arch}"
+        cd /tmp
+        wget -O histogram-quantile.tar.gz "https://github.com/SigNoz/signoz/releases/download/histogram-quantile%2F$${version}/histogram-quantile_$${node_os}_$${node_arch}.tar.gz"
+        tar -xvzf histogram-quantile.tar.gz
+        mv histogram-quantile /var/lib/clickhouse/user_scripts/histogramQuantile
     volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
+      - ./src/clickhouse/user_scripts:/var/lib/clickhouse/user_scripts/
 
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
+  zookeeper-1:
+    image: signoz/zookeeper:3.7.1
+    container_name: ${W9_ID}-zookeeper-1
+    user: root
     restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "3"
+        max-size: 50m
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -s -m 2 http://localhost:8080/commands/ruok | grep error | grep null
+      interval: 30s
+      timeout: 5s
+      retries: 3
     volumes:
-      - mysql_data:/var/lib/mysql
+      - zookeeper-1:/bitnami/zookeeper
     environment:
-      MYSQL_DATABASE: $WORDPRESS_DB_NAME
-      MYSQL_USER: $WORDPRESS_DB_USER
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      - ZOO_SERVER_ID=1
+      - ALLOW_ANONYMOUS_LOGIN=yes
+      - ZOO_AUTOPURGE_INTERVAL=1
+      - ZOO_ENABLE_PROMETHEUS_METRICS=yes
+      - ZOO_PROMETHEUS_METRICS_PORT_NUMBER=9141
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:25.5.6
+    container_name: ${W9_ID}-clickhouse
+    tty: true
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "3"
+        max-size: 50m
+    networks:
+      default:
+        aliases:
+          - clickhouse
+    depends_on:
+      init-clickhouse:
+        condition: service_completed_successfully
+      zookeeper-1:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - --spider
+        - -q
+        - 0.0.0.0:8123/ping
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    volumes:
+      - ./src/clickhouse/config.xml:/etc/clickhouse-server/config.xml
+      - ./src/clickhouse/users.xml:/etc/clickhouse-server/users.xml
+      - ./src/clickhouse/custom-function.xml:/etc/clickhouse-server/custom-function.xml
+      - ./src/clickhouse/user_scripts:/var/lib/clickhouse/user_scripts/
+      - ./src/clickhouse/cluster.xml:/etc/clickhouse-server/config.d/cluster.xml
+      - clickhouse:/var/lib/clickhouse/
+    environment:
+      - CLICKHOUSE_SKIP_USER_SETUP=1
+
+  schema-migrator-sync:
+    image: signoz/signoz-schema-migrator:${OTELCOL_TAG}
+    container_name: ${W9_ID}-schema-migrator-sync
+    restart: on-failure
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "3"
+        max-size: 50m
+    command:
+      - sync
+      - --dsn=tcp://clickhouse:9000
+      - --up=
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+
+  signoz:
+    image: signoz/signoz:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "3"
+        max-size: 50m
+    command:
+      - --config=/root/config/prometheus.yml
+    ports:
+      - ${W9_HTTP_PORT_SET}:8080
+    volumes:
+      - ./src/signoz/prometheus.yml:/root/config/prometheus.yml
+      - ./src/dashboards:/root/config/dashboards
+      - sqlite:/var/lib/signoz/
+    environment:
+      - SIGNOZ_ALERTMANAGER_PROVIDER=signoz
+      - SIGNOZ_TELEMETRYSTORE_CLICKHOUSE_DSN=tcp://clickhouse:9000
+      - SIGNOZ_SQLSTORE_SQLITE_PATH=/var/lib/signoz/signoz.db
+      - DASHBOARDS_PATH=/root/config/dashboards
+      - STORAGE=clickhouse
+      - GODEBUG=netdns=go
+      - TELEMETRY_ENABLED=${TELEMETRY_ENABLED}
+      - DEPLOYMENT_TYPE=docker-standalone-amd
+      - DOT_METRICS_ENABLED=true
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - --spider
+        - -q
+        - localhost:8080/api/v1/health
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+      schema-migrator-sync:
+        condition: service_completed_successfully
+
+  otel-collector:
+    image: signoz/signoz-otel-collector:${OTELCOL_TAG}
+    container_name: ${W9_ID}-otel-collector
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "3"
+        max-size: 50m
+    command:
+      - --config=/etc/otel-collector-config.yaml
+      - --manager-config=/etc/manager-config.yaml
+      - --copy-path=/var/tmp/collector-config.yaml
+      - --feature-gates=-pkg.translator.prometheus.NormalizeName
+    volumes:
+      - ./src/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+      - ./src/signoz/otel-collector-opamp-config.yaml:/etc/manager-config.yaml
+    environment:
+      - OTEL_RESOURCE_ATTRIBUTES=host.name=signoz-host,os.type=linux
+      - LOW_CARDINAL_EXCEPTION_GROUPING=false
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+    depends_on:
+      signoz:
+        condition: service_healthy
+
+  schema-migrator-async:
+    image: signoz/signoz-schema-migrator:${OTELCOL_TAG}
+    container_name: ${W9_ID}-schema-migrator-async
+    restart: on-failure
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "3"
+        max-size: 50m
+    command:
+      - async
+      - --dsn=tcp://clickhouse:9000
+      - --up=
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+      schema-migrator-sync:
+        condition: service_completed_successfully
 
 volumes:
-  wordpress:
-  mysql_data:
-    
+  clickhouse:
+  sqlite:
+  zookeeper-1:
+
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

@@ -8,6 +8,7 @@
     {
       "dist": "community",
       "version": [
+        "v0.106.0",
         "latest"
       ]
     }
@@ -15,7 +16,7 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "8",
-    "url": "https://signoz.io"
+    "disk": "20",
+    "url": "https://signoz.io/docs/install/docker/"
   }
 }
