@@ -63,10 +63,6 @@ services:
       options:
         max-file: "3"
         max-size: 50m
-    networks:
-      default:
-        aliases:
-          - clickhouse
     depends_on:
       init-clickhouse:
         condition: service_completed_successfully
@@ -108,7 +104,7 @@ services:
         max-size: 50m
     command:
       - sync
-      - --dsn=tcp://clickhouse:9000
+      - --dsn=tcp://${W9_ID}-clickhouse:9000
       - --up=
     depends_on:
       clickhouse:
@@ -118,6 +114,8 @@ services:
     image: signoz/signoz:${W9_VERSION}
     container_name: ${W9_ID}
     restart: unless-stopped
+    env_file:
+      - .env
     logging:
       driver: "json-file"
       options:
@@ -133,7 +131,7 @@ services:
       - sqlite:/var/lib/signoz/
     environment:
       - SIGNOZ_ALERTMANAGER_PROVIDER=signoz
-      - SIGNOZ_TELEMETRYSTORE_CLICKHOUSE_DSN=tcp://clickhouse:9000
+      - SIGNOZ_TELEMETRYSTORE_CLICKHOUSE_DSN=tcp://${W9_ID}-clickhouse:9000
       - SIGNOZ_SQLSTORE_SQLITE_PATH=/var/lib/signoz/signoz.db
       - DASHBOARDS_PATH=/root/config/dashboards
       - STORAGE=clickhouse
@@ -177,9 +175,9 @@ services:
     environment:
       - OTEL_RESOURCE_ATTRIBUTES=host.name=signoz-host,os.type=linux
       - LOW_CARDINAL_EXCEPTION_GROUPING=false
-    ports:
-      - "4317:4317"
-      - "4318:4318"
+    # ports:
+    #   - "4317:4317"
+    #   - "4318:4318"
     depends_on:
       signoz:
         condition: service_healthy
@@ -195,7 +193,7 @@ services:
         max-size: 50m
     command:
       - async
-      - --dsn=tcp://clickhouse:9000
+      - --dsn=tcp://${W9_ID}-clickhouse:9000
       - --up=
     depends_on:
       clickhouse:
