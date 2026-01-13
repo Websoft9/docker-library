@@ -6,6 +6,7 @@ services:
   broker:
     image: confluentinc/cp-kafka:7.4.0
     container_name: ${W9_ID}-broker
+    restart: unless-stopped
     environment:
       - KAFKA_BROKER_ID=1
       - KAFKA_ZOOKEEPER_CONNECT=${W9_ID}-zookeeper:2181
@@ -32,6 +33,7 @@ services:
   datahub-actions:
     image: acryldata/datahub-actions:head
     container_name: ${W9_ID}-actions
+    restart: unless-stopped
     environment:
       - DATAHUB_GMS_HOST=datahub-gms-${W9_HTTP_PORT_SET}
       - DATAHUB_GMS_PORT=8080
@@ -50,6 +52,7 @@ services:
   datahub-frontend-react:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
+    restart: unless-stopped
     ports:
       - ${W9_HTTP_PORT_SET}:9002
     env_file: .env
@@ -73,6 +76,7 @@ services:
   datahub-gms:
     image: acryldata/datahub-gms:${W9_VERSION}
     container_name: datahub-gms-${W9_HTTP_PORT_SET}
+    restart: unless-stopped
     environment:
       - DATAHUB_SERVER_TYPE=quickstart
       - DATAHUB_TELEMETRY_ENABLED=true
@@ -150,6 +154,7 @@ services:
   elasticsearch:
     image: elasticsearch:7.10.1
     container_name: ${W9_ID}-elasticsearch
+    restart: unless-stopped
     deploy:
       resources:
         limits:
@@ -214,7 +219,7 @@ services:
       retries: 5
       start_period: 20s
       timeout: 5s
-    restart: on-failure
+    restart: unless-stopped
     volumes:
       - datahub-mysqldata:/var/lib/mysql
 
@@ -236,6 +241,7 @@ services:
   schema-registry:
     image: confluentinc/cp-schema-registry:7.4.0
     container_name: ${W9_ID}-schema-registry
+    restart: unless-stopped
     environment:
       - SCHEMA_REGISTRY_HOST_NAME=${W9_ID}-schema-registry
       - SCHEMA_REGISTRY_KAFKASTORE_SECURITY_PROTOCOL=PLAINTEXT
@@ -253,6 +259,7 @@ services:
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.0
     container_name: ${W9_ID}-zookeeper
+    restart: unless-stopped
     environment:
       - ZOOKEEPER_CLIENT_PORT=2181
       - ZOOKEEPER_TICK_TIME=2000
