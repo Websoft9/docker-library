@@ -6,6 +6,7 @@ services:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
+    env_file: .env
     logging:
       driver: "json-file"
       options:
@@ -25,6 +26,7 @@ services:
     image: apachestreampipes/backend:$W9_VERSION
     container_name: $W9_ID-backend
     restart: unless-stopped
+    env_file: .env
     logging:
       driver: "json-file"
       options:
