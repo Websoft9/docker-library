@@ -3,12 +3,12 @@
   "trademark": "Apache StreamPipes",
   "release": false,
   "fork_url": "https://github.com/apache/streampipes",
-  "version_from": "",
+  "version_from": "https://hub.docker.com/r/apachestreampipes/backend/tags",
   "edition": [
     {
       "dist": "community",
       "version": [
-        "latest"
+        "0.98.0"
       ]
     }
   ],
