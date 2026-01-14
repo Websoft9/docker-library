@@ -1,28 +1,37 @@
 # image: https://hub.docker.com/u/onyxdotapp
-# compose file: https://github.com/onyx-dot-app/onyx/blob/main/deployment/docker_compose/docker-compose.prod.yml
-
-version: '3.8'
+# compose file: https://github.com/onyx-dot-app/onyx/blob/main/deployment/docker_compose/docker-compose.prod-no-letsencrypt.yml
 
 services:
   api_server:
     image: onyxdotapp/onyx-backend:${W9_VERSION}
     container_name: $W9_ID-api-server
     command: >
-      /bin/sh -c "alembic upgrade head && echo \"Starting Danswer Api Server\" && uvicorn danswer.main:app --host 0.0.0.0 --port 8080"
+      /bin/sh -c "alembic upgrade head &&
+      echo \"Starting Onyx Api Server\" &&
+      uvicorn onyx.main:app --host 0.0.0.0 --port 8080"
     depends_on:
       - relational_db
       - index
       - cache
       - inference_model_server
-    restart: always
+      - minio
+    restart: unless-stopped
     env_file:
       - .env
     environment:
       - AUTH_TYPE=${AUTH_TYPE:-oidc}
       - POSTGRES_HOST=$W9_ID-postgresql
-      - VESPA_HOST=danswer-index-$W9_HTTP_PORT_SET
+      - VESPA_HOST=$W9_ID-index
       - REDIS_HOST=$W9_ID-cache
       - MODEL_SERVER_HOST=$W9_ID-inference-model-server
+      - USE_IAM_AUTH=${USE_IAM_AUTH}
+      - AWS_REGION_NAME=${AWS_REGION_NAME-}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY-}
+      # MinIO configuration
+      - S3_ENDPOINT_URL=${S3_ENDPOINT_URL:-http://$W9_ID-minio:9000}
+      - S3_AWS_ACCESS_KEY_ID=${S3_AWS_ACCESS_KEY_ID:-minioadmin}
+      - S3_AWS_SECRET_ACCESS_KEY=${S3_AWS_SECRET_ACCESS_KEY:-minioadmin}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     logging:
@@ -30,29 +39,42 @@ services:
       options:
         max-size: "50m"
         max-file: "6"
+    volumes:
+      - api_server_logs:/var/log/onyx
 
   background:
     image: onyxdotapp/onyx-backend:${W9_VERSION}
     container_name: $W9_ID-background
-    command: /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+    command: /app/scripts/supervisord_entrypoint.sh
     depends_on:
       - relational_db
       - index
       - cache
       - inference_model_server
       - indexing_model_server
-    restart: always
+    restart: unless-stopped
     env_file:
       - .env
     environment:
+      - USE_LIGHTWEIGHT_BACKGROUND_WORKER=${USE_LIGHTWEIGHT_BACKGROUND_WORKER:-true}
       - AUTH_TYPE=${AUTH_TYPE:-oidc}
       - POSTGRES_HOST=$W9_ID-postgresql
-      - VESPA_HOST=danswer-index-$W9_HTTP_PORT_SET
+      - VESPA_HOST=$W9_ID-index
       - REDIS_HOST=$W9_ID-cache
-      - MODEL_SERVER_HOST=$W9_ID-inference-model-server
-      - INDEXING_MODEL_SERVER_HOST=$W9_ID-indexing-model-server
+      - MODEL_SERVER_HOST=${MODEL_SERVER_HOST:-$W9_ID-inference-model-server}
+      - INDEXING_MODEL_SERVER_HOST=${INDEXING_MODEL_SERVER_HOST:-$W9_ID-indexing-model-server}
+      - USE_IAM_AUTH=${USE_IAM_AUTH}
+      - AWS_REGION_NAME=${AWS_REGION_NAME-}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY-}
+      # MinIO configuration
+      - S3_ENDPOINT_URL=${S3_ENDPOINT_URL:-http://$W9_ID-minio:9000}
+      - S3_AWS_ACCESS_KEY_ID=${S3_AWS_ACCESS_KEY_ID:-minioadmin}
+      - S3_AWS_SECRET_ACCESS_KEY=${S3_AWS_SECRET_ACCESS_KEY:-minioadmin}
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    volumes:
+      - background_logs:/var/log/onyx
     logging:
       driver: json-file
       options:
@@ -61,14 +83,16 @@ services:
 
   web_server:
     image: onyxdotapp/onyx-web-server:${W9_VERSION}
-    container_name: $W9_ID-web-server
+    container_name: $W9_ID
     depends_on:
       - api_server
-    restart: always
+    restart: unless-stopped
+    ports:
+      - "${W9_HTTP_PORT_SET}:3000"
     env_file:
       - .env
     environment:
-      - INTERNAL_URL=http://${W9_ID}-api-server:8080
+      - INTERNAL_URL=http://$W9_ID-api-server:8080
     logging:
       driver: json-file
       options:
@@ -78,8 +102,9 @@ services:
   relational_db:
     image: postgres:15.2-alpine
     container_name: $W9_ID-postgresql
-    command: -c 'max_connections=150'
-    restart: always
+    shm_size: 1g
+    command: -c 'max_connections=250'
+    restart: unless-stopped
     env_file:
       - .env
     volumes:
@@ -91,10 +116,10 @@ services:
         max-file: "6"
 
   inference_model_server:
-    image: danswer/danswer-model-server:latest
+    image: onyxdotapp/onyx-model-server:${W9_VERSION}
     container_name: $W9_ID-inference-model-server
     command: >
-      /bin/sh -c "if [ \"${DISABLE_MODEL_SERVER:-false}\" = \"True\" ]; then
+      /bin/sh -c "if [ \"${DISABLE_MODEL_SERVER:-}\" = \"True\" ] || [ \"${DISABLE_MODEL_SERVER:-}\" = \"true\" ]; then
         echo 'Skipping service...';
         exit 0;
       else
@@ -105,7 +130,8 @@ services:
       - MIN_THREADS_ML_MODELS=${MIN_THREADS_ML_MODELS:-}
       - LOG_LEVEL=${LOG_LEVEL:-info}
     volumes:
-      - model_cache_huggingface:/root/.cache/huggingface/
+      - model_cache_huggingface:/app/.cache/huggingface/
+      - inference_model_server_logs:/var/log/onyx
     logging:
       driver: json-file
       options:
@@ -116,7 +142,7 @@ services:
     image: onyxdotapp/onyx-model-server:${W9_VERSION}
     container_name: $W9_ID-indexing-model-server
     command: >
-      /bin/sh -c "if [ \"${DISABLE_MODEL_SERVER:-false}\" = \"True\" ]; then
+      /bin/sh -c "if [ \"${DISABLE_MODEL_SERVER:-}\" = \"True\" ] || [ \"${DISABLE_MODEL_SERVER:-}\" = \"true\" ]; then
         echo 'Skipping service...';
         exit 0;
       else
@@ -129,7 +155,8 @@ services:
       - LOG_LEVEL=${LOG_LEVEL:-info}
       - VESPA_SEARCHER_THREADS=${VESPA_SEARCHER_THREADS:-1}
     volumes:
-      - indexing_huggingface_model_cache:/root/.cache/huggingface/
+      - indexing_huggingface_model_cache:/app/.cache/huggingface/
+      - indexing_model_server_logs:/var/log/onyx
     logging:
       driver: json-file
       options:
@@ -138,9 +165,14 @@ services:
 
   # This container name cannot have an underscore in it due to Vespa expectations of the URL
   index:
-    image: vespaengine/vespa:latest
-    container_name: danswer-index-$W9_HTTP_PORT_SET
-    restart: always
+    image: vespaengine/vespa:8.609.39
+    container_name: $W9_ID-index
+    restart: unless-stopped
+    environment:
+      - VESPA_SKIP_UPGRADE_CHECK=true
+    ports:
+      - "19071:19071"
+      - "8081:8081"
     volumes:
       - vespa_volume:/opt/vespa/var
     logging:
@@ -149,39 +181,61 @@ services:
         max-size: "50m"
         max-file: "6"
 
-  nginx:
-    image: nginx:1.23.4-alpine
-    container_name: $W9_ID
-    restart: always
-    depends_on:
-      - api_server
-      - web_server
-    ports:
-      - "${W9_HTTP_PORT_SET}:80"
+  minio:
+    image: minio/minio:RELEASE.2025-07-23T15-54-02Z-cpuv1
+    container_name: $W9_ID-minio
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      MINIO_DEFAULT_BUCKETS: ${S3_FILE_STORE_BUCKET_NAME:-onyx-file-store-bucket}
     volumes:
-      - ./src:/etc/nginx/conf.d
-    logging:
-      driver: json-file
-      options:
-        max-size: "50m"
-        max-file: "6"
-    command: >
-      /bin/sh -c "chmod +x /etc/nginx/conf.d/run-nginx.sh && dos2unix /etc/nginx/conf.d/run-nginx.sh && /etc/nginx/conf.d/run-nginx.sh app.conf.template"
-    env_file:
-      - .env
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
 
   cache:
     image: redis:7.4-alpine
     container_name: $W9_ID-cache
-    restart: always
+    restart: unless-stopped
     command: redis-server --save "" --appendonly no
+    tmpfs:
+      - /data
+
+  code-interpreter:
+    image: onyxdotapp/code-interpreter:${CODE_INTERPRETER_IMAGE_TAG:-latest}
+    container_name: $W9_ID-code-interpreter
+    entrypoint: ["/bin/bash", "-c"]
+    command: >
+      "
+      if [ \"$${CODE_INTERPRETER_BETA_ENABLED}\" = \"True\" ] || [ \"$${CODE_INTERPRETER_BETA_ENABLED}\" = \"true\" ]; then
+        exec bash ./entrypoint.sh code-interpreter-api;
+      else
+        echo 'Skipping code interpreter';
+        exec tail -f /dev/null;
+      fi
+      "
+    restart: unless-stopped
+    env_file:
+      - .env
+    user: root
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
   db_volume:
   vespa_volume:
+  minio_data:
   model_cache_huggingface:
   indexing_huggingface_model_cache:
-
+  api_server_logs:
+  background_logs:
+  inference_model_server_logs:
+  indexing_model_server_logs:
 
 networks:
   default:
