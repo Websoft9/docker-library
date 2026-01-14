@@ -207,7 +207,7 @@ services:
       - /data
 
   code-interpreter:
-    image: onyxdotapp/code-interpreter:${CODE_INTERPRETER_IMAGE_TAG:-latest}
+    image: onyxdotapp/code-interpreter:latest
     container_name: $W9_ID-code-interpreter
     entrypoint: ["/bin/bash", "-c"]
     command: >
