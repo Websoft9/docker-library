@@ -1,15 +1,33 @@
-# image,docs: https://hub.docker.com/_/wordpress/
+# image,docs: https://hub.docker.com/r/rudderlabs/rudder-server
+# docs: https://www.rudderstack.com/docs/get-started/rudderstack-open-source/data-plane-setup/docker/
 
 services:
+  db:
+    image: postgres:15-alpine
+    container_name: $W9_ID-db
+    restart: unless-stopped
+    shm_size: 128mb
+    logging:
+      driver: "json-file"
+      options:
+          max-file: "5"
+          max-size: 10m
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
-  wordpress:
+  backend:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
+    depends_on:
+      - db
+      - metrics
+      - transformer
+    entrypoint: sh -c '/wait-for db:5432 -- /rudder-server'
     logging:
       driver: "json-file"
       options:
@@ -18,31 +36,50 @@ services:
     deploy:
       resources:
         limits:
-          memory: 5g
-          cpus: '0.7'
+          memory: 4g
+          cpus: '2.0'
     ports:
-      - $W9_HTTP_PORT_SET:80
+      - $W9_HTTP_PORT_SET:8080
     env_file: .env
-    volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
-
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
-    restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
-    volumes:
-      - mysql_data:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: $WORDPRESS_DB_NAME
-      MYSQL_USER: $WORDPRESS_DB_USER
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      - JOBS_DB_HOST=${JOBS_DB_HOST}
+      - JOBS_DB_USER=${JOBS_DB_USER}
+      - JOBS_DB_PORT=${JOBS_DB_PORT}
+      - JOBS_DB_DB_NAME=${JOBS_DB_DB_NAME}
+      - JOBS_DB_PASSWORD=${JOBS_DB_PASSWORD}
+      - DEST_TRANSFORM_URL=${DEST_TRANSFORM_URL}
+      - CONFIG_BACKEND_URL=${CONFIG_BACKEND_URL}
+      - WORKSPACE_TOKEN=${WORKSPACE_TOKEN}
+      - STATSD_SERVER_URL=${STATSD_SERVER_URL}
+      - RSERVER_GATEWAY_WEBHOOK_SOURCE_LIST_FOR_PARSING_PARAMS=${RSERVER_GATEWAY_WEBHOOK_SOURCE_LIST_FOR_PARSING_PARAMS}
+
+  transformer:
+    image: rudderlabs/rudder-transformer:latest
+    container_name: $W9_ID-transformer
+    restart: unless-stopped
+    depends_on:
+      - metrics
+    logging:
+      driver: "json-file"
+      options:
+          max-file: "5"
+          max-size: 10m
+    environment:
+      - STATSD_SERVER_HOST=${STATSD_SERVER_HOST}
+      - STATSD_SERVER_PORT=${STATSD_SERVER_PORT}
+
+  metrics:
+    image: prom/statsd-exporter:v0.22.4
+    container_name: $W9_ID-metrics
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+          max-file: "5"
+          max-size: 10m
 
 volumes:
-  wordpress:
-  mysql_data:
+  postgres_data:
     
 networks:
   default:

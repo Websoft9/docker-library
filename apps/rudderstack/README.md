@@ -24,3 +24,17 @@ If you want use RudderStack with **Websoft9 Business Support** free, you can [su
 ## Documentation
 
 [RudderStack Administrator Guide](https://support.websoft9.com/docs/rudderstack) powered by Websoft9
+
+## Configuration
+
+Before running RudderStack, you need to configure your workspace token:
+
+1. Sign up for a free account at [RudderStack Cloud](https://app.rudderstack.com/signup)
+2. Get your workspace token from the dashboard (Settings > Workspace)
+3. Update the `W9_WORKSPACE_TOKEN_SET` value in the `.env` file with your actual workspace token
+
+## Official Documentation
+
+- [RudderStack Documentation](https://www.rudderstack.com/docs/)
+- [Docker Setup Guide](https://www.rudderstack.com/docs/get-started/rudderstack-open-source/data-plane-setup/docker/)
+- [GitHub Repository](https://github.com/rudderlabs/rudder-server)
