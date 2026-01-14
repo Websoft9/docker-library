@@ -5,7 +5,7 @@ version: '3.8'
 
 services:
   api_server:
-    image: onyxdotapp/onyx-backend:${W9_VERSION:-latest}
+    image: onyxdotapp/onyx-backend:${W9_VERSION}
     container_name: $W9_ID-api-server
     command: >
       /bin/sh -c "alembic upgrade head && echo \"Starting Danswer Api Server\" && uvicorn danswer.main:app --host 0.0.0.0 --port 8080"
@@ -32,7 +32,7 @@ services:
         max-file: "6"
 
   background:
-    image: onyxdotapp/onyx-backend:${W9_VERSION:-latest}
+    image: onyxdotapp/onyx-backend:${W9_VERSION}
     container_name: $W9_ID-background
     command: /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
     depends_on:
@@ -60,7 +60,7 @@ services:
         max-file: "6"
 
   web_server:
-    image: onyxdotapp/onyx-web-server:${W9_VERSION:-latest}
+    image: onyxdotapp/onyx-web-server:${W9_VERSION}
     container_name: $W9_ID-web-server
     depends_on:
       - api_server
@@ -91,7 +91,7 @@ services:
         max-file: "6"
 
   inference_model_server:
-    image: danswer/danswer-model-server:${W9_VERSION:-latest}
+    image: danswer/danswer-model-server:latest
     container_name: $W9_ID-inference-model-server
     command: >
       /bin/sh -c "if [ \"${DISABLE_MODEL_SERVER:-false}\" = \"True\" ]; then
@@ -113,7 +113,7 @@ services:
         max-file: "6"
 
   indexing_model_server:
-    image: onyxdotapp/onyx-model-server:${W9_VERSION:-latest}
+    image: onyxdotapp/onyx-model-server:${W9_VERSION}
     container_name: $W9_ID-indexing-model-server
     command: >
       /bin/sh -c "if [ \"${DISABLE_MODEL_SERVER:-false}\" = \"True\" ]; then
