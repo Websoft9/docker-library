@@ -8,10 +8,10 @@ services:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     ports:
-      - $W9_HTTPS_PORT_SET:32400
+      - $W9_HTTP_PORT_SET:32400
     env_file: .env
     environment:
-      - TZ=<timezone>
+      - TZ=Asia/Shanghai
       - PLEX_CLAIM=$W9_RCODE
       - ADVERTISE_IP=http://$W9_URL
     volumes:
