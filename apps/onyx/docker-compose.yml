@@ -83,16 +83,38 @@ services:
 
   web_server:
     image: onyxdotapp/onyx-web-server:${W9_VERSION}
-    container_name: $W9_ID
+    container_name: $W9_ID-web-server
     depends_on:
       - api_server
     restart: unless-stopped
-    ports:
-      - "${W9_HTTP_PORT_SET}:3000"
     env_file:
       - .env
     environment:
       - INTERNAL_URL=http://$W9_ID-api-server:8080
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "6"
+
+  nginx:
+    image: nginx:1.25.5-alpine
+    container_name: $W9_ID
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - api_server
+      - web_server
+    ports:
+      - "${W9_HTTP_PORT_SET}:80"
+    volumes:
+      - ./src:/etc/nginx/conf.d
+    command: >
+      /bin/sh -c "dos2unix /etc/nginx/conf.d/run-nginx.sh 2>/dev/null || true
+      && /etc/nginx/conf.d/run-nginx.sh app.conf.template"
+    environment:
+      - DOMAIN=${W9_DOMAIN}
     logging:
       driver: json-file
       options:
