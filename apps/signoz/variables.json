@@ -16,7 +16,7 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "20",
+    "disk": "10",
     "url": "https://signoz.io/docs/install/docker/"
   }
 }

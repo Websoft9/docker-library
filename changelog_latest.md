@@ -1,1 +1,8 @@
-1. add i18n for wordpress
+- [Create docker-compose.yml project for [signoz]](https://github.com/Websoft9/docker-library/issues/1792)
+- [Create docker-compose.yml project for [papermc]](https://github.com/Websoft9/docker-library/issues/1545)
+- [Create docker-compose.yml project for [fluentbit]](https://github.com/Websoft9/docker-library/issues/1361)
+- [Create docker-compose.yml project for [localai]](https://github.com/Websoft9/docker-library/issues/1235)
+- [Create docker-compose.yml project for [datahub]](https://github.com/Websoft9/docker-library/issues/315)
+- [Create docker-compose.yml project for [streampipes]](https://github.com/Websoft9/docker-library/issues/1365)
+- [Create docker-compose.yml project for [plex]](https://github.com/Websoft9/docker-library/issues/1198)
+- [Create docker-compose.yml project for [meilisearch]](https://github.com/Websoft9/docker-library/issues/1333)
