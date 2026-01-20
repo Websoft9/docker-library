@@ -4,8 +4,9 @@
 services:
   fe:
     image: $W9_REPO:$W9_VERSION
-    container_name: doris
+    container_name: $W9_ID
     restart: unless-stopped
+    env_file: .env
     hostname: fe
     ports:
      - "8030:8030"
@@ -16,7 +17,7 @@ services:
   be:
     image: apache/doris:be-2.1.9
     hostname: be
-    container_name: doris-be
+    container_name: $W9_ID-be
     restart: unless-stopped
     environment:
      - FE_SERVERS=fe1:127.0.0.1:9010
