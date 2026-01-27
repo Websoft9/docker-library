@@ -4,3 +4,6 @@ library
 library-*.zip
 artifacts
 mk.sh
+
+.claude
+_bmad-output
