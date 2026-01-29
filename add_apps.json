@@ -1,15 +1,15 @@
 [
   {
-    "name": "doris",
-    "trademark": "Doris",
+    "name": "safeline",
+    "trademark": "SafeLine",
     "release": false,
-    "fork_url": "https://github.com/apache/doris",
-    "version_from": "https://hub.docker.com/r/apache/doris/tags",
+    "fork_url": "https://github.com/chaitin/SafeLine",
+    "version_from": "swr.cn-east-3.myhuaweicloud.com/chaitin-safeline/safeline-mgt-g",
     "edition": [
       {
         "dist": "community",
         "version": [
-          "fe-4.0"
+          "9.3.2"
         ]
       }
     ],
@@ -17,7 +17,28 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://doris.apache.org/"
+      "url": "https://safepoint.cloud"
+    }
+  },
+  {
+    "name": "moltbot",
+    "trademark": "Moltbot",
+    "release": false,
+    "fork_url": "https://github.com/moltbot/moltbot",
+    "version_from": "ghcr.io/moltbot/clawdbot:main",
+    "edition": [
+      {
+        "dist": "community",
+        "version": [
+          "9.3.2"
+        ]
+      }
+    ],
+    "requirements": {
+      "cpu": "2",
+      "memory": "4",
+      "disk": "10",
+      "url": "https://clawd.bot"
     }
   }
 ]
