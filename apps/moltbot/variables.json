@@ -1,0 +1,21 @@
+{
+  "name": "moltbot",
+  "trademark": "Moltbot",
+  "release": false,
+  "fork_url": "https://github.com/moltbot/moltbot",
+  "version_from": "ghcr.io/moltbot/clawdbot:main",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "9.3.2"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://clawd.bot"
+  }
+}
