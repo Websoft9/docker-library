@@ -3,7 +3,7 @@
 
 services:
   postgres:
-    container_name: ${W9_ID}-pg
+    container_name: safeline-pg
     restart: always
     image: ${W9_REPO}-postgres:15.2
     volumes:
@@ -31,13 +31,8 @@ services:
       test: curl -k -f https://localhost:1443/api/open/health
     env_file: .env
     environment:
-      - MGT_PG=postgres://safeline-ce:${POSTGRES_PASSWORD}@${W9_ID}-pg/safeline-ce?sslmode=disable
+      - MGT_PG=postgres://safeline-ce:${POSTGRES_PASSWORD}@safeline-pg/safeline-ce?sslmode=disable
       - MGT_PROXY=${MGT_PROXY}
-      - LUIGI_HOST=${W9_RCODE}-luigi
-      - FVM_HOST=${W9_RCODE}-fvm
-      - DETECTOR_HOST=${W9_RCODE}-detector
-      - CHAOS_SERVE_ADDR=http://safeline-chaos:9000
-      - CHAOS_CHALLENGE_ADDR=http://safeline-chaos:8080
     depends_on:
       - postgres
       - fvm
@@ -47,8 +42,7 @@ services:
         max-size: "100m"
         max-file: "5"
   detect:
-    container_name: ${W9_ID}-detector
-    hostname: ${W9_RCODE}-detector
+    container_name: safeline-detector
     restart: always
     image: ${W9_REPO}-detector:${W9_VERSION}
     volumes:
@@ -57,9 +51,9 @@ services:
       - /etc/localtime:/etc/localtime:ro
     environment:
       - LOG_DIR=/logs/detector
-      - MGT_HOST=${W9_ID}-mgt
+      - MGT_HOST=safeline-mgt
   tengine:
-    container_name: ${W9_ID}-tengine
+    container_name: safeline-tengine
     restart: always
     image: ${W9_REPO}-tengine:${W9_VERSION}
     volumes:
@@ -72,20 +66,19 @@ services:
       - cache:/usr/local/nginx/cache
       - sock:/app/sock
     environment:
-      - TCD_MGT_API=https://${W9_ID}-mgt:1443/api/open/publish/server
+      - TCD_MGT_API=https://safeline-mgt:1443/api/open/publish/server
       - CHALLENGE_SERVER=safeline-chaos:8080
     ulimits:
       nofile: 131072
     network_mode: host
   luigi:
-    container_name: ${W9_ID}-luigi
-    hostname: ${W9_RCODE}-luigi
+    container_name: safeline-luigi
     restart: always
     image: ${W9_REPO}-luigi:${W9_VERSION}
     environment:
-      - MGT_IP=${W9_ID}-mgt
-      - DETECTOR_HOST=${W9_ID}-detector
-      - LUIGI_PG=postgres://safeline-ce:${POSTGRES_PASSWORD}@${W9_ID}-pg/safeline-ce?sslmode=disable
+      - MGT_IP=${W9_ID}
+      - DETECTOR_HOST=safeline-detector
+      - LUIGI_PG=postgres://safeline-ce:${POSTGRES_PASSWORD}@safeline-pg/safeline-ce?sslmode=disable
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - luigi:/app/data
@@ -98,13 +91,12 @@ services:
       - detect
       - mgt
   fvm:
-    container_name: ${W9_ID}-fvm
-    hostname: ${W9_RCODE}-fvm
+    container_name: safeline-fvm
     restart: always
     image: ${W9_REPO}-fvm:${W9_VERSION}
     environment:
-      - MGT_HOST=${W9_ID}-mgt
-      - DETECTOR_HOST=${W9_ID}-detector
+      - MGT_HOST=${W9_ID}
+      - DETECTOR_HOST=safeline-detector
     volumes:
       - /etc/localtime:/etc/localtime:ro
     logging:
@@ -122,7 +114,7 @@ services:
         max-size: "100m"
         max-file: "10"
     environment:
-      - DB_ADDR=postgres://safeline-ce:${POSTGRES_PASSWORD}@${W9_ID}-pg/safeline-ce?sslmode=disable
+      - DB_ADDR=postgres://safeline-ce:${POSTGRES_PASSWORD}@safeline-pg/safeline-ce?sslmode=disable
     volumes:
       - sock:/app/sock
       - chaos:/app/chaos
