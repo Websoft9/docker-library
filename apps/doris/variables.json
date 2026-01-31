@@ -1,7 +1,7 @@
 {
   "name": "doris",
   "trademark": "Doris",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/apache/doris",
   "version_from": "https://hub.docker.com/r/apache/doris/tags",
   "edition": [

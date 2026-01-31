@@ -1,7 +1,7 @@
 {
   "name": "safeline",
   "trademark": "SafeLine",
-  "release": false,
+  "release": true,
   "fork_url": "https://github.com/chaitin/SafeLine",
   "version_from": "swr.cn-east-3.myhuaweicloud.com/chaitin-safeline/safeline-mgt-g",
   "edition": [
