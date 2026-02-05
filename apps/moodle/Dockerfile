@@ -5,7 +5,7 @@ FROM php:8.2-apache
 
 LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
       org.opencontainers.image.description="Moodle packaged by Websoft9" \
-      org.opencontainers.image.source="Moodle_5.1.1" \
+      org.opencontainers.image.source="https://packaging.moodle.org/stable501/moodle-5.1.1.zip" \
       org.opencontainers.image.title="Moodle" \
       org.opencontainers.image.vendor="Websoft9 Inc." \
       org.opencontainers.image.version="5.1.1"
