@@ -1,4 +1,4 @@
-# Moodle Dockerfile based on official php:apache
+# Moodle Dockerfile based on official php:apache image
 # Reference: https://docs.moodle.org/501/en/Installation_quick_guide
 
 FROM php:8.2-apache

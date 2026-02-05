@@ -78,7 +78,6 @@ jobs:
         tags: ${{env.TAGS}}
         registry: docker.io
         directory: ${{env.DIRECTORY}}
-        dockerfile: ${{env.DOCKERFILE}}
         multiPlatform: true
         platform: linux/amd64
         username: ${{ secrets.DOCKER_USERNAME }}
