@@ -67,7 +67,7 @@ jobs:
         echo "Building and pushing Docker image for $APP with tags: $TAGS"
         echo "TAGS=$TAGS" >> $GITHUB_ENV
         echo "APP=$APP" >> $GITHUB_ENV
-        echo "DOCKERFILE=apps/$APP/Dockerfile" >> $GITHUB_ENV
+        echo "DOCKERFILE=Dockerfile" >> $GITHUB_ENV
         echo "DIRECTORY=apps/$APP" >> $GITHUB_ENV
         echo "README=apps/$APP/README.md" >> $GITHUB_ENV
 
