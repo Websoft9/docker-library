@@ -1,15 +1,16 @@
 [
   {
-    "name": "safeline",
-    "trademark": "SafeLine",
+    "name": "databasus",
+    "trademark": "Databasus",
     "release": false,
-    "fork_url": "https://github.com/chaitin/SafeLine",
-    "version_from": "swr.cn-east-3.myhuaweicloud.com/chaitin-safeline/safeline-mgt-g",
+    "fork_url": "https://github.com/databasus/databasus",
+    "version_from": "https://hub.docker.com/r/databasus/databasus/tags",
     "edition": [
       {
         "dist": "community",
         "version": [
-          "9.3.2"
+          "v3.9.0",
+          "latest"
         ]
       }
     ],
@@ -17,28 +18,7 @@
       "cpu": "2",
       "memory": "4",
       "disk": "10",
-      "url": "https://safepoint.cloud"
-    }
-  },
-  {
-    "name": "moltbot",
-    "trademark": "Moltbot",
-    "release": false,
-    "fork_url": "https://github.com/moltbot/moltbot",
-    "version_from": "ghcr.io/moltbot/clawdbot:main",
-    "edition": [
-      {
-        "dist": "community",
-        "version": [
-          "9.3.2"
-        ]
-      }
-    ],
-    "requirements": {
-      "cpu": "2",
-      "memory": "4",
-      "disk": "10",
-      "url": "https://clawd.bot"
+      "url": "https://databasus.com"
     }
   }
 ]
