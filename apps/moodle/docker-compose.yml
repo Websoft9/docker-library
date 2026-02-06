@@ -8,6 +8,7 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     restart: unless-stopped
+    env_file: .env
     environment:
       # Database configuration
       - MOODLE_DB_TYPE=mariadb
@@ -20,10 +21,6 @@ services:
       - MOODLE_URL=http://${W9_URL}
       - MOODLE_SITE_NAME=Moodle Learning Platform
       - MOODLE_SITE_SHORT=Moodle
-      # Admin account
-      - MOODLE_ADMIN_USER=${W9_LOGIN_USER}
-      - MOODLE_ADMIN_PASSWORD=${W9_LOGIN_PASSWORD}
-      - MOODLE_ADMIN_EMAIL=${MOODLE_EMAIL}
       # Data directory
       - MOODLE_DATA=/var/moodledata
     ports:
