@@ -6,4 +6,7 @@ artifacts
 mk.sh
 
 .claude
+
+# BMAD sensitive configs (contains server credentials)
+_bmad/bmb/test-servers.yaml
 _bmad-output

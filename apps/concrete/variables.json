@@ -1,0 +1,22 @@
+{
+    "name": "concrete",
+    "trademark": "Concrete CMS",
+    "release": true,
+    "fork_url": "https://github.com/concretecms/concretecms",
+    "version_from": "https://github.com/concretecms/concretecms/releases",
+    "edition": [
+        {
+            "dist": "community",
+            "version": [
+                "9.4.3",
+                "latest"
+            ]
+        }
+    ],
+    "requirements": {
+        "cpu": "1",
+        "memory": "2",
+        "disk": "10",
+        "url": "https://documentation.concretecms.org/developers/introduction/system-requirements"
+    }
+}

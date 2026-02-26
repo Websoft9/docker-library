@@ -1,4 +1,5 @@
-# image,docs: https://databasus.com/installation
+# image: https://hub.docker.com/r/databasus/databasus
+# docs: https://databasus.com/installation
 
 services:
   databasus:
@@ -6,15 +7,16 @@ services:
     container_name: $W9_ID
     env_file: .env
     ports:
-      - "$W9_HTTP_PORT_SET:4005"
+      - $W9_HTTP_PORT_SET:$W9_HTTP_PORT
     volumes:
-      - databasus-data:/databasus-data
+      - databasus:/databasus-data
     restart: unless-stopped
 
 volumes:
-  databasus-data:
-    
+  databasus:
+
+
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

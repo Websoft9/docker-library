@@ -1,0 +1,51 @@
+# image: https://hub.docker.com/_/php
+# docs: https://documentation.concretecms.org
+
+version: '3.8'
+
+services:
+  concrete:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    restart: unless-stopped
+    ports:
+      - $W9_HTTP_PORT_SET:80
+    volumes:
+      - concrete_html:/var/www/html
+      - concrete_data:/var/www/html/application/files
+      - ./src/install.sh:/docker-entrypoint-init.d/install.sh
+      - ./src/php_extra.ini:/usr/local/etc/php/conf.d/php_extra.ini
+    env_file: .env
+    depends_on:
+      - concrete-mysql
+    command: >
+      bash -c " apt-get update && apt-get install -y git unzip libpng-dev libjpeg-dev libfreetype6-dev libzip-dev && docker-php-ext-configure gd --with-freetype --with-jpeg && docker-php-ext-install gd pdo pdo_mysql zip && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && if [ ! -f /var/www/html/composer.json ]; then
+        cd /var/www/html &&
+        composer create-project concretecms/concretecms:^9.4 . &&
+        chmod +x /docker-entrypoint-init.d/install.sh &&
+        /docker-entrypoint-init.d/install.sh
+      fi && apache2-foreground "
+
+  concrete-mysql:
+    image: mysql:$W9_DB_VERSION
+    container_name: $W9_ID-mysql
+    restart: unless-stopped
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: $W9_ID
+      MYSQL_USER: $W9_ID
+      MYSQL_PASSWORD: $W9_POWER_PASSWORD
+      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+
+volumes:
+  concrete_html:
+  concrete_data:
+  mysql_data:
+
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

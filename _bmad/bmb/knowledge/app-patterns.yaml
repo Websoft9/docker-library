@@ -1,0 +1,406 @@
+# 应用模式库 (App Patterns Library)
+#
+# 用途: 基于 362 个现有应用的真实数据提炼，为新应用创建提供快速匹配骨架
+# 维护: 随应用库增长定期更新统计数字
+# 引用: step-01 Phase 1（相似应用推荐）, step-02 Phase 2（架构设计骨架）
+#
+# 数据来源: 2026-02-25 扫描 apps/ 目录自动生成
+# 总应用数: 362
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 模式定义
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+patterns:
+
+  # ──────────────────────────────────────────
+  # Pattern A: 单容器 Web 服务
+  # 占比: 159/362 (43.9%) — 最常见
+  # ──────────────────────────────────────────
+  solo_web:
+    id: "A"
+    name: "单容器 Web 服务"
+    description: "单个容器提供 Web 界面或 API，无外部数据库/缓存依赖"
+    frequency: "43.9%"
+    count: 159
+
+    indicators:
+      - "Docker Hub 镜像是 all-in-one 类型"
+      - "官方 compose 仅包含一个 service"
+      - "内嵌数据库（SQLite、BoltDB）或无持久化需求"
+
+    typical_structure:
+      services: 1
+      env_vars: "8-15"
+      has_login: "约 30%（内嵌认证的应用，如 Grafana、Code Server）"
+      has_url_replace: "约 20%"
+      has_power_password: "约 40%"
+      src_files: "0-3（通常是配置文件或启动脚本）"
+
+    compose_skeleton: |
+      services:
+        ${W9_ID}:
+          image: ${W9_REPO}:${W9_VERSION}
+          container_name: ${W9_ID}
+          restart: unless-stopped
+          ports:
+            - ${W9_HTTP_PORT_SET}:{internal_port}
+          volumes:
+            - data:/data              # 内嵌 DB 数据目录
+          networks:
+            - default
+      volumes:
+        data:
+      networks:
+        default:
+          name: ${W9_NETWORK}
+          external: true
+
+    env_skeleton: |
+      W9_REPO={image_name}
+      W9_VERSION={version}
+      W9_HTTP_PORT_SET=9001
+      W9_ID={app_name}
+      W9_NETWORK=websoft9
+      W9_URL=internet_ip:$W9_HTTP_PORT_SET
+
+    reference_apps:
+      best: ["nginx", "drawio", "excalidraw", "homeassistant"]
+      with_login: ["grafana", "cloudbeaver", "adguardhome"]
+      with_config: ["nginx", "caddy", "haproxy"]
+      ai_tools: ["anythingllm", "lobechat", "bigagi"]
+
+    common_pitfalls:
+      - "别忘了 data volume — 即使是单容器也需要持久化"
+      - "注意内嵌 DB 的数据目录路径（如 /data, /app/data, /config）"
+
+  # ──────────────────────────────────────────
+  # Pattern B: Web + 数据库
+  # 占比: 117/362 (32.3%) — 第二常见
+  # ──────────────────────────────────────────
+  web_db:
+    id: "B"
+    name: "Web + 数据库"
+    description: "主 Web 应用 + 独立数据库（MySQL/MariaDB/PostgreSQL/MongoDB）"
+    frequency: "32.3%"
+    count: 117
+
+    indicators:
+      - "官方 compose 包含 2 个 service（app + db）"
+      - "环境变量包含 DB_HOST、DB_PASSWORD 等"
+      - "数据库为 MySQL/MariaDB/PostgreSQL/MongoDB 之一"
+
+    typical_structure:
+      services: 2
+      env_vars: "12-25"
+      has_login: "约 50%"
+      has_url_replace: "约 35%"
+      has_power_password: "95%+"
+      src_files: "0-3"
+
+    compose_skeleton: |
+      services:
+        ${W9_ID}:
+          image: ${W9_REPO}:${W9_VERSION}
+          container_name: ${W9_ID}
+          restart: unless-stopped
+          ports:
+            - ${W9_HTTP_PORT_SET}:{internal_port}
+          environment:
+            - DB_HOST=${W9_ID}-{db_type}
+            - DB_NAME={app_name}
+            - DB_USER={app_name}
+            - DB_PASSWORD=${W9_POWER_PASSWORD}
+          volumes:
+            - data:{app_data_path}
+          depends_on:
+            - {db_type}
+          networks:
+            - default
+
+        ${W9_ID}-{db_type}:
+          image: {db_image}:{db_version}
+          container_name: ${W9_ID}-{db_type}
+          restart: unless-stopped
+          environment:
+            - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWORD}  # 或对应 DB 变量
+            - MYSQL_DATABASE={app_name}
+            - MYSQL_USER={app_name}
+            - MYSQL_PASSWORD=${W9_POWER_PASSWORD}
+          volumes:
+            - {db_type}_data:{db_data_path}
+          networks:
+            - default
+
+      volumes:
+        data:
+        {db_type}_data:
+
+      networks:
+        default:
+          name: ${W9_NETWORK}
+          external: true
+
+    db_variants:
+      mysql:
+        image: "mysql:8.0"
+        data_path: "/var/lib/mysql"
+        env_pattern: "MYSQL_ROOT_PASSWORD, MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD"
+        healthcheck: "mysqladmin ping -h localhost"
+      mariadb:
+        image: "mariadb:10.11"
+        data_path: "/var/lib/mysql"
+        env_pattern: "MARIADB_ROOT_PASSWORD, MARIADB_DATABASE, MARIADB_USER, MARIADB_PASSWORD"
+        healthcheck: "mariadb-admin ping -h localhost"
+      postgres:
+        image: "postgres:16"
+        data_path: "/var/lib/postgresql/data"
+        env_pattern: "POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_USER"
+        healthcheck: "pg_isready -U postgres"
+      mongo:
+        image: "mongo:7"
+        data_path: "/data/db"
+        env_pattern: "MONGO_INITDB_ROOT_USERNAME, MONGO_INITDB_ROOT_PASSWORD"
+        healthcheck: "mongosh --eval 'db.runCommand({ping:1})'"
+
+    reference_apps:
+      mysql: ["wordpress", "joomla", "drupal"]
+      postgres: ["bookstack", "answer", "heyform"]
+      mariadb: ["matomo", "dolibarr"]
+      mongo: ["rocketchat", "parse"]
+
+    common_pitfalls:
+      - "DB 容器必须有 healthcheck，主应用 depends_on 应加 condition: service_healthy"
+      - "DB 密码统一用 $W9_POWER_PASSWORD"
+      - "DB 容器命名: $W9_ID-mysql (不是 $W9_ID-db)"
+
+  # ──────────────────────────────────────────
+  # Pattern C: Web + 数据库 + 缓存
+  # 占比: 14/362 (3.9%)
+  # ──────────────────────────────────────────
+  web_db_cache:
+    id: "C"
+    name: "Web + 数据库 + 缓存"
+    description: "主 Web 应用 + 数据库 + Redis/Memcached 缓存层"
+    frequency: "3.9%"
+    count: 14
+
+    indicators:
+      - "官方 compose 包含 3 个 service"
+      - "包含 Redis 或 Memcached"
+      - "通常是中等复杂度的 Web 应用"
+
+    typical_structure:
+      services: 3
+      env_vars: "15-35"
+      has_login: "约 60%"
+      has_url_replace: "约 50%"
+      has_power_password: "100%"
+      src_files: "0-2"
+
+    compose_skeleton: |
+      # 在 Pattern B 基础上新增:
+        ${W9_ID}-redis:
+          image: redis:7
+          container_name: ${W9_ID}-redis
+          restart: unless-stopped
+          volumes:
+            - redis_data:/data
+          healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+          networks:
+            - default
+
+    reference_apps:
+      typical: ["activepieces", "directus", "firecrawl"]
+      with_login: ["discourse", "directus", "frappe"]
+      complex: ["mastodon", "cloudreve"]
+
+    common_pitfalls:
+      - "Redis 通常不需要密码配置（容器内网络）"
+      - "缓存服务通常不需要暴露端口"
+
+  # ──────────────────────────────────────────
+  # Pattern D: 多进程共享网络
+  # 占比: 较少，但 Pangolin 正属于此类
+  # ──────────────────────────────────────────
+  shared_network:
+    id: "D"
+    name: "多进程共享网络空间"
+    description: "多个服务共享 network namespace（network_mode: service:xxx）"
+    frequency: "<3%"
+    count: ~10
+
+    indicators:
+      - "使用 network_mode: service:{another_service}"
+      - "多个进程需要监听同一网络接口"
+      - "典型: VPN + Web、反向代理 + 隧道"
+
+    typical_structure:
+      services: "2-4"
+      env_vars: "8-15"
+      has_login: "通常无（配置文件管理）"
+      has_url_replace: "通常无"
+      src_files: "2-5（配置文件较多）"
+
+    compose_skeleton: |
+      services:
+        ${W9_ID}:
+          image: ${W9_REPO}:${W9_VERSION}
+          container_name: ${W9_ID}
+          restart: unless-stopped
+          ports:
+            - ${W9_HTTP_PORT_SET}:{internal_port}
+          volumes:
+            - ./src/config:/app/config
+            - data:/app/data
+          networks:
+            - default
+
+        ${W9_ID}-sidecar:
+          image: {sidecar_image}:{version}
+          container_name: ${W9_ID}-sidecar
+          restart: unless-stopped
+          network_mode: "service:${W9_ID}"  # 共享主服务网络
+          depends_on:
+            - ${W9_ID}
+
+    reference_apps:
+      typical: ["pangolin"]
+      notes: "Pangolin 中 traefik 使用 service:gerbil 共享网络"
+
+    common_pitfalls:
+      - "共享网络的服务不能有自己的 ports/networks 配置"
+      - "端口映射只能在被共享的服务上定义"
+      - "配置文件通常较复杂，需要仔细研究官方模板"
+
+  # ──────────────────────────────────────────
+  # Pattern E: 复杂多服务平台
+  # 占比: 50/362 (13.8%)
+  # ──────────────────────────────────────────
+  multi_complex:
+    id: "E"
+    name: "复杂多服务平台"
+    description: "4+ 个服务的复杂应用，通常包含消息队列、worker、调度器等"
+    frequency: "13.8%"
+    count: 50
+
+    indicators:
+      - "官方 compose 包含 4+ 个 service"
+      - "包含 worker、scheduler、queue 等组件"
+      - "环境变量 20+ 个"
+      - "可能需要初始化脚本"
+
+    typical_structure:
+      services: "4-25"
+      env_vars: "20-60+"
+      has_login: "约 40%"
+      has_url_replace: "约 30%"
+      has_power_password: "95%+"
+      src_files: "2-50+（差异极大）"
+
+    subcategories:
+      - name: "带 worker 的 Web 应用"
+        services: "4-6"
+        examples: ["automatisch", "chatwoot", "awx"]
+        pattern: "web + db + redis + worker(s)"
+
+      - name: "DevOps/数据平台"
+        services: "6-12"
+        examples: ["airflow", "datahub", "dify", "supabase"]
+        pattern: "多组件协同，各有独立职责"
+
+      - name: "企业应用套件"
+        services: "8-25"
+        examples: ["appwrite", "erpnext", "coze", "aitable"]
+        pattern: "需要大量配置文件和初始化数据"
+
+    reference_apps:
+      moderate: ["discourse", "guacamole", "immich"]
+      complex: ["gitlab", "dify", "supabase"]
+      extreme: ["coze", "appwrite", "aitable"]
+
+    common_pitfalls:
+      - "启动顺序很重要 — 善用 depends_on + healthcheck"
+      - "建议从官方 compose 精简，而非从零构建"
+      - "环境变量过多时考虑分组注释"
+      - "初始化可能需要 5-10 分钟，测试 timeout 要够长"
+      - "src/ 文件可能非常多（如 coze 有 100+ 文件），需要批量下载"
+
+  # ──────────────────────────────────────────
+  # Pattern F: 独立数据库/中间件
+  # 占比: ~8/362 (2.2%)
+  # ──────────────────────────────────────────
+  standalone_db:
+    id: "F"
+    name: "独立数据库/中间件"
+    description: "作为独立服务运行的数据库或消息中间件"
+    frequency: "2.2%"
+    count: ~8
+
+    indicators:
+      - "Docker镜像是数据库类（mysql, postgres, mongo, redis, kafka）"
+      - "主要提供非 HTTP 协议（TCP 端口）"
+      - "通常有管理 Web UI 在另一个端口"
+
+    typical_structure:
+      services: "1-2"
+      env_vars: "8-12"
+      has_login: "通常有（DB root 密码）"
+      has_url_replace: "通常无"
+      src_files: "0-2"
+
+    reference_apps: ["clickhouse", "couchdb", "arangodb", "influxdb"]
+
+    common_pitfalls:
+      - "HTTP 端口可能是管理 UI，不是数据端口"
+      - "数据持久化路径必须正确"
+      - "healthcheck 用数据库原生命令，不用 curl"
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 模式匹配算法
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+matching_algorithm: |
+  在 step-01 Phase 10 或 step-02 Phase 2 中执行:
+
+  1. 从研究数据提取: 服务数量、是否有 DB、是否有缓存、是否有共享网络
+  2. 匹配逻辑:
+     服务数=1 且 镜像为DB类      → Pattern F (standalone_db)
+     服务数=1 且 非DB            → Pattern A (solo_web)
+     服务数=2 且 有DB            → Pattern B (web_db)
+     服务数=3 且 有DB+Cache      → Pattern C (web_db_cache)
+     有 network_mode: service:*  → Pattern D (shared_network)
+     服务数≥4                    → Pattern E (multi_complex)
+     默认                        → Pattern B (web_db)
+
+  3. 匹配后:
+     - 加载对应 compose_skeleton 作为起点
+     - 显示 reference_apps 供参考
+     - 输出 common_pitfalls 提醒
+     - 将 pattern_id 记录到 state.json.matched_pattern
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 统计摘要（2026-02-25 快照）
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+statistics:
+  total_apps: 362
+  with_w9_login: 145 # 40.1%
+  with_w9_url_replace: 122 # 33.7%
+  service_distribution:
+    "1": 163 # 45.0%
+    "2": 114 # 31.5%
+    "3": 31  # 8.6%
+    "4": 12  # 3.3%
+    "5": 12  # 3.3%
+    "6+": 30 # 8.3%
+  pattern_distribution:
+    solo_web: 159
+    web_db: 117
+    web_db_cache: 14
+    shared_network: ~10
+    multi_complex: 50
+    standalone_db: ~8

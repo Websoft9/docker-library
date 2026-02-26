@@ -1,0 +1,270 @@
+# 决策先例库 (Decision Precedents)
+#
+# 用途: 记录 W9_* 变量决策的历史案例，为新应用提供参考和一致性保障
+# 维护: 每次完成应用创建后，由 agent 自动追加新记录
+# 引用: step-01 Phase 10b/10c 和 step-02 Phase 3 中使用
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# W9_LOGIN_USER 决策先例
+#
+# 统计: 145/362 (40%) 的现有应用使用 W9_LOGIN_USER
+# 规则: 仅当应用支持通过 Docker 环境变量预配置管理员凭证时包含
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+w9_login:
+
+  # ── 包含 W9_LOGIN 的典型案例 ──
+
+  include_patterns:
+    
+    - pattern: "显式管理员环境变量"
+      rule_id: "LOGIN-1"
+      confidence: 95
+      examples:
+        - app: wordpress
+          evidence: "尽管 WordPress 安装向导需要手动设置，但通过脚本注入管理员"
+          env_vars: ["WORDPRESS_TABLE_PREFIX"]
+          notes: "通过 src/init.sh 自定义脚本注入管理员"
+        - app: joomla
+          evidence: "JOOMLA_ADMIN_USER, JOOMLA_ADMIN_PASSWORD 环境变量"
+          env_vars: ["JOOMLA_ADMIN_USER", "JOOMLA_ADMIN_PASSWORD"]
+        - app: gitlab
+          evidence: "GITLAB_ROOT_PASSWORD 环境变量"
+          env_vars: ["GITLAB_ROOT_PASSWORD"]
+        - app: grafana
+          evidence: "GF_SECURITY_ADMIN_USER, GF_SECURITY_ADMIN_PASSWORD"
+          env_vars: ["GF_SECURITY_ADMIN_USER", "GF_SECURITY_ADMIN_PASSWORD"]
+        - app: bookstack
+          evidence: "APP_DEFAULT_ADMIN_EMAIL, APP_DEFAULT_ADMIN_PASSWORD"
+          env_vars: ["APP_DEFAULT_ADMIN_EMAIL", "APP_DEFAULT_ADMIN_PASSWORD"]
+
+    - pattern: "数据库 root 密码"
+      rule_id: "LOGIN-2"
+      confidence: 90
+      examples:
+        - app: clickhouse
+          evidence: "CLICKHOUSE_ADMIN_USER, CLICKHOUSE_ADMIN_PASSWORD"
+          env_vars: ["CLICKHOUSE_ADMIN_USER", "CLICKHOUSE_ADMIN_PASSWORD"]
+        - app: arangodb
+          evidence: "ARANGO_ROOT_PASSWORD"
+          env_vars: ["ARANGO_ROOT_PASSWORD"]
+
+    - pattern: "后台管理员邮箱+密码"
+      rule_id: "LOGIN-3"
+      confidence: 90
+      examples:
+        - app: directus
+          evidence: "ADMIN_EMAIL, ADMIN_PASSWORD"
+          env_vars: ["ADMIN_EMAIL", "ADMIN_PASSWORD"]
+        - app: supabase
+          evidence: "DASHBOARD_USERNAME, DASHBOARD_PASSWORD"
+          env_vars: ["DASHBOARD_USERNAME", "DASHBOARD_PASSWORD"]
+        - app: discourse
+          evidence: "DISCOURSE_DEVELOPER_EMAILS + 脚本设置密码"
+          env_vars: ["DISCOURSE_DEVELOPER_EMAILS"]
+
+  # ── 排除 W9_LOGIN 的典型案例 ──
+
+  exclude_patterns:
+
+    - pattern: "首次访问 setup wizard，无预配置环境变量"
+      rule_id: "LOGIN-X1"
+      confidence: 85
+      examples:
+        - app: drupal
+          evidence: "首次访问时进入安装向导，无管理员环境变量，密码通过 UI 设置"
+          notes: "无法通过 Docker 环境变量预设管理员"
+        - app: matomo
+          evidence: "首次访问进入安装向导"
+          notes: "用户在浏览器中完成初始化"
+        # pangolin 属于此类
+        - app: pangolin
+          evidence: "config.yml + 首次访问 setup wizard 设置管理员"
+          notes: "配置通过 YAML 文件而非环境变量，管理员通过 setup wizard 创建"
+
+    - pattern: "无认证系统 / 纯展示"
+      rule_id: "LOGIN-X2"
+      confidence: 95
+      examples:
+        - app: nginx
+          evidence: "静态 Web 服务器，无用户管理"
+        - app: drawio
+          evidence: "客户端绘图工具，无后端认证"
+        - app: apache
+          evidence: "HTTP 服务器，无内置认证"
+        - app: excalidraw
+          evidence: "协作白板，无登录系统"
+
+    - pattern: "仅 Token/API Key 认证"
+      rule_id: "LOGIN-X3"
+      confidence: 90
+      examples:
+        - app: firecrawl
+          evidence: "FIRECRAWL_API_KEY 认证，非用户名密码"
+        - app: codeserver
+          evidence: "PASSWORD 环境变量，非 user+password 组合"
+          notes: "单密码认证，不适合 W9_LOGIN_USER + W9_LOGIN_PASSWORD 模式"
+
+    - pattern: "所有认证通过配置文件而非环境变量"
+      rule_id: "LOGIN-X4"
+      confidence: 85
+      examples:
+        - app: dify
+          evidence: "管理员通过首次访问 UI 创建，无预配置环境变量"
+        - app: coze
+          evidence: "管理员通过配置文件和首次访问设置"
+
+  # ── 边界案例 (需特别关注) ──
+
+  edge_cases:
+
+    - description: "有密码环境变量但不是管理员登录"
+      app: mastodon
+      decision: exclude
+      reason: "虽然有 SMTP_PASSWORD 等，但管理员通过 tootctl 命令行创建，非 Docker 环境变量"
+      lesson: "检查密码变量的实际用途，不是所有 PASSWORD 变量都是管理员密码"
+
+    - description: "通过自定义脚本注入管理员"
+      app: wordpress
+      decision: include (无 W9_LOGIN_USER 但有 src/init.sh)
+      reason: "WordPress 镜像不原生支持管理员环境变量，但 docker-library 通过 init.sh 脚本注入"
+      lesson: "有时需要额外脚本来实现预配置管理员"
+
+    - description: "环境变量存在但非必需"
+      app: ghost
+      decision: exclude
+      reason: "Ghost 支持通过 API 创建管理员，但不通过 Docker 环境变量预配置"
+      lesson: "应用 API 支持 ≠ Docker 环境变量支持"
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# W9_URL_REPLACE 决策先例
+#
+# 统计: 122/362 (33.7%) 的现有应用使用 W9_URL_REPLACE
+# 规则: 仅当 $W9_URL 在 docker-compose.yml 中被实际引用时包含
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+w9_url_replace:
+
+  include_patterns:
+
+    - pattern: "compose 中直接引用 $W9_URL"
+      rule_id: "URL-1"
+      confidence: 100
+      examples:
+        - app: bookstack
+          evidence: "APP_URL=http://$W9_URL"
+          compose_ref: "environment 中使用 $W9_URL"
+        - app: wordpress
+          evidence: "WORDPRESS_URL=$W9_URL"
+          compose_ref: "environment 中使用 $W9_URL"
+
+    - pattern: "外部访问/回调 URL"
+      rule_id: "URL-2"
+      confidence: 95
+      examples:
+        - app: discourse
+          evidence: "DISCOURSE_HOSTNAME 需要外部可访问域名"
+        - app: mastodon
+          evidence: "LOCAL_DOMAIN 需要外部域名配置"
+        - app: supabase
+          evidence: "多个组件需要 SITE_URL / API_EXTERNAL_URL"
+        - app: appwrite
+          evidence: "_APP_DOMAIN 需要外部域名"
+
+    - pattern: "trusted domain / CORS 配置"
+      rule_id: "URL-3"
+      confidence: 90
+      examples:
+        - app: ghost
+          evidence: "url 配置需要外部访问地址"
+        - app: codeserver
+          evidence: "访问控制需要知道外部 URL"
+
+  exclude_patterns:
+
+    - pattern: "纯内部服务，无需外部 URL"
+      rule_id: "URL-X1"
+      confidence: 90
+      examples:
+        - app: nginx
+          evidence: "静态文件服务，无需知道外部 URL"
+        - app: drawio
+          evidence: "客户端应用，不需要外部 URL 配置"
+        - app: grafana
+          evidence: "虽然有 Web UI 但不需要预配置外部 URL"
+
+    - pattern: "配置通过文件而非环境变量注入 URL"
+      rule_id: "URL-X2"
+      confidence: 85
+      examples:
+        - app: pangolin
+          evidence: "URL 通过 config.yml 配置，非 compose environment"
+          notes: "config.yml 中有 domain 配置，但不通过 $W9_URL 环境变量注入"
+        - app: dify
+          evidence: "不需要在 compose 中配置外部 URL"
+        - app: coze
+          evidence: "URL 配置在配置文件中管理"
+
+  edge_cases:
+
+    - description: "W9_URL 在 .env 中存在但不在 compose 中引用"
+      app: joomla
+      decision: exclude
+      reason: "W9_URL 是标准模板变量，但 joomla compose 不引用它"
+      lesson: "W9_URL 始终保留在 .env 中是标准做法，关键看 compose 是否引用"
+
+    - description: "需要 URL 但通过 after_up.sh 脚本注入"
+      app: gitlab
+      decision: exclude (但 compose 中通过 GITLAB_OMNIBUS_CONFIG 引用)
+      reason: "GitLab 通过 GITLAB_OMNIBUS_CONFIG 中的 external_url 配置 URL"
+      lesson: "有些应用通过复杂的内嵌配置引用 URL，需要仔细检查"
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# W9_POWER_PASSWORD 决策先例
+#
+# 统计: 大多数有数据库或认证的应用都使用
+# 规则: 当有任何需要密码的服务时使用此统一密码
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+w9_power_password:
+
+  include_patterns:
+    - pattern: "有数据库服务"
+      confidence: 95
+      examples: ["wordpress", "joomla", "drupal", "bookstack"]
+      notes: "DB_PASSWORD=$W9_POWER_PASSWORD"
+
+    - pattern: "有管理员密码"
+      confidence: 95
+      examples: ["gitlab", "grafana", "directus"]
+      notes: "ADMIN_PASSWORD=$W9_POWER_PASSWORD"
+
+    - pattern: "有 SECRET_KEY / JWT_SECRET"
+      confidence: 90
+      examples: ["supabase", "appwrite", "discourse"]
+      notes: "SECRET=$W9_POWER_PASSWORD 或用其生成"
+
+  exclude_patterns:
+    - pattern: "无认证无数据库的纯 Web 服务"
+      confidence: 95
+      examples: ["nginx", "drawio", "apache", "excalidraw"]
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 使用指南
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#
+# 在 step-01 Phase 10 或 step-02 Phase 3 做决策时:
+#
+# 1. 识别当前应用的特征（有无管理员环境变量、有无 URL 配置等）
+# 2. 在此文件中查找最接近的 pattern
+# 3. 如果匹配到 pattern → 采用对应决策，引用 rule_id 和类似 app
+# 4. 如果是新的边界案例 → 明确标注，决策后追加到 edge_cases
+#
+# 追加新记录格式:
+#   - app: {app_name}
+#     evidence: "{具体证据}"
+#     decision: include/exclude
+#     date: {YYYY-MM-DD}
