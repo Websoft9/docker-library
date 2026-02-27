@@ -66,9 +66,10 @@ patterns:
 
     reference_apps:
       best: ["nginx", "drawio", "excalidraw", "homeassistant"]
-      with_login: ["grafana", "cloudbeaver", "adguardhome"]
+      with_login: ["cloudbeaver", "adguardhome", "codeserver"]
       with_config: ["nginx", "caddy", "haproxy"]
       ai_tools: ["anythingllm", "lobechat", "bigagi"]
+      notes: "注意: grafana 实际有 3 个服务 (grafana+loki+promtail)，属于 Pattern C/E，不属于 Pattern A"
 
     common_pitfalls:
       - "别忘了 data volume — 即使是单容器也需要持久化"
@@ -165,9 +166,9 @@ patterns:
 
     reference_apps:
       mysql: ["wordpress", "joomla", "drupal"]
-      postgres: ["bookstack", "answer", "heyform"]
-      mariadb: ["matomo", "dolibarr"]
-      mongo: ["rocketchat", "parse"]
+      postgres: ["answer", "heyform", "directus"]
+      mariadb: ["matomo", "dolibarr", "bookstack"]
+      mongo: ["rocketchat"]
 
     common_pitfalls:
       - "DB 容器必须有 healthcheck，主应用 depends_on 应加 condition: service_healthy"
@@ -312,13 +313,13 @@ patterns:
 
       - name: "企业应用套件"
         services: "8-25"
-        examples: ["appwrite", "erpnext", "coze", "aitable"]
+        examples: ["supabase", "erpnext", "coze", "aitable"]
         pattern: "需要大量配置文件和初始化数据"
 
     reference_apps:
       moderate: ["discourse", "guacamole", "immich"]
-      complex: ["gitlab", "dify", "supabase"]
-      extreme: ["coze", "appwrite", "aitable"]
+      complex: ["gitlab", "dify", "supabase", "grafana"]
+      extreme: ["coze", "aitable"]
 
     common_pitfalls:
       - "启动顺序很重要 — 善用 depends_on + healthcheck"
@@ -388,8 +389,8 @@ matching_algorithm: |
 
 statistics:
   total_apps: 362
-  with_w9_login: 145 # 40.1%
-  with_w9_url_replace: 122 # 33.7%
+  with_w9_login: 143 # 39.5%
+  with_w9_url_replace: 121 # 33.4%
   service_distribution:
     "1": 163 # 45.0%
     "2": 114 # 31.5%

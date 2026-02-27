@@ -134,6 +134,8 @@ description: Create new Docker Compose application for docker-library
   "current_stage": "research|analysis|development|testing",
   "matched_pattern": "{pattern_id from app-patterns.yaml}",
   "stage_status": {
+    // ⚠️ total_phases 必须与对应 step 文件中的 ### Phase 数量保持同步
+    // step-01: 11, step-02: 8, step-03: 9, step-04: 10 (含 Phase 4.5)
     "research": {
       "status": "not_started|in_progress|completed",
       "current_phase": 0,
@@ -163,7 +165,7 @@ description: Create new Docker Compose application for docker-library
     "testing": {
       "status": "not_started|in_progress|completed",
       "current_phase": 0,
-      "total_phases": 9,
+      "total_phases": 10,
       "completed_phases": [],
       "phase_outputs": {}
     }
@@ -264,6 +266,9 @@ apps/{app_name}/
 | 项目规范 | `_bmad-output/docker-library-spec.md` |
 | 规范指南 | `.github/copilot-instructions.md` |
 
+> ⚠️ **规范优先级：** `.github/copilot-instructions.md` 是最终权威源。
+> 当 `_bmad-output/docker-library-spec.md`（早期研究产物）与 `copilot-instructions.md` 内容冲突时，以后者为准。
+
 每个阶段文件包含：
 - 流程概览（Phase 列表）
 - 具体执行逻辑（Step 子步骤）
@@ -319,6 +324,18 @@ apps/{app_name}/
   ✅ 如果 L1 有 🔴 阻塞项 → 自动降级为人工确认
   ✅ state.json 记录 auto_approved=true（可追溯）
 ```
+
+---
+
+## 工作流超时与重试规则
+
+| 场景 | 限制 | 处理 |
+|------|------|------|
+| 单个 Phase 执行 | 无硬性超时 | 互动式的 Phase 等待用户输入无限时 |
+| fetch_webpage 失败 | 最多重试 3 次 | 跳过该数据源，标记完整度下降 |
+| L2 部署超时 | 300秒（默认） | 记录失败，进入 Phase 5 诊断 |
+| L2 修复循环 | 最多 3 次 | 第 3 次仍失败→暂停工作流，等待用户介入 |
+| 单个应用总工作流 | 无硬性超时 | agent session 中断后可通过 state.json 恢复 |
 
 ---
 

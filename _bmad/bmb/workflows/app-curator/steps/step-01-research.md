@@ -129,7 +129,7 @@ Phase 完成时写入:
 
 **关键决策点：**
 - Phase 8 找到完整 compose（含明确镜像信息）→ 跳过 Phase 9
-- Phase 10 完整度 ≥ 80% → 自动进入分析阶段
+- Phase 10 完整度 ≥ 80% → 推荐继续（[Y] 为默认），仍展示提示等待用户确认
 - Phase 10 完整度 < 50% → 暂停，要求补充信息
 
 ---
@@ -328,7 +328,7 @@ ls apps/{app_name}/ 2>/dev/null
 - {industry_1}: {application}
 - {industry_2}: {application}
 
-对比竞品:
+对比竞品 (可选 — 对 Docker 配置生成价值有限，可跳过):
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 与 {competitor_1} 相比: {difference}
 与 {competitor_2} 相比: {difference}
@@ -340,7 +340,7 @@ ls apps/{app_name}/ 2>/dev/null
 1. 查看官方网站的 Use Cases / Solutions 页面
 2. 阅读官方博客的案例文章
 3. 搜索 "{app_name} use cases" 或 "{app_name} examples"
-4. 了解主要竞争对手（可选）
+4. 了解主要竞争对手（可选 — 仅在用户明确要求或 variables.json 需要竞品信息时执行）
 
 **理解重点：**
 - 这个应用在**什么场景下**使用？
@@ -836,7 +836,8 @@ Docker Hub API 查询:
   → 每个镜像独立验证版本
   → 记录各镜像版本到 research_data
   → 不可互相推测版本 (如 Jaeger 版本不能从 OTel 版本推断)
-```🔍 检查变种:
+
+🔍 检查变种:
   - 标准版 vs Alpine 版 (体积更小，但兼容性可能有差异)
   - Community vs Enterprise (功能差异)
   - 不同数据库支持 (mysql vs postgres)
@@ -1225,14 +1226,14 @@ GitHub: {url}
     "compliance_prediction": {
       "w9_login_user": {
         "required": true,
-        "confidence": 0.95,
+        "confidence": 95,
         "matched_pattern": "[1-6]",
         "reason": "",
         "evidence": ""
       },
       "w9_url_replace": {
         "required": true,
-        "confidence": 0.90,
+        "confidence": 90,
         "matched_pattern": "[1-4]",
         "reason": "",
         "evidence": ""
@@ -1280,7 +1281,7 @@ GitHub: {url}
 
 **阶段切换：**
 
-触发条件：用户确认继续 或 信息完整度 ≥ 80%
+触发条件：用户确认继续（信息完整度 ≥ 80% 时 Y 为默认值）
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

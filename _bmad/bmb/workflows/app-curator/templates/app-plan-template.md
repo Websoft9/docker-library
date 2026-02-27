@@ -291,6 +291,10 @@
 ## 10. 开发文件清单 📌
 
 > 数据来源：step-02 Phase 7b | step-03 Phase 2-7 按此顺序生成
+> 
+> ⚠️ **序号计算说明：** `{{ loop.index + 4 }}` 和 `{{ src_files_count + N }}` 为连续编号。
+> 填充时：固定行占 1-4，src 文件从 5 开始，后续固定文件接续编号。
+> 例如：若有 2 个 src 文件，则 src/README.md 序号=7, variables.json=8, CHANGELOG.md=9, Notes.md=10。
 
 | 序号 | 文件路径 | 类型 | 说明 |
 |------|---------|------|------|

@@ -12,7 +12,9 @@ document_output_language: Chinese
 output_folder: "{project-root}/_bmad-output"
 
 # Automation Settings
-auto_approve_web_fetch: true      # 自动批准网页访问
-auto_approve_file_operations: true # 自动批准文件/目录创建
-auto_approve_terminal_commands: true # 自动批准终端命令执行
+# 这些设置由 BMAD 框架 agent 运行时使用，控制是否自动批准特定操作
+# 在 workflow-create-app.md 的渐进式审批机制中，agent 可参考这些设置辅助决策
+auto_approve_web_fetch: true      # 自动批准网页访问（step-01 研究阶段 fetch_webpage）
+auto_approve_file_operations: true # 自动批准文件/目录创建（step-03 文件生成）
+auto_approve_terminal_commands: true # 自动批准终端命令执行（step-04 测试命令）
 auto_approve_simple_reads: true    # 自动批准文件读取操作

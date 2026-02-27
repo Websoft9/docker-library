@@ -116,26 +116,21 @@ mkdir -p apps/{app_name}/src
 |------|------|------|
 | `Dockerfile` | 不使用自定义构建 | 模板 shell 可能包含其他应用的 Dockerfile |
 | `README.jinja2` | 始终删除 | 已被 `template/README.jinja2` 全局模板取代 |
-| `src/nginx-proxy.conf.template` | compose 未引用 | WordPress 模板残留 |
-| `src/php_exra.ini` | compose 未引用 | WordPress/PHP 模板残留 |
-| 其他 `src/*` 文件 | compose 未引用 | 对照 docker-compose.yml volumes 映射判断 |
 
 ```bash
 cd apps/{app_name}
 [ -f Dockerfile ] && rm -f Dockerfile
 [ -f README.jinja2 ] && rm -f README.jinja2
-for f in src/*; do
-  [ "$(basename $f)" = "README.md" ] && continue
-  grep -q "$(basename $f)" docker-compose.yml || rm -f "$f"
-done
 ```
+
+> ⚠️ **src/ 残留文件清理推迟到 Phase 5e（生成 src/ 文件后执行）。**
+> 原因：此时 docker-compose.yml 尚未生成（Phase 4），无法对照 volumes 映射判断哪些 src/ 文件应保留。
 
 **验证：**
 ```
 ✅ apps/{app_name}/     目录已创建
 ✅ apps/{app_name}/src/ 子目录已创建
-✅ 无模板残留文件（Dockerfile、README.jinja2 等已清理）
-✅ src/ 中仅保留即将创建的配置文件
+✅ Dockerfile、README.jinja2 等已清理
 ```
 
 ---
@@ -423,13 +418,14 @@ W9_NAME='{display_name}'
 
 规则 5: 注释规范
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  ✅ 文件首行固定格式: # version tags refer to: {dockerhub_tags_url}
-  ✅ 用户区顶部固定: # Environments which for user settings when create application
+  ✅ 文件首行: # {App Name} on Docker - Environment Configuration（结构化注释块）
+  ✅ Image 区块内: # version tags refer to: {dockerhub_tags_url}
   ✅ 可选变量注释掉示例: # W9_HTTPS_PORT_SET='9443'
-  ✅ 应用变量区首行: # Official env reference: {docs_url}
+  ✅ 应用变量区首行: # Official environment variable reference: {docs_url}
   ✅ 行内注释说明特殊变量用途（紧跟变量后）
   ✅ 可选的应用变量注释形式保留: # SOME_VAR=value   # Uncomment to enable: ...
   ❌ 不写无意义注释（如 # This is the ID）
+  📝 注意: 旧应用可能使用简洁格式（首行直接是 # version tags refer to:），新创建的应用统一使用结构化注释格式
 
 规则 6: 引号风格
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -488,9 +484,8 @@ W9_LOGIN_PASSWORD=$W9_POWER_PASSWORD
 W9_ADMIN_PATH="/wp-admin"
 W9_DB_EXPOSE="mysql"
 W9_DB_VERSION="8.0"
-# WordPress writes its URL to the database; set to actual domain or leave ''
-W9_URL='appname.example.com'
-# Automatically replaced with actual IP/domain on first boot
+#wordpress have write w9_url to database, You can set W9_URL using  your true URL or ""
+W9_URL=''
 W9_URL_REPLACE=true
 W9_NETWORK=websoft9
 #### --------------------------------------------------------------------------------------- ####
@@ -542,7 +537,7 @@ W9_ID='grafana'
 W9_HTTP_PORT=3000
 W9_LOGIN_USER=admin
 W9_LOGIN_PASSWORD=$W9_POWER_PASSWORD
-W9_URL='appname.example.com'
+W9_URL='internet_ip:$W9_HTTP_PORT_SET'
 W9_NETWORK=websoft9
 #### --------------------------------------------------------------------------------------- ####
 
@@ -585,7 +580,7 @@ W9_HTTP_PORT_SET='9001'
 # =========================================================
 W9_ID='nginx'
 W9_HTTP_PORT=80
-W9_URL='appname.example.com'
+W9_URL='internet_ip:$W9_HTTP_PORT_SET'
 W9_NETWORK=websoft9
 ```
 
@@ -869,15 +864,18 @@ This directory contains custom configuration files mounted into containers.
   [✅/❌] 无多余文件（compose 中未引用的）  ← 必须二次确认！
   [✅/❌] 脚本文件有适当注释
 
-⚠️ 关键清理步骤（二次确认）:
+⚠️ 关键清理步骤（二次确认，此处完成 Phase 2b 推迟的 src/ 清理）:
   - 对照 docker-compose.yml 中 volumes 的 ./src/ 映射
   - 删除所有 src/ 中 compose 未引用的文件（除 README.md 外）
   - 常见模板残留: nginx-proxy.conf.template, php_exra.ini
   - 验证命令:
+    ```bash
+    cd apps/{app_name}
     for f in src/*; do
       [ "$(basename $f)" = "README.md" ] && continue
-      grep -q "$(basename $f)" docker-compose.yml || echo "删除: $f"
+      grep -q "$(basename $f)" docker-compose.yml || rm -f "$f" && echo "已删除残留: $f"
     done
+    ```
 ```
 
 ---

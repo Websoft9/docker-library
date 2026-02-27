@@ -142,7 +142,7 @@ Phase 8  → 生成计划文档 + 用户确认
 [情况 1] Compose 类型 A (产品级) + 无用户覆盖
   → 以模式骨架为底，用官方 compose 架构覆盖差异部分
 
-[情况 2] Compose 类型 B (Demo) + 用户已在 Step 10g 选择方案
+[情况 2] Compose 类型 B (Demo) + 用户已在 step-01 Phase 10g 选择方案
   → 使用用户选择的方案 (从 state.json architecture_decision.user_choice 读取)
   → 如果 state.json 中无 user_choice → 🚨 停止，返回 step-01 Phase 10g 请用户确认
 
@@ -454,7 +454,7 @@ W9_URL 格式: {选定格式}
   来源: {从哪里获取默认内容}
     → 官方仓库 (优先)
     → 官方文档示例
-    → 从运行中的容器提取 (docker cp)
+    → 在测试阶段 (step-04) 从运行中的容器提取 (docker cp)
     → 手动创建合理默认值
   说明: {文件用途}
   {end}
@@ -482,6 +482,9 @@ src/README.md      | 自动生成      | 必须
 ### Phase 6: 测试策略制定
 
 **目标：** 基于复杂度评估制定三层测试计划（L1 自动 + L2 远程部署 + L3 人工功能）
+
+> ℹ️ **与 step-04 Phase 6 的分工：** 本 Phase 制定**测试策略框架**（测试层级、超时参数、通用清单骨架），
+> step-04 Phase 6 在实际部署后基于探测结果生成**具体的 test-checklist.md** 文件。两者互补而非重复。
 
 ```
 🧪 测试策略
@@ -669,8 +672,9 @@ src/ 文件:              {file_count} 个
 → 加载 `step-03-development.md`
 
 **M（调整）：**
-- 根据用户反馈修改对应 Phase 的分析结果
-- 重新生成计划文档
+- 根据用户反馈确定需修改的内容，定位到对应 Phase（如：登录决策→Phase 3，URL决策→Phase 4，测试策略→Phase 6）
+- 仅重新执行受影响的 Phase，而非全部重做
+- 重新生成计划文档（仅更新变更部分）
 - 再次展示摘要请求确认
 
 **N（暂停）：**

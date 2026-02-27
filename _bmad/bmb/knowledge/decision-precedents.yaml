@@ -7,7 +7,7 @@
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # W9_LOGIN_USER 决策先例
 #
-# 统计: 145/362 (40%) 的现有应用使用 W9_LOGIN_USER
+# 统计: 143/362 (39.5%) 的现有应用使用 W9_LOGIN_USER
 # 规则: 仅当应用支持通过 Docker 环境变量预配置管理员凭证时包含
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -21,10 +21,6 @@ w9_login:
       rule_id: "LOGIN-1"
       confidence: 95
       examples:
-        - app: wordpress
-          evidence: "尽管 WordPress 安装向导需要手动设置，但通过脚本注入管理员"
-          env_vars: ["WORDPRESS_TABLE_PREFIX"]
-          notes: "通过 src/init.sh 自定义脚本注入管理员"
         - app: joomla
           evidence: "JOOMLA_ADMIN_USER, JOOMLA_ADMIN_PASSWORD 环境变量"
           env_vars: ["JOOMLA_ADMIN_USER", "JOOMLA_ADMIN_PASSWORD"]
@@ -102,8 +98,8 @@ w9_login:
         - app: firecrawl
           evidence: "FIRECRAWL_API_KEY 认证，非用户名密码"
         - app: codeserver
-          evidence: "PASSWORD 环境变量，非 user+password 组合"
-          notes: "单密码认证，不适合 W9_LOGIN_USER + W9_LOGIN_PASSWORD 模式"
+          evidence: "PASSWORD 环境变量，单密码认证（有 W9_LOGIN_PASSWORD 但无 W9_LOGIN_USER）"
+          notes: "单密码认证，不适合 W9_LOGIN_USER + W9_LOGIN_PASSWORD 模式，但通过 W9_LOGIN_PASSWORD 提供登录密码"
 
     - pattern: "所有认证通过配置文件而非环境变量"
       rule_id: "LOGIN-X4"
@@ -126,9 +122,9 @@ w9_login:
 
     - description: "通过自定义脚本注入管理员"
       app: wordpress
-      decision: include (无 W9_LOGIN_USER 但有 src/init.sh)
-      reason: "WordPress 镜像不原生支持管理员环境变量，但 docker-library 通过 init.sh 脚本注入"
-      lesson: "有时需要额外脚本来实现预配置管理员"
+      decision: "include (W9_LOGIN_PASSWORD=\$W9_POWER_PASSWORD 但无 W9_LOGIN_USER，通过 src/init.sh 脚本注入)"
+      reason: "WordPress 镜像不原生支持管理员环境变量，但 docker-library 通过 init.sh 脚本注入。实际 .env 无 W9_LOGIN_USER，仅有 W9_LOGIN_PASSWORD"
+      lesson: "有时需要额外脚本来实现预配置管理员，且可能不完全符合 LOGIN-1 模式"
 
     - description: "环境变量存在但非必需"
       app: ghost
@@ -140,7 +136,7 @@ w9_login:
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # W9_URL_REPLACE 决策先例
 #
-# 统计: 122/362 (33.7%) 的现有应用使用 W9_URL_REPLACE
+# 统计: 121/362 (33.4%) 的现有应用使用 W9_URL_REPLACE
 # 规则: 仅当 $W9_URL 在 docker-compose.yml 中被实际引用时包含
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -156,8 +152,8 @@ w9_url_replace:
           evidence: "APP_URL=http://$W9_URL"
           compose_ref: "environment 中使用 $W9_URL"
         - app: wordpress
-          evidence: "WORDPRESS_URL=$W9_URL"
-          compose_ref: "environment 中使用 $W9_URL"
+          evidence: "WORDPRESS_ROOT_URL=\"http://$W9_URL\" 在 .env 中定义，compose environment 引用"
+          compose_ref: "environment 中通过 .env 变量引用 $W9_URL"
 
     - pattern: "外部访问/回调 URL"
       rule_id: "URL-2"
@@ -169,8 +165,8 @@ w9_url_replace:
           evidence: "LOCAL_DOMAIN 需要外部域名配置"
         - app: supabase
           evidence: "多个组件需要 SITE_URL / API_EXTERNAL_URL"
-        - app: appwrite
-          evidence: "_APP_DOMAIN 需要外部域名"
+        - app: chatwoot
+          evidence: "FRONTEND_URL 需要外部可访问地址"
 
     - pattern: "trusted domain / CORS 配置"
       rule_id: "URL-3"
@@ -243,7 +239,7 @@ w9_power_password:
 
     - pattern: "有 SECRET_KEY / JWT_SECRET"
       confidence: 90
-      examples: ["supabase", "appwrite", "discourse"]
+      examples: ["supabase", "chatwoot", "discourse"]
       notes: "SECRET=$W9_POWER_PASSWORD 或用其生成"
 
   exclude_patterns:

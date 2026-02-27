@@ -182,8 +182,8 @@ python3 build/update_readme.py "{app_name}"
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   变量检查:
-    □ W9_LOGIN_USER 是否应该存在 → 对比 decision-precedents.yaml
-    □ W9_URL_REPLACE 是否应该存在 → 对比 decision-precedents.yaml
+    □ W9_LOGIN_USER 是否应该存在 → 对比 _bmad/bmb/knowledge/decision-precedents.yaml
+    □ W9_URL_REPLACE 是否应该存在 → 对比 _bmad/bmb/knowledge/decision-precedents.yaml
     □ 所有 compose 引用的变量在 .env 中有定义
 
   文件检查:
@@ -239,19 +239,6 @@ python3 build/update_readme.py "{app_name}"
 确认重新生成? [Y/N]
 ```
 
-如果确认 → 按 step-03 Phase 3-8 的逻辑重新生成文件，但跳过研究和分析阶段。
+如果确认 → 按 `_bmad/bmb/workflows/app-curator/steps/step-03-development.md` Phase 3-8 的逻辑重新生成文件，但跳过研究和分析阶段。
 
----
-
-## 批量操作扩展
-
-```
-未来扩展预留:
-
-[BU] 批量更新 — 升级所有使用特定基础镜像的应用
-  输入: "mysql:8.0 → mysql:8.4"
-  自动: 扫描所有 compose 中使用 mysql:8.0 的应用 → 逐个执行 [VU]
-
-[BA] 批量审计 — 检查所有应用的合规性
-  输出: 健康报告（缺少 healthcheck、使用 :latest、安全问题等）
-```
+> 📝 批量更新和批量审计功能已独立到 `workflow-batch-ops.md`，通过 Agent 菜单 [BO] 访问。

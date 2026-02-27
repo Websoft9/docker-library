@@ -235,6 +235,14 @@ grep -rl "{old_image}:{old_tag}" apps/*/docker-compose.yml | \
 失败的应用自动回滚
 ```
 
+**回滚机制：**
+1. 修改前先备份原文件：`cp {file} {file}.bak`（在同目录下创建 `.bak` 副本）
+2. 执行批量修改
+3. 对每个应用运行 L1 验证（`docker compose config --quiet`）
+4. 如果 L1 失败：立即从 `.bak` 恢复原文件（`mv {file}.bak {file}`）
+5. 如果 L1 通过：删除 `.bak` 备份
+6. 记录每个应用的修复结果（成功/失败/回滚）到汇总报告
+
 ### Phase 4: 汇总报告
 
 格式同 [VU] Phase 4。
