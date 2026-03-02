@@ -1,42 +1,96 @@
 name: Release to Github and artifact
 
 on:
+  push:
+    tags: ['v*']
   workflow_dispatch:
-  repository_dispatch:
-    types: [custom_event]
+    inputs:
+      tag:
+        description: 'Tag name (e.g. v2026.03.07)'
+        required: true
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
+  quality-gate:
+    name: Quality Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install requests python-dotenv
+
+      - name: Get changed apps since last tag
+        id: changed
+        run: |
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          if [ -z "$PREV_TAG" ]; then
+            echo "No previous tag found, skipping app validation"
+            echo "CHANGED=" >> $GITHUB_OUTPUT
+          else
+            CHANGED=$(git diff --name-only "$PREV_TAG"..HEAD \
+              | grep '^apps/' | cut -d/ -f2 | sort -u | tr '\n' ',' | sed 's/,$//')
+            echo "CHANGED=$CHANGED" >> $GITHUB_OUTPUT
+            echo "Changed apps: $CHANGED"
+          fi
+
+      - name: Validate changed apps
+        if: steps.changed.outputs.CHANGED != ''
+        run: |
+          docker network create websoft9 || true
+          python3 build/validate_app.py "${{ steps.changed.outputs.CHANGED }}"
+
   release:
     name: Release to github and artifact
+    needs: quality-gate
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     env:
       CI: false
       appname: library
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         name: Check out code
+        with:
+          fetch-depth: 0
 
-      - name: Version convert
-        id: convert_version      
+      - name: Parse version and channel from tag
         run: |
-          curl https://raw.githubusercontent.com/Websoft9/websoft9/main/docker/apphub/Dockerfile -o Dockerfile
-
-          library_tag=$(grep 'ARG LIBRARY_VERSION' "Dockerfile" | cut -d'"' -f2 | xargs)
-          apphub_tag=$(grep 'LABEL version' "Dockerfile" | cut -d'"' -f2 | xargs)
-
-          if [[ "$apphub_tag" == *"-"* ]]; then
-            suffix="${apphub_tag#*-}"
-            library_tag_gh="${library_tag}-${suffix}"
-            echo "CHANNEL=dev" >> $GITHUB_ENV
-          else
-            library_tag_gh=$library_tag
-            echo "CHANNEL=release" >> $GITHUB_ENV
+          TAG="${{ github.ref_name }}"
+          # workflow_dispatch 时使用手动输入的 tag
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ github.event.inputs.tag }}"
           fi
-
-          echo "LIBRARY_TAG=$library_tag" >> $GITHUB_ENV
-          echo "LIBRARY_TAG_GH=$library_tag_gh" >> $GITHUB_ENV
-
-          jq --arg version "$library_tag_gh" '.Version = $version' library.json > temp.json && mv temp.json library.json
+          # 去掉 v 前缀得到版本号
+          VERSION="${TAG#v}"
+          # tag 含 "-" 时为预发布（dev 渠道）
+          if [[ "$TAG" == *"-"* ]]; then
+            echo "CHANNEL=dev" >> $GITHUB_ENV
+            echo "PRERELEASE=true" >> $GITHUB_ENV
+          else
+            echo "CHANNEL=release" >> $GITHUB_ENV
+            echo "PRERELEASE=false" >> $GITHUB_ENV
+          fi
+          echo "TAG=$TAG" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          # 更新 library.json 版本号
+          jq --arg v "$VERSION" '.Version = $v' library.json > temp.json && mv temp.json library.json
 
       - name: Create Zip Archive for artifact
         run: |
@@ -47,9 +101,9 @@ jobs:
           cp *.md ${{ env.appname }}
           cp ${{ env.appname }}.json ${{ env.appname }}
           cp ${{ env.appname }}.json CHANGELOG.md artifacts
-          zip -r ${{ env.appname }}-${{ env.LIBRARY_TAG }}.zip ${{ env.appname }}
-          cp ${{ env.appname }}-${{ env.LIBRARY_TAG }}.zip artifacts
-          cp artifacts/${{ env.appname }}-${{ env.LIBRARY_TAG }}.zip artifacts/${{ env.appname }}-latest.zip
+          zip -r ${{ env.appname }}-${{ env.VERSION }}.zip ${{ env.appname }}
+          cp ${{ env.appname }}-${{ env.VERSION }}.zip artifacts
+          cp artifacts/${{ env.appname }}-${{ env.VERSION }}.zip artifacts/${{ env.appname }}-latest.zip
 
       - name: Upload To cloudflare r2
         uses: ryand56/r2-upload-action@latest
@@ -60,34 +114,43 @@ jobs:
           r2-bucket: artifact
           source-dir: artifacts
           destination-dir: ./${{ env.CHANNEL }}/websoft9/plugin/${{ env.appname }}
-          
+
       - name: Purge Cloudflare Cache
         uses: jakejarvis/cloudflare-purge-action@master
         env:
           CLOUDFLARE_ZONE: ${{ secrets.CLOUDFLARE_ZONE_ID }}
           CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           PURGE_URLS: '["https://artifact.websoft9.com/${{ env.CHANNEL }}/websoft9/plugin/library/library-latest.zip"]'
-          
-      - name: Create Github Release from code
+
+      - name: Verify CDN accessible
+        run: |
+          sleep 15
+          curl -sf --retry 3 --retry-delay 5 \
+            "https://artifact.websoft9.com/${{ env.CHANNEL }}/websoft9/plugin/library/library-latest.zip" \
+            -o /dev/null && echo "CDN OK" || (echo "CDN verification failed" && exit 1)
+
+      - name: Create Github Release
+        id: create_release
         uses: softprops/action-gh-release@v1
         with:
           files: |
             ${{ env.appname }}.json
-          tag_name: ${{ env.LIBRARY_TAG_GH }}
-          name: ${{ env.LIBRARY_TAG_GH }}
+          tag_name: ${{ env.TAG }}
+          name: ${{ env.TAG }}
           draft: false
-          prerelease: false
+          prerelease: ${{ env.PRERELEASE }}
 
       - name: Trigger websoft9/json2md.yml workflow
         uses: benc-uk/workflow-dispatch@v1
-        with: 
-            workflow: json2md.yml
-            repo: websoft9/doc.websoft9.com
-            ref: dev
-            token: ${{secrets.MYGITHUB_ADMIN_TOKEN}}
+        with:
+          workflow: json2md.yml
+          repo: websoft9/doc.websoft9.com
+          ref: dev
+          token: ${{ secrets.MYGITHUB_ADMIN_TOKEN }}
 
   pages:
     name: Build Github Pages
+    needs: release
     permissions:
       contents: read
       pages: write
@@ -96,6 +159,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -106,9 +170,23 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
           path: '.'
 
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  notify-failure:
+    name: Notify on failure
+    needs: [quality-gate, release]
+    if: failure()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Send failure alert
+        run: |
+          echo "Release failed for tag ${{ github.ref_name }}"
+          # 如配置了 Webhook，取消注释以下内容：
+          # curl -X POST "${{ secrets.DINGTALK_WEBHOOK }}" \
+          #   -H 'Content-Type: application/json' \
+          #   -d '{"msgtype":"text","text":{"content":"❌ docker-library release failed: ${{ github.ref_name }}"}}'

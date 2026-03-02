@@ -1,11 +1,10 @@
-name: Gate 2 - Smoke Test
+name: Gate 1a - Static Validation
 
 on:
   pull_request:
     branches: [dev]
     paths:
-      - 'apps/*/.env'
-      - 'apps/*/docker-compose.yml'
+      - 'apps/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -16,10 +15,10 @@ permissions:
   pull-requests: write
 
 jobs:
-  smoke-test:
-    name: Smoke Test
+  validate:
+    name: Static Validation
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -39,8 +38,7 @@ jobs:
         run: |
           git fetch origin dev
           CHANGED=$(git diff --name-only origin/dev...HEAD \
-            | grep -E 'apps/.*/(\.(env)|docker-compose\.yml)$' \
-            | cut -d/ -f2 | sort -u | tr '\n' ',' | sed 's/,$//')
+            | grep '^apps/' | cut -d/ -f2 | sort -u | tr '\n' ',' | sed 's/,$//')
           echo "CHANGED=$CHANGED" >> $GITHUB_OUTPUT
           echo "Changed apps: $CHANGED"
 
@@ -48,38 +46,31 @@ jobs:
         if: steps.changed.outputs.CHANGED != ''
         run: docker network create websoft9 || true
 
-      - name: Run smoke tests
+      - name: Run validate_app.py
         if: steps.changed.outputs.CHANGED != ''
-        id: smoke
+        id: validate
         run: |
-          python3 build/test_apps.py "${{ steps.changed.outputs.CHANGED }}"
+          python3 build/validate_app.py "${{ steps.changed.outputs.CHANGED }}" \
+            --output-json /tmp/result.json \
+            --pr-comment /tmp/comment.md
         continue-on-error: true
 
-      - name: Upload container logs on failure
-        if: steps.smoke.outcome == 'failure'
-        uses: actions/upload-artifact@v4
-        with:
-          name: docker-logs-${{ github.run_number }}
-          path: /tmp/docker-logs/
-          retention-days: 7
-
-      - name: Post smoke test result to PR
+      - name: Post PR comment
         if: steps.changed.outputs.CHANGED != ''
         uses: actions/github-script@v7
         with:
           script: |
-            const outcome = '${{ steps.smoke.outcome }}';
-            const apps = '${{ steps.changed.outputs.CHANGED }}';
-            const icon = outcome === 'success' ? '✅' : '❌';
-            const status = outcome === 'success' ? '全部通过' : '存在失败，请查看 Artifacts 中的容器日志';
-            const marker = '<!-- smoke-test-bot -->';
-            const body = `${marker}\n## 🚀 Smoke Test Result\n\n| 测试的应用 | 结果 |\n|---|---|\n| ${apps} | ${icon} ${status} |`;
+            const fs = require('fs');
+            const comment = fs.readFileSync('/tmp/comment.md', 'utf8');
+            const marker = '<!-- validate-bot -->';
+            const body = marker + '\n' + comment;
 
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
             });
+
             const existing = comments.find(c => c.body.includes(marker));
             if (existing) {
               await github.rest.issues.updateComment({
@@ -97,12 +88,12 @@ jobs:
               });
             }
 
-      - name: Fail if smoke test failed
-        if: steps.smoke.outcome == 'failure'
+      - name: Fail if validation failed
+        if: steps.validate.outcome == 'failure'
         run: |
-          echo "Smoke test failed. Check Artifacts for container logs."
+          echo "Static validation failed. See PR comment for details."
           exit 1
 
       - name: No apps changed
         if: steps.changed.outputs.CHANGED == ''
-        run: echo "No .env/docker-compose.yml changed, skipping smoke test."
+        run: echo "No app files changed, skipping validation."
