@@ -1,0 +1,39 @@
+# .github/labeler.yml
+# Auto-labeling rules for pull requests.
+# Requires: actions/labeler action in labeler.yml workflow.
+
+new-app:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'apps/*/docker-compose.yml'
+    # Label as new-app if the directory had no prior docker-compose.yml on the base branch.
+    # Note: 'new-app' detection is best-effort via file addition (not modification).
+
+version-update:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'apps/*/.env'
+
+config-fix:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'apps/*/src/**'
+
+docker-image:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'apps/*/docker-compose.yml'
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/workflows/**'
+          - 'build/**'
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '*.md'
+          - 'docs/**'
+          - 'apps/*/README.md'
+          - 'apps/*/variables.json'

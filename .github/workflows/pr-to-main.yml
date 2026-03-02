@@ -1,0 +1,152 @@
+name: Gate 3 - PR to Main
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'apps/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  pr-to-main:
+    name: Pre-merge Quality Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install python-dotenv requests
+
+      - name: Get changed apps
+        id: changed
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD \
+            | grep -E '^apps/[^/]+/' \
+            | sed 's|apps/||;s|/.*||' \
+            | sort -u \
+            | tr '\n' ',')
+          CHANGED="${CHANGED%,}"
+          echo "apps=${CHANGED}" >> $GITHUB_OUTPUT
+          echo "Changed apps: ${CHANGED}"
+
+      - name: Run static validation
+        id: validate
+        if: steps.changed.outputs.apps != ''
+        run: |
+          python3 build/validate_app.py "${{ steps.changed.outputs.apps }}" \
+            --pr-comment > /tmp/validate_comment.md
+          cat /tmp/validate_comment.md
+        continue-on-error: true
+
+      - name: Check app CHANGELOGs updated
+        id: changelog
+        if: steps.changed.outputs.apps != ''
+        shell: bash
+        run: |
+          IFS=',' read -ra APPS <<< "${{ steps.changed.outputs.apps }}"
+          MISSING=()
+          for app in "${APPS[@]}"; do
+            # Only require CHANGELOG for apps that modified .env or docker-compose.yml
+            HAS_CORE_CHANGE=$(git diff --name-only origin/${{ github.base_ref }}...HEAD \
+              | grep -E "^apps/${app}/(\.env|docker-compose\.yml)$" | wc -l)
+            if [[ "$HAS_CORE_CHANGE" -gt 0 ]]; then
+              CLOG="apps/${app}/CHANGELOG.md"
+              CLOG_CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD \
+                | grep -c "^${CLOG}$" || true)
+              if [[ "$CLOG_CHANGED" -eq 0 ]]; then
+                MISSING+=("$app")
+              fi
+            fi
+          done
+          if [[ ${#MISSING[@]} -gt 0 ]]; then
+            echo "missing_changelogs=${MISSING[*]}" >> $GITHUB_OUTPUT
+            echo "FAIL: ${MISSING[*]} - apps/*/CHANGELOG.md not updated" >&2
+            exit 1
+          fi
+          echo "missing_changelogs=" >> $GITHUB_OUTPUT
+        continue-on-error: true
+
+      - name: Check dev CDN reachable
+        id: cdn
+        run: |
+          CDN_URL="https://libs.websoft9.com/Websoft9/docker-library/main/library.json"
+          if curl -sf --retry 3 --retry-delay 5 -o /dev/null "$CDN_URL"; then
+            echo "CDN OK: ${CDN_URL}"
+          else
+            echo "WARNING: CDN unreachable - ${CDN_URL}" >&2
+            # Non-blocking: CDN issue should not block a PR to main
+          fi
+
+      - name: Post PR comment
+        uses: actions/github-script@v7
+        if: always() && steps.changed.outputs.apps != ''
+        with:
+          script: |
+            const fs = require('fs');
+            const marker = '<!-- pr-to-main-bot -->';
+
+            // Compose comment body
+            let validate = '';
+            try { validate = fs.readFileSync('/tmp/validate_comment.md', 'utf8'); }
+            catch { validate = '> validation output unavailable'; }
+
+            const validateStatus = '${{ steps.validate.outcome }}' === 'success' ? '🟢' : '🔴';
+            const changelogStatus = '${{ steps.changelog.outcome }}' === 'success' ? '🟢' : '🔴';
+            const missingClogs = '${{ steps.changelog.outputs.missing_changelogs }}';
+
+            let body = `${marker}\n## Gate 3 — PR to Main\n\n`;
+            body += `| Gate | Status |\n|------|--------|\n`;
+            body += `| Static Validation | ${validateStatus} \`${{ steps.validate.outcome }}\` |\n`;
+            body += `| CHANGELOG updated | ${changelogStatus} \`${{ steps.changelog.outcome }}\` |\n\n`;
+
+            if (missingClogs) {
+              body += `⚠️ **Missing CHANGELOG updates for:** ${missingClogs}\n`;
+              body += `Please update \`apps/{name}/CHANGELOG.md\` for each changed app.\n\n`;
+            }
+
+            body += `<details><summary>Validation detail</summary>\n\n${validate}\n\n</details>\n`;
+
+            // Post or update comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+      - name: Fail if any gate failed
+        if: steps.validate.outcome == 'failure' || steps.changelog.outcome == 'failure'
+        run: |
+          echo "One or more gates failed. See PR comment for details."
+          exit 1

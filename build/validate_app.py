@@ -190,7 +190,7 @@ def _read_env(app_dir: Path) -> dict:
                 line = line.strip()
                 if line and not line.startswith("#") and "=" in line:
                     k, _, v = line.partition("=")
-                    result[k.strip()] = v.strip()
+                    result[k.strip()] = v.strip().strip("'\"")
         _env_cache[key] = result
     return _env_cache[key]
 

@@ -1,0 +1,91 @@
+name: Gate 1b - Image & Metadata Check
+
+on:
+  pull_request:
+    branches: [dev]
+    paths:
+      - 'apps/*/.env'
+      - 'apps/*/docker-compose.yml'
+      - 'apps/*/variables.json'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  image-check:
+    name: Image & Metadata Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install requests python-dotenv
+
+      - name: Get changed apps
+        id: changed
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD \
+            | grep -E '^apps/[^/]+/' \
+            | sed 's|apps/||;s|/.*||' \
+            | sort -u \
+            | tr '\n' ',')
+          CHANGED="${CHANGED%,}"
+          echo "apps=${CHANGED}" >> $GITHUB_OUTPUT
+          echo "Changed apps: ${CHANGED}"
+
+      - name: Check Docker images and metadata
+        id: check
+        run: |
+          python3 build/check_images.py "${{ steps.changed.outputs.apps }}" \
+            --output-github >> $GITHUB_OUTPUT
+        continue-on-error: true
+
+      - name: Post PR comment
+        uses: actions/github-script@v7
+        if: always() && steps.changed.outputs.apps != ''
+        with:
+          script: |
+            const result = `${{ steps.check.outputs.comment_body || 'No output' }}`;
+            const marker = '<!-- image-check-bot -->';
+            const body = `${marker}\n${result}`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existing = comments.find(c => c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+      - name: Fail if check failed
+        if: steps.check.outcome == 'failure'
+        run: exit 1
