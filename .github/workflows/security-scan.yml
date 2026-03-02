@@ -1,0 +1,204 @@
+name: Gate 1c - Security Scan (Trivy)
+
+on:
+  pull_request:
+    branches: [dev]
+    paths:
+      - 'apps/*/docker-compose.yml'
+      - 'apps/*/.env'
+  schedule:
+    # Weekly full scan every Monday at 02:00 UTC
+    - cron: '0 2 * * 1'
+  workflow_dispatch:
+    inputs:
+      apps:
+        description: 'App names to scan (comma-separated, or ALL)'
+        required: false
+        default: 'ALL'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  security-events: write   # for SARIF upload
+
+jobs:
+  security-scan:
+    name: Trivy Image Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Trivy
+        run: |
+          sudo apt-get install -y wget apt-transport-https gnupg
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key \
+            | sudo gpg --dearmor -o /usr/share/keyrings/trivy.gpg
+          echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] \
+            https://aquasecurity.github.io/trivy-repo/deb generic main" \
+            | sudo tee /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update -qq && sudo apt-get install -y trivy
+
+      - name: Determine apps to scan
+        id: apps
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git fetch origin ${{ github.base_ref }} --depth=1
+            APPS=$(git diff --name-only origin/${{ github.base_ref }}...HEAD \
+              | grep -E '^apps/[^/]+/' \
+              | sed 's|apps/||;s|/.*||' \
+              | sort -u \
+              | tr '\n' ',')
+            APPS="${APPS%,}"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            APPS="${{ github.event.inputs.apps }}"
+          else
+            # Scheduled: collect all apps with a W9_REPO defined
+            APPS=$(ls apps/ | tr '\n' ',' | sed 's/,$//')
+          fi
+          echo "apps=${APPS}" >> $GITHUB_OUTPUT
+          echo "Scanning: ${APPS}"
+
+      - name: Extract images from .env files
+        id: images
+        run: |
+          IFS=',' read -ra APP_LIST <<< "${{ steps.apps.outputs.apps }}"
+          IMAGE_LIST=""
+          for app in "${APP_LIST[@]}"; do
+            ENV_FILE="apps/${app}/.env"
+            [ -f "$ENV_FILE" ] || continue
+            REPO=$(grep '^W9_REPO=' "$ENV_FILE" | cut -d= -f2 | tr -d "'\"")
+            VERSION=$(grep '^W9_VERSION=' "$ENV_FILE" | cut -d= -f2 | tr -d "'\"")
+            [ -z "$REPO" ] || [ -z "$VERSION" ] && continue
+            # Normalise to full image reference
+            if [[ "$REPO" != *"/"* ]]; then
+              IMAGE="docker.io/library/${REPO}:${VERSION}"
+            else
+              IMAGE="docker.io/${REPO}:${VERSION}"
+            fi
+            IMAGE_LIST="${IMAGE_LIST}${app}=${IMAGE}\n"
+          done
+          # Write to file for next step
+          printf "%b" "$IMAGE_LIST" > /tmp/images.txt
+          echo "Image list written:"
+          cat /tmp/images.txt
+
+      - name: Run Trivy scans
+        id: scan
+        run: |
+          mkdir -p /tmp/trivy-reports
+          CRITICAL_FOUND=0
+          SUMMARY=""
+
+          while IFS='=' read -r app image; do
+            [ -z "$app" ] && continue
+            echo ">>> Scanning $app ($image) ..."
+            REPORT="/tmp/trivy-reports/${app}.json"
+
+            trivy image \
+              --quiet \
+              --no-progress \
+              --format json \
+              --severity CRITICAL,HIGH \
+              --ignore-unfixed \
+              --output "$REPORT" \
+              "$image" 2>/dev/null || true
+
+            # Count findings
+            if [ -f "$REPORT" ]; then
+              CRITICAL=$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity=="CRITICAL")] | length' "$REPORT" 2>/dev/null || echo 0)
+              HIGH=$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity=="HIGH")] | length' "$REPORT" 2>/dev/null || echo 0)
+              if [ "$CRITICAL" -gt 0 ]; then
+                CRITICAL_FOUND=1
+                STATUS="🔴"
+              elif [ "$HIGH" -gt 10 ]; then
+                STATUS="🟡"
+              else
+                STATUS="🟢"
+              fi
+              SUMMARY="${SUMMARY}| \`${app}\` | \`${image##*/}\` | ${STATUS} | ${CRITICAL} | ${HIGH} |\n"
+            fi
+          done < /tmp/images.txt
+
+          echo "CRITICAL_FOUND=$CRITICAL_FOUND" >> $GITHUB_OUTPUT
+          # Store summary for comment (encode newlines)
+          SUMMARY_ENC=$(printf "%b" "$SUMMARY" | sed ':a;N;$!ba;s/\n/%0A/g')
+          echo "summary=${SUMMARY_ENC}" >> $GITHUB_OUTPUT
+
+      - name: Generate SARIF for GitHub Security tab
+        run: |
+          # Re-run trivy in SARIF format for the first image if available
+          FIRST_IMAGE=$(head -1 /tmp/images.txt | cut -d= -f2- | tr -d ' ')
+          if [ -n "$FIRST_IMAGE" ]; then
+            trivy image \
+              --quiet \
+              --no-progress \
+              --format sarif \
+              --severity CRITICAL,HIGH \
+              --ignore-unfixed \
+              --output /tmp/trivy.sarif \
+              "$FIRST_IMAGE" 2>/dev/null || true
+          fi
+
+      - name: Upload SARIF to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always() && hashFiles('/tmp/trivy.sarif') != ''
+        with:
+          sarif_file: /tmp/trivy.sarif
+        continue-on-error: true
+
+      - name: Upload scan reports as artifacts
+        uses: actions/upload-artifact@v4
+        if: always() && hashFiles('/tmp/trivy-reports/*.json') != ''
+        with:
+          name: trivy-reports-${{ github.run_id }}
+          path: /tmp/trivy-reports/
+          retention-days: 30
+
+      - name: Post PR comment
+        uses: actions/github-script@v7
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            const marker = '<!-- security-scan-bot -->';
+            const summaryRaw = `${{ steps.scan.outputs.summary }}`.replace(/%0A/g, '\n');
+            const criticalFound = '${{ steps.scan.outputs.CRITICAL_FOUND }}' === '1';
+
+            let body = `${marker}\n## Gate 1c — Security Scan (Trivy)\n\n`;
+            body += criticalFound
+              ? '🔴 **CRITICAL vulnerabilities found** — please review before merging.\n\n'
+              : '🟢 No CRITICAL vulnerabilities found.\n\n';
+            body += '| App | Image | Status | CRITICAL | HIGH |\n';
+            body += '|-----|-------|--------|----------|------|\n';
+            body += summaryRaw + '\n';
+            body += '\n> Only CRITICAL and HIGH unfixed CVEs are reported. Full reports in Actions artifacts.\n';
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                comment_id: existing.id, body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: context.issue.number, body,
+              });
+            }
+
+      - name: Fail on CRITICAL vulnerabilities (PR only)
+        if: github.event_name == 'pull_request' && steps.scan.outputs.CRITICAL_FOUND == '1'
+        run: |
+          echo "CRITICAL vulnerabilities found. Blocking PR merge."
+          exit 1

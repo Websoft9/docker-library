@@ -1,0 +1,95 @@
+# git-cliff configuration for docker-library
+# https://git-cliff.org/docs/configuration
+#
+# Generates CHANGELOG.md grouped by conventional commit type.
+# Run locally: git cliff --output CHANGELOG.md
+
+[changelog]
+# Header placed at the top of the generated CHANGELOG
+header = """
+# Changelog\n
+All notable changes to this project will be documented in this file.\n
+"""
+
+# Template for each release section (Tera template syntax)
+body = """
+{% if version %}\
+## [{{ version | trim_start_matches(pat="v") }}] — {{ timestamp | date(format="%Y-%m-%d") }}
+{% else %}\
+## [Unreleased]
+{% endif %}\
+
+{% for group, commits in commits | group_by(attribute="group") %}
+### {{ group | upper_first }}
+{% for commit in commits %}
+- {% if commit.scope %}**{{ commit.scope }}**: {% endif %}\
+{{ commit.message | upper_first }}\
+{% if commit.github.username %} by [@{{ commit.github.username }}](https://github.com/{{ commit.github.username }}){% endif %}\
+{% if commit.github.pr_number %} in [#{{ commit.github.pr_number }}]({{ self::remote_url() }}/pull/{{ commit.github.pr_number }}){% endif %}
+{% endfor %}
+{% endfor %}\n
+"""
+
+# Remove trailing newlines
+trim = true
+
+# Footer placed at the bottom of the generated CHANGELOG
+footer = ""
+
+[git]
+# Use conventional commits
+conventional_commits = true
+
+# Filter commits that don't match conventional commit format
+filter_unconventional = true
+
+# Split the commit summary at the first '('
+split_commits = false
+
+# Post-processing regex replacements on commit messages
+commit_preprocessors = [
+  # Remove issue numbers from commit messages
+  { pattern = '\(#([0-9]+)\)', replace = "([#${1}](https://github.com/Websoft9/docker-library/issues/${1}))" },
+]
+
+# Map conventional commit types to changelog sections
+commit_parsers = [
+  { message = "^feat",     group = "Features" },
+  { message = "^fix",      group = "Bug Fixes" },
+  { message = "^refactor", group = "Refactoring" },
+  { message = "^perf",     group = "Performance" },
+  { message = "^docs",     group = "Documentation" },
+  { message = "^ci",       group = "CI / Build" },
+  { message = "^chore",    group = "Chores" },
+  # Skip purely automated commits
+  { message = "^chore\\(release\\)", skip = true },
+  { message = "^chore\\(bot\\)",     skip = true },
+  { message = "^style",    skip = true },
+  { message = "^test",     skip = true },
+  { body = ".*security",   group = "Security" },
+]
+
+# Protect breaking changes
+protect_breaking_commits = false
+
+# Filter commits by tags
+filter_commits = false
+
+# Tags to process (glob)
+tag_pattern = "v[0-9]*"
+
+# Skip tags matching this pattern
+skip_tags = ""
+
+# Ignore tags matching this pattern
+ignore_tags = ""
+
+# Sort order for tags
+topo_order = false
+
+# Sort commits within each group
+sort_commits = "newest"
+
+[remote.github]
+owner = "Websoft9"
+repo  = "docker-library"

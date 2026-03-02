@@ -92,6 +92,27 @@ jobs:
           # 更新 library.json 版本号
           jq --arg v "$VERSION" '.Version = $v' library.json > temp.json && mv temp.json library.json
 
+      - name: Install git-cliff
+        run: |
+          CLIFF_VER=$(curl -sf https://api.github.com/repos/orhun/git-cliff/releases/latest \
+            | grep '"tag_name"' | cut -d'"' -f4)
+          curl -sL "https://github.com/orhun/git-cliff/releases/download/${CLIFF_VER}/git-cliff-${CLIFF_VER#v}-x86_64-unknown-linux-gnu.tar.gz" \
+            | tar xz --strip-components=1 -C /usr/local/bin \
+              "git-cliff-${CLIFF_VER#v}-x86_64-unknown-linux-gnu/git-cliff"
+          git-cliff --version
+
+      - name: Generate CHANGELOG.md and release notes
+        run: |
+          # Full cumulative CHANGELOG.md (committed into archive)
+          git-cliff --config .github/cliff.toml --tag ${{ env.TAG }} --output CHANGELOG.md
+          echo "=== First 40 lines of CHANGELOG.md ==="
+          head -40 CHANGELOG.md
+          # Single-release notes for GitHub Release body
+          git-cliff --config .github/cliff.toml --tag ${{ env.TAG }} \
+            --latest --strip header --output /tmp/release_notes.md
+          echo "=== Release notes ==="
+          cat /tmp/release_notes.md
+
       - name: Create Zip Archive for artifact
         run: |
           mkdir ${{ env.appname }} artifacts
@@ -137,6 +158,7 @@ jobs:
             ${{ env.appname }}.json
           tag_name: ${{ env.TAG }}
           name: ${{ env.TAG }}
+          body_path: /tmp/release_notes.md
           draft: false
           prerelease: ${{ env.PRERELEASE }}
 
