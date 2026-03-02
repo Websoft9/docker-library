@@ -1,0 +1,206 @@
+name: Auto-fill PR Description
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [dev, main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  pr-description:
+    name: Update PR Description
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Collect app changes
+        id: changes
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1
+
+          # Get list of changed apps
+          CHANGED_APPS=$(git diff --name-only origin/${{ github.base_ref }}...HEAD \
+            | grep -E '^apps/[^/]+/' \
+            | sed 's|apps/||;s|/.*||' \
+            | sort -u)
+
+          if [ -z "$CHANGED_APPS" ]; then
+            echo "type=non-app" >> $GITHUB_OUTPUT
+            echo "table=" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Build table rows: app | old_version | new_version | change_type
+          TABLE=""
+          CHANGE_TYPES=""
+
+          for app in $CHANGED_APPS; do
+            ENV_FILE="apps/${app}/.env"
+            [ -f "$ENV_FILE" ] || continue
+
+            # New version (HEAD)
+            NEW_VER=$(grep '^W9_VERSION=' "$ENV_FILE" | cut -d= -f2 | tr -d "'\"")
+            NEW_REPO=$(grep '^W9_REPO=' "$ENV_FILE" | cut -d= -f2 | tr -d "'\"")
+
+            # Old version (base branch)
+            OLD_VER=$(git show "origin/${{ github.base_ref }}:${ENV_FILE}" 2>/dev/null \
+              | grep '^W9_VERSION=' | cut -d= -f2 | tr -d "'\""  || echo "—")
+
+            # Detect change type
+            IS_NEW_APP=""
+            git show "origin/${{ github.base_ref }}:apps/${app}/docker-compose.yml" \
+              > /dev/null 2>&1 || IS_NEW_APP="yes"
+
+            if [ -n "$IS_NEW_APP" ]; then
+              CTYPE="🆕 New app"
+              CHANGE_TYPES="${CHANGE_TYPES}new-app,"
+            elif [ "$OLD_VER" != "$NEW_VER" ]; then
+              CTYPE="🔄 Version update"
+              CHANGE_TYPES="${CHANGE_TYPES}version-update,"
+            else
+              # Check if only src/ or docs changed
+              CORE_CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD \
+                | grep -E "^apps/${app}/(\.env|docker-compose\.yml)$" | wc -l)
+              if [ "$CORE_CHANGED" -gt 0 ]; then
+                CTYPE="🛠 Config fix"
+                CHANGE_TYPES="${CHANGE_TYPES}config-fix,"
+              else
+                CTYPE="📄 Docs / src"
+                CHANGE_TYPES="${CHANGE_TYPES}docs,"
+              fi
+            fi
+
+            TABLE="${TABLE}| \`${app}\` | \`${NEW_REPO}\` | \`${OLD_VER}\` | \`${NEW_VER}\` | ${CTYPE} |%0A"
+          done
+
+          # Determine dominant change type for checkbox auto-select
+          if echo "$CHANGE_TYPES" | grep -q "new-app"; then
+            DOMINANT="new-app"
+          elif echo "$CHANGE_TYPES" | grep -q "version-update"; then
+            DOMINANT="version-update"
+          elif echo "$CHANGE_TYPES" | grep -q "config-fix"; then
+            DOMINANT="config-fix"
+          else
+            DOMINANT="docs"
+          fi
+
+          echo "table=${TABLE}" >> $GITHUB_OUTPUT
+          echo "dominant=${DOMINANT}" >> $GITHUB_OUTPUT
+          echo "type=app" >> $GITHUB_OUTPUT
+          echo "app_count=$(echo "$CHANGED_APPS" | wc -w | tr -d ' ')" >> $GITHUB_OUTPUT
+          echo "app_list=$(echo "$CHANGED_APPS" | tr '\n' ',' | sed 's/,$//')" >> $GITHUB_OUTPUT
+
+      - name: Update PR description
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const changeType   = '${{ steps.changes.outputs.type }}';
+            const tableRaw     = `${{ steps.changes.outputs.table }}`;
+            const dominant     = '${{ steps.changes.outputs.dominant }}';
+            const appCount     = '${{ steps.changes.outputs.app_count }}';
+            const appList      = '${{ steps.changes.outputs.app_list }}';
+
+            // Decode %0A back to real newlines
+            const table = tableRaw.replace(/%0A/g, '\n');
+
+            // Fetch current PR body
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+            let body = pr.body || '';
+
+            // ── 1. Update apps table section ──────────────────────────────────
+            const appsHeader = '| App | Image | Old Version | New Version | Change |\n'
+                             + '|-----|-------|-------------|-------------|--------|\n';
+
+            let appsContent;
+            if (changeType === 'non-app') {
+              appsContent = '_No app directories changed in this PR._\n';
+            } else {
+              appsContent = appsHeader + table;
+            }
+
+            const appsStart = '<!-- pr-bot:apps-table -->';
+            const appsEnd   = '<!-- pr-bot:apps-table-end -->';
+            const appsRegex = new RegExp(
+              `${appsStart}[\\s\\S]*?${appsEnd}`, 'm'
+            );
+            const appsBlock = `${appsStart}\n${appsContent}\n${appsEnd}`;
+
+            if (body.includes(appsStart)) {
+              body = body.replace(appsRegex, appsBlock);
+            } else {
+              body = body + '\n\n' + appsBlock;
+            }
+
+            // ── 2. Pre-tick the correct change-type checkbox ──────────────────
+            const typeStart = '<!-- pr-bot:change-type -->';
+            const typeEnd   = '<!-- pr-bot:change-type-end -->';
+            const typeRegex = new RegExp(`${typeStart}[\\s\\S]*?${typeEnd}`, 'm');
+
+            const checkMap = {
+              'new-app':        '🆕 New app',
+              'version-update': '🔄 Version update',
+              'config-fix':     '🛠 Config / compose fix',
+              'docs':           '📄 Documentation',
+            };
+            const tickLabel = checkMap[dominant] || '';
+
+            let typeBlock = body.match(typeRegex)?.[0] || '';
+            if (typeBlock && tickLabel) {
+              // Reset all checkboxes then tick the matching one
+              typeBlock = typeBlock.replace(/- \[x\]/gi, '- [ ]');
+              typeBlock = typeBlock.replace(
+                new RegExp(`- \\[ \\] ${tickLabel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`),
+                `- [x] ${tickLabel}`
+              );
+              body = body.replace(typeRegex, typeBlock);
+            }
+
+            // ── 3. Auto-generate PR title if still default ────────────────────
+            let newTitle = pr.title;
+            const defaultTitles = ['Update', 'fix', pr.head.ref];
+            const isDefaultTitle = !pr.title || defaultTitles.some(t =>
+              pr.title.toLowerCase().trim() === t.toLowerCase()
+            );
+
+            if (changeType === 'app' && dominant && appList) {
+              const apps = appList.split(',');
+              const prefix = {
+                'new-app':        'feat(app)',
+                'version-update': 'chore(version)',
+                'config-fix':     'fix(app)',
+                'docs':           'docs(app)',
+              }[dominant] || 'chore(app)';
+
+              // Only auto-set title if it looks like a default / branch name
+              const branchRef = '${{ github.head_ref }}';
+              if (!pr.title || pr.title === branchRef || pr.title.trim() === '') {
+                if (apps.length === 1) {
+                  const repo = '${{ steps.changes.outputs.app_list }}'.split(',')[0];
+                  newTitle = `${prefix}: update ${apps[0]}`;
+                } else {
+                  newTitle = `${prefix}: update ${apps.length} apps (${apps.slice(0,3).join(', ')}${apps.length > 3 ? '...' : ''})`;
+                }
+              }
+            }
+
+            // ── 4. Persist changes ────────────────────────────────────────────
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              body,
+              ...(newTitle !== pr.title ? { title: newTitle } : {}),
+            });
+
+            core.info(`PR description updated. Dominant change type: ${dominant}, Apps: ${appList}`);
