@@ -47,6 +47,11 @@ password: admin
 这是怎么回事呢？通过官方的论坛中研究，发现这是文档更新不及时导致，也就是说overrides中的安装在文档中还没有体现，虽然它更具有效率。  
 
 
+### 安装完成后执行命令，同步hrms资源，解决图片不显示
+```
+docker compose exec frontend bash -lc 'set -euxo pipefail; cd /home/frappe/frappe-bench; id; ls -ld apps/hrms/hrms/public; mkdir -p sites/assets/hrms; cp -a apps/hrms/hrms/public/. sites/assets/hrms/; ls -lah sites/assets/hrms; ls -lah sites/assets/hrms/images/frappe-hr-logo.svg'
+```
+
 #### 与URL有关的变量有那些？
 
 ```

@@ -2,12 +2,17 @@
   "name": "kafka",
   "trademark": "Kafka",
   "release": true,
-  "fork_url": "https://github.com/bitnami/bitnami-docker-kafka",
-  "version_from": "https://hub.docker.com/r/bitnami/kafka/tags",
+  "fork_url": "https://github.com/apache/kafka",
+  "version_from": "https://hub.docker.com/r/apache/kafka/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["4.0","3.9","3.8","3.6","3.2","2.8","latest"]
+      "version": [
+        "4.0.1",
+        "3.9.2",
+        "3.8.1",
+        "3.7.2"
+      ]
     }
   ],
   "requirements": {

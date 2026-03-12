@@ -8,9 +8,9 @@
     {
       "dist": "community",
       "version": [
+        "v16",
         "v15",
-        "v14",
-        "v13"
+        "v14"
       ]
     }
   ],
