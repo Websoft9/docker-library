@@ -8,6 +8,7 @@ services:
     restart: unless-stopped
     ports:
       - "$W9_DB_KAFKA_PORT_SET:9092"
+    env_file: .env
     environment:
       CLUSTER_ID: ${CLUSTER_ID}
       KAFKA_NODE_ID: ${KAFKA_NODE_ID}
