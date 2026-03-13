@@ -1,0 +1,89 @@
+# image: https://github.com/openclaw/openclaw/pkgs/container/openclaw
+# docs: https://docs.openclaw.ai/install/docker
+
+services:
+  openclaw:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    restart: unless-stopped
+    init: true
+    user: root
+    entrypoint: [ "/docker-entrypoint.sh" ]
+    command: [ "node", "dist/index.js", "gateway", "--bind", "${OPENCLAW_GATEWAY_BIND:-lan}", "--port", "18789" ]
+    ports:
+      - $W9_HTTP_PORT_SET:18789
+      - $W9_BRIDGE_PORT_SET:18790
+    env_file: .env
+    environment:
+      - HOME=/home/node
+      - TERM=xterm-256color
+      - OPENCLAW_GATEWAY_TOKEN=$W9_POWER_PASSWORD
+      - OPENCLAW_GATEWAY_BIND=${OPENCLAW_GATEWAY_BIND}
+      - OPENCLAW_GATEWAY_PORT=18789
+      - OPENCLAW_ALLOW_INSECURE_PRIVATE_WS=${OPENCLAW_ALLOW_INSECURE_PRIVATE_WS:-}
+    volumes:
+      - openclaw_agents:/home/node/.openclaw/agents
+      - openclaw_workspace:/home/node/.openclaw/workspace
+      - openclaw_canvas:/home/node/.openclaw/canvas
+      - openclaw_cron:/home/node/.openclaw/cron
+      - openclaw_queue:/home/node/.openclaw/delivery-queue
+      - ./src/init.js:/init.js:ro
+    healthcheck:
+      test:
+        - "CMD"
+        - "node"
+        - "-e"
+        - "fetch('http://127.0.0.1:18789/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Optional CLI service for channel setup and management commands.
+  # Not started by default. Usage:
+  #   docker compose --profile cli run --rm openclaw-cli channels login
+  #   docker compose --profile cli run --rm openclaw-cli config set <key> <value>
+  #   docker compose --profile cli run --rm openclaw-cli devices list
+  openclaw-cli:
+    image: $W9_REPO:$W9_VERSION
+    container_name: ${W9_ID}-cli
+    network_mode: "service:openclaw"
+    profiles:
+      - cli
+    cap_drop:
+      - NET_RAW
+      - NET_ADMIN
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - HOME=/home/node
+      - TERM=xterm-256color
+      - OPENCLAW_GATEWAY_TOKEN=$W9_POWER_PASSWORD
+      - OPENCLAW_GATEWAY_BIND=${OPENCLAW_GATEWAY_BIND}
+      - OPENCLAW_ALLOW_INSECURE_PRIVATE_WS=${OPENCLAW_ALLOW_INSECURE_PRIVATE_WS:-}
+      - BROWSER=echo
+    volumes:
+      - openclaw_agents:/home/node/.openclaw/agents
+      - openclaw_workspace:/home/node/.openclaw/workspace
+      - openclaw_canvas:/home/node/.openclaw/canvas
+      - openclaw_cron:/home/node/.openclaw/cron
+      - openclaw_queue:/home/node/.openclaw/delivery-queue
+    stdin_open: true
+    tty: true
+    init: true
+    entrypoint: [ "node", "dist/index.js" ]
+    depends_on:
+      - openclaw
+
+volumes:
+  openclaw_agents:
+  openclaw_workspace:
+  openclaw_canvas:
+  openclaw_cron:
+  openclaw_queue:
+
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

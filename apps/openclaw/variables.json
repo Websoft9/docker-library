@@ -1,0 +1,21 @@
+{
+  "name": "openclaw",
+  "trademark": "OpenClaw",
+  "release": true,
+  "fork_url": "https://github.com/openclaw/openclaw",
+  "version_from": "https://github.com/openclaw/openclaw/releases",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "2026.3.11-wecom"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "2",
+    "disk": "10",
+    "url": "https://openclaw.ai"
+  }
+}
