@@ -54,6 +54,11 @@ services:
       retries: 3
       start_period: 30s
 
+  # Optional CLI service for channel setup and management commands.
+  # Not started by default. Usage:
+  #   docker compose --profile cli run --rm openclaw-cli channels login
+  #   docker compose --profile cli run --rm openclaw-cli config set <key> <value>
+  #   docker compose --profile cli run --rm openclaw-cli devices list
   openclaw-cli:
     image: $W9_REPO:$W9_VERSION
     container_name: ${W9_ID}-cli
