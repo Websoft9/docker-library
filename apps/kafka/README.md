@@ -3,7 +3,7 @@
 This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Kafka:
 
 
- - community:  4.0, 3.9, 3.8, 3.6, 3.2, 2.8, latest
+ - community:  4.0.1, 3.9.2, 3.8.1, 3.7.2
 
 
 ## System Requirements

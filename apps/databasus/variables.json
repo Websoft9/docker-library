@@ -1,0 +1,22 @@
+{
+  "name": "databasus",
+  "trademark": "Databasus",
+  "release": false,
+  "fork_url": "https://github.com/databasus/databasus",
+  "version_from": "https://hub.docker.com/r/databasus/databasus/tags",
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "v3.9.0",
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10",
+    "url": "https://databasus.com"
+  }
+}
