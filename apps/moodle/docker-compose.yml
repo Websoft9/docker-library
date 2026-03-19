@@ -1,7 +1,5 @@
-# Custom Moodle with php:apache base image
-# Official installation guide: https://docs.moodle.org/501/en/Installation_quick_guide
-
-version: "3.8"
+# image: https://hub.docker.com/r/websoft9dev/moodle (self-built, base: moodlehq/moodle-php-apache)
+# docs: https://docs.moodle.org/en/Installation_quick_guide
 
 services:
   moodle:
@@ -9,56 +7,35 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     env_file: .env
-    environment:
-      # Database configuration
-      - MOODLE_DB_TYPE=mariadb
-      - MOODLE_DB_HOST=${W9_ID}-mariadb
-      - MOODLE_DB_PORT=3306
-      - MOODLE_DB_NAME=moodle
-      - MOODLE_DB_USER=moodle
-      - MOODLE_DB_PASSWORD=${W9_POWER_PASSWORD}
-      # Site configuration
-      - MOODLE_URL=http://${W9_URL}
-      - MOODLE_SITE_NAME=Moodle Learning Platform
-      - MOODLE_SITE_SHORT=Moodle
-      # Data directory
-      - MOODLE_DATA=/var/moodledata
     ports:
-      - "${W9_HTTP_PORT_SET}:80"
+      - "${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}"
     volumes:
-      - moodle_html:/var/www/html
       - moodle_data:/var/moodledata
+      - ./src/php.ini:/usr/local/etc/php/conf.d/moodle.ini
     depends_on:
       mariadb:
         condition: service_healthy
 
   mariadb:
-    image: mariadb:${W9_MARIADB_VERSION}
+    image: mariadb:${W9_DB_VERSION}
     container_name: ${W9_ID}-mariadb
     restart: unless-stopped
-    environment:
-      - MYSQL_ROOT_PASSWORD=${W9_POWER_PASSWORD}
-      - MYSQL_DATABASE=moodle
-      - MYSQL_USER=moodle
-      - MYSQL_PASSWORD=${W9_POWER_PASSWORD}
+    env_file: .env
     command: >
-      --character-set-server=utf8mb4
-      --collation-server=utf8mb4_unicode_ci
-      --max_allowed_packet=512M
-      --innodb_buffer_pool_size=512M
-      --innodb_log_file_size=256M
+      --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max_allowed_packet=512M
     volumes:
       - mariadb_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
       interval: 10s
       timeout: 5s
-      retries: 5
-      
+      retries: 10
+      start_period: 30s
+
 volumes:
-  moodle_html:
   moodle_data:
   mariadb_data:
+
 
 networks:
   default:
