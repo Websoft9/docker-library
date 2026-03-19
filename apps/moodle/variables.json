@@ -2,18 +2,21 @@
   "name": "moodle",
   "trademark": "Moodle",
   "release": true,
-  "fork_url": "https://github.com/moodlehq/moodle-docker",
-  "version_from": "https://hub.docker.com/r/bitnami/moodle/tags",
+  "fork_url": "https://github.com/moodlehq/moodle-php-apache",
+  "version_from": "https://github.com/moodle/moodle/releases",
   "edition": [
     {
       "dist": "community",
-      "version": ["5.1.1","latest"]
+      "version": [
+        "5.1.3",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "4",
-    "url": "https://github.com/moodle/docker#recommended-system-requirements"
+    "url": "https://docs.moodle.org/en/Installing_Moodle#System_requirements"
   }
 }
