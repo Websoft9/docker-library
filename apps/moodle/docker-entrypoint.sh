@@ -71,15 +71,13 @@ if [ ! -f /var/www/html/config.php ]; then
     echo "Moodle installation complete."
     # Persist config.php to moodledata so it survives container recreations
     cp /var/www/html/config.php "${MOODLE_DATA}/.moodle_config.php"
+    chown www-data:www-data /var/www/html/config.php
 elif php /var/www/html/admin/cli/upgrade.php --is-pending --non-interactive 2>/dev/null | grep -q "pending\|Upgrade"; then
     echo "Database upgrade pending, running upgrade..."
     php /var/www/html/admin/cli/upgrade.php --non-interactive
     echo "Moodle upgrade complete."
     cp /var/www/html/config.php "${MOODLE_DATA}/.moodle_config.php"
+    chown www-data:www-data /var/www/html/config.php
 fi
-
-# Ensure correct permissions
-chown -R www-data:www-data /var/www/html
-chown -R www-data:www-data "${MOODLE_DATA}"
 
 exec "$@"
