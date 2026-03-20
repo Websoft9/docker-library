@@ -13,21 +13,17 @@ else
 fi
 
 # 等待wordpress完成引导
-until docker exec $W9_ID wp core is-installed &>/dev/null; do
+until docker exec $W9_ID wp core is-installed >/dev/null 2>&1; do
   echo "wait for WordPress..."
   sleep 5
 done
 
-# 设置home
-if [ "`docker exec $W9_ID wp option get home | cut -d: -f1`" == "https" ];then
-  docker exec $W9_ID wp option update home "https://$W9_URL"
-else
-  docker exec $W9_ID wp option update home "$WORDPRESS_ROOT_URL"
+# W9_URL为空时跳过URL更新，避免将站点URL设为无效值
+if [ -z "$W9_URL" ]; then
+  echo "W9_URL is empty, skip URL update"
+  exit 0
 fi
 
-# 设置siteurl
-if [ "`docker exec $W9_ID wp option get siteurl | cut -d: -f1`" == "https" ];then
-  docker exec $W9_ID wp option update siteurl "https://$W9_URL"
-else
-  docker exec $W9_ID wp option update siteurl "$WORDPRESS_ROOT_URL"
-fi
+# 设置home和siteurl
+docker exec $W9_ID wp option update home "$WORDPRESS_ROOT_URL"
+docker exec $W9_ID wp option update siteurl "$WORDPRESS_ROOT_URL"
