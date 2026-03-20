@@ -47,9 +47,9 @@ RUN echo "* * * * * www-data /usr/local/bin/php /var/www/html/admin/cli/cron.php
     >> /etc/crontab
 
 COPY docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 EXPOSE 80
 
-ENTRYPOINT ["docker-entrypoint.sh"]
+ENTRYPOINT ["entrypoint.sh"]
 CMD ["apache2-foreground"]
