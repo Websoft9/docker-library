@@ -46,7 +46,7 @@ RUN curl ${CURL_PROXY:+--proxy "$CURL_PROXY"} -fsSL -o /tmp/moodle.zip \
 RUN echo "* * * * * www-data /usr/local/bin/php /var/www/html/admin/cli/cron.php >/dev/null 2>&1" \
     >> /etc/crontab
 
-COPY docker-entrypoint.sh /usr/local/bin/
+COPY entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 EXPOSE 80
