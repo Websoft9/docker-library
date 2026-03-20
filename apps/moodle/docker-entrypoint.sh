@@ -15,6 +15,9 @@ set -euo pipefail
 : "${MOODLE_SITE_NAME:=Moodle Learning Platform}"
 
 # Start cron daemon (runs in background, handles /etc/crontab)
+# Remove stale pid file that persists across container restarts (writable layer is preserved),
+# which would cause cron to refuse to start and exit non-zero, triggering set -e.
+rm -f /var/run/cron.pid 2>/dev/null || true
 cron
 
 # Restore config.php from moodledata if it was persisted after a previous install
