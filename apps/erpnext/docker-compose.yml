@@ -43,44 +43,18 @@ services:
     image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID-create-site
     restart: none
+    env_file:
+      - .env
     volumes:
       - apps:/home/frappe/frappe-bench/apps
       - env:/home/frappe/frappe-bench/env
       - sites:/home/frappe/frappe-bench/sites
       - logs:/home/frappe/frappe-bench/logs
+      - ./src/create-site.sh:/usr/local/bin/create-site.sh
+      - ./src/hrms:/opt/hrms-src:ro
     entrypoint:
       - bash
-      - -c
-    command:
-      - >
-        set -e; wait-for-it -t 120 $W9_ID-mariadb:3306; wait-for-it -t 120 $W9_ID-redis-cache:6379; wait-for-it -t 120 $W9_ID-redis-queue:6379; export start=`date +%s`; until [[ -n `grep -hs ^ sites/common_site_config.json | jq -r ".db_host // empty"` ]] && \
-          [[ -n `grep -hs ^ sites/common_site_config.json | jq -r ".redis_cache // empty"` ]] && \
-          [[ -n `grep -hs ^ sites/common_site_config.json | jq -r ".redis_queue // empty"` ]];
-        do
-          echo "Waiting for sites/common_site_config.json to be created";
-          sleep 5;
-          if (( `date +%s`-start > 120 )); then
-            echo "could not find sites/common_site_config.json with required keys";
-            exit 1
-          fi
-        done; echo "sites/common_site_config.json found"; if [ ! -d sites/frontend ]; then
-          bench new-site --mariadb-user-host-login-scope='%' --admin-password=$W9_LOGIN_PASSWORD --db-root-username=root --db-root-password=$W9_LOGIN_PASSWORD --install-app erpnext --set-default frontend;
-        else
-          echo "Site frontend already exists, skip new-site";
-        fi; if [ ! -d apps/hrms ]; then
-          bench get-app --branch $W9_HRMS_BRANCH hrms;
-        fi; bench pip install -e apps/hrms; ls -1 apps > sites/apps.txt; if ! bench --site frontend list-apps | grep -qx hrms; then
-          bench --site frontend install-app hrms;
-        else
-          echo "HRMS already installed on frontend";
-        fi; mkdir -p sites/assets; rm -rf sites/assets/hrms; cp -a /home/frappe/frappe-bench/apps/hrms/hrms/public sites/assets/hrms; if command -v node >/dev/null 2>&1; then
-          bench build --app hrms;
-        else
-          echo "node not found, skip bench build --app hrms";
-        fi; if [ ! -f sites/assets/hrms/images/frappe-hr-logo.svg ]; then
-          echo "ERROR: HRMS asset missing after build: sites/assets/hrms/images/frappe-hr-logo.svg";
-          exit 1;
-        fi; bench --site frontend migrate; bench --site frontend clear-cache; bench --site frontend clear-website-cache;
+      - /usr/local/bin/create-site.sh
 
   mariadb:
     image: mariadb:$W9_DB_VERSION
@@ -112,7 +86,13 @@ services:
     env_file:
       - .env
     command:
-      - nginx-entrypoint.sh
+      - bash
+      - -c
+      - >
+        set -e; cd /home/frappe/frappe-bench; if [ -d apps/hrms/hrms/public ]; then
+          mkdir -p sites/assets/hrms;
+          cp -a apps/hrms/hrms/public/. sites/assets/hrms/;
+        fi; exec nginx-entrypoint.sh
     environment:
       BACKEND: $W9_ID-backend:8000
       FRAPPE_SITE_NAME_HEADER: frontend
