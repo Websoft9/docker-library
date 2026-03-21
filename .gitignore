@@ -7,3 +7,7 @@ mk.sh
 
 .claude
 _bmad-output
+
+# Pre-downloaded app sources (large, user-managed, not version-controlled)
+apps/erpnext/src/hrms/*
+!apps/erpnext/src/hrms/.gitkeep
