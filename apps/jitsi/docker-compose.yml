@@ -1,6 +1,5 @@
 # image: https://hub.docker.com/r/jitsi/web/
 # compose: https://github.com/jitsi/docker-jitsi-meet
-version: '3.8'
 
 services:
     # Frontend
@@ -22,13 +21,19 @@ services:
             - AUDIO_QUALITY_OPUS_BITRATE
             - AUTO_CAPTION_ON_RECORD
             - BRANDING_DATA_URL
+            - BWE_ESTIMATOR_ENGINE
             - BOSH_RELATIVE
             - CHROME_EXTENSION_BANNER_JSON
+            - CODEC_ORDER_JVB
+            - CODEC_ORDER_JVB_MOBILE
+            - CODEC_ORDER_P2P
+            - CODEC_ORDER_P2P_MOBILE
             - COLIBRI_WEBSOCKET_PORT
             - COLIBRI_WEBSOCKET_JVB_LOOKUP_NAME
             - COLIBRI_WEBSOCKET_REGEX
             - CONFCODE_URL
             - CORS_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN
+            - CSP_HEADER
             - DEFAULT_LANGUAGE
             - DEPLOYMENTINFO_ENVIRONMENT
             - DEPLOYMENTINFO_ENVIRONMENT_TYPE
@@ -57,7 +62,9 @@ services:
             - DROPBOX_APPKEY
             - DROPBOX_REDIRECT_URI
             - DYNAMIC_BRANDING_URL
+            - ENABLE_ADAPTIVE_MODE
             - ENABLE_AUDIO_PROCESSING
+            - ENABLE_AUTOMATIC_GAIN_CONTROL
             - ENABLE_AUTH
             - ENABLE_AUTH_DOMAIN
             - ENABLE_BREAKOUT_ROOMS
@@ -98,6 +105,7 @@ services:
             - ENABLE_TALK_WHILE_MUTED
             - ENABLE_TCC
             - ENABLE_TRANSCRIPTIONS
+            - ENABLE_VLA
             - ENABLE_XMPP_WEBSOCKET
             - ENABLE_JAAS_COMPONENTS
             - ETHERPAD_PUBLIC_URL
@@ -115,9 +123,11 @@ services:
             - LETSENCRYPT_DOMAIN
             - LETSENCRYPT_EMAIL
             - LETSENCRYPT_USE_STAGING
+            - LETSENCRYPT_ACME_SERVER
             - MATOMO_ENDPOINT
             - MATOMO_SITE_ID
             - MICROSOFT_API_APP_CLIENT_ID
+            - NGINX_KEEPALIVE_TIMEOUT
             - NGINX_RESOLVER
             - NGINX_WORKER_PROCESSES
             - NGINX_WORKER_CONNECTIONS
@@ -125,10 +135,18 @@ services:
             - PREFERRED_LANGUAGE
             - PUBLIC_URL
             - P2P_PREFERRED_CODEC
+            - P2P_STUN_SERVERS
             - RESOLUTION
             - RESOLUTION_MIN
             - RESOLUTION_WIDTH
             - RESOLUTION_WIDTH_MIN
+            - RTCSTATS_ENABLED
+            - RTCSTATS_STORE_LOGS
+            - RTCSTATS_POLL_INTERVAL
+            - RTCSTATS_SEND_SDP
+            - RTCSTATS_URL_BASE
+            - RTC_VISUALIZER_URL_BASE
+            - RTC_VISUALIZER_PATH
             - START_AUDIO_MUTED
             - START_AUDIO_ONLY
             - START_SILENT
@@ -171,6 +189,7 @@ services:
             - XMPP_BOSH_URL_BASE
             - XMPP_DOMAIN
             - XMPP_GUEST_DOMAIN
+            - XMPP_HIDDEN_DOMAIN
             - XMPP_MUC_DOMAIN
             - XMPP_RECORDER_DOMAIN
             - XMPP_PORT
@@ -203,6 +222,7 @@ services:
             - ENABLE_IPV6
             - ENABLE_LOBBY
             - ENABLE_RECORDING
+            - ENABLE_TRANSCRIPTIONS
             - ENABLE_S2S
             - ENABLE_VISITORS
             - ENABLE_XMPP_WEBSOCKET
@@ -222,6 +242,8 @@ services:
             - JIBRI_XMPP_PASSWORD
             - JICOFO_AUTH_PASSWORD
             - JICOFO_COMPONENT_SECRET
+            - JIGASI_TRANSCRIBER_PASSWORD
+            - JIGASI_TRANSCRIBER_USER
             - JIGASI_XMPP_USER
             - JIGASI_XMPP_PASSWORD
             - JVB_AUTH_USER
@@ -262,7 +284,14 @@ services:
             - PROSODY_C2S_REQUIRE_ENCRYPTION
             - PROSODY_RESERVATION_ENABLED
             - PROSODY_RESERVATION_REST_BASE_URL
+            - PROSODY_DISABLE_C2S_LIMIT
+            - PROSODY_DISABLE_S2S_LIMIT
+            - PROSODY_ENABLE_FILTER_MESSAGES
+            - PROSODY_ENABLE_MUC_RESOURCE_VALIDATE
+            - PROSODY_MUC_RESOURCE_VALIDATE_ANONYMOUS_STRICT
+            - PROSODY_MUC_RESOURCE_VALIDATE_ANON_METHODS
             - PROSODY_ENABLE_RATE_LIMITS
+            - PROSODY_ENABLE_RECORDING_METADATA
             - PROSODY_ENABLE_STANZA_COUNTS
             - PROSODY_ENABLE_S2S
             - PROSODY_ENABLE_METRICS
@@ -281,20 +310,25 @@ services:
             - PROSODY_TRUSTED_PROXIES
             - PROSODY_VISITOR_INDEX
             - PROSODY_VISITORS_MUC_PREFIX
+            - PROSODY_VISITORS_S2S_VHOSTS
             - PUBLIC_URL
             - STUN_HOST
             - STUN_PORT
             - TURN_CREDENTIALS
+            - TURN_USERNAME
+            - TURN_PASSWORD
             - TURN_HOST
             - TURNS_HOST
             - TURN_PORT
             - TURNS_PORT
             - TURN_TRANSPORT
+            - TURN_TTL
             - TZ
             - VISITORS_MAX_VISITORS_PER_NODE
             - VISITORS_XMPP_DOMAIN
             - VISITORS_XMPP_SERVER
             - VISITORS_XMPP_PORT
+            - WAIT_FOR_HOST_DISABLE_AUTO_OWNERS
             - XMPP_BREAKOUT_MUC_MODULES
             - XMPP_CONFIGURATION
             - XMPP_DOMAIN
@@ -307,6 +341,7 @@ services:
             - XMPP_MUC_MODULES
             - XMPP_MUC_CONFIGURATION
             - XMPP_INTERNAL_MUC_MODULES
+            - XMPP_HIDDEN_DOMAIN
             - XMPP_RECORDER_DOMAIN
             - XMPP_PORT
             - XMPP_SERVER_S2S_PORT
@@ -331,6 +366,7 @@ services:
             - BRIDGE_STRESS_THRESHOLD
             - ENABLE_AUTH
             - ENABLE_AUTO_OWNER
+            - ENABLE_MODERATOR_CHECKS
             - ENABLE_CODEC_VP8
             - ENABLE_CODEC_VP9
             - ENABLE_CODEC_AV1
@@ -341,6 +377,8 @@ services:
             - ENABLE_OCTO_SCTP
             - ENABLE_RECORDING
             - ENABLE_SCTP
+            - ENABLE_SHARED_DOCUMENT_RANDOM_NAME
+            - ENABLE_TRANSCRIPTIONS
             - ENABLE_VISITORS
             - ENABLE_AUTO_LOGIN
             - JICOFO_AUTH_LIFETIME
@@ -357,11 +395,18 @@ services:
             - JICOFO_CONF_STRIP_SIMULCAST
             - JICOFO_CONF_SSRC_REWRITING
             - JICOFO_ENABLE_HEALTH_CHECKS
+            - JICOFO_ENABLE_ICE_FAILURE_DETECTION
+            - JICOFO_ENABLE_LOAD_REDISTRIBUTION
             - JICOFO_ENABLE_REST
             - JICOFO_HEALTH_CHECKS_USE_PRESENCE
+            - JICOFO_ICE_FAILURE_INTERVAL
+            - JICOFO_ICE_FAILURE_MIN_ENDPOINTS
+            - JICOFO_ICE_FAILURE_THRESHOLD
             - JICOFO_MAX_MEMORY
             - JICOFO_MULTI_STREAM_BACKWARD_COMPAT
             - JICOFO_OCTO_REGION
+            - JICOFO_RESTART_REQUEST_MAX
+            - JICOFO_RESTART_REQUEST_INTERVAL
             - JICOFO_TRUSTED_DOMAINS
             - JIBRI_BREWERY_MUC
             - JIBRI_REQUEST_RETRIES
@@ -389,6 +434,7 @@ services:
             - XMPP_DOMAIN
             - XMPP_AUTH_DOMAIN
             - XMPP_INTERNAL_MUC_DOMAIN
+            - XMPP_HIDDEN_DOMAIN
             - XMPP_MUC_DOMAIN
             - XMPP_RECORDER_DOMAIN
             - XMPP_SERVER
@@ -403,8 +449,8 @@ services:
         image: jitsi/jvb:${W9_VERSION}
         container_name: $W9_ID-jvb
         restart: unless-stopped
-        # ports:
-        #     - '${JVB_PORT:-10000}:${JVB_PORT:-10000}/udp'
+        ports:
+            - '${W9_UDP_PORT_SET:-10000}:${W9_UDP_PORT_SET:-10000}/udp'
         #     - '127.0.0.1:${JVB_COLIBRI_PORT:-8080}:8080'
         volumes:
             - jvb_config:/config:Z
@@ -418,6 +464,7 @@ services:
             - AUTOSCALER_SIDECAR_REGION
             - AUTOSCALER_SIDECAR_SHUTDOWN_POLLING_INTERVAL
             - AUTOSCALER_SIDECAR_STATS_POLLING_INTERVAL
+            - DISABLE_AWS_HARVESTER
             - DOCKER_HOST_ADDRESS
             - ENABLE_COLIBRI_WEBSOCKET
             - ENABLE_JVB_XMPP_SERVER
@@ -432,7 +479,7 @@ services:
             - JVB_DISABLE_STUN
             - JVB_DISABLE_XMPP
             - JVB_INSTANCE_ID
-            - JVB_PORT
+            - JVB_PORT=${W9_UDP_PORT_SET:-10000}
             - JVB_MUC_NICKNAME
             - JVB_STUN_SERVERS
             - JVB_LOG_FILE
