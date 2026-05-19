@@ -10,6 +10,7 @@ services:
     ports:
       - "${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}"
     volumes:
+      - moodle_app:/var/www/html
       - moodle_data:/var/moodledata
       - ./src/php.ini:/usr/local/etc/php/conf.d/moodle.ini
     depends_on:
@@ -33,6 +34,7 @@ services:
       start_period: 30s
 
 volumes:
+  moodle_app:
   moodle_data:
   mariadb_data:
 

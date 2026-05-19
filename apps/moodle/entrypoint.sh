@@ -20,10 +20,20 @@ set -euo pipefail
 rm -f /var/run/cron.pid 2>/dev/null || true
 cron
 
+# Initialize the mounted application directory from the image seed on first start.
+if [ ! -f /var/www/html/public/index.php ]; then
+    echo "Initializing Moodle application directory..."
+    mkdir -p /var/www/html
+    cp -a /usr/src/moodle/. /var/www/html/
+    chown -R www-data:www-data /var/www/html
+fi
+
 # Restore config.php from moodledata if it was persisted after a previous install
 if [ -f "${MOODLE_DATA}/.moodle_config.php" ] && [ ! -f /var/www/html/config.php ]; then
     echo "Restoring config.php from moodledata..."
     cp "${MOODLE_DATA}/.moodle_config.php" /var/www/html/config.php
+    chown www-data:www-data /var/www/html/config.php
+    chmod 644 /var/www/html/config.php
 fi
 
 # Wait for the database to be ready (max 120 seconds)
@@ -72,12 +82,14 @@ if [ ! -f /var/www/html/config.php ]; then
     # Persist config.php to moodledata so it survives container recreations
     cp /var/www/html/config.php "${MOODLE_DATA}/.moodle_config.php"
     chown www-data:www-data /var/www/html/config.php
+    chmod 644 /var/www/html/config.php
 elif php /var/www/html/admin/cli/upgrade.php --is-pending --non-interactive 2>/dev/null | grep -q "pending\|Upgrade"; then
     echo "Database upgrade pending, running upgrade..."
     php /var/www/html/admin/cli/upgrade.php --non-interactive
     echo "Moodle upgrade complete."
     cp /var/www/html/config.php "${MOODLE_DATA}/.moodle_config.php"
     chown www-data:www-data /var/www/html/config.php
+    chmod 644 /var/www/html/config.php
 fi
 
 exec "$@"
