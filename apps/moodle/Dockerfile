@@ -11,6 +11,7 @@ LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
     org.opencontainers.image.version="5.1.3"
 
 ENV MOODLE_VERSION=5.1.3 \
+    MOODLE_SRC=/usr/src/moodle \
     MOODLE_DATA=/var/moodledata \
     APACHE_DOCUMENT_ROOT=/var/www/html/public
 
@@ -34,13 +35,14 @@ RUN mkdir -p ${MOODLE_DATA} \
 # For CI/CD: no proxy needed. For local builds behind a firewall:
 #   docker build --network=host --build-arg CURL_PROXY=socks5h://127.0.0.1:1080 ...
 ARG CURL_PROXY=
-WORKDIR /var/www/html
+WORKDIR ${MOODLE_SRC}
 RUN curl ${CURL_PROXY:+--proxy "$CURL_PROXY"} -fsSL -o /tmp/moodle.zip \
     "https://packaging.moodle.org/stable501/moodle-${MOODLE_VERSION}.zip" \
     && unzip -q /tmp/moodle.zip -d /tmp/moodle_src \
-    && cp -a /tmp/moodle_src/moodle/. /var/www/html/ \
+    && mkdir -p ${MOODLE_SRC} /var/www/html \
+    && cp -a /tmp/moodle_src/moodle/. ${MOODLE_SRC}/ \
     && rm -rf /tmp/moodle.zip /tmp/moodle_src \
-    && chown -R www-data:www-data /var/www/html
+    && chown -R www-data:www-data ${MOODLE_SRC} /var/www/html
 
 # Moodle scheduled task (cron)
 RUN echo "* * * * * www-data /usr/local/bin/php /var/www/html/admin/cli/cron.php >/dev/null 2>&1" \
