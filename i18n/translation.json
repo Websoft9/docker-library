@@ -363,6 +363,14 @@
         "PROXY PORT",
         "代理端口"
     ],
+    "W9_PROXY_REMOTING_PORT_SET": [
+        "RocketMQ Proxy Remoting Port",
+        "RocketMQ Proxy Remoting 端口"
+    ],
+    "W9_PROXY_GRPC_PORT_SET": [
+        "RocketMQ Proxy gRPC Port",
+        "RocketMQ Proxy gRPC 端口"
+    ],
     "W9_LOGIN_ConnectURL": [
         "LOGIN OONNECT URL",
         "登陆连接地址"
