@@ -8,46 +8,54 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}-nameserver
     restart: unless-stopped
-    # ports:
-    #   - 9876:9876
+    ports:
+      - ${W9_NAMESRV_PORT_SET}:9876
     command: sh mqnamesrv
+
   broker:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}-broker
     restart: unless-stopped
     ports:
-      - ${W9_BROKER_PORT_SET}:10909
-      # - 10911:10911
-      # - 10912:10912
+      - ${W9_BROKER_VIP_PORT_SET}:10909
+      - ${W9_BROKER_PORT_SET}:10911
+      - ${W9_BROKER_HA_PORT_SET}:10912
     environment:
       - NAMESRV_ADDR=${W9_ID}-nameserver:9876
+    volumes:
+      - rocketmq_home:/home/rocketmq
     depends_on:
       - namesrv
     command: sh mqbroker
+
   proxy:
-    image: apache/rocketmq:5.2.0
+    image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     env_file: .env
     depends_on:
       - broker
       - namesrv
     ports:
-      - ${W9_HTTP_PORT_SET}:8080
-      # - 8081:8081
+      - ${W9_PROXY_REMOTING_PORT_SET}:8080
+      - ${W9_PROXY_GRPC_PORT_SET}:8081
     restart: unless-stopped
     environment:
       - NAMESRV_ADDR=${W9_ID}-nameserver:9876
     command: sh mqproxy
-  # dashboard:
-  #   image: apacherocketmq/rocketmq-dashboard:latest
-  #   container_name: ${W9_ID}-dashboard
-  #   depends_on:
-  #     - namesrv
-  #   ports:
-  #     - ${W9_DASHBOARD_PORT_SET}:8080
-  #   restart: unless-stopped
-  #   environment:
-  #     - JAVA_OPTS=-Drocketmq.namesrv.addr=${W9_ID}-rmqnamesrv:9876
+
+  dashboard:
+    image: apacherocketmq/rocketmq-dashboard:${W9_DASHBOARD_VERSION}
+    container_name: ${W9_ID}-dashboard
+    depends_on:
+      - namesrv
+    ports:
+      - ${W9_DASHBOARD_PORT_SET}:8082
+    restart: unless-stopped
+    environment:
+      - JAVA_OPTS=-Drocketmq.namesrv.addr=${W9_ID}-nameserver:9876
+
+volumes:
+  rocketmq_home:
       
 networks:
   default:
