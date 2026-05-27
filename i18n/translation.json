@@ -438,5 +438,9 @@
     "W9_SMTP_PORT_SET": [
         "SMTP PORT",
         "SMTP 端口"
+    ],
+    "W9_BRIDGE_PORT_SET": [
+        "",
+        ""
     ]
 }
