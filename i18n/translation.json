@@ -376,8 +376,8 @@
         "登陆连接地址"
     ],
     "W9_BROKER_PORT_SET": [
-        "BROKER PORT",
-        "代理监听端口"
+        "RocketMQ Broker Main Port",
+        "RocketMQ Broker 主端口"
     ],
     "W9_CONTAINER_PT_INIT_SET": [
         "CONTAINER PORT NEED EXPOSED",
@@ -440,7 +440,19 @@
         "SMTP 端口"
     ],
     "W9_BRIDGE_PORT_SET": [
-        "",
-        ""
+        "Bridge Control Port",
+        "桥接控制端口"
+    ],
+    "W9_NAMESRV_PORT_SET": [
+        "RocketMQ NameServer Port",
+        "RocketMQ NameServer 端口"
+    ],
+    "W9_BROKER_VIP_PORT_SET": [
+        "RocketMQ Broker VIP Port",
+        "RocketMQ Broker VIP 端口"
+    ],
+    "W9_BROKER_HA_PORT_SET": [
+        "RocketMQ Broker HA Port",
+        "RocketMQ Broker HA 端口"
     ]
 }
