@@ -24,10 +24,9 @@ services:
       - NAMESRV_ADDR=${W9_ID}-nameserver:9876
     volumes:
       - rocketmq_home:/home/rocketmq
-      - ./src/broker.conf:/home/rocketmq/rocketmq-${W9_VERSION}/conf/broker.conf
     depends_on:
       - namesrv
-    command: sh mqbroker -c /home/rocketmq/rocketmq-${W9_VERSION}/conf/broker.conf
+    command: sh mqbroker
 
   proxy:
     image: ${W9_REPO}:${W9_VERSION}
