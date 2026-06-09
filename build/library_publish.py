@@ -22,6 +22,7 @@ CHANNEL_PACKAGE_NAMES = {
     "rc": "library-rc.zip",
     "release": "library-latest.zip",
 }
+V2_FULL_PACKAGE_BASENAME = "library"
 CATALOG_FILE_NAMES = (
     "catalog_en.json",
     "catalog_zh.json",
@@ -115,6 +116,14 @@ def summarize_versions(edition_list: list[dict]) -> list[str]:
     return versions
 
 
+def v2_full_package_names(channel: str, dataset_version: str) -> tuple[str, str]:
+    return (f"{V2_FULL_PACKAGE_BASENAME}-{dataset_version}.zip", f"{V2_FULL_PACKAGE_BASENAME}-{channel}.zip")
+
+
+def v2_app_package_names(dataset_version: str) -> tuple[str, str]:
+    return (f"{dataset_version}.zip", "latest.zip")
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -172,19 +181,39 @@ def current_app_fingerprint(app_dir: Path) -> str:
     return digest.hexdigest()
 
 
+def build_app_package_entry(app_name: str, dataset_version: str) -> dict:
+    versioned_name, latest_name = v2_app_package_names(dataset_version)
+    app_base = f"apps/{app_name}"
+    return {
+        "versioned": f"{app_base}/{versioned_name}",
+        "latest": f"{app_base}/{latest_name}",
+    }
+
+
+def build_app_checksum_entry(app_name: str, dataset_version: str) -> dict:
+    package_entry = build_app_package_entry(app_name, dataset_version)
+    return {
+        "versioned": f"{package_entry['versioned']}.sha256",
+        "latest": f"{package_entry['latest']}.sha256",
+    }
+
+
 def build_apps_index(dataset_version: str, channel: str, generated_at: str) -> dict:
     apps = []
     for app_dir in sorted(path for path in APPS_DIR.iterdir() if path.is_dir()):
         variables = load_variables_json(app_dir)
+        app_name = app_dir.name
         apps.append(
             {
-                "app": app_dir.name,
-                "name": variables.get("name", app_dir.name),
-                "trademark": variables.get("trademark", variables.get("name", app_dir.name)),
+                "app": app_name,
+                "name": variables.get("name", app_name),
+                "trademark": variables.get("trademark", variables.get("name", app_name)),
                 "release": variables.get("release"),
                 "versions": summarize_versions(variables.get("edition", [])),
-                "path": f"apps/{app_dir.name}",
+                "path": f"apps/{app_name}",
                 "hash": current_app_fingerprint(app_dir),
+                "package": build_app_package_entry(app_name, dataset_version),
+                "checksum": build_app_checksum_entry(app_name, dataset_version),
             }
         )
 
@@ -260,7 +289,7 @@ def build_apps_delta(
 def build_library_manifest(
     dataset_version: str,
     channel: str,
-    package_name: str,
+    full_package_names: dict,
     apps_index_name: str,
     apps_delta_name: str,
     checksum_names: dict,
@@ -270,9 +299,11 @@ def build_library_manifest(
         "schemaVersion": "1",
         "datasetVersion": dataset_version,
         "channel": channel,
-        "libraryPackage": package_name,
+        "fullPackage": full_package_names,
         "appsIndex": apps_index_name,
         "appsDelta": apps_delta_name,
+        "appPackagesBase": "apps/",
+        "supportsPartialUpdate": True,
         "checksum": checksum_names,
         "generatedAt": generated_at,
     }
@@ -373,7 +404,8 @@ def validate_catalog_artifacts(output_dir: Path, manifest: dict) -> None:
 
 def validate_library_artifacts(output_dir: Path, manifest: dict) -> None:
     for name in (
-        manifest["libraryPackage"],
+        manifest["fullPackage"]["versioned"],
+        manifest["fullPackage"]["latest"],
         manifest["appsIndex"],
         manifest["appsDelta"],
         "manifest.json",
@@ -389,6 +421,14 @@ def validate_library_artifacts(output_dir: Path, manifest: dict) -> None:
     for key in ("addedApps", "changedApps", "removedApps"):
         if key not in apps_delta or not isinstance(apps_delta[key], list):
             raise SystemExit(f"invalid apps delta structure: {key}")
+
+    apps_index = json.loads((output_dir / manifest["appsIndex"]).read_text(encoding="utf-8"))
+    for entry in apps_index.get("apps", []):
+        package = entry.get("package") or {}
+        checksum = entry.get("checksum") or {}
+        for path in (package.get("versioned"), package.get("latest"), checksum.get("versioned"), checksum.get("latest")):
+            if not path or not (output_dir / path).exists():
+                raise SystemExit(f"missing app package artifact: {entry.get('app')} -> {path}")
 
 
 def validate_appstore_artifacts(appstore_dir: Path) -> None:
@@ -506,12 +546,36 @@ def build_v2_appstore_artifacts(
 
     apps_index_name = f"apps-index-{dataset_version}.json"
     apps_delta_name = f"apps-delta-{from_version}-to-{dataset_version}.json"
+    full_dir = library_dir / "full"
+    apps_packages_dir = library_dir / "apps"
+    full_dir.mkdir(parents=True, exist_ok=True)
+    apps_packages_dir.mkdir(parents=True, exist_ok=True)
+
+    full_versioned_name, full_latest_name = v2_full_package_names(channel, dataset_version)
 
     with tempfile.TemporaryDirectory() as tmp_dir_name:
         tmp_dir = Path(tmp_dir_name)
         package_dir = tmp_dir / PACKAGE_ROOT_NAME
         copy_package_contents(package_dir, packaged_library_json)
-        create_zip_from_directory(package_dir, library_dir / package_name)
+        create_zip_from_directory(package_dir, full_dir / full_versioned_name)
+
+    shutil.copy2(full_dir / full_versioned_name, full_dir / full_latest_name)
+
+    for app_dir in sorted(path for path in APPS_DIR.iterdir() if path.is_dir()):
+        app_name = app_dir.name
+        app_output_dir = apps_packages_dir / app_name
+        app_output_dir.mkdir(parents=True, exist_ok=True)
+        app_versioned_name, app_latest_name = v2_app_package_names(dataset_version)
+
+        with tempfile.TemporaryDirectory() as tmp_dir_name:
+            tmp_dir = Path(tmp_dir_name)
+            app_package_root = tmp_dir / app_name
+            shutil.copytree(app_dir, app_package_root)
+            create_zip_from_directory(app_package_root, app_output_dir / app_versioned_name)
+
+        shutil.copy2(app_output_dir / app_versioned_name, app_output_dir / app_latest_name)
+        write_checksum_file(app_output_dir / app_versioned_name)
+        write_checksum_file(app_output_dir / app_latest_name)
 
     apps_index = build_apps_index(dataset_version, channel, generated_at)
     apps_delta = build_apps_delta(
@@ -526,7 +590,8 @@ def build_v2_appstore_artifacts(
     write_json(library_dir / apps_delta_name, apps_delta)
 
     library_checksums = {
-        "libraryPackage": write_checksum_file(library_dir / package_name),
+        "fullPackageVersioned": f"full/{write_checksum_file(full_dir / full_versioned_name)}",
+        "fullPackageLatest": f"full/{write_checksum_file(full_dir / full_latest_name)}",
         "appsIndex": write_checksum_file(library_dir / apps_index_name),
         "appsDelta": write_checksum_file(library_dir / apps_delta_name),
     }
@@ -534,7 +599,10 @@ def build_v2_appstore_artifacts(
     library_manifest = build_library_manifest(
         dataset_version=dataset_version,
         channel=channel,
-        package_name=package_name,
+        full_package_names={
+            "versioned": f"full/{full_versioned_name}",
+            "latest": f"full/{full_latest_name}",
+        },
         apps_index_name=apps_index_name,
         apps_delta_name=apps_delta_name,
         checksum_names=library_checksums,
@@ -558,7 +626,11 @@ def build_v2_appstore_artifacts(
         },
         "library": {
             "manifest": "library/manifest.json",
-            "libraryPackage": package_name,
+            "fullPackage": {
+                "versioned": f"full/{full_versioned_name}",
+                "latest": f"full/{full_latest_name}",
+            },
+            "appPackagesBase": "apps/",
             "appsIndex": apps_index_name,
             "appsDelta": apps_delta_name,
             "checksum": library_checksums,

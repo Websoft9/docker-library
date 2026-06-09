@@ -266,8 +266,17 @@
 1. `manifest.json`
 2. `apps-index-<datasetVersion>.json`
 3. `apps-delta-<fromVersion>-to-<toVersion>.json`
-4. `library` 主制品
-5. 上述文件对应 checksum
+4. `library` 全量主制品
+5. `apps/<app>` 级独立制品集合
+6. 上述文件对应 checksum
+
+补充要求：
+
+1. `library` 必须同时保留全量包与单 app 包两类输出
+2. 全量包用于首装、回退、灾备与旧客户端兼容
+3. 单 app 包用于新增 app 和变更 app 的网络增量分发
+4. 第一阶段单 app 制品粒度固定到 `apps/<app>`，不继续细化到 app 内文件级制品
+5. 单 app 制品应同时提供可覆盖的最新别名与不可变的版本化对象
 
 ### 6.4 legacy 输出
 
@@ -370,6 +379,27 @@ v2 workflow 的职责应为：
 4. `appstore` 根级所有子数据集都必须能通过根 manifest 追溯
 5. `catalog` 与 `library` 都必须有各自 manifest
 
+### 10.1 library 子目录建议结构
+
+为支持真正的 app 级增量分发，`library/` 下建议采用以下结构：
+
+1. `artifact/websoft9/v2/<channel>/appstore/library/manifest.json`
+2. `artifact/websoft9/v2/<channel>/appstore/library/apps-index-<datasetVersion>.json`
+3. `artifact/websoft9/v2/<channel>/appstore/library/apps-delta-<fromVersion>-to-<toVersion>.json`
+4. `artifact/websoft9/v2/<channel>/appstore/library/full/library-<datasetVersion>.zip`
+5. `artifact/websoft9/v2/<channel>/appstore/library/full/library-<channel>.zip`
+6. `artifact/websoft9/v2/<channel>/appstore/library/apps/<app>/<datasetVersion>.zip`
+7. `artifact/websoft9/v2/<channel>/appstore/library/apps/<app>/latest.zip`
+
+说明：
+
+1. `full/library-<datasetVersion>.zip` 是不可变的全量快照包
+2. `full/library-<channel>.zip` 是该通道下的全量最新别名，可被覆盖
+3. `apps/<app>/<datasetVersion>.zip` 是不可变的单 app 快照包
+4. `apps/<app>/latest.zip` 是该 app 在该通道下的最新别名，可被覆盖
+5. `latest` 类对象只承担最新指针语义，不承担审计与回滚语义
+6. 真正的审计、回滚与复现必须依赖版本化对象
+
 ## 11. 更新粒度
 
 第一阶段的更新粒度按子数据集分别定义。
@@ -400,6 +430,20 @@ v2 workflow 的职责应为：
 1. `addedApps`
 2. `changedApps`
 3. `removedApps`
+
+但需要明确区分两层语义：
+
+1. `apps-delta` 只负责表达 app 级变化范围
+2. 真正的增量载荷必须由单 app 制品承担
+
+因此客户端更新应采用如下优先级：
+
+1. 首装或本地状态损坏时，下载 `library` 全量包
+2. 已有旧版本且服务端提供单 app 制品时，只下载 `addedApps` 与 `changedApps` 对应的 app 包
+3. 对 `removedApps` 直接执行本地删除
+4. 任一单 app 更新失败时，可回退到全量包恢复
+
+结论：`apps-delta` 不是增量载荷本身；只有在服务端同时发布单 app 制品时，app 级增量更新才成立。
 
 ## 12. 版本语义
 
@@ -513,7 +557,7 @@ v2 workflow 的职责应为：
 1. `schemaVersion`
 2. `datasetVersion`
 3. `channel`
-4. `libraryPackage`
+4. `fullPackage`
 5. `appsIndex`
 6. `appsDelta`
 7. `checksum`
@@ -524,6 +568,9 @@ v2 workflow 的职责应为：
 1. `library` 必须被定义为独立可版本化的数据集
 2. 第一阶段即使输出仍较简，也必须通过 `library/manifest.json` 明确其契约版本边界
 3. 后续 `apps-index`、`apps-delta` 或包命名结构变化只能通过 `schemaVersion` 管理
+4. `library manifest` 必须同时暴露全量包入口与单 app 包基准路径
+5. `supportsPartialUpdate=true` 才表示客户端可以按 app 制品做网络增量更新
+6. 即使支持单 app 更新，仍必须保留全量包作为兜底恢复路径
 
 建议样例如下：
 
@@ -532,17 +579,41 @@ v2 workflow 的职责应为：
   "schemaVersion": "1",
   "datasetVersion": "2026.06.09.120000",
   "channel": "release",
-  "libraryPackage": "library-latest.zip",
+  "fullPackage": {
+    "versioned": "full/library-2026.06.09.120000.zip",
+    "latest": "full/library-release.zip"
+  },
   "appsIndex": "apps-index-2026.06.09.120000.json",
   "appsDelta": "apps-delta-2026.06.08.120000-to-2026.06.09.120000.json",
+  "appPackagesBase": "apps/",
+  "supportsPartialUpdate": true,
   "checksum": {
-    "libraryPackage": "library-latest.zip.sha256",
+    "fullPackageVersioned": "full/library-2026.06.09.120000.zip.sha256",
+    "fullPackageLatest": "full/library-release.zip.sha256",
     "appsIndex": "apps-index-2026.06.09.120000.json.sha256",
     "appsDelta": "apps-delta-2026.06.08.120000-to-2026.06.09.120000.json.sha256"
   },
   "generatedAt": "2026-06-09T12:00:00Z"
 }
 ```
+
+### 11.4 apps-index 扩展要求
+
+为支持单 app 下载，`apps-index` 中每个 app 条目建议最少包含：
+
+1. `app`
+2. `hash`
+3. `package.versioned`
+4. `package.latest`
+5. `checksum.versioned`
+6. `checksum.latest`
+
+说明：
+
+1. `package.versioned` 指向不可变单 app 包
+2. `package.latest` 指向该 app 的最新别名
+3. 新客户端优先读取 `package.versioned`，以获得更强一致性
+4. 只关心当前通道最新值的轻量客户端可读取 `package.latest`
 
 ## 14. 校验门禁
 
@@ -556,20 +627,22 @@ v2 workflow 的职责应为：
 6. `library.schemaVersion` 与 `library.datasetVersion` 可追溯
 7. `apps-index` 可生成
 8. `apps-delta` 可生成
-9. appstore 根 manifest 可生成
-10. appstore 根级 `schemaVersion` 与 `datasetVersion` 可追溯
-11. 所有 checksum 与实际文件一致
-12. R2 上传后的文件可访问
-13. legacy catalog 兼容输出可被完整生成
-14. legacy library 兼容输出可被完整生成
+9. 单 app 制品可按 app 级生成
+10. appstore 根 manifest 可生成
+11. appstore 根级 `schemaVersion` 与 `datasetVersion` 可追溯
+12. 所有 checksum 与实际文件一致
+13. R2 上传后的文件可访问
+14. legacy catalog 兼容输出可被完整生成
+15. legacy library 兼容输出可被完整生成
 
 建议以下情况直接失败：
 
 1. 任一必须制品缺失
 2. 任一 manifest 缺关键字段
 3. `apps-delta` 不符合 app 级结构
-4. checksum 不一致
-5. 根 manifest 无法追溯到 `catalog` 或 `library`
+4. 单 app 制品缺失或校验信息不可追溯
+5. checksum 不一致
+6. 根 manifest 无法追溯到 `catalog` 或 `library`
 
 ## 15. 回滚要求
 
@@ -580,8 +653,10 @@ v2 workflow 的职责应为：
 1. 每次发布保留历史 `appstore-manifest.json`
 2. 每次发布保留历史 `catalog` manifest 与对应 JSON
 3. 每次发布保留历史 `library` manifest、`apps-index`、`apps-delta`
-4. 每次发布保留 legacy catalog 与 legacy library 兼容制品
-5. 能根据历史根 manifest 找回同一次发布对应的 `catalog` 与 `library` 组合
+4. 每次发布保留历史全量 `library` 版本包
+5. 每次发布保留历史单 app 版本包
+6. 每次发布保留 legacy catalog 与 legacy library 兼容制品
+7. 能根据历史根 manifest 找回同一次发布对应的 `catalog` 与 `library` 组合
 
 ## 16. 与下游的契约
 
@@ -595,7 +670,7 @@ v2 workflow 的职责应为：
 
 ## 17. 第一阶段最小改造清单
 
-第一阶段最少只做下面十一件事：
+第一阶段最少只做下面十三件事：
 
 1. 保留 legacy workflow 并允许其在迁移窗口内继续运行
 2. 新增独立的 v2 workflow，专门发布 `appstore`
@@ -608,6 +683,8 @@ v2 workflow 的职责应为：
 9. 继续保留 legacy 兼容制品
 10. 为 `catalog`、`library` 和 `appstore` 根级补充 manifest 与 checksum
 11. 保持 `library` 更新粒度为 app 级
+12. 为 `library` 增加单 app 制品输出能力
+13. 为全量包与单 app 包同时保留版本化对象与最新别名
 
 ## 18. 结论
 
@@ -625,4 +702,5 @@ v2 workflow 的职责应为：
 8. 新增统一的 `appstore/catalog/library/manifests` 目录结构
 9. `catalog` 与 `library` 具有清晰的 `schemaVersion` 与 `datasetVersion` 边界
 10. `library` 更新粒度固定为 app 级
-11. 发布结果可通过根 manifest 追溯到完整发布集合
+11. `library` 同时提供全量包与单 app 包两类制品
+12. 发布结果可通过根 manifest 追溯到完整发布集合
