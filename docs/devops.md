@@ -388,17 +388,50 @@ v2 workflow 的职责应为：
 3. `artifact/websoft9/v2/<channel>/appstore/library/apps-delta-<fromVersion>-to-<toVersion>.json`
 4. `artifact/websoft9/v2/<channel>/appstore/library/full/library-<datasetVersion>.zip`
 5. `artifact/websoft9/v2/<channel>/appstore/library/full/library-<channel>.zip`
-6. `artifact/websoft9/v2/<channel>/appstore/library/apps/<app>/<datasetVersion>.zip`
+6. `artifact/websoft9/v2/<channel>/appstore/library/apps/<app>/<appVersion>.zip`
 7. `artifact/websoft9/v2/<channel>/appstore/library/apps/<app>/latest.zip`
 
 说明：
 
-1. `full/library-<datasetVersion>.zip` 是不可变的全量快照包
+1. `full/library-<datasetVersion>.zip` 是不可变的全量快照包，`<datasetVersion>` 使用全局发布时间戳
 2. `full/library-<channel>.zip` 是该通道下的全量最新别名，可被覆盖
-3. `apps/<app>/<datasetVersion>.zip` 是不可变的单 app 快照包
+3. `apps/<app>/<appVersion>.zip` 是不可变的单 app 快照包，**`<appVersion>` 使用该 app 内容指纹哈希的前 16 位十六进制字符，而非全局发布时间戳**
 4. `apps/<app>/latest.zip` 是该 app 在该通道下的最新别名，可被覆盖
 5. `latest` 类对象只承担最新指针语义，不承担审计与回滚语义
 6. 真正的审计、回滚与复现必须依赖版本化对象
+
+**`<appVersion>` 设计说明：**
+
+单 app 包的版本标识采用内容寻址（content-addressed）策略：
+
+- `<appVersion>` = SHA-256(`apps/<app>/` 下所有文件的内容 + 相对路径) 的前 16 位十六进制字符
+- 同一 app、同一内容 → 同一 `<appVersion>` → 文件名不变
+- 这确保了 **只有内容实际变更的 app 才产生新的版本化包**，未变更的 app 的已有版本化包无需重建、无需重新上传
+
+此字段在 `apps-index` 的 `hash` 字段中以完整 SHA-256 形式存储，`<appVersion>` 是其截断派生值。
+
+### 10.2 单 App 包构建优化
+
+为避免每次发布都重建全部 300+ 个 app 的单 app 包，构建流程采用按需构建策略：
+
+1. **首次发布**（无历史 `from_ref`）：为所有 app 构建单 app 包（全量冷启动）
+2. **增量发布**（存在历史 `from_ref`）：**仅**为 `apps-delta` 中的 `addedApps` 与 `changedApps` 构建单 app 包
+3. 未变更 app 的单 app 包不重新构建、不重新上传——R2 上已有文件保持不变
+
+此优化依赖两个前提：
+
+1. `<appVersion>` 使用内容哈希（内容不变 → 文件名不变 → 无需重建）
+2. R2 上传步骤采用**追加/覆盖模式**，而非同步删除模式（sync-with-delete），避免覆盖掉未变更 app 的已有包
+
+优化效果（以 300 个 app、每次变更 2 个为例）：
+
+| 指标 | 优化前 | 优化后 |
+|------|--------|--------|
+| 单 app zip 打包次数 | 300 | 2 |
+| R2 PUT 请求数（单 app 部分） | ~600 | ~4 |
+| 10 次发布后 R2 版本化包存量 | ~3000 | ~320 |
+
+注意：全量包 `full/library-<datasetVersion>.zip` 仍然每次发布都重建（包含所有 app），作为首装与灾备的兜底路径。
 
 ## 11. 更新粒度
 
