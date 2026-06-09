@@ -124,6 +124,15 @@ def v2_full_package_names(channel: str, dataset_version: str) -> tuple[str, str]
 APP_PACKAGE_NAME = "latest.zip"
 
 
+def _hash_content(*contents: str) -> str:
+    """Derive a short content-addressed version from one or more strings."""
+    digest = hashlib.sha256()
+    for c in contents:
+        digest.update(c.encode("utf-8"))
+        digest.update(b"\0")
+    return digest.hexdigest()[:16]
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -316,16 +325,21 @@ def build_catalog_manifest(dataset_version: str, checksum_names: dict, generated
     }
 
 
-def build_appstore_manifest(dataset_version: str, channel: str, generated_at: str) -> dict:
+def build_appstore_manifest(
+    dataset_version: str, channel: str, generated_at: str,
+    catalog_dsv: str, library_dsv: str,
+) -> dict:
     return {
         "schemaVersion": "1",
         "datasetVersion": dataset_version,
         "channel": channel,
         "catalog": {
             "manifest": "catalog/manifest.json",
+            "datasetVersion": catalog_dsv,
         },
         "library": {
             "manifest": "library/manifest.json",
+            "datasetVersion": library_dsv,
         },
         "generatedAt": generated_at,
     }
@@ -537,13 +551,14 @@ def build_v2_appstore_artifacts(
         elif file_name == "product_zh.json":
             catalog_checksums["productZh"] = write_checksum_file(destination)
 
-    catalog_manifest = build_catalog_manifest(dataset_version, catalog_checksums, generated_at)
+    catalog_checksum_values = ",".join(f"{k}={v}" for k, v in sorted(catalog_checksums.items()))
+    catalog_dsv = _hash_content(catalog_checksum_values)
+
+    catalog_manifest = build_catalog_manifest(catalog_dsv, catalog_checksums, generated_at)
     write_json(catalog_dir / "manifest.json", catalog_manifest)
     write_checksum_file(catalog_dir / "manifest.json")
     validate_catalog_artifacts(catalog_dir, catalog_manifest)
 
-    apps_index_name = f"apps-index-{dataset_version}.json"
-    apps_delta_name = f"apps-delta-{from_version}-to-{dataset_version}.json"
     full_dir = library_dir / "full"
     apps_packages_dir = library_dir / "apps"
     full_dir.mkdir(parents=True, exist_ok=True)
@@ -560,15 +575,21 @@ def build_v2_appstore_artifacts(
     shutil.copy2(full_dir / full_versioned_name, full_dir / full_latest_name)
 
     # ── library – compute index & delta BEFORE per-app zips ──
-    apps_index = build_apps_index(dataset_version, channel, generated_at)
+    apps_index = build_apps_index(catalog_dsv, channel, generated_at)
+    serialized_index = json.dumps(apps_index, sort_keys=True, ensure_ascii=False)
+    library_dsv = _hash_content(serialized_index)
+
     apps_delta = build_apps_delta(
         apps_index=apps_index,
         from_ref=from_ref,
         from_version=from_version,
-        to_version=dataset_version,
+        to_version=library_dsv,
         channel=channel,
         generated_at=generated_at,
     )
+
+    apps_index_name = f"apps-index-{library_dsv}.json"
+    apps_delta_name = f"apps-delta-{from_version}-to-{library_dsv}.json"
 
     # Determine which apps actually need (re)built packages.
     # --all-apps (first-publish seed) or from_ref=None both mean "build everything".
@@ -606,7 +627,7 @@ def build_v2_appstore_artifacts(
     }
 
     library_manifest = build_library_manifest(
-        dataset_version=dataset_version,
+        dataset_version=library_dsv,
         channel=channel,
         full_package_names={
             "versioned": f"full/{full_versioned_name}",
@@ -621,7 +642,8 @@ def build_v2_appstore_artifacts(
     write_checksum_file(library_dir / "manifest.json")
     validate_library_artifacts(library_dir, library_manifest, changed_app_names)
 
-    appstore_manifest = build_appstore_manifest(dataset_version, channel, generated_at)
+    appstore_dsv = _hash_content(catalog_dsv, library_dsv)
+    appstore_manifest = build_appstore_manifest(appstore_dsv, channel, generated_at, catalog_dsv, library_dsv)
     write_json(manifests_dir / "appstore-manifest.json", appstore_manifest)
     appstore_manifest_checksum = write_checksum_file(manifests_dir / "appstore-manifest.json")
     validate_appstore_artifacts(output_dir)
@@ -632,6 +654,7 @@ def build_v2_appstore_artifacts(
             "manifest": "catalog/manifest.json",
             "files": list(CATALOG_FILE_NAMES),
             "checksum": catalog_checksums,
+            "datasetVersion": catalog_dsv,
         },
         "library": {
             "manifest": "library/manifest.json",
@@ -643,10 +666,12 @@ def build_v2_appstore_artifacts(
             "appsIndex": apps_index_name,
             "appsDelta": apps_delta_name,
             "checksum": library_checksums,
+            "datasetVersion": library_dsv,
         },
         "appstore": {
             "manifest": "manifests/appstore-manifest.json",
             "checksum": appstore_manifest_checksum,
+            "datasetVersion": appstore_dsv,
         },
     }
 
