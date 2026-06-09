@@ -113,7 +113,7 @@ jobs:
           aws s3 sync \
             dist/appstore-publish/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/catalog \
             s3://artifact/websoft9/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/catalog \
-            --no-delete --endpoint-url "$AWS_ENDPOINT_URL"
+            --endpoint-url "$AWS_ENDPOINT_URL"
 
       - name: Upload v2 library metadata to Cloudflare R2
         env:
@@ -125,7 +125,7 @@ jobs:
             dist/appstore-publish/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/library \
             s3://artifact/websoft9/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/library \
             --exclude "apps/*" \
-            --no-delete --endpoint-url "$AWS_ENDPOINT_URL"
+            --endpoint-url "$AWS_ENDPOINT_URL"
 
       - name: Upload v2 per-app packages to Cloudflare R2 (additive only)
         env:
@@ -149,4 +149,4 @@ jobs:
           aws s3 sync \
             dist/appstore-publish/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/manifests \
             s3://artifact/websoft9/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/manifests \
-            --no-delete --endpoint-url "$AWS_ENDPOINT_URL"
+            --endpoint-url "$AWS_ENDPOINT_URL"
