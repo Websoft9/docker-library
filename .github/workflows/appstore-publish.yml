@@ -1,0 +1,96 @@
+name: Appstore Publish
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: Publish channel; rc is reserved for manual pre-release use
+        required: true
+        type: choice
+        options:
+          - dev
+          - rc
+          - release
+      from_ref:
+        description: Optional git ref used to calculate apps-delta
+        required: false
+        type: string
+
+jobs:
+  publish:
+    name: Build and publish appstore artifacts
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve publish channel
+        id: resolve_channel
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            if [[ "${{ github.ref_name }}" == "dev" ]]; then
+              channel="dev"
+            elif [[ "${{ github.ref_name }}" == "main" ]]; then
+              channel="release"
+            else
+              echo "Unsupported push branch: ${{ github.ref_name }}" >&2
+              exit 1
+            fi
+          else
+            channel="${{ inputs.channel }}"
+          fi
+
+          echo "channel=$channel" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: Fetch catalog inputs
+        env:
+          CONTENTFUL_GRAPHQL_TOKEN: ${{ secrets.CONTENTFUL_GRAPHQLTOKEN }}
+        run: |
+          python build/fetch_catalog.py \
+            --channel "${{ steps.resolve_channel.outputs.channel }}" \
+            --output-dir dist/catalog-source
+
+      - name: Build publish artifacts
+        run: |
+          args=(
+            --channel "${{ steps.resolve_channel.outputs.channel }}"
+            --output-dir dist/appstore-publish
+            --catalog-source-dir dist/catalog-source
+          )
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "${{ inputs.from_ref }}" ]]; then
+            args+=(--from-ref "${{ inputs.from_ref }}")
+          fi
+          python build/library_publish.py "${args[@]}"
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: appstore-publish-${{ steps.resolve_channel.outputs.channel }}
+          path: dist/appstore-publish
+
+      - name: Upload v2 artifacts to Cloudflare R2
+        uses: ryand56/r2-upload-action@latest
+        with:
+          r2-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          r2-access-key-id: ${{ secrets.CLOUDFLARE_R2_SECRET_ID }}
+          r2-secret-access-key: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
+          r2-bucket: artifact
+          source-dir: dist/appstore-publish/v2/${{ steps.resolve_channel.outputs.channel }}/appstore
+          destination-dir: ./websoft9/v2/${{ steps.resolve_channel.outputs.channel }}/appstore
