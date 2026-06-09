@@ -38,6 +38,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--catalog-source-dir", required=True)
     parser.add_argument("--from-ref", default=None)
     parser.add_argument("--library-version", default=None)
+    parser.add_argument("--all-apps", action="store_true", help="Build per-app packages for all apps (first-publish seed)")
     return parser.parse_args()
 
 
@@ -540,6 +541,7 @@ def build_v2_appstore_artifacts(
     from_version: str,
     channel: str,
     generated_at: str,
+    all_apps: bool = False,
 ) -> dict:
     catalog_dir = output_dir / "catalog"
     library_dir = output_dir / "library"
@@ -596,8 +598,8 @@ def build_v2_appstore_artifacts(
     )
 
     # Determine which apps actually need (re)built packages.
-    # On the very first publish (from_ref is None) every app is new.
-    if from_ref is None:
+    # --all-apps (first-publish seed) or from_ref=None both mean "build everything".
+    if all_apps or from_ref is None:
         changed_app_names: set[str] = {entry["app"] for entry in apps_index["apps"]}
     else:
         changed_app_names = set(apps_delta.get("addedApps", [])) | set(apps_delta.get("changedApps", []))
@@ -721,6 +723,7 @@ def main() -> int:
         from_version=from_version,
         channel=channel,
         generated_at=generated_at,
+        all_apps=args.all_apps,
     )
 
     print(

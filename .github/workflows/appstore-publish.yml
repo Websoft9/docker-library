@@ -67,6 +67,22 @@ jobs:
             --channel "${{ steps.resolve_channel.outputs.channel }}" \
             --output-dir dist/catalog-source
 
+      - name: Check if first v2 publish (R2 apps/ prefix empty)
+        id: check_seed
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_SECRET_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
+          AWS_ENDPOINT_URL: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
+        run: |
+          count=$(aws s3 ls "s3://artifact/websoft9/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/library/apps/" --recursive --endpoint-url "$AWS_ENDPOINT_URL" 2>/dev/null | wc -l)
+          if [ "$count" -eq 0 ]; then
+            echo "R2 apps/ prefix is empty — first publish, will seed all app packages"
+            echo "seed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "R2 apps/ prefix has $count objects — incremental publish"
+            echo "seed=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build publish artifacts
         run: |
           args=(
@@ -74,6 +90,9 @@ jobs:
             --output-dir dist/appstore-publish
             --catalog-source-dir dist/catalog-source
           )
+          if [[ "${{ steps.check_seed.outputs.seed }}" == "true" ]]; then
+            args+=(--all-apps)
+          fi
           if [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "${{ inputs.from_ref }}" ]]; then
             args+=(--from-ref "${{ inputs.from_ref }}")
           fi
@@ -85,12 +104,49 @@ jobs:
           name: appstore-publish-${{ steps.resolve_channel.outputs.channel }}
           path: dist/appstore-publish
 
-      - name: Upload v2 artifacts to Cloudflare R2
-        uses: ryand56/r2-upload-action@latest
-        with:
-          r2-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          r2-access-key-id: ${{ secrets.CLOUDFLARE_R2_SECRET_ID }}
-          r2-secret-access-key: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
-          r2-bucket: artifact
-          source-dir: dist/appstore-publish/v2/${{ steps.resolve_channel.outputs.channel }}/appstore
-          destination-dir: ./websoft9/v2/${{ steps.resolve_channel.outputs.channel }}/appstore
+      - name: Upload v2 catalog to Cloudflare R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_SECRET_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
+          AWS_ENDPOINT_URL: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
+        run: |
+          aws s3 sync \
+            dist/appstore-publish/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/catalog \
+            s3://artifact/websoft9/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/catalog \
+            --no-delete --endpoint-url "$AWS_ENDPOINT_URL"
+
+      - name: Upload v2 library metadata to Cloudflare R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_SECRET_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
+          AWS_ENDPOINT_URL: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
+        run: |
+          aws s3 sync \
+            dist/appstore-publish/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/library \
+            s3://artifact/websoft9/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/library \
+            --exclude "apps/*" \
+            --no-delete --endpoint-url "$AWS_ENDPOINT_URL"
+
+      - name: Upload v2 per-app packages to Cloudflare R2 (additive only)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_SECRET_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
+          AWS_ENDPOINT_URL: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
+        run: |
+          if [ -d "dist/appstore-publish/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/library/apps" ]; then
+            aws s3 cp --recursive \
+              dist/appstore-publish/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/library/apps \
+              s3://artifact/websoft9/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/library/apps \
+              --endpoint-url "$AWS_ENDPOINT_URL"
+          fi
+
+      - name: Upload v2 manifests to Cloudflare R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_SECRET_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
+          AWS_ENDPOINT_URL: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
+        run: |
+          aws s3 sync \
+            dist/appstore-publish/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/manifests \
+            s3://artifact/websoft9/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/manifests \
+            --no-delete --endpoint-url "$AWS_ENDPOINT_URL"
