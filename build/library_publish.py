@@ -121,23 +121,7 @@ def v2_full_package_names(channel: str, dataset_version: str) -> tuple[str, str]
     return (f"{V2_FULL_PACKAGE_BASENAME}-{dataset_version}.zip", f"{V2_FULL_PACKAGE_BASENAME}-{channel}.zip")
 
 
-def _app_version_from_hash(app_hash: str) -> str:
-    """Derive a stable, content-addressed version identifier from an app's fingerprint hash.
-
-    Using the content hash means the same app content always produces the same
-    versioned filename, so unchanged apps never need to be rebuilt or re-uploaded.
-    """
-    return app_hash[:16]
-
-
-def v2_app_package_names(app_version: str) -> tuple[str, str]:
-    """Return (versioned_zip_name, latest_zip_name) for a single app.
-
-    ``app_version`` should be a per-app content-derived identifier, not the
-    global publish timestamp, so that only actually-changed apps get new
-    versioned packages.
-    """
-    return (f"{app_version}.zip", "latest.zip")
+APP_PACKAGE_NAME = "latest.zip"
 
 
 def sha256_file(path: Path) -> str:
@@ -197,21 +181,12 @@ def current_app_fingerprint(app_dir: Path) -> str:
     return digest.hexdigest()
 
 
-def build_app_package_entry(app_name: str, app_version: str) -> dict:
-    versioned_name, latest_name = v2_app_package_names(app_version)
-    app_base = f"apps/{app_name}"
-    return {
-        "versioned": f"{app_base}/{versioned_name}",
-        "latest": f"{app_base}/{latest_name}",
-    }
+def build_app_package_entry(app_name: str) -> dict:
+    return {"latest": f"apps/{app_name}/{APP_PACKAGE_NAME}"}
 
 
-def build_app_checksum_entry(app_name: str, app_version: str) -> dict:
-    package_entry = build_app_package_entry(app_name, app_version)
-    return {
-        "versioned": f"{package_entry['versioned']}.sha256",
-        "latest": f"{package_entry['latest']}.sha256",
-    }
+def build_app_checksum_entry(app_name: str) -> dict:
+    return {"latest": f"apps/{app_name}/{APP_PACKAGE_NAME}.sha256"}
 
 
 def build_apps_index(dataset_version: str, channel: str, generated_at: str) -> dict:
@@ -219,8 +194,6 @@ def build_apps_index(dataset_version: str, channel: str, generated_at: str) -> d
     for app_dir in sorted(path for path in APPS_DIR.iterdir() if path.is_dir()):
         variables = load_variables_json(app_dir)
         app_name = app_dir.name
-        app_hash = current_app_fingerprint(app_dir)
-        app_version = _app_version_from_hash(app_hash)
         apps.append(
             {
                 "app": app_name,
@@ -229,9 +202,9 @@ def build_apps_index(dataset_version: str, channel: str, generated_at: str) -> d
                 "release": variables.get("release"),
                 "versions": summarize_versions(variables.get("edition", [])),
                 "path": f"apps/{app_name}",
-                "hash": app_hash,
-                "package": build_app_package_entry(app_name, app_version),
-                "checksum": build_app_checksum_entry(app_name, app_version),
+                "hash": current_app_fingerprint(app_dir),
+                "package": build_app_package_entry(app_name),
+                "checksum": build_app_checksum_entry(app_name),
             }
         )
 
@@ -450,7 +423,7 @@ def validate_library_artifacts(output_dir: Path, manifest: dict, changed_app_nam
             continue
         package = entry.get("package") or {}
         checksum = entry.get("checksum") or {}
-        for path in (package.get("versioned"), package.get("latest"), checksum.get("versioned"), checksum.get("latest")):
+        for path in (package.get("latest"), checksum.get("latest")):
             if not path or not (output_dir / path).exists():
                 raise SystemExit(f"missing app package artifact: {entry.get('app')} -> {path}")
 
@@ -610,13 +583,6 @@ def build_v2_appstore_artifacts(
         if app_name not in changed_app_names:
             continue
 
-        # Look up the app's content-derived version identifier from the index.
-        app_entry = next((e for e in apps_index["apps"] if e["app"] == app_name), None)
-        if app_entry is None:
-            continue
-        app_version = _app_version_from_hash(app_entry["hash"])
-        app_versioned_name, app_latest_name = v2_app_package_names(app_version)
-
         app_output_dir = apps_packages_dir / app_name
         app_output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -624,11 +590,9 @@ def build_v2_appstore_artifacts(
             tmp_dir = Path(tmp_dir_name)
             app_package_root = tmp_dir / app_name
             shutil.copytree(app_dir, app_package_root)
-            create_zip_from_directory(app_package_root, app_output_dir / app_versioned_name)
+            create_zip_from_directory(app_package_root, app_output_dir / APP_PACKAGE_NAME)
 
-        shutil.copy2(app_output_dir / app_versioned_name, app_output_dir / app_latest_name)
-        write_checksum_file(app_output_dir / app_versioned_name)
-        write_checksum_file(app_output_dir / app_latest_name)
+        write_checksum_file(app_output_dir / APP_PACKAGE_NAME)
 
     # ── library – write index, delta, manifest ───────────────
     write_json(library_dir / apps_index_name, apps_index)
