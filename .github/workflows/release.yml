@@ -2,6 +2,15 @@ name: Release to Github and artifact
 
 on:
   workflow_dispatch:
+    inputs:
+      library_version:
+        description: Optional legacy release version tag used for the versioned library zip and GitHub Release
+        required: false
+        type: string
+      from_ref:
+        description: Optional git ref used to calculate apps-delta
+        required: false
+        type: string
   repository_dispatch:
     types: [custom_event]
 
@@ -9,82 +18,100 @@ jobs:
   release:
     name: Release to github and artifact
     runs-on: ubuntu-latest
-    env:
-      CI: false
-      appname: library
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         name: Check out code
 
-      - name: Version convert
-        id: convert_version      
+      - name: Resolve release inputs
+        id: resolve_inputs
         run: |
-          curl https://raw.githubusercontent.com/Websoft9/websoft9/main/docker/apphub/Dockerfile -o Dockerfile
-
-          library_tag=$(grep 'ARG LIBRARY_VERSION' "Dockerfile" | cut -d'"' -f2 | xargs)
-          apphub_tag=$(grep 'LABEL version' "Dockerfile" | cut -d'"' -f2 | xargs)
-
-          if [[ "$apphub_tag" == *"-"* ]]; then
-            suffix="${apphub_tag#*-}"
-            library_tag_gh="${library_tag}-${suffix}"
-            echo "CHANNEL=dev" >> $GITHUB_ENV
-          else
-            library_tag_gh=$library_tag
-            echo "CHANNEL=release" >> $GITHUB_ENV
+          version="${{ inputs.library_version }}"
+          if [[ -z "$version" ]]; then
+            version="${{ github.event.client_payload.library_version }}"
           fi
+          if [[ -z "$version" ]]; then
+            version="$(date -u +%Y.%m.%d.%H%M%S)"
+          fi
+          from_ref="${{ inputs.from_ref }}"
+          if [[ -z "$from_ref" ]]; then
+            from_ref="${{ github.event.client_payload.from_ref }}"
+          fi
+          echo "library_version=$version" >> "$GITHUB_OUTPUT"
+          echo "from_ref=$from_ref" >> "$GITHUB_OUTPUT"
 
-          echo "LIBRARY_TAG=$library_tag" >> $GITHUB_ENV
-          echo "LIBRARY_TAG_GH=$library_tag_gh" >> $GITHUB_ENV
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-          jq --arg version "$library_tag_gh" '.Version = $version' library.json > temp.json && mv temp.json library.json
-
-      - name: Create Zip Archive for artifact
+      - name: Install Python dependencies
         run: |
-          mkdir ${{ env.appname }} artifacts
-          cp -r apps ${{ env.appname }}
-          cp -r docs ${{ env.appname }}
-          cp -r template ${{ env.appname }}
-          cp *.md ${{ env.appname }}
-          cp ${{ env.appname }}.json ${{ env.appname }}
-          cp ${{ env.appname }}.json CHANGELOG.md artifacts
-          zip -r ${{ env.appname }}-${{ env.LIBRARY_TAG }}.zip ${{ env.appname }}
-          cp ${{ env.appname }}-${{ env.LIBRARY_TAG }}.zip artifacts
-          cp artifacts/${{ env.appname }}-${{ env.LIBRARY_TAG }}.zip artifacts/${{ env.appname }}-latest.zip
+          python -m pip install --upgrade pip
+          pip install requests
 
-      - name: Upload To cloudflare r2
+      - name: Fetch catalog inputs
+        env:
+          CONTENTFUL_GRAPHQL_TOKEN: ${{ secrets.CONTENTFUL_GRAPHQLTOKEN }}
+        run: |
+          python build/fetch_catalog.py \
+            --channel release \
+            --output-dir dist/catalog-source
+
+      - name: Build legacy and v2 artifacts
+        run: |
+          args=(
+            --channel release
+            --output-dir dist/publish
+            --catalog-source-dir dist/catalog-source
+            --library-version "${{ steps.resolve_inputs.outputs.library_version }}"
+          )
+          if [[ -n "${{ steps.resolve_inputs.outputs.from_ref }}" ]]; then
+            args+=(--from-ref "${{ steps.resolve_inputs.outputs.from_ref }}")
+          fi
+          python build/library_publish.py "${args[@]}"
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: publish-release
+          path: dist/publish
+
+      - name: Upload legacy library to Cloudflare R2
         uses: ryand56/r2-upload-action@latest
         with:
           r2-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           r2-access-key-id: ${{ secrets.CLOUDFLARE_R2_SECRET_ID }}
           r2-secret-access-key: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
           r2-bucket: artifact
-          source-dir: artifacts
-          destination-dir: ./${{ env.CHANNEL }}/websoft9/plugin/${{ env.appname }}
+          source-dir: dist/publish/legacy/release/library
+          destination-dir: ./release/websoft9/plugin/library
+
+      - name: Upload legacy media to Cloudflare R2
+        uses: ryand56/r2-upload-action@latest
+        with:
+          r2-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          r2-access-key-id: ${{ secrets.CLOUDFLARE_R2_SECRET_ID }}
+          r2-secret-access-key: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
+          r2-bucket: artifact
+          source-dir: dist/publish/legacy/release/media
+          destination-dir: ./release/websoft9/plugin/media
           
       - name: Purge Cloudflare Cache
         uses: jakejarvis/cloudflare-purge-action@master
         env:
           CLOUDFLARE_ZONE: ${{ secrets.CLOUDFLARE_ZONE_ID }}
           CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          PURGE_URLS: '["https://artifact.websoft9.com/${{ env.CHANNEL }}/websoft9/plugin/library/library-latest.zip"]'
+          PURGE_URLS: '["https://artifact.websoft9.com/release/websoft9/plugin/library/library-latest.zip","https://artifact.websoft9.com/release/websoft9/plugin/media/media.zip"]'
           
       - name: Create Github Release from code
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            ${{ env.appname }}.json
-          tag_name: ${{ env.LIBRARY_TAG_GH }}
-          name: ${{ env.LIBRARY_TAG_GH }}
+            dist/publish/legacy/release/library/library.json
+          tag_name: ${{ steps.resolve_inputs.outputs.library_version }}
+          name: ${{ steps.resolve_inputs.outputs.library_version }}
           draft: false
           prerelease: false
-
-      - name: Trigger websoft9/json2md.yml workflow
-        uses: benc-uk/workflow-dispatch@v1
-        with: 
-            workflow: json2md.yml
-            repo: websoft9/doc.websoft9.com
-            ref: dev
-            token: ${{secrets.MYGITHUB_ADMIN_TOKEN}}
 
   pages:
     name: Build Github Pages
