@@ -84,27 +84,7 @@ jobs:
       - name: Download legacy screenshots from Contentful
         run: |
           mkdir -p dist/catalog-source/screenshots
-          for f in dist/catalog-source/product_*.json; do
-            [ -f "$f" ] && python3 -c "
-import json, sys, urllib.request, os
-with open('$f') as fh:
-    data = json.load(fh)
-urls = set()
-for item in data:
-    for s in item.get('screenshots', []):
-        u = s.get('value') or s.get('imageurl')
-        if u: urls.add(u)
-for u in sorted(urls):
-    try:
-        name = u.rsplit('/', 1)[-1].split('?')[0]
-        if '.' not in name: name = f'{hash(u) & 0xFFFFFFFFFFFF:012x}.png'
-        path = os.path.join('dist/catalog-source/screenshots', name)
-        if not os.path.exists(path):
-            urllib.request.urlretrieve(u, path)
-    except Exception as e:
-        print(f'Warning: screenshot {u}: {e}', file=sys.stderr)
-"
-          done
+          python3 build/download_screenshots.py dist/catalog-source/screenshots
 
       - name: Check if first v2 publish (R2 apps/ prefix empty)
         id: check_seed
