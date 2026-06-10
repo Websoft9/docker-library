@@ -105,6 +105,7 @@ else:
 artifact/websoft9/v2/<channel>/appstore/
 ├── catalog/
 │   ├── manifest.json              # catalog 清单
+│   ├── catalog-<datasetVersion>.zip   # 全量包（4 个 JSON）
 │   ├── catalog_en.json
 │   ├── catalog_zh.json
 │   ├── product_en.json
@@ -168,6 +169,7 @@ artifact/websoft9/v2/<channel>/appstore/
   "schemaVersion": "1",
   "datasetVersion": "7ee7a10b7da49f38",
   "source": "contentful",
+  "fullPackage": "catalog-7ee7a10b7da49f38.zip",
   "files": {
     "catalogEn": "catalog_en.json",
     "catalogZh": "catalog_zh.json",
@@ -178,7 +180,8 @@ artifact/websoft9/v2/<channel>/appstore/
     "catalogEn": "catalog_en.json.sha256",
     "catalogZh": "catalog_zh.json.sha256",
     "productEn": "product_en.json.sha256",
-    "productZh": "product_zh.json.sha256"
+    "productZh": "product_zh.json.sha256",
+    "fullPackage": "catalog-7ee7a10b7da49f38.zip.sha256"
   },
   "generatedAt": "2026-06-09T12:00:00Z"
 }
@@ -318,51 +321,44 @@ artifact/websoft9/v2/<channel>/appstore/
 
 ## 11. 消费者指南
 
-消费者在本地维护两个版本锚点，分别对应 `appstore-manifest.json` 中暴露的 `catalog.datasetVersion` 和 `library.datasetVersion`：
-
-```json
-{
-  "schemaVersion": "1",
-  "lastCatalogDsv": "7ee7a10b7da49f38",
-  "lastLibraryDsv": "85f687824c03ef93"
-}
-```
-
-> **为什么存两个而不是一个？** 根 manifest 中已经分别给出了 `catalog.datasetVersion` 和 `library.datasetVersion`。消费者下载根 manifest 后，可以**直接**判断哪部分变了、哪部分没变——catalog 没变就跳过 catalog 更新，library 没变就跳过 library 更新。如果只存一个组合版本，只能知道"有变化"但不知道"谁变了"，必须两个子 manifest 都下载。**
+消费者无需维护额外的状态文件——**上一次下载成功的 `appstore-manifest.json` 本身就是完整的状态记录**。更新时将新下载的 manifest 与本地缓存的旧 manifest 对比即可。
 
 ### 11.1 首次安装（冷启动）
 
 ```
 1. 下载 appstore-manifest.json
 2. 检查 schemaVersion 兼容性 → 不兼容则中止
-3. 下载 full/library-<channel>.zip（全量包）
-4. 校验 full/library-<channel>.zip.sha256
-5. 解压到本地 apps/ 目录
-6. 将 catalog.datasetVersion 和 library.datasetVersion 保存到本地
+
+3. 下载 catalog 全量数据：
+   → 下载 catalog/manifest.json
+   → 下载 catalog-<datasetVersion>.zip（全量包，1 次请求 1 次校验）
+   → 校验 catalog-<datasetVersion>.zip.sha256
+   → 解压到本地
+
+4. 下载 library 全量数据：
+   → 下载 full/library-<channel>.zip（全量包，含所有 app 模板）
+   → 校验 full/library-<channel>.zip.sha256
+   → 解压到本地 apps/ 目录
+
+5. 保存本次下载的 appstore-manifest.json 到本地作为状态锚点
 ```
 
 ### 11.2 增量更新
 
 ```
-1. 下载 appstore-manifest.json（~200B）
+1. 下载最新的 appstore-manifest.json
 
-2. if catalog.datasetVersion ≠ 本地 lastCatalogDsv:
-     → 下载 catalog/manifest.json
-     → 逐个对比 checksum，只下载实际变更的 JSON 文件
-     → 更新 lastCatalogDsv
+2. 对比新 manifest 与本地缓存的旧 manifest：
+   → 如果 catalog.datasetVersion 不同：
+       下载 catalog/manifest.json → 逐个对比 checksum → 下载变更的 JSON
+   → 如果 library.datasetVersion 不同：
+       if supportsPartialUpdate:
+         下载 apps-delta → 下载 changed/added app 的 latest.zip
+       else:
+         下载全量包
+   → 如果都相同：什么都不做，结束
 
-3. if library.datasetVersion ≠ 本地 lastLibraryDsv:
-     → 下载 library/manifest.json
-     → if supportsPartialUpdate == true:
-         下载 apps-delta-{lastLibraryDsv}-to-{新libraryDsv}.json
-         addedApps / changedApps → 下载对应的 latest.zip
-         removedApps → 本地删除
-     → else:
-         下载 full/library-<channel>.zip 全量替换
-     → 更新 lastLibraryDsv
-
-4. 更新本地 schemaVersion（如有变化）
-```
+3. 更新成功后，用新 manifest 替换本地缓存
 ```
 
 **典型场景开销**：
@@ -378,10 +374,11 @@ artifact/websoft9/v2/<channel>/appstore/
 ```
 增量更新中任一文件下载或校验失败：
   → 回退策略：下载 full/library-<channel>.zip 全量覆盖本地 apps/
-  → 更新 lastLibraryDsv 到全量包的版本
+  → 用本次下载的 manifest 替换本地缓存
 
 schemaVersion 不在本地支持列表中：
-  → 不更新任何数据，保持当前状态
+  → 不更新任何数据，保持本地缓存的旧 manifest
+  → 提示用户升级客户端
   → 提示用户升级客户端
 ```
 

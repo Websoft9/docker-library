@@ -80,8 +80,7 @@ def format_dataset_version(dt: datetime) -> str:
 def resolve_from_version(from_ref: str | None) -> str:
     if not from_ref:
         return "initial"
-    timestamp = run_git("show", "-s", "--format=%cI", from_ref)
-    return format_dataset_version(datetime.fromisoformat(timestamp.replace("Z", "+00:00")))
+    return run_git("rev-parse", "--short=16", from_ref)
 
 
 def load_library_json(library_version: str | None) -> dict:
@@ -309,11 +308,12 @@ def build_library_manifest(
     }
 
 
-def build_catalog_manifest(dataset_version: str, checksum_names: dict, generated_at: str) -> dict:
+def build_catalog_manifest(dataset_version: str, checksum_names: dict, generated_at: str, full_package_name: str) -> dict:
     return {
         "schemaVersion": "1",
         "datasetVersion": dataset_version,
         "source": "contentful",
+        "fullPackage": full_package_name,
         "files": {
             "catalogEn": "catalog_en.json",
             "catalogZh": "catalog_zh.json",
@@ -405,6 +405,9 @@ def validate_catalog_artifacts(output_dir: Path, manifest: dict) -> None:
             raise SystemExit(f"missing catalog checksum: {checksum_name}")
     if not (output_dir / "manifest.json").exists():
         raise SystemExit("missing catalog manifest.json")
+    full_pkg = manifest.get("fullPackage")
+    if full_pkg and not (output_dir / full_pkg).exists():
+        raise SystemExit(f"missing catalog full package: {full_pkg}")
 
 
 def validate_library_artifacts(output_dir: Path, manifest: dict, changed_app_names: set[str] | None = None) -> None:
@@ -554,7 +557,17 @@ def build_v2_appstore_artifacts(
     catalog_checksum_values = ",".join(f"{k}={v}" for k, v in sorted(catalog_checksums.items()))
     catalog_dsv = _hash_content(catalog_checksum_values)
 
-    catalog_manifest = build_catalog_manifest(catalog_dsv, catalog_checksums, generated_at)
+    # ── catalog full package ─────────────────────────────────
+    catalog_zip_name = f"catalog-{catalog_dsv}.zip"
+    with tempfile.TemporaryDirectory() as tmp_dir_name:
+        tmp_dir = Path(tmp_dir_name)
+        for file_name in CATALOG_FILE_NAMES:
+            shutil.copy2(catalog_dir / file_name, tmp_dir / file_name)
+        create_zip_from_directory(tmp_dir, catalog_dir / catalog_zip_name)
+    catalog_zip_checksum = write_checksum_file(catalog_dir / catalog_zip_name)
+    catalog_checksums["fullPackage"] = catalog_zip_checksum
+
+    catalog_manifest = build_catalog_manifest(catalog_dsv, catalog_checksums, generated_at, catalog_zip_name)
     write_json(catalog_dir / "manifest.json", catalog_manifest)
     write_checksum_file(catalog_dir / "manifest.json")
     validate_catalog_artifacts(catalog_dir, catalog_manifest)
