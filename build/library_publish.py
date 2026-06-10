@@ -492,7 +492,7 @@ def build_legacy_library_artifacts(output_dir: Path, package_name: str, packaged
 
 def build_legacy_media_artifacts(output_dir: Path, catalog_source_dir: Path, channel: str) -> dict:
     output_dir.mkdir(parents=True, exist_ok=True)
-    archive_name = "media-dev.zip" if channel == "dev" else "media.zip"
+    archive_name = "media-dev.zip" if channel == "dev" else "media-latest.zip"
     distribution_map = build_distribution_map() if channel == "dev" else {}
 
     with tempfile.TemporaryDirectory() as tmp_dir_name:

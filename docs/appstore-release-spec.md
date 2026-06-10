@@ -400,7 +400,7 @@ schemaVersion 不在本地支持列表中：
 | `appstore-manifest.json` | Cache-Control: 60s | 入口文件，需及时感知更新 |
 | `catalog/manifest.json` | Cache-Control: 60s | 体积极小，变更频率低 |
 | `apps-delta-*.json` | Cache-Control: 60s | 体积极小 |
-| `apps/{app}/latest.zip` | Cache-Control: 86400 | 未变更时 hash 不变，可大胆缓存 |
+| `apps/{app}/latest.zip` | Cache-Control: 60s | 模板文件体积极小，变更后需立即生效 |
 | `full/library-{dsv}.zip` | immutable | 文件名含内容版本，永不变 |
 | `*.sha256` | 跟随对应文件 | 校验与被校验文件同步缓存 |
 | `catalog_*.json / product_*.json` | Cache-Control: 3600 | 描述数据，变更频率中等 |

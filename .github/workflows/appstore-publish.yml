@@ -139,6 +139,7 @@ jobs:
           aws s3 sync \
             dist/appstore-publish/appstore/${{ steps.resolve_channel.outputs.channel }}/catalog \
             s3://artifact/appstore/${{ steps.resolve_channel.outputs.channel }}/catalog \
+            --cache-control "public, max-age=60" \
             --endpoint-url "$AWS_ENDPOINT_URL"
 
       - name: Upload v2 library metadata to Cloudflare R2
@@ -151,6 +152,7 @@ jobs:
             dist/appstore-publish/appstore/${{ steps.resolve_channel.outputs.channel }}/library \
             s3://artifact/appstore/${{ steps.resolve_channel.outputs.channel }}/library \
             --exclude "apps/*" \
+            --cache-control "public, max-age=60" \
             --endpoint-url "$AWS_ENDPOINT_URL"
 
       - name: Upload v2 per-app packages to Cloudflare R2 (additive only)
@@ -163,6 +165,7 @@ jobs:
             aws s3 cp --recursive \
               dist/appstore-publish/appstore/${{ steps.resolve_channel.outputs.channel }}/library/apps \
               s3://artifact/appstore/${{ steps.resolve_channel.outputs.channel }}/library/apps \
+              --cache-control "public, max-age=60" \
               --endpoint-url "$AWS_ENDPOINT_URL"
           fi
 
@@ -175,6 +178,7 @@ jobs:
           aws s3 sync \
             dist/appstore-publish/appstore/${{ steps.resolve_channel.outputs.channel }}/manifests \
             s3://artifact/appstore/${{ steps.resolve_channel.outputs.channel }}/manifests \
+            --cache-control "public, max-age=60" \
             --endpoint-url "$AWS_ENDPOINT_URL"
 
       # ── legacy uploads (old R2 paths, kept for backward compatibility) ──
@@ -207,7 +211,7 @@ jobs:
           if [[ "${{ steps.resolve_channel.outputs.channel }}" == "dev" ]]; then
             echo "urls=[\"https://artifact.websoft9.com/dev/websoft9/plugin/library/library-dev.zip\",\"https://artifact.websoft9.com/dev/websoft9/plugin/media/media-dev.zip\"]" >> "$GITHUB_OUTPUT"
           else
-            echo "urls=[\"https://artifact.websoft9.com/release/websoft9/plugin/library/library-latest.zip\",\"https://artifact.websoft9.com/release/websoft9/plugin/media/media.zip\"]" >> "$GITHUB_OUTPUT"
+            echo "urls=[\"https://artifact.websoft9.com/release/websoft9/plugin/library/library-latest.zip\",\"https://artifact.websoft9.com/release/websoft9/plugin/media/media-latest.zip\"]" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Purge legacy Cloudflare Cache
