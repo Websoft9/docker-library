@@ -458,7 +458,7 @@ def validate_appstore_artifacts(appstore_dir: Path) -> None:
 
 def build_output_paths(base_output_dir: Path, channel: str) -> tuple[Path, Path]:
     legacy_library_dir = base_output_dir / "legacy" / channel / "library"
-    v2_appstore_dir = base_output_dir / "v2" / channel / "appstore"
+    v2_appstore_dir = base_output_dir / "appstore" / channel
     return legacy_library_dir, v2_appstore_dir
 
 
@@ -502,6 +502,7 @@ def build_legacy_media_artifacts(output_dir: Path, catalog_source_dir: Path, cha
         json_dir.mkdir(parents=True, exist_ok=True)
 
         catalog_sources = ensure_catalog_source(catalog_source_dir)
+
         for file_name, source_path in catalog_sources.items():
             destination = json_dir / file_name
             if file_name.startswith("product_") and distribution_map:
@@ -509,6 +510,12 @@ def build_legacy_media_artifacts(output_dir: Path, catalog_source_dir: Path, cha
                 write_json(destination, merge_product_distribution(product_entries, distribution_map))
             else:
                 shutil.copy2(source_path, destination)
+
+        # Include logos and screenshots if workflow downloaded them
+        for asset_dir in ("logos", "screenshots"):
+            src = catalog_source_dir / asset_dir
+            if src.is_dir():
+                shutil.copytree(src, media_root / asset_dir)
 
         create_zip_from_directory(media_root, output_dir / archive_name)
 
@@ -558,16 +565,18 @@ def build_v2_appstore_artifacts(
     catalog_dsv = _hash_content(catalog_checksum_values)
 
     # ── catalog full package ─────────────────────────────────
+    catalog_full_dir = catalog_dir / "full"
+    catalog_full_dir.mkdir(parents=True, exist_ok=True)
     catalog_zip_name = f"catalog-{catalog_dsv}.zip"
     with tempfile.TemporaryDirectory() as tmp_dir_name:
         tmp_dir = Path(tmp_dir_name)
         for file_name in CATALOG_FILE_NAMES:
             shutil.copy2(catalog_dir / file_name, tmp_dir / file_name)
-        create_zip_from_directory(tmp_dir, catalog_dir / catalog_zip_name)
-    catalog_zip_checksum = write_checksum_file(catalog_dir / catalog_zip_name)
+        create_zip_from_directory(tmp_dir, catalog_full_dir / catalog_zip_name)
+    catalog_zip_checksum = write_checksum_file(catalog_full_dir / catalog_zip_name)
     catalog_checksums["fullPackage"] = catalog_zip_checksum
 
-    catalog_manifest = build_catalog_manifest(catalog_dsv, catalog_checksums, generated_at, catalog_zip_name)
+    catalog_manifest = build_catalog_manifest(catalog_dsv, catalog_checksums, generated_at, f"full/{catalog_zip_name}")
     write_json(catalog_dir / "manifest.json", catalog_manifest)
     write_checksum_file(catalog_dir / "manifest.json")
     validate_catalog_artifacts(catalog_dir, catalog_manifest)

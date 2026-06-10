@@ -67,6 +67,45 @@ jobs:
             --channel "${{ steps.resolve_channel.outputs.channel }}" \
             --output-dir dist/catalog-source
 
+      # ── legacy media assets (logos + screenshots, same as old media.yml) ──
+
+      - name: Download legacy logos from R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_SECRET_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
+          AWS_ENDPOINT_URL: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
+        run: |
+          mkdir -p dist/catalog-source/logos
+          aws s3 sync \
+            s3://libs/Websoft9/logo/product \
+            dist/catalog-source/logos \
+            --endpoint-url "$AWS_ENDPOINT_URL" || echo "Warning: logo sync failed (non-blocking)"
+
+      - name: Download legacy screenshots from Contentful
+        run: |
+          mkdir -p dist/catalog-source/screenshots
+          for f in dist/catalog-source/product_*.json; do
+            [ -f "$f" ] && python3 -c "
+import json, sys, urllib.request, os
+with open('$f') as fh:
+    data = json.load(fh)
+urls = set()
+for item in data:
+    for s in item.get('screenshots', []):
+        u = s.get('value') or s.get('imageurl')
+        if u: urls.add(u)
+for u in sorted(urls):
+    try:
+        name = u.rsplit('/', 1)[-1].split('?')[0]
+        if '.' not in name: name = f'{hash(u) & 0xFFFFFFFFFFFF:012x}.png'
+        path = os.path.join('dist/catalog-source/screenshots', name)
+        if not os.path.exists(path):
+            urllib.request.urlretrieve(u, path)
+    except Exception as e:
+        print(f'Warning: screenshot {u}: {e}', file=sys.stderr)
+"
+          done
+
       - name: Check if first v2 publish (R2 apps/ prefix empty)
         id: check_seed
         env:
@@ -74,7 +113,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
           AWS_ENDPOINT_URL: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
         run: |
-          count=$(aws s3 ls "s3://artifact/websoft9/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/library/apps/" --recursive --endpoint-url "$AWS_ENDPOINT_URL" 2>/dev/null | wc -l)
+          count=$(aws s3 ls "s3://artifact/appstore/${{ steps.resolve_channel.outputs.channel }}/library/apps/" --recursive --endpoint-url "$AWS_ENDPOINT_URL" 2>/dev/null | wc -l)
           if [ "$count" -eq 0 ]; then
             echo "R2 apps/ prefix is empty — first publish, will seed all app packages"
             echo "seed=true" >> "$GITHUB_OUTPUT"
@@ -111,8 +150,8 @@ jobs:
           AWS_ENDPOINT_URL: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
         run: |
           aws s3 sync \
-            dist/appstore-publish/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/catalog \
-            s3://artifact/websoft9/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/catalog \
+            dist/appstore-publish/appstore/${{ steps.resolve_channel.outputs.channel }}/catalog \
+            s3://artifact/appstore/${{ steps.resolve_channel.outputs.channel }}/catalog \
             --endpoint-url "$AWS_ENDPOINT_URL"
 
       - name: Upload v2 library metadata to Cloudflare R2
@@ -122,8 +161,8 @@ jobs:
           AWS_ENDPOINT_URL: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
         run: |
           aws s3 sync \
-            dist/appstore-publish/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/library \
-            s3://artifact/websoft9/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/library \
+            dist/appstore-publish/appstore/${{ steps.resolve_channel.outputs.channel }}/library \
+            s3://artifact/appstore/${{ steps.resolve_channel.outputs.channel }}/library \
             --exclude "apps/*" \
             --endpoint-url "$AWS_ENDPOINT_URL"
 
@@ -133,10 +172,10 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
           AWS_ENDPOINT_URL: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
         run: |
-          if [ -d "dist/appstore-publish/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/library/apps" ]; then
+          if [ -d "dist/appstore-publish/appstore/${{ steps.resolve_channel.outputs.channel }}/library/apps" ]; then
             aws s3 cp --recursive \
-              dist/appstore-publish/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/library/apps \
-              s3://artifact/websoft9/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/library/apps \
+              dist/appstore-publish/appstore/${{ steps.resolve_channel.outputs.channel }}/library/apps \
+              s3://artifact/appstore/${{ steps.resolve_channel.outputs.channel }}/library/apps \
               --endpoint-url "$AWS_ENDPOINT_URL"
           fi
 
@@ -147,6 +186,86 @@ jobs:
           AWS_ENDPOINT_URL: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
         run: |
           aws s3 sync \
-            dist/appstore-publish/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/manifests \
-            s3://artifact/websoft9/v2/${{ steps.resolve_channel.outputs.channel }}/appstore/manifests \
+            dist/appstore-publish/appstore/${{ steps.resolve_channel.outputs.channel }}/manifests \
+            s3://artifact/appstore/${{ steps.resolve_channel.outputs.channel }}/manifests \
             --endpoint-url "$AWS_ENDPOINT_URL"
+
+      # ── legacy uploads (old R2 paths, kept for backward compatibility) ──
+
+      - name: Upload legacy library to Cloudflare R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_SECRET_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
+          AWS_ENDPOINT_URL: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
+        run: |
+          aws s3 sync \
+            dist/appstore-publish/legacy/${{ steps.resolve_channel.outputs.channel }}/library \
+            s3://artifact/${{ steps.resolve_channel.outputs.channel }}/websoft9/plugin/library \
+            --endpoint-url "$AWS_ENDPOINT_URL"
+
+      - name: Upload legacy media to Cloudflare R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_SECRET_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
+          AWS_ENDPOINT_URL: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
+        run: |
+          aws s3 sync \
+            dist/appstore-publish/legacy/${{ steps.resolve_channel.outputs.channel }}/media \
+            s3://artifact/${{ steps.resolve_channel.outputs.channel }}/websoft9/plugin/media \
+            --endpoint-url "$AWS_ENDPOINT_URL"
+
+      - name: Resolve legacy purge URLs
+        id: purge_urls
+        run: |
+          if [[ "${{ steps.resolve_channel.outputs.channel }}" == "dev" ]]; then
+            echo "urls=[\"https://artifact.websoft9.com/dev/websoft9/plugin/library/library-dev.zip\",\"https://artifact.websoft9.com/dev/websoft9/plugin/media/media-dev.zip\"]" >> "$GITHUB_OUTPUT"
+          else
+            echo "urls=[\"https://artifact.websoft9.com/release/websoft9/plugin/library/library-latest.zip\",\"https://artifact.websoft9.com/release/websoft9/plugin/media/media.zip\"]" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Purge legacy Cloudflare Cache
+        uses: jakejarvis/cloudflare-purge-action@v2
+        env:
+          CLOUDFLARE_ZONE: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        with:
+          PURGE_URLS: ${{ steps.purge_urls.outputs.urls }}
+
+      - name: Create GitHub Release (release channel only)
+        if: steps.resolve_channel.outputs.channel == 'release'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/appstore-publish/legacy/release/library/library.json
+          tag_name: release-${{ github.run_number }}
+          name: Release ${{ github.run_number }}
+          draft: false
+          prerelease: false
+
+  pages:
+    name: Build Github Pages (release only)
+    if: github.ref_name == 'main'
+    needs: publish
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
