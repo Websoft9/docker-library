@@ -567,7 +567,7 @@ def build_v2_appstore_artifacts(
     # ── catalog full package ─────────────────────────────────
     catalog_full_dir = catalog_dir / "full"
     catalog_full_dir.mkdir(parents=True, exist_ok=True)
-    catalog_zip_name = f"catalog-{catalog_dsv}.zip"
+    catalog_zip_name = f"catalog-{dataset_version}.zip"
     with tempfile.TemporaryDirectory() as tmp_dir_name:
         tmp_dir = Path(tmp_dir_name)
         for file_name in CATALOG_FILE_NAMES:

@@ -170,7 +170,7 @@ artifact/appstore/<channel>/
   "schemaVersion": "1",
   "datasetVersion": "7ee7a10b7da49f38",
   "source": "contentful",
-  "fullPackage": "full/catalog-7ee7a10b7da49f38.zip",
+  "fullPackage": "full/catalog-2026.06.09.120000.zip",
   "files": {
     "catalogEn": "catalog_en.json",
     "catalogZh": "catalog_zh.json",
@@ -182,7 +182,7 @@ artifact/appstore/<channel>/
     "catalogZh": "catalog_zh.json.sha256",
     "productEn": "product_en.json.sha256",
     "productZh": "product_zh.json.sha256",
-    "fullPackage": "full/catalog-7ee7a10b7da49f38.zip.sha256"
+    "fullPackage": "full/catalog-2026.06.09.120000.zip.sha256"
   },
   "generatedAt": "2026-06-09T12:00:00Z"
 }
