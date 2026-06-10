@@ -84,7 +84,14 @@ jobs:
       - name: Download legacy screenshots from Contentful
         run: |
           mkdir -p dist/catalog-source/screenshots
-          python3 build/download_screenshots.py dist/catalog-source/screenshots
+          for f in dist/catalog-source/product_*.json; do
+            [ -f "$f" ] || continue
+            jq -r '.[].screenshots[]?.value // empty' "$f" 2>/dev/null | sort -u | while read -r url; do
+              name=$(basename "$url" | cut -d'?' -f1)
+              [ -z "$name" ] && name="$(echo "$url" | md5sum | cut -c1-12).png"
+              [ -f "dist/catalog-source/screenshots/$name" ] || wget -q "$url" -O "dist/catalog-source/screenshots/$name" || true
+            done
+          done
 
       - name: Check if first v2 publish (R2 apps/ prefix empty)
         id: check_seed
