@@ -102,28 +102,29 @@ else:
 ### 4.1 R2 目录结构
 
 ```
-artifact/websoft9/v2/<channel>/appstore/
+artifact/appstore/<channel>/
 ├── catalog/
-│   ├── manifest.json              # catalog 清单
-│   ├── catalog-<datasetVersion>.zip   # 全量包（4 个 JSON）
+│   ├── manifest.json
+│   ├── full/
+│   │   └── catalog-<datasetVersion>.zip
 │   ├── catalog_en.json
 │   ├── catalog_zh.json
 │   ├── product_en.json
 │   ├── product_zh.json
 │   └── *.sha256
 ├── library/
-│   ├── manifest.json              # library 清单
+│   ├── manifest.json
 │   ├── apps-index-<datasetVersion>.json
 │   ├── apps-delta-<fromVersion>-to-<toVersion>.json
 │   ├── full/
-│   │   ├── library-<datasetVersion>.zip   # 不可变全量包
-│   │   └── library-<channel>.zip          # 可变全量别名
+│   │   ├── library-<datasetVersion>.zip
+│   │   └── library-<channel>.zip
 │   └── apps/
 │       └── <app>/
-│           ├── latest.zip                 # 唯一安装包
+│           ├── latest.zip
 │           └── latest.zip.sha256
 └── manifests/
-    └── appstore-manifest.json      # 根清单
+    └── appstore-manifest.json
 ```
 
 ### 4.2 设计要点
@@ -169,7 +170,7 @@ artifact/websoft9/v2/<channel>/appstore/
   "schemaVersion": "1",
   "datasetVersion": "7ee7a10b7da49f38",
   "source": "contentful",
-  "fullPackage": "catalog-7ee7a10b7da49f38.zip",
+  "fullPackage": "full/catalog-7ee7a10b7da49f38.zip",
   "files": {
     "catalogEn": "catalog_en.json",
     "catalogZh": "catalog_zh.json",
@@ -181,7 +182,7 @@ artifact/websoft9/v2/<channel>/appstore/
     "catalogZh": "catalog_zh.json.sha256",
     "productEn": "product_en.json.sha256",
     "productZh": "product_zh.json.sha256",
-    "fullPackage": "catalog-7ee7a10b7da49f38.zip.sha256"
+    "fullPackage": "full/catalog-7ee7a10b7da49f38.zip.sha256"
   },
   "generatedAt": "2026-06-09T12:00:00Z"
 }
@@ -247,30 +248,40 @@ artifact/websoft9/v2/<channel>/appstore/
 2. 解析 channel
 3. 检查 R2 apps/ 是否为空 → 空则标记首次发布（--all-apps）
 4. 从 Contentful 拉取 catalog 源数据
-5. 运行 library_publish.py 构建所有制品
-6. 分步上传到 R2（catalog / library 元数据 / apps / manifests）
+5. 运行 library_publish.py 构建所有制品（v2 + legacy）
+6. 上传 v2 制品到新 R2 路径
+7. 上传 legacy 制品到旧 R2 路径（兼容旧消费者）
+8. 清除 Cloudflare 缓存
+9. release 通道额外创建 GitHub Release
 ```
 
 ### 6.3 上传策略
 
-| 子目录 | 命令 | 说明 |
-|--------|------|------|
-| `catalog/` | `aws s3 sync` | 追加/覆盖 |
-| `library/`（排除 `apps/`） | `aws s3 sync --exclude "apps/*"` | 追加/覆盖 |
-| `library/apps/` | `aws s3 cp --recursive` | 纯增量，仅上传本次构建的 app |
-| `manifests/` | `aws s3 sync` | 追加/覆盖 |
+| 目标 | 命令 | R2 路径 |
+|------|------|--------|
+| v2 catalog | `aws s3 sync` | `appstore/<channel>/catalog/` |
+| v2 library 元数据 | `aws s3 sync --exclude "apps/*"` | `appstore/<channel>/library/` |
+| v2 单 app 包 | `aws s3 cp --recursive` | `appstore/<channel>/library/apps/` |
+| v2 manifests | `aws s3 sync` | `appstore/<channel>/manifests/` |
+| legacy library | `aws s3 sync` | `<channel>/websoft9/plugin/library/` |
+| legacy media | `aws s3 sync` | `<channel>/websoft9/plugin/media/` |
+
+所有 `sync` 均为默认追加/覆盖模式，不删除目标已有文件。
 
 ---
 
 ## 7. Legacy 兼容
 
-并行期内 legacy 与 v2 共存：
+并行期内 legacy 与 v2 通过**同一 workflow、不同 R2 路径**共存：
 
-- Legacy 使用旧 R2 路径（`dev/websoft9/plugin/library/` 等）
-- v2 使用新路径（`v2/<channel>/appstore/`）
-- 两套 workflow 独立运行，物理隔离
-- 旧跨仓库 workflow 依赖已迁回本项目内部实现
-- Legacy 在迁移窗口结束后下线
+| 制品 | v2 路径 | legacy 路径 |
+|------|--------|------------|
+| catalog | `appstore/<channel>/catalog/` | `<channel>/websoft9/plugin/media/`（打包为 `media.zip`） |
+| library | `appstore/<channel>/library/` | `<channel>/websoft9/plugin/library/`（打包为 `library-*.zip`） |
+
+**legacy `media.zip` 保持旧格式**：内含 `json/` + `logos/` + `screenshots/`，图片从 Contentful URL 下载后打包。v2 目录中不包含图片二进制，统一使用在线 URL。
+
+每次 push 同时产出两套制品，迁移窗口结束后下线 legacy 上传步骤。
 
 ---
 
