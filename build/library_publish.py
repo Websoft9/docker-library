@@ -574,7 +574,7 @@ def build_v2_appstore_artifacts(
             shutil.copy2(catalog_dir / file_name, tmp_dir / file_name)
         create_zip_from_directory(tmp_dir, catalog_full_dir / catalog_zip_name)
     catalog_zip_checksum = write_checksum_file(catalog_full_dir / catalog_zip_name)
-    catalog_checksums["fullPackage"] = catalog_zip_checksum
+    catalog_checksums["fullPackage"] = f"full/{catalog_zip_checksum}"
 
     catalog_manifest = build_catalog_manifest(catalog_dsv, catalog_checksums, generated_at, f"full/{catalog_zip_name}")
     write_json(catalog_dir / "manifest.json", catalog_manifest)
