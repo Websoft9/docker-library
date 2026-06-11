@@ -8,4 +8,6 @@ mk.sh
 .claude
 _bmad-output
 
-# Pre-downloaded app sourcesdist/
+# Pre-downloaded app sources
+
+dist/
