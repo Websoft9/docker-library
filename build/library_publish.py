@@ -22,7 +22,7 @@ CHANNEL_PACKAGE_NAMES = {
     "rc": "library-rc.zip",
     "release": "library-latest.zip",
 }
-V2_FULL_PACKAGE_BASENAME = "library"
+V2_FULL_LATEST_NAME = "latest.zip"
 CATALOG_FILE_NAMES = (
     "catalog_en.json",
     "catalog_zh.json",
@@ -114,10 +114,6 @@ def summarize_versions(edition_list: list[dict]) -> list[str]:
             if version not in versions:
                 versions.append(version)
     return versions
-
-
-def v2_full_package_names(channel: str, dataset_version: str) -> tuple[str, str]:
-    return (f"{V2_FULL_PACKAGE_BASENAME}-{dataset_version}.zip", f"{V2_FULL_PACKAGE_BASENAME}-{channel}.zip")
 
 
 APP_PACKAGE_NAME = "latest.zip"
@@ -412,8 +408,7 @@ def validate_catalog_artifacts(output_dir: Path, manifest: dict) -> None:
 
 def validate_library_artifacts(output_dir: Path, manifest: dict, changed_app_names: set[str] | None = None) -> None:
     for name in (
-        manifest["fullPackage"]["versioned"],
-        manifest["fullPackage"]["latest"],
+        manifest["fullPackage"],
         manifest["appsIndex"],
         manifest["appsDelta"],
         "manifest.json",
@@ -567,16 +562,20 @@ def build_v2_appstore_artifacts(
     # ── catalog full package ─────────────────────────────────
     catalog_full_dir = catalog_dir / "full"
     catalog_full_dir.mkdir(parents=True, exist_ok=True)
-    catalog_zip_name = f"catalog-{dataset_version}.zip"
+    catalog_zip_latest_name = V2_FULL_LATEST_NAME
     with tempfile.TemporaryDirectory() as tmp_dir_name:
         tmp_dir = Path(tmp_dir_name)
         for file_name in CATALOG_FILE_NAMES:
             shutil.copy2(catalog_dir / file_name, tmp_dir / file_name)
-        create_zip_from_directory(tmp_dir, catalog_full_dir / catalog_zip_name)
-    catalog_zip_checksum = write_checksum_file(catalog_full_dir / catalog_zip_name)
-    catalog_checksums["fullPackage"] = f"full/{catalog_zip_checksum}"
+        create_zip_from_directory(tmp_dir, catalog_full_dir / catalog_zip_latest_name)
+    catalog_checksums["fullPackage"] = f"full/{write_checksum_file(catalog_full_dir / catalog_zip_latest_name)}"
 
-    catalog_manifest = build_catalog_manifest(catalog_dsv, catalog_checksums, generated_at, f"full/{catalog_zip_name}")
+    catalog_manifest = build_catalog_manifest(
+        catalog_dsv,
+        catalog_checksums,
+        generated_at,
+        f"full/{catalog_zip_latest_name}",
+    )
     write_json(catalog_dir / "manifest.json", catalog_manifest)
     write_checksum_file(catalog_dir / "manifest.json")
     validate_catalog_artifacts(catalog_dir, catalog_manifest)
@@ -586,20 +585,17 @@ def build_v2_appstore_artifacts(
     full_dir.mkdir(parents=True, exist_ok=True)
     apps_packages_dir.mkdir(parents=True, exist_ok=True)
 
-    full_versioned_name, full_latest_name = v2_full_package_names(channel, dataset_version)
+    # ── library – compute index & delta BEFORE per-app zips ──
+    apps_index = build_apps_index(catalog_dsv, channel, generated_at)
+    serialized_index = json.dumps(apps_index, sort_keys=True, ensure_ascii=False)
+    library_dsv = _hash_content(serialized_index)
+    full_latest_name = V2_FULL_LATEST_NAME
 
     with tempfile.TemporaryDirectory() as tmp_dir_name:
         tmp_dir = Path(tmp_dir_name)
         package_dir = tmp_dir / PACKAGE_ROOT_NAME
         copy_package_contents(package_dir, packaged_library_json)
-        create_zip_from_directory(package_dir, full_dir / full_versioned_name)
-
-    shutil.copy2(full_dir / full_versioned_name, full_dir / full_latest_name)
-
-    # ── library – compute index & delta BEFORE per-app zips ──
-    apps_index = build_apps_index(catalog_dsv, channel, generated_at)
-    serialized_index = json.dumps(apps_index, sort_keys=True, ensure_ascii=False)
-    library_dsv = _hash_content(serialized_index)
+        create_zip_from_directory(package_dir, full_dir / full_latest_name)
 
     apps_delta = build_apps_delta(
         apps_index=apps_index,
@@ -642,8 +638,7 @@ def build_v2_appstore_artifacts(
     write_json(library_dir / apps_delta_name, apps_delta)
 
     library_checksums = {
-        "fullPackageVersioned": f"full/{write_checksum_file(full_dir / full_versioned_name)}",
-        "fullPackageLatest": f"full/{write_checksum_file(full_dir / full_latest_name)}",
+        "fullPackage": f"full/{write_checksum_file(full_dir / full_latest_name)}",
         "appsIndex": write_checksum_file(library_dir / apps_index_name),
         "appsDelta": write_checksum_file(library_dir / apps_delta_name),
     }
@@ -651,10 +646,7 @@ def build_v2_appstore_artifacts(
     library_manifest = build_library_manifest(
         dataset_version=library_dsv,
         channel=channel,
-        full_package_names={
-            "versioned": f"full/{full_versioned_name}",
-            "latest": f"full/{full_latest_name}",
-        },
+        full_package_names=f"full/{full_latest_name}",
         apps_index_name=apps_index_name,
         apps_delta_name=apps_delta_name,
         checksum_names=library_checksums,
@@ -680,10 +672,7 @@ def build_v2_appstore_artifacts(
         },
         "library": {
             "manifest": "library/manifest.json",
-            "fullPackage": {
-                "versioned": f"full/{full_versioned_name}",
-                "latest": f"full/{full_latest_name}",
-            },
+            "fullPackage": f"full/{full_latest_name}",
             "appPackagesBase": "apps/",
             "appsIndex": apps_index_name,
             "appsDelta": apps_delta_name,

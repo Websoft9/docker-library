@@ -106,7 +106,7 @@ artifact/appstore/<channel>/
 ├── catalog/
 │   ├── manifest.json
 │   ├── full/
-│   │   └── catalog-<datasetVersion>.zip
+│   │   └── latest.zip
 │   ├── catalog_en.json
 │   ├── catalog_zh.json
 │   ├── product_en.json
@@ -117,8 +117,7 @@ artifact/appstore/<channel>/
 │   ├── apps-index-<datasetVersion>.json
 │   ├── apps-delta-<fromVersion>-to-<toVersion>.json
 │   ├── full/
-│   │   ├── library-<datasetVersion>.zip
-│   │   └── library-<channel>.zip
+│   │   └── latest.zip
 │   └── apps/
 │       └── <app>/
 │           ├── latest.zip
@@ -132,6 +131,9 @@ artifact/appstore/<channel>/
 | 要点 | 说明 |
 |------|------|
 | 全量包兜底 | 每次发布都重建，用于首装、灾备、回退 |
+| 通道只由目录表达 | `artifact/appstore/<channel>/` 已隔离 `dev` / `rc` / `release`，v2 文件名不再重复携带通道语义 |
+| catalog full 仅保留 latest | catalog 已有稳定命名的 JSON 文件与 checksum，`full/latest.zip` 仅承担冷启动与兜底恢复 |
+| library full 仅保留 latest | library 与 catalog 保持一致，v2 R2 不保留全量历史快照，仅保留固定入口 `full/latest.zip` |
 | 单 app 包仅 `latest.zip` | 不保留版本化包，R2 仅作分发缓存；审计追溯由 git 保证 |
 | 增量构建 | 仅 `addedApps` + `changedApps` 触发重建，未变更 app 不触碰 |
 | 上传策略 | `aws s3 sync`（默认不删除），首次发布由 `check_seed` 检测并全量播种 |
@@ -170,7 +172,7 @@ artifact/appstore/<channel>/
   "schemaVersion": "1",
   "datasetVersion": "7ee7a10b7da49f38",
   "source": "contentful",
-  "fullPackage": "full/catalog-2026.06.09.120000.zip",
+  "fullPackage": "full/latest.zip",
   "files": {
     "catalogEn": "catalog_en.json",
     "catalogZh": "catalog_zh.json",
@@ -182,7 +184,7 @@ artifact/appstore/<channel>/
     "catalogZh": "catalog_zh.json.sha256",
     "productEn": "product_en.json.sha256",
     "productZh": "product_zh.json.sha256",
-    "fullPackage": "full/catalog-2026.06.09.120000.zip.sha256"
+    "fullPackage": "full/latest.zip.sha256"
   },
   "generatedAt": "2026-06-09T12:00:00Z"
 }
@@ -195,17 +197,13 @@ artifact/appstore/<channel>/
   "schemaVersion": "1",
   "datasetVersion": "85f687824c03ef93",
   "channel": "release",
-  "fullPackage": {
-    "versioned": "full/library-2026.06.09.120000.zip",
-    "latest": "full/library-release.zip"
-  },
+  "fullPackage": "full/latest.zip",
   "appsIndex": "apps-index-85f687824c03ef93.json",
   "appsDelta": "apps-delta-7ee7a10b7da49f38-to-85f687824c03ef93.json",
   "appPackagesBase": "apps/",
   "supportsPartialUpdate": true,
   "checksum": {
-    "fullPackageVersioned": "full/library-2026.06.09.120000.zip.sha256",
-    "fullPackageLatest": "full/library-release.zip.sha256",
+    "fullPackage": "full/latest.zip.sha256",
     "appsIndex": "apps-index-85f687824c03ef93.json.sha256",
     "appsDelta": "apps-delta-7ee7a10b7da49f38-to-85f687824c03ef93.json.sha256"
   },
@@ -249,7 +247,7 @@ artifact/appstore/<channel>/
 3. 检查 R2 apps/ 是否为空 → 空则标记首次发布（--all-apps）
 4. 从 Contentful 拉取 catalog 源数据
 5. 运行 library_publish.py 构建所有制品（v2 + legacy）
-6. 上传 v2 制品到新 R2 路径
+6. 上传 v2 制品到新 R2 路径（`channel` 只由目录表达，full 固定入口统一为 `latest.zip`）
 7. 上传 legacy 制品到旧 R2 路径（兼容旧消费者）
 8. 清除 Cloudflare 缓存
 9. release 通道额外创建 GitHub Release
@@ -303,12 +301,12 @@ artifact/appstore/<channel>/
 
 | # | 事项 |
 |---|------|
-| 1 | 保留 legacy workflow，新增独立 v2 workflow |
-| 2 | 新增 `v2/<channel>/appstore/{catalog,library,manifests}` 目录结构 |
+| 1 | 同一 workflow 同时产出 v2 与 legacy，两者目录和命名规则彼此独立 |
+| 2 | 新增 `artifact/appstore/<channel>/{catalog,library,manifests}` 目录结构 |
 | 3 | 为三层分别建立 `schemaVersion` + `datasetVersion` |
 | 4 | 旧 library / catalog 构建逻辑迁回本项目 |
 | 5 | Library 更新粒度固定为 app 级 |
-| 6 | 全量包 + 单 app 包（`latest.zip`）双输出 |
+| 6 | v2 catalog full 与 library full 均仅输出 `full/latest.zip`；单 app 包继续使用 `latest.zip` |
 | 7 | Manifest + checksum 覆盖所有制品 |
 | 8 | 首次发布自动全量播种，后续增量构建 |
 
@@ -342,13 +340,13 @@ artifact/appstore/<channel>/
 
 3. 下载 catalog 全量数据：
    → 下载 catalog/manifest.json
-   → 下载 catalog-<datasetVersion>.zip（全量包，1 次请求 1 次校验）
-   → 校验 catalog-<datasetVersion>.zip.sha256
+  → 下载 full/latest.zip（固定入口）
+  → 校验 full/latest.zip.sha256
    → 解压到本地
 
 4. 下载 library 全量数据：
-   → 下载 full/library-<channel>.zip（全量包，含所有 app 模板）
-   → 校验 full/library-<channel>.zip.sha256
+  → 下载 full/latest.zip（全量包，含所有 app 模板）
+  → 校验 full/latest.zip.sha256
    → 解压到本地 apps/ 目录
 
 5. 保存本次下载的 appstore-manifest.json 到本地作为状态锚点
@@ -384,12 +382,11 @@ artifact/appstore/<channel>/
 
 ```
 增量更新中任一文件下载或校验失败：
-  → 回退策略：下载 full/library-<channel>.zip 全量覆盖本地 apps/
+  → 回退策略：下载 library/full/latest.zip 全量覆盖本地 apps/
   → 用本次下载的 manifest 替换本地缓存
 
 schemaVersion 不在本地支持列表中：
   → 不更新任何数据，保持本地缓存的旧 manifest
-  → 提示用户升级客户端
   → 提示用户升级客户端
 ```
 
@@ -399,8 +396,9 @@ schemaVersion 不在本地支持列表中：
 |------|------|------|
 | `appstore-manifest.json` | Cache-Control: 60s | 入口文件，需及时感知更新 |
 | `catalog/manifest.json` | Cache-Control: 60s | 体积极小，变更频率低 |
+| `catalog/full/latest.zip` | Cache-Control: 60s | 冷启动与兜底恢复入口，覆盖发布后需尽快生效 |
 | `apps-delta-*.json` | Cache-Control: 60s | 体积极小 |
 | `apps/{app}/latest.zip` | Cache-Control: 60s | 模板文件体积极小，变更后需立即生效 |
-| `full/library-{dsv}.zip` | immutable | 文件名含内容版本，永不变 |
+| `library/full/latest.zip` | Cache-Control: 60s | library 全量固定入口 |
 | `*.sha256` | 跟随对应文件 | 校验与被校验文件同步缓存 |
 | `catalog_*.json / product_*.json` | Cache-Control: 3600 | 描述数据，变更频率中等 |
