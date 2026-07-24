@@ -95,6 +95,17 @@ else:
 3. `removedApps` → 本地删除
 4. 任一 app 更新失败 → 回退到全量包恢复
 
+### 3.1 Channel 数据差异
+
+为保持与旧体系一致，`dev` 与 `release` 的数据范围**不是完全相同**：
+
+- `release`：只消费 Contentful 中 `production=true` 的 product 条目
+- `dev`：不过滤 `production`，因此包含更多 product 条目，便于开发、联调与测试
+- `dev`：额外将仓库 `apps/*/variables.json` 中的 `edition -> distribution` 信息补写回 `product_*.json`
+- `release`：不做这一步本地 distribution 补写，保持发布面向生产的数据集
+
+因此，`dev` 通道天然是"更宽、更富"的数据集，而 `release` 通道是"更收敛、更生产化"的数据集。
+
 ---
 
 ## 4. 输出物模型
@@ -246,7 +257,7 @@ artifact/appstore/<channel>/
 2. 解析 channel
 3. 检查 R2 apps/ 是否为空 → 空则标记首次发布（--all-apps）
 4. 从 Contentful 拉取 catalog 源数据
-5. 运行 library_publish.py 构建所有制品（v2 + legacy）
+5. 运行 library_publish.py 构建所有制品（v2 + legacy）；其中 dev 保留旧体系的 distribution 补写逻辑
 6. 上传 v2 制品到新 R2 路径（`channel` 只由目录表达，full 固定入口统一为 `latest.zip`）
 7. 上传 legacy 制品到旧 R2 路径（兼容旧消费者）
 8. 清除 Cloudflare 缓存

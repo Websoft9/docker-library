@@ -543,10 +543,15 @@ def build_v2_appstore_artifacts(
     manifests_dir.mkdir(parents=True, exist_ok=True)
 
     catalog_sources = ensure_catalog_source(catalog_source_dir)
+    distribution_map = build_distribution_map() if channel == "dev" else {}
     catalog_checksums: dict[str, str] = {}
     for file_name, source_path in catalog_sources.items():
         destination = catalog_dir / file_name
-        shutil.copy2(source_path, destination)
+        if file_name.startswith("product_") and distribution_map:
+            product_entries = load_json(source_path)
+            write_json(destination, merge_product_distribution(product_entries, distribution_map))
+        else:
+            shutil.copy2(source_path, destination)
         if file_name == "catalog_en.json":
             catalog_checksums["catalogEn"] = write_checksum_file(destination)
         elif file_name == "catalog_zh.json":

@@ -109,6 +109,12 @@ jobs:
             echo "seed=false" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Read library version
+        id: version
+        run: |
+          VERSION=$(jq -r '.Version' library.json)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
       - name: Build publish artifacts
         run: |
           args=(
@@ -228,8 +234,8 @@ jobs:
         with:
           files: |
             dist/appstore-publish/legacy/release/library/library.json
-          tag_name: release-${{ github.run_number }}
-          name: Release ${{ github.run_number }}
+          tag_name: ${{ steps.version.outputs.version }}
+          name: ${{ steps.version.outputs.version }}
           draft: false
           prerelease: false
 
