@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1",
+  "datasetVersion": "7ee7a10b7da49f38",
+  "source": "contentful",
+  "fullPackage": "full/latest.zip",
+  "files": {
+    "catalogEn": "catalog_en.json",
+    "catalogZh": "catalog_zh.json",
+    "productEn": "product_en.json",
+    "productZh": "product_zh.json"
+  },
+  "checksum": {
+    "catalogEn": "catalog_en.json.sha256",
+    "catalogZh": "catalog_zh.json.sha256",
+    "productEn": "product_en.json.sha256",
+    "productZh": "product_zh.json.sha256",
+    "fullPackage": "full/latest.zip.sha256"
+  },
+  "generatedAt": "2026-06-11T00:52:28.279033Z"
+}

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1",
+  "datasetVersion": "5f6a52f4f1166cd7",
+  "channel": "dev",
+  "catalog": {
+    "manifest": "catalog/manifest.json",
+    "datasetVersion": "7ee7a10b7da49f38"
+  },
+  "library": {
+    "manifest": "library/manifest.json",
+    "datasetVersion": "2ced95b5e3679c0b"
+  },
+  "generatedAt": "2026-06-11T00:52:28.279033Z"
+}

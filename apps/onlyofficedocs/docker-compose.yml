@@ -27,7 +27,7 @@ services:
     volumes:
       - data:/var/www/onlyoffice/Data
       - log:/var/log/onlyoffice
-      - db:/var/lib/postgresql
+      - db:/var/lib/postgresql/data
       - lib:/var/lib/onlyoffice
       - cache:/var/lib/redis
       - mq:/var/lib/rabbitmq
