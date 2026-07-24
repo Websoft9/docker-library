@@ -130,6 +130,15 @@ jobs:
           fi
           python build/library_publish.py "${args[@]}"
 
+      - name: Generate changelog
+        if: steps.resolve_channel.outputs.channel == 'release'
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: .github/cliff.toml
+          args: --latest --strip header
+        env:
+          OUTPUT: dist/CHANGELOG_RELEASE.md
+
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
@@ -236,6 +245,7 @@ jobs:
             dist/appstore-publish/legacy/release/library/library.json
           tag_name: ${{ steps.version.outputs.version }}
           name: ${{ steps.version.outputs.version }}
+          body_path: dist/CHANGELOG_RELEASE.md
           draft: false
           prerelease: false
 

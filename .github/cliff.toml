@@ -1,0 +1,53 @@
+# git-cliff configuration for docker-library
+# Docs: https://git-cliff.org/docs/configuration
+
+[changelog]
+header = "# Changelog\n\nAll notable changes to this project will be documented in this file.\n\n"
+body = """
+{%- if version -%}
+## [{{ version }}] - {{ timestamp | date(format="%Y-%m-%d") }}
+{% else -%}
+## [Unreleased]
+{% endif -%}
+{% for group, commits in commits | group_by(attribute="group") %}
+### {{ group }}
+{% for commit in commits -%}
+- {% if commit.scope %}**{{ commit.scope }}:** {% endif %}{{ commit.message | split(pat="\n") | first | trim }}{% if commit.remote.username %} (by @{{ commit.remote.username }}){% endif %}
+{% endfor -%}
+{% endfor -%}
+"""
+trim = true
+footer = ""
+
+[git]
+conventional_commits = false
+filter_unconventional = false
+split_commits = false
+commit_parsers = [
+  { message = "^(?i)add", group = "Added" },
+  { message = "^(?i)feat", group = "Added" },
+  { message = "^(?i)new", group = "Added" },
+  { message = "^(?i)fix", group = "Fixed" },
+  { message = "^(?i)bug", group = "Fixed" },
+  { message = "^(?i)update", group = "Changed" },
+  { message = "^(?i)upgrade", group = "Changed" },
+  { message = "^(?i)change", group = "Changed" },
+  { message = "^(?i)refactor", group = "Changed" },
+  { message = "^(?i)remove", group = "Removed" },
+  { message = "^(?i)delete", group = "Removed" },
+  { message = "^(?i)docs", group = "Documentation" },
+  { message = "^(?i)doc", group = "Documentation" },
+  { message = "^(?i)perf", group = "Performance" },
+  { message = "^(?i)ci", group = "CI/CD" },
+  { message = "^(?i)build", group = "CI/CD" },
+  { message = "^(?i)chore", group = "Miscellaneous" },
+  { message = "^(?i)merge", group = "Merged" },
+  { message = ".*", group = "Other" },
+]
+protect_breaking_commits = false
+filter_commits = true
+tag_pattern = "[0-9]*"
+skip_tags = "release-*"
+ignore_tags = ""
+topo_order = false
+sort_commits = "oldest"
