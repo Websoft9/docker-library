@@ -488,7 +488,7 @@ def build_legacy_library_artifacts(output_dir: Path, package_name: str, packaged
 def build_legacy_media_artifacts(output_dir: Path, catalog_source_dir: Path, channel: str) -> dict:
     output_dir.mkdir(parents=True, exist_ok=True)
     archive_name = "media-dev.zip" if channel == "dev" else "media-latest.zip"
-    distribution_map = build_distribution_map() if channel == "dev" else {}
+    distribution_map = build_distribution_map()
 
     with tempfile.TemporaryDirectory() as tmp_dir_name:
         tmp_dir = Path(tmp_dir_name)
@@ -543,7 +543,7 @@ def build_v2_appstore_artifacts(
     manifests_dir.mkdir(parents=True, exist_ok=True)
 
     catalog_sources = ensure_catalog_source(catalog_source_dir)
-    distribution_map = build_distribution_map() if channel == "dev" else {}
+    distribution_map = build_distribution_map()
     catalog_checksums: dict[str, str] = {}
     for file_name, source_path in catalog_sources.items():
         destination = catalog_dir / file_name
