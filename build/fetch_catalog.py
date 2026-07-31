@@ -55,6 +55,7 @@ query($locale: String!, $skip: Int!, $production: Boolean) {
       description
       screenshots
       distribution
+      production
       vcpu
       memory
       storage
