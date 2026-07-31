@@ -59,7 +59,7 @@ query($locale: String!, $skip: Int!, $production: Boolean) {
       memory
       storage
       logo { imageurl }
-      relatedAppsCollection(limit: 20) {
+      relatedAppsCollection(limit: 10) {
         items {
           key
           trademark
