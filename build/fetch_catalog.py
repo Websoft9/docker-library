@@ -61,7 +61,8 @@ query($locale: String!, $skip: Int!, $production: Boolean) {
       logo { imageurl }
       relatedAppsCollection(limit: 20) {
         items {
-          sys { id }
+          key
+          trademark
         }
       }
       catalogCollection(limit: 15) {
