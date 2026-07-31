@@ -59,6 +59,12 @@ query($locale: String!, $skip: Int!, $production: Boolean) {
       memory
       storage
       logo { imageurl }
+      relatedappsCollection(limit: 20) {
+        items {
+          key
+          trademark
+        }
+      }
       catalogCollection(limit: 15) {
         items {
           key
