@@ -13,6 +13,12 @@
       ]
     }
   ],
+  "externalDB": {
+    "6.9": [
+      "MariaDB 10.11 or greater",
+      "MySQL 8.0 or greater"
+    ]
+  },
   "requirements": {
     "cpu": "1",
     "memory": "1",
