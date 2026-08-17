@@ -2,6 +2,27 @@ name: Get Apps Latest Version
 
 on: 
   workflow_dispatch:
+    inputs:
+      selection:
+        description: Selection mode for app checks
+        required: false
+        default: all-active
+        type: choice
+        options:
+          - all-active
+          - due
+          - weekly
+          - monthly
+          - quarterly
+      target_date:
+        description: Optional cadence date in YYYY-MM-DD
+        required: false
+        type: string
+      plan_only:
+        description: Only output selected apps without remote version checks
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   get-apps-versions:
@@ -19,10 +40,12 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install requests packaging        
+        pip install requests packaging pyyaml
 
     - name: Run version update script
-      run: python build/get_apps_latest_version.py --max-pages 1 --page-size 100
+      env:
+        TARGET_DATE: ${{ inputs.target_date }}
+      run: python build/get_apps_latest_version.py --max-pages 1 --page-size 100 --selection "${{ inputs.selection || 'all-active' }}" ${{ inputs.plan_only && '--plan-only' || '' }}
 
     - name: Upload output as artifact
       uses: actions/upload-artifact@v4

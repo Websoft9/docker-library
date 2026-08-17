@@ -1,62 +1,30 @@
 ---
 name: New docker compose request
-about: Create new docker-compose this project
-title: 'Create docker-compose.yml project for [appname]'
+about: Create one new application through the AI-SDLC flow
+title: 'Create app package for [appname]'
 labels: 'feature'
 assignees: ''
 ---
 
-## Describe application with below format
+## App
 
-```
-# application name
-name: "Websoft9"
-# URL of the software project's homepage
-website_url: "https://www.websoft9.com"
-# URL where the full source code of the program can be downloaded
-source_code_url: "https://gitlab.com/websoft9/websoft9"
-# a brief and concise statementthat presents the main points for this application, shorter than 10 characters
-summary: "Open source Application self-hosting platform"
-# description of what the software does, shorter than 250 characters, sentence case
-description: ""
-# list of license identifiers, see https://opensource.org/licenses for the full list of licenses
-licenses:
-  - MIT
-# (optional, true/false, default true) whether this application have Docker image
-Docker_image: true
-# (optional) link to an interactive demo of the software
-demo_url: "https://www.websoft9.com/demo"
-```
+- app name:
+- official site:
+- official docs:
+- official image or compose reference:
 
-## Assessment Checklist by repository owner 
+## Requirements
 
-Before deveopment, repository owner should complete below Assessment: 
+- auth model:
+- storage needs:
+- network or port needs:
+- required services:
 
-- [ ] This application have **3** containers
-- [ ] official architecture research
-- [ ] Complete the Contentful data
-- [ ] Create app project structure from template
+## Acceptance Focus
 
+- core user path:
+- special E2E focus:
 
-## Development Checklist by deveoper
+## Notes
 
-Developer should develop this application's docker compose project at **Websoft9 Console** directly. 
-
-- [ ] official architecture research
-- [ ] follow [standardized syntax](https://github.com/Websoft9/docker-library/blob/main/docs/code_owner.md)
-- [ ] specials and refers at notes.md/.env/docker-compose.yml
-- [ ] test at Websoft9 Appstore and nginx proxy testing
-- [ ] check siteurl or baseurl
-- [ ] add official environments reference at .env
-- [ ] connetion URI
-- [ ] ports
-- [ ] credentials environment
-- [ ] i18n
-- [ ] commit RP to dev branch
-
-## Production preparation by repository owner 
-
-- [ ] system test
-- [ ] docs
-- [ ] add Notes content to docs
-- [ ] publish to RC release
+- additional context:

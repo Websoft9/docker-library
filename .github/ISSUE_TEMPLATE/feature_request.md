@@ -1,35 +1,23 @@
 ---
 name: Feature request
-about: Suggest an idea for this project
-title: 'feature title for [appname]'
+about: Request a new capability or process change
+title: 'Feature for [scope]'
 labels: 'feature'
 assignees: ''
 ---
 
-**What type of your feature request?**  
+## Problem
 
-- [ ] Add new features
-- [ ] Improve current features
+- what is missing:
+- who is affected:
 
-**Do you have Clear solution**  
+## Desired Result
 
-- [ ] No solution, need research
-- [ ] Yes, solution detail below
+- expected outcome:
+- acceptance notes:
 
-Discribe you solution here:  
+## Delivery Mode
 
-**Is your feature request related to a problem? Please describe.**  
-
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
-
-**Describe the solution you'd like**  
-
-A clear and concise description of what you want to happen.  
-
-**Describe alternatives you've considered**  
-
-A clear and concise description of any alternative solutions or features you've considered.  
-
-**Additional context**  
-
-Add any other context or screenshots about the feature request here.
+- [ ] app change
+- [ ] process change
+- [ ] research first

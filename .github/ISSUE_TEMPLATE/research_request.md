@@ -1,20 +1,19 @@
 ---
 name: Research discussion
-about: Do some research and discussion, then get the correct solution
-title: 'Research discussion title for [appname]'
+about: Request analysis before implementation
+title: 'Research for [scope]'
 labels: research
 ---
 
+## Question
 
-## Describe question
+## References
 
+- official docs:
+- current app or workflow:
 
+## Expected Output
 
-## Docs references
-
-This docs is very important for research:  
-
-* official docs1
-* official docs2
-* official docs3
-* other docs
+- [ ] recommendation only
+- [ ] recommendation with implementation plan
+- [ ] recommendation with archive decision

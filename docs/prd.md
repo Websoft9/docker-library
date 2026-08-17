@@ -1,4 +1,6 @@
 # Product Requirements Document (PRD)
+
+> Operational authority now lives in `docs/vision.md`, `docs/architecture.md`, and `docs/ai-sdlc/README.md`. This PRD remains product background and scope context.
 ## Docker Compose Application Library
 
 **Version:** 1.0  

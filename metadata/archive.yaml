@@ -1,0 +1,17 @@
+version: 1
+
+defaults:
+  archive_reason: owner-retired
+  contentful:
+    action: archive
+    production: false
+
+apps:
+  - discuz
+  - joomla
+  - magento
+  - mediawiki
+  - nodebb
+  - sscms
+
+overrides: {}

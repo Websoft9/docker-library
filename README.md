@@ -54,6 +54,16 @@ We greatly welcome community contributions to provide suggestions and improvemen
 
 [Websoft9 Administrator Guide](https://support.websoft9.com/docs/apps)
 
+[Vision](docs/vision.md)
+
+[Architecture](docs/architecture.md)
+
+[AI-SDLC Guide](docs/ai-sdlc/README.md)
+
+[Maintenance Metadata](metadata/maintenance.yaml)
+
+[Archive Metadata](metadata/archive.yaml)
+
 ## Support
 
 You can subscribe [Websoft9 Enterprise Support](https://www.websoft9.com/apps) to ensure high availability of applications and more:

@@ -6,10 +6,14 @@ labels: 'update,S-research'
 assignees: ''
 ---
 
-**Research and development steps your need to do**  
+## Scope
+
+- old app:
+- new app:
+
+## Required Handoffs
 
 - [ ] docker-library update
-- [ ] contentful update
+- [ ] Contentful metadata update
 - [ ] docs update
-- [ ] aliyun oss image update
-
+- [ ] release artifact update if needed

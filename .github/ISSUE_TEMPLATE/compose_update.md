@@ -1,30 +1,35 @@
 ---
 name: Update application's version
-about: Update application's version
-title: 'Update version to [x.x.x] for [appname]'
-labels: 'update,S-research'
+about: Update one application's version through the AI-SDLC flow
+title: 'Update [appname] to [target-version]'
+labels: 'update'
 assignees: ''
 ---
 
-**What type of your feature request?**  
+## App
 
-Change the W9_VERSION to target version number at `.env` and test it
+- app name:
+- current version:
+- target version:
 
-**Research and development steps your need to do**  
+## Upstream
 
-- [ ] Check the official installation docs of this application
-- [ ] Add a comment with docker logs
-- [ ] If need to update documentation, add issue at [Websoft9 docs](https://github.com/websoft9/doc.websoft9.com)
+- release notes:
+- image or source reference:
 
-**How to commit your change to [docker-library](https://github.com/Websoft9/docker-library)?**   
+## Candidate Class
 
-   ```
-   docker exec -it websoft9-apphub bash
-   apphub commit --appid --github_token
-   ```
+- [ ] patch
+- [ ] minor
+- [ ] major
+- [ ] security
 
-**Testing steps**   
+## Expected Decision
 
-- [ ] Upload your sreenshoot to PR
-- [ ] Automation testing when submit PR to dev branch
-- [ ] System testing for dev branch
+- [ ] auto-update
+- [ ] review-first
+
+## Notes
+
+- risk hints:
+- special E2E focus:

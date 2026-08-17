@@ -1,0 +1,42 @@
+version: 1
+
+defaults:
+  status: active
+  cadence: monthly
+  update_policy: patch-minor
+
+cadence:
+  weekly:
+    - activemq
+    - arangodb
+    - erpnext
+    - gitea
+    - gitlab
+    - grafana
+    - graylog
+    - influxdb
+    - jenkins
+    - mattermost
+    - metabase
+    - mongodb
+    - moodle
+    - mysql
+    - neo4j
+    - nextcloud
+    - onlyofficedocs
+    - owncloud
+    - portainer
+    - postgresql
+    - prestashop
+    - rabbitmq
+    - redmine
+    - rocketmq
+    - superset
+    - wordpress
+    - wordpresspro
+    - zabbix
+
+update_policy: {}
+
+lifecycle:
+  frozen: []

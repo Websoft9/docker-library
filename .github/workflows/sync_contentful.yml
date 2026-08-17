@@ -1,5 +1,5 @@
-# workflow_dispatch mode will sync all applications
-# push trigger mode only sync changed applications
+# workflow_dispatch mode syncs active and archived applications
+# push trigger mode only syncs changed applications
 
 name: Sync data to Contentful
 
@@ -27,7 +27,7 @@ jobs:
           git diff --name-only ${{ github.event.before }} ${{ github.event.after }}
           echo "APP_LISTS=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} -- 'apps/*/variables.json' | awk -F/ '{print $2}' | tr '\n' ',' | sed 's/,$//')" >> $GITHUB_ENV
         elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-          echo "APP_LISTS=$(ls -d apps/*/ | cut -f2 -d'/' | tr '\n' ',' | sed 's/,$//')" >> $GITHUB_ENV
+          echo "APP_LISTS=$(printf '%s\n' apps/*/ archive/apps/*/ | awk -F/ '{print $2 == "apps" ? $3 : $2}' | sed '/^$/d' | sort -u | tr '\n' ',' | sed 's/,$//')" >> $GITHUB_ENV
         fi
     
       # if judge release=true, insert code to cut APP_LISTS
@@ -35,7 +35,7 @@ jobs:
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install requests contentful_management
+        pip install requests contentful_management pyyaml
 
     - name:  Run sync_contentful.py
       env:
