@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "docker-library-cli"
+version = "0.1.0"
+description = "CLI for docker-library automation"
+requires-python = ">=3.9"
+dependencies = [
+  "typer>=0.12,<1",
+  "requests[socks]>=2",
+  "PyYAML>=6",
+  "packaging>=24"
+]
+
+[project.scripts]
+libs = "cli.main:run"
+
+[tool.setuptools.packages.find]
+include = ["cli*"]

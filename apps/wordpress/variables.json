@@ -4,6 +4,24 @@
   "release": true,
   "fork_url": "https://github.com/docker-library/wordpress",
   "version_from": "https://hub.docker.com/_/wordpress/tags",
+  "upstream": {
+    "version_source": {
+      "type": "dockerhub-tags",
+      "url": "https://hub.docker.com/_/wordpress/tags"
+    },
+    "ai_reference_sources": [
+      {
+        "name": "image-repository",
+        "type": "human-doc-page",
+        "url": "https://github.com/docker-library/wordpress"
+      },
+      {
+        "name": "requirements-docs",
+        "type": "human-doc-page",
+        "url": "https://www.wordpress.org/docs/user_guide/en/install-requirements.html"
+      }
+    ]
+  },
   "edition": [
     {
       "dist": "community",

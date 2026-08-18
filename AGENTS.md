@@ -14,7 +14,8 @@ Read in this order:
 2. `docs/architecture.md`
 3. `docs/code_owner.md`
 4. `docs/ai-sdlc/README.md`
-5. `.github/copilot-instructions.md`
+5. `docs/upstream-spec.md`
+6. `.github/copilot-instructions.md`
 
 ## Core Rules
 
@@ -43,6 +44,7 @@ Read in this order:
 
 - Apps: `apps/`
 - App metadata: `metadata/maintenance.yaml`, `metadata/archive.yaml`
+- Shared skills: `skills/`
 - Template: `template/`
 - Scripts: `build/`
 - Process docs: `docs/ai-sdlc/`

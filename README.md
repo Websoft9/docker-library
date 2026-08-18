@@ -48,7 +48,7 @@ We greatly welcome community contributions to provide suggestions and improvemen
 
 1. Find a bug, request features and provide better methods, you can promote your ideas through [issue](https://github.com/Websoft9/docker-library/issues).
 
-2. Contributing to this repository, please follow our [contribution guidelines](CONTRIBUTING.md). We try our best to provide [reward](./docs/reward.md) for some important task.
+2. Contributing to this repository, please follow our [contribution guidelines](CONTRIBUTING.md).
 
 ## Documentation
 
@@ -63,6 +63,10 @@ We greatly welcome community contributions to provide suggestions and improvemen
 [Maintenance Metadata](metadata/maintenance.yaml)
 
 [Archive Metadata](metadata/archive.yaml)
+
+[Shared Skills](skills/README.md)
+
+[CLI](cli/README.md)
 
 ## Support
 

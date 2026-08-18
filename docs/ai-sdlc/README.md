@@ -30,3 +30,4 @@ Docs:
 - `07-issue-contracts.md`
 - `08-pr-contracts.md`
 - `09-owner-e2e-runbook.md`
+- `10-update-assessment-workflow.md`

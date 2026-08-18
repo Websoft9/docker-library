@@ -4,8 +4,9 @@ library
 library-*.zip
 artifacts
 mk.sh
-
-.claude
+.opencode/node_modules
 _bmad-output
+.venv
+*.egg-info
 
 # Pre-downloaded app sources

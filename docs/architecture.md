@@ -7,6 +7,7 @@ Core layout:
 - `archive/apps/`: archived apps removed from active maintenance
 - `metadata/maintenance.yaml`: repository-level maintenance metadata
 - `metadata/archive.yaml`: archived app metadata and external handoff flags
+- `skills/`: canonical shared skills for multiple agents
 - `template/`: canonical app template
 - `build/`: generation and maintenance scripts
 - `docs/`: product, process, and maintainer docs
@@ -39,4 +40,5 @@ Authority:
 - product direction: `docs/vision.md`
 - app development rules: `docs/code_owner.md`
 - AI delivery process: `docs/ai-sdlc/README.md`
+- upstream discovery rules: `docs/upstream-spec.md`
 - AI execution hints: `AGENTS.md` and `.github/copilot-instructions.md`

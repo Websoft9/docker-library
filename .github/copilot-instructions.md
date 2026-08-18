@@ -7,7 +7,8 @@ Authority order:
 2. `docs/vision.md`
 3. `docs/architecture.md`
 4. `docs/ai-sdlc/README.md`
-5. `docs/code_owner.md`
+5. `docs/upstream-spec.md`
+6. `docs/code_owner.md`
 
 Repository model:
 - `apps/<app>` is one deployable unit

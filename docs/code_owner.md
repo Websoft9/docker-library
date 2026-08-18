@@ -197,6 +197,8 @@ You know there three type container for an application:
 
 We suggest add Application container and Application assisting container 's environments to .env
 
-#### Which version should use?
+#### Which image tag should use?
 
-Try to use x.x, not recommend use x.x.x if not necessary.
+- Prefer `x.x` tags for `W9_VERSION` when the upstream image publishes a stable `x.x` tag.
+- Use `x.x.x` only when the upstream image does not provide a usable `x.x` tag, or when an exact patch pin is required for compatibility, migration safety, or a known upstream regression.
+- Do not use prerelease tags unless the issue explicitly targets prerelease testing.
