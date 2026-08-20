@@ -4,6 +4,13 @@
   "release": true,
   "fork_url": "https://github.com/appsmithorg/appsmith",
   "version_from": "https://hub.docker.com/r/appsmith/appsmith-ce/tags",
+  "upstream": {
+    "image": "https://hub.docker.com/r/appsmith/appsmith-ce/tags",
+    "releases": "https://github.com/appsmithorg/appsmith/tags",
+    "docs": [
+      "https://github.com/appsmithorg/appsmith"
+    ]
+  },
   "edition": [
     {
       "dist": "community",

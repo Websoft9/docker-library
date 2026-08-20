@@ -4,6 +4,13 @@
   "release": true,
   "fork_url": "https://github.com/aria2/aria2",
   "version_from": "https://hub.docker.com/r/p3terx/aria2-pro/tags",
+  "upstream": {
+    "image": "https://hub.docker.com/r/p3terx/aria2-pro/tags",
+    "releases": "https://github.com/aria2/aria2/tags",
+    "docs": [
+      "https://github.com/aria2/aria2"
+    ]
+  },
   "edition": [
     {
       "dist": "community",

@@ -4,6 +4,13 @@
   "release": true,
   "fork_url": "https://github.com/docker-library/httpd",
   "version_from": "https://hub.docker.com/_/httpd/tags",
+  "upstream": {
+    "image": "https://hub.docker.com/_/httpd/tags",
+    "releases": "https://github.com/docker-library/httpd/tags",
+    "docs": [
+      "https://github.com/docker-library/httpd"
+    ]
+  },
   "edition": [
     {
       "dist": "community",

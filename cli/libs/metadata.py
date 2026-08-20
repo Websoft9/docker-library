@@ -5,6 +5,8 @@ from pathlib import Path
 
 import yaml
 
+from libs.repo import repo_path
+
 
 @dataclass
 class AppMetadata:
@@ -23,11 +25,11 @@ def _load_yaml(path: Path) -> dict:
 
 
 def load_maintenance() -> dict:
-    return _load_yaml(Path("metadata/maintenance.yaml"))
+    return _load_yaml(repo_path("metadata", "maintenance.yaml"))
 
 
 def load_archive() -> dict:
-    return _load_yaml(Path("metadata/archive.yaml"))
+    return _load_yaml(repo_path("metadata", "archive.yaml"))
 
 
 def resolve_archive_entries(data: dict) -> dict[str, dict]:
@@ -90,11 +92,11 @@ def resolve_app_metadata(app_name: str) -> AppMetadata:
 
 
 def app_dir(app_name: str) -> Path | None:
-    active = Path("apps") / app_name
+    active = repo_path("apps", app_name)
     if active.exists():
         return active
 
-    archived = Path("archive/apps") / app_name
+    archived = repo_path("archive", "apps", app_name)
     if archived.exists():
         return archived
 
@@ -102,7 +104,7 @@ def app_dir(app_name: str) -> Path | None:
 
 
 def active_app_dirs() -> list[Path]:
-    apps_root = Path("apps")
+    apps_root = repo_path("apps")
     if not apps_root.exists():
         return []
     return sorted(path for path in apps_root.iterdir() if path.is_dir())

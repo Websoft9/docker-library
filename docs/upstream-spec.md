@@ -12,26 +12,54 @@ Rule:
 - CLI collects facts
 - AI interprets facts and makes workflow decisions
 
+## Scan Pipeline
+
+The full update pipeline follows five layers:
+
+1. Release index
+   - read the upstream release page or git tags
+   - collect known stable version numbers
+   - skip prerelease and versions at or below the current version
+
+2. Image verification
+   - for each candidate from the release index, verify the image registry has a matching tag
+   - candidates are tried from highest to lowest, so a slightly lower image tag wins when the newest has no image yet
+   - prefer stable `x.x` image tags over patch tags
+
+3. Structure layer
+   - list all dependency images from the local `docker-compose.yml`
+   - when `upstream.compose.compose` is declared, diff normalized compose structure
+   - emit `compose-drift` facts: services, images, ports, volumes, depends_on, healthcheck, command
+
+4. Research layer
+   - AI reads official docs, release notes, and the official compose file
+   - produces a change plan: which files to update and whether new pieces must be added
+
+5. Decision layer
+   - classify the change as patch, minor, major, or security
+   - apply maintenance policy to choose `auto-update`, `review-first`, `defer`, or `skip`
+   - owner confirms the final direction
+
+New app flow reuses layers 3-5 and starts from the repository template.
+
 ## Source Types
 
-CLI-first source types:
-- `dockerhub-tags`
-- `github-releases`
-- `github-tags`
-- `raw-compose`
-- `raw-env`
-- `raw-yaml`
-- `raw-json`
+CLI-first source types (inferred from URL patterns, no manual `type` field):
+- `dockerhub-tags` - `hub.docker.com/...`
+- `ghcr-tags` - `ghcr.io/...`
+- `github-releases` - `github.com/.../releases`
+- `github-tags` - `github.com/.../tags`
+- `raw-compose` - compose files referenced by `upstream.compose.compose`
+- `raw-env` - env files referenced by `upstream.compose.env`
 
-AI-only source types:
-- `human-readme`
-- `human-doc-page`
-- `dynamic-web-page`
-- `login-required-page`
+AI-only sources:
+- any URL listed under `upstream.docs` or found during research
+- `human-readme`, `human-doc-page`, `dynamic-web-page`, `login-required-page` remain valid labels for documentation purposes only
 
 Fallback rule:
 - if CLI cannot parse a declared source, return `source-error`
 - AI may then research and propose a corrected source
+- `github-releases` falls back to `github-tags` when the repo publishes no releases
 
 ## Scan Outputs
 
@@ -49,21 +77,30 @@ AI consumes these outputs and decides:
 
 ## Minimal Upstream Descriptor
 
+Role-based keys, no type fields. CLI infers the source type from URL patterns:
+
+- `image`: image registry tag source (Docker Hub, GHCR, ...) - discover/verify
+- `releases`: upstream project version list (GitHub releases/tags) - optional, enables the verified rollback ladder
+- `compose.compose`: official compose file - enables compose drift
+- `compose.env`: official env example file - enables config drift
+- `docs`: URLs for AI research only, any page
+
 Migration rule:
 - keep existing `version_from` during migration
-- `upstream.version_source.url` should match `version_from` when both exist
-- new upstream dimensions may be added without removing `version_from`
+- new apps may omit `version_from` when `upstream.image` exists
+- old keys `version_source`, `release_index`, `compose_source`, `config_source`, `ai_reference_sources` remain readable by CLI but are deprecated
 
 For image-driven apps:
 
 ```json
 {
-  "version_from": "https://hub.docker.com/r/grafana/grafana/tags",
+  "version_from": "https://hub.docker.com/_/wordpress/tags",
   "upstream": {
-    "version_source": {
-      "type": "dockerhub-tags",
-      "url": "https://hub.docker.com/r/grafana/grafana/tags"
-    }
+    "image": "https://hub.docker.com/_/wordpress/tags",
+    "docs": [
+      "https://github.com/docker-library/wordpress",
+      "https://www.wordpress.org/docs/user_guide/en/install-requirements.html"
+    ]
   }
 }
 ```
@@ -74,43 +111,47 @@ For compose-driven apps:
 {
   "version_from": "https://github.com/example/project/releases",
   "upstream": {
-    "version_source": {
-      "type": "github-releases",
-      "url": "https://github.com/example/project/releases"
+    "releases": "https://github.com/example/project/tags",
+    "compose": {
+      "compose": "https://raw.githubusercontent.com/example/project/main/docker-compose.yml",
+      "env": "https://raw.githubusercontent.com/example/project/main/.env.example"
     },
-    "compose_source": {
-      "type": "raw-compose",
-      "url": "https://raw.githubusercontent.com/example/project/main/docker-compose.yml"
-    }
+    "docs": [
+      "https://github.com/example/project"
+    ]
   }
 }
 ```
 
-For mixed sources where CLI and AI both need references:
+For image-driven apps with a project version list (verified rollback ladder):
 
 ```json
 {
   "version_from": "https://hub.docker.com/_/wordpress/tags",
   "upstream": {
-    "version_source": {
-      "type": "dockerhub-tags",
-      "url": "https://hub.docker.com/_/wordpress/tags"
-    },
-    "ai_reference_sources": [
-      {
-        "name": "image-repository",
-        "type": "human-doc-page",
-        "url": "https://github.com/docker-library/wordpress"
-      },
-      {
-        "name": "requirements-docs",
-        "type": "human-doc-page",
-        "url": "https://www.wordpress.org/docs/user_guide/en/install-requirements.html"
-      }
+    "image": "https://hub.docker.com/_/wordpress/tags",
+    "releases": "https://github.com/WordPress/wordpress-develop/tags",
+    "compose": {},
+    "docs": [
+      "https://github.com/docker-library/wordpress",
+      "https://www.wordpress.org/docs/user_guide/en/install-requirements.html"
     ]
   }
 }
 ```
+
+Release index rule:
+- when `releases` exists, it provides the list of known upstream versions
+- CLI takes the top stable versions above the current version
+- each candidate is verified against `image` before reporting
+- unverified versions are not reported as image updates
+- when a stable `x.x` image tag exists above the current version, it wins over patch tags
+
+Rollback ladder:
+1. release index + verify when `release_index` exists
+2. fall back to plain `version_source` strategy when the index fails or verifies nothing
+3. fall back to `source-error` when the primary source itself fails
+4. AI may then research and propose a corrected source
 
 Rules:
 - `url` must point to a stable upstream source
@@ -133,6 +174,62 @@ Rules:
 - default values
 - required variables
 - URL or login related config
+
+## AI Fallback Boundary
+
+When `libs drift` runs:
+- always trust `dependency_images`
+- trust `compose_drift` when status is `ok`
+- trust `config_drift` when status is `ok`
+
+When `compose_drift.status` or `config_drift.status` is:
+- `not-declared`: AI may read official docs or propose a better upstream source
+- `source-error`: AI may retry source discovery or propose a corrected source
+
+AI SHOULD NOT redo the local dependency inventory or local compose parsing that CLI already produced.
+
+## DB Lifecycle
+
+Embedded database versions are decided from three layers:
+
+1. `variables.json externalDB` - the app's verified requirement result (min / recommended / reason). It is a result cache, not the source of truth; humans or AI verify it against vendor docs and test it.
+2. `metadata/db-lifecycle.json` - engine-level lifecycle facts (track and EOL per version), shared by all apps. Refreshed by `libs db-refresh` from the endoflife.date API; the read path treats snapshots older than 45 days as stale. Data changes are reviewed by PR like any data change.
+3. Registry tags - tag availability, fetched by the CLI at assessment time (existing `dockerhub-tags` parser).
+
+Schema of `metadata/db-lifecycle.json`:
+
+```json
+{
+  "version": 1,
+  "updated_at": "2026-08-20",
+  "engines": {
+    "mysql": {
+      "source": "https://endoflife.date/api/mysql.json",
+      "tracks": [
+        { "version": "8.4", "track": "lts", "eol": "2032-04-30" },
+        { "version": "9.7", "track": "lts", "eol": "2034-04-21" },
+        { "version": "8.0", "track": "lts", "eol": "2026-04-30" }
+      ]
+    }
+  }
+}
+```
+
+- `track`: `lts` | `innovation` | `short-term` | `stable` (engine semantics; from vendor policy)
+- `eol`: ISO date or null when open-ended
+- keep rule: alive versions, plus recently EOL'd LTS versions (current or previous calendar year) for decision rationale
+
+Decision rule:
+
+- candidates = available tags ∩ (>= externalDB.min) ∩ alive in db-lifecycle
+- LTS/stabled tracks rank above innovation/short-term
+- untested majors above the vendor's documented/tested upper bound are not eligible (AI judgment from prose docs)
+- the chosen version is recorded back into `externalDB.recommended` with a reason
+
+Division of labor:
+
+- CLI: current `W9_DB_VERSION`, declared min, lifecycle table, registry tags
+- AI: vendor-tested upper bound, final pick, recording the verified result into externalDB
 
 ## Design Rule
 

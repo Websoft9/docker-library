@@ -4,6 +4,13 @@
   "release": true,
   "fork_url": "https://github.com/ansible/awx",
   "version_from": "https://hub.docker.com/r/elestio/automatisch/tags",
+  "upstream": {
+    "image": "https://quay.io/ansible/awx",
+    "releases": "https://github.com/ansible/awx/tags",
+    "docs": [
+      "https://github.com/ansible/awx"
+    ]
+  },
   "edition": [
     {
       "dist": "community",

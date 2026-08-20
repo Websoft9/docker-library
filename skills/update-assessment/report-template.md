@@ -10,6 +10,12 @@
 
 - short rationale:
 
+## Database
+
+- current version:
+- min requirement:
+- recommendation: no change | <version> (reason)
+
 ## Evidence
 
 - upstream references:

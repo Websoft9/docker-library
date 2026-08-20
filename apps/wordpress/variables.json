@@ -5,21 +5,13 @@
   "fork_url": "https://github.com/docker-library/wordpress",
   "version_from": "https://hub.docker.com/_/wordpress/tags",
   "upstream": {
-    "version_source": {
-      "type": "dockerhub-tags",
-      "url": "https://hub.docker.com/_/wordpress/tags"
-    },
-    "ai_reference_sources": [
-      {
-        "name": "image-repository",
-        "type": "human-doc-page",
-        "url": "https://github.com/docker-library/wordpress"
-      },
-      {
-        "name": "requirements-docs",
-        "type": "human-doc-page",
-        "url": "https://www.wordpress.org/docs/user_guide/en/install-requirements.html"
-      }
+    "image": "https://hub.docker.com/_/wordpress/tags",
+    "releases": "https://github.com/WordPress/wordpress-develop/tags",
+    "compose": {},
+    "docs": [
+      "https://github.com/docker-library/wordpress",
+      "https://www.wordpress.org/docs/user_guide/en/install-requirements.html",
+      "https://make.wordpress.org/hosting/handbook/compatibility"
     ]
   },
   "edition": [
@@ -46,5 +38,8 @@
     "memory": "1",
     "disk": "1",
     "url": "https://www.wordpress.org/docs/user_guide/en/install-requirements.html"
+  },
+  "help": {
+    "db": "MySQL 8.0+ or MariaDB 10.11+"
   }
 }

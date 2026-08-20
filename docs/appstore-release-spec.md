@@ -18,6 +18,20 @@
 
 **appstore 不是第三套独立事实源**——它是对 catalog 与 library 的聚合与发布。
 
+### 说明性字段
+
+`variables.json` 中的 help text 统一放在 `help` 对象（如 `help.db`），供界面以 help text 形式展示：
+
+- 它们是人类可读文案，不参与任何计算
+- 计算事实只来自 `.env`（如 `W9_DB_VERSION`）与 `metadata/`
+- `help` 为增量新增，不修改、不取代 `requirements`、`externalDB` 等既有字段
+
+`help` 字段规则：
+
+- 每个 key 一条单句字符串
+- 若个别版本要求不同，在同一句话中注明，例如 `MySQL 8.0+ (7.0+ requires 8.4+)`
+- 不做版本键控对象，避免额外维护负担
+
 ### 职责边界
 
 | 本项目负责 | 本项目不负责 |

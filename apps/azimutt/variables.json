@@ -4,6 +4,13 @@
   "release": true,
   "fork_url": "https://github.com/azimuttapp/azimutt",
   "version_from": "https://github.com/azimuttapp/azimutt/pkgs/container/azimutt",
+  "upstream": {
+    "image": "https://ghcr.io/azimuttapp/azimutt",
+    "releases": "https://github.com/azimuttapp/azimutt/tags",
+    "docs": [
+      "https://github.com/azimuttapp/azimutt"
+    ]
+  },
   "edition": [
     {
       "dist": "community",

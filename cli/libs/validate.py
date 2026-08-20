@@ -1,13 +1,16 @@
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 
 import typer
 import yaml
 
-from cli.metadata import app_dir
-from cli.output import print_output
+from libs.metadata import app_dir
+from libs.output import print_output
+from libs.repo import repo_path
+
 
 app = typer.Typer(
     invoke_without_command=True,
@@ -50,7 +53,7 @@ def _structure_result(target: Path) -> dict:
 def _policy_result(target: Path) -> dict:
     env_path = target / ".env"
     compose_path = target / "docker-compose.yml"
-    translation_path = Path("i18n/translation.json")
+    translation_path = repo_path("i18n", "translation.json")
 
     env_lines = env_path.read_text(encoding="utf-8").splitlines() if env_path.exists() else []
     env_keys = []
@@ -65,8 +68,6 @@ def _policy_result(target: Path) -> dict:
     compose_text = compose_path.read_text(encoding="utf-8") if compose_path.exists() else ""
     translation = {}
     if translation_path.exists():
-        import json
-
         translation = json.loads(translation_path.read_text(encoding="utf-8"))
 
     missing_translation = [key for key in env_keys if TRANSLATABLE_ENV_RE.match(key) and key not in translation]

@@ -4,10 +4,20 @@
   "release": true,
   "fork_url": "https://github.com/apache/incubator-answer",
   "version_from": "https://hub.docker.com/r/apache/answer/tags",
+  "upstream": {
+    "image": "https://hub.docker.com/r/apache/answer/tags",
+    "releases": "https://github.com/apache/answer/tags",
+    "docs": [
+      "https://github.com/apache/answer"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
-      "version": ["1.7.0","latest"]
+      "version": [
+        "1.7.0",
+        "latest"
+      ]
     }
   ],
   "requirements": {

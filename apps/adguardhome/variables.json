@@ -4,10 +4,20 @@
   "release": true,
   "fork_url": "https://github.com/AdguardTeam/AdguardHome",
   "version_from": "https://hub.docker.com/r/adguard/adguardhome/tags",
+  "upstream": {
+    "image": "https://hub.docker.com/r/adguard/adguardhome/tags",
+    "releases": "https://github.com/AdguardTeam/AdguardHome/tags",
+    "docs": [
+      "https://github.com/AdguardTeam/AdguardHome"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
-      "version": ["v0.107.64","latest"]
+      "version": [
+        "v0.107.64",
+        "latest"
+      ]
     }
   ],
   "requirements": {

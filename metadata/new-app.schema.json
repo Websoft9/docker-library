@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "trademark", "docs"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "trademark": {
+      "type": "string",
+      "minLength": 1
+    },
+    "docs": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "github": { "type": "string" },
+        "image": { "type": "string" },
+        "install": { "type": "string" }
+      }
+    }
+  }
+}

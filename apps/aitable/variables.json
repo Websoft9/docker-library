@@ -4,6 +4,16 @@
   "release": true,
   "fork_url": "https://github.com/apitable/apitable/blob/develop/docker-compose.yaml",
   "version_from": "https://hub.docker.com/r/apitable/openresty/tags",
+  "upstream": {
+    "image": "https://hub.docker.com/r/apitable/openresty/tags",
+    "releases": "https://github.com/apitable/apitable/tags",
+    "compose": {
+      "compose": "https://raw.githubusercontent.com/apitable/apitable/develop/docker-compose.yaml"
+    },
+    "docs": [
+      "https://github.com/apitable/apitable"
+    ]
+  },
   "edition": [
     {
       "dist": "community",

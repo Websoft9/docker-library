@@ -8,5 +8,6 @@ mk.sh
 _bmad-output
 .venv
 *.egg-info
+cli/proxy.conf
 
 # Pre-downloaded app sources

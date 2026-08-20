@@ -4,11 +4,18 @@
   "release": true,
   "fork_url": "https://github.com/arangodb/arangodb",
   "version_from": "https://hub.docker.com/_/arangodb/tags",
+  "upstream": {
+    "image": "https://hub.docker.com/_/arangodb/tags",
+    "releases": "https://github.com/arangodb/arangodb/tags",
+    "docs": [
+      "https://github.com/arangodb/arangodb"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "3.12.4",        
+        "3.12.4",
         "latest"
       ]
     }

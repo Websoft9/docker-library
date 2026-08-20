@@ -4,6 +4,13 @@
   "release": true,
   "fork_url": "https://github.com/activepieces/activepieces",
   "version_from": "https://hub.docker.com/r/activepieces/activepieces/tags",
+  "upstream": {
+    "image": "https://hub.docker.com/r/activepieces/activepieces/tags",
+    "releases": "https://github.com/activepieces/activepieces/tags",
+    "docs": [
+      "https://github.com/activepieces/activepieces"
+    ]
+  },
   "edition": [
     {
       "dist": "community",

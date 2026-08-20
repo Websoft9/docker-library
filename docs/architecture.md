@@ -19,6 +19,7 @@ App contract:
 - `variables.json`: metadata for generation and publishing
 - `README.md`: generated or maintained app docs
 - `src/`: mounted config files referenced by volumes
+- prose fields such as `help.*` are user-facing help text; machine computation reads `.env` and `metadata/` only
 
 Shared invariants:
 - use the `websoft9` network

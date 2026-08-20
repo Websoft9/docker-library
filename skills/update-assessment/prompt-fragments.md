@@ -23,3 +23,11 @@ Choose one result only:
 - `review-first`: owner should review before implementation
 - `defer`: track and revisit in the next cadence
 - `skip`: no update work should start for this candidate
+
+## DB Decision Rule
+
+Candidates = alive tracks from `metadata/db-lifecycle.json` with version >= the app's `externalDB` min. LTS/stable tracks outrank innovation/short-term tracks. A DB major above the vendor-tested upper bound is not eligible.
+
+`externalDB` is a verified result cache, `db-lifecycle.json` is the engine fact source. Use both plus live registry tags; never invent requirements from memory.
+
+An EOL'd current `W9_DB_VERSION` is a P1 finding: report the best LTS candidate with a reason, but do not block the main version decision on it.

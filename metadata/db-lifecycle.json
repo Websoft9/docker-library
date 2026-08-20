@@ -1,0 +1,176 @@
+{
+  "version": 1,
+  "updated_at": "2026-08-20",
+  "engines": {
+    "clickhouse": {
+      "source": "https://endoflife.date/api/clickhouse.json",
+      "tracks": [
+        {
+          "version": "26.7",
+          "track": "stable",
+          "eol": null
+        },
+        {
+          "version": "26.6",
+          "track": "stable",
+          "eol": null
+        },
+        {
+          "version": "26.5",
+          "track": "stable",
+          "eol": null
+        },
+        {
+          "version": "26.3",
+          "track": "lts",
+          "eol": "2027-03-26"
+        },
+        {
+          "version": "25.8",
+          "track": "lts",
+          "eol": "2026-08-29"
+        },
+        {
+          "version": "25.3",
+          "track": "lts",
+          "eol": "2026-03-20"
+        }
+      ]
+    },
+    "mariadb": {
+      "source": "https://endoflife.date/api/mariadb.json",
+      "tracks": [
+        {
+          "version": "12.3",
+          "track": "lts",
+          "eol": "2029-06-12"
+        },
+        {
+          "version": "11.8",
+          "track": "lts",
+          "eol": "2028-06-04"
+        },
+        {
+          "version": "11.4",
+          "track": "lts",
+          "eol": "2029-05-29"
+        },
+        {
+          "version": "10.11",
+          "track": "lts",
+          "eol": "2028-02-16"
+        },
+        {
+          "version": "10.6",
+          "track": "lts",
+          "eol": "2026-07-06"
+        },
+        {
+          "version": "10.5",
+          "track": "lts",
+          "eol": "2025-06-24"
+        }
+      ]
+    },
+    "mysql": {
+      "source": "https://endoflife.date/api/mysql.json",
+      "tracks": [
+        {
+          "version": "9.7",
+          "track": "lts",
+          "eol": "2034-04-21"
+        },
+        {
+          "version": "8.4",
+          "track": "lts",
+          "eol": "2032-04-30"
+        },
+        {
+          "version": "8.0",
+          "track": "lts",
+          "eol": "2026-04-30"
+        }
+      ]
+    },
+    "postgresql": {
+      "source": "https://endoflife.date/api/postgresql.json",
+      "tracks": [
+        {
+          "version": "18",
+          "track": "stable",
+          "eol": "2030-11-14"
+        },
+        {
+          "version": "17",
+          "track": "stable",
+          "eol": "2029-11-08"
+        },
+        {
+          "version": "16",
+          "track": "stable",
+          "eol": "2028-11-09"
+        },
+        {
+          "version": "15",
+          "track": "stable",
+          "eol": "2027-11-11"
+        },
+        {
+          "version": "14",
+          "track": "stable",
+          "eol": "2026-11-12"
+        }
+      ]
+    },
+    "redis": {
+      "source": "https://endoflife.date/api/redis.json",
+      "tracks": [
+        {
+          "version": "8.10",
+          "track": "stable",
+          "eol": null
+        },
+        {
+          "version": "8.8",
+          "track": "stable",
+          "eol": null
+        },
+        {
+          "version": "8.6",
+          "track": "stable",
+          "eol": null
+        },
+        {
+          "version": "8.4",
+          "track": "stable",
+          "eol": null
+        },
+        {
+          "version": "8.2",
+          "track": "stable",
+          "eol": "2030-09-01"
+        },
+        {
+          "version": "8.0",
+          "track": "stable",
+          "eol": "2026-12-01"
+        },
+        {
+          "version": "7.4",
+          "track": "stable",
+          "eol": "2029-12-01"
+        },
+        {
+          "version": "7.2",
+          "track": "stable",
+          "eol": "2029-12-01"
+        },
+        {
+          "version": "6.2",
+          "track": "stable",
+          "eol": "2027-04-01"
+        }
+      ]
+    }
+  }
+}

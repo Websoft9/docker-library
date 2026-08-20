@@ -4,6 +4,13 @@
   "release": false,
   "fork_url": "https://github.com/apache/apisix-docker",
   "version_from": "https://hub.docker.com/r/apache/apisix/tags",
+  "upstream": {
+    "image": "https://hub.docker.com/r/apache/apisix/tags",
+    "releases": "https://github.com/apache/apisix/tags",
+    "docs": [
+      "https://github.com/apache/apisix-docker"
+    ]
+  },
   "edition": [
     {
       "dist": "community",

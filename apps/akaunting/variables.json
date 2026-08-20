@@ -4,6 +4,13 @@
   "release": true,
   "fork_url": "https://github.com/akaunting/docker",
   "version_from": "https://hub.docker.com/r/akaunting/akaunting/tags",
+  "upstream": {
+    "image": "https://hub.docker.com/r/akaunting/akaunting/tags",
+    "releases": "https://github.com/akaunting/akaunting/tags",
+    "docs": [
+      "https://github.com/akaunting/docker"
+    ]
+  },
   "edition": [
     {
       "dist": "community",

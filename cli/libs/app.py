@@ -5,13 +5,15 @@ import shutil
 from pathlib import Path
 
 import typer
+import yaml
 from rich import box
 from rich.console import Console
 from rich.table import Table
-import yaml
 
-from cli.metadata import active_app_dirs, app_dir, resolve_app_metadata
-from cli.output import print_output
+from libs.metadata import active_app_dirs, app_dir, resolve_app_metadata
+from libs.output import print_output
+from libs.repo import relative_repo_path, repo_path
+
 
 app = typer.Typer(help="Manage apps", context_settings={"help_option_names": ["-h", "--help"]})
 
@@ -40,7 +42,7 @@ def collect_apps(include_archived: bool = False, scope: str | None = None) -> li
         output.append(item)
 
     if include_archived:
-        for name in _app_names(Path("archive/apps")):
+        for name in _app_names(repo_path("archive", "apps")):
             metadata = resolve_app_metadata(name)
             item = {
                 "name": name,
@@ -58,7 +60,10 @@ def collect_apps(include_archived: bool = False, scope: str | None = None) -> li
 
 
 def _app_scope(app_name: str) -> str:
-    variables_path = app_dir(app_name) / "variables.json"
+    target = app_dir(app_name)
+    if not target:
+        return "public"
+    variables_path = target / "variables.json"
     if not variables_path.exists():
         return "public"
     variables = json.loads(variables_path.read_text(encoding="utf-8"))
@@ -75,7 +80,7 @@ def collect_app_info(app_name: str) -> dict:
     metadata = resolve_app_metadata(app_name)
     return {
         "name": app_name,
-        "path": str(target),
+        "path": relative_repo_path(target),
         "status": metadata.status,
         "cadence": metadata.cadence,
         "update_policy": metadata.update_policy,
@@ -84,6 +89,7 @@ def collect_app_info(app_name: str) -> dict:
         "release": variables.get("release"),
         "version_from": variables.get("version_from"),
         "requirements": variables.get("requirements"),
+        "external_db": variables.get("externalDB"),
     }
 
 
@@ -104,12 +110,12 @@ def archive_app(app_name: str, reason: str = "owner-retired", dry_run: bool = Fa
     if not source:
         raise FileNotFoundError(app_name)
 
-    archive_target = Path("archive/apps") / app_name
+    archive_target = repo_path("archive", "apps", app_name)
     already_archived = source == archive_target
     actions = {
         "app": app_name,
-        "source": str(source),
-        "target": str(archive_target),
+        "source": relative_repo_path(source),
+        "target": relative_repo_path(archive_target),
         "reason": reason,
         "already_archived": already_archived,
         "dry_run": dry_run,
@@ -117,8 +123,8 @@ def archive_app(app_name: str, reason: str = "owner-retired", dry_run: bool = Fa
     if already_archived:
         return actions
 
-    maintenance_path = Path("metadata/maintenance.yaml")
-    archive_path = Path("metadata/archive.yaml")
+    maintenance_path = repo_path("metadata", "maintenance.yaml")
+    archive_path = repo_path("metadata", "archive.yaml")
     maintenance = _read_yaml(maintenance_path)
     archive = _read_yaml(archive_path)
 
@@ -157,22 +163,22 @@ def archive_app(app_name: str, reason: str = "owner-retired", dry_run: bool = Fa
 
 
 def restore_app(app_name: str, cadence: str = "monthly", update_policy: str = "patch-minor", dry_run: bool = False) -> dict:
-    source = Path("archive/apps") / app_name
+    source = repo_path("archive", "apps", app_name)
     if not source.exists():
         raise FileNotFoundError(app_name)
-    target = Path("apps") / app_name
+    target = repo_path("apps", app_name)
     if target.exists():
         raise FileExistsError(app_name)
 
-    maintenance_path = Path("metadata/maintenance.yaml")
-    archive_path = Path("metadata/archive.yaml")
+    maintenance_path = repo_path("metadata", "maintenance.yaml")
+    archive_path = repo_path("metadata", "archive.yaml")
     maintenance = _read_yaml(maintenance_path)
     archive = _read_yaml(archive_path)
 
     actions = {
         "app": app_name,
-        "source": str(source),
-        "target": str(target),
+        "source": relative_repo_path(source),
+        "target": relative_repo_path(target),
         "cadence": cadence,
         "update_policy": update_policy,
         "dry_run": dry_run,

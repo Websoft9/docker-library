@@ -1,8 +1,10 @@
 # Update Assessment Checklist
 
 - [ ] Read `apps/<app>/variables.json`
-- [ ] Read `apps/<app>/.env`
-- [ ] Read `apps/<app>/docker-compose.yml`
+- [ ] Run `libs scan --app <app> --json`
+- [ ] Run `libs drift --app <app> --json`
+- [ ] Read `apps/<app>/.env` only if scan or drift is missing required facts
+- [ ] Read `apps/<app>/docker-compose.yml` only if scan or drift is missing required facts
 - [ ] Read `metadata/maintenance.yaml`
 - [ ] Read `docs/ai-sdlc/02-maintenance-policy.md`
 - [ ] Detect newest upstream version
@@ -10,5 +12,11 @@
 - [ ] Read release notes or changelog
 - [ ] Check cadence and update policy
 - [ ] Check deployment risk: compose, env, volumes, init flow, login flow, data path
+- [ ] Identify DB dependency images from `libs drift` output
+- [ ] Read `externalDB` in `apps/<app>/variables.json`
+- [ ] Read `metadata/db-lifecycle.json`; run `libs db-refresh` if engine missing or snapshot stale (>45 days)
+- [ ] Compute DB candidates: alive, >= min, LTS preferred over innovation
+- [ ] Judge vendor-tested DB upper bound from release notes or docs
+- [ ] Report DB finding: recommendation + reason, or `no change`
 - [ ] Apply `x.x` vs `x.x.x` tag policy
 - [ ] Produce final decision: auto-update | review-first | defer | skip

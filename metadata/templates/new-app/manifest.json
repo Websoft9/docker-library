@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "generated_files": [
+    ".env",
+    "docker-compose.yml",
+    "variables.json",
+    "README.md",
+    "src/.gitkeep"
+  ],
+  "required_inputs": [
+    "name",
+    "trademark",
+    "version",
+    "repo"
+  ],
+  "optional_docs": [
+    "github",
+    "image",
+    "install"
+  ]
+}

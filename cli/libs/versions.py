@@ -5,14 +5,11 @@ from datetime import date, datetime
 
 import typer
 
-from cli.metadata import active_app_dirs, resolve_app_metadata
-from cli.output import print_output
-from cli.versioning import (
-    convert_to_dockerhub_api_url,
-    find_latest_version,
-    get_current_versions,
-    get_dockerhub_tags,
-)
+from libs.metadata import active_app_dirs, resolve_app_metadata
+from libs.output import print_output
+from libs.sources import detect_source_type, fetch_candidates, fetch_verified_candidates
+from libs.versioning import get_current_versions
+
 
 app = typer.Typer(help="Scan upstream versions", context_settings={"help_option_names": ["-h", "--help"]})
 
@@ -44,12 +41,23 @@ def _selected(app_name: str, selection: str, target_date: date) -> tuple[bool, s
     return metadata.cadence == selection, metadata.cadence
 
 
+def resolve_source_type(variables: dict, version_from: str) -> str:
+    upstream = variables.get("upstream") or {}
+    image = upstream.get("image")
+    if image:
+        return detect_source_type(image) or "unknown"
+    declared = (upstream.get("version_source") or {}).get("type")
+    if declared:
+        return declared
+    return detect_source_type(version_from) or "unknown"
+
+
 def scan_apps(
     selection: str = "all-active",
     target_date: str | None = None,
     plan_only: bool = False,
-    max_pages: int = 1,
     page_size: int = 100,
+    major_ahead: int = 3,
     app_filter: str | None = None,
 ) -> list[dict]:
     target = _parse_target_date(target_date)
@@ -70,6 +78,7 @@ def scan_apps(
         variables = json.loads(variables_path.read_text(encoding="utf-8"))
         current_versions, all_versions = get_current_versions(variables.get("edition", []))
         current_version_strs = [str(current) for current in current_versions]
+        version_from = variables.get("version_from", "")
         payload = {
             "name": variables["name"],
             "status": metadata.status,
@@ -78,7 +87,8 @@ def scan_apps(
             "selected_by": selected_by,
             "target_date": target.isoformat(),
             "current_version": all_versions if plan_only else current_version_strs,
-            "version_from": variables.get("version_from", ""),
+            "version_from": version_from,
+            "source_type": resolve_source_type(variables, version_from),
         }
 
         if plan_only:
@@ -98,19 +108,35 @@ def scan_apps(
             continue
 
         highest_version = max(current for current in current_versions if current != "latest")
-        api_url = convert_to_dockerhub_api_url(variables.get("version_from", ""))
-        if not api_url:
-            payload["error"] = "Invalid version_from URL or not a Docker Hub URL"
-            payload["latest_version"] = None
-            output.append(payload)
-            continue
-
-        try:
-            tags = get_dockerhub_tags(api_url, max_pages=max_pages, page_size=page_size)
-            payload["latest_version"] = find_latest_version(tags, str(highest_version))
-        except Exception as error:
+        upstream = variables.get("upstream") or {}
+        image_url = upstream.get("image") or (upstream.get("version_source") or {}).get("url") or version_from
+        releases = upstream.get("releases")
+        if not releases:
+            legacy_index = upstream.get("release_index") or {}
+            releases = legacy_index.get("url") or None
+        if releases:
+            latest_version, error = fetch_verified_candidates(
+                payload["source_type"],
+                image_url,
+                detect_source_type(releases) or "github-tags",
+                releases,
+                str(highest_version),
+                major_ahead=major_ahead,
+                page_size=page_size,
+            )
+        else:
+            latest_version, error = fetch_candidates(
+                payload["source_type"],
+                image_url,
+                str(highest_version),
+                major_ahead=major_ahead,
+                page_size=page_size,
+            )
+        if error:
             payload["error"] = f"Failed to fetch tags: {error}"
             payload["latest_version"] = None
+        else:
+            payload["latest_version"] = latest_version
 
         output.append(payload)
 
@@ -122,9 +148,10 @@ def scan(
     selection: str = typer.Option("all-active", help="all-active | due | weekly | monthly | quarterly"),
     target_date: str | None = typer.Option(None, "--date", help="Date used for cadence selection in YYYY-MM-DD format"),
     plan_only: bool = typer.Option(False, help="Only list selected apps without remote version checks"),
-    max_pages: int = typer.Option(1, help="Maximum number of Docker Hub pages"),
+    max_pages: int = typer.Option(1, help="Deprecated; ignored"),
     page_size: int = typer.Option(100, help="Number of tags per Docker Hub page"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
 ) -> None:
-    output = scan_apps(selection=selection, target_date=target_date, plan_only=plan_only, max_pages=max_pages, page_size=page_size)
+    _ = max_pages
+    output = scan_apps(selection=selection, target_date=target_date, plan_only=plan_only, page_size=page_size)
     print_output(output, as_json)
