@@ -23,5 +23,6 @@ Shared skills:
 - `new-app`
 - `archive-app`
 - `restore-app`
+- `deploy-validation`
 - `test-report-generation`
 - `release-readiness-check`

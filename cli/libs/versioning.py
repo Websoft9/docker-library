@@ -1,6 +1,15 @@
 from __future__ import annotations
 
+import re
+
 from packaging import version
+
+
+def normalize_tag(name: str) -> str:
+    normalized = re.sub(r"-ls\d+$", "", name)
+    if normalized.endswith("-cli"):
+        normalized = normalized[:-4]
+    return normalized
 
 
 def get_current_versions(edition: list[dict]):
@@ -16,7 +25,7 @@ def get_current_versions(edition: list[dict]):
                 valid_versions.append("latest")
                 continue
             try:
-                valid_versions.append(version.parse(str(current)))
+                valid_versions.append(version.parse(normalize_tag(str(current))))
             except version.InvalidVersion:
                 continue
 
@@ -24,14 +33,14 @@ def get_current_versions(edition: list[dict]):
 
 
 def find_latest_version(tags: list[dict], current_version: str) -> dict | None:
-    current_ver = version.parse(current_version)
+    current_ver = version.parse(normalize_tag(current_version))
     minor_candidates = []
     full_candidates = []
 
     for tag in tags:
         tag_name = tag["name"]
         try:
-            tag_ver = version.parse(tag_name)
+            tag_ver = version.parse(normalize_tag(tag_name))
         except version.InvalidVersion:
             continue
 

@@ -1,0 +1,24 @@
+services:
+
+  ffmpeg:
+    image: $W9_REPO:$W9_VERSION
+    container_name: $W9_ID
+    # CLI tool: it exits after each command, so no restart loop
+    restart: "no"
+    env_file: .env
+    environment:
+      - PUID=65534
+      - PGID=65534
+      - TZ=Asia/Shanghai
+    volumes:
+      - media:/media
+    # Default run prints the version and exits; use `docker compose run ffmpeg ...` for real jobs
+    command: -version
+
+volumes:
+  media:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

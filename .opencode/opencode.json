@@ -4,5 +4,13 @@
     "paths": [
       "skills"
     ]
+  },
+  "permission": {
+    "edit": "allow",
+    "read": "allow",
+    "glob": "allow",
+    "grep": "allow",
+    "list": "allow",
+    "bash": "allow"
   }
 }

@@ -13,11 +13,20 @@ dependencies = [
   "requests[socks]>=2",
   "PyYAML>=6",
   "packaging>=24",
-  "jsonschema>=4"
+  "jsonschema>=4",
+  "Jinja2>=3"
 ]
 
 [project.scripts]
 libs = "libs.main:run"
 
+[project.optional-dependencies]
+test = [
+  "pytest>=8",
+]
+
 [tool.setuptools.packages.find]
 include = ["libs*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

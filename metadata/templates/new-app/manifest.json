@@ -9,7 +9,9 @@
   ],
   "required_inputs": [
     "name",
-    "trademark",
+    "trademark"
+  ],
+  "optional_inputs": [
     "version",
     "repo"
   ],

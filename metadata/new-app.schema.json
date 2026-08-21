@@ -2,13 +2,21 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["name", "trademark", "docs"],
+  "required": ["name", "trademark"],
   "properties": {
     "name": {
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9-]*$"
     },
     "trademark": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "repo": {
       "type": "string",
       "minLength": 1
     },

@@ -6,7 +6,7 @@ import re
 from packaging import version
 
 from libs.http import get
-from libs.versioning import find_latest_version
+from libs.versioning import find_latest_version, normalize_tag
 
 
 VERSION_START_RE = re.compile(r"^v?(\d+)")
@@ -101,7 +101,17 @@ def _fetch_dockerhub(url: str, current_version: str, major_ahead: int, page_size
             return None, error
         tags.extend(page)
 
-    return find_latest_version(tags, current_version), None
+    allowed_majors = set(range(major, major + major_ahead + 1))
+    filtered = []
+    for tag in tags:
+        try:
+            tag_ver = version.parse(normalize_tag(tag["name"]))
+        except version.InvalidVersion:
+            continue
+        if tag_ver.release and tag_ver.release[0] in allowed_majors:
+            filtered.append(tag)
+
+    return find_latest_version(filtered, current_version), None
 
 
 def _dockerhub_tags(api_url: str, name: str | None, page_size: int) -> tuple[list[dict], str | None]:
@@ -247,13 +257,13 @@ def _github_tags_raw(url: str, page_size: int) -> tuple[list[dict], str | None]:
 
 
 def _stable_candidates(tags: list[dict], current_version: str, limit: int = 5) -> list[str]:
-    current_ver = version.parse(current_version)
+    current_ver = version.parse(normalize_tag(current_version))
     candidates = set()
 
     for tag in tags:
         tag_name = tag["name"]
         try:
-            tag_ver = version.parse(tag_name)
+            tag_ver = version.parse(normalize_tag(tag_name))
         except version.InvalidVersion:
             continue
 
@@ -265,13 +275,13 @@ def _stable_candidates(tags: list[dict], current_version: str, limit: int = 5) -
         candidates.add(tag_name)
 
     def version_key(name):
-        return version.parse(name)
+        return version.parse(normalize_tag(name))
 
     return sorted(candidates, key=version_key, reverse=True)[:limit]
 
 
 def _dockerhub_verify(api_url: str, candidate: str, page_size: int) -> dict | None:
-    candidate_ver = version.parse(candidate)
+    candidate_ver = version.parse(normalize_tag(candidate))
     params = {"page_size": page_size, "name": candidate.lstrip("v")}
     data, error = _get_json(api_url, params)
     if error or not data:
@@ -281,7 +291,7 @@ def _dockerhub_verify(api_url: str, candidate: str, page_size: int) -> dict | No
     for tag in (data or {}).get("results") or []:
         tag_name = tag["name"]
         try:
-            if version.parse(tag_name) == candidate_ver:
+            if version.parse(normalize_tag(tag_name)) == candidate_ver:
                 best = {
                     "version": candidate,
                     "last_updated": tag["last_updated"],

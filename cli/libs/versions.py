@@ -89,13 +89,14 @@ def scan_apps(
             "current_version": all_versions if plan_only else current_version_strs,
             "version_from": version_from,
             "source_type": resolve_source_type(variables, version_from),
+            "release": variables.get("release"),
         }
 
         if plan_only:
             output.append(payload)
             continue
 
-        if not variables.get("release", False):
+        if not variables.get("release", False) and not app_filter:
             payload["error"] = "App release=false"
             payload["latest_version"] = None
             output.append(payload)

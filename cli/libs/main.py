@@ -8,7 +8,7 @@ from rich.console import Console
 from rich.table import Table
 
 from libs import app as app_ops
-from libs import dblifecycle, drift, http, newapp, validate, versions
+from libs import dblifecycle, drift, http, newapp, readme, validate, versions
 from libs.metadata import app_dir
 from libs.output import print_output
 
@@ -41,6 +41,12 @@ def proxy_command(
         return
     current = http.detect_proxy()
     typer.echo(current or "no proxy configured")
+
+
+@app.command("help")
+def help_command(ctx: typer.Context) -> None:
+    """Show help for libs. Same as libs --help."""
+    typer.echo(ctx.parent.get_help())
 
 
 @app.command("list")
@@ -292,12 +298,10 @@ def db_refresh_command(
 
 @app.command("new-app")
 def new_app_command(
-    issue: str | None = typer.Option(None, "--from-issue", help="Issue block file, or - for stdin"),
-    validate_only: str | None = typer.Option(None, "--validate-issue", help="Validate an issue block file, or - for stdin; no files written"),
-    name: str | None = typer.Option(None, "--name", help="App name"),
-    trademark: str | None = typer.Option(None, "--trademark", help="Brand display name"),
-    version: str | None = typer.Option(None, "--version", help="Image version, e.g. 7.0"),
-    repo: str | None = typer.Option(None, "--repo", help="Image reference, e.g. wordpress or ghcr.io/ns/img"),
+    name: str = typer.Option(..., "--name", help="App name, lowercase directory name"),
+    trademark: str = typer.Option(..., "--trademark", help="Brand display name, e.g. WordPress"),
+    version: str | None = typer.Option(None, "--version", help="Image version, e.g. 7.0; TODO placeholder when omitted"),
+    repo: str | None = typer.Option(None, "--repo", help="Image reference, e.g. wordpress or ghcr.io/ns/img; TODO placeholder when omitted"),
     docs_github: str | None = typer.Option(None, "--docs-github", help="Project repository URL"),
     docs_image: str | None = typer.Option(None, "--docs-image", help="Official image registry URL"),
     docs_install: str | None = typer.Option(None, "--docs-install", help="Official install reference URL"),
@@ -310,39 +314,12 @@ def new_app_command(
         if value:
             docs[key] = value
 
-    if validate_only:
-        block = newapp.parse_issue_block(newapp.read_issue_source(validate_only))
-        if block is None:
-            typer.echo("no new-app-request yaml block found", err=True)
-            raise typer.Exit(code=2)
-        errors = newapp.validate_request(block)
-        print_output({"valid": not errors, "errors": errors}, as_json)
-        if errors:
-            raise typer.Exit(code=1)
-        return
-
-    if issue:
-        block = newapp.parse_issue_block(newapp.read_issue_source(issue))
-        if block is None:
-            typer.echo("no new-app-request yaml block found", err=True)
-            raise typer.Exit(code=2)
-        errors = newapp.validate_request(block)
-        if errors:
-            print_output({"valid": False, "errors": errors}, as_json)
-            raise typer.Exit(code=1)
-        name = block.get("name")
-        trademark = block.get("trademark")
-        docs = block.get("docs") or {}
-
-    if not name or not trademark or not version or not repo:
-        raise typer.BadParameter("--name, --trademark, --version, and --repo are required (or use --from-issue plus --version/--repo)")
-
     try:
         payload = newapp.scaffold(
             name=name,
             trademark=trademark,
-            version=version,
-            repo=repo,
+            version=version or "",
+            repo=repo or "",
             docs=docs,
             dry_run=dry_run,
         )
@@ -354,7 +331,22 @@ def new_app_command(
     print_output(payload, as_json)
 
 
+@app.command("gen-readme")
+def gen_readme_command(
+    app_name: str = typer.Option(..., "--app", help="App name"),
+    as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
+) -> None:
+    """Generate one app's README.md from variables.json."""
+    try:
+        payload = readme.render_readme(app_name)
+    except FileNotFoundError as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=4)
+    print_output(payload, as_json)
+
+
 def run() -> int | None:
+    app.registered_commands.sort(key=lambda item: item.name)
     try:
         app()
     except FileNotFoundError as error:

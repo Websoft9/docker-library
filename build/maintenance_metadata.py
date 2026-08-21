@@ -3,6 +3,10 @@ from pathlib import Path
 import yaml
 
 
+ALLOWED_CADENCE = {"weekly", "monthly", "quarterly"}
+ALLOWED_UPDATE_POLICY = {"patch-minor", "minor-only", "lts-only", "security-first", "manual-major"}
+
+
 def app_roots():
     return [Path("apps"), Path("archive/apps")]
 
@@ -53,6 +57,8 @@ def validate_maintenance_metadata(data):
     seen_policy = {}
 
     for cadence, apps in (data.get("cadence") or {}).items():
+        if cadence not in ALLOWED_CADENCE:
+            raise ValueError(f"Unknown cadence bucket: {cadence}")
         for app in apps or []:
             if app not in existing:
                 raise ValueError(f"Unknown app in cadence.{cadence}: {app}")
@@ -62,6 +68,8 @@ def validate_maintenance_metadata(data):
             seen_cadence[app] = cadence
 
     for policy, apps in (data.get("update_policy") or {}).items():
+        if policy not in ALLOWED_UPDATE_POLICY:
+            raise ValueError(f"Unknown update policy bucket: {policy}")
         for app in apps or []:
             if app not in existing:
                 raise ValueError(f"Unknown app in update_policy.{policy}: {app}")

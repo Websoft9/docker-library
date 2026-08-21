@@ -50,6 +50,10 @@ switch ($Target) {
     Write-Host "  install      create .venv and install the libs CLI"
     Write-Host "  libs         run one libs command, e.g. .\\make.ps1 libs scan --app wordpress --json"
     Write-Host "  cli          open a PowerShell with the libs CLI activated"
+    Write-Host "  test-cli     run cli unit and contract tests"
+    Write-Host "  test-build   run build pipeline smoke tests"
+    Write-Host "  test-skills  run skills asset and workflow tests"
+    Write-Host "  test         run the full repo machine-system test suite"
   }
   "install" {
     $python = Get-PythonCommand
@@ -65,6 +69,18 @@ switch ($Target) {
     $pwsh = if (Get-Command pwsh -ErrorAction SilentlyContinue) { "pwsh" } else { "powershell" }
     $command = "& '.\.venv\Scripts\Activate.ps1'; libs -h"
     & $pwsh -NoExit -Command $command
+  }
+  "test-cli" {
+    & .\.venv\Scripts\python.exe -m pytest cli/tests -q
+  }
+  "test-build" {
+    & .\.venv\Scripts\python.exe -m pytest tests/build -q
+  }
+  "test-skills" {
+    & .\.venv\Scripts\python.exe -m pytest tests/skills -q
+  }
+  "test" {
+    & .\.venv\Scripts\python.exe -m pytest cli/tests tests/build tests/skills -q
   }
   default {
     throw "Unknown target: $Target"

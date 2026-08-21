@@ -8,22 +8,14 @@ assignees: ''
 
 ## App
 
-- app name:
-- official site:
-- official docs:
-- official image or compose reference:
+- app name (directory name, e.g. `wordpress`):
+- trademark (brand display name, e.g. `WordPress`):
 
-## Requirements
+## Official References (at least one)
 
-- auth model:
-- storage needs:
-- network or port needs:
-- required services:
-
-## Acceptance Focus
-
-- core user path:
-- special E2E focus:
+- github repository:
+- image registry (e.g. Docker Hub or GHCR tags page):
+- install or deployment docs:
 
 ## Notes
 

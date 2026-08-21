@@ -50,6 +50,12 @@ Read in this order:
 - Process docs: `docs/ai-sdlc/`
 - CI: `.github/workflows/`
 
+## Testing
+
+- Run `make test`; suites live in `cli/tests`, `tests/build`, `tests/skills`
+- Test contract: `docs/test.md`
+- Manual walkthrough: `docs/runbook.md`
+
 ## When Updating Apps
 
 - Check upstream version and release notes first.

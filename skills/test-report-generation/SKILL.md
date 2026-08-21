@@ -28,6 +28,10 @@ Supporting files in this skill:
 4. Identify owner attention points.
 5. Produce the report in repository format.
 
+## Output
+
+A short report in `docs/ai-sdlc/06-test-report-format.md` format.
+
 ## Rules
 
 - Report only the latest validated result.

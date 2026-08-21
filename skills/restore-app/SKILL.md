@@ -28,7 +28,7 @@ Supporting files in this skill:
 3. Preview with `make --no-print-directory libs ARGS="restore --app <app> --cadence <c> --update-policy <p> --dry-run --json"` and show the actions.
 4. Run the real restore with the same command without `--dry-run`.
 5. Run a stale-version assessment: check `W9_VERSION` in `apps/<app>/.env` against the upstream image; if outdated, hand over to the `app-update` skill.
-6. Run `make --no-print-directory libs ARGS="check --app <app>"` and produce a short test report.
+6. Run the `deploy-validation` skill and produce a short test report.
 7. Recommend running `release-readiness-check` before publishing; owner E2E decides.
 
 ## Output

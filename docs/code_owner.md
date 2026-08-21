@@ -176,6 +176,7 @@ Create new application must use [template](../template/), then set your file:
 - Each container must directly reference. env
 - Use after declaring volumes
 - The configuration file volumes uses the absolute path reference of src
+- Do not write upstream reference comments in docker-compose.yml; upstream references live only in `variables.json` `upstream`
 
 2. .env
 

@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 import json
-import re
-import sys
+import secrets
+import string
 from pathlib import Path
 
 import jsonschema
-import yaml
 
 from libs.app import collect_apps
 from libs.repo import repo_path
@@ -14,8 +13,11 @@ from libs.validate import check_app
 
 SCHEMA_PATH = repo_path("metadata", "new-app.schema.json")
 TEMPLATE_ROOT = repo_path("metadata", "templates", "new-app")
-BLOCK_RE = re.compile(r"```ya?ml\s*new-app-request\s*\n(.*?)```", re.DOTALL)
-NAME_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
+
+
+def random_password(length: int = 14) -> str:
+    alphabet = string.ascii_letters + string.digits
+    return "".join(secrets.choice(alphabet) for _ in range(length))
 
 
 def load_schema() -> dict:
@@ -26,17 +28,6 @@ def load_manifest() -> dict:
     return json.loads((TEMPLATE_ROOT / "manifest.json").read_text(encoding="utf-8"))
 
 
-def parse_issue_block(text: str) -> dict | None:
-    match = BLOCK_RE.search(text)
-    if not match:
-        return None
-    try:
-        data = yaml.safe_load(match.group(1))
-    except yaml.YAMLError:
-        return None
-    return data if isinstance(data, dict) else None
-
-
 def validate_request(data: dict) -> list[str]:
     validator = jsonschema.Draft202012Validator(load_schema())
     errors = []
@@ -44,12 +35,6 @@ def validate_request(data: dict) -> list[str]:
         path = ".".join(str(part) for part in error.path) or "request"
         errors.append(f"{path}: {error.message}")
     return errors
-
-
-def read_issue_source(source: str) -> str:
-    if source == "-":
-        return sys.stdin.read()
-    return Path(source).read_text(encoding="utf-8")
 
 
 def existing_app(name: str) -> dict | None:
@@ -69,13 +54,20 @@ def render_file(name: str, context: dict) -> str:
     return (TEMPLATE_ROOT / name).read_text(encoding="utf-8").format(**context)
 
 
-def scaffold(name: str, trademark: str, version: str, repo: str, docs: dict | None = None, dry_run: bool = False) -> dict:
-    if not NAME_RE.match(name):
-        raise ValueError(f"invalid app name: {name} (expected [a-z0-9][a-z0-9-]*)")
-    if not version:
-        raise ValueError("version is required; research first, then scaffold")
-    if not repo:
-        raise ValueError("repo is required; research the image first, then scaffold")
+def scaffold(name: str, trademark: str, version: str = "", repo: str = "", docs: dict | None = None, dry_run: bool = False) -> dict:
+    request = {
+        "name": name,
+        "trademark": trademark,
+    }
+    if version:
+        request["version"] = version
+    if repo:
+        request["repo"] = repo
+    if docs:
+        request["docs"] = docs
+    errors = validate_request(request)
+    if errors:
+        raise ValueError("; ".join(errors))
     existing = existing_app(name)
     if existing:
         raise FileExistsError(
@@ -84,18 +76,19 @@ def scaffold(name: str, trademark: str, version: str, repo: str, docs: dict | No
 
     manifest = load_manifest()
     docs = docs or {}
-    image_url = docs.get("image") or tags_url(repo)
+    image_url = docs.get("image") or (tags_url(repo) if repo else "")
     target = repo_path("apps", name)
 
     context = {
         "name": name,
         "trademark": trademark,
-        "version": version,
-        "repo": repo,
-        "image_url": image_url,
+        "version": version or "TODO",
+        "repo": repo or "TODO",
+        "image_url": image_url or "TODO",
         "github_url": docs.get("github") or "",
         "install_url": docs.get("install") or "",
         "docs_json": json.dumps([url for url in (docs.get("github"), docs.get("install")) if url], ensure_ascii=False),
+        "power_password": random_password(),
     }
     files = {
         ".env": render_file(".env.tmpl", context),
@@ -108,8 +101,8 @@ def scaffold(name: str, trademark: str, version: str, repo: str, docs: dict | No
     payload = {
         "app": name,
         "trademark": trademark,
-        "version": version,
-        "repo": repo,
+        "version": version or "TODO",
+        "repo": repo or "TODO",
         "files": manifest["generated_files"],
         "dry_run": dry_run,
     }
@@ -128,6 +121,7 @@ def scaffold(name: str, trademark: str, version: str, repo: str, docs: dict | No
         "fill upstream metadata (compose, config sources) in variables.json",
         "design compose: volumes, healthcheck, db service and its version",
         "register new translatable W9_* keys in i18n/translation.json",
-        "run libs check --app <app> and deployment validation",
+        "run libs gen-readme --app <app> after editing variables.json",
+        "run the deploy-validation skill",
     ]
     return payload

@@ -1,4 +1,4 @@
-.PHONY: help opencode install libs cli
+.PHONY: help opencode install libs cli test test-cli test-build test-skills
 
 ifeq ($(OS),Windows_NT)
 PYTHON ?= py
@@ -20,7 +20,7 @@ opencode: ## start opencode with proxy disabled
 
 install: ## create .venv and install the libs CLI
 	$(PYTHON) -m venv .venv
-	$(VENV_BIN)/pip install -e cli/
+	$(VENV_BIN)/pip install -e 'cli/[test]'
 	@proxy="$${https_proxy:-$${HTTPS_PROXY:-$${http_proxy:-$${HTTP_PROXY:-}}}}"; \
 	if [ -n "$$proxy" ]; then \
 		printf '%s' "$$proxy" > cli/proxy.conf; \
@@ -42,3 +42,17 @@ cli: ## enter an activated shell for libs
 			echo "using proxy: $$proxy"; \
 		else echo "no proxy detected"; fi; \
 		libs -h; exec bash'
+
+test-cli: ## run cli unit and contract tests
+	$(VENV_BIN)/python -m pytest cli/tests -q
+
+test-build: ## run build pipeline smoke tests
+	$(VENV_BIN)/python -m pytest tests/build -q
+
+test-skills: ## run skills asset and workflow tests
+	$(VENV_BIN)/python -m pytest tests/skills -q
+
+test: ## run the full repo machine-system test suite
+	$(MAKE) --no-print-directory test-cli
+	$(MAKE) --no-print-directory test-build
+	$(MAKE) --no-print-directory test-skills

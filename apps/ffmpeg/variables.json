@@ -1,0 +1,27 @@
+{
+  "name": "ffmpeg",
+  "trademark": "FFmpeg",
+  "release": false,
+  "fork_url": "https://github.com/FFmpeg/FFmpeg",
+  "version_from": "https://hub.docker.com/r/linuxserver/ffmpeg/tags",
+  "upstream": {
+    "image": "https://hub.docker.com/r/linuxserver/ffmpeg/tags",
+    "releases": "https://github.com/FFmpeg/FFmpeg/tags",
+    "docs": [
+      "https://ffmpeg.org/documentation.html",
+      "https://ffmpeg.org/download.html#releases"
+    ]
+  },
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["9.0-cli-ls78", "latest"]
+    }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1",
+    "url": "https://ffmpeg.org/documentation.html"
+  }
+}

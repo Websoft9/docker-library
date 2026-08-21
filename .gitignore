@@ -4,10 +4,17 @@ library
 library-*.zip
 artifacts
 mk.sh
-.opencode/node_modules
-_bmad-output
+
 .venv
 *.egg-info
+.pytest_cache
+tests/__pycache__
+cli/.pytest_cache
+.opencode/node_modules
+## secret
 cli/proxy.conf
-
-# Pre-downloaded app sources
+## secrets (private keys never enter the repository)
+.secrets/
+*.pem
+*.key
+id_*
