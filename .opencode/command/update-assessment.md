@@ -1,11 +1,14 @@
 ---
 description: Assess whether one app is worth updating before implementation
 agent: build
+argument-hint: [app name]
 ---
 
 Use the `update-assessment` skill to run the update assessment workflow.
 
-If the task input is empty, ask the user which app to assess.
+Usage: /update-assessment <app name>
+
+If the task input is `help` or empty, echo the usage line, then ask the user which app to assess.
 
 If the task input is present, treat it as the workflow input.
 

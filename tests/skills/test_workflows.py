@@ -5,7 +5,6 @@ import json
 from typer.testing import CliRunner
 
 from libs import main
-from libs import readme as readme_module
 
 
 runner = CliRunner()

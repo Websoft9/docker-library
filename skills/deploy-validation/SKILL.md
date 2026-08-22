@@ -20,7 +20,7 @@ Supporting files in this skill:
 - app name (required)
 - target: local | remote (default remote)
 - remote host (required when target=remote)
-- remote user (required when target=remote)
+- remote user (optional when target=remote; defaults to `root`)
 - remote path (default `/opt/websoft9-test`)
 - remote key (default `.secrets/ssh/default.pem` under the repository root; git-ignored, chmod 600; never commit it)
 
@@ -52,6 +52,7 @@ Supporting files in this skill:
 
 - Validation only; never modify app files.
 - Never skip a failed gate; report the first blocking error.
+- When the remote user is not provided, default to `root`. If SSH auth fails with the default user, stop and ask the user for the correct user and key; do not retry with guessed users.
 - The server is assumed dedicated and ephemeral; its IP is public information and is recorded openly in the report.
 - Environment limitations (e.g. registry unreachable, missing docker daemon) are reported as environment blocks, not app defects.
 - `down -v` runs even when validation fails; server deletion stays manual.

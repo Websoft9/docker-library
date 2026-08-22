@@ -561,10 +561,8 @@ def build_v2_appstore_artifacts(
         elif file_name == "product_zh.json":
             catalog_checksums["productZh"] = write_checksum_file(destination)
 
-    catalog_dsv_parts = []
-    for file_name in CATALOG_FILE_NAMES:
-        catalog_dsv_parts.append(f"{file_name}={sha256_file(catalog_dir / file_name)}")
-    catalog_dsv = _hash_content(",".join(catalog_dsv_parts))
+    catalog_checksum_values = ",".join(f"{k}={v}" for k, v in sorted(catalog_checksums.items()))
+    catalog_dsv = _hash_content(catalog_checksum_values)
 
     # ── catalog full package ─────────────────────────────────
     catalog_full_dir = catalog_dir / "full"

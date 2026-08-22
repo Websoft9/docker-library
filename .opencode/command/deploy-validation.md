@@ -1,11 +1,14 @@
 ---
 description: Prove one app deploys, locally or on a prepared remote server
 agent: build
+argument-hint: [app name] [--host ip --user name --key path --path dir]
 ---
 
 Use the `deploy-validation` skill to run the validation workflow.
 
-If the task input is empty, ask the user for the app name.
+Usage: /deploy-validation <app name> [--host ip --user name] [--key path] [--path dir] [local]
+
+If the task input is `help` or empty, echo the usage line, then ask the user for the app name.
 
 The default target is remote. The task input may carry `--host <ip> --user <name> --key <path> --path <dir>`; treat the presence of `--host` as remote. If the input says `local`, or no remote server is available on the current machine, use target local.
 

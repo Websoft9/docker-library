@@ -55,17 +55,10 @@ query($locale: String!, $skip: Int!, $production: Boolean) {
       description
       screenshots
       distribution
-      production
       vcpu
       memory
       storage
       logo { imageurl }
-      relatedAppsCollection(limit: 10) {
-        items {
-          key
-          trademark
-        }
-      }
       catalogCollection(limit: 15) {
         items {
           key

@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 import secrets
 import string
-from pathlib import Path
 
 import jsonschema
 

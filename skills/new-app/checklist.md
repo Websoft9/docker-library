@@ -10,3 +10,4 @@
 - [ ] Run `libs check --app <app>` and deploy/reachability validation
 - [ ] Produce a short test report
 - [ ] Assign cadence/update policy by writing the app into `metadata/maintenance.yaml` buckets, and state it in the report
+- [ ] Draft Contentful fields: copy `metadata/templates/contentful-draft.json` to `metadata/contentful-drafts/<app>.json`; owner reviews before `libs contentful-create --app <app> --apply`

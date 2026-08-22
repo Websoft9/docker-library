@@ -143,3 +143,10 @@ def test_repo_discovery_contract_from_subdirectory(repo_fixture, app_factory, mo
 
     assert result.exit_code == 0
     assert _json_output(result)["path"] == "apps/wordpress"
+
+
+def test_check_maintenance_contract(repo_fixture):
+    result = runner.invoke(main.app, ["check-maintenance"])
+
+    assert result.exit_code == 0
+    assert "maintenance metadata valid" in result.stdout

@@ -8,7 +8,7 @@ from rich.console import Console
 from rich.table import Table
 
 from libs import app as app_ops
-from libs import dblifecycle, drift, http, newapp, readme, validate, versions
+from libs import contentful, dblifecycle, drift, http, maintenance, newapp, readme, validate, versions
 from libs.metadata import app_dir
 from libs.output import print_output
 
@@ -296,6 +296,17 @@ def db_refresh_command(
     print_output(payload, as_json)
 
 
+@app.command("check-maintenance")
+def check_maintenance_command() -> None:
+    """Validate maintenance/archive metadata against the app tree."""
+    try:
+        maintenance.load_maintenance_metadata()
+    except Exception as error:
+        typer.echo(f"maintenance metadata invalid: {error}", err=True)
+        raise typer.Exit(code=1)
+    typer.echo("maintenance metadata valid")
+
+
 @app.command("new-app")
 def new_app_command(
     name: str = typer.Option(..., "--name", help="App name, lowercase directory name"),
@@ -339,6 +350,30 @@ def gen_readme_command(
     """Generate one app's README.md from variables.json."""
     try:
         payload = readme.render_readme(app_name)
+    except FileNotFoundError as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=4)
+    print_output(payload, as_json)
+
+
+@app.command("contentful-create")
+def contentful_create_command(
+    app_name: str = typer.Option(..., "--app", help="App name"),
+    environment: str = typer.Option("master", "--environment", help="Contentful environment"),
+    drafts_dir: str = typer.Option(contentful.DEFAULT_DRAFTS_DIR, "--drafts-dir", help="Draft files directory, repo-relative"),
+    apply: bool = typer.Option(False, "--apply", help="Write to Contentful instead of previewing"),
+    update_machine: bool = typer.Option(False, "--update-machine", help="When the entry exists, refresh machine fields only"),
+    as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
+) -> None:
+    """Create a Contentful product entry for one app; previews by default."""
+    try:
+        payload = contentful.sync_app(
+            app_name=app_name,
+            environment=environment,
+            drafts_dir=drafts_dir,
+            apply=apply,
+            update_machine=update_machine,
+        )
     except FileNotFoundError as error:
         typer.echo(str(error), err=True)
         raise typer.Exit(code=4)

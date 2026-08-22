@@ -82,6 +82,9 @@ switch ($Target) {
   "test" {
     & .\.venv\Scripts\python.exe -m pytest cli/tests tests/build tests/skills -q
   }
+  "contentful-create" {
+    & .\.venv\Scripts\libs.exe contentful-create @Args
+  }
   default {
     throw "Unknown target: $Target"
   }

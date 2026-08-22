@@ -1,14 +1,12 @@
-from pathlib import Path
+from __future__ import annotations
 
 import yaml
 
-
-ALLOWED_CADENCE = {"weekly", "monthly", "quarterly"}
-ALLOWED_UPDATE_POLICY = {"patch-minor", "minor-only", "lts-only", "security-first", "manual-major"}
+from libs.repo import repo_path
 
 
 def app_roots():
-    return [Path("apps"), Path("archive/apps")]
+    return [repo_path("apps"), repo_path("archive/apps")]
 
 
 def known_apps():
@@ -20,9 +18,15 @@ def known_apps():
     return apps
 
 
+def _read_yaml(path) -> dict:
+    if not path.exists():
+        return {}
+    return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+
+
 def load_maintenance_metadata():
-    metadata_file = Path("metadata/maintenance.yaml")
-    archive_file = Path("metadata/archive.yaml")
+    metadata_file = repo_path("metadata", "maintenance.yaml")
+    archive_file = repo_path("metadata", "archive.yaml")
     if not metadata_file.exists():
         data = {
             "defaults": {},
@@ -32,20 +36,15 @@ def load_maintenance_metadata():
         }
 
         if archive_file.exists():
-            with open(archive_file, "r", encoding="utf-8") as file:
-                archive_data = yaml.safe_load(file) or {}
-            data.setdefault("lifecycle", {})["archived"] = resolve_archive_entries(archive_data)
+            data.setdefault("lifecycle", {})["archived"] = resolve_archive_entries(_read_yaml(archive_file))
 
         validate_maintenance_metadata(data)
         return data
 
-    with open(metadata_file, "r", encoding="utf-8") as file:
-        data = yaml.safe_load(file) or {}
+    data = _read_yaml(metadata_file)
 
     if archive_file.exists():
-        with open(archive_file, "r", encoding="utf-8") as file:
-            archive_data = yaml.safe_load(file) or {}
-        data.setdefault("lifecycle", {})["archived"] = resolve_archive_entries(archive_data)
+        data.setdefault("lifecycle", {})["archived"] = resolve_archive_entries(_read_yaml(archive_file))
 
     validate_maintenance_metadata(data)
     return data
@@ -57,8 +56,6 @@ def validate_maintenance_metadata(data):
     seen_policy = {}
 
     for cadence, apps in (data.get("cadence") or {}).items():
-        if cadence not in ALLOWED_CADENCE:
-            raise ValueError(f"Unknown cadence bucket: {cadence}")
         for app in apps or []:
             if app not in existing:
                 raise ValueError(f"Unknown app in cadence.{cadence}: {app}")
@@ -68,8 +65,6 @@ def validate_maintenance_metadata(data):
             seen_cadence[app] = cadence
 
     for policy, apps in (data.get("update_policy") or {}).items():
-        if policy not in ALLOWED_UPDATE_POLICY:
-            raise ValueError(f"Unknown update policy bucket: {policy}")
         for app in apps or []:
             if app not in existing:
                 raise ValueError(f"Unknown app in update_policy.{policy}: {app}")

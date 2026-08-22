@@ -1,11 +1,8 @@
 import json
 import os
 from pathlib import Path
-
 from contentful_management import Client
 from contentful_management.errors import HTTPError
-
-from maintenance_metadata import contentful_override, load_maintenance_metadata
 
 # 设置 Contentful API 访问参数
 ACCESS_TOKEN = os.environ['CONTENTFUL_ACCESS_TOKEN']
@@ -13,16 +10,7 @@ SPACE_ID = "ffrhttfighww"
 
 # 初始化 Contentful 管理客户端
 client = Client(ACCESS_TOKEN)
-def app_path(product_name):
-    active = Path('apps') / product_name
-    if active.exists():
-        return active
 
-    archived = Path('archive/apps') / product_name
-    if archived.exists():
-        return archived
-
-    return active
 def update_contentful(product_name, editions, requirements, production):
     try:
         # 获取 Contentful 中的 Product entry
@@ -60,26 +48,20 @@ total_updates = 0
 successful_updates = 0
 failed_updates = 0
 failed_products = []
-maintenance = load_maintenance_metadata()
 
-# 遍历 apps 或 archive/apps 下 app_lists 的 variables.json 文件
+# 遍历 apps 文件夹下app_lists下的 variables.json 文件
+apps_path = Path('apps')
 app_lists_str = os.getenv('APP_LISTS', '')
 app_lists = app_lists_str.split(',') 
 
 for product_name in app_lists:
-    if not product_name:
-        continue
-
-    variables_file = app_path(product_name) / 'variables.json'
+    variables_file = apps_path / product_name / 'variables.json'
     try:
         with open(variables_file) as file:
             data = json.load(file)
             editions = data['edition']
             requirements = data['requirements']
             production = data['release']
-            override = contentful_override(maintenance, product_name)
-            if 'production' in override:
-                production = override['production']
             
             total_updates += 1
             if update_contentful(product_name, editions, requirements,production):

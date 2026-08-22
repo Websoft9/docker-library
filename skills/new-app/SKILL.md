@@ -35,6 +35,7 @@ If any required input is missing, stop and ask the user for it before researchin
 8. Run the `deploy-validation` skill to prove the app deploys.
 9. Produce a short test report.
 10. Assign a maintenance cadence and update policy: write the app into the matching buckets of `metadata/maintenance.yaml` (apps not listed inherit the monthly/patch-minor defaults), and state the assignment in the report. The owner reviews it at merge.
+11. Draft the Contentful marketing fields from the upstream research: copy `metadata/templates/contentful-draft.json` to `metadata/contentful-drafts/<app>.json` and fill trademark, summary, overview, description, websiteurl, and screenshots. The owner reviews the draft before the first Contentful write; AI never writes Contentful directly. The owner applies with `libs contentful-create --app <app> --apply` after review.
 
 ## Output
 

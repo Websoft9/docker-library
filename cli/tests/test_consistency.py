@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import importlib.util
 import json
 from pathlib import Path
 
@@ -8,26 +7,16 @@ import jsonschema
 import yaml
 from jinja2 import Environment, FileSystemLoader
 
+from libs.maintenance import load_maintenance_metadata
+
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
-def _load_build_module(name: str, path: Path):
-    spec = importlib.util.spec_from_file_location(name, path)
-    module = importlib.util.module_from_spec(spec)
-    assert spec.loader is not None
-    spec.loader.exec_module(module)
-    return module
-
-
 def test_maintenance_metadata_validator_accepts_current_repository(monkeypatch):
-    maintenance_metadata = _load_build_module(
-        "maintenance_metadata_test",
-        REPO_ROOT / "build" / "maintenance_metadata.py",
-    )
     monkeypatch.chdir(REPO_ROOT)
 
-    data = maintenance_metadata.load_maintenance_metadata()
+    data = load_maintenance_metadata()
 
     assert isinstance(data, dict)
     assert "defaults" in data
@@ -61,6 +50,7 @@ def test_new_app_templates_render_and_parse():
         "github_url": "https://github.com/example/demo-app",
         "install_url": "https://example.com/install",
         "docs_json": json.dumps(["https://github.com/example/demo-app", "https://example.com/install"]),
+        "power_password": "dummy-password",
     }
 
     env_text = (template_root / ".env.tmpl").read_text(encoding="utf-8").format(**context)

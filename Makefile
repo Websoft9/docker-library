@@ -1,4 +1,4 @@
-.PHONY: help opencode install libs cli test test-cli test-build test-skills
+.PHONY: help opencode install libs cli test test-cli test-build test-skills contentful-create
 
 ifeq ($(OS),Windows_NT)
 PYTHON ?= py
@@ -51,6 +51,9 @@ test-build: ## run build pipeline smoke tests
 
 test-skills: ## run skills asset and workflow tests
 	$(VENV_BIN)/python -m pytest tests/skills -q
+
+contentful-create: ## preview or create a Contentful product entry, e.g. make contentful-create ARGS="--app ffmpeg --apply"
+	$(VENV_BIN)/libs contentful-create $(ARGS)
 
 test: ## run the full repo machine-system test suite
 	$(MAKE) --no-print-directory test-cli
