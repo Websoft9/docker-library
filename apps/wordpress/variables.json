@@ -23,16 +23,6 @@
       ]
     }
   ],
-  "externalDB": {
-    "6.9": {
-      "mariadb": [
-        "10.11+"
-      ],
-      "mysql": [
-        "8.0+"
-      ]
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "1",
