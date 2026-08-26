@@ -2,32 +2,23 @@
   "name": "activemq",
   "trademark": "ActiveMQ",
   "release": true,
-  "fork_url": "https://github.com/apache/activemq-artemis/tree/main/artemis-docker",
-  "version_from": "https://hub.docker.com/r/alfresco/alfresco-activemq/tags",
+  "fork_url": "https://github.com/apache/activemq/tree/main/assembly/src/docker",
+  "version_from": "https://hub.docker.com/r/apache/activemq/tags",
   "upstream": {
-    "image": "https://hub.docker.com/r/alfresco/alfresco-activemq/tags",
-    "releases": "https://github.com/apache/activemq/tags",
+    "image": "https://hub.docker.com/r/apache/activemq/tags",
+    "releases": "https://github.com/apache/activemq/releases",
     "docs": [
-      "https://github.com/apache/activemq-artemis/tree/main/artemis-docker"
+      "https://github.com/apache/activemq/tree/main/assembly/src/docker"
     ]
   },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "5.18.6-jre17-rockylinux8"
-      ]
-    },
-    {
-      "dist": "classic",
-      "version": [
-        "5.18.6-jre17-rockylinux8"
-      ]
-    },
-    {
-      "dist": "artemis",
-      "version": [
-        "2.21.0"
+        "6.3.0",
+        "6.2.8",
+        "5.19.9",
+        "latest"
       ]
     }
   ],
@@ -35,6 +26,6 @@
     "cpu": "1",
     "memory": "2",
     "disk": "4",
-    "url": "https://github.com/apache/activemq-artemis"
+    "url": "https://github.com/apache/activemq/tree/main/assembly/src/docker"
   }
 }

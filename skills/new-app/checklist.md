@@ -7,6 +7,7 @@
 - [ ] Scaffold via `libs new-app --name ... --trademark ... [--version <x.x> --repo <image> --docs-* ...]`; it refuses duplicates and runs the quality gates; omitted version/repo become TODO placeholders
 - [ ] Fill compose design, upstream metadata, DB version, and i18n keys beyond the skeleton
 - [ ] Decide env groups: enable password group (DB/login apps) and web group (web apps); delete unused groups
+- [ ] Fill `.env` "image environment variables" section: single Docs URL, used vars, up to 5 unused vars commented out
 - [ ] Run `libs check --app <app>` and deploy/reachability validation
 - [ ] Produce a short test report
 - [ ] Assign cadence/update policy by writing the app into `metadata/maintenance.yaml` buckets, and state it in the report

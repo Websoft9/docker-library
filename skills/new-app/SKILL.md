@@ -30,12 +30,13 @@ If any required input is missing, stop and ask the user for it before researchin
 3. Read repository rules from `docs/code_owner.md` and the machine template under `metadata/templates/new-app/`.
 4. Research the real image and version from upstream sources.
 5. Scaffold the package skeleton with `make --no-print-directory libs ARGS="new-app --name <app> --trademark <brand> --json"` plus `--version <x.x>` and `--repo <image>` when the research has already resolved them (otherwise the CLI writes explicit TODO placeholders). The command refuses duplicates and runs the quality gates automatically.
-6. Fill `.env`, `docker-compose.yml`, `variables.json`, `README.md`, and `src/` beyond the skeleton, following the todo list returned by the scaffold command. Decide the env groups from research: enable the password group (uncomment and fill) when the app has a DB or login; enable the web group when it exposes a web page; delete groups the app does not need.
+6. Fill `.env`, `docker-compose.yml`, `variables.json`, `README.md`, and `src/` beyond the skeleton, following the todo list returned by the scaffold command. Decide the env groups from research: enable the password group (uncomment and fill) when the app has a DB or login; enable the web group when it exposes a web page; delete groups the app does not need. In the `.env` "image environment variables" section, set the single Docs URL, list the vars actually used by `docker-compose.yml`, and add up to 5 unused vars commented out.
 7. Register any new translatable env key in `i18n/translation.json`.
-8. Run the `deploy-validation` skill to prove the app deploys.
-9. Produce a short test report.
-10. Assign a maintenance cadence and update policy: write the app into the matching buckets of `metadata/maintenance.yaml` (apps not listed inherit the monthly/patch-minor defaults), and state the assignment in the report. The owner reviews it at merge.
-11. Draft the Contentful marketing fields from the upstream research: copy `metadata/templates/contentful-draft.json` to `metadata/contentful-drafts/<app>.json` and fill trademark, summary, overview, description, websiteurl, and screenshots. The owner reviews the draft before the first Contentful write; AI never writes Contentful directly. The owner applies with `libs contentful-create --app <app> --apply` after review.
+8. If a credential or config env var only takes effect on first container startup (the image entrypoint uses a marker file, e.g. `webconsole.security.enabled`), record it in `variables.json` as `env.first_startup_only` (list of env names) so the README auto-renders the warning.
+9. Run the `deploy-validation` skill to prove the app deploys.
+10. Produce a short test report.
+11. Assign a maintenance cadence and update policy: write the app into the matching buckets of `metadata/maintenance.yaml` (apps not listed inherit the monthly/patch-minor defaults), and state the assignment in the report. The owner reviews it at merge.
+12. Draft the Contentful marketing fields from the upstream research: copy `metadata/templates/contentful-draft.json` to `metadata/contentful-drafts/<app>.json` and fill trademark, summary, overview, description, websiteurl, and screenshots. The owner reviews the draft before the first Contentful write; AI never writes Contentful directly. The owner applies with `libs contentful-create --app <app> --apply` after review.
 
 ## Output
 

@@ -8,7 +8,7 @@ from rich.console import Console
 from rich.table import Table
 
 from libs import app as app_ops
-from libs import contentful, dblifecycle, drift, http, maintenance, newapp, readme, validate, versions
+from libs import app_deploy, app_tests, appstore_preview, contentful, dblifecycle, drift, http, maintenance, newapp, readme, remote, validate, versions
 from libs.metadata import app_dir
 from libs.output import print_output
 
@@ -47,6 +47,7 @@ def proxy_command(
 def help_command(ctx: typer.Context) -> None:
     """Show help for libs. Same as libs --help."""
     typer.echo(ctx.parent.get_help())
+    typer.echo("\nRemote-capable commands may read defaults from .secrets/remote.env (TARGET, SSH_HOST, SSH_USER, SSH_SECRET_PATH, DEPLOY_ROOT). Current remote-aware commands: app-deploy, app-down, app-tests, appstore-sync, appstore-deploy.")
 
 
 @app.command("list")
@@ -378,6 +379,181 @@ def contentful_create_command(
         typer.echo(str(error), err=True)
         raise typer.Exit(code=4)
     print_output(payload, as_json)
+
+
+@app.command("appstore-sync")
+def appstore_sync_command(
+    app_name: str = typer.Option(..., "--app", help="App name"),
+    ssh_host: str | None = typer.Option(None, "--ssh-host", help="Remote host IP or name; defaults from .secrets/remote.env"),
+    ssh_user: str | None = typer.Option(None, "--ssh-user", help="Remote SSH user; defaults from .secrets/remote.env or root"),
+    ssh_secret_path: str | None = typer.Option(None, "--ssh-secret-path", help="SSH secret path (key or password file); defaults from .secrets/remote.env or .secrets/ssh/default.pem"),
+    container: str = typer.Option(appstore_preview.DEFAULT_CONTAINER, "--container", help="Remote websoft9 container name"),
+    json_dir: str = typer.Option(appstore_preview.DEFAULT_JSON_DIR, "--json-dir", help="JSON directory inside the container"),
+    progress: bool = typer.Option(False, "--progress", help="Show step progress on stderr"),
+    verbose: bool = typer.Option(False, "--verbose", help="Show step progress and raw subprocess output on stderr"),
+    as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
+) -> None:
+    """Sync one app into the remote websoft9 appstore JSON preview and app directory."""
+    try:
+        progress_writer = (lambda message: typer.echo(message, err=True)) if (progress or verbose) else None
+        payload = appstore_preview.prepare_preview(
+            app_name=app_name,
+            host=ssh_host,
+            user=ssh_user,
+            secret_path=ssh_secret_path,
+            container=container,
+            json_dir=json_dir,
+            progress=progress_writer,
+            verbose=verbose,
+        )
+    except FileNotFoundError as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=4)
+    except Exception as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=1)
+    print_output(payload, as_json)
+
+
+@app.command("appstore-preview", hidden=True)
+def appstore_preview_command(
+    app_name: str = typer.Option(..., "--app", help="App name"),
+    ssh_host: str | None = typer.Option(None, "--ssh-host", help="Remote host IP or name; defaults from .secrets/remote.env"),
+    ssh_user: str | None = typer.Option(None, "--ssh-user", help="Remote SSH user; defaults from .secrets/remote.env or root"),
+    ssh_secret_path: str | None = typer.Option(None, "--ssh-secret-path", help="SSH secret path (key or password file); defaults from .secrets/remote.env or .secrets/ssh/default.pem"),
+    container: str = typer.Option(appstore_preview.DEFAULT_CONTAINER, "--container", help="Remote websoft9 container name"),
+    json_dir: str = typer.Option(appstore_preview.DEFAULT_JSON_DIR, "--json-dir", help="JSON directory inside the container"),
+    progress: bool = typer.Option(False, "--progress", help="Show step progress on stderr"),
+    verbose: bool = typer.Option(False, "--verbose", help="Show step progress and raw subprocess output on stderr"),
+    as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
+) -> None:
+    """Deprecated alias of appstore-sync."""
+    appstore_sync_command(app_name, ssh_host, ssh_user, ssh_secret_path, container, json_dir, progress, verbose, as_json)
+
+
+@app.command("app-deploy")
+def app_deploy_command(
+    app_name: str = typer.Option(..., "--app", help="App name"),
+    target: str | None = typer.Option(None, "--target", help="local | remote; defaults from .secrets/remote.env or local"),
+    ssh_host: str | None = typer.Option(None, "--ssh-host", help="Remote host IP or name; defaults from .secrets/remote.env"),
+    ssh_user: str | None = typer.Option(None, "--ssh-user", help="Remote SSH user; defaults from .secrets/remote.env or root"),
+    ssh_secret_path: str | None = typer.Option(None, "--ssh-secret-path", help="SSH secret path (key or password file); defaults from .secrets/remote.env or .secrets/ssh/default.pem"),
+    deploy_root: str | None = typer.Option(None, "--deploy-root", help="Remote deploy root; defaults from .secrets/remote.env or /websoft9/library/apps"),
+    version: str | None = typer.Option(None, "--version", help="Deploy a specific image tag by overriding W9_VERSION; repo .env is not modified"),
+    down: bool = typer.Option(False, "--down", help="Tear the app down with docker compose down -v instead of up -d"),
+    progress: bool = typer.Option(False, "--progress", help="Show step progress on stderr"),
+    verbose: bool = typer.Option(False, "--verbose", help="Show step progress and raw subprocess output on stderr"),
+    as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
+) -> None:
+    """Run docker compose deploy/teardown for one app; local by default, remote-aware via .secrets/remote.env or --ssh-host."""
+    try:
+        progress_writer = (lambda message: typer.echo(message, err=True)) if (progress or verbose) else None
+        payload = app_deploy.deploy(
+            app_name=app_name,
+            target=target,
+            ssh_host=ssh_host,
+            ssh_user=ssh_user,
+            ssh_secret_path=ssh_secret_path,
+            deploy_root=deploy_root,
+            version=version,
+            down=down,
+            progress=progress_writer,
+            verbose=verbose,
+        )
+    except FileNotFoundError as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=4)
+    except Exception as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=1)
+    print_output(payload, as_json)
+
+
+@app.command("app-down")
+def app_down_command(
+    app_name: str = typer.Option(..., "--app", help="App name"),
+    target: str | None = typer.Option(None, "--target", help="local | remote; defaults from .secrets/remote.env or local"),
+    ssh_host: str | None = typer.Option(None, "--ssh-host", help="Remote host IP or name; defaults from .secrets/remote.env"),
+    ssh_user: str | None = typer.Option(None, "--ssh-user", help="Remote SSH user; defaults from .secrets/remote.env or root"),
+    ssh_secret_path: str | None = typer.Option(None, "--ssh-secret-path", help="SSH secret path (key or password file); defaults from .secrets/remote.env or .secrets/ssh/default.pem"),
+    deploy_root: str | None = typer.Option(None, "--deploy-root", help="Remote deploy root; defaults from .secrets/remote.env or /websoft9/library/apps"),
+    progress: bool = typer.Option(False, "--progress", help="Show step progress on stderr"),
+    verbose: bool = typer.Option(False, "--verbose", help="Show step progress and raw subprocess output on stderr"),
+    as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
+) -> None:
+    """Tear one app down with docker compose down -v; local by default, remote-aware via .secrets/remote.env or --ssh-host."""
+    try:
+        progress_writer = (lambda message: typer.echo(message, err=True)) if (progress or verbose) else None
+        payload = app_deploy.deploy(
+            app_name=app_name,
+            target=target,
+            ssh_host=ssh_host,
+            ssh_user=ssh_user,
+            ssh_secret_path=ssh_secret_path,
+            deploy_root=deploy_root,
+            down=True,
+            progress=progress_writer,
+            verbose=verbose,
+        )
+    except FileNotFoundError as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=4)
+    except Exception as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=1)
+    print_output(payload, as_json)
+
+
+@app.command("appstore-deploy")
+def appstore_deploy_command(
+    app_name: str = typer.Option(..., "--app", help="App name"),
+    ssh_host: str | None = typer.Option(None, "--ssh-host", help="Remote host IP or name; defaults from .secrets/remote.env"),
+    ssh_user: str | None = typer.Option(None, "--ssh-user", help="Remote SSH user; defaults from .secrets/remote.env or root"),
+    ssh_secret_path: str | None = typer.Option(None, "--ssh-secret-path", help="SSH secret path (key or password file); defaults from .secrets/remote.env or .secrets/ssh/default.pem"),
+    deploy_root: str | None = typer.Option(None, "--deploy-root", help="Remote appstore root; defaults from .secrets/remote.env or /websoft9/library/apps"),
+    progress: bool = typer.Option(False, "--progress", help="Show step progress on stderr"),
+    verbose: bool = typer.Option(False, "--verbose", help="Show step progress and raw subprocess output on stderr"),
+    as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
+) -> None:
+    """Deploy one app into a websoft9 container appstore. Not implemented yet; pending the websoft9 container CLI."""
+    if progress or verbose:
+        typer.echo("[1/1] appstore-deploy is not implemented yet", err=True)
+    typer.echo(
+        f"appstore-deploy is not implemented yet; it will be added when the websoft9 container provides the corresponding CLI (app: {app_name}, deploy_root: {deploy_root or '/websoft9/library/apps'}).",
+        err=True,
+    )
+    raise typer.Exit(code=1)
+
+
+@app.command("app-tests")
+def app_tests_command(
+    app_name: str = typer.Option(..., "--app", help="App name"),
+    base_url: str | None = typer.Option(None, "--base-url", help="Override the base URL used by web checks"),
+    ssh_host: str | None = typer.Option(None, "--ssh-host", help="Remote host IP or name; defaults from .secrets/remote.env for web checks"),
+    ssh_user: str | None = typer.Option(None, "--ssh-user", help="Remote SSH user; defaults from .secrets/remote.env or root"),
+    ssh_secret_path: str | None = typer.Option(None, "--ssh-secret-path", help="SSH secret path (key or password file); defaults from .secrets/remote.env or .secrets/ssh/default.pem"),
+    deploy_root: str | None = typer.Option(None, "--deploy-root", help="Remote deploy root; defaults from .secrets/remote.env or /websoft9/library/apps"),
+    as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
+) -> None:
+    """Run app functional checks declared in apps/<app>/tests/cases.yml; localhost by default, remote-aware via .secrets/remote.env or --ssh-* overrides."""
+    try:
+        payload = app_tests.run_app_tests(
+            app_name,
+            base_url=base_url,
+            ssh_host=ssh_host,
+            ssh_user=ssh_user,
+            ssh_secret_path=ssh_secret_path,
+            deploy_root=deploy_root,
+        )
+    except FileNotFoundError as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=4)
+    except ValueError as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=2)
+    print_output(payload, as_json)
+    if not payload["ok"]:
+        raise typer.Exit(code=1)
 
 
 def run() -> int | None:

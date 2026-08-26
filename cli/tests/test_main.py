@@ -28,7 +28,10 @@ def test_help_command_prints_parent_help(monkeypatch):
 
     main.help_command(DummyContext())
 
-    assert output == [("HELP TEXT", False)]
+    assert output == [
+        ("HELP TEXT", False),
+        ("\nRemote-capable commands may read defaults from .secrets/remote.env (TARGET, SSH_HOST, SSH_USER, SSH_SECRET_PATH, DEPLOY_ROOT). Current remote-aware commands: app-deploy, app-down, app-tests, appstore-sync, appstore-deploy.", False),
+    ]
 
 
 def test_proxy_command_calls_save_clear_and_show(monkeypatch):

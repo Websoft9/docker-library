@@ -85,6 +85,12 @@ switch ($Target) {
   "contentful-create" {
     & .\.venv\Scripts\libs.exe contentful-create @Args
   }
+  "appstore-preview" {
+    & .\.venv\Scripts\libs.exe appstore-preview @Args
+  }
+  "app-tests" {
+    & .\.venv\Scripts\libs.exe app-tests @Args
+  }
   default {
     throw "Unknown target: $Target"
   }

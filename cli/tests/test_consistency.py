@@ -71,10 +71,19 @@ def test_readme_template_renders_with_minimal_context():
         name="demo-app",
         edition=[{"dist": "community", "version": ["1.0", "latest"]}],
         requirements={"memory": "1", "cpu": "1", "disk": "1", "url": "https://example.com"},
+        ports=[{"purpose": "Web Console", "port": "8080"}],
+        data_dirs=[{"volume": "data", "path": "/opt/data"}],
+        guide="## 快速入门\nhandwritten",
+        troubleshooting="## 故障\nnotes",
     )
 
     assert "# Demo App on Docker" in rendered
-    assert "community:  1.0, latest" in rendered
+    assert "Supported versions: 1.0, latest" in rendered
+    assert "W9_GUIDE_START" in rendered and "handwritten" in rendered
+    assert "W9_TROUBLESHOOT_START" in rendered and "notes" in rendered
+    assert "Web Console" in rendered and "8080" in rendered
+    assert "packages this app from the official" in rendered
+    assert "Apps run as containers; rebuild after any configuration change." in rendered
 
 
 def test_new_app_schema_accepts_sample_request():
@@ -105,6 +114,14 @@ def test_repository_variables_json_have_consistent_shapes():
             for key in ("compose_source", "config_source", "version_source"):
                 if key in data["upstream"] and data["upstream"][key] is not None:
                     assert isinstance(data["upstream"][key], dict), f"{variables_path}: upstream.{key} must be object"
+
+        if "env" in data:
+            assert isinstance(data["env"], dict), f"{variables_path}: env must be object"
+            first = data["env"].get("first_startup_only")
+            if first is not None:
+                assert isinstance(first, list) and all(isinstance(x, str) for x in first), (
+                    f"{variables_path}: env.first_startup_only must be a list of strings"
+                )
 
 
 def test_db_lifecycle_snapshot_has_valid_structure():

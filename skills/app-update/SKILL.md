@@ -30,8 +30,10 @@ Supporting files in this skill:
 5. Keep changes app-local unless the task explicitly requires cross-repo updates.
 6. Apply the version tag policy from `docs/devops-spec.md`: prefer `x.x`, use `x.x.x` only when exact patch pinning is required.
 7. If new translatable env keys are introduced, register them in `i18n/translation.json`.
-8. Run the `deploy-validation` skill for the changed app.
-9. Produce a short test report.
+8. When `.env` is touched, keep the "image environment variables" section intact: refresh the single Docs URL if the upstream changed, keep the used vars aligned with `docker-compose.yml`, and keep commented unused vars at no more than 5.
+9. When a credential or config env var only takes effect on first container startup (the image's entrypoint uses a marker file, e.g. `webconsole.security.enabled`), record that fact in `variables.json` as `env.first_startup_only` (a list of such env names). The README generator then auto-renders the warning; keep the "how to rotate" solution in the hand-written README Change Password section or Notes instead of in metadata.
+10. Run the `deploy-validation` skill for the changed app.
+11. Produce a short test report.
 
 ## Output
 

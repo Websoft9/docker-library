@@ -68,10 +68,21 @@ py -m venv .venv
 - `libs new-app --name <name> --trademark <brand> --dry-run` - preview a new app scaffold
 - `libs gen-readme --app <name>` - regenerate one app's README from variables.json
 - `libs contentful-create --app <name>` - preview a Contentful product entry (use `--apply` to write)
+- `libs app-deploy --app <name> [--ssh-host <ip>] [--progress] [--verbose]` - deploy one app locally or remotely; `--progress` prints step headers to stderr and `--verbose` also prints raw command output
+- `libs app-deploy --app <name> --version <tag>` - deploy a specific image tag by overriding `W9_VERSION` without modifying the repo `.env`
+- `libs app-down --app <name> [--ssh-host <ip>] [--progress] [--json]` - tear one app down with `docker compose down -v`
+- `libs appstore-sync --app <name> --ssh-host <ip> [--progress] [--verbose]` - patch remote `product_en.json` / `product_zh.json` distribution and sync one app directory for appstore testing
+- `libs appstore-deploy --app <name> --ssh-host <ip> [--progress] [--verbose]` - deploy one app into a websoft9 container appstore (not implemented yet; pending the websoft9 container CLI)
 - `libs proxy` - show, save, or clear the saved proxy
 - `libs help` - show help, same as `libs --help`
 
-Options: `--json`, `--plan-only`, `--selection`, `--date`, `--include-archived`, `--scope`, `--major-ahead`, `--proxy`, `-h` / `--help`.
+Options: `--json`, `--progress`, `--verbose`, `--plan-only`, `--selection`, `--date`, `--include-archived`, `--scope`, `--major-ahead`, `--proxy`, `-h` / `--help`.
+
+Shared execution options:
+- `--json` keeps the final payload on `stdout`
+- `--progress` writes step-level progress to `stderr`
+- `--verbose` writes step-level progress and raw subprocess output to `stderr`
+- only long-running or execution-style commands expose `--progress` and `--verbose`
 
 Network behavior:
 - default request timeout is 15s, override with `LIBS_HTTP_TIMEOUT`

@@ -1,27 +1,24 @@
-# This file is defined for community version, if it not have community version, is not need
-# For the reason that Websoft9 console can not support multiply distribution, now we use active classic at here
-
-version: "3.8"
+# official image: https://hub.docker.com/r/apache/activemq
+# upstream docs: https://github.com/apache/activemq/tree/main/assembly/src/docker
 
 services:
   activemq:
+    image: $W9_REPO:$W9_VERSION
     container_name: $W9_ID
     restart: unless-stopped
+    entrypoint: ["/bin/sh", "/opt/websoft9/entrypoint.sh"]
     env_file: .env
-    image: $W9_CLASSIC_REPO:$W9_VERSION
-    environment:
-      - ACTIVEMQ_BROKER_NAME=localhost
-      - ACTIVEMQ_ADMIN_LOGIN=$W9_LOGIN_USER
-      - ACTIVEMQ_ADMIN_PASSWORD=$W9_LOGIN_PASSWORD
     volumes:
-      - config:/opt/activemq/conf
-      - logs:/var/log/activemq
-      - data:/opt/activemq/data
+      - activemq_data:/opt/apache-activemq/data
+      - ./src/entrypoint.sh:/opt/websoft9/entrypoint.sh:ro
     ports:
-      - "$W9_HTTP_PORT_SET:8161" # Web Console
-      - "$W9_AMQP_PORT_SET:5672" # AMQP
+      - "$W9_HTTP_PORT_SET:8161"    # Web Console
+      - "$W9_AMQP_PORT_SET:5672"    # AMQP
       - "$W9_OPENWIRE_PORT_SET:61616" # OpenWire
-      - "$W9_STOMP_PORT_SET:61613" # STOMP
+      - "$W9_STOMP_PORT_SET:61613"  # STOMP
+      # - "1883:1883"   # MQTT
+      # - "61614:61614" # WS
+      # - "1099:1099"   # JMX
 
 networks:
   default:
@@ -29,7 +26,4 @@ networks:
     external: true
 
 volumes:
-  config:
-  logs:
-  data:
-
+  activemq_data:

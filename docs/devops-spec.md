@@ -162,6 +162,28 @@ Rules:
 - machine output: `--json`
 - preview mode: `--dry-run`
 
+### 4.1 Standard Shared Options
+
+The following option names are reserved shared CLI semantics. They are not required on every command, but when a command supports them, the behavior MUST remain consistent.
+
+- `--json`: final machine-readable result goes to `stdout`
+- `--progress`: high-level step progress goes to `stderr`
+- `--verbose`: implies progress and also writes raw subprocess output to `stderr`
+
+Rules:
+
+- `stdout` MUST remain clean for final results, especially when `--json` is used.
+- `stderr` MUST carry progress and verbose execution details.
+- Commands that do not have meaningful long-running or multi-step execution MAY omit `--progress` and `--verbose`.
+- Commands that support `--verbose` SHOULD also support `--progress`.
+
+Current commands expected to support these shared options:
+
+- `libs app-deploy`
+- `libs app-down`
+- `libs appstore-sync`
+- `libs appstore-deploy` (currently a stub; it still exposes the shared options in help)
+
 Business inputs SHOULD be passed as arguments, not hidden in environment variables.
 
 Environment variables MAY be used for:

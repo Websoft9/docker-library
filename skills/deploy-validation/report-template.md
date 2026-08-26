@@ -10,7 +10,7 @@
 - structure:
 - policy:
 - deploy:
-- reachability:
+- functional checks:
 - logs:
 - cleanup:
 

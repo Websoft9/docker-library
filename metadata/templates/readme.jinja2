@@ -1,26 +1,87 @@
-# {{trademark}} on Docker  
+# {{trademark}} on Docker
 
-This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for {{trademark}}:
+## Quick Start
 
-{% for ed in edition %}
- - {{ed.dist}}:  {{ ed.version | join(', ') }}
+### Deploy Verification
+
+1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **{{ trademark }}**.
+2. In the **Access** tab, get the login URL and credentials.
+3. Open the login URL in a browser and sign in to confirm the app works.
+
+<!-- W9_GUIDE_START -->
+{{ guide }}
+<!-- W9_GUIDE_END -->
+
+## Configuration Reference
+
+Websoft9 packages this app from the official [{{ trademark }} Docker image]({{ image_url }}) and makes some improvements below.
+
+<!-- W9_NOTE_START -->
+{{ config_note }}
+<!-- W9_NOTE_END -->
+
+Apps run as containers; rebuild after any configuration change.
+
+### Version Support
+
+Supported versions: {% for ed in edition %}{{ ed.version | join(', ') }}{% endfor %}.
+{% if has_latest %}
+The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
+{% endif %}
+
+### Ports
+
+| Purpose | Port |
+| --- | --- |
+{% for row in (ports or []) -%}
+| {{ row.purpose }} | {{ row.port }} |
 {% endfor %}
 
-## System Requirements
+### Data Directory
 
-The following are the minimal [recommended requirements]({{requirements.url}}):
+{% if (data_dirs or [])|length > 1 %}
+{% for d in data_dirs -%}
+- `{{ d.volume }}` → `{{ d.path }}`
+{% endfor %}
+{% elif data_dirs %}
+Data is persisted in the `{{ data_dirs[0].volume }}` volume, mounted at `{{ data_dirs[0].path }}`.
+{% else %}
+Data is kept inside the container; a named volume is recommended for persistence.
+{% endif %}
 
-* **RAM**: {{requirements.memory}} GB or more
-* **CPU**: {{requirements.cpu}} cores or higher
-* **Disk**: at least {{requirements.disk}} GB of free space
-* **bandwidth**: more fluent experience over 100M  
+### Environment Variables
 
-## Install
+Environment variables are defined in the app's `.env` file; see the reference section at the end of `.env` for supported variables.
+{% if first_startup_only_note %}
 
-You can install this {{trademark}} by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+{{ first_startup_only_note }}
+{% endif %}
 
-If you want use {{trademark}} with **Websoft9 Business Support** free, you can [subscribe {{trademark}}](https://www.websoft9.com/apps) on Cloud platform
+### Configuration Files
 
-## Documentation
+{% if (config_overrides or [])|length > 1 %}
+{% for c in config_overrides -%}
+- `{{ c.source }}` → `{{ c.target }}`
+{% endfor %}
+{% elif config_overrides %}
+Configuration is overridden by mounting `{{ config_overrides[0].source }}` to `{{ config_overrides[0].target }}`.
+{% else %}
+Configuration files live inside the image; mount a single file read-only to override, and never replace the whole directory.
+{% endif %}
 
-[{{trademark}} Administrator Guide](https://support.websoft9.com/docs/{{name}}) powered by Websoft9
+## References
+
+- [{{trademark}} Administrator Guide](https://support.websoft9.com/docs/{{name}}) by Websoft9
+{% for ref in (references or []) %}
+- [{{ ref.label }}]({{ ref.url }})
+{% endfor %}
+
+<!-- W9_TROUBLESHOOT_START -->
+{{ troubleshooting }}
+<!-- W9_TROUBLESHOOT_END -->
+
+## Changelog
+
+<!-- W9_CHANGELOG_START -->
+{{ changelog }}
+<!-- W9_CHANGELOG_END -->
