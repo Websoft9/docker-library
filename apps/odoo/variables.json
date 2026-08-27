@@ -22,5 +22,8 @@
     "memory": "2",
     "disk": "1",
     "url": "https://github.com/odoo/docker"
+  },
+  "help": {
+    "db": "PostgreSQL 14+ (15.0 requires 11+, 16.0 requires 13+)"
   }
 }
