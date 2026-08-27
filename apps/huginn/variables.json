@@ -2,18 +2,20 @@
   "name": "huginn",
   "trademark": "Huginn",
   "release": true,
-  "fork_url": "https://github.com/huginn/huginn",
-  "version_from": "https://github.com/huginn/huginn/pkgs/container/huginn",
   "edition": [
     {
       "dist": "community",
-      "version": ["latest"]
+      "version": [
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": "https://github.com/huginn/huginn"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://github.com/huginn/huginn/pkgs/container/huginn"
   }
 }

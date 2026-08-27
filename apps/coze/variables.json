@@ -2,8 +2,6 @@
   "name": "coze",
   "trademark": "Coze Studio",
   "release": true,
-  "fork_url": "https://github.com/coze-dev/coze-studio",
-  "version_from": "https://hub.docker.com/r/cozedev/coze-studio-server",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "4",
     "memory": "8",
-    "disk": "20",
-    "url": "https://www.coze.cn/"
+    "disk": "20"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/cozedev/coze-studio-server"
   }
 }

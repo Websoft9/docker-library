@@ -2,18 +2,21 @@
   "name": "couchbase",
   "trademark": "Couchbase",
   "release": true,
-  "fork_url": "https://hub.docker.com/r/couchbase/server",
-  "version_from": "https://hub.docker.com/r/couchbase/server/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["community-7.6.2","community"]
+      "version": [
+        "community-7.6.2",
+        "community"
+      ]
     }
   ],
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "8",
-    "url": "https://docs.couchbase.com/server/current/install/pre-install.html"
+    "disk": "8"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/couchbase/server/tags"
   }
 }

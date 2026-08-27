@@ -2,8 +2,6 @@
   "name": "graylog",
   "trademark": "Graylog",
   "release": true,
-  "fork_url": "https://github.com/Graylog2/graylog-docker",
-  "version_from": "https://hub.docker.com/r/graylog/graylog/tags",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "1",
-    "url": "https://go2docs.graylog.org/current/downloading_and_installing_graylog/docker_installation.htm?tocpath=Install%20Graylog%7C_____2#Prerequisites"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/graylog/graylog/tags"
   }
 }

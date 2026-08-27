@@ -1,4 +1,4 @@
-.PHONY: help opencode install libs cli remote test test-cli test-build test-skills contentful-create app-deploy app-down appstore-sync appstore-preview appstore-deploy app-tests
+.PHONY: help opencode opencode-clear install libs cli remote test test-cli test-build test-skills contentful-create app-deploy app-down appstore-sync appstore-preview appstore-deploy app-tests
 
 ifeq ($(OS),Windows_NT)
 PYTHON ?= py
@@ -17,6 +17,9 @@ opencode: ## start opencode with proxy disabled
 	@echo "Starting opencode (proxy disabled)..."
 	@unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy ALL_PROXY all_proxy; \
 	no_proxy="*" NO_PROXY="*" opencode
+
+opencode-clear: ## list current-directory opencode sessions, confirm, then delete them (ARGS supports --all/--dry-run)
+	@$(PYTHON) build/opencode_delete.py $(ARGS)
 
 install: ## create .venv and install the libs CLI
 	$(PYTHON) -m venv .venv
@@ -80,10 +83,10 @@ test-skills: ## run skills asset and workflow tests
 contentful-create: ## preview or create a Contentful product entry, e.g. make contentful-create ARGS="--app ffmpeg --apply"
 	$(VENV_BIN)/libs contentful-create $(ARGS)
 
-app-deploy: ## run docker compose deploy/teardown for one app (localhost by default, remote-aware via .secrets/remote.env)
+app-deploy: ## run docker compose deploy/teardown for one app
 	$(VENV_BIN)/libs app-deploy $(ARGS)
 
-app-down: ## tear one app down with docker compose down -v (localhost by default, remote-aware via .secrets/remote.env)
+app-down: ## tear one app down with docker compose down -v
 	$(VENV_BIN)/libs app-down $(ARGS)
 
 appstore-sync: ## sync one app into the remote websoft9 appstore JSON preview and app directory
@@ -95,7 +98,7 @@ appstore-preview: ## deprecated alias of make appstore-sync
 appstore-deploy: ## deploy one app into a websoft9 container appstore (not implemented yet; pending the websoft9 container CLI)
 	$(VENV_BIN)/libs appstore-deploy $(ARGS)
 
-app-tests: ## run app functional checks declared in apps/<app>/tests/cases.yml (localhost by default, remote-aware via .secrets/remote.env)
+app-tests: ## run app functional checks declared in apps/<app>/tests/cases.yml
 	$(VENV_BIN)/libs app-tests $(ARGS)
 
 test: ## run the full repo machine-system test suite

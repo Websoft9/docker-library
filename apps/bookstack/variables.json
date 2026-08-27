@@ -2,8 +2,6 @@
   "name": "bookstack",
   "trademark": "BookStack",
   "release": true,
-  "fork_url": "https://github.com/linuxserver/docker-bookstack",
-  "version_from": "https://github.com/linuxserver/docker-bookstack/pkgs/container/bookstack",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "10",
-    "url": "https://www.bookstackapp.com"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://github.com/linuxserver/docker-bookstack/pkgs/container/bookstack"
   }
 }

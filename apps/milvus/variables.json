@@ -1,20 +1,22 @@
 {
-    "name": "milvus",
-    "trademark": "Milvus",
-    "release": true,
-    "fork_url": "https://github.com/milvus-io/milvus",
-    "version_from": "https://hub.docker.com/r/milvusdb/milvus/tags",
-    "edition": [
-      {
-        "dist": "community",
-        "version": ["v2.6.3","latest"]
-      }
-    ],
-    "requirements": {
-      "cpu": "8",
-      "memory": "32",
-      "disk": "4",
-      "url": "https://milvus.io/docs/prerequisite-docker.md"
+  "name": "milvus",
+  "trademark": "Milvus",
+  "release": true,
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "v2.6.3",
+        "latest"
+      ]
     }
+  ],
+  "requirements": {
+    "cpu": "8",
+    "memory": "32",
+    "disk": "4"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/milvusdb/milvus/tags"
   }
-  
+}

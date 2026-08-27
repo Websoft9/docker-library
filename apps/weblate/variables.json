@@ -2,8 +2,6 @@
   "name": "weblate",
   "trademark": "Weblate",
   "release": false,
-  "fork_url": "https://github.com/WeblateOrg/weblate",
-  "version_from": "https://hub.docker.com/r/weblate/weblate/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://weblate.org"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/weblate/weblate/tags"
   }
 }

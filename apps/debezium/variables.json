@@ -2,8 +2,6 @@
   "name": "debezium",
   "trademark": "Debezium",
   "release": false,
-  "fork_url": "https://github.com/debezium/debezium",
-  "version_from": "",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,6 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "8",
-    "url": "https://debezium.io"
+    "disk": "8"
   }
 }

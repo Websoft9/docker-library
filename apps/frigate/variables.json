@@ -2,8 +2,6 @@
   "name": "frigate",
   "trademark": "Frigate",
   "release": false,
-  "fork_url": "https://github.com/blakeblackshear/frigate",
-  "version_from": "",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,6 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://frigate.video"
+    "disk": "10"
   }
 }

@@ -2,8 +2,6 @@
   "name": "rudderstack",
   "trademark": "RudderStack",
   "release": false,
-  "fork_url": "https://github.com/rudderlabs/rudder-server",
-  "version_from": "https://hub.docker.com/r/rudderlabs/rudder-server/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://www.rudderstack.com"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/rudderlabs/rudder-server/tags"
   }
 }

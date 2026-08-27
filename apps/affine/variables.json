@@ -2,8 +2,6 @@
   "name": "affine",
   "trademark": "AFFiNE",
   "release": false,
-  "fork_url": "https://github.com/toeverything/AFFiNE",
-  "version_from": "",
   "upstream": {
     "image": "https://ghcr.io/toeverything/affine-graphql",
     "releases": "https://github.com/toeverything/AFFiNE/tags",
@@ -23,7 +21,6 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": "https://github.com/toeverything/AFFiNE"
+    "disk": "1"
   }
 }

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import shutil
+import subprocess
 from pathlib import Path
 
 from libs.repo import repo_path
@@ -111,3 +112,34 @@ def scp_base(host: str, user: str, secret_path: Path) -> list[str]:
             raise FileNotFoundError("sshpass is required for password-based SSH; provide a key file or install sshpass")
         base.extend(["sshpass", "-f", str(secret_path), "scp"])
     return base + ssh_connect_options()
+
+
+def scrub_ssh_stderr(text: str) -> str:
+    cleaned = []
+    for line in text.splitlines():
+        if line.startswith("Warning: Permanently added '") and "to the list of known hosts." in line:
+            continue
+        cleaned.append(line)
+    return "\n".join(cleaned).strip()
+
+
+def scrub_completed_process(result: subprocess.CompletedProcess) -> subprocess.CompletedProcess:
+    return subprocess.CompletedProcess(
+        args=result.args,
+        returncode=result.returncode,
+        stdout=result.stdout,
+        stderr=scrub_ssh_stderr(result.stderr),
+    )
+
+
+def run_command(command: list[str]) -> subprocess.CompletedProcess:
+    result = subprocess.run(command, check=False, capture_output=True, text=True)
+    return scrub_completed_process(result)
+
+
+def run_ssh(host: str, user: str, secret_path: Path, script: str) -> subprocess.CompletedProcess:
+    return run_command(ssh_base(host, user, secret_path) + [script])
+
+
+def preflight_ssh(host: str, user: str, secret_path: Path) -> subprocess.CompletedProcess:
+    return run_ssh(host, user, secret_path, "true")

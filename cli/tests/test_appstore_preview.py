@@ -26,7 +26,7 @@ def test_distribution_for_app_reads_variables(repo_fixture, app_factory):
         variables={
             "name": "demo",
             "release": True,
-            "version_from": "https://hub.docker.com/_/demo/tags",
+            "upstream": {"image": "https://hub.docker.com/_/demo/tags"},
             "edition": [{"dist": "community", "version": ["1.0", "latest"]}],
             "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
         },

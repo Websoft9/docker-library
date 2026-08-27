@@ -2,8 +2,6 @@
   "name": "opencost",
   "trademark": "OpenCost",
   "release": true,
-  "fork_url": "https://github.com/opencost/opencost",
-  "version_from": "ghcr.io/opencost/opencost",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://opencost.io"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "ghcr.io/opencost/opencost"
   }
 }

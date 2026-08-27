@@ -2,8 +2,6 @@
   "name": "gitness",
   "trademark": "Gitness",
   "release": true,
-  "fork_url": "https://docs.gitness.com/installation/data",
-  "version_from": "https://hub.docker.com/r/harness/gitness/tags",
   "edition": [
     {
       "dist": "community",
@@ -12,12 +10,13 @@
         "latest"
       ]
     }
-
   ],
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "1",
-    "url": ""
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/harness/gitness/tags"
   }
 }

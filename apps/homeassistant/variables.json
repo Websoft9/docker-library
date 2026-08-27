@@ -2,18 +2,21 @@
   "name": "homeassistant",
   "trademark": "Home Assistant",
   "release": true,
-  "fork_url": "https://github.com/home-assistant/core",
-  "version_from": "https://hub.docker.com/r/homeassistant/home-assistant/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["2025.7","latest"]
+      "version": [
+        "2025.7",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "4",
-    "url": "https://www.home-assistant.io/installation/linux"
+    "disk": "4"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/homeassistant/home-assistant/tags"
   }
 }

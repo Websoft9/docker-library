@@ -2,8 +2,6 @@
   "name": "seafile",
   "trademark": "Seafile",
   "release": true,
-  "fork_url": "https://github.com/haiwen/seafile-docker.git",
-  "version_from": "https://hub.docker.com/r/seafileltd/seafile-mc/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "4",
-    "url": "https://cloud.seafile.com/published/seafile-manual-cn/docker"
+    "disk": "4"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/seafileltd/seafile-mc/tags"
   }
 }

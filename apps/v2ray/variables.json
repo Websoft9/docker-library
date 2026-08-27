@@ -2,8 +2,6 @@
   "name": "v2ray",
   "trademark": "V2Ray",
   "release": false,
-  "fork_url": "https://www.v2ray.com/",
-  "version_from": "",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,6 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": "https://www.v2ray.com/"
+    "disk": "1"
   }
 }

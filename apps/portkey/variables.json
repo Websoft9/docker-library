@@ -2,18 +2,21 @@
   "name": "portkey",
   "trademark": "Portkey",
   "release": true,
-  "fork_url": "https://raw.githubusercontent.com/Portkey-AI/gateway/main/docker-compose.yaml",
-  "version_from": "https://hub.docker.com/r/portkeyai/gateway/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["1.14.3","latest"]
+      "version": [
+        "1.14.3",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": "https://github.com/onlyoffice/docker#recommended-system-requirements"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/portkeyai/gateway/tags"
   }
 }

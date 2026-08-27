@@ -2,18 +2,21 @@
   "name": "flowise",
   "trademark": "Flowise",
   "release": true,
-  "fork_url": "https://github.com/FlowiseAI",
-  "version_from": "https://hub.docker.com/r/flowiseai/flowise/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["3.0.4","latest"]
+      "version": [
+        "3.0.4",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "2",
-    "url": "https://docs.flowiseai.com/getting-started"
+    "disk": "2"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/flowiseai/flowise/tags"
   }
 }

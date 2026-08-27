@@ -13,17 +13,17 @@ def test_parse_target_date_and_cadence_matches():
     assert versions._cadence_matches("quarterly", date(2026, 10, 1)) is True
 
 
-def test_resolve_source_type_prefers_upstream_image_and_declared_type():
-    assert versions.resolve_source_type({"upstream": {"image": "ghcr.io/org/app"}}, "") == "ghcr-tags"
-    assert versions.resolve_source_type({"upstream": {"version_source": {"type": "custom"}}}, "") == "custom"
-    assert versions.resolve_source_type({}, "https://github.com/foo/bar/releases") == "github-releases"
+def test_resolve_source_type_uses_upstream_image():
+    assert versions.resolve_source_type({"upstream": {"image": "ghcr.io/org/app"}}) == "ghcr-tags"
+    assert versions.resolve_source_type({"upstream": {"image": "https://hub.docker.com/_/x/tags"}}) == "dockerhub-tags"
+    assert versions.resolve_source_type({}) == "unknown"
 
 
 def test_scan_apps_plan_only_uses_current_versions_without_network(repo_fixture, app_factory):
     app_factory("wordpress", variables={
         "name": "wordpress",
         "release": True,
-        "version_from": "https://hub.docker.com/_/wordpress/tags",
+        "upstream": {"image": "https://hub.docker.com/_/wordpress/tags"},
         "edition": [{"dist": "community", "version": ["6.9", "latest"]}],
     })
 
@@ -37,7 +37,7 @@ def test_scan_apps_plan_only_uses_current_versions_without_network(repo_fixture,
         "selected_by": "all-active",
         "target_date": date.today().isoformat(),
         "current_version": ["6.9", "latest"],
-        "version_from": "https://hub.docker.com/_/wordpress/tags",
+        "upstream_image": "https://hub.docker.com/_/wordpress/tags",
         "source_type": "dockerhub-tags",
         "release": True,
     }]
@@ -47,7 +47,7 @@ def test_batch_scan_skips_release_false_apps(repo_fixture, app_factory, monkeypa
     app_factory("draft-app", variables={
         "name": "draft-app",
         "release": False,
-        "version_from": "https://hub.docker.com/_/draft/tags",
+        "upstream": {"image": "https://hub.docker.com/_/draft/tags"},
         "edition": [{"dist": "community", "version": ["1.0"]}],
     })
     calls = []
@@ -66,7 +66,7 @@ def test_single_app_scan_probes_even_when_release_false(repo_fixture, app_factor
     app_factory("draft-app", variables={
         "name": "draft-app",
         "release": False,
-        "version_from": "https://hub.docker.com/_/draft/tags",
+        "upstream": {"image": "https://hub.docker.com/_/draft/tags"},
         "edition": [{"dist": "community", "version": ["1.0"]}],
     })
     monkeypatch.setattr(versions, "fetch_candidates", lambda *args, **kwargs: ({"version": "1.1", "last_updated": "2026-01-01"}, None))
@@ -82,7 +82,7 @@ def test_scan_apps_uses_fetch_candidates_when_release_enabled(repo_fixture, app_
     app_factory("demo", variables={
         "name": "demo",
         "release": True,
-        "version_from": "https://hub.docker.com/_/demo/tags",
+        "upstream": {"image": "https://hub.docker.com/_/demo/tags"},
         "edition": [{"dist": "community", "version": ["1.0"]}],
     })
     monkeypatch.setattr(versions, "fetch_candidates", lambda *args, **kwargs: ({"version": "1.1", "last_updated": "2026-01-01"}, None))

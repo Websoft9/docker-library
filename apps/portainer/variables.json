@@ -2,8 +2,6 @@
   "name": "portainer",
   "trademark": "Portainer",
   "release": true,
-  "fork_url": "https://github.com/portainer/portainer-compose.git",
-  "version_from": "https://hub.docker.com/r/portainer/portainer-ce/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "4",
-    "url": "https://documentation.portainer.io/v2.0-be/deploy/requirements/"
+    "disk": "4"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/portainer/portainer-ce/tags"
   }
 }

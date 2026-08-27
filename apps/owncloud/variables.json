@@ -2,8 +2,6 @@
   "name": "owncloud",
   "trademark": "Owncloud",
   "release": true,
-  "fork_url": "https://github.com/owncloud-docker/server",
-  "version_from": "https://hub.docker.com/r/owncloud/server/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": "https://doc.owncloud.com/server/10.8/admin_manual/installation/docker/"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/owncloud/server/tags"
   }
 }

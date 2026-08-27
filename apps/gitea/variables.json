@@ -2,18 +2,21 @@
   "name": "gitea",
   "trademark": "Gitea",
   "release": true,
-  "fork_url": "https://github.com/go-gitea/gitea",
-  "version_from": "https://hub.docker.com/r/gitea/gitea/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["1.25","latest"]
+      "version": [
+        "1.25",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "4",
-    "url": "https://docs.gitea.io/zh-cn/install-with-docker-rootless"
+    "disk": "4"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/gitea/gitea/tags"
   }
 }

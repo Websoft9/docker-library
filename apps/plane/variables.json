@@ -2,8 +2,6 @@
   "name": "plane",
   "trademark": "Plane",
   "release": false,
-  "fork_url": "https://github.com/makeplane/plane",
-  "version_from": "",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,6 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://plane.so"
+    "disk": "10"
   }
 }

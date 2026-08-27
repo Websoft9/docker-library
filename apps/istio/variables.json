@@ -2,8 +2,6 @@
   "name": "istio",
   "trademark": "Istio",
   "release": false,
-  "fork_url": "https://github.com/istio/istio",
-  "version_from": "https://hub.docker.com/r/istio/proxyv2/tags",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://istio.io"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/istio/proxyv2/tags"
   }
 }

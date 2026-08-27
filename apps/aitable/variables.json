@@ -2,8 +2,6 @@
   "name": "aitable",
   "trademark": "AITable",
   "release": true,
-  "fork_url": "https://github.com/apitable/apitable/blob/develop/docker-compose.yaml",
-  "version_from": "https://hub.docker.com/r/apitable/openresty/tags",
   "upstream": {
     "image": "https://hub.docker.com/r/apitable/openresty/tags",
     "releases": "https://github.com/apitable/apitable/tags",
@@ -26,7 +24,6 @@
   "requirements": {
     "cpu": "2",
     "memory": "8",
-    "disk": "3",
-    "url": "https://github.com/apitable/apitable/blob/develop/docker-compose.yaml"
+    "disk": "3"
   }
 }

@@ -2,18 +2,21 @@
   "name": "linkwarden",
   "trademark": "Linkwarden",
   "release": true,
-  "fork_url": "https://github.com/linkwarden/linkwarden",
-  "version_from": "https://ghcr.io/linkwarden/linkwarden",
   "edition": [
     {
       "dist": "community",
-      "version": ["v2.9.3","latest"]
+      "version": [
+        "v2.9.3",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "1",
-    "url": "https://linkwarden.app"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://ghcr.io/linkwarden/linkwarden"
   }
 }

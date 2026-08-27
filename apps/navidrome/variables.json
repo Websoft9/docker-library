@@ -2,18 +2,21 @@
   "name": "navidrome",
   "trademark": "Navidrome",
   "release": true,
-  "fork_url": "https://github.com/navidrome/navidrome/",
-  "version_from": "https://hub.docker.com/r/deluan/navidrome/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["0.58.0","latest"]
+      "version": [
+        "0.58.0",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "8",
-    "url": "https://www.navidrome.org/docs/installation/"
+    "disk": "8"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/deluan/navidrome/tags"
   }
 }

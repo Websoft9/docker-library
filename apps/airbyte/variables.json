@@ -2,8 +2,6 @@
   "name": "airbyte",
   "trademark": "Airbyte",
   "release": false,
-  "fork_url": "https://github.com/airbytehq/airbyte",
-  "version_from": "https://hub.docker.com/r/airbyte/webapp/tags",
   "upstream": {
     "image": "https://hub.docker.com/r/airbyte/webapp/tags",
     "releases": "https://github.com/airbytehq/airbyte/tags",
@@ -22,7 +20,6 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://airbyte.com"
+    "disk": "10"
   }
 }

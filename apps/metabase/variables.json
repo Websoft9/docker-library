@@ -2,18 +2,21 @@
   "name": "metabase",
   "trademark": "Metabase",
   "release": true,
-  "fork_url": "https://github.com/metabase/metabase",
-  "version_from": "https://hub.docker.com/r/metabase/metabase/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["v0.57.5.3","latest"]
+      "version": [
+        "v0.57.5.3",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": "https://www.metabase.com/docs/latest/operations-guide/running-metabase-on-docker.html"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/metabase/metabase/tags"
   }
 }

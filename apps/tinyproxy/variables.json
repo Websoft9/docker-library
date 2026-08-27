@@ -3,8 +3,6 @@
   "trademark": "tinyproxy ",
   "release": true,
   "scope": "internal",
-  "fork_url": "https://hub.docker.com/r/ajoergensen/tinyproxy",
-  "version_from": "https://hub.docker.com/r/ajoergensen/tinyproxy/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "1",
-    "url": "https://github.com/tinyproxy/tinyproxy"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/ajoergensen/tinyproxy/tags"
   }
 }

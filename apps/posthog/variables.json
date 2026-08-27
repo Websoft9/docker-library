@@ -2,8 +2,6 @@
   "name": "posthog",
   "trademark": "PostHog",
   "release": false,
-  "fork_url": "https://github.com/PostHog/posthog",
-  "version_from": "",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,6 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://posthog.com"
+    "disk": "10"
   }
 }

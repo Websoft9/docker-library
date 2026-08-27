@@ -2,18 +2,21 @@
   "name": "mosquitto",
   "trademark": "Eclipse Mosquitto",
   "release": true,
-  "fork_url": "https://github.com/eclipse/mosquitto",
-  "version_from": "https://hub.docker.com/_/eclipse-mosquitto/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["2","latest"]
+      "version": [
+        "2",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": "https://registry.hub.docker.com/_/eclipse-mosquitto"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/_/eclipse-mosquitto/tags"
   }
 }

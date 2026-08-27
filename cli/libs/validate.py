@@ -18,7 +18,7 @@ app = typer.Typer(
     context_settings={"help_option_names": ["-h", "--help"]},
 )
 
-REQUIRED_FILES = [".env", "docker-compose.yml", "variables.json", "README.md"]
+REQUIRED_FILES = [".env", "docker-compose.yml", "variables.json", "README.md", "CHANGELOG.md"]
 TRANSLATABLE_ENV_RE = re.compile(r"^(W9_.*_SET|W9_LOGIN.*)$")
 
 

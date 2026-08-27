@@ -2,8 +2,6 @@
   "name": "ansible",
   "trademark": "Ansible",
   "release": true,
-  "fork_url": "",
-  "version_from": "https://hub.docker.com/r/websoft9dev/ansible/tags",
   "upstream": {
     "image": "https://hub.docker.com/r/websoft9dev/ansible/tags",
     "docs": [
@@ -21,7 +19,6 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": "https://docs.ansible.com/ansible/latest/installation_guide"
+    "disk": "1"
   }
 }

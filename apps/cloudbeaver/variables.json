@@ -2,8 +2,6 @@
   "name": "cloudbeaver",
   "trademark": "CloudBeaver",
   "release": true,
-  "fork_url": "https://github.com/dbeaver/cloudbeaver",
-  "version_from": "https://hub.docker.com/r/dbeaver/cloudbeaver/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "4",
-    "url": "https://github.com/dbeaver/cloudbeaver/wiki"
+    "disk": "4"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/dbeaver/cloudbeaver/tags"
   }
 }

@@ -2,18 +2,21 @@
   "name": "jellyfin",
   "trademark": "Jellyfin",
   "release": true,
-  "fork_url": "https://jellyfin.org/docs/general/installation/",
-  "version_from": "https://hub.docker.com/r/jellyfin/jellyfin/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["10.10.7", "latest"]
+      "version": [
+        "10.10.7",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "2",
     "memory": "8",
-    "disk": "5",
-    "url": "https://jellyfin.org/docs/general/administration/hardware-selection"
+    "disk": "5"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/jellyfin/jellyfin/tags"
   }
 }

@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "defaults": {
+    "postgresql": {
+      "bundled": {
+        "port": 5432,
+        "external_access": false,
+        "database_env": "POSTGRES_DB",
+        "username_env": "POSTGRES_USER",
+        "password_env": "POSTGRES_PASSWORD"
+      },
+      "external": {
+        "external_access": true,
+        "host_env": "W9_DB_HOST",
+        "port_env": "W9_DB_PORT",
+        "database_env": "W9_DB_NAME",
+        "username_env": "W9_DB_USER",
+        "password_env": "W9_DB_PASSWORD",
+        "ssl_env": "W9_DB_SSL"
+      }
+    },
+    "mysql": {
+      "bundled": {
+        "port": 3306,
+        "external_access": false,
+        "database_env": "MYSQL_DATABASE",
+        "username_env": "MYSQL_USER",
+        "password_env": "MYSQL_PASSWORD"
+      },
+      "external": {
+        "external_access": true,
+        "host_env": "W9_DB_HOST",
+        "port_env": "W9_DB_PORT",
+        "database_env": "W9_DB_NAME",
+        "username_env": "W9_DB_USER",
+        "password_env": "W9_DB_PASSWORD",
+        "ssl_env": "W9_DB_SSL"
+      }
+    },
+    "mariadb": {
+      "bundled": {
+        "port": 3306,
+        "external_access": false,
+        "database_env": "MARIADB_DATABASE",
+        "username_env": "MARIADB_USER",
+        "password_env": "MARIADB_PASSWORD"
+      },
+      "external": {
+        "external_access": true,
+        "host_env": "W9_DB_HOST",
+        "port_env": "W9_DB_PORT",
+        "database_env": "W9_DB_NAME",
+        "username_env": "W9_DB_USER",
+        "password_env": "W9_DB_PASSWORD",
+        "ssl_env": "W9_DB_SSL"
+      }
+    }
+  }
+}

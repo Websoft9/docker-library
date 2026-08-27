@@ -177,6 +177,7 @@ Create new application must use [template](../template/), then set your file:
 - Use after declaring volumes
 - The configuration file volumes uses the absolute path reference of src
 - Do not write upstream reference comments in docker-compose.yml; upstream references live only in `variables.json` `upstream`
+- Every published port line must carry an inline `# purpose` comment, e.g. `- "$W9_HTTP_PORT_SET:80" # Web Console`
 
 2. .env
 

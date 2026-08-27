@@ -2,8 +2,6 @@
   "name": "tomee",
   "trademark": "TomEE",
   "release": true,
-  "fork_url": "https://github.com/apache/tomee",
-  "version_from": "https://hub.docker.com/_/tomee/tags",
   "edition": [
     {
       "dist": "community",
@@ -34,7 +32,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "1",
-    "url": "https://tomee.apache.org/"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/_/tomee/tags"
   }
 }

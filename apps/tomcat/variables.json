@@ -2,8 +2,6 @@
   "name": "tomcat",
   "trademark": "Tomcat ",
   "release": true,
-  "fork_url": "https://github.com/apache/tomcat",
-  "version_from": "https://hub.docker.com/_/tomcat/tags",
   "edition": [
     {
       "dist": "community",
@@ -26,7 +24,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "1",
-    "url": "https://tomcat.apache.org/"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/_/tomcat/tags"
   }
 }

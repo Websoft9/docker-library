@@ -2,8 +2,6 @@
   "name": "elasticsearch",
   "trademark": "Elasticsearch",
   "release": true,
-  "fork_url": "https://github.com/elastic/elasticsearch",
-  "version_from": "https://hub.docker.com/_/elasticsearch/tags",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "8",
-    "url": "https://github.com/elastic/elasticsearch"
+    "disk": "8"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/_/elasticsearch/tags"
   }
 }

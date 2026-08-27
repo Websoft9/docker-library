@@ -2,13 +2,11 @@
   "name": "dgraph",
   "trademark": "Dgraph",
   "release": true,
-  "fork_url": "https://hub.docker.com/r/dgraph/standalone",
-  "version_from": "https://hub.docker.com/r/dgraph/dgraph/tags",
   "edition": [
     {
       "dist": "community",
       "version": [
-        "v25.0.0",        
+        "v25.0.0",
         "latest"
       ]
     }
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "2",
-    "url": "https://hub.docker.com/r/dgraph/standalone"
+    "disk": "2"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/dgraph/dgraph/tags"
   }
 }

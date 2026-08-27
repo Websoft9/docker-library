@@ -2,18 +2,21 @@
   "name": "miniflux",
   "trademark": "Miniflux",
   "release": true,
-  "fork_url": "https://github.com/miniflux/v2",
-  "version_from": "https://hub.docker.com/r/miniflux/miniflux/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["2.2.10","latest"]
+      "version": [
+        "2.2.10",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://miniflux.app"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/miniflux/miniflux/tags"
   }
 }

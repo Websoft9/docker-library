@@ -2,8 +2,6 @@
   "name": "redisinsight",
   "trademark": "RedisInsight",
   "release": true,
-  "fork_url": "https://hub.docker.com/r/redis/redisinsight",
-  "version_from": "https://hub.docker.com/r/redis/redisinsight/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "4",
-    "url": "https://hub.docker.com/r/redis/redisinsight"
+    "disk": "4"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/redis/redisinsight/tags"
   }
 }

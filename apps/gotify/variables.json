@@ -2,8 +2,6 @@
   "name": "gotify",
   "trademark": "Gotify",
   "release": true,
-  "fork_url": "https://github.com/gotify",
-  "version_from": "https://hub.docker.com/r/gotify/server/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://gotify.net/"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/gotify/server/tags"
   }
 }

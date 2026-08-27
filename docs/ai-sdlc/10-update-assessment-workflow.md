@@ -28,14 +28,16 @@ Steps:
    - report a DB finding when the current engine is EOL or a better LTS candidate exists
 6. Read upstream release notes, changelog, or upgrade guide.
 7. Check whether the candidate fits the app's update policy and cadence.
-8. Assess breaking risk for compose, env keys, volumes, init flow, login flow, and data path.
-9. Decide one result: `auto-update`, `review-first`, `defer`, or `skip`.
-10. Publish a short assessment report in the issue.
+8. Perform a read-only conformance screening against current repository quality gates and generation rules. Record only findings that affect implementation scope, upgrade safety, or validation readiness.
+9. Assess breaking risk for compose, env keys, volumes, init flow, login flow, data path, and any blocking conformance drift.
+10. Decide one result: `auto-update`, `review-first`, `defer`, or `skip`.
+11. Publish a short assessment report in the issue.
 
 Output:
 - candidate version
 - candidate class
 - decision: `auto-update` | `review-first` | `defer` | `skip`
+- repository conformance finding: `ok` | `minor-fixes` | `blocking-fixes`
 - database finding: current, minimum, recommendation + reason, or `no change`
 - short rationale
 - upstream references
@@ -43,6 +45,8 @@ Output:
 
 Rules:
 - this workflow does not change code
+- the conformance screening is read-only and is not a full package remediation pass
+- check only the current repository requirements that can change the update decision, block validation, or materially expand implementation scope
 - `auto-update` means AI may open or continue an implementation issue now
 - `review-first` means stop after assessment and wait for owner approval
 - `defer` means record the candidate and check again in the next cadence

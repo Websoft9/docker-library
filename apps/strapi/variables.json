@@ -2,8 +2,6 @@
   "name": "strapi",
   "trademark": "Strapi",
   "release": true,
-  "fork_url": "https://github.com/strapi/strapi-docker",
-  "version_from": "https://hub.docker.com/r/strapi/strapi/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": "https://hub.docker.com/r/strapi/strapi"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/strapi/strapi/tags"
   }
 }

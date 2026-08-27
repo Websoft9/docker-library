@@ -2,18 +2,20 @@
   "name": "firecrawl",
   "trademark": "Firecrawl",
   "release": true,
-  "fork_url": "https://github.com/mendableai/firecrawl",
-  "version_from": "https://github.com/mendableai/firecrawl/pkgs/container/firecrawl/versions?page=1",
   "edition": [
     {
       "dist": "community",
-      "version": ["latest"]
+      "version": [
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": "https://docs.firecrawl.dev/contributing/self-host"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://github.com/mendableai/firecrawl/pkgs/container/firecrawl/versions?page=1"
   }
 }

@@ -2,8 +2,9 @@
   "name": "appname",
   "trademark": "AppName",
   "release": false,
-  "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
-  "version_from": "",
+  "upstream": {
+    "image": "https://hub.docker.com/r/namespace/image/tags"
+  },
   "edition": [
     {
       "dist": "community",
@@ -17,7 +18,6 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "1",
-    "url": "https://github.com/onlyoffice/docker#recommended-system-requirements"
+    "disk": "1"
   }
 }

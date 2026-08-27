@@ -2,8 +2,6 @@
   "name": "caddy",
   "trademark": "Caddy",
   "release": true,
-  "fork_url": "https://github.com/caddyserver/caddy-docker",
-  "version_from": "https://hub.docker.com/_/caddy/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "2",
-    "url": "https://hub.docker.com/_/caddy"
+    "disk": "2"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/_/caddy/tags"
   }
 }

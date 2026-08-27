@@ -2,8 +2,6 @@
   "name": "mongodb",
   "trademark": "MongoDB",
   "release": true,
-  "fork_url": "https://github.com/docker-library/mongo",
-  "version_from": "https://hub.docker.com/_/mongo/tags",
   "edition": [
     {
       "dist": "community",
@@ -28,7 +26,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": "https://github.com/mongodb/docker#recommended-system-requirements"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/_/mongo/tags"
   }
 }

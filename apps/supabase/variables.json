@@ -2,8 +2,6 @@
   "name": "supabase",
   "trademark": "Supabase",
   "release": true,
-  "fork_url": "https://github.com/supabase/supabase",
-  "version_from": "",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,6 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "2",
-    "url": "https://supabase.com/docs/guides/self-hosting/docker"
+    "disk": "2"
   }
 }

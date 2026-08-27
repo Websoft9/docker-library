@@ -2,8 +2,6 @@
   "name": "keila",
   "trademark": "Keila",
   "release": true,
-  "fork_url": "https://github.com/pentacent/keila",
-  "version_from": "",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,6 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://www.keila.io"
+    "disk": "10"
   }
 }

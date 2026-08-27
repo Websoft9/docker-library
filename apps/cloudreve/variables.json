@@ -2,8 +2,6 @@
   "name": "cloudreve",
   "trademark": "Cloudreve",
   "release": true,
-  "fork_url": "https://docs.cloudreve.org/getting-started/install#docker-compose",
-  "version_from": "https://hub.docker.com/r/cloudreve/cloudreve/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "10",
-    "url": "https://docs.cloudreve.org/getting-started/install#yun-hang"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/cloudreve/cloudreve/tags"
   }
 }

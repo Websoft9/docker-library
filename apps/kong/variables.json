@@ -2,18 +2,21 @@
   "name": "kong",
   "trademark": "Kong Gateway (OSS)",
   "release": true,
-  "fork_url": "https://github.com/Kuari/kong-konga-docker-compose.git",
-  "version_from": "https://hub.docker.com/_/kong/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["3.9","latest"]
+      "version": [
+        "3.9",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "1",
-    "url": "https://konghq.com/install/#kong-community"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/_/kong/tags"
   }
 }

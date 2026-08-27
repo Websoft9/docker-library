@@ -148,9 +148,23 @@ Recommended CLI shape:
 
 ```bash
 libs <action> [options]
+libs <domain>-<action> [options]
 ```
 
 Current first-version commands are app-default commands. Secondary resource groups may be introduced later only when they become stable first-class domains.
+
+Naming guidance:
+
+- user-facing command names SHOULD optimize for intent clarity first
+- use plain `<action>` for global actions such as `list`, `scan`, `check`, or `report`
+- use `<domain>-<action>` only when the domain is a stable first-class namespace such as `app`, `db`, `contentful`, or `appstore`
+- avoid mixing `<action>-<domain>` and `<domain>-<action>` for the same command family
+- when a grouped domain exists, keep sibling commands parallel, for example `app-deploy` and `app-down`
+
+Adapter naming guidance:
+
+- user-facing adapter commands such as opencode slash commands SHOULD prefer `<action>-<object>` because they represent direct user intent, for example `new-app`, `update-app`, `archive-app`, `restore-app`
+- shared skill names MAY stay workflow-oriented and do not need to match adapter command names exactly
 
 Rules:
 

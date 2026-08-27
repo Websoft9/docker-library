@@ -2,18 +2,29 @@
   "name": "php",
   "trademark": "PHP",
   "release": true,
-  "fork_url": "https://github.com/Websoft9/docker-library/tree/main/apps/php",
-  "version_from": "https://hub.docker.com/_/php/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["8.3-apache","8.2-apache","8.1-apache","8.0-apache","7.4-apache","7.3-apache","7.2-apache","7.1-apache","7.0-apache","5.6-apache"]
+      "version": [
+        "8.3-apache",
+        "8.2-apache",
+        "8.1-apache",
+        "8.0-apache",
+        "7.4-apache",
+        "7.3-apache",
+        "7.2-apache",
+        "7.1-apache",
+        "7.0-apache",
+        "5.6-apache"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": "https://hub.docker.com/_/php"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/_/php/tags"
   }
 }

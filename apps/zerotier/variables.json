@@ -2,18 +2,21 @@
   "name": "zerotier",
   "trademark": "ZeroTier",
   "release": true,
-  "fork_url": "https://github.com/zerotier/ZeroTierOne",
-  "version_from": "https://hub.docker.com/r/zerotier/zerotier/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["latest", "1.14.2"]
+      "version": [
+        "latest",
+        "1.14.2"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": "https://www.zerotier.com"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/zerotier/zerotier/tags"
   }
 }

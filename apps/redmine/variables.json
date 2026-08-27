@@ -2,8 +2,6 @@
   "name": "redmine",
   "trademark": "Redmine",
   "release": true,
-  "fork_url": "https://github.com/docker-library/redmine",
-  "version_from": "https://hub.docker.com/_/redmine/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": "https://www.redmine.org/projects/redmine/wiki/RedmineInstall#Requirements"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/_/redmine/tags"
   }
 }

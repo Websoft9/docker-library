@@ -2,18 +2,21 @@
   "name": "rclone",
   "trademark": "Rclone",
   "release": true,
-  "fork_url": "https://github.com/rclone/rclone",
-  "version_from": "https://hub.docker.com/r/rclone/rclone/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["1.71", "latest"]
+      "version": [
+        "1.71",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "10",
-    "url": "https://rclone.org"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/rclone/rclone/tags"
   }
 }

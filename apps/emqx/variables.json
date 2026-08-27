@@ -2,18 +2,28 @@
   "name": "emqx",
   "trademark": "EMQX",
   "release": true,
-  "fork_url": "https://github.com/emqx/emqx",
-  "version_from": "https://hub.docker.com/r/emqx/emqx/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["6.0","5.10","5.8.4","5.5","5.4","5.3","5.2","5.1","latest"]
+      "version": [
+        "6.0",
+        "5.10",
+        "5.8.4",
+        "5.5",
+        "5.4",
+        "5.3",
+        "5.2",
+        "5.1",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "2",
-    "url": "https://www.emqx.io/docs/en/latest/deploy/install.html"
+    "disk": "2"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/emqx/emqx/tags"
   }
 }

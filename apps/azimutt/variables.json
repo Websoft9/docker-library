@@ -2,8 +2,6 @@
   "name": "azimutt",
   "trademark": "Azimutt",
   "release": true,
-  "fork_url": "https://github.com/azimuttapp/azimutt",
-  "version_from": "https://github.com/azimuttapp/azimutt/pkgs/container/azimutt",
   "upstream": {
     "image": "https://ghcr.io/azimuttapp/azimutt",
     "releases": "https://github.com/azimuttapp/azimutt/tags",
@@ -22,7 +20,6 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://azimutt.app"
+    "disk": "10"
   }
 }

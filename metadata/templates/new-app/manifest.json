@@ -5,6 +5,7 @@
     "docker-compose.yml",
     "variables.json",
     "README.md",
+    "CHANGELOG.md",
     "src/.gitkeep"
   ],
   "required_inputs": [

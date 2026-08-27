@@ -2,18 +2,21 @@
   "name": "formbricks",
   "trademark": "Formbricks",
   "release": true,
-  "fork_url": "https://github.com/formbricks/formbricks",
-  "version_from": "https://hub.docker.com/r/formbricks/formbricks/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["latest", "3.0.0"]
+      "version": [
+        "latest",
+        "3.0.0"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "2",
-    "url": "https://formbricks.com/docs/self-hosting/overview"
+    "disk": "2"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/formbricks/formbricks/tags"
   }
 }

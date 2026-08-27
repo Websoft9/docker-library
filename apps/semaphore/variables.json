@@ -2,8 +2,6 @@
   "name": "semaphore",
   "trademark": "Ansible Semaphore",
   "release": true,
-  "fork_url": "https://hub.docker.com/r/semaphoreui/semaphore",
-  "version_from": "https://hub.docker.com/r/semaphoreui/semaphore/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "4",
-    "url": "https://docs.semui.co/"
+    "disk": "4"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/semaphoreui/semaphore/tags"
   }
 }

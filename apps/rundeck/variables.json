@@ -2,18 +2,20 @@
   "name": "rundeck",
   "trademark": "Rundeck",
   "release": true,
-  "fork_url": "https://github.com/rundeck/docker-zoo",
-  "version_from": "https://hub.docker.com/r/rundeck/rundeck/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["5.17.0"]
+      "version": [
+        "5.17.0"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "4",
-    "url": "https://docs.rundeck.com/docs/administration/install/system-requirements.html"
+    "disk": "4"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/rundeck/rundeck/tags"
   }
 }

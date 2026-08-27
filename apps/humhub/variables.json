@@ -2,18 +2,21 @@
   "name": "humhub",
   "trademark": "HumHub",
   "release": true,
-  "fork_url": "https://hub.docker.com/r/mriedmann/humhub",
-  "version_from": "https://hub.docker.com/r/mriedmann/humhub/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["1.17.1","latest"]
+      "version": [
+        "1.17.1",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "2",
-    "url": "https://docs.humhub.org/docs/admin/requirements"
+    "disk": "2"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/mriedmann/humhub/tags"
   }
 }

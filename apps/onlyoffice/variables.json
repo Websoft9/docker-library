@@ -1,21 +1,22 @@
 {
-    "name": "onlyoffice",
-    "trademark": "ONLYOFFICE Workspace",
-    "release": true,
-    "fork_url": "https://github.com/ONLYOFFICE/Docker-CommunityServer.git",
-    "version_from": "https://hub.docker.com/r/onlyoffice/communityserver/tags",
-    "edition": [
-      {
-        "dist": "community",
-        "version": [
-          "12.7.0.1936","latest"
-        ]
-      }
-    ],
-    "requirements": {
-      "cpu": "2",
-      "memory": "8",
-      "disk": "10",
-      "url": "https://github.com/ONLYOFFICE/Docker-CommunityServer"
+  "name": "onlyoffice",
+  "trademark": "ONLYOFFICE Workspace",
+  "release": true,
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "12.7.0.1936",
+        "latest"
+      ]
     }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "8",
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/onlyoffice/communityserver/tags"
   }
+}

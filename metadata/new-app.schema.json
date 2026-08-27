@@ -1,5 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$comment": "New-app requests must always resolve an upstream image source. Optional upstream.releases / upstream.compose / upstream.env should be passed only when verified and applicable; omit them otherwise.",
   "type": "object",
   "additionalProperties": false,
   "required": ["name", "trademark"],
@@ -28,6 +29,16 @@
         "github": { "type": "string" },
         "image": { "type": "string" },
         "install": { "type": "string" }
+      }
+    },
+    "upstream": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "releases": { "type": "string" },
+        "compose": { "type": "string" },
+        "env": { "type": "string" }
       }
     }
   }

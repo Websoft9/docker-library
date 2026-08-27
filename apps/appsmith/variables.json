@@ -2,8 +2,6 @@
   "name": "appsmith",
   "trademark": "Appsmith",
   "release": true,
-  "fork_url": "https://github.com/appsmithorg/appsmith",
-  "version_from": "https://hub.docker.com/r/appsmith/appsmith-ce/tags",
   "upstream": {
     "image": "https://hub.docker.com/r/appsmith/appsmith-ce/tags",
     "releases": "https://github.com/appsmithorg/appsmith/tags",
@@ -23,7 +21,6 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "1",
-    "url": "https://github.com/appsmithorg/appsmith"
+    "disk": "1"
   }
 }

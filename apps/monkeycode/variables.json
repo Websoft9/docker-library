@@ -2,8 +2,6 @@
   "name": "monkeycode",
   "trademark": "MonkeyCode",
   "release": true,
-  "fork_url": "https://github.com/chaitin/MonkeyCode",
-  "version_from": "chaitin-registry.cn-hangzhou.cr.aliyuncs.com/monkeycode/backend",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "5",
-    "url": "https://monkeycode-ai.com/"
+    "disk": "5"
+  },
+  "upstream": {
+    "image": "chaitin-registry.cn-hangzhou.cr.aliyuncs.com/monkeycode/backend"
   }
 }

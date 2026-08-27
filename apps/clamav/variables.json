@@ -2,8 +2,6 @@
   "name": "clamav",
   "trademark": "ClamAV",
   "release": true,
-  "fork_url": "https://hub.docker.com/r/clamav/clamav",
-  "version_from": "https://hub.docker.com/r/clamav/clamav/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "2",
-    "url": "https://docs.clamav.net/manual/Installing/Docker.html"
+    "disk": "2"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/clamav/clamav/tags"
   }
 }

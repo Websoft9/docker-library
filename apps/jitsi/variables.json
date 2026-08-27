@@ -2,8 +2,6 @@
   "name": "jitsi",
   "trademark": "Jitsi",
   "release": true,
-  "fork_url": "https://github.com/jitsi/docker-jitsi-meet",
-  "version_from": "https://github.com/jitsi/docker-jitsi-meet",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://jitsi.github.io/handbook/docs/devops-guide/devops-guide-requirements"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://github.com/jitsi/docker-jitsi-meet"
   }
 }

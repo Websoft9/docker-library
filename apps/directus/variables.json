@@ -2,8 +2,6 @@
   "name": "directus",
   "trademark": "Directus",
   "release": true,
-  "fork_url": "https://github.com/directus/directus",
-  "version_from": "https://hub.docker.com/r/directus/directus/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "4",
-    "url": "https://docs.directus.io/getting-started/installation"
+    "disk": "4"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/directus/directus/tags"
   }
 }

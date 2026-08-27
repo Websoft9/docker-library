@@ -2,8 +2,6 @@
   "name": "matlab",
   "trademark": "MATLAB",
   "release": true,
-  "fork_url": "",
-  "version_from": "https://hub.docker.com/r/mathworks/matlab/tags",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://www.mathworks.com/help/cloudcenter/ug/matlab-container-on-docker-hub.html"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/mathworks/matlab/tags"
   }
 }

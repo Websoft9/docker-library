@@ -2,8 +2,6 @@
   "name": "kafka",
   "trademark": "Kafka",
   "release": true,
-  "fork_url": "https://github.com/apache/kafka",
-  "version_from": "https://hub.docker.com/r/apache/kafka/tags",
   "edition": [
     {
       "dist": "community",
@@ -18,7 +16,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "1",
-    "url": "http://kafka.apache.org/quickstart"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/apache/kafka/tags"
   }
 }

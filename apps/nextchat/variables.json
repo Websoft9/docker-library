@@ -2,8 +2,6 @@
   "name": "nextchat",
   "trademark": "NextChat",
   "release": true,
-  "fork_url": "https://github.com/Yidadaa/ChatGPT-Next-Web",
-  "version_from": "https://hub.docker.com/r/yidadaa/chatgpt-next-web/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": "https://github.com/Yidadaa/ChatGPT-Next-Web"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/yidadaa/chatgpt-next-web/tags"
   }
 }

@@ -2,8 +2,6 @@
   "name": "theia",
   "trademark": "Theia",
   "release": false,
-  "fork_url": "https://registry.hub.docker.com/r/theiaide/theia",
-  "version_from": "",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,6 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": "https://registry.hub.docker.com/r/theiaide/theia"
+    "disk": "1"
   }
 }

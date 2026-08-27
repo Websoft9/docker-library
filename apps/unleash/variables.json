@@ -2,18 +2,21 @@
   "name": "unleash",
   "trademark": "Unleash",
   "release": true,
-  "fork_url": "https://github.com/Unleash/unleash",
-  "version_from": "https://hub.docker.com/r/unleashorg/unleash-server/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["7.3","latest"]
+      "version": [
+        "7.3",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "1",
-    "url": "https://getunleash.io"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/unleashorg/unleash-server/tags"
   }
 }

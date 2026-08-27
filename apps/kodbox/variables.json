@@ -2,18 +2,21 @@
   "name": "kodbox",
   "trademark": "Kodbox",
   "release": true,
-  "fork_url": "https://github.com/KodCloud-dev/docker/blob/master/compose/docker-compose.yml",
-  "version_from": "https://hub.docker.com/r/kodcloud/kodbox/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["1.59","latest"]
+      "version": [
+        "1.59",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "4",
-    "url": "http://kodcloud.com"
+    "disk": "4"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/kodcloud/kodbox/tags"
   }
 }

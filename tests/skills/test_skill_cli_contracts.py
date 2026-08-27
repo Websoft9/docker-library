@@ -29,7 +29,7 @@ def test_update_assessment_skill_commands_contract(skill_repo_fixture, skill_app
             "name": "wordpress",
             "trademark": "WordPress",
             "release": True,
-            "version_from": "https://hub.docker.com/_/wordpress/tags",
+            "upstream": {"image": "https://hub.docker.com/_/wordpress/tags"},
             "edition": [{"dist": "community", "version": ["6.9", "latest"]}],
         },
     )
@@ -74,7 +74,7 @@ def test_new_app_and_db_refresh_skill_commands_contract(skill_repo_fixture, monk
 
     assert new_app_result.exit_code == 0
     assert db_refresh_result.exit_code == 0
-    assert _json_output(new_app_result)["files"] == [".env", "docker-compose.yml", "variables.json", "README.md", "src/.gitkeep"]
+    assert _json_output(new_app_result)["files"] == [".env", "docker-compose.yml", "variables.json", "README.md", "CHANGELOG.md", "src/.gitkeep"]
     assert _json_output(db_refresh_result)["refreshed"] == {"mysql": 1}
 
 

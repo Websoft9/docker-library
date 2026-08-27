@@ -1,0 +1,5 @@
+optional:
+  - id: health-endpoint
+    type: web-access
+    path: /api/v1/health
+    expect_status: 200

@@ -2,8 +2,6 @@
   "name": "opensearch",
   "trademark": "OpenSearch",
   "release": true,
-  "fork_url": "https://github.com/ONLYOFFICE/docker#recommended-system-requirements",
-  "version_from": "https://hub.docker.com/r/opensearchproject/opensearch/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "8",
-    "disk": "8",
-    "url": "https://github.com/onlyoffice/docker#recommended-system-requirements"
+    "disk": "8"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/opensearchproject/opensearch/tags"
   }
 }

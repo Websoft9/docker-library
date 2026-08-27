@@ -2,26 +2,35 @@
   "name": "onlyofficedocs",
   "trademark": "ONLYOFFICE Docs",
   "release": true,
-  "fork_url": "https://github.com/ONLYOFFICE/Docker-DocumentServer",
-  "version_from": "https://hub.docker.com/r/onlyoffice/documentserver/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["9.1","latest"]
+      "version": [
+        "9.1",
+        "latest"
+      ]
     },
     {
       "dist": "enterprise",
-      "version": ["9.1","latest"]
+      "version": [
+        "9.1",
+        "latest"
+      ]
     },
     {
       "dist": "developer ",
-      "version": ["9.1","latest"]
+      "version": [
+        "9.1",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "1",
-    "url": "https://github.com/ONLYOFFICE/Docker-DocumentServer#recommended-system-requirements"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/onlyoffice/documentserver/tags"
   }
 }

@@ -85,16 +85,23 @@ Role-based keys, no type fields. CLI infers the source type from URL patterns:
 - `compose.env`: official env example file - enables config drift
 - `docs`: URLs for AI research only, any page
 
+Recommended new-app usage:
+
+- always declare `upstream.image`
+- add `releases` when the project publishes a reliable upstream release or tag list separate from the image registry, or when the extra source improves candidate verification and rollback confidence
+- add `compose.compose` when upstream publishes an official compose file that is relevant to this package's topology comparison
+- add `compose.env` when upstream publishes an official env example or config sample that is useful for config drift checks
+- omit `releases`, `compose.compose`, or `compose.env` when the source does not exist, is unstable, or has not been verified yet; do not write empty placeholders
+- keep `docs` for the human/AI research pages that explain install, upgrade, requirements, or architecture
+
 Migration rule:
-- keep existing `version_from` during migration
-- new apps may omit `version_from` when `upstream.image` exists
-- old keys `version_source`, `release_index`, `compose_source`, `config_source`, `ai_reference_sources` remain readable by CLI but are deprecated
+- `upstream.image` is the single version source; apps must declare it
+- old keys `version_from`, `version_source`, `release_index`, `compose_source`, `config_source`, `ai_reference_sources` are no longer read and must not be written
 
 For image-driven apps:
 
 ```json
 {
-  "version_from": "https://hub.docker.com/_/wordpress/tags",
   "upstream": {
     "image": "https://hub.docker.com/_/wordpress/tags",
     "docs": [
@@ -109,8 +116,8 @@ For compose-driven apps:
 
 ```json
 {
-  "version_from": "https://github.com/example/project/releases",
   "upstream": {
+    "image": "https://hub.docker.com/r/example/project/tags",
     "releases": "https://github.com/example/project/tags",
     "compose": {
       "compose": "https://raw.githubusercontent.com/example/project/main/docker-compose.yml",
@@ -127,7 +134,6 @@ For image-driven apps with a project version list (verified rollback ladder):
 
 ```json
 {
-  "version_from": "https://hub.docker.com/_/wordpress/tags",
   "upstream": {
     "image": "https://hub.docker.com/_/wordpress/tags",
     "releases": "https://github.com/WordPress/wordpress-develop/tags",
@@ -148,10 +154,9 @@ Release index rule:
 - when a stable `x.x` image tag exists above the current version, it wins over patch tags
 
 Rollback ladder:
-1. release index + verify when `release_index` exists
-2. fall back to plain `version_source` strategy when the index fails or verifies nothing
-3. fall back to `source-error` when the primary source itself fails
-4. AI may then research and propose a corrected source
+1. verify candidates against `upstream.image`
+2. fall back to `source-error` when the primary source fails
+3. AI may then research and propose a corrected source
 
 Rules:
 - `url` must point to a stable upstream source

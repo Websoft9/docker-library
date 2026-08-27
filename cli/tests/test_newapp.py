@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 
+from jinja2 import Environment, FileSystemLoader
+
 from libs import newapp
 
 
@@ -46,18 +48,21 @@ def test_scaffold_dry_run_and_write(repo_fixture, monkeypatch):
             "version": {"type": "string"},
             "repo": {"type": "string"},
             "docs": {"type": "object"},
+            "upstream": {"type": "object"},
         },
     }) + "\n", encoding="utf-8")
-    (template_root / "manifest.json").write_text(json.dumps({"generated_files": [".env", "docker-compose.yml", "variables.json", "README.md", "src/.gitkeep"]}) + "\n", encoding="utf-8")
-    (template_root / ".env.tmpl").write_text("W9_VERSION={version}\n", encoding="utf-8")
+    (template_root / "manifest.json").write_text(json.dumps({"generated_files": [".env", "docker-compose.yml", "variables.json", "README.md", "CHANGELOG.md", "src/.gitkeep"]}) + "\n", encoding="utf-8")
+    (template_root / ".env.tmpl").write_text("W9_VERSION={{ version }}\n", encoding="utf-8")
     (template_root / "docker-compose.yml.tmpl").write_text("services:\n", encoding="utf-8")
-    (template_root / "variables.json.tmpl").write_text('{{"name": "{name}", "trademark": "{trademark}"}}', encoding="utf-8")
-    (template_root / "README.md.tmpl").write_text("# {trademark}\n", encoding="utf-8")
+    (template_root / "variables.json.tmpl").write_text('{"name": "{{ name }}", "trademark": "{{ trademark }}"}', encoding="utf-8")
+    (template_root / "README.md.tmpl").write_text("# {{ trademark }}\n", encoding="utf-8")
+    (template_root / "CHANGELOG.md.tmpl").write_text("# CHANGELOG\n", encoding="utf-8")
     (template_root / "src").mkdir(exist_ok=True)
     (template_root / "src" / ".gitkeep").write_text("\n", encoding="utf-8")
 
     monkeypatch.setattr(newapp, "SCHEMA_PATH", schema_path)
     monkeypatch.setattr(newapp, "TEMPLATE_ROOT", template_root)
+    monkeypatch.setattr(newapp, "TEMPLATE_ENV", Environment(loader=FileSystemLoader(str(template_root)), autoescape=False, keep_trailing_newline=True, trim_blocks=True, lstrip_blocks=True))
     monkeypatch.setattr(newapp, "check_app", lambda name, gate="all": {"app": name, "ok": True})
 
     dry_run = newapp.scaffold("demo", "Demo", version="1.0", repo="bitnami/demo", dry_run=True)
@@ -65,5 +70,6 @@ def test_scaffold_dry_run_and_write(repo_fixture, monkeypatch):
 
     assert dry_run["dry_run"] is True
     assert (repo_fixture / "apps" / "demo" / ".env").exists()
+    assert (repo_fixture / "apps" / "demo" / "CHANGELOG.md").exists()
     assert written["check"] == {"app": "demo", "ok": True}
     assert "run libs gen-readme --app <app> after editing variables.json" in written["todo"]

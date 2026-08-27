@@ -2,8 +2,6 @@
   "name": "windmill",
   "trademark": "Windmill",
   "release": true,
-  "fork_url": "https://github.com/windmill-labs/windmill",
-  "version_from": "ghcr.io/windmill-labs/windmill",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://www.windmill.dev"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "ghcr.io/windmill-labs/windmill"
   }
 }

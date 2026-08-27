@@ -2,8 +2,6 @@
   "name": "signoz",
   "trademark": "SigNoz",
   "release": true,
-  "fork_url": "https://github.com/SigNoz/signoz",
-  "version_from": "https://hub.docker.com/r/signoz/signoz/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://signoz.io/docs/install/docker/"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/signoz/signoz/tags"
   }
 }

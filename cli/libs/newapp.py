@@ -5,6 +5,7 @@ import secrets
 import string
 
 import jsonschema
+from jinja2 import Environment, FileSystemLoader
 
 from libs.app import collect_apps
 from libs.repo import repo_path
@@ -12,6 +13,13 @@ from libs.validate import check_app
 
 SCHEMA_PATH = repo_path("metadata", "new-app.schema.json")
 TEMPLATE_ROOT = repo_path("metadata", "templates", "new-app")
+TEMPLATE_ENV = Environment(
+    loader=FileSystemLoader(str(TEMPLATE_ROOT)),
+    autoescape=False,
+    keep_trailing_newline=True,
+    trim_blocks=True,
+    lstrip_blocks=True,
+)
 
 
 def random_password(length: int = 14) -> str:
@@ -50,10 +58,18 @@ def tags_url(repo: str) -> str:
 
 
 def render_file(name: str, context: dict) -> str:
-    return (TEMPLATE_ROOT / name).read_text(encoding="utf-8").format(**context)
+    return TEMPLATE_ENV.get_template(name).render(**context)
 
 
-def scaffold(name: str, trademark: str, version: str = "", repo: str = "", docs: dict | None = None, dry_run: bool = False) -> dict:
+def scaffold(
+    name: str,
+    trademark: str,
+    version: str = "",
+    repo: str = "",
+    docs: dict | None = None,
+    upstream: dict | None = None,
+    dry_run: bool = False,
+) -> dict:
     request = {
         "name": name,
         "trademark": trademark,
@@ -64,6 +80,8 @@ def scaffold(name: str, trademark: str, version: str = "", repo: str = "", docs:
         request["repo"] = repo
     if docs:
         request["docs"] = docs
+    if upstream:
+        request["upstream"] = upstream
     errors = validate_request(request)
     if errors:
         raise ValueError("; ".join(errors))
@@ -75,6 +93,7 @@ def scaffold(name: str, trademark: str, version: str = "", repo: str = "", docs:
 
     manifest = load_manifest()
     docs = docs or {}
+    upstream = upstream or {}
     image_url = docs.get("image") or (tags_url(repo) if repo else "")
     target = repo_path("apps", name)
 
@@ -84,9 +103,18 @@ def scaffold(name: str, trademark: str, version: str = "", repo: str = "", docs:
         "version": version or "TODO",
         "repo": repo or "TODO",
         "image_url": image_url or "TODO",
+        "releases_url": upstream.get("releases") or "",
+        "compose_url": upstream.get("compose") or "",
+        "compose_env_url": upstream.get("env") or "",
         "github_url": docs.get("github") or "",
         "install_url": docs.get("install") or "",
         "docs_json": json.dumps([url for url in (docs.get("github"), docs.get("install")) if url], ensure_ascii=False),
+        "has_releases": bool(upstream.get("releases")),
+        "has_compose": bool(upstream.get("compose")),
+        "has_compose_env": bool(upstream.get("env")),
+        "has_compose_group": bool(upstream.get("compose") or upstream.get("env")),
+        "has_install_url": bool(docs.get("install")),
+        "has_fork_url": bool(docs.get("github")),
         "power_password": random_password(),
     }
     files = {
@@ -94,6 +122,7 @@ def scaffold(name: str, trademark: str, version: str = "", repo: str = "", docs:
         "docker-compose.yml": render_file("docker-compose.yml.tmpl", context),
         "variables.json": render_file("variables.json.tmpl", context) + "\n",
         "README.md": render_file("README.md.tmpl", context),
+        "CHANGELOG.md": render_file("CHANGELOG.md.tmpl", context) + "\n",
         "src/.gitkeep": (TEMPLATE_ROOT / "src" / ".gitkeep").read_text(encoding="utf-8"),
     }
 
@@ -117,7 +146,7 @@ def scaffold(name: str, trademark: str, version: str = "", repo: str = "", docs:
 
     payload["check"] = check_app(name, gate="all")
     payload["todo"] = [
-        "fill upstream metadata (compose, config sources) in variables.json",
+        "fill any missing upstream metadata in variables.json (releases, compose, env) when official sources exist",
         "design compose: volumes, healthcheck, db service and its version",
         "register new translatable W9_* keys in i18n/translation.json",
         "run libs gen-readme --app <app> after editing variables.json",

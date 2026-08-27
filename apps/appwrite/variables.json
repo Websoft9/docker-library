@@ -2,8 +2,6 @@
   "name": "appwrite",
   "trademark": "Appwrite",
   "release": false,
-  "fork_url": "https://github.com/appwrite/appwrite",
-  "version_from": "https://hub.docker.com/r/appwrite/appwrite/tags",
   "upstream": {
     "image": "https://hub.docker.com/r/appwrite/appwrite/tags",
     "releases": "https://github.com/appwrite/appwrite/tags",
@@ -22,7 +20,6 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://appwrite.io"
+    "disk": "10"
   }
 }

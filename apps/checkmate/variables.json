@@ -2,8 +2,6 @@
   "name": "checkmate",
   "trademark": "Checkmate",
   "release": true,
-  "fork_url": "https://github.com/bluewave-labs/Checkmate",
-  "version_from": "ghcr.io/bluewave-labs/checkmate-backend",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "8",
-    "url": "https://checkmate.so"
+    "disk": "8"
+  },
+  "upstream": {
+    "image": "ghcr.io/bluewave-labs/checkmate-backend"
   }
 }

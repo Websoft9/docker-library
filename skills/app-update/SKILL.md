@@ -26,14 +26,20 @@ Supporting files in this skill:
 1. Read repository facts from `apps/<app>/`, `metadata/maintenance.yaml`, and the app notes when relevant.
 2. Read the approved assessment result, if one exists.
 3. Read upstream release notes, upgrade notes, image tags, and requirements.
-4. Update only the files required for the target version, typically `.env`, `docker-compose.yml`, `variables.json`, `README.md`, and `src/`.
+4. Update only the files required for the target version and any app-local files that must change to satisfy current repository quality gates or generation rules, typically `.env`, `docker-compose.yml`, `variables.json`, `README.md`, `CHANGELOG.md`, and `src/`.
 5. Keep changes app-local unless the task explicitly requires cross-repo updates.
 6. Apply the version tag policy from `docs/devops-spec.md`: prefer `x.x`, use `x.x.x` only when exact patch pinning is required.
 7. If new translatable env keys are introduced, register them in `i18n/translation.json`.
-8. When `.env` is touched, keep the "image environment variables" section intact: refresh the single Docs URL if the upstream changed, keep the used vars aligned with `docker-compose.yml`, and keep commented unused vars at no more than 5.
-9. When a credential or config env var only takes effect on first container startup (the image's entrypoint uses a marker file, e.g. `webconsole.security.enabled`), record that fact in `variables.json` as `env.first_startup_only` (a list of such env names). The README generator then auto-renders the warning; keep the "how to rotate" solution in the hand-written README Change Password section or Notes instead of in metadata.
-10. Run the `deploy-validation` skill for the changed app.
-11. Produce a short test report.
+8. When `.env` is touched, keep the "image environment variables" section intact and mirror the template layout in `metadata/templates/new-app/.env.tmpl`: keep the section banner, the Docs URL, the "Used by docker-compose.yml" group, and the commented "Not used by default" group. Refresh the single Docs URL if the upstream changed, keep only the variables required by the current package shape plus any user-facing essentials, keep the used vars aligned with `docker-compose.yml`, and keep commented unused vars at no more than 5.
+9. When `docker-compose.yml` is touched, ensure every published port line carries an inline `# purpose` comment and that no `# image:` / `# docs:` source comments remain — image and documentation sources live only in `variables.json` `upstream`.
+10. When a credential or config env var only takes effect on first container startup (the image's entrypoint uses a marker file, e.g. `webconsole.security.enabled`), record that fact in `variables.json` as `env.first_startup_only` (a list of such env names). The README generator then auto-renders the warning; keep the "how to rotate" solution in the hand-written README Change Password section or Notes instead of in metadata.
+11. Healthchecks should default to the main app container only. Add healthchecks to sidecar or dependency containers only when the official upstream compose explicitly defines them or the task explicitly requires them.
+12. If the target app has app-local drift against the current repository rules (for example template, metadata, env policy, or generated README expectations), fix the minimum blocking or directly relevant items as part of the same update.
+13. Keep `apps/<app>/CHANGELOG.md` as the single source of app change history. Do not duplicate changelog content into `README.md`.
+14. Run `libs gen-readme --app <app> --json` after metadata or README marker content changes so generated sections stay current.
+15. For dependency images such as PostgreSQL, MySQL, MariaDB, or Redis, prefer `x.x` tags even when upstream examples show `x.x.x`, unless exact patch pinning is demonstrably required.
+16. Run the `deploy-validation` skill for the changed app.
+17. Produce a short test report.
 
 ## Output
 
@@ -47,6 +53,9 @@ Supporting files in this skill:
 
 - Do not start implementation for a `review-first` candidate unless the owner has approved continuation.
 - Keep the smallest correct change.
+- The update is not a blind version bump. The changed app must still pass the current quality gates after the work is complete.
+- Do not perform broad cosmetic template re-alignment. Fix only the app-local conformance items that are blocking, directly relevant to the update, or required by current gates and generators.
+- Keep `upstream.image` as the single version source. Never write `version_from`, `fork_url`, or `requirements.url`.
 - Prefer official or trusted upstream images.
 - Produce the report in the same language the user used unless the user asks otherwise.
 - Use `report-template.md` when the user asks for a formal implementation report.

@@ -2,8 +2,6 @@
   "name": "chroma",
   "trademark": "Chroma",
   "release": true,
-  "fork_url": "https://github.com/chroma-core/chroma",
-  "version_from": "https://hub.docker.com/r/chromadb/chroma/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://www.trychroma.com"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/chromadb/chroma/tags"
   }
 }

@@ -12,6 +12,8 @@
 - [ ] Read release notes or changelog
 - [ ] Check cadence and update policy
 - [ ] Check deployment risk: compose, env, volumes, init flow, login flow, data path
+- [ ] Perform read-only conformance screening for app-local structure, policy, metadata, and generated README compatibility
+- [ ] Classify conformance finding: ok | minor-fixes | blocking-fixes
 - [ ] Identify DB dependency images from `libs drift` output
 - [ ] Read `externalDB` in `apps/<app>/variables.json`
 - [ ] Read `metadata/db-lifecycle.json`; run `libs db-refresh` if engine missing or snapshot stale (>45 days)

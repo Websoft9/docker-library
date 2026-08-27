@@ -2,8 +2,6 @@
   "name": "oracle",
   "trademark": "Oracle Database",
   "release": true,
-  "fork_url": "https://container-registry.oracle.com/database/express",
-  "version_from": "https://container-registry.oracle.com/ords/ocr/ba/database/express",
   "edition": [
     {
       "dist": "community",
@@ -17,7 +15,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "8",
-    "disk": "1",
-    "url": "https://container-registry.oracle.com/"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://container-registry.oracle.com/ords/ocr/ba/database/express"
   }
 }

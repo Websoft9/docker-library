@@ -2,18 +2,21 @@
   "name": "snipeit",
   "trademark": "Snipe-IT",
   "release": true,
-  "fork_url": "https://github.com/snipe/snipe-it",
-  "version_from": "https://hub.docker.com/r/snipe/snipe-it/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["v8-latest","latest"]
+      "version": [
+        "v8-latest",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "2",
-    "url": "https://snipeitapp.com"
+    "disk": "2"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/snipe/snipe-it/tags"
   }
 }

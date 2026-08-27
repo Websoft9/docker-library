@@ -2,8 +2,6 @@
   "name": "papermc",
   "trademark": "PaperMC",
   "release": true,
-  "fork_url": "https://github.com/PaperMC/Paper",
-  "version_from": "https://hub.docker.com/r/magnia/papermc/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "8",
-    "url": "https://papermc.io"
+    "disk": "8"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/magnia/papermc/tags"
   }
 }

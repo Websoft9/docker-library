@@ -22,7 +22,7 @@ IMAGE_TAG_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
 def _run(command: list[str], *, progress: ProgressWriter | None = None, verbose: bool = False) -> subprocess.CompletedProcess:
     if progress and verbose:
         progress(f"$ {shlex.join(command)}")
-    result = subprocess.run(command, check=False, capture_output=True, text=True)
+    result = remote.run_command(command)
     if progress and verbose:
         if result.stdout.strip():
             progress(result.stdout.rstrip())

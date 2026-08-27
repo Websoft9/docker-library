@@ -2,18 +2,18 @@
   "name": "sonarqube",
   "trademark": "SonarQube",
   "release": true,
-  "fork_url": "https://github.com/SonarSource/sonarqube",
-  "version_from": "",
   "edition": [
     {
       "dist": "community",
-      "version": ["community", "latest"]
+      "version": [
+        "community",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "15",
-    "url": "https://www.sonarsource.com"
+    "disk": "15"
   }
 }

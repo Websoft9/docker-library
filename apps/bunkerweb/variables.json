@@ -2,8 +2,6 @@
   "name": "bunkerweb",
   "trademark": "BunkerWeb",
   "release": true,
-  "fork_url": "https://github.com/bunkerity/bunkerweb",
-  "version_from": "https://hub.docker.com/r/bunkerity/bunkerweb/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://docs.bunkerweb.io/latest/quickstart-guide/"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/bunkerity/bunkerweb/tags"
   }
 }

@@ -2,8 +2,6 @@
   "name": "umami",
   "trademark": "Umami",
   "release": true,
-  "fork_url": "https://umami.is/docs/install",
-  "version_from": "https://hub.docker.com/r/umamisoftware/umami/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": "https://umami.is/docs/install"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/umamisoftware/umami/tags"
   }
 }

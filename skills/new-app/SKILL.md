@@ -29,14 +29,19 @@ If any required input is missing, stop and ask the user for it before researchin
 2. Read the issue requirements and official upstream docs.
 3. Read repository rules from `docs/code_owner.md` and the machine template under `metadata/templates/new-app/`.
 4. Research the real image and version from upstream sources.
-5. Scaffold the package skeleton with `make --no-print-directory libs ARGS="new-app --name <app> --trademark <brand> --json"` plus `--version <x.x>` and `--repo <image>` when the research has already resolved them (otherwise the CLI writes explicit TODO placeholders). The command refuses duplicates and runs the quality gates automatically.
-6. Fill `.env`, `docker-compose.yml`, `variables.json`, `README.md`, and `src/` beyond the skeleton, following the todo list returned by the scaffold command. Decide the env groups from research: enable the password group (uncomment and fill) when the app has a DB or login; enable the web group when it exposes a web page; delete groups the app does not need. In the `.env` "image environment variables" section, set the single Docs URL, list the vars actually used by `docker-compose.yml`, and add up to 5 unused vars commented out.
-7. Register any new translatable env key in `i18n/translation.json`.
-8. If a credential or config env var only takes effect on first container startup (the image entrypoint uses a marker file, e.g. `webconsole.security.enabled`), record it in `variables.json` as `env.first_startup_only` (list of env names) so the README auto-renders the warning.
-9. Run the `deploy-validation` skill to prove the app deploys.
-10. Produce a short test report.
-11. Assign a maintenance cadence and update policy: write the app into the matching buckets of `metadata/maintenance.yaml` (apps not listed inherit the monthly/patch-minor defaults), and state the assignment in the report. The owner reviews it at merge.
-12. Draft the Contentful marketing fields from the upstream research: copy `metadata/templates/contentful-draft.json` to `metadata/contentful-drafts/<app>.json` and fill trademark, summary, overview, description, websiteurl, and screenshots. The owner reviews the draft before the first Contentful write; AI never writes Contentful directly. The owner applies with `libs contentful-create --app <app> --apply` after review.
+5. Scaffold the package skeleton with `make --no-print-directory libs ARGS="new-app --name <app> --trademark <brand> --json"` plus `--version <x.x>` and `--repo <image>` when the research has already resolved them (otherwise the CLI writes explicit TODO placeholders). When upstream sources are known, also pass `--upstream-releases <url>`, `--upstream-compose <url>`, and `--upstream-env <url>` as applicable so `variables.json` starts with the current repository shape. The command refuses duplicates and runs the quality gates automatically.
+6. Fill `.env`, `docker-compose.yml`, `variables.json`, `README.md`, `CHANGELOG.md`, and `src/` beyond the skeleton, following the todo list returned by the scaffold command. Decide the env groups from research: enable the password group (uncomment and fill) when the app has a DB or login; enable the web group when it exposes a web page; delete groups the app does not need. In the `.env` "image environment variables" section, keep only the variables required by the current package shape plus any user-facing essentials, set the single Docs URL, list the vars actually used by `docker-compose.yml`, and add up to 5 unused vars commented out. Mirror the template layout in `metadata/templates/new-app/.env.tmpl`: keep the section banner, the Docs URL, the "Used by docker-compose.yml" group, and the commented "Not used by default" group; do not restructure the application-env section freely.
+7. Author `docker-compose.yml` so every published port line carries an inline `# purpose` comment, and never add `# image:` / `# docs:` source comments — the image and documentation sources live only in `variables.json` `upstream`. Update `variables.json` `upstream.image` as the single version source.
+8. Register any new translatable env key in `i18n/translation.json`.
+9. Healthchecks should default to the main app container only. Add healthchecks to sidecar or dependency containers only when the official upstream compose explicitly defines them or the task explicitly requires them.
+10. If a credential or config env var only takes effect on first container startup (the image entrypoint uses a marker file, e.g. `webconsole.security.enabled`), record it in `variables.json` as `env.first_startup_only` (list of env names) so the README auto-renders the warning.
+11. Keep `apps/<app>/CHANGELOG.md` as the single source of app change history. Do not duplicate changelog content into `README.md`.
+12. Run `libs gen-readme --app <app> --json` after metadata or README marker content changes so generated sections stay current.
+13. For dependency images such as PostgreSQL, MySQL, MariaDB, or Redis, prefer `x.x` tags even when upstream examples show `x.x.x`, unless exact patch pinning is demonstrably required.
+14. Run the `deploy-validation` skill to prove the app deploys.
+15. Produce a short test report.
+16. Assign a maintenance cadence and update policy: write the app into the matching buckets of `metadata/maintenance.yaml` (apps not listed inherit the monthly/patch-minor defaults), and state the assignment in the report. The owner reviews it at merge.
+17. Draft the Contentful marketing fields from the upstream research: copy `metadata/templates/contentful-draft.json` to `metadata/contentful-drafts/<app>.json` and fill trademark, summary, overview, description, websiteurl, and screenshots. The owner reviews the draft before the first Contentful write; AI never writes Contentful directly. The owner applies with `libs contentful-create --app <app> --apply` after review.
 
 ## Output
 
@@ -55,5 +60,7 @@ If any required input is missing, stop and ask the user for it before researchin
 - The CLI scaffold reads `metadata/templates/new-app/`; `template/` stays as a human reference and must not be treated as the machine template source.
 - Prefer official images or trusted upstream images.
 - Keep the app aligned to repository conventions.
+- `variables.json` should declare the `upstream` structure explicitly when sources are known. `releases`, `compose.compose`, and `compose.env` should be considered during research and scaffold completion, but should be omitted when they are not applicable or not yet verified.
+- Keep `upstream.image` as the single version source. Never write `version_from`, `fork_url`, or `requirements.url`.
 - Do not change unrelated apps.
 - Produce the report in the same language the user used unless the user asks otherwise.

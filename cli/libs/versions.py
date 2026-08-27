@@ -41,15 +41,12 @@ def _selected(app_name: str, selection: str, target_date: date) -> tuple[bool, s
     return metadata.cadence == selection, metadata.cadence
 
 
-def resolve_source_type(variables: dict, version_from: str) -> str:
+def resolve_source_type(variables: dict) -> str:
     upstream = variables.get("upstream") or {}
     image = upstream.get("image")
     if image:
         return detect_source_type(image) or "unknown"
-    declared = (upstream.get("version_source") or {}).get("type")
-    if declared:
-        return declared
-    return detect_source_type(version_from) or "unknown"
+    return "unknown"
 
 
 def scan_apps(
@@ -78,7 +75,8 @@ def scan_apps(
         variables = json.loads(variables_path.read_text(encoding="utf-8"))
         current_versions, all_versions = get_current_versions(variables.get("edition", []))
         current_version_strs = [str(current) for current in current_versions]
-        version_from = variables.get("version_from", "")
+        upstream = variables.get("upstream") or {}
+        image_url = upstream.get("image") or ""
         payload = {
             "name": variables["name"],
             "status": metadata.status,
@@ -87,8 +85,8 @@ def scan_apps(
             "selected_by": selected_by,
             "target_date": target.isoformat(),
             "current_version": all_versions if plan_only else current_version_strs,
-            "version_from": version_from,
-            "source_type": resolve_source_type(variables, version_from),
+            "upstream_image": image_url,
+            "source_type": resolve_source_type(variables),
             "release": variables.get("release"),
         }
 
@@ -109,12 +107,7 @@ def scan_apps(
             continue
 
         highest_version = max(current for current in current_versions if current != "latest")
-        upstream = variables.get("upstream") or {}
-        image_url = upstream.get("image") or (upstream.get("version_source") or {}).get("url") or version_from
         releases = upstream.get("releases")
-        if not releases:
-            legacy_index = upstream.get("release_index") or {}
-            releases = legacy_index.get("url") or None
         if releases:
             latest_version, error = fetch_verified_candidates(
                 payload["source_type"],

@@ -2,8 +2,6 @@
   "name": "couchdb",
   "trademark": "CouchDB",
   "release": true,
-  "fork_url": "https://github.com/apache/couchdb-docker",
-  "version_from": "https://hub.docker.com/_/couchdb/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "4",
-    "url": "https://docs.couchdb.org/en/latest/install/index.html"
+    "disk": "4"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/_/couchdb/tags"
   }
 }

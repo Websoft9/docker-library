@@ -2,8 +2,6 @@
   "name": "typo3",
   "trademark": "Typo3",
   "release": true,
-  "fork_url": "https://hub.docker.com/r/martinhelmich/typo3",
-  "version_from": "https://hub.docker.com/r/martinhelmich/typo3/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "1",
-    "url": "https://docs.typo3.org/m/typo3/tutorial-getting-started/11.5/en-us/Installation/Index.html"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/martinhelmich/typo3/tags"
   }
 }

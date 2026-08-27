@@ -2,8 +2,6 @@
   "name": "palworld",
   "trademark": "Palworld",
   "release": true,
-  "fork_url": "https://github.com/thijsvanloef/palworld-server-docker",
-  "version_from": "https://hub.docker.com/r/thijsvanloef/palworld-server-docker/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "4",
     "memory": "16",
-    "disk": "8",
-    "url": "https://github.com/thijsvanloef/palworld-server-docker"
+    "disk": "8"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/thijsvanloef/palworld-server-docker/tags"
   }
 }

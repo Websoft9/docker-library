@@ -15,12 +15,18 @@ GUIDE_START = "<!-- W9_GUIDE_START -->"
 GUIDE_END = "<!-- W9_GUIDE_END -->"
 TROUBLE_START = "<!-- W9_TROUBLESHOOT_START -->"
 TROUBLE_END = "<!-- W9_TROUBLESHOOT_END -->"
-CHANGELOG_START = "<!-- W9_CHANGELOG_START -->"
-CHANGELOG_END = "<!-- W9_CHANGELOG_END -->"
 NOTE_START = "<!-- W9_NOTE_START -->"
 NOTE_END = "<!-- W9_NOTE_END -->"
 PORT_LINE_RE = re.compile(r'^\s*-\s*"?\$?(?P<var>[A-Z0-9_]+)?:(?P<cport>\d+)"?\s*(?:#\s*(?P<note>.*))?$')
 VOLUME_LINE_RE = re.compile(r'^\s*-\s*(?P<src>[\w.\/]+):(?P<dst>\/\S+?)(?::ro)?$')
+
+
+def _link_url(value: str) -> str:
+    if value.startswith(("http://", "https://")):
+        return value
+    if value.startswith("ghcr.io/"):
+        return f"https://{value}"
+    return value
 
 
 def _extract_block(text: str, start: str, end: str) -> str:
@@ -46,15 +52,23 @@ def _compose_ports(text: str) -> list[dict]:
 def _compose_volumes(text: str) -> tuple[list[dict], list[dict]]:
     data_dirs = []
     config_overrides = []
+    seen_data = set()
+    seen_config = set()
     for line in text.splitlines():
         match = VOLUME_LINE_RE.match(line)
         if not match:
             continue
         src, dst = match.group("src"), match.group("dst")
         if src.startswith("./src/"):
-            config_overrides.append({"source": src, "target": dst})
+            key = (src, dst)
+            if key not in seen_config:
+                config_overrides.append({"source": src, "target": dst})
+                seen_config.add(key)
         else:
-            data_dirs.append({"volume": src, "path": dst})
+            key = (src, dst)
+            if key not in seen_data:
+                data_dirs.append({"volume": src, "path": dst})
+                seen_data.add(key)
     return data_dirs, config_overrides
 
 
@@ -63,13 +77,19 @@ def _references(variables: dict) -> list[dict]:
     upstream = variables.get("upstream") or {}
     image = upstream.get("image")
     if image:
-        refs.append({"label": "Docker Hub image", "url": image})
+        label = "GHCR image" if "ghcr.io" in image else "Docker Hub image"
+        refs.append({"label": label, "url": _link_url(image)})
     releases = upstream.get("releases")
     if releases:
-        refs.append({"label": "Releases", "url": releases})
+        refs.append({"label": "Releases", "url": _link_url(releases)})
+    compose = upstream.get("compose") or {}
+    if compose.get("compose"):
+        refs.append({"label": "Official compose", "url": _link_url(compose["compose"])})
+    if compose.get("env"):
+        refs.append({"label": "Official env example", "url": _link_url(compose["env"])})
     for doc in upstream.get("docs") or []:
         label = "GitHub docs" if "github.com" in doc else "Official docs"
-        refs.append({"label": label, "url": doc})
+        refs.append({"label": label, "url": _link_url(doc)})
     return refs
 
 
@@ -90,15 +110,6 @@ def _default_guide(admin_url: str | None, trademark: str) -> str:
 
 def _default_troubleshooting() -> str:
     return "## Troubleshooting\n\n**App fails to start?**\n- Check `docker compose logs`.\n\n**Port not reachable?**\n- Ensure the firewall / security group allows the port." 
-
-
-def _default_changelog(target: Path) -> str:
-    changelog_path = target / "CHANGELOG.md"
-    if changelog_path.exists():
-        text = changelog_path.read_text(encoding="utf-8").strip()
-        if text:
-            return text
-    return "首次发布。"
 
 
 def _first_startup_only_note(variables: dict) -> str:
@@ -140,11 +151,10 @@ def render_readme(app_name: str) -> dict:
     context["data_dirs"] = data_dirs
     context["config_overrides"] = config_overrides
     context["references"] = _references(variables)
-    context["image_url"] = (variables.get("upstream") or {}).get("image") or ""
+    context["image_url"] = _link_url((variables.get("upstream") or {}).get("image") or "")
     context["has_latest"] = any("latest" in (ed.get("version") or []) for ed in variables.get("edition") or [])
     context["guide"] = _extract_block(existing, GUIDE_START, GUIDE_END) or _default_guide(admin_url, variables.get("trademark", app_name))
     context["troubleshooting"] = _extract_block(existing, TROUBLE_START, TROUBLE_END) or _default_troubleshooting()
-    context["changelog"] = _extract_block(existing, CHANGELOG_START, CHANGELOG_END) or _default_changelog(target)
     context["config_note"] = _extract_block(existing, NOTE_START, NOTE_END)
     context["first_startup_only_note"] = _first_startup_only_note(variables)
 

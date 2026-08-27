@@ -2,8 +2,6 @@
   "name": "openclaw",
   "trademark": "OpenClaw",
   "release": true,
-  "fork_url": "https://github.com/openclaw/openclaw",
-  "version_from": "https://github.com/openclaw/openclaw/releases",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "2",
-    "disk": "10",
-    "url": "https://openclaw.ai"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://github.com/openclaw/openclaw/releases"
   }
 }

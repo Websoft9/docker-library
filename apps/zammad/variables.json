@@ -2,8 +2,6 @@
   "name": "zammad",
   "trademark": "Zammad",
   "release": true,
-  "fork_url": "https://github.com/zammad/zammad-docker-compose",
-  "version_from": "https://hub.docker.com/r/zammad/zammad-docker-compose/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "2",
-    "url": "https://github.com/zammad-contrib/docker-zammad/blob/master/README.md"
+    "disk": "2"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/zammad/zammad-docker-compose/tags"
   }
 }

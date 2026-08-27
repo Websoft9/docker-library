@@ -2,8 +2,6 @@
   "name": "inngest",
   "trademark": "Inngest",
   "release": false,
-  "fork_url": "https://github.com/inngest/inngest",
-  "version_from": "https://hub.docker.com/r/inngest/inngest/tags",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://www.inngest.com"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/inngest/inngest/tags"
   }
 }

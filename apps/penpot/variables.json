@@ -2,18 +2,21 @@
   "name": "penpot",
   "trademark": "Penpot",
   "release": true,
-  "fork_url": "https://github.com/penpot/penpot",
-  "version_from": "https://hub.docker.com/r/penpotapp/frontend/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["2.11.1","latest"]
+      "version": [
+        "2.11.1",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "4",
-    "url": "https://help.penpot.app/technical-guide"
+    "disk": "4"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/penpotapp/frontend/tags"
   }
 }

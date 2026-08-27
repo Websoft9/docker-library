@@ -2,18 +2,21 @@
   "name": "memcached",
   "trademark": "Memcached",
   "release": true,
-  "fork_url": "https://github.com/docker-library/memcached",
-  "version_from": "https://hub.docker.com/_/memcached/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["1.6","latest"]
+      "version": [
+        "1.6",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": "https://github.com/memcached/memcached/wiki/Install"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/_/memcached/tags"
   }
 }

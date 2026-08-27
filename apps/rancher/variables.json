@@ -2,8 +2,6 @@
   "name": "rancher",
   "trademark": "Rancher",
   "release": true,
-  "fork_url": "https://github.com/rancher/rancher",
-  "version_from": "https://hub.docker.com/r/rancher/rancher/tags",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "1",
-    "url": "https://rancher.com/quick-start"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/rancher/rancher/tags"
   }
 }

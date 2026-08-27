@@ -2,18 +2,17 @@
   "name": "geoserver",
   "trademark": "GeoServer",
   "release": false,
-  "fork_url": "https://github.com/geoserver/geoserver-cloud",
-  "version_from": "",
   "edition": [
     {
       "dist": "community",
-      "version": ["latest"]
+      "version": [
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "1",
-    "url": "https://github.com/geoserver/geoserver-cloud"
+    "disk": "1"
   }
 }

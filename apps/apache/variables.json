@@ -2,8 +2,6 @@
   "name": "apache",
   "trademark": "Apache",
   "release": true,
-  "fork_url": "https://github.com/docker-library/httpd",
-  "version_from": "https://hub.docker.com/_/httpd/tags",
   "upstream": {
     "image": "https://hub.docker.com/_/httpd/tags",
     "releases": "https://github.com/docker-library/httpd/tags",
@@ -24,7 +22,6 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "2",
-    "url": "https://github.com/apache/docker#recommended-system-requirements"
+    "disk": "2"
   }
 }

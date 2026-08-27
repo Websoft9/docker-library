@@ -1,11 +1,4 @@
 optional:
-  - id: console-responds
-    type: web-access
-    path: /admin
-    expect_status:
-      - 200
-      - 401
-
   - id: console-login
     type: http-basic
     path: /admin/

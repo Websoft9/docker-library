@@ -2,18 +2,21 @@
   "name": "matomo",
   "trademark": "Matomo",
   "release": true,
-  "fork_url": "https://matomo.org/faq/on-premise/installing-matomo/",
-  "version_from": "https://hub.docker.com/_/matomo/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["5.6.1","latest"]
+      "version": [
+        "5.6.1",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "2",
-    "url": "https://matomo.org/faq/on-premise/installing-matomo/"
+    "disk": "2"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/_/matomo/tags"
   }
 }

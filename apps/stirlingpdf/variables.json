@@ -2,8 +2,6 @@
   "name": "stirlingpdf",
   "trademark": "Stirling PDF",
   "release": true,
-  "fork_url": "https://github.com/Stirling-Tools/Stirling-PDF",
-  "version_from": "https://hub.docker.com/r/stirlingtools/stirling-pdf/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://stirlingpdf.io"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/stirlingtools/stirling-pdf/tags"
   }
 }

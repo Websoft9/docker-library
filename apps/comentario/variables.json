@@ -2,8 +2,6 @@
   "name": "comentario",
   "trademark": "Comentario",
   "release": true,
-  "fork_url": "https://gitlab.com/comentario/comentario",
-  "version_from": "registry.gitlab.com/comentario/comentario-ci-tools/test-site",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://comentario.app"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "registry.gitlab.com/comentario/comentario-ci-tools/test-site"
   }
 }

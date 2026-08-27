@@ -31,6 +31,7 @@ def test_new_app_manifest_matches_template_files():
         "docker-compose.yml": "docker-compose.yml.tmpl",
         "variables.json": "variables.json.tmpl",
         "README.md": "README.md.tmpl",
+        "CHANGELOG.md": "CHANGELOG.md.tmpl",
         "src/.gitkeep": "src/.gitkeep",
     }
 
@@ -47,21 +48,33 @@ def test_new_app_templates_render_and_parse():
         "version": "1.0",
         "repo": "bitnami/demo-app",
         "image_url": "https://hub.docker.com/r/bitnami/demo-app/tags",
+        "releases_url": "https://github.com/example/demo-app/tags",
+        "compose_url": "https://raw.githubusercontent.com/example/demo-app/main/docker-compose.yml",
+        "compose_env_url": "https://raw.githubusercontent.com/example/demo-app/main/.env.example",
         "github_url": "https://github.com/example/demo-app",
         "install_url": "https://example.com/install",
         "docs_json": json.dumps(["https://github.com/example/demo-app", "https://example.com/install"]),
+        "has_releases": True,
+        "has_compose": True,
+        "has_compose_env": True,
+        "has_compose_group": True,
+        "has_install_url": True,
+        "has_fork_url": True,
         "power_password": "dummy-password",
     }
 
-    env_text = (template_root / ".env.tmpl").read_text(encoding="utf-8").format(**context)
-    compose_text = (template_root / "docker-compose.yml.tmpl").read_text(encoding="utf-8").format(**context)
-    variables_text = (template_root / "variables.json.tmpl").read_text(encoding="utf-8").format(**context)
-    readme_text = (template_root / "README.md.tmpl").read_text(encoding="utf-8").format(**context)
+    env = Environment(loader=FileSystemLoader(str(template_root)), keep_trailing_newline=True, trim_blocks=True, lstrip_blocks=True)
+    env_text = env.get_template(".env.tmpl").render(**context)
+    compose_text = env.get_template("docker-compose.yml.tmpl").render(**context)
+    variables_text = env.get_template("variables.json.tmpl").render(**context)
+    readme_text = env.get_template("README.md.tmpl").render(**context)
+    changelog_text = env.get_template("CHANGELOG.md.tmpl").render(**context)
 
     assert "W9_VERSION=1.0" in env_text
     assert yaml.safe_load(compose_text)["services"]["demo-app"]["container_name"] == "$W9_ID"
     assert json.loads(variables_text)["name"] == "demo-app"
     assert "Demo App" in readme_text
+    assert "# CHANGELOG" in changelog_text
 
 
 def test_readme_template_renders_with_minimal_context():

@@ -2,8 +2,6 @@
   "name": "superset",
   "trademark": "Superset",
   "release": true,
-  "fork_url": "https://github.com/apache/superset.git",
-  "version_from": "https://hub.docker.com/r/apache/superset/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "8",
-    "disk": "3",
-    "url": "https://superset.apache.org/docs/installation/installing-superset-using-docker-compose"
+    "disk": "3"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/apache/superset/tags"
   }
 }

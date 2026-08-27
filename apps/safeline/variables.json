@@ -2,8 +2,6 @@
   "name": "safeline",
   "trademark": "SafeLine",
   "release": true,
-  "fork_url": "https://github.com/chaitin/SafeLine",
-  "version_from": "swr.cn-east-3.myhuaweicloud.com/chaitin-safeline/safeline-mgt-g",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://safepoint.cloud"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "swr.cn-east-3.myhuaweicloud.com/chaitin-safeline/safeline-mgt-g"
   }
 }

@@ -66,6 +66,7 @@ py -m venv .venv
 - `libs db-refresh` - refresh the DB lifecycle snapshot from endoflife.date
 - `libs check-maintenance` - validate maintenance/archive metadata against the app tree
 - `libs new-app --name <name> --trademark <brand> --dry-run` - preview a new app scaffold
+- `libs new-app --name <name> --trademark <brand> --upstream-releases <url> --upstream-compose <url> --upstream-env <url>` - prefill optional upstream sources used by scan, drift, and README generation
 - `libs gen-readme --app <name>` - regenerate one app's README from variables.json
 - `libs contentful-create --app <name>` - preview a Contentful product entry (use `--apply` to write)
 - `libs app-deploy --app <name> [--ssh-host <ip>] [--progress] [--verbose]` - deploy one app locally or remotely; `--progress` prints step headers to stderr and `--verbose` also prints raw command output
@@ -73,6 +74,7 @@ py -m venv .venv
 - `libs app-down --app <name> [--ssh-host <ip>] [--progress] [--json]` - tear one app down with `docker compose down -v`
 - `libs appstore-sync --app <name> --ssh-host <ip> [--progress] [--verbose]` - patch remote `product_en.json` / `product_zh.json` distribution and sync one app directory for appstore testing
 - `libs appstore-deploy --app <name> --ssh-host <ip> [--progress] [--verbose]` - deploy one app into a websoft9 container appstore (not implemented yet; pending the websoft9 container CLI)
+- remote-aware commands suppress the routine `known hosts` add warning from ephemeral SSH targets; real stderr still passes through
 - `libs proxy` - show, save, or clear the saved proxy
 - `libs help` - show help, same as `libs --help`
 

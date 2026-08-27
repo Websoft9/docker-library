@@ -2,18 +2,21 @@
   "name": "jenkins",
   "trademark": "Jenkins",
   "release": true,
-  "fork_url": "https://github.com/jenkinsci/docker.git",
-  "version_from": "https://hub.docker.com/r/jenkins/jenkins/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["2.540","latest"]
+      "version": [
+        "2.540",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "8",
-    "url": "https://www.jenkins.io/doc/book/installing/docker/"
+    "disk": "8"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/jenkins/jenkins/tags"
   }
 }

@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import json
+import subprocess
+from pathlib import Path
 
 from typer.testing import CliRunner
 
-from libs import main
+from libs import main, remote
 
 
 runner = CliRunner()
@@ -41,6 +43,10 @@ def test_new_app_skill_workflow_smoke(skill_repo_fixture):
     assert readme_result.exit_code == 0
     assert _json_output(readme_result)["path"] == "apps/smoke-app/README.md"
 
+    variables = json.loads((skill_repo_fixture / "apps" / "smoke-app" / "variables.json").read_text(encoding="utf-8"))
+    assert "releases" not in variables["upstream"]
+    assert "compose" not in variables["upstream"]
+
 
 def test_archive_restore_skill_workflow_smoke(skill_repo_fixture, skill_app_factory):
     skill_app_factory("ghost")
@@ -73,7 +79,7 @@ def test_update_assessment_style_workflow_smoke(skill_repo_fixture, skill_app_fa
             "name": "wordpress",
             "trademark": "WordPress",
             "release": True,
-            "version_from": "https://hub.docker.com/_/wordpress/tags",
+            "upstream": {"image": "https://hub.docker.com/_/wordpress/tags"},
             "edition": [{"dist": "community", "version": ["6.9", "latest"]}],
         },
     )
@@ -90,3 +96,51 @@ def test_update_assessment_style_workflow_smoke(skill_repo_fixture, skill_app_fa
     assert _json_output(scan_result)[0]["latest_version"]["version"] == "7.0"
     assert "mysql:$W9_DB_VERSION" in _json_output(drift_result)["dependency_images"]
     assert _json_output(db_refresh_result)["refreshed"] == {"mysql": 1}
+
+
+def test_new_app_prefills_upstream_sources(skill_repo_fixture):
+    result = runner.invoke(
+        main.app,
+        [
+            "new-app",
+            "--name",
+            "upstream-app",
+            "--trademark",
+            "Upstream App",
+            "--version",
+            "1.0",
+            "--repo",
+            "ghcr.io/example/upstream-app",
+            "--docs-github",
+            "https://github.com/example/upstream-app",
+            "--docs-install",
+            "https://docs.example.com/upstream-app/install",
+            "--upstream-releases",
+            "https://github.com/example/upstream-app/tags",
+            "--upstream-compose",
+            "https://raw.githubusercontent.com/example/upstream-app/main/docker-compose.yml",
+            "--upstream-env",
+            "https://raw.githubusercontent.com/example/upstream-app/main/.env.example",
+            "--json",
+        ],
+    )
+
+    assert result.exit_code == 0
+    variables = json.loads((Path(skill_repo_fixture) / "apps" / "upstream-app" / "variables.json").read_text(encoding="utf-8"))
+    assert variables["upstream"]["releases"] == "https://github.com/example/upstream-app/tags"
+    assert variables["upstream"]["compose"]["compose"] == "https://raw.githubusercontent.com/example/upstream-app/main/docker-compose.yml"
+    assert variables["upstream"]["compose"]["env"] == "https://raw.githubusercontent.com/example/upstream-app/main/.env.example"
+
+
+def test_remote_scrubs_known_hosts_warning():
+    result = remote.scrub_completed_process(
+        subprocess.CompletedProcess(
+            args=["ssh", "example"],
+            returncode=0,
+            stdout="ok\n",
+            stderr="Warning: Permanently added '47.86.46.191' (ED25519) to the list of known hosts.\nreal warning\n",
+        )
+    )
+
+    assert result.stdout == "ok\n"
+    assert result.stderr == "real warning"

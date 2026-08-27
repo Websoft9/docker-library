@@ -2,18 +2,21 @@
   "name": "minio",
   "trademark": "Minio",
   "release": true,
-  "fork_url": "",
-  "version_from": "https://hub.docker.com/r/minio/minio/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["RELEASE.2025-07-23T15-54-02Z","latest"]
+      "version": [
+        "RELEASE.2025-07-23T15-54-02Z",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "1",
-    "url": "https://hub.docker.com/r/minio/minio"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/minio/minio/tags"
   }
 }

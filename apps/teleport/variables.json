@@ -2,8 +2,6 @@
   "name": "teleport",
   "trademark": "Teleport",
   "release": true,
-  "fork_url": "https://gallery.ecr.aws/gravitational/teleport",
-  "version_from": "",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,6 @@
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "1",
-    "url": "https://gallery.ecr.aws/gravitational/teleport"
+    "disk": "1"
   }
 }

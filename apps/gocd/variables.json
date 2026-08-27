@@ -2,8 +2,6 @@
   "name": "gocd",
   "trademark": "GoCD",
   "release": true,
-  "fork_url": "https://github.com/gocd/gocd",
-  "version_from": "https://hub.docker.com/r/gocd/gocd-server/tags",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://www.gocd.org"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/gocd/gocd-server/tags"
   }
 }

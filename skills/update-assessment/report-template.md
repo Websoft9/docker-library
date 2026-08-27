@@ -5,10 +5,12 @@
 - candidate version:
 - candidate class: patch | minor | major | security
 - decision: auto-update | review-first | defer | skip
+- repository conformance: ok | minor-fixes | blocking-fixes
 
 ## Why
 
 - short rationale:
+- conformance scope note:
 
 ## Database
 

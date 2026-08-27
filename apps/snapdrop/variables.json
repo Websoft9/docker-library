@@ -2,18 +2,20 @@
   "name": "snapdrop",
   "trademark": "Snapdrop",
   "release": true,
-  "fork_url": "https://github.com/RobinLinus/snapdrop",
-  "version_from": "https://hub.docker.com/r/linuxserver/snapdrop/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["version-b8b78cc2"]
+      "version": [
+        "version-b8b78cc2"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": "https://github.com/RobinLinus/snapdrop"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/linuxserver/snapdrop/tags"
   }
 }

@@ -2,8 +2,6 @@
   "name": "plausible",
   "trademark": "Plausible",
   "release": true,
-  "fork_url": "https://github.com/plausible/hosting",
-  "version_from": "https://hub.docker.com/r/plausible/analytics/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": "https://github.com/plausible/analytics"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/plausible/analytics/tags"
   }
 }

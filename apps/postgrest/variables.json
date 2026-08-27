@@ -2,8 +2,6 @@
   "name": "postgrest",
   "trademark": "PostgREST",
   "release": true,
-  "fork_url": "https://postgrest.org/en/v12/",
-  "version_from": "https://hub.docker.com/r/postgrest/postgrest/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "1",
-    "url": "https://postgrest.org/en/v12/"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/postgrest/postgrest/tags"
   }
 }

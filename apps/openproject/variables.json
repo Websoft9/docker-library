@@ -2,8 +2,6 @@
   "name": "openproject",
   "trademark": "OpenProject",
   "release": true,
-  "fork_url": "https://github.com/opf/openproject",
-  "version_from": "",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,6 @@
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "2",
-    "url": "https://www.openproject.org"
+    "disk": "2"
   }
 }

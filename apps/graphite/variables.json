@@ -2,18 +2,21 @@
   "name": "graphite",
   "trademark": "Graphite",
   "release": true,
-  "fork_url": "https://github.com/graphite-project/graphite-web",
-  "version_from": "https://hub.docker.com/r/graphiteapp/graphite-statsd/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["latest","1.1.10-5"]
+      "version": [
+        "latest",
+        "1.1.10-5"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": "https://graphite.readthedocs.io/en/latest/install.html"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/graphiteapp/graphite-statsd/tags"
   }
 }

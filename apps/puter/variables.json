@@ -2,8 +2,6 @@
   "name": "puter",
   "trademark": "Puter",
   "release": false,
-  "fork_url": "https://github.com/HeyPuter/puter",
-  "version_from": "ghcr.io/heyputer/puter:latest",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://puter.com"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "ghcr.io/heyputer/puter:latest"
   }
 }

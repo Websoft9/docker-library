@@ -2,8 +2,6 @@
   "name": "zitadel",
   "trademark": "ZITADEL",
   "release": true,
-  "fork_url": "https://github.com/zitadel/zitadel",
-  "version_from": "ghcr.io/zitadel/zitadel",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://zitadel.com/docs/self-hosting/manage/production#minimum-system-requirements"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "ghcr.io/zitadel/zitadel"
   }
 }

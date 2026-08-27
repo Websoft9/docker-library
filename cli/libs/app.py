@@ -87,7 +87,7 @@ def collect_app_info(app_name: str) -> dict:
         "archive_reason": metadata.archive_reason,
         "trademark": variables.get("trademark"),
         "release": variables.get("release"),
-        "version_from": variables.get("version_from"),
+        "upstream_image": (variables.get("upstream") or {}).get("image"),
         "requirements": variables.get("requirements"),
         "external_db": variables.get("externalDB"),
     }

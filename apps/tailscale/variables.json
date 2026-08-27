@@ -2,8 +2,6 @@
   "name": "tailscale",
   "trademark": "Tailscale",
   "release": false,
-  "fork_url": "https://github.com/tailscale/tailscale",
-  "version_from": "https://hub.docker.com/r/tailscale/tailscale/tags",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://tailscale.com"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/tailscale/tailscale/tags"
   }
 }

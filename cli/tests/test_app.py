@@ -11,7 +11,7 @@ def test_collect_apps_includes_archived_and_filters_scope(repo_fixture, app_fact
         "name": "internal-app",
         "scope": "internal",
         "release": True,
-        "version_from": "https://hub.docker.com/_/example/tags",
+        "upstream": {"image": "https://hub.docker.com/_/example/tags"},
         "edition": [{"dist": "community", "version": ["1.0"]}],
     })
     app_factory("archived-app", archived=True)
@@ -33,7 +33,7 @@ def test_collect_app_info_returns_relative_path(app_factory):
         "name": "wordpress",
         "trademark": "WordPress",
         "release": True,
-        "version_from": "https://hub.docker.com/_/wordpress/tags",
+        "upstream": {"image": "https://hub.docker.com/_/wordpress/tags"},
         "requirements": {"cpu": "1"},
         "externalDB": {"1.0": {"mysql": ["8.0+"]}},
         "edition": [{"dist": "community", "version": ["1.0"]}],

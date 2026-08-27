@@ -69,11 +69,12 @@ def app_factory(repo_fixture: Path):
                 "name": name,
                 "trademark": name.title(),
                 "release": True,
-                "version_from": "https://hub.docker.com/_/example/tags",
+                "upstream": {"image": "https://hub.docker.com/_/example/tags"},
                 "edition": [{"dist": "community", "version": ["1.0"]}],
             }
         (root / "variables.json").write_text(json.dumps(variables, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         (root / "README.md").write_text(readme, encoding="utf-8")
+        (root / "CHANGELOG.md").write_text("# CHANGELOG\n", encoding="utf-8")
         return root
 
     return create_app

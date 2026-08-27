@@ -2,8 +2,6 @@
   "name": "awx",
   "trademark": "AWX",
   "release": true,
-  "fork_url": "https://github.com/ansible/awx",
-  "version_from": "https://hub.docker.com/r/elestio/automatisch/tags",
   "upstream": {
     "image": "https://quay.io/ansible/awx",
     "releases": "https://github.com/ansible/awx/tags",
@@ -22,7 +20,6 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "1",
-    "url": "https://github.com/awx/docker#recommended-system-requirements"
+    "disk": "1"
   }
 }

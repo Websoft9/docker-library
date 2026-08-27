@@ -97,7 +97,7 @@ def main():
                     variables = json.load(file)
                     name = variables['name']
                     release = variables.get('release', False)
-                    version_from = variables.get('version_from', '')
+                    image_source = (variables.get('upstream') or {}).get('image') or ''
                     current_versions, all_versions = get_current_versions(variables['edition'])
 
                     if release:
@@ -108,7 +108,7 @@ def main():
                                 'name': name,
                                 'current_version': all_versions,
                                 'latest_version': None,
-                                'version_from': version_from,
+                                'upstream_image': image_source,
                                 'error': 'No valid current versions found'
                             })
                             continue
@@ -117,7 +117,7 @@ def main():
                         highest_version = max(v for v in current_versions if v != 'latest')
                         highest_version_str = str(highest_version)
 
-                        api_url = convert_to_dockerhub_api_url(version_from)
+                        api_url = convert_to_dockerhub_api_url(image_source)
                         if api_url:
                             print(f"Fetching tags for {name} from {api_url}")
                             tags, error = get_dockerhub_tags(api_url, max_pages=args.max_pages, page_size=args.page_size)
@@ -133,15 +133,15 @@ def main():
                                 'name': name,
                                 'current_version': current_version_strs,
                                 'latest_version': latest_version,
-                                'version_from': version_from
+                                'upstream_image': image_source
                             })
                         else:
                             output.append({
                                 'name': name,
                                 'current_version': current_version_strs,
                                 'latest_version': None,
-                                'version_from': version_from,
-                                'error': 'Invalid version_from URL or not a Docker Hub URL'
+                                'upstream_image': image_source,
+                                'error': 'Invalid upstream.image or not a Docker Hub URL'
                             })
 
     output.sort(key=lambda x: x['name'])

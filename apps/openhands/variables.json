@@ -2,8 +2,6 @@
   "name": "openhands",
   "trademark": "OpenHands",
   "release": true,
-  "fork_url": "https://github.com/All-Hands-AI/OpenHands",
-  "version_from": "https://github.com/All-Hands-AI/OpenHands/pkgs/container/openhands",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://www.all-hands.dev"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://github.com/All-Hands-AI/OpenHands/pkgs/container/openhands"
   }
 }

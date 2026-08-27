@@ -2,8 +2,6 @@
   "name": "countly",
   "trademark": "Countly",
   "release": false,
-  "fork_url": "https://github.com/Countly/countly-server",
-  "version_from": "",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,6 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "1",
-    "url": "https://github.com/countly/docker#recommended-system-requirements"
+    "disk": "1"
   }
 }

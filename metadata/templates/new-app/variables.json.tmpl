@@ -1,23 +1,38 @@
-{{
-  "name": "{name}",
-  "trademark": "{trademark}",
+{
+  "name": "{{ name }}",
+  "trademark": "{{ trademark }}",
   "release": false,
-  "fork_url": "{github_url}",
-  "version_from": "{image_url}",
-  "upstream": {{
-    "image": "{image_url}",
-    "docs": {docs_json}
-  }},
+{% if has_fork_url %}
+  "fork_url": "{{ github_url }}",
+{% endif %}
+  "version_from": "{{ image_url }}",
+  "upstream": {
+    "image": "{{ image_url }}",
+{% if has_releases %}
+    "releases": "{{ releases_url }}",
+{% endif %}
+{% if has_compose_group %}
+    "compose": {
+{% if has_compose %}
+      "compose": "{{ compose_url }}"{% if has_compose_env %},{% endif %}
+{% endif %}
+{% if has_compose_env %}
+      "env": "{{ compose_env_url }}"
+{% endif %}
+    },
+{% endif %}
+    "docs": {{ docs_json }}
+  },
   "edition": [
-    {{
+    {
       "dist": "community",
-      "version": ["{version}", "latest"]
-    }}
+      "version": ["{{ version }}", "latest"]
+    }
   ],
-  "requirements": {{
+  "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": "{install_url}"
-  }}
-}}
+    "disk": "1"{% if has_install_url %},
+    "url": "{{ install_url }}"{% endif %}
+  }
+}

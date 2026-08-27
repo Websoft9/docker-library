@@ -91,9 +91,3 @@ Configuration is overridden by mounting `./src/entrypoint.sh` to `/opt/websoft9/
 - Ensure the cloud security group / firewall allows the port.
 <!-- W9_TROUBLESHOOT_END -->
 
-## Changelog
-
-<!-- W9_CHANGELOG_START -->
-- 2026-08-25: Removed Artemis, Classic only; official `apache/activemq` image, versions 6.3.0 / 6.2.8 / 5.19.9 / latest
-- 2026-08-25: Added `src/entrypoint.sh` compatible with 5.19 / 6.2 / 6.3; fixed Web Console 403, 5.19 auth & CSP, and restart loop
-<!-- W9_CHANGELOG_END -->

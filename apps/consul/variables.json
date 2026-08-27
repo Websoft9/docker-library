@@ -2,8 +2,6 @@
   "name": "consul",
   "trademark": "Consul",
   "release": true,
-  "fork_url": "https://github.com/hashicorp/consul",
-  "version_from": "https://hub.docker.com/r/hashicorp/consul/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://www.consul.io"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/hashicorp/consul/tags"
   }
 }

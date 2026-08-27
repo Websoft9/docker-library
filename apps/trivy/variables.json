@@ -2,8 +2,6 @@
   "name": "trivy",
   "trademark": "Trivy",
   "release": true,
-  "fork_url": "https://aquasecurity.github.io/trivy/v0.53/getting-started/installation/#docker",
-  "version_from": "https://hub.docker.com/r/aquasec/trivy/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "2",
-    "url": "https://aquasecurity.github.io/trivy/v0.53/docs/"
+    "disk": "2"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/aquasec/trivy/tags"
   }
 }

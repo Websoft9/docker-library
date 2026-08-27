@@ -2,18 +2,20 @@
   "name": "guacamole",
   "trademark": "Guacamole",
   "release": false,
-  "fork_url": "https://github.com/boschkundendienst/guacamole-docker-compose",
-  "version_from": "https://hub.docker.com/r/guacamole/guacamole/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["latest"]
+      "version": [
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "1",
-    "url": "https://guacamole.incubator.apache.org/doc/gug/introduction.html"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/guacamole/guacamole/tags"
   }
 }

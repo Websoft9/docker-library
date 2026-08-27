@@ -5,6 +5,7 @@
 - [ ] Read upstream release notes and upgrade notes
 - [ ] Choose `x.x` or `x.x.x` tag using repository policy
 - [ ] Update only required files
+- [ ] Fix minimum app-local conformance drift required by current gates or generation rules
 - [ ] Keep changes app-local
 - [ ] Register new translatable env keys in `i18n/translation.json` if needed
 - [ ] Run structure, policy, deploy, and reachability checks when applicable

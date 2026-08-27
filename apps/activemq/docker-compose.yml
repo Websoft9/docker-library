@@ -7,6 +7,14 @@ services:
     container_name: $W9_ID
     restart: unless-stopped
     entrypoint: ["/bin/sh", "/opt/websoft9/entrypoint.sh"]
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - bash -lc 'exec 3<>/dev/tcp/127.0.0.1/8161'
+      interval: 10s
+      timeout: 10s
+      retries: 12
+      start_period: 20s
     env_file: .env
     volumes:
       - activemq_data:/opt/apache-activemq/data

@@ -2,18 +2,21 @@
   "name": "grafana",
   "trademark": "Grafana",
   "release": true,
-  "fork_url": "",
-  "version_from": "https://hub.docker.com/r/grafana/grafana/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["12.1.1","latest"]
+      "version": [
+        "12.1.1",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "2",
-    "url": "https://grafana.com/docs/grafana/latest/installation/requirements/#grafana-requirements"
+    "disk": "2"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/grafana/grafana/tags"
   }
 }

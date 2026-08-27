@@ -1,20 +1,22 @@
 {
-    "name": "gladys",
-    "trademark": "Gladys",
-    "release": true,
-    "fork_url": "https://github.com/GladysAssistant/Gladys",
-    "version_from": "https://hub.docker.com/r/gladysassistant/gladys/tags",
-    "edition": [
-      {
-        "dist": "community",
-        "version": ["v4.65.1", "latest"]
-      }
-    ],
-    "requirements": {
-      "cpu": "1",
-      "memory": "1",
-      "disk": "4",
-      "url": "https://gladysassistant.com/docs"
+  "name": "gladys",
+  "trademark": "Gladys",
+  "release": true,
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "v4.65.1",
+        "latest"
+      ]
     }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "4"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/gladysassistant/gladys/tags"
   }
-  
+}

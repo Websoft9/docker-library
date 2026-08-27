@@ -2,8 +2,6 @@
   "name": "opentelemetry",
   "trademark": "OpenTelemetry",
   "release": false,
-  "fork_url": "https://github.com/open-telemetry/opentelemetry-go",
-  "version_from": "",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,6 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "8",
-    "url": "https://opentelemetry.io/"
+    "disk": "8"
   }
 }

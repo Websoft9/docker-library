@@ -2,8 +2,6 @@
   "name": "ollama",
   "trademark": "Ollama",
   "release": true,
-  "fork_url": "https://github.com/ollama/ollama",
-  "version_from": "https://hub.docker.com/r/ollama/ollama/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://ollama.com"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/ollama/ollama/tags"
   }
 }

@@ -70,7 +70,7 @@ def test_sync_app_dry_run_preview(repo_fixture, app_factory):
         "name": "demo",
         "trademark": "Demo",
         "release": False,
-        "version_from": "https://hub.docker.com/_/demo/tags",
+        "upstream": {"image": "https://hub.docker.com/_/demo/tags"},
         "edition": [{"dist": "community", "version": ["1.0", "latest"]}],
         "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
     })
@@ -88,7 +88,7 @@ def test_contentful_create_cli_preview_exit_0(repo_fixture, app_factory):
         "name": "demo",
         "trademark": "Demo",
         "release": False,
-        "version_from": "https://hub.docker.com/_/demo/tags",
+        "upstream": {"image": "https://hub.docker.com/_/demo/tags"},
         "edition": [{"dist": "community", "version": ["1.0", "latest"]}],
         "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
     })
@@ -155,7 +155,7 @@ def test_sync_app_apply_creates_entry_when_absent(repo_fixture, app_factory, mon
         "name": "demo",
         "trademark": "Demo",
         "release": False,
-        "version_from": "https://hub.docker.com/_/demo/tags",
+        "upstream": {"image": "https://hub.docker.com/_/demo/tags"},
         "edition": [{"dist": "community", "version": ["1.0", "latest"]}],
         "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
     })

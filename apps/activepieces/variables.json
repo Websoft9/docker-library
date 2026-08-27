@@ -2,28 +2,46 @@
   "name": "activepieces",
   "trademark": "Activepieces",
   "release": true,
-  "fork_url": "https://github.com/activepieces/activepieces",
-  "version_from": "https://hub.docker.com/r/activepieces/activepieces/tags",
   "upstream": {
-    "image": "https://hub.docker.com/r/activepieces/activepieces/tags",
+    "image": "ghcr.io/activepieces/activepieces",
     "releases": "https://github.com/activepieces/activepieces/tags",
+    "compose": {
+      "compose": "https://raw.githubusercontent.com/activepieces/activepieces/main/docker-compose.yml",
+      "env": "https://raw.githubusercontent.com/activepieces/activepieces/main/.env.example"
+    },
     "docs": [
-      "https://github.com/activepieces/activepieces"
+      "https://github.com/activepieces/activepieces",
+      "https://www.activepieces.com/docs/install/options/docker-compose",
+      "https://www.activepieces.com/docs/install/reference/breaking-changes"
     ]
   },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "0.70.4",
+        "0.88.4",
         "latest"
       ]
     }
   ],
+  "database": {
+    "type": "postgresql",
+    "supported_modes": [
+      "bundled",
+      "external"
+    ],
+    "default_mode": "bundled",
+    "bundled": {
+      "service": "postgres",
+      "internal_host": "$W9_ID-postgresql",
+      "database_env": "AP_POSTGRES_DATABASE",
+      "username_env": "AP_POSTGRES_USERNAME",
+      "password_env": "AP_POSTGRES_PASSWORD"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "8",
-    "url": "https://www.activepieces.com"
+    "disk": "8"
   }
 }

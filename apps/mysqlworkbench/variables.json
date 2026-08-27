@@ -2,19 +2,21 @@
   "name": "mysqlworkbench",
   "trademark": "MySQL Workbench",
   "release": true,
-  "fork_url": "https://hub.docker.com/r/linuxserver/mysql-workbench",
-  "version_from": "https://hub.docker.com/r/linuxserver/mysql-workbench/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["8.0.40","latest"]
+      "version": [
+        "8.0.40",
+        "latest"
+      ]
     }
-
   ],
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "3",
-    "url": ""
+    "disk": "3"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/linuxserver/mysql-workbench/tags"
   }
 }

@@ -2,8 +2,6 @@
   "name": "budibase",
   "trademark": "Budibase",
   "release": true,
-  "fork_url": "https://github.com/Budibase/budibase/tree/develop/hosting",
-  "version_from": "https://hub.docker.com/r/budibase/proxy/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "8",
-    "disk": "1",
-    "url": "https://github.com/Budibase/budibase/tree/develop/hosting"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/budibase/proxy/tags"
   }
 }

@@ -2,8 +2,6 @@
   "name": "nomad",
   "trademark": "Nomad",
   "release": false,
-  "fork_url": "https://github.com/hashicorp/nomad",
-  "version_from": "https://hub.docker.com/r/hashicorp/nomad/tags",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://www.hashicorp.com/products/nomad"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/hashicorp/nomad/tags"
   }
 }

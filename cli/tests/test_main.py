@@ -30,7 +30,7 @@ def test_help_command_prints_parent_help(monkeypatch):
 
     assert output == [
         ("HELP TEXT", False),
-        ("\nRemote-capable commands may read defaults from .secrets/remote.env (TARGET, SSH_HOST, SSH_USER, SSH_SECRET_PATH, DEPLOY_ROOT). Current remote-aware commands: app-deploy, app-down, app-tests, appstore-sync, appstore-deploy.", False),
+        ("\nLocal by default; remote-aware commands read defaults from .secrets/remote.env (TARGET, SSH_HOST, SSH_USER, SSH_SECRET_PATH, DEPLOY_ROOT). Current remote-aware commands: app-deploy, app-down, app-tests, appstore-sync, appstore-deploy.", False),
     ]
 
 

@@ -2,18 +2,21 @@
   "name": "mlflow",
   "trademark": "MLflow",
   "release": true,
-  "fork_url": "https://github.com/mlflow/mlflow",
-  "version_from": "https://github.com/mlflow/mlflow/pkgs/container/mlflow",
   "edition": [
     {
       "dist": "community",
-      "version": ["v3.1.4","latest"]
+      "version": [
+        "v3.1.4",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "2",
-    "url": "https://mlflow.org/docs/latest/index.html"
+    "disk": "2"
+  },
+  "upstream": {
+    "image": "https://github.com/mlflow/mlflow/pkgs/container/mlflow"
   }
 }

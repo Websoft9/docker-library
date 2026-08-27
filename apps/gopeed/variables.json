@@ -2,18 +2,21 @@
   "name": "gopeed",
   "trademark": "Gopeed",
   "release": false,
-  "fork_url": "https://github.com/GopeedLab/gopeed",
-  "version_from": "https://hub.docker.com/r/liwei2633/gopeed/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["latest","v1.7.0"]
+      "version": [
+        "latest",
+        "v1.7.0"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": "https://docs.gopeed.com/install.html"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/liwei2633/gopeed/tags"
   }
 }

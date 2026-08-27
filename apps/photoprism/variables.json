@@ -2,8 +2,6 @@
   "name": "photoprism",
   "trademark": "PhotoPrism",
   "release": true,
-  "fork_url": "https://github.com/photoprism/photoprism",
-  "version_from": "https://hub.docker.com/r/photoprism/photoprism/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "10",
-    "url": "https://docs.photoprism.app/getting-started/#system-requirements"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/photoprism/photoprism/tags"
   }
 }

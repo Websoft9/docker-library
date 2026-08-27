@@ -2,8 +2,6 @@
   "name": "keploy",
   "trademark": "Keploy",
   "release": false,
-  "fork_url": "https://github.com/keploy/keploy",
-  "version_from": "ghcr.io/keploy/keploy",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://keploy.io"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "ghcr.io/keploy/keploy"
   }
 }

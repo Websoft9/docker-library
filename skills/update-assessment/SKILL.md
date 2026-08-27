@@ -30,14 +30,15 @@ Supporting files in this skill:
 5. Read upstream release notes, changelog, or upgrade guide.
 6. Check whether the candidate fits the app's update policy and cadence.
 7. Assess breaking risk for compose, env keys, volumes, init flow, login flow, and data path.
-8. Assess the database dependency when `libs drift` lists a DB engine image:
+8. Perform a read-only repository conformance screening for the current app package against current quality gates and generation rules. Record only issues that materially affect update cost, safety, or readiness; do not expand into a full implementation review.
+9. Assess the database dependency when `libs drift` lists a DB engine image:
    - Read `W9_DB_VERSION` from `apps/<app>/.env` as the authoritative current DB version.
    - Read `metadata/db-lifecycle.json`; if the engine is missing or the snapshot is stale (older than 45 days), run `libs db-refresh` first.
    - Read the vendor-tested minimum from official release notes or docs, not from `externalDB`.
    - Compute candidates: alive tracks with version >= vendor minimum; LTS/stable preferred over innovation/short-term.
    - Judge the vendor-tested upper bound from release notes or docs; untested majors are not eligible.
    - If the current `W9_DB_VERSION` is EOL'd or a better LTS candidate exists, report a DB finding with recommendation and reason. It does not block the main version decision.
-9. Decide one result: `auto-update`, `review-first`, `defer`, or `skip`.
+10. Decide one result: `auto-update`, `review-first`, `defer`, or `skip`.
 
 ## Output
 
@@ -47,6 +48,7 @@ A short assessment report:
 - candidate class
 - decision
 - short rationale
+- repository conformance finding (`ok`, `minor-fixes`, or `blocking-fixes`) with short scope note
 - database finding (current, min, recommendation + reason, or `no change`)
 - upstream references
 - owner attention points
@@ -54,6 +56,8 @@ A short assessment report:
 ## Rules
 
 - Assessment only. Do not edit any files. Exception: `libs db-refresh` may run to refresh the shared `metadata/db-lifecycle.json` fact snapshot.
+- The conformance screening is read-only and scoped. Check for structural, policy, metadata, or generated-doc drift only when it could change the update decision, increase implementation scope, or block validation.
+- Typical screening targets include required files, `src/` mount alignment, JSON/YAML validity, env key policy, `variables.json` required fields, and README generation compatibility.
 - DB findings use two machine fact sources: `W9_DB_VERSION` in `.env` is the current version, and `db-lifecycle.json` is the engine lifecycle source. Vendor minimums come from official docs. `externalDB` is user-facing help text only and must not be used for computation.
 - Never pick a DB major above the vendor-tested upper bound; prefer LTS over innovation.
 - An EOL'd current DB version is a P1 finding; report it even when the app itself needs no update.

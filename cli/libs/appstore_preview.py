@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 import shlex
-import shutil
 import subprocess
 import tempfile
 from collections.abc import Callable
@@ -10,6 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from libs.contentful import build_machine_fields, load_variables
+from libs import remote
 from libs.remote import resolve_secret_path as default_resolve_secret_path, scp_base, ssh_base, ssh_host as default_ssh_host, ssh_user as default_ssh_user
 from libs.repo import repo_path
 
@@ -25,16 +25,9 @@ def resolve_secret_path(secret_path: str | None) -> Path:
     return default_resolve_secret_path(secret_path)
 
 
-def secret_mode(secret_path: Path) -> str:
-    sample = secret_path.read_text(encoding="utf-8", errors="ignore")[:256]
-    if sample.lstrip().startswith("-----BEGIN "):
-        return "key"
-    return "password"
-
-
 def _ssh_shell_prefix(secret_path: Path) -> str:
     opts = " -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=15"
-    if secret_mode(secret_path) == "key":
+    if remote.secret_mode(secret_path) == "key":
         return f"ssh -i {secret_path}{opts}"
     if not shutil.which("sshpass"):
         raise FileNotFoundError("sshpass is required for password-based SSH; provide a key file or install sshpass")
@@ -73,7 +66,7 @@ def _announce(progress: ProgressWriter | None, index: int, total: int, message: 
 def _run(command: list[str], *, progress: ProgressWriter | None = None, verbose: bool = False) -> str:
     if progress and verbose:
         progress(f"$ {shlex.join(command)}")
-    result = subprocess.run(command, check=False, capture_output=True, text=True)
+    result = remote.run_command(command)
     if progress and verbose:
         if result.stdout.strip():
             progress(result.stdout.rstrip())
@@ -87,7 +80,9 @@ def _run(command: list[str], *, progress: ProgressWriter | None = None, verbose:
 def _run_local(command: str, *, cwd: Path | None = None, progress: ProgressWriter | None = None, verbose: bool = False) -> str:
     if progress and verbose:
         progress(f"$ {command}")
-    result = subprocess.run(["bash", "-lc", command], check=False, capture_output=True, text=True, cwd=cwd)
+    result = remote.scrub_completed_process(
+        subprocess.run(["bash", "-lc", command], check=False, capture_output=True, text=True, cwd=cwd)
+    )
     if progress and verbose:
         if result.stdout.strip():
             progress(result.stdout.rstrip())

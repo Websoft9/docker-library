@@ -2,8 +2,6 @@
   "name": "rowy",
   "trademark": "Rowy",
   "release": false,
-  "fork_url": "",
-  "version_from": "",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,6 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1",
-    "url": ""
+    "disk": "1"
   }
 }

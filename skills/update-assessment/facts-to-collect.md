@@ -3,7 +3,7 @@
 Repository facts:
 
 - current `W9_VERSION`
-- current upstream source from `version_from`
+- current upstream source from `upstream.image`
 - current compose image references
 - current database and runtime requirements
 - current cadence and update policy

@@ -2,8 +2,6 @@
   "name": "neko",
   "trademark": "Neko",
   "release": false,
-  "fork_url": "https://github.com/m1k1o/neko",
-  "version_from": "https://hub.docker.com/r/m1k1o/neko/tags",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "1",
-    "url": "https://neko.m1k1o.net"
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/m1k1o/neko/tags"
   }
 }

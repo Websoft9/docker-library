@@ -2,18 +2,20 @@
   "name": "mattermost",
   "trademark": "Mattermost",
   "release": true,
-  "fork_url": "https://github.com/mattermost/docker",
-  "version_from": "https://hub.docker.com/r/mattermost/mattermost-team-edition/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["11.1"]
+      "version": [
+        "11.1"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "8",
-    "url": "https://docs.mattermost.com/install/install-docker.html/"
+    "disk": "8"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/mattermost/mattermost-team-edition/tags"
   }
 }

@@ -2,8 +2,6 @@
   "name": "huggingchat",
   "trademark": "HuggingChat",
   "release": true,
-  "fork_url": "https://github.com/huggingface/chat-ui",
-  "version_from": "https://github.com/huggingface/chat-ui/pkgs/container/chat-ui",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://huggingface.co/chat"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://github.com/huggingface/chat-ui/pkgs/container/chat-ui"
   }
 }

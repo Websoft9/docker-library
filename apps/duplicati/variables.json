@@ -2,18 +2,21 @@
   "name": "duplicati",
   "trademark": "Duplicati",
   "release": true,
-  "fork_url": "https://hub.docker.com/r/linuxserver/duplicati",
-  "version_from": "https://hub.docker.com/r/linuxserver/duplicati/tags",
   "edition": [
     {
       "dist": "community",
-      "version": ["2.1.0","latest"]
+      "version": [
+        "2.1.0",
+        "latest"
+      ]
     }
   ],
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "2",
-    "url": "https://duplicati.readthedocs.io/en/latest/02-installation/#prerequisites"
+    "disk": "2"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/linuxserver/duplicati/tags"
   }
 }

@@ -4,7 +4,8 @@
 - [ ] If `<app>` is in the full list (active/archived/internal), report its status, scope, cadence, update_policy and stop (re-input name or terminate)
 - [ ] Read the issue prose, extract name, trademark, and at least one official reference URL
 - [ ] Read official docs, image references, repository rules, and `metadata/templates/new-app/`
-- [ ] Scaffold via `libs new-app --name ... --trademark ... [--version <x.x> --repo <image> --docs-* ...]`; it refuses duplicates and runs the quality gates; omitted version/repo become TODO placeholders
+- [ ] Scaffold via `libs new-app --name ... --trademark ... [--version <x.x> --repo <image> --docs-* ... --upstream-releases <url> --upstream-compose <url> --upstream-env <url>]`; it refuses duplicates and runs the quality gates; omitted version/repo become TODO placeholders
+- [ ] Fill any missing upstream fields in `variables.json` after research confirms what is applicable; omit fields that are not applicable
 - [ ] Fill compose design, upstream metadata, DB version, and i18n keys beyond the skeleton
 - [ ] Decide env groups: enable password group (DB/login apps) and web group (web apps); delete unused groups
 - [ ] Fill `.env` "image environment variables" section: single Docs URL, used vars, up to 5 unused vars commented out

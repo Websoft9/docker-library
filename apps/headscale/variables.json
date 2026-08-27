@@ -2,8 +2,6 @@
   "name": "headscale",
   "trademark": "Headscale",
   "release": false,
-  "fork_url": "https://github.com/juanfont/headscale",
-  "version_from": "ghcr.io/juanfont/headscale:latest",
   "edition": [
     {
       "dist": "community",
@@ -15,7 +13,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://headscale.net"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "ghcr.io/juanfont/headscale:latest"
   }
 }

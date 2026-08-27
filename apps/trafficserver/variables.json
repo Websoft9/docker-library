@@ -2,8 +2,6 @@
   "name": "trafficserver",
   "trademark": "Apache Traffic Server",
   "release": true,
-  "fork_url": "",
-  "version_from": "https://hub.docker.com/r/trafficserver/trafficserver/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://trafficserver.apache.org"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/trafficserver/trafficserver/tags"
   }
 }

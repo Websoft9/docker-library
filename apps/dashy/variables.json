@@ -2,8 +2,6 @@
   "name": "dashy",
   "trademark": "Dashy",
   "release": true,
-  "fork_url": "https://github.com/lissy93/dashy",
-  "version_from": "https://hub.docker.com/r/lissy93/dashy/tags",
   "edition": [
     {
       "dist": "community",
@@ -16,7 +14,9 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "10",
-    "url": "https://dashy.to"
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/lissy93/dashy/tags"
   }
 }

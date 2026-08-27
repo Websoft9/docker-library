@@ -2,8 +2,6 @@
   "name": "runtime",
   "trademark": "Web Runtime",
   "release": false,
-  "fork_url": "",
-  "version_from": "",
   "edition": [
     {
       "dist": "community",
@@ -23,7 +21,6 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "1",
-    "url": "https://github.com/Websoft9/docker-runtime"
+    "disk": "1"
   }
 }
