@@ -151,6 +151,7 @@ def test_sync_app_dir_sends_app_folder_without_extra_apps_prefix(repo_fixture, a
     def fake_run(command, check, cwd=None, text=True, capture_output=False):
         calls.append(command)
         class Result:
+            args = []
             stdout = ""
             stderr = ""
             returncode = 0
