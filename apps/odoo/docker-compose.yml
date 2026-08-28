@@ -14,10 +14,6 @@ services:
       - odoo_config:/etc/odoo
       - odoo_addons:/mnt/extra-addons
     env_file: .env
-    environment:
-      HOST: ${W9_ID}-postgresql
-      USER: $W9_ID
-      PASSWORD: ${W9_POWER_PASSWORD}
     depends_on:
       - postgresql
     restart: unless-stopped

@@ -2,8 +2,9 @@
   "name": "odoo",
   "trademark": "Odoo",
   "release": true,
-  "fork_url": "https://github.com/odoo/docker",
-  "version_from": "https://hub.docker.com/_/odoo/tags",
+  "upstream": {
+    "image": "https://hub.docker.com/_/odoo/tags"
+  },
   "edition": [
     {
       "dist": "community",
@@ -20,7 +21,9 @@
   "requirements": {
     "cpu": "1",
     "memory": "2",
-    "disk": "1",
-    "url": "https://github.com/odoo/docker"
+    "disk": "1"
+  },
+  "help": {
+    "db": "PostgreSQL 14+ (15.0 requires 11+, 16.0 requires 13+)"
   }
 }
