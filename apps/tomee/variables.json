@@ -35,6 +35,6 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/_/tomee/tags"
+    "image": "https://hub.docker.com/_/tomee"
   }
 }

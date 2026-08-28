@@ -17,6 +17,6 @@
     "disk": "2"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/clamav/clamav/tags"
+    "image": "https://hub.docker.com/r/clamav/clamav"
   }
 }

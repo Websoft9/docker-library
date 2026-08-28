@@ -9,7 +9,7 @@ from libs import newapp
 
 def test_tags_url_formats_short_repo_and_preserves_urls():
     assert newapp.tags_url("wordpress") == "wordpress"
-    assert newapp.tags_url("bitnami/wordpress") == "https://hub.docker.com/r/bitnami/wordpress/tags"
+    assert newapp.tags_url("bitnami/wordpress") == "https://hub.docker.com/r/bitnami/wordpress"
     assert newapp.tags_url("https://example.com/image") == "https://example.com/image"
 
 

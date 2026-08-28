@@ -17,6 +17,6 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/rajnandan1/kener/tags"
+    "image": "https://hub.docker.com/r/rajnandan1/kener"
   }
 }

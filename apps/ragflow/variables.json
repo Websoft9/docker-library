@@ -16,6 +16,6 @@
     "disk": "50"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/infiniflow/ragflow/tags"
+    "image": "https://hub.docker.com/r/infiniflow/ragflow"
   }
 }

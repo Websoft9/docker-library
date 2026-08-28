@@ -17,6 +17,6 @@
     "disk": "3"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/linuxserver/mysql-workbench/tags"
+    "image": "https://hub.docker.com/r/linuxserver/mysql-workbench"
   }
 }

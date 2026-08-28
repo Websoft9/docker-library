@@ -48,7 +48,7 @@ CLI-first source types (inferred from URL patterns, no manual `type` field):
 - `dockerhub-tags` - `hub.docker.com/...`
 - `ghcr-tags` - `ghcr.io/...`
 - `github-releases` - `github.com/.../releases`
-- `github-tags` - `github.com/.../tags`
+- `github-tags` - `github.com/org/repo` (tags are the default GitHub source; no `/tags` suffix needed)
 - `raw-compose` - compose files referenced by `upstream.compose.compose`
 - `raw-env` - env files referenced by `upstream.compose.env`
 
@@ -103,7 +103,7 @@ For image-driven apps:
 ```json
 {
   "upstream": {
-    "image": "https://hub.docker.com/_/wordpress/tags",
+    "image": "https://hub.docker.com/_/wordpress",
     "docs": [
       "https://github.com/docker-library/wordpress",
       "https://www.wordpress.org/docs/user_guide/en/install-requirements.html"
@@ -117,8 +117,8 @@ For compose-driven apps:
 ```json
 {
   "upstream": {
-    "image": "https://hub.docker.com/r/example/project/tags",
-    "releases": "https://github.com/example/project/tags",
+    "image": "https://hub.docker.com/r/example/project",
+    "releases": "https://github.com/example/project",
     "compose": {
       "compose": "https://raw.githubusercontent.com/example/project/main/docker-compose.yml",
       "env": "https://raw.githubusercontent.com/example/project/main/.env.example"
@@ -135,8 +135,8 @@ For image-driven apps with a project version list (verified rollback ladder):
 ```json
 {
   "upstream": {
-    "image": "https://hub.docker.com/_/wordpress/tags",
-    "releases": "https://github.com/WordPress/wordpress-develop/tags",
+    "image": "https://hub.docker.com/_/wordpress",
+    "releases": "https://github.com/WordPress/wordpress-develop",
     "compose": {},
     "docs": [
       "https://github.com/docker-library/wordpress",

@@ -3,8 +3,8 @@
   "trademark": "Akeneo",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/r/websoft9dev/akeneo/tags",
-    "releases": "https://github.com/akeneo/pim-community-dev/tags",
+    "image": "https://hub.docker.com/r/websoft9dev/akeneo",
+    "releases": "https://github.com/akeneo/pim-community-dev",
     "docs": [
       "https://github.com/akeneo/pim-community-dev"
     ]

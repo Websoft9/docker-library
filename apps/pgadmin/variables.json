@@ -17,6 +17,6 @@
     "disk": "2"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/dpage/pgadmin4/tags"
+    "image": "https://hub.docker.com/r/dpage/pgadmin4"
   }
 }

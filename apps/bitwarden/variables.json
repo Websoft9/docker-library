@@ -17,6 +17,6 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/bitwarden/self-host/tags"
+    "image": "https://hub.docker.com/r/bitwarden/self-host"
   }
 }

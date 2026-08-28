@@ -66,16 +66,20 @@ def _get_json(url: str, params: dict | None = None) -> tuple[dict | list | None,
         return None, str(error)
 
 
-def _dockerhub_api_url(version_from_url: str) -> str | None:
+def _dockerhub_api_url(url: str) -> str | None:
     try:
-        path_parts = version_from_url.split("/")
-        if "_/" in version_from_url:
-            image_name = path_parts[-2]
+        path = url.split("//", 1)[1]
+        parts = [part for part in path.split("/") if part]
+        if len(parts) < 3:
+            return None
+        if parts[1] == "_" and len(parts) >= 3:
+            image_name = parts[2]
             return f"https://hub.docker.com/v2/repositories/library/{image_name}/tags"
-
-        namespace = path_parts[-3]
-        image_name = path_parts[-2]
-        return f"https://hub.docker.com/v2/repositories/{namespace}/{image_name}/tags"
+        if parts[1] == "r" and len(parts) >= 4:
+            namespace = parts[2]
+            image_name = parts[3]
+            return f"https://hub.docker.com/v2/repositories/{namespace}/{image_name}/tags"
+        return None
     except Exception:
         return None
 

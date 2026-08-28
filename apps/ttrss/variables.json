@@ -17,6 +17,6 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/cthulhoo/ttrss-fpm-pgsql-static/tags"
+    "image": "https://hub.docker.com/r/cthulhoo/ttrss-fpm-pgsql-static"
   }
 }

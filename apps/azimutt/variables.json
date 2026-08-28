@@ -4,7 +4,7 @@
   "release": true,
   "upstream": {
     "image": "https://ghcr.io/azimuttapp/azimutt",
-    "releases": "https://github.com/azimuttapp/azimutt/tags",
+    "releases": "https://github.com/azimuttapp/azimutt",
     "docs": [
       "https://github.com/azimuttapp/azimutt"
     ]

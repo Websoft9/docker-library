@@ -19,6 +19,6 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/apache/kafka/tags"
+    "image": "https://hub.docker.com/r/apache/kafka"
   }
 }

@@ -186,6 +186,7 @@ Create new application must use [template](../template/), then set your file:
 - All exposed ports are marked with End of _SET, users can modify them
 - These variables must be included in .env: W9_REPO, W9_DIST, W9_VERSION, W9_ID
 - W9_URL is an identifier that distinguishes web applications
+- If the app has an install-time or first-startup external URL setting such as `root_url`, `base_url`, `public_url`, `site_url`, `app_url`, `host`, or `domain`, declare `W9_URL` and set `W9_URL_REPLACE=true`
 - There are two internal ports in the web application container: W9_HTTP_PORT, W9_HTTPS_PORT
 - The user's main database type is W9_ DB_ EXPOSE to determine
 

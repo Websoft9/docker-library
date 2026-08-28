@@ -16,6 +16,6 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/graylog/graylog/tags"
+    "image": "https://hub.docker.com/r/graylog/graylog"
   }
 }

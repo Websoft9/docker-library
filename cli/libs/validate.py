@@ -20,6 +20,15 @@ app = typer.Typer(
 
 REQUIRED_FILES = [".env", "docker-compose.yml", "variables.json", "README.md", "CHANGELOG.md"]
 TRANSLATABLE_ENV_RE = re.compile(r"^(W9_.*_SET|W9_LOGIN.*)$")
+URL_CONFIG_REF_RE = re.compile(r"\$(?:\{)?W9_URL(?:\})?")
+URL_AWARE_KEY_RE = re.compile(
+    r"(^|_)(ROOT_URL|BASE_URL|SITE_URL|APP_URL|PUBLIC_URL|WEBAPP_URL|HOMEPAGE_URL|EXTERNAL_URL|"
+    r"HOST|DOMAIN|SERVER_URL|PUBLISHEDSERVERURL|EXTERNALDOMAIN|EXTERNAL_HOST|PUBLIC_URI|WEBHOOK_URL)(_|$)",
+    re.IGNORECASE,
+)
+DEPENDENCY_IMAGE_RE = re.compile(r"^(?P<repo>[^:@]+(?:/[^:@]+)*):(?P<tag>[^@\s]+)(?:@(?P<digest>sha256:[a-f0-9]+))?$")
+PATCH_TAG_RE = re.compile(r"^\d+\.\d+\.\d+(?:[-_][A-Za-z0-9._-]+)?$")
+DEPENDENCY_TAG_HINT_RE = re.compile(r"(redis|postgres|postgresql|mysql|mariadb|pgvector)", re.IGNORECASE)
 
 
 def _read_compose(path: Path) -> dict:
@@ -66,6 +75,7 @@ def _policy_result(target: Path) -> dict:
         env_map[key] = value
 
     compose_text = compose_path.read_text(encoding="utf-8") if compose_path.exists() else ""
+    compose = _read_compose(compose_path) if compose_path.exists() else {}
     translation = {}
     if translation_path.exists():
         translation = json.loads(translation_path.read_text(encoding="utf-8"))
@@ -73,16 +83,51 @@ def _policy_result(target: Path) -> dict:
     missing_translation = [key for key in env_keys if TRANSLATABLE_ENV_RE.match(key) and key not in translation]
     login_keys = [key for key in ("W9_LOGIN_USER", "W9_LOGIN_PASSWORD") if key in env_map]
     login_pair_ok = len(login_keys) in (0, 2)
+    url_declared_ok = "W9_URL_REPLACE" not in env_map or "W9_URL" in env_map
+    url_replace_required = any(
+        not key.startswith("W9_") and URL_AWARE_KEY_RE.search(key) and URL_CONFIG_REF_RE.search(value)
+        for key, value in env_map.items()
+    ) or bool(URL_CONFIG_REF_RE.search(compose_text))
     url_replace_ok = True
     if "W9_URL_REPLACE" in env_map:
         url_replace_ok = "$W9_URL" in compose_text or any("$W9_URL" in value for value in env_map.values())
+    url_replace_required_ok = True
+    if url_replace_required:
+        url_replace_required_ok = env_map.get("W9_URL_REPLACE", "").strip("'\"").lower() == "true"
+    dependency_patch_tags = []
+    for service_name, service in (compose.get("services") or {}).items():
+        image = service.get("image")
+        if not isinstance(image, str) or "$" in image:
+            continue
+        match = DEPENDENCY_IMAGE_RE.match(image.strip())
+        if not match:
+            continue
+        repo = match.group("repo")
+        tag = match.group("tag")
+        if not DEPENDENCY_TAG_HINT_RE.search(repo):
+            continue
+        if PATCH_TAG_RE.match(tag):
+            dependency_patch_tags.append({"service": service_name, "image": image})
+    dependency_tag_policy_ok = not dependency_patch_tags
 
-    ok = not missing_translation and login_pair_ok and url_replace_ok
+    ok = (
+        not missing_translation
+        and login_pair_ok
+        and url_declared_ok
+        and url_replace_ok
+        and url_replace_required_ok
+        and dependency_tag_policy_ok
+    )
     return {
         "ok": ok,
         "missing_translation_keys": missing_translation,
         "login_pair_ok": login_pair_ok,
+        "url_declared_ok": url_declared_ok,
         "url_replace_ok": url_replace_ok,
+        "url_replace_required": url_replace_required,
+        "url_replace_required_ok": url_replace_required_ok,
+        "dependency_patch_tags": dependency_patch_tags,
+        "dependency_tag_policy_ok": dependency_tag_policy_ok,
     }
 
 

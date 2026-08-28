@@ -25,6 +25,6 @@
     "disk": "2"
   },
   "upstream": {
-    "image": "https://hub.docker.com/_/php/tags"
+    "image": "https://hub.docker.com/_/php"
   }
 }

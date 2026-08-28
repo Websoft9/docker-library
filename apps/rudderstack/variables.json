@@ -17,6 +17,6 @@
     "disk": "10"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/rudderlabs/rudder-server/tags"
+    "image": "https://hub.docker.com/r/rudderlabs/rudder-server"
   }
 }

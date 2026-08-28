@@ -16,6 +16,6 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/typesense/typesense/tags"
+    "image": "https://hub.docker.com/r/typesense/typesense"
   }
 }

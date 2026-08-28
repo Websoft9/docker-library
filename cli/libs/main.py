@@ -370,6 +370,8 @@ def contentful_create_command(
     app_name: str = typer.Option(..., "--app", help="App name"),
     environment: str = typer.Option("master", "--environment", help="Contentful environment"),
     drafts_dir: str = typer.Option(contentful.DEFAULT_DRAFTS_DIR, "--drafts-dir", help="Draft files directory, repo-relative"),
+    token: str | None = typer.Option(None, "--token", help="Contentful access token; highest-priority override"),
+    env_file: str | None = typer.Option(None, "--env-file", help="Contentful env file; overrides default .secrets/contentful.env"),
     apply: bool = typer.Option(False, "--apply", help="Write to Contentful instead of previewing"),
     update_machine: bool = typer.Option(False, "--update-machine", help="When the entry exists, refresh machine fields only"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
@@ -382,6 +384,48 @@ def contentful_create_command(
             drafts_dir=drafts_dir,
             apply=apply,
             update_machine=update_machine,
+            token=token,
+            env_file=env_file,
+        )
+    except FileNotFoundError as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=4)
+    print_output(payload, as_json)
+
+
+@app.command("contentful-update")
+def contentful_update_command(
+    app_name: str = typer.Option(..., "--app", help="App name"),
+    fields_json: str = typer.Option(
+        ...,
+        "--fields",
+        help='JSON object of fields to update, e.g. \'{"appStore": false, "production": false}\'',
+    ),
+    environment: str = typer.Option("master", "--environment", help="Contentful environment"),
+    token: str | None = typer.Option(None, "--token", help="Contentful access token; highest-priority override"),
+    env_file: str | None = typer.Option(None, "--env-file", help="Contentful env file; overrides default .secrets/contentful.env"),
+    apply: bool = typer.Option(False, "--apply", help="Write to Contentful instead of previewing"),
+    as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
+) -> None:
+    """Update fields on an existing Contentful product entry; previews by default."""
+    try:
+        fields = json.loads(fields_json)
+        if not isinstance(fields, dict):
+            raise ValueError("--fields must be a JSON object")
+    except json.JSONDecodeError as error:
+        typer.echo(f"invalid --fields JSON: {error}", err=True)
+        raise typer.Exit(code=2)
+    except ValueError as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=2)
+    try:
+        payload = contentful.update_fields(
+            app_name=app_name,
+            environment=environment,
+            fields=fields,
+            apply=apply,
+            token=token,
+            env_file=env_file,
         )
     except FileNotFoundError as error:
         typer.echo(str(error), err=True)

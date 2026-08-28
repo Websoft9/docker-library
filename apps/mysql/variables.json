@@ -27,6 +27,6 @@
     "disk": "8"
   },
   "upstream": {
-    "image": "https://hub.docker.com/_/mysql/tags"
+    "image": "https://hub.docker.com/_/mysql"
   }
 }

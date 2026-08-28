@@ -3,8 +3,8 @@
   "trademark": "Apache",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/_/httpd/tags",
-    "releases": "https://github.com/docker-library/httpd/tags",
+    "image": "https://hub.docker.com/_/httpd",
+    "releases": "https://github.com/docker-library/httpd",
     "docs": [
       "https://github.com/docker-library/httpd"
     ]

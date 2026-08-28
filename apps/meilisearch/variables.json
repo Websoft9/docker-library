@@ -17,6 +17,6 @@
     "disk": "8"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/getmeili/meilisearch/tags"
+    "image": "https://hub.docker.com/r/getmeili/meilisearch"
   }
 }

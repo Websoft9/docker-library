@@ -287,6 +287,7 @@ Version selection rules for `W9_VERSION`:
 - Use `x.x.x` only when:
   - upstream does not provide a usable `x.x` tag, or
   - an exact patch pin is required for compatibility, migration safety, or a known upstream regression.
+- For dependency images such as Redis, PostgreSQL, MySQL, MariaDB, and pgvector, `libs check --gate policy` treats hard-coded `x.x.x` compose tags as policy drift unless they are converted to a variable-managed tag or otherwise justified and modeled through the app package.
 - Do not use prerelease tags unless the task explicitly targets prerelease testing.
 
 These rules MUST apply to both manual edits and AI-driven update workflows.

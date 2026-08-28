@@ -17,6 +17,6 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/graphiteapp/graphite-statsd/tags"
+    "image": "https://hub.docker.com/r/graphiteapp/graphite-statsd"
   }
 }

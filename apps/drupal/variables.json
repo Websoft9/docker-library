@@ -18,6 +18,6 @@
     "disk": "2"
   },
   "upstream": {
-    "image": "https://hub.docker.com/_/drupal/tags"
+    "image": "https://hub.docker.com/_/drupal"
   }
 }

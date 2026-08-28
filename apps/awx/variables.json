@@ -4,7 +4,7 @@
   "release": true,
   "upstream": {
     "image": "https://quay.io/ansible/awx",
-    "releases": "https://github.com/ansible/awx/tags",
+    "releases": "https://github.com/ansible/awx",
     "docs": [
       "https://github.com/ansible/awx"
     ]

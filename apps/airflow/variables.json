@@ -3,8 +3,8 @@
   "trademark": "Airflow",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/r/apache/airflow/tags",
-    "releases": "https://github.com/apache/airflow/tags",
+    "image": "https://hub.docker.com/r/apache/airflow",
+    "releases": "https://github.com/apache/airflow",
     "docs": [
       "https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html",
       "https://github.com/apache/airflow"

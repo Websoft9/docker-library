@@ -141,23 +141,18 @@ def test_appstore_sync_cli_contract_progress_to_stderr(monkeypatch):
     ]
 
 
-def test_sync_app_dir_sends_app_folder_without_extra_apps_prefix(repo_fixture, app_factory, monkeypatch):
+def test_sync_app_dir_scp_to_staging_then_docker_cp(repo_fixture, app_factory, monkeypatch):
     app_factory("demo")
     calls = []
     secret_path = repo_fixture / ".secrets" / "ssh" / "default.pem"
     secret_path.parent.mkdir(parents=True, exist_ok=True)
     secret_path.write_text("-----BEGIN OPENSSH PRIVATE KEY-----\n", encoding="utf-8")
 
-    def fake_run(command, check, cwd=None, text=True, capture_output=False):
+    def fake_run(command, *, progress=None, verbose=False):
         calls.append(command)
-        class Result:
-            args = []
-            stdout = ""
-            stderr = ""
-            returncode = 0
-        return Result()
+        return ""
 
-    monkeypatch.setattr(appstore_preview.subprocess, "run", fake_run)
+    monkeypatch.setattr(appstore_preview, "_run", fake_run)
 
     appstore_preview._sync_app_dir(
         app_name="demo",
@@ -169,8 +164,20 @@ def test_sync_app_dir_sends_app_folder_without_extra_apps_prefix(repo_fixture, a
         backup_dir="/tmp/backup-demo",
     )
 
-    assert "tar czf - -C apps demo" in calls[0][2]
-    assert "docker exec -i websoft9 tar xzf - -C /websoft9/library/apps" in calls[0][2]
+    prepare = " ".join(calls[0])
+    assert "rm -rf /tmp/websoft9-appstore-staging-demo && mkdir -p /tmp/websoft9-appstore-staging-demo" in prepare
+    assert "mkdir -p /tmp/backup-demo" in prepare
+    assert "docker exec websoft9 sh -c 'tar czf - -C /websoft9/library/apps demo' > /tmp/backup-demo/demo.tgz" in prepare
+
+    scp_call = calls[1]
+    assert scp_call[0] == "scp"
+    assert any(arg.endswith("/apps/demo") for arg in scp_call)
+    assert scp_call[-1] == "root@1.2.3.4:/tmp/websoft9-appstore-staging-demo/"
+
+    apply_ssh = " ".join(calls[2])
+    assert "docker exec websoft9 sh -c 'rm -rf /websoft9/library/apps/demo'" in apply_ssh
+    assert "docker cp /tmp/websoft9-appstore-staging-demo/demo websoft9:/websoft9/library/apps" in apply_ssh
+    assert "rm -rf /tmp/websoft9-appstore-staging-demo" in apply_ssh
 
 
 def test_appstore_deploy_stub_not_implemented():

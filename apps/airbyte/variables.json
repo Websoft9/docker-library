@@ -3,8 +3,8 @@
   "trademark": "Airbyte",
   "release": false,
   "upstream": {
-    "image": "https://hub.docker.com/r/airbyte/webapp/tags",
-    "releases": "https://github.com/airbytehq/airbyte/tags",
+    "image": "https://hub.docker.com/r/airbyte/webapp",
+    "releases": "https://github.com/airbytehq/airbyte",
     "docs": [
       "https://github.com/airbytehq/airbyte"
     ]

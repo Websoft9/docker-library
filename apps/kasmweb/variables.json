@@ -16,6 +16,6 @@
     "disk": "5"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/kasmweb/desktop/tags"
+    "image": "https://hub.docker.com/r/kasmweb/desktop"
   }
 }

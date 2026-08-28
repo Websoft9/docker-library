@@ -3,7 +3,7 @@
   "trademark": "Odoo",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/_/odoo/tags"
+    "image": "https://hub.docker.com/_/odoo"
   },
   "edition": [
     {

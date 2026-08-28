@@ -17,6 +17,6 @@
     "disk": "4"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/lobehub/lobe-chat-database/tags"
+    "image": "https://hub.docker.com/r/lobehub/lobe-chat-database"
   }
 }

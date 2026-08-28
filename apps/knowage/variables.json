@@ -16,6 +16,6 @@
     "disk": "3"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/knowagelabs/knowage-server-docker/tags"
+    "image": "https://hub.docker.com/r/knowagelabs/knowage-server-docker"
   }
 }

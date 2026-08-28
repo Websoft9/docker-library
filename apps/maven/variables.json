@@ -31,6 +31,6 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/_/maven/tags"
+    "image": "https://hub.docker.com/_/maven"
   }
 }

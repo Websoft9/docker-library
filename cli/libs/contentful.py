@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import json
-import os
+
+from libs.credentials import resolve_secret
 
 CONTENTFUL_TOKEN_ENV = "CONTENTFUL_ACCESS_TOKEN"
 SPACE_ID = "ffrhttfighww"
@@ -77,10 +78,12 @@ def update_machine_fields(entry, machine_fields: dict) -> None:
     entry.publish()
 
 
-def _load_client():
-    token = os.getenv(CONTENTFUL_TOKEN_ENV)
+def _load_client(token: str | None = None, env_file: str | None = None):
+    token = resolve_secret(CONTENTFUL_TOKEN_ENV, "contentful", token, env_file)
     if not token:
-        raise FileNotFoundError(f"missing {CONTENTFUL_TOKEN_ENV} environment variable")
+        raise FileNotFoundError(
+            f"missing {CONTENTFUL_TOKEN_ENV}; set the env var, add .secrets/contentful.env, pass --env-file, or pass --token"
+        )
     try:
         from contentful_management import Client
     except ImportError as error:
@@ -88,7 +91,15 @@ def _load_client():
     return Client(token)
 
 
-def sync_app(app_name: str, environment: str, drafts_dir: str, apply: bool, update_machine: bool) -> dict:
+def sync_app(
+    app_name: str,
+    environment: str,
+    drafts_dir: str,
+    apply: bool,
+    update_machine: bool,
+    token: str | None = None,
+    env_file: str | None = None,
+) -> dict:
     variables = load_variables(app_name)
     draft = load_draft(app_name, drafts_dir)
     machine_fields = build_machine_fields(variables)
@@ -105,7 +116,7 @@ def sync_app(app_name: str, environment: str, drafts_dir: str, apply: bool, upda
         payload["action"] = "create"
         return payload
 
-    client = _load_client()
+    client = _load_client(token, env_file)
     existing = find_existing_entry(client, environment, app_name)
     if existing:
         if update_machine:
@@ -121,4 +132,39 @@ def sync_app(app_name: str, environment: str, drafts_dir: str, apply: bool, upda
     payload["action"] = "created"
     payload["dry_run"] = False
     payload["fields"] = sorted(fields)
+    return payload
+
+
+def update_fields(
+    app_name: str,
+    environment: str,
+    fields: dict,
+    apply: bool,
+    token: str | None = None,
+    env_file: str | None = None,
+) -> dict:
+    payload = {
+        "app": app_name,
+        "environment": environment,
+        "dry_run": not apply,
+        "fields": {key: value for key, value in fields.items() if value is not None},
+    }
+    if not apply:
+        payload["action"] = "update"
+        return payload
+
+    client = _load_client(token, env_file)
+    existing = find_existing_entry(client, environment, app_name)
+    if not existing:
+        payload["action"] = "not-found"
+        payload["dry_run"] = False
+        return payload
+
+    for key, value in fields.items():
+        if value is not None:
+            existing.fields("en-US")[key] = value
+    existing.save()
+    existing.publish()
+    payload["action"] = "updated"
+    payload["dry_run"] = False
     return payload

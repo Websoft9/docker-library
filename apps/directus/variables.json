@@ -17,6 +17,6 @@
     "disk": "4"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/directus/directus/tags"
+    "image": "https://hub.docker.com/r/directus/directus"
   }
 }

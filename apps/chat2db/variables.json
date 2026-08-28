@@ -17,6 +17,6 @@
     "disk": "2"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/chat2db/chat2db/tags"
+    "image": "https://hub.docker.com/r/chat2db/chat2db"
   }
 }

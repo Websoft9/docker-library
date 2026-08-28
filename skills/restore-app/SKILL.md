@@ -27,15 +27,17 @@ Supporting files in this skill:
 2. Confirm cadence and update policy with the user (defaults: monthly / patch-minor).
 3. Preview with `make --no-print-directory libs ARGS="restore --app <app> --cadence <c> --update-policy <p> --dry-run --json"` and show the actions.
 4. Run the real restore with the same command without `--dry-run`.
-5. Run a stale-version assessment: check `W9_VERSION` in `apps/<app>/.env` against the upstream image; if outdated, hand over to the `app-update` skill.
-6. Run the `deploy-validation` skill and produce a short test report.
-7. Recommend running `release-readiness-check` before publishing; owner E2E decides.
+5. Restore Contentful listing flags: for the restored app, preview `make libs ARGS="contentful-update --app <app> --fields '{\"appStore\": true, \"production\": true}'"` and hand the `--apply` run to the owner.
+6. Run a stale-version assessment: check `W9_VERSION` in `apps/<app>/.env` against the upstream image; if outdated, hand over to the `app-update` skill.
+7. Run the `deploy-validation` skill and produce a short test report.
+8. Recommend running `release-readiness-check` before publishing; owner E2E decides.
 
 ## Output
 
 - restored app
 - cadence and update policy assigned
 - metadata changes
+- Contentful handoff status
 - stale-version assessment result
 - owner E2E focus
 
@@ -45,3 +47,5 @@ Supporting files in this skill:
 - Restore is not release: a stale version must go through `app-update` before publish.
 - One app per issue unless the batch shares the same cadence and policy.
 - Do not delete app history.
+- Contentful updates use the `contentful_management` Python SDK (installed by `make install`). AI previews `contentful-update`; only the owner runs it with `--apply`.
+- Contentful listing flags for restore are `appStore` and `production`, both set to `true`.

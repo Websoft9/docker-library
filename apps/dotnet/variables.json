@@ -20,6 +20,6 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://mcr.microsoft.com/en-us/product/dotnet/sdk/tags"
+    "image": "https://mcr.microsoft.com/en-us/product/dotnet/sdk"
   }
 }

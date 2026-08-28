@@ -17,6 +17,6 @@
     "disk": "4"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/bitnami/discourse/tags"
+    "image": "https://hub.docker.com/r/bitnami/discourse"
   }
 }

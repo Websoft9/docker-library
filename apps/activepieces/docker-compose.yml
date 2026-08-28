@@ -46,7 +46,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   redis:
-    image: redis:7.0.7
+    image: redis:7.0
     container_name: $W9_ID-redis
     restart: unless-stopped
     volumes:

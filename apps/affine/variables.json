@@ -4,7 +4,7 @@
   "release": false,
   "upstream": {
     "image": "https://ghcr.io/toeverything/affine-graphql",
-    "releases": "https://github.com/toeverything/AFFiNE/tags",
+    "releases": "https://github.com/toeverything/AFFiNE",
     "docs": [
       "https://github.com/toeverything/AFFiNE",
       "https://docs.affine.pro/docs/self-host-affine"

@@ -3,8 +3,8 @@
   "trademark": "Akaunting",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/r/akaunting/akaunting/tags",
-    "releases": "https://github.com/akaunting/akaunting/tags",
+    "image": "https://hub.docker.com/r/akaunting/akaunting",
+    "releases": "https://github.com/akaunting/akaunting",
     "docs": [
       "https://github.com/akaunting/docker"
     ]

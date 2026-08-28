@@ -23,6 +23,6 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/redis/redisinsight/tags"
+    "image": "https://hub.docker.com/r/redis/redisinsight"
   }
 }

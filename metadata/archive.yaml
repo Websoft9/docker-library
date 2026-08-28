@@ -14,4 +14,5 @@ apps:
 - mingdao
 - nodebb
 - sscms
+- weblate
 overrides: {}

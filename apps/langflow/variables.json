@@ -16,6 +16,6 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://dockerhub.websoft9.com/r/langflowai/langflow/tags"
+    "image": "https://dockerhub.websoft9.com/r/langflowai/langflow"
   }
 }

@@ -16,6 +16,6 @@
     "disk": "10"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/lissy93/web-check/tags"
+    "image": "https://hub.docker.com/r/lissy93/web-check"
   }
 }

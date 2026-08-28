@@ -16,6 +16,6 @@
     "disk": "10"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/getlago/api/tags"
+    "image": "https://hub.docker.com/r/getlago/api"
   }
 }

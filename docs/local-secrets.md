@@ -10,8 +10,8 @@ This repository keeps local secrets and remote execution defaults outside git.
 | --- | --- |
 | `.secrets/remote.env` | Remote execution profile written by `make remote` (TARGET, SSH_HOST, SSH_USER, SSH_SECRET_PATH, DEPLOY_ROOT). Template: `metadata/templates/remote.env.example` |
 | `.secrets/ssh/default.pem` | Default SSH key for remote deploy-validation (chmod 600) |
-| `.secrets/contentful.key` | Contentful management token for `libs contentful-create --apply` |
-| `.secrets/cloudflare_r2` | Cloudflare R2 credentials for publish operations |
+| `.secrets/contentful.env` | Contentful token file for `libs contentful-create --apply` (`CONTENTFUL_ACCESS_TOKEN=...`) |
+| `.secrets/cloudflare.env` | Cloudflare token file for CLI or publish operations (`CLOUDFLARE_API_TOKEN=...`) |
 
 ## Manual vs CI
 
@@ -23,3 +23,5 @@ This repository keeps local secrets and remote execution defaults outside git.
 - Never commit secrets; keep files under `.secrets/` outside git.
 - Keep `.secrets/ssh/default.pem` with permissions `600`.
 - Run `make remote` to regenerate `.secrets/remote.env` interactively; the default deploy root is `/websoft9/library/apps`.
+- Run `make connector` to create or update provider token files such as `.secrets/contentful.env` and `.secrets/cloudflare.env` interactively.
+- Provider env files store the token directly as standard environment variables; no extra file indirection is used.

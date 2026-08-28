@@ -17,6 +17,6 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/_/phpmyadmin/tags"
+    "image": "https://hub.docker.com/_/phpmyadmin"
   }
 }

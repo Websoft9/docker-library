@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 import shlex
-import subprocess
 import tempfile
 from collections.abc import Callable
 from datetime import datetime, timezone
@@ -77,22 +76,6 @@ def _run(command: list[str], *, progress: ProgressWriter | None = None, verbose:
     return result.stdout.strip()
 
 
-def _run_local(command: str, *, cwd: Path | None = None, progress: ProgressWriter | None = None, verbose: bool = False) -> str:
-    if progress and verbose:
-        progress(f"$ {command}")
-    result = remote.scrub_completed_process(
-        subprocess.run(["bash", "-lc", command], check=False, capture_output=True, text=True, cwd=cwd)
-    )
-    if progress and verbose:
-        if result.stdout.strip():
-            progress(result.stdout.rstrip())
-        if result.stderr.strip():
-            progress(result.stderr.rstrip())
-    if result.returncode != 0:
-        raise RuntimeError(result.stderr.strip() or result.stdout.strip() or "command failed")
-    return result.stdout.strip()
-
-
 def _sync_app_dir(
     app_name: str,
     host: str,
@@ -105,20 +88,38 @@ def _sync_app_dir(
     progress: ProgressWriter | None = None,
     verbose: bool = False,
 ) -> None:
-    command = (
-        f"mkdir -p {backup_dir} && "
-        f"if docker exec {container} sh -c 'test -d {deploy_dir}/{app_name}'; then "
-        f"docker exec {container} sh -c 'tar czf - -C {deploy_dir} {app_name}' > {backup_dir}/{app_name}.tgz; fi && "
-        f"docker exec {container} sh -c 'rm -rf {deploy_dir}/{app_name}' && "
-        f"docker exec -i {container} tar xzf - -C {deploy_dir}"
+    staging_dir = f"/tmp/websoft9-appstore-staging-{app_name}"
+    remote = f"{user}@{host}"
+
+    _run(
+        ssh_base(host, user, secret_path)
+        + [
+            (
+                f"rm -rf {staging_dir} && mkdir -p {staging_dir} && mkdir -p {backup_dir} && "
+                f"if docker exec {container} sh -c 'test -d {deploy_dir}/{app_name}'; then "
+                f"docker exec {container} sh -c 'tar czf - -C {deploy_dir} {app_name}' > {backup_dir}/{app_name}.tgz; fi"
+            )
+        ],
+        progress=progress,
+        verbose=verbose,
     )
-    _run_local(
-        (
-            f"tar czf - -C apps {app_name} | "
-            + f"{_ssh_shell_prefix(secret_path)} "
-            + f"{user}@{host} \"{command}\""
-        ),
-        cwd=repo_path(),
+
+    _run(
+        scp_base(host, user, secret_path)
+        + ["-r", str(repo_path("apps", app_name)), f"{remote}:{staging_dir}/"],
+        progress=progress,
+        verbose=verbose,
+    )
+
+    _run(
+        ssh_base(host, user, secret_path)
+        + [
+            (
+                f"docker exec {container} sh -c 'rm -rf {deploy_dir}/{app_name}' && "
+                f"docker cp {staging_dir}/{app_name} {container}:{deploy_dir} && "
+                f"rm -rf {staging_dir}"
+            )
+        ],
         progress=progress,
         verbose=verbose,
     )

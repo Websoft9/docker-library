@@ -3,7 +3,7 @@
   "trademark": "ActiveMQ",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/r/apache/activemq/tags",
+    "image": "https://hub.docker.com/r/apache/activemq",
     "releases": "https://github.com/apache/activemq/releases",
     "docs": [
       "https://github.com/apache/activemq/tree/main/assembly/src/docker"

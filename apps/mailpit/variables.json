@@ -17,6 +17,6 @@
     "disk": "2"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/axllent/mailpit/tags"
+    "image": "https://hub.docker.com/r/axllent/mailpit"
   }
 }

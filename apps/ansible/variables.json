@@ -3,7 +3,7 @@
   "trademark": "Ansible",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/r/websoft9dev/ansible/tags",
+    "image": "https://hub.docker.com/r/websoft9dev/ansible",
     "docs": [
       "https://github.com/ansible/ansible"
     ]

@@ -115,6 +115,150 @@ def test_sync_app_apply_requires_token(repo_fixture, app_factory, monkeypatch):
         contentful.sync_app("demo", "master", "metadata/contentful-drafts", apply=True, update_machine=False)
 
 
+def test_sync_app_apply_accepts_explicit_token(repo_fixture, app_factory, monkeypatch):
+    app_factory("demo")
+    monkeypatch.delenv("CONTENTFUL_ACCESS_TOKEN", raising=False)
+    captured = {}
+
+    def fake_client_factory(token):
+        captured["token"] = token
+        return FakeClient()
+
+    monkeypatch.setitem(sys.modules, "contentful_management", types.SimpleNamespace(Client=fake_client_factory))
+
+    payload = contentful.sync_app(
+        "demo", "master", "metadata/contentful-drafts", apply=True, update_machine=False, token="explicit-token"
+    )
+
+    assert payload["action"] == "created"
+    assert captured["token"] == "explicit-token"
+
+
+def test_sync_app_apply_uses_default_contentful_env_file(repo_fixture, app_factory, monkeypatch):
+    app_factory("demo")
+    (repo_fixture / ".secrets").mkdir(exist_ok=True)
+    (repo_fixture / ".secrets" / "contentful.env").write_text(
+        "CONTENTFUL_ACCESS_TOKEN=file-token\n",
+        encoding="utf-8",
+    )
+    monkeypatch.delenv("CONTENTFUL_ACCESS_TOKEN", raising=False)
+    captured = {}
+
+    def fake_client_factory(token):
+        captured["token"] = token
+        return FakeClient()
+
+    monkeypatch.setitem(sys.modules, "contentful_management", types.SimpleNamespace(Client=fake_client_factory))
+
+    payload = contentful.sync_app("demo", "master", "metadata/contentful-drafts", apply=True, update_machine=False)
+
+    assert payload["action"] == "created"
+    assert captured["token"] == "file-token"
+
+
+def test_contentful_create_cli_forwards_token(repo_fixture, app_factory, monkeypatch):
+    calls = {}
+
+    def fake_sync_app(**kwargs):
+        calls.update(kwargs)
+        return {"app": kwargs["app_name"], "action": "create", "dry_run": True}
+
+    monkeypatch.setattr(contentful, "sync_app", fake_sync_app)
+
+    result = runner.invoke(main.app, ["contentful-create", "--app", "demo", "--token", "abc", "--json"])
+
+    assert result.exit_code == 0
+    assert calls["token"] == "abc"
+
+
+def test_contentful_create_cli_forwards_env_file(repo_fixture, app_factory, monkeypatch):
+    calls = {}
+
+    def fake_sync_app(**kwargs):
+        calls.update(kwargs)
+        return {"app": kwargs["app_name"], "action": "create", "dry_run": True}
+
+    monkeypatch.setattr(contentful, "sync_app", fake_sync_app)
+
+    result = runner.invoke(
+        main.app,
+        ["contentful-create", "--app", "demo", "--env-file", ".secrets/contentful.env", "--json"],
+    )
+
+    assert result.exit_code == 0
+    assert calls["env_file"] == ".secrets/contentful.env"
+
+
+def test_update_fields_dry_run_preview(repo_fixture, app_factory):
+    payload = contentful.update_fields("demo", "master", {"appStore": False, "production": False}, apply=False)
+
+    assert payload["action"] == "update"
+    assert payload["dry_run"] is True
+    assert payload["fields"] == {"appStore": False, "production": False}
+
+
+def test_update_fields_apply_updates_existing_entry(repo_fixture, app_factory, monkeypatch):
+    monkeypatch.setenv("CONTENTFUL_ACCESS_TOKEN", "token")
+    entry = FakeEntry()
+    fake_client = FakeClient(existing=entry)
+    monkeypatch.setitem(sys.modules, "contentful_management", types.SimpleNamespace(Client=lambda token: fake_client))
+
+    payload = contentful.update_fields("demo", "master", {"appStore": False, "production": False}, apply=True)
+
+    assert payload["action"] == "updated"
+    assert payload["dry_run"] is False
+    assert entry.fields_data["appStore"] is False
+    assert entry.fields_data["production"] is False
+
+
+def test_update_fields_apply_not_found(repo_fixture, app_factory, monkeypatch):
+    monkeypatch.setenv("CONTENTFUL_ACCESS_TOKEN", "token")
+    fake_client = FakeClient()
+    monkeypatch.setitem(sys.modules, "contentful_management", types.SimpleNamespace(Client=lambda token: fake_client))
+
+    payload = contentful.update_fields("demo", "master", {"appStore": False}, apply=True)
+
+    assert payload["action"] == "not-found"
+    assert payload["dry_run"] is False
+
+
+def test_contentful_update_cli_preview_exit_0(repo_fixture, app_factory):
+    result = runner.invoke(
+        main.app,
+        ["contentful-update", "--app", "demo", "--fields", '{"appStore": false, "production": false}', "--json"],
+    )
+
+    assert result.exit_code == 0
+    payload = json.loads(result.stdout)
+    assert payload["action"] == "update"
+    assert payload["dry_run"] is True
+
+
+def test_contentful_update_cli_invalid_fields_exit_2(repo_fixture, app_factory):
+    result = runner.invoke(main.app, ["contentful-update", "--app", "demo", "--fields", "not-json", "--json"])
+
+    assert result.exit_code == 2
+
+
+def test_contentful_update_cli_forwards_fields_and_apply(repo_fixture, app_factory, monkeypatch):
+    calls = {}
+
+    def fake_update_fields(**kwargs):
+        calls.update(kwargs)
+        return {"app": kwargs["app_name"], "action": "updated", "dry_run": False}
+
+    monkeypatch.setattr(contentful, "update_fields", fake_update_fields)
+
+    result = runner.invoke(
+        main.app,
+        ["contentful-update", "--app", "demo", "--fields", '{"appStore": false}', "--apply", "--json"],
+    )
+
+    assert result.exit_code == 0
+    assert calls["fields"] == {"appStore": False}
+    assert calls["apply"] is True
+
+
 class FakeEntry:
     def __init__(self):
         self.fields_data = {}

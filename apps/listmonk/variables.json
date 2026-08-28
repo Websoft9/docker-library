@@ -17,6 +17,6 @@
     "disk": "8"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/listmonk/listmonk/tags"
+    "image": "https://hub.docker.com/r/listmonk/listmonk"
   }
 }

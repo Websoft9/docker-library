@@ -53,7 +53,7 @@ def existing_app(name: str) -> dict | None:
 
 def tags_url(repo: str) -> str:
     if "/" in repo and not repo.startswith(("http://", "https://")):
-        return f"https://hub.docker.com/r/{repo}/tags"
+        return f"https://hub.docker.com/r/{repo}"
     return repo
 
 

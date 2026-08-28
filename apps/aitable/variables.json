@@ -3,8 +3,8 @@
   "trademark": "AITable",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/r/apitable/openresty/tags",
-    "releases": "https://github.com/apitable/apitable/tags",
+    "image": "https://hub.docker.com/r/apitable/openresty",
+    "releases": "https://github.com/apitable/apitable",
     "compose": {
       "compose": "https://raw.githubusercontent.com/apitable/apitable/develop/docker-compose.yaml"
     },

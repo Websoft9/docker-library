@@ -3,8 +3,8 @@
   "trademark": "ArangoDB",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/_/arangodb/tags",
-    "releases": "https://github.com/arangodb/arangodb/tags",
+    "image": "https://hub.docker.com/_/arangodb",
+    "releases": "https://github.com/arangodb/arangodb",
     "docs": [
       "https://github.com/arangodb/arangodb"
     ]

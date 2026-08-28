@@ -30,6 +30,6 @@
     "disk": "8"
   },
   "upstream": {
-    "image": "https://hub.docker.com/_/mariadb/tags"
+    "image": "https://hub.docker.com/_/mariadb"
   }
 }

@@ -18,6 +18,6 @@
     "disk": "8"
   },
   "upstream": {
-    "image": "https://hub.docker.com/_/varnish/tags"
+    "image": "https://hub.docker.com/_/varnish"
   }
 }

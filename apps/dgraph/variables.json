@@ -17,6 +17,6 @@
     "disk": "2"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/dgraph/dgraph/tags"
+    "image": "https://hub.docker.com/r/dgraph/dgraph"
   }
 }

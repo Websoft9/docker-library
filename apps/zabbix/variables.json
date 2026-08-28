@@ -17,6 +17,6 @@
     "disk": "2"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/zabbix/zabbix-web-nginx-pgsql/tags"
+    "image": "https://hub.docker.com/r/zabbix/zabbix-web-nginx-pgsql"
   }
 }

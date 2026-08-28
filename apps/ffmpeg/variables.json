@@ -3,8 +3,8 @@
   "trademark": "FFmpeg",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/r/linuxserver/ffmpeg/tags",
-    "releases": "https://github.com/FFmpeg/FFmpeg/tags",
+    "image": "https://hub.docker.com/r/linuxserver/ffmpeg",
+    "releases": "https://github.com/FFmpeg/FFmpeg",
     "docs": [
       "https://ffmpeg.org/documentation.html",
       "https://ffmpeg.org/download.html#releases"

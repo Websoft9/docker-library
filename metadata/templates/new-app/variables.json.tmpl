@@ -2,10 +2,6 @@
   "name": "{{ name }}",
   "trademark": "{{ trademark }}",
   "release": false,
-{% if has_fork_url %}
-  "fork_url": "{{ github_url }}",
-{% endif %}
-  "version_from": "{{ image_url }}",
   "upstream": {
     "image": "{{ image_url }}",
 {% if has_releases %}
@@ -32,7 +28,12 @@
   "requirements": {
     "cpu": "1",
     "memory": "1",
-    "disk": "1"{% if has_install_url %},
-    "url": "{{ install_url }}"{% endif %}
+    "disk": "1"
+  },
+  "env": {
+    "first_startup_only": []
+  },
+  "help": {
+    "db": ""
   }
 }

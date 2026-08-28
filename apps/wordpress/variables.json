@@ -3,8 +3,8 @@
   "trademark": "WordPress",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/_/wordpress/tags",
-    "releases": "https://github.com/WordPress/wordpress-develop/tags",
+    "image": "https://hub.docker.com/_/wordpress",
+    "releases": "https://github.com/WordPress/wordpress-develop",
     "compose": {},
     "docs": [
       "https://github.com/docker-library/wordpress",

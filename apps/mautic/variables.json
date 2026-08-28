@@ -16,6 +16,6 @@
     "disk": "4"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/mautic/mautic/tags"
+    "image": "https://hub.docker.com/r/mautic/mautic"
   }
 }

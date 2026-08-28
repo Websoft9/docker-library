@@ -16,6 +16,6 @@
     "disk": "10"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/xprobe/xinference/tags"
+    "image": "https://hub.docker.com/r/xprobe/xinference"
   }
 }

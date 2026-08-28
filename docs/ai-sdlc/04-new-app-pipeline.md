@@ -7,7 +7,7 @@ Steps:
 1. Issue provides `name`, `trademark`, and at least one official reference URL (`docs.github`, `docs.image`, or `docs.install`).
 2. AI researches the real image, version, official install, and compose patterns.
 3. AI creates the app from the machine template under `metadata/templates/new-app/`.
-4. AI fills `.env`, `docker-compose.yml`, `variables.json`, `README.md`, `CHANGELOG.md`, and `src/`.
+4. AI fills `.env`, `docker-compose.yml`, `variables.json`, `README.md`, `CHANGELOG.md`, and `src/`. When the app has an install-time or first-startup external URL setting, AI declares `W9_URL` and sets `W9_URL_REPLACE=true`.
 5. AI registers any new translatable env key in `i18n/translation.json`.
 6. AI runs automated validation.
 7. AI publishes the test report.

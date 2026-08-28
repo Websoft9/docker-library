@@ -17,6 +17,6 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/n8nio/n8n/tags"
+    "image": "https://hub.docker.com/r/n8nio/n8n"
   }
 }

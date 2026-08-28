@@ -17,6 +17,6 @@
     "disk": "4"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/easysoft/zentao/tags"
+    "image": "https://hub.docker.com/r/easysoft/zentao"
   }
 }

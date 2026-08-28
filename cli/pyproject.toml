@@ -14,7 +14,8 @@ dependencies = [
   "PyYAML>=6",
   "packaging>=24",
   "jsonschema>=4",
-  "Jinja2>=3"
+  "Jinja2>=3",
+  "contentful_management>=0.13"
 ]
 
 [project.scripts]

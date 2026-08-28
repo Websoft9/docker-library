@@ -24,6 +24,6 @@
     "disk": "2"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/emqx/emqx/tags"
+    "image": "https://hub.docker.com/r/emqx/emqx"
   }
 }

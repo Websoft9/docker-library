@@ -16,6 +16,6 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/hatamiarash7/memcached-admin/tags"
+    "image": "https://hub.docker.com/r/hatamiarash7/memcached-admin"
   }
 }

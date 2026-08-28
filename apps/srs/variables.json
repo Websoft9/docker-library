@@ -17,6 +17,6 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/ossrs/srs/tags"
+    "image": "https://hub.docker.com/r/ossrs/srs"
   }
 }

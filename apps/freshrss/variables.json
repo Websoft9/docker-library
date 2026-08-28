@@ -17,6 +17,6 @@
     "disk": "2"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/freshrss/freshrss/tags"
+    "image": "https://hub.docker.com/r/freshrss/freshrss"
   }
 }

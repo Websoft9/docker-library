@@ -19,5 +19,11 @@
     "cpu": "2",
     "memory": "4",
     "disk": "1"
+  },
+  "env": {
+    "first_startup_only": []
+  },
+  "help": {
+    "db": ""
   }
 }

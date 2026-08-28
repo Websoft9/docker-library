@@ -16,6 +16,6 @@
     "disk": "8"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/apachestreampipes/backend/tags"
+    "image": "https://hub.docker.com/r/apachestreampipes/backend"
   }
 }

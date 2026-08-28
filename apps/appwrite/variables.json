@@ -3,8 +3,8 @@
   "trademark": "Appwrite",
   "release": false,
   "upstream": {
-    "image": "https://hub.docker.com/r/appwrite/appwrite/tags",
-    "releases": "https://github.com/appwrite/appwrite/tags",
+    "image": "https://hub.docker.com/r/appwrite/appwrite",
+    "releases": "https://github.com/appwrite/appwrite",
     "docs": [
       "https://github.com/appwrite/appwrite"
     ]

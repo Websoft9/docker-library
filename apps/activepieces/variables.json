@@ -4,7 +4,7 @@
   "release": true,
   "upstream": {
     "image": "ghcr.io/activepieces/activepieces",
-    "releases": "https://github.com/activepieces/activepieces/tags",
+    "releases": "https://github.com/activepieces/activepieces",
     "compose": {
       "compose": "https://raw.githubusercontent.com/activepieces/activepieces/main/docker-compose.yml",
       "env": "https://raw.githubusercontent.com/activepieces/activepieces/main/.env.example"
@@ -19,7 +19,7 @@
     {
       "dist": "community",
       "version": [
-        "0.88.4",
+        "0.88.4-hotfix.1",
         "latest"
       ]
     }

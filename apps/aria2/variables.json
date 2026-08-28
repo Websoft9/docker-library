@@ -3,8 +3,8 @@
   "trademark": "Aria2",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/r/p3terx/aria2-pro/tags",
-    "releases": "https://github.com/aria2/aria2/tags",
+    "image": "https://hub.docker.com/r/p3terx/aria2-pro",
+    "releases": "https://github.com/aria2/aria2",
     "docs": [
       "https://github.com/aria2/aria2"
     ]

@@ -20,6 +20,6 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/_/zookeeper/tags"
+    "image": "https://hub.docker.com/_/zookeeper"
   }
 }

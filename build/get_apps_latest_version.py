@@ -26,19 +26,18 @@ def get_dockerhub_tags(api_url, max_pages=1, page_size=100, delay=1):
             return tags, str(e)
     return tags, None
 
-def convert_to_dockerhub_api_url(version_from_url):
+def convert_to_dockerhub_api_url(url):
     try:
-        path_parts = version_from_url.split('/')
-        if '_/' in version_from_url:
-            # Official image
-            image_name = path_parts[-2]
-            return f"https://hub.docker.com/v2/repositories/library/{image_name}/tags"
-        else:
-            # Non-official image
-            namespace = path_parts[-3]
-            image_name = path_parts[-2]
-            return f"https://hub.docker.com/v2/repositories/{namespace}/{image_name}/tags"
-    except Exception as e:
+        path = url.split('//', 1)[1]
+        parts = [p for p in path.split('/') if p]
+        if len(parts) < 3:
+            return None
+        if parts[1] == '_' and len(parts) >= 3:
+            return f"https://hub.docker.com/v2/repositories/library/{parts[2]}/tags"
+        if parts[1] == 'r' and len(parts) >= 4:
+            return f"https://hub.docker.com/v2/repositories/{parts[2]}/{parts[3]}/tags"
+        return None
+    except Exception:
         return None
 
 def get_current_versions(edition):

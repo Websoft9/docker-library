@@ -3,8 +3,8 @@
   "trademark": "AdguardHome",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/r/adguard/adguardhome/tags",
-    "releases": "https://github.com/AdguardTeam/AdguardHome/tags",
+    "image": "https://hub.docker.com/r/adguard/adguardhome",
+    "releases": "https://github.com/AdguardTeam/AdguardHome",
     "docs": [
       "https://github.com/AdguardTeam/AdguardHome"
     ]
@@ -13,7 +13,7 @@
     {
       "dist": "community",
       "version": [
-        "v0.107.64",
+        "v0.107.79",
         "latest"
       ]
     }

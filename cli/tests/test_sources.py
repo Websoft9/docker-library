@@ -28,6 +28,17 @@ def test_dockerhub_api_url_supports_library_and_namespaced_images():
     )
 
 
+def test_dockerhub_api_url_works_without_tags_suffix():
+    assert (
+        sources._dockerhub_api_url("https://hub.docker.com/_/wordpress")
+        == "https://hub.docker.com/v2/repositories/library/wordpress/tags"
+    )
+    assert (
+        sources._dockerhub_api_url("https://hub.docker.com/r/redis/redisinsight")
+        == "https://hub.docker.com/v2/repositories/redis/redisinsight/tags"
+    )
+
+
 def test_github_api_url_and_ghcr_repository_parsing():
     assert sources._github_api_url("https://github.com/owner/repo/releases") == "https://api.github.com/repos/owner/repo"
     assert sources._github_api_url("https://example.com/owner/repo") is None

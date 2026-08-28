@@ -68,7 +68,7 @@ def test_new_app_contracts_dry_run_and_duplicate_rejection(repo_fixture, app_fac
     payload = _json_output(dry_run)
     assert payload["app"] == "demo-app"
     assert payload["dry_run"] is True
-    assert payload["files"] == [".env", "docker-compose.yml", "variables.json", "README.md", "src/.gitkeep"]
+    assert payload["files"] == [".env", "docker-compose.yml", "variables.json", "README.md", "CHANGELOG.md", "src/.gitkeep"]
     assert not (repo_fixture / "apps" / "demo-app").exists()
 
     app_factory("demo-app")

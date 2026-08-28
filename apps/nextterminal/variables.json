@@ -17,6 +17,6 @@
     "disk": "4"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/dushixiang/next-terminal/tags"
+    "image": "https://hub.docker.com/r/dushixiang/next-terminal"
   }
 }

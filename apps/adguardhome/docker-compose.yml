@@ -1,6 +1,3 @@
-# image: https://hub.docker.com/r/adguard/adguardhome
-# docs: https://github.com/AdguardTeam/AdGuardHome?tab=readme-ov-file#getting-started
-
 services:
   adguardhome:
     image: ${W9_REPO}:${W9_VERSION}
@@ -14,10 +11,10 @@ services:
       - adguard-work:/opt/adguardhome/work
       - adguard-conf:/opt/adguardhome/conf
     ports:
-      - "${W9_DNS_TCP_PORT_SET}:53/tcp"
-      - "${W9_DNS_UDP_PORT_SET}:53/udp"
-      - "${W9_HTTP_PORT_SET}:80"
-      - "${W9_DASHBOARD_PORT_SET}:3000/tcp"
+      - "${W9_DNS_TCP_PORT_SET}:53/tcp"      # DNS (TCP)
+      - "${W9_DNS_UDP_PORT_SET}:53/udp"      # DNS (UDP)
+      - "${W9_HTTP_PORT_SET}:80"             # Web
+      - "${W9_DASHBOARD_PORT_SET}:3000/tcp"  # Dashboard
 
 networks:
   default:

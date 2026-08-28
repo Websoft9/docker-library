@@ -1,4 +1,4 @@
-.PHONY: help opencode opencode-clear install libs cli remote test test-cli test-build test-skills contentful-create app-deploy app-down appstore-sync appstore-preview appstore-deploy app-tests
+.PHONY: help opencode opencode-clear install libs cli remote connector test test-cli test-build test-skills
 
 ifeq ($(OS),Windows_NT)
 PYTHON ?= py
@@ -11,17 +11,34 @@ VENV_ACTIVATE := .venv/bin/activate
 endif
 
 help:
-	@grep -E '^[a-zA-Z0-9_-]+:.*?## ' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "; c="\033[1;36m"; g="\033[1;32m"; d="\033[2m"; r="\033[0m"} { if (NR==1) printf "\n  %s%s make targets%s\n\n  %s%s%s: %s<target>%s\n\n", c, "docker-library", r, d, "Usage", r, g, r } { printf "  %s%-16s%s %s\n", g, "make " $$1, r, $$2 } END { printf "\n" }'
+	@printf '\n  \033[1;36mdocker-library make targets\033[0m\n\n'
+	@printf '  \033[2mUsage\033[0m: \033[1;32mmake <target>\033[0m\n\n'
+	@printf '  \033[1;35m▸ Dev\033[0m\n'
+	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'opencode' 'start opencode with proxy disabled'
+	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'opencode-clear' 'list opencode sessions, confirm, then delete them (ARGS: --all/--dry-run)'
+	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'cli' 'enter an activated shell for libs'
+	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'libs' 'run one libs command, e.g. make libs ARGS="scan --app wordpress --json"'
+	@printf '\n  \033[1;35m▸ Testing & Quality\033[0m\n'
+	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'test' 'run the full repo machine-system test suite'
+	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'test-cli' 'run cli unit and contract tests'
+	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'test-build' 'run build pipeline smoke tests'
+	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'test-skills' 'run skills asset and workflow tests'
+	@printf '\n  \033[1;35m▸ Config & Setup\033[0m\n'
+	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'help' 'show this help'
+	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'install' 'create .venv and install the libs CLI'
+	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'remote' 'interactively write .secrets/remote.env for remote-aware commands'
+	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'connector' 'interactively write .secrets/<provider>.env for external API tokens'
+	@printf '\n'
 
-opencode: ## start opencode with proxy disabled
+opencode:
 	@echo "Starting opencode (proxy disabled)..."
 	@unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy ALL_PROXY all_proxy; \
 	no_proxy="*" NO_PROXY="*" opencode
 
-opencode-clear: ## list current-directory opencode sessions, confirm, then delete them (ARGS supports --all/--dry-run)
+opencode-clear:
 	@$(PYTHON) build/opencode_delete.py $(ARGS)
 
-install: ## create .venv and install the libs CLI
+install:
 	$(PYTHON) -m venv .venv
 	$(VENV_BIN)/pip install -e 'cli/[test]'
 	@proxy="$${https_proxy:-$${HTTPS_PROXY:-$${http_proxy:-$${HTTP_PROXY:-}}}}"; \
@@ -30,12 +47,12 @@ install: ## create .venv and install the libs CLI
 		echo "saved proxy: $$proxy"; \
 	fi
 
-libs: ## run one libs command, e.g. make libs ARGS="scan --app wordpress --json"
+libs:
 	@proxy="$${https_proxy:-$${HTTPS_PROXY:-$${http_proxy:-$${HTTP_PROXY:-}}}}"; \
 	if [ -n "$$proxy" ]; then export https_proxy="$$proxy" http_proxy="$$proxy" all_proxy="$$proxy" no_proxy= NO_PROXY=; fi; \
 	$(VENV_BIN)/libs $(ARGS)
 
-cli: ## enter an activated shell for libs
+cli:
 	@echo "Entering a shell with the libs CLI activated. Type 'exit' to leave."
 	@exec bash -c 'source $(VENV_ACTIVATE); \
 		proxy="$${https_proxy:-$${HTTPS_PROXY:-$${http_proxy:-$${HTTP_PROXY:-}}}}"; \
@@ -46,7 +63,7 @@ cli: ## enter an activated shell for libs
 		else echo "no proxy detected"; fi; \
 		libs -h; exec bash'
 
-remote: ## interactively write .secrets/remote.env for remote-aware commands
+remote:
 	@mkdir -p .secrets
 	@bash -lc 'set -e; \
 	  current_target="$${TARGET:-remote}"; \
@@ -71,37 +88,35 @@ remote: ## interactively write .secrets/remote.env for remote-aware commands
 	  chmod 600 .secrets/remote.env; \
 	  echo "wrote .secrets/remote.env"'
 
-test-cli: ## run cli unit and contract tests
+connector:
+	@mkdir -p .secrets
+	@bash -lc 'set -e; \
+	  current_choice=1; \
+	  if [ "${PROVIDER:-}" = "cloudflare" ] || [ "${PROVIDER:-}" = "2" ]; then current_choice=2; fi; \
+	  printf "Available providers:\n  1) contentful\n  2) cloudflare\n"; \
+	  read -r -p "provider [$$current_choice]: " input_choice; input_choice="$${input_choice:-$$current_choice}"; \
+	  case "$$input_choice" in \
+	    1|contentful) provider="contentful"; file=".secrets/contentful.env"; key="CONTENTFUL_ACCESS_TOKEN" ;; \
+	    2|cloudflare) provider="cloudflare"; file=".secrets/cloudflare.env"; key="CLOUDFLARE_API_TOKEN" ;; \
+	    *) echo "unsupported provider selection: $$input_choice" >&2; exit 1 ;; \
+	  esac; \
+	  if [ -f "$$file" ]; then echo "updating $$file"; else echo "creating $$file"; fi; \
+	  read -r -s -p "$$key: " input_token; echo; \
+	  if [ -z "$$input_token" ]; then echo "empty token is not allowed" >&2; exit 1; fi; \
+	  printf "%s=%s\n" "$$key" "$$input_token" > "$$file"; \
+	  chmod 600 "$$file"; \
+	  echo "wrote $$file"'
+
+test-cli:
 	$(VENV_BIN)/python -m pytest cli/tests -q
 
-test-build: ## run build pipeline smoke tests
+test-build:
 	$(VENV_BIN)/python -m pytest tests/build -q
 
-test-skills: ## run skills asset and workflow tests
+test-skills:
 	$(VENV_BIN)/python -m pytest tests/skills -q
 
-contentful-create: ## preview or create a Contentful product entry, e.g. make contentful-create ARGS="--app ffmpeg --apply"
-	$(VENV_BIN)/libs contentful-create $(ARGS)
-
-app-deploy: ## run docker compose deploy/teardown for one app
-	$(VENV_BIN)/libs app-deploy $(ARGS)
-
-app-down: ## tear one app down with docker compose down -v
-	$(VENV_BIN)/libs app-down $(ARGS)
-
-appstore-sync: ## sync one app into the remote websoft9 appstore JSON preview and app directory
-	$(VENV_BIN)/libs appstore-sync $(ARGS)
-
-appstore-preview: ## deprecated alias of make appstore-sync
-	$(VENV_BIN)/libs appstore-preview $(ARGS)
-
-appstore-deploy: ## deploy one app into a websoft9 container appstore (not implemented yet; pending the websoft9 container CLI)
-	$(VENV_BIN)/libs appstore-deploy $(ARGS)
-
-app-tests: ## run app functional checks declared in apps/<app>/tests/cases.yml
-	$(VENV_BIN)/libs app-tests $(ARGS)
-
-test: ## run the full repo machine-system test suite
+test:
 	$(MAKE) --no-print-directory test-cli
 	$(MAKE) --no-print-directory test-build
 	$(MAKE) --no-print-directory test-skills

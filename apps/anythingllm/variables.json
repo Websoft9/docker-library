@@ -3,8 +3,8 @@
   "trademark": "AnythingLLM",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/r/mintplexlabs/anythingllm/tags",
-    "releases": "https://github.com/Mintplex-Labs/anything-llm/tags",
+    "image": "https://hub.docker.com/r/mintplexlabs/anythingllm",
+    "releases": "https://github.com/Mintplex-Labs/anything-llm",
     "docs": [
       "https://github.com/Mintplex-Labs/anything-llm"
     ]

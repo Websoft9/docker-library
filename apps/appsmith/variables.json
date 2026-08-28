@@ -3,8 +3,8 @@
   "trademark": "Appsmith",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/r/appsmith/appsmith-ce/tags",
-    "releases": "https://github.com/appsmithorg/appsmith/tags",
+    "image": "https://hub.docker.com/r/appsmith/appsmith-ce",
+    "releases": "https://github.com/appsmithorg/appsmith",
     "docs": [
       "https://github.com/appsmithorg/appsmith"
     ]

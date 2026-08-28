@@ -3,8 +3,8 @@
   "trademark": "Apisix",
   "release": false,
   "upstream": {
-    "image": "https://hub.docker.com/r/apache/apisix/tags",
-    "releases": "https://github.com/apache/apisix/tags",
+    "image": "https://hub.docker.com/r/apache/apisix",
+    "releases": "https://github.com/apache/apisix",
     "docs": [
       "https://github.com/apache/apisix-docker"
     ]
