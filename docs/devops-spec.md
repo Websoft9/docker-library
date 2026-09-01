@@ -164,6 +164,7 @@ Naming guidance:
 Adapter naming guidance:
 
 - user-facing adapter commands such as opencode slash commands SHOULD prefer `<action>-<object>` because they represent direct user intent, for example `new-app`, `update-app`, `archive-app`, `restore-app`
+- project-provided opencode slash commands in this repository SHOULD carry the `libs-` prefix to distinguish them from opencode's official commands, for example `/libs-new-app`, `/libs-archive-app`, `/libs-catalog-seed`
 - shared skill names MAY stay workflow-oriented and do not need to match adapter command names exactly
 
 Rules:
@@ -223,20 +224,20 @@ Implemented now:
 
 ```bash
 libs list
-libs info --app <name>
+libs app-info --app <name>
 libs scan --selection due
-libs check --app <name> --gate all
-libs check --app <name> --gate structure
-libs check --app <name> --gate policy
-libs report --app <name>
-libs archive --app <name> --dry-run
+libs app-check --app <name> --gate all
+libs app-check --app <name> --gate structure
+libs app-check --app <name> --gate policy
+libs app-report --app <name>
+libs app-archive --app <name> --dry-run
 ```
 
 Planned next:
 
 ```bash
-libs check --app <name> --gate deploy
-libs check --app <name> --gate reachability
+libs app-check --app <name> --gate deploy
+libs app-check --app <name> --gate reachability
 libs new --app <name>
 libs docs-readme --app <name>
 libs contentful-sync --app <name>
@@ -287,7 +288,7 @@ Version selection rules for `W9_VERSION`:
 - Use `x.x.x` only when:
   - upstream does not provide a usable `x.x` tag, or
   - an exact patch pin is required for compatibility, migration safety, or a known upstream regression.
-- For dependency images such as Redis, PostgreSQL, MySQL, MariaDB, and pgvector, `libs check --gate policy` treats hard-coded `x.x.x` compose tags as policy drift unless they are converted to a variable-managed tag or otherwise justified and modeled through the app package.
+- For dependency images such as Redis, PostgreSQL, MySQL, MariaDB, and pgvector, `libs app-check --gate policy` treats hard-coded `x.x.x` compose tags as policy drift unless they are converted to a variable-managed tag or otherwise justified and modeled through the app package.
 - Do not use prerelease tags unless the task explicitly targets prerelease testing.
 
 These rules MUST apply to both manual edits and AI-driven update workflows.

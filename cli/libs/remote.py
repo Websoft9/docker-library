@@ -53,6 +53,10 @@ def deploy_root(value: str | None = None) -> str:
     return value or load_profile().get("DEPLOY_ROOT") or DEFAULT_DEPLOY_ROOT
 
 
+def appstore_container(value: str | None = None) -> str:
+    return value or load_profile().get("CONTAINER") or "websoft9"
+
+
 def resolve_path(path_value: str) -> Path:
     path = Path(path_value)
     if path.is_absolute():
@@ -139,6 +143,33 @@ def run_command(command: list[str]) -> subprocess.CompletedProcess:
 
 def run_ssh(host: str, user: str, secret_path: Path, script: str) -> subprocess.CompletedProcess:
     return run_command(ssh_base(host, user, secret_path) + [script])
+
+
+def stream_command(command: list[str], on_line=None) -> subprocess.CompletedProcess:
+    process = subprocess.Popen(
+        command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        bufsize=1,
+    )
+    assert process.stdout is not None
+    lines: list[str] = []
+    for line in process.stdout:
+        lines.append(line)
+        if on_line:
+            text = line.rstrip("\n")
+            if text:
+                on_line(text)
+    returncode = process.wait()
+    stdout = "".join(lines)
+    return scrub_completed_process(
+        subprocess.CompletedProcess(args=command, returncode=returncode, stdout=stdout, stderr="")
+    )
+
+
+def stream_ssh(host: str, user: str, secret_path: Path, script: str, on_line=None) -> subprocess.CompletedProcess:
+    return stream_command(ssh_base(host, user, secret_path) + [script], on_line=on_line)
 
 
 def preflight_ssh(host: str, user: str, secret_path: Path) -> subprocess.CompletedProcess:

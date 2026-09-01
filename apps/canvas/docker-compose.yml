@@ -1,0 +1,114 @@
+services:
+  web:
+    image: ${W9_REPO}:${W9_VERSION}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        CANVAS_VERSION: ${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      RAILS_ENV: production
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      CANVAS_DATABASE_HOST: ${CANVAS_DATABASE_HOST}
+      CANVAS_DATABASE_USERNAME: ${CANVAS_DATABASE_USERNAME}
+      CANVAS_DATABASE_PRODUCTION: ${CANVAS_DATABASE_PRODUCTION}
+      CANVAS_REDIS_URL: ${CANVAS_REDIS_URL}
+      CANVAS_LMS_ADMIN_EMAIL: ${CANVAS_LMS_ADMIN_EMAIL}
+      CANVAS_LMS_ADMIN_PASSWORD: ${CANVAS_LMS_ADMIN_PASSWORD}
+      CANVAS_LMS_ACCOUNT_NAME: ${CANVAS_LMS_ACCOUNT_NAME}
+      CANVAS_LMS_STATS_COLLECTION: ${CANVAS_LMS_STATS_COLLECTION}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      JWT_ENCRYPTION_KEY: ${JWT_ENCRYPTION_KEY}
+      CANVAS_HOST: ${W9_URL}
+    command: ["/usr/local/bin/entrypoint.sh", "web"]
+    ports:
+      - "${W9_HTTP_PORT_SET}:80" # Web Console
+    volumes:
+      - canvas_bundle:/usr/src/app/vendor/bundle
+      - canvas_tmp:/usr/src/app/tmp
+      - canvas_data:/usr/src/app/public/assets
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1/login/canvas >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 20
+      start_period: 300s
+
+  jobs:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}-jobs
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      RAILS_ENV: production
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      CANVAS_DATABASE_HOST: ${CANVAS_DATABASE_HOST}
+      CANVAS_DATABASE_USERNAME: ${CANVAS_DATABASE_USERNAME}
+      CANVAS_DATABASE_PRODUCTION: ${CANVAS_DATABASE_PRODUCTION}
+      CANVAS_REDIS_URL: ${CANVAS_REDIS_URL}
+      CANVAS_LMS_ADMIN_EMAIL: ${CANVAS_LMS_ADMIN_EMAIL}
+      CANVAS_LMS_ADMIN_PASSWORD: ${CANVAS_LMS_ADMIN_PASSWORD}
+      CANVAS_LMS_ACCOUNT_NAME: ${CANVAS_LMS_ACCOUNT_NAME}
+      CANVAS_LMS_STATS_COLLECTION: ${CANVAS_LMS_STATS_COLLECTION}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      JWT_ENCRYPTION_KEY: ${JWT_ENCRYPTION_KEY}
+      CANVAS_HOST: ${W9_URL}
+      CANVAS_SKIP_BOOTSTRAP: "true"
+    command: ["/usr/local/bin/entrypoint.sh", "jobs"]
+    volumes:
+      - canvas_bundle:/usr/src/app/vendor/bundle
+      - canvas_tmp:/usr/src/app/tmp
+      - canvas_data:/usr/src/app/public/assets
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      web:
+        condition: service_started
+
+  postgresql:
+    image: postgres:${W9_DB_VERSION}
+    container_name: ${W9_ID}-postgresql
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+    volumes:
+      - canvas_postgresql:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  redis:
+    image: redis:7.4
+    container_name: ${W9_ID}-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - canvas_redis:/data
+
+volumes:
+  canvas_bundle:
+  canvas_tmp:
+  canvas_data:
+  canvas_postgresql:
+  canvas_redis:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

@@ -1,0 +1,6 @@
+production:
+  address: <%= ENV.fetch('SMTP_ADDRESS', 'mailcatcher') %>
+  port: <%= ENV.fetch('SMTP_PORT', '25') %>
+  domain: <%= ENV.fetch('CANVAS_HOST', 'canvas.example.com') %>
+  outgoing_address: <%= ENV.fetch('CANVAS_OUTGOING_ADDRESS', 'canvas@canvas.example.com') %>
+  default_name: Instructure Canvas

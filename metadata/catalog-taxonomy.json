@@ -1,0 +1,808 @@
+{
+  "version": 1,
+  "source": "https://artifact.websoft9.com/appstore/release/catalog/catalog_en.json",
+  "locale": "en",
+  "categories": [
+    {
+      "key": "itdevops",
+      "title": "IT Monitor",
+      "position": 23,
+      "children": [
+        {
+          "key": "logs-Analytics",
+          "title": "Log Analytics",
+          "position": null
+        },
+        {
+          "key": "desktop",
+          "title": "Linux Desktop",
+          "position": null
+        },
+        {
+          "key": "apm",
+          "title": "APM",
+          "position": 10
+        },
+        {
+          "key": "backup",
+          "title": "Backup & Restore",
+          "position": 10
+        },
+        {
+          "key": "opsauto",
+          "title": "Operations Automation",
+          "position": 12
+        },
+        {
+          "key": "fullmonitor",
+          "title": "Full Monitoring",
+          "position": null
+        },
+        {
+          "key": "cpm",
+          "title": "Multicloud Management",
+          "position": null
+        },
+        {
+          "key": "itsm",
+          "title": "Cloud Infrastructure Monitoring",
+          "position": null
+        }
+      ]
+    },
+    {
+      "key": "analytics",
+      "title": "Data Analytics",
+      "position": 2,
+      "children": [
+        {
+          "key": "dstreaming",
+          "title": "Real-time Streaming Analysis",
+          "position": 4
+        },
+        {
+          "key": "master-data",
+          "title": "Master Data",
+          "position": 11
+        },
+        {
+          "key": "web-analytics",
+          "title": "Web Analytics",
+          "position": 11
+        },
+        {
+          "key": "data-catalog",
+          "title": "Data Catalog",
+          "position": 6
+        },
+        {
+          "key": "dataengine",
+          "title": "Data Search Engine",
+          "position": 1
+        },
+        {
+          "key": "logs-Analytics",
+          "title": "Log Analytics",
+          "position": null
+        },
+        {
+          "key": "dinsights",
+          "title": "Data Insights & BI",
+          "position": 1
+        },
+        {
+          "key": "dintegration",
+          "title": "Data Orchestration and Integration",
+          "position": 5
+        },
+        {
+          "key": "data-warehouse",
+          "title": "Data Warehouse and Lake",
+          "position": 11
+        }
+      ]
+    },
+    {
+      "key": "create",
+      "title": "Design & Create",
+      "position": 4,
+      "children": [
+        {
+          "key": "low-code",
+          "title": "Low Code and No Code",
+          "position": 12
+        },
+        {
+          "key": "dcreativity",
+          "title": "Digital creativity",
+          "position": 10
+        },
+        {
+          "key": "industrial-design",
+          "title": "Industrial Design",
+          "position": 10
+        },
+        {
+          "key": "virtual-reality",
+          "title": "Virtual Reality",
+          "position": 10
+        },
+        {
+          "key": "whiteboard-and-note",
+          "title": "Whiteboard and Note",
+          "position": 10
+        }
+      ]
+    },
+    {
+      "key": "iot",
+      "title": "IoT",
+      "position": 12,
+      "children": [
+        {
+          "key": "digital-twins",
+          "title": "Digital twins",
+          "position": null
+        },
+        {
+          "key": "device-security",
+          "title": "Device Security",
+          "position": 10
+        },
+        {
+          "key": "mqtt",
+          "title": "MQTT",
+          "position": 10
+        },
+        {
+          "key": "device-management",
+          "title": "Device Management and Monitor",
+          "position": 10
+        }
+      ]
+    },
+    {
+      "key": "runtime",
+      "title": "App Runtime",
+      "position": 11,
+      "children": [
+        {
+          "key": "ruby",
+          "title": "Ruby",
+          "position": 10
+        },
+        {
+          "key": "python",
+          "title": "Python",
+          "position": 10
+        },
+        {
+          "key": "html",
+          "title": "HTML",
+          "position": 10
+        },
+        {
+          "key": "docker",
+          "title": "Docker",
+          "position": 10
+        },
+        {
+          "key": "node",
+          "title": "Node",
+          "position": 10
+        },
+        {
+          "key": "java",
+          "title": "Java",
+          "position": 10
+        },
+        {
+          "key": "dotnet",
+          "title": ".NET",
+          "position": 10
+        },
+        {
+          "key": "php",
+          "title": "PHP",
+          "position": 10
+        },
+        {
+          "key": "go",
+          "title": "Go",
+          "position": 10
+        }
+      ]
+    },
+    {
+      "key": "communication",
+      "title": "Communication",
+      "position": 6,
+      "children": [
+        {
+          "key": "meeting",
+          "title": "Meeting",
+          "position": 10
+        },
+        {
+          "key": "chat",
+          "title": "Chat",
+          "position": null
+        },
+        {
+          "key": "email",
+          "title": "Email Server",
+          "position": 1
+        }
+      ]
+    },
+    {
+      "key": "games",
+      "title": "Games",
+      "position": 14,
+      "children": [
+        {
+          "key": "game-engine",
+          "title": "Game Engine",
+          "position": 1
+        },
+        {
+          "key": "games-server",
+          "title": "Games Server",
+          "position": 10
+        }
+      ]
+    },
+    {
+      "key": "database",
+      "title": "Databases",
+      "position": 10,
+      "children": [
+        {
+          "key": "data-warehouse",
+          "title": "Data Warehouse and Lake",
+          "position": 11
+        },
+        {
+          "key": "memorydb",
+          "title": "In-memory Database",
+          "position": 6
+        },
+        {
+          "key": "nosql",
+          "title": "NoSQL Database",
+          "position": 2
+        },
+        {
+          "key": "rds",
+          "title": "Relational Databases",
+          "position": 1
+        },
+        {
+          "key": "vector-databases",
+          "title": "Vector Databases",
+          "position": 5.1
+        },
+        {
+          "key": "newsql",
+          "title": "NewSQL Database",
+          "position": 3
+        },
+        {
+          "key": "timedbs",
+          "title": "Time Series Database",
+          "position": 4
+        },
+        {
+          "key": "graphdb",
+          "title": "Graph Databases",
+          "position": 5
+        },
+        {
+          "key": "dbtools",
+          "title": "Database Management Tools",
+          "position": 21
+        }
+      ]
+    },
+    {
+      "key": "security",
+      "title": "IT Security",
+      "position": 24,
+      "children": [
+        {
+          "key": "teampassm",
+          "title": "Team Password Management",
+          "position": 1
+        },
+        {
+          "key": "firewall",
+          "title": "Firewall",
+          "position": 10
+        },
+        {
+          "key": "access-control",
+          "title": "Access Control",
+          "position": 10
+        },
+        {
+          "key": "pam",
+          "title": "Privileged Access Management",
+          "position": 10
+        },
+        {
+          "key": "softwarechain",
+          "title": "Software supply chain",
+          "position": 11
+        },
+        {
+          "key": "security-detection",
+          "title": "Detection and Monitor",
+          "position": 10
+        }
+      ]
+    },
+    {
+      "key": "ai",
+      "title": "AI + Machine Learning",
+      "position": 1,
+      "children": [
+        {
+          "key": "ai-for-video",
+          "title": "AI Writing and Creative Content Generation",
+          "position": 1.2
+        },
+        {
+          "key": "open-llm",
+          "title": "Local AI model Service and Runtime",
+          "position": 2
+        },
+        {
+          "key": "ai-devops",
+          "title": "AI DevOps",
+          "position": 4
+        },
+        {
+          "key": "ai-industry",
+          "title": "Machine Vision and Industrial AI Applications",
+          "position": 1.5
+        },
+        {
+          "key": "ai-ml",
+          "title": "Machine Learning and Model Training",
+          "position": 3
+        },
+        {
+          "key": "aiui",
+          "title": "AI Models Unified Interface",
+          "position": 1
+        },
+        {
+          "key": "ai-agent-chat",
+          "title": "AI Agents/Chatbots/RAG",
+          "position": 1.4
+        }
+      ]
+    },
+    {
+      "key": "collaboration",
+      "title": "Collaboration & Office",
+      "position": 7,
+      "children": [
+        {
+          "key": "pm-task",
+          "title": "Project and Task",
+          "position": 1
+        },
+        {
+          "key": "cloud-workspaces",
+          "title": "Cloud Workspaces",
+          "position": 10
+        },
+        {
+          "key": "teampassm",
+          "title": "Team Password Management",
+          "position": 1
+        },
+        {
+          "key": "document",
+          "title": "Document Collaboration",
+          "position": null
+        },
+        {
+          "key": "files",
+          "title": "Files Management",
+          "position": 10
+        }
+      ]
+    },
+    {
+      "key": "networking",
+      "title": "Networking",
+      "position": 13,
+      "children": [
+        {
+          "key": "httpserver",
+          "title": "HTTP Server",
+          "position": 1
+        },
+        {
+          "key": "dns",
+          "title": "DNS Server",
+          "position": 10
+        },
+        {
+          "key": "application-gateway",
+          "title": "Application Gateway",
+          "position": 10
+        },
+        {
+          "key": "virtual-networking",
+          "title": "Virtual networking",
+          "position": 10
+        },
+        {
+          "key": "api",
+          "title": "API Gateway",
+          "position": 1
+        },
+        {
+          "key": "balancer",
+          "title": "Load Balancer",
+          "position": 1
+        }
+      ]
+    },
+    {
+      "key": "itdeveloper",
+      "title": "IT Developer",
+      "position": 21,
+      "children": [
+        {
+          "key": "pipeline",
+          "title": "CI/CD Pipeline",
+          "position": 3
+        },
+        {
+          "key": "repository",
+          "title": "Code Repository",
+          "position": 1
+        },
+        {
+          "key": "testing",
+          "title": "TestPlan",
+          "position": 4
+        },
+        {
+          "key": "artifact-repository",
+          "title": "Artifact Repository",
+          "position": 2
+        },
+        {
+          "key": "devops",
+          "title": "DevOps All",
+          "position": 0
+        },
+        {
+          "key": "low-code",
+          "title": "Low Code and No Code",
+          "position": 12
+        },
+        {
+          "key": "agile",
+          "title": "Agile Boards",
+          "position": 10
+        },
+        {
+          "key": "ide",
+          "title": "Web IDE",
+          "position": 6
+        },
+        {
+          "key": "webframework",
+          "title": "Web Framework",
+          "position": null
+        },
+        {
+          "key": "softwarechain",
+          "title": "Software supply chain",
+          "position": 11
+        },
+        {
+          "key": "orchestration",
+          "title": "Application orchestration",
+          "position": 5
+        }
+      ]
+    },
+    {
+      "key": "cms",
+      "title": "Content Management",
+      "position": 5,
+      "children": [
+        {
+          "key": "kms",
+          "title": "Knowledge Management",
+          "position": 3
+        },
+        {
+          "key": "website",
+          "title": "Website Builder",
+          "position": 1
+        },
+        {
+          "key": "web-analytics",
+          "title": "Web Analytics",
+          "position": 11
+        },
+        {
+          "key": "community",
+          "title": "Online Community",
+          "position": 4
+        },
+        {
+          "key": "elearning",
+          "title": "eLearning",
+          "position": 5
+        },
+        {
+          "key": "ecommerce",
+          "title": "eCommerce",
+          "position": 2
+        },
+        {
+          "key": "headless-cms",
+          "title": "Headless CMS",
+          "position": 10
+        },
+        {
+          "key": "news-feed",
+          "title": "News Feed",
+          "position": 10
+        },
+        {
+          "key": "media-system",
+          "title": "Media System",
+          "position": 6
+        },
+        {
+          "key": "blog",
+          "title": "Blog",
+          "position": 1.2
+        }
+      ]
+    },
+    {
+      "key": "usecase",
+      "title": "Use Case",
+      "position": 0,
+      "children": [
+        {
+          "key": "ecms",
+          "title": "Enterprise content management",
+          "position": null
+        },
+        {
+          "key": "survey",
+          "title": "Data survey and collection",
+          "position": 10
+        },
+        {
+          "key": "marktech",
+          "title": "Content Marketing",
+          "position": 10
+        },
+        {
+          "key": "devop-case",
+          "title": "All-in-one DevOps",
+          "position": 10
+        },
+        {
+          "key": "operation",
+          "title": "Digtal for SCM and Operation",
+          "position": 10
+        },
+        {
+          "key": "education",
+          "title": "Software Labs for High Education",
+          "position": 10
+        },
+        {
+          "key": "home-server",
+          "title": "Home Server",
+          "position": null
+        }
+      ]
+    },
+    {
+      "key": "automation",
+      "title": "Automation",
+      "position": 8,
+      "children": [
+        {
+          "key": "rpa",
+          "title": "RPA",
+          "position": 1
+        },
+        {
+          "key": "opsauto",
+          "title": "Operations Automation",
+          "position": 12
+        },
+        {
+          "key": "ai-agent-chat",
+          "title": "AI Agents/Chatbots/RAG",
+          "position": 1.4
+        },
+        {
+          "key": "pipeline",
+          "title": "CI/CD Pipeline",
+          "position": 3
+        },
+        {
+          "key": "business-automation",
+          "title": "Business automation",
+          "position": 12
+        }
+      ]
+    },
+    {
+      "key": "architecture",
+      "title": "IT Architecture",
+      "position": 22,
+      "children": [
+        {
+          "key": "licensing",
+          "title": "Licensing and distribution",
+          "position": 10
+        },
+        {
+          "key": "baas",
+          "title": "BaaS",
+          "position": 10
+        },
+        {
+          "key": "dataengine",
+          "title": "Data Search Engine",
+          "position": 1
+        },
+        {
+          "key": "docs",
+          "title": "Document Service",
+          "position": null
+        },
+        {
+          "key": "application-gateway",
+          "title": "Application Gateway",
+          "position": 10
+        },
+        {
+          "key": "workflow",
+          "title": "Work Flow",
+          "position": null
+        },
+        {
+          "key": "email",
+          "title": "Email Server",
+          "position": 1
+        },
+        {
+          "key": "mq",
+          "title": "Message Queue",
+          "position": null
+        },
+        {
+          "key": "balancer",
+          "title": "Load Balancer",
+          "position": 1
+        },
+        {
+          "key": "game-engine",
+          "title": "Game Engine",
+          "position": 1
+        },
+        {
+          "key": "subscriptions-and-billing",
+          "title": "Subscriptions and billing",
+          "position": 10
+        },
+        {
+          "key": "key-management",
+          "title": "Key Management",
+          "position": 10
+        },
+        {
+          "key": "httpserver",
+          "title": "HTTP Server",
+          "position": 1
+        },
+        {
+          "key": "backup",
+          "title": "Backup & Restore",
+          "position": 10
+        },
+        {
+          "key": "container",
+          "title": "Container",
+          "position": null
+        },
+        {
+          "key": "api",
+          "title": "API Gateway",
+          "position": 1
+        },
+        {
+          "key": "video-server",
+          "title": "Video Server",
+          "position": 10
+        },
+        {
+          "key": "oss",
+          "title": "Object Storage",
+          "position": null
+        },
+        {
+          "key": "gis",
+          "title": "GIS Service",
+          "position": null
+        }
+      ]
+    },
+    {
+      "key": "business-operation",
+      "title": "Business Operation",
+      "position": 3,
+      "children": [
+        {
+          "key": "erp",
+          "title": "ERP & Finance",
+          "position": 2.2
+        },
+        {
+          "key": "smart-manufacturing",
+          "title": "Supply Chain & Manufacturing & Logistic",
+          "position": 1.2
+        },
+        {
+          "key": "crm",
+          "title": "CRM & Distribution & Order",
+          "position": 1.1
+        },
+        {
+          "key": "strategy",
+          "title": "Strategy & Legal & HR",
+          "position": 2.1
+        },
+        {
+          "key": "master-data",
+          "title": "Master Data",
+          "position": 11
+        },
+        {
+          "key": "business-automation",
+          "title": "Business automation",
+          "position": 12
+        },
+        {
+          "key": "marketing",
+          "title": "Marketing",
+          "position": 3
+        },
+        {
+          "key": "helpdesk",
+          "title": "Support & Customer Success",
+          "position": 1
+        },
+        {
+          "key": "plm",
+          "title": "PLM & PDM",
+          "position": 5
+        },
+        {
+          "key": "blockchain",
+          "title": "Blockchain",
+          "position": 12
+        }
+      ]
+    }
+  ]
+}

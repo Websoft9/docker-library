@@ -1,13 +1,75 @@
-version: '3.8'
-
 services:
   affine:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    ports:
+      - "${W9_HTTP_PORT_SET}:3010" # Web Console
+    env_file: .env
+    depends_on:
+      affine-migration:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - affine_storage:/root/.affine/storage
+      - ./src/config.json:/root/.affine/config/config.json:ro
+    healthcheck:
+      test: ["CMD-SHELL", "bash -lc 'exec 3<>/dev/tcp/127.0.0.1/3010'"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+      start_period: 20s
 
+  affine-migration:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}-migration
+    restart: "no"
+    env_file: .env
+    command: ["sh", "-c", "node ./scripts/self-host-predeploy.js"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - affine_storage:/root/.affine/storage
+      - ./src/config.json:/root/.affine/config/config.json:ro
+
+  postgres:
+    image: pgvector/pgvector:${W9_DB_VERSION}
+    container_name: ${W9_ID}-postgresql
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: affine
+      POSTGRES_DB: affine
+      POSTGRES_PASSWORD: ${W9_POWER_PASSWORD}
+      POSTGRES_INITDB_ARGS: --data-checksums
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "affine", "-d", "affine"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - affine_postgres:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7.4
+    container_name: ${W9_ID}-redis
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  affine_storage:
+  affine_postgres:
 
 networks:
   default:
     name: ${W9_NETWORK}
     external: true
-
-volumes:
-  akeneo:

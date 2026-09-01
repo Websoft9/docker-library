@@ -33,7 +33,7 @@
     "default_mode": "bundled",
     "bundled": {
       "service": "postgres",
-      "internal_host": "$W9_ID-postgresql",
+      "internal_host": "${W9_ID}-postgresql",
       "database_env": "AP_POSTGRES_DATABASE",
       "username_env": "AP_POSTGRES_USERNAME",
       "password_env": "AP_POSTGRES_PASSWORD"

@@ -182,7 +182,7 @@ Rules:
 
 ## AI Fallback Boundary
 
-When `libs drift` runs:
+When `libs app-drift` runs:
 - always trust `dependency_images`
 - trust `compose_drift` when status is `ok`
 - trust `config_drift` when status is `ok`

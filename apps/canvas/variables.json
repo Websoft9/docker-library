@@ -1,0 +1,39 @@
+{
+  "name": "canvas",
+  "trademark": "Canvas",
+  "release": true,
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "2026-05-20.143"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "4",
+    "memory": "8",
+    "disk": "20"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/websoft9dev/canvas",
+    "releases": "https://github.com/instructure/canvas-lms",
+    "compose": {
+      "compose": "https://raw.githubusercontent.com/instructure/canvas-lms/master/docker-compose.yml"
+    },
+    "docs": [
+      "https://github.com/instructure/canvas-lms/wiki/Production-Start",
+      "https://raw.githubusercontent.com/instructure/canvas-lms/master/Dockerfile.production"
+    ]
+  },
+  "env": {
+    "first_startup_only": [
+      "CANVAS_LMS_ADMIN_EMAIL",
+      "CANVAS_LMS_ADMIN_PASSWORD",
+      "CANVAS_LMS_ACCOUNT_NAME"
+    ]
+  },
+  "help": {
+    "db": "Canvas requires PostgreSQL 14+ and Redis 6+. This package bundles PostgreSQL 16 and Redis 7.4 for a single-node deployment."
+  }
+}

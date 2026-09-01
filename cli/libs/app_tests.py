@@ -15,7 +15,7 @@ from libs import remote
 from libs.repo import repo_path
 
 
-VAR_REF_RE = re.compile(r"\$([A-Z0-9_]+)")
+VAR_REF_RE = re.compile(r"\$\{?([A-Z0-9_]+)\}?")
 ProgressWriter = Callable[[str], None]
 
 DEFAULT_REQUIRED_CASES = (

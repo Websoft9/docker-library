@@ -15,7 +15,7 @@ def test_app_deploy_cli_contract_progress_to_stderr(monkeypatch):
     def fake_deploy(**kwargs):
         assert callable(kwargs["progress"])
         assert kwargs["verbose"] is False
-        kwargs["progress"]("[1/5] syncing deploy package")
+        kwargs["progress"]("[1/6] syncing deploy package")
         return {"app": kwargs["app_name"], "target": "remote", "action": "up -d"}
 
     monkeypatch.setattr(app_deploy, "deploy", fake_deploy)
@@ -35,13 +35,13 @@ def test_app_deploy_cli_contract_progress_to_stderr(monkeypatch):
     )
 
     assert output == [
-        ("[1/5] syncing deploy package", True),
+        ("[1/6] syncing deploy package", True),
         (json.dumps({"app": "demo", "target": "remote", "action": "up -d"}, indent=2, ensure_ascii=False), False),
     ]
 
 
 def test_app_deploy_local_step_sequence(monkeypatch, repo_fixture, app_factory):
-    app_factory("demo")
+    app_factory("demo", compose="services:\n  demo:\n    build: .\n")
     output = []
 
     def fake_run(command, *, progress=None, verbose=False):
@@ -49,28 +49,41 @@ def test_app_deploy_local_step_sequence(monkeypatch, repo_fixture, app_factory):
             progress(f"$ {' '.join(command)}")
         return types.SimpleNamespace(returncode=0, stdout="ok", stderr="")
 
+    def fake_stream(command, *, progress=None):
+        if progress:
+            progress("build line")
+        return types.SimpleNamespace(returncode=0, stdout="ok", stderr="")
+
     monkeypatch.setattr(app_deploy, "_run", fake_run)
+    monkeypatch.setattr(app_deploy, "_run_stream", fake_stream)
 
     payload = app_deploy.deploy("demo", target="local", progress=output.append, verbose=False)
 
     assert payload["target"] == "local"
     assert output == [
-        "[1/5] ensuring shared network",
-        "[2/5] validating compose config",
-        "[3/5] pulling images",
-        "[4/5] starting application",
-        "[5/5] showing container status",
+        "[1/6] ensuring shared network",
+        "[2/6] validating compose config",
+        "[3/6] pulling images",
+        "[4/6] building local images",
+        "build line",
+        "[5/6] starting application",
+        "[6/6] showing container status",
     ]
 
 
 def test_app_deploy_remote_step_sequence_for_down(monkeypatch, repo_fixture, app_factory):
-    app_factory("demo")
+    app_factory("demo", compose="services:\n  demo:\n    build: .\n")
     output = []
 
     monkeypatch.setattr(app_deploy, "_sync_app_dir", lambda *args, **kwargs: None)
     monkeypatch.setattr(
         app_deploy,
         "_run_remote",
+        lambda *args, **kwargs: types.SimpleNamespace(returncode=0, stdout="ok", stderr=""),
+    )
+    monkeypatch.setattr(
+        app_deploy,
+        "_run_remote_stream",
         lambda *args, **kwargs: types.SimpleNamespace(returncode=0, stdout="ok", stderr=""),
     )
     monkeypatch.setattr(app_deploy.remote, "ssh_host", lambda value=None: value or "1.2.3.4")
@@ -138,7 +151,7 @@ def test_app_down_cli_forwards_down_flag(monkeypatch):
 
 
 def test_app_deploy_remote_version_patches_remote_env(monkeypatch, repo_fixture, app_factory):
-    app_factory("demo")
+    app_factory("demo", compose="services:\n  web:\n    build: .\n    image: demo:1\n  jobs:\n    image: demo:1\n  db:\n    image: postgres:16\n")
     calls = []
     (repo_fixture / ".secrets" / "ssh").mkdir(parents=True, exist_ok=True)
     (repo_fixture / ".secrets" / "ssh" / "default.pem").write_text("-----BEGIN OPENSSH PRIVATE KEY-----\n", encoding="utf-8")
@@ -153,8 +166,40 @@ def test_app_deploy_remote_version_patches_remote_env(monkeypatch, repo_fixture,
         "_run_remote",
         lambda *args, **kwargs: (calls.append(args[3]), types.SimpleNamespace(returncode=0, stdout="ok", stderr=""))[1],
     )
+    monkeypatch.setattr(
+        app_deploy,
+        "_run_remote_stream",
+        lambda *args, **kwargs: (calls.append(args[3]), types.SimpleNamespace(returncode=0, stdout="ok", stderr=""))[1],
+    )
 
     payload = app_deploy.deploy("demo", target="remote", version="7.0")
 
     assert payload["version"] == "7.0"
     assert any("W9_VERSION='7.0'" in call for call in calls)
+    assert any("docker compose --progress plain" in call for call in calls)
+    assert any("pull db" in call for call in calls)
+    assert not any("pull jobs" in call for call in calls)
+
+
+def test_app_deploy_skips_build_when_compose_has_no_build(monkeypatch, repo_fixture, app_factory):
+    app_factory("demo", compose="services:\n  demo:\n    image: nginx:latest\n")
+    output = []
+    calls = []
+
+    def fake_run(command, *, progress=None, verbose=False):
+        calls.append(command)
+        return types.SimpleNamespace(returncode=0, stdout="ok", stderr="")
+
+    monkeypatch.setattr(app_deploy, "_run", fake_run)
+
+    payload = app_deploy.deploy("demo", target="local", progress=output.append, verbose=False)
+
+    assert payload["target"] == "local"
+    assert output == [
+        "[1/5] ensuring shared network",
+        "[2/5] validating compose config",
+        "[3/5] pulling images",
+        "[4/5] starting application",
+        "[5/5] showing container status",
+    ]
+    assert not any(command[:4] == ["docker", "compose", "--progress", "plain"] for command in calls)

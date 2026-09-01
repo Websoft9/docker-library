@@ -1,0 +1,5 @@
+production: &default
+  encryption_key: <%= ENV['ENCRYPTION_KEY'] %>
+  jwt_encryption_keys:
+    - <%= ENV['JWT_ENCRYPTION_KEY'] %>
+  lti_iss: 'https://canvas.instructure.com'

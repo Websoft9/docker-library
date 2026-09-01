@@ -21,14 +21,14 @@ Windows PowerShell:
 ```bash
 make cli     # enter an activated shell
 libs scan --selection due --json
-libs check --app wordpress --json
+libs app-check --app wordpress --json
 ```
 
 Windows PowerShell:
 
 ```powershell
 .\make.ps1 libs scan --selection due --json
-.\make.ps1 libs check --app wordpress --json
+.\make.ps1 libs app-check --app wordpress --json
 ```
 
 Or without activating:
@@ -56,24 +56,24 @@ py -m venv .venv
 ## Commands
 
 - `libs list` - list active apps
-- `libs info --app <name>` - show one app
+- `libs app-info --app <name>` - show one app
 - `libs scan` - scan upstream versions
-- `libs check --app <name>` - run structure + policy gates
-- `libs check --app <name> --gate structure`
-- `libs check --app <name> --gate policy`
-- `libs report --app <name>` - generate a short readiness report
-- `libs archive --app <name> --dry-run` - preview archive actions
-- `libs restore --app <name> --dry-run` - preview restore actions
-- `libs drift --app <name>` - list dependency images and compare upstream compose drift
+- `libs app-check --app <name>` - run structure + policy gates
+- `libs app-check --app <name> --gate structure`
+- `libs app-check --app <name> --gate policy`
+- `libs app-report --app <name>` - generate a short readiness report
+- `libs app-archive --app <name> --dry-run` - preview archive actions
+- `libs app-restore --app <name> --dry-run` - preview restore actions
+- `libs app-drift --app <name>` - list dependency images and compare upstream compose drift
 - `libs db-refresh` - refresh the DB lifecycle snapshot from endoflife.date
-- `libs check-maintenance` - validate maintenance/archive metadata against the app tree
-- `libs new-app --name <name> --trademark <brand> --dry-run` - preview a new app scaffold
-- `libs new-app --name <name> --trademark <brand> --upstream-releases <url> --upstream-compose <url> --upstream-env <url>` - prefill optional upstream sources used by scan, drift, and README generation
-- `libs gen-readme --app <name>` - regenerate one app's README from variables.json
-- `libs contentful-create --app <name>` - preview a Contentful product entry (use `--apply` to write)
-- `libs contentful-update --app <name> --fields '<json>'` - preview updating fields on an existing Contentful entry (use `--apply` to write); e.g. `--fields '{"appStore": false, "production": false}'`
+- `libs maintenance-check` - validate maintenance/archive metadata against the app tree
+- `libs app-new --name <name> --trademark <brand> --dry-run` - preview a new app scaffold
+- `libs app-new --name <name> --trademark <brand> --upstream-releases <url> --upstream-compose <url> --upstream-env <url>` - prefill optional upstream sources used by scan, drift, and README generation
+- `libs app-gen-readme --app <name>` - regenerate one app's README from variables.json
+- `libs catalog-push --app <name>` - preview pushing repo catalog + machine fields to Contentful (use `--apply` to write)
+- `libs catalog-update --app <name> --fields '<json>'` - preview updating fields on an existing Contentful product entry (use `--apply` to write); e.g. `--fields '{"appStore": false, "production": false}'`
   - Direct `libs` invocation: single-quote the JSON and use real double quotes inside, e.g. `--fields '{"appStore": false}'`
-  - `make libs ARGS="..."` wrapper: the outer double quotes need escapes, e.g. `make libs ARGS="contentful-update --app <name> --fields '{\"appStore\": false}'"`
+  - `make libs ARGS="..."` wrapper: the outer double quotes need escapes, e.g. `make libs ARGS="catalog-update --app <name> --fields '{\"appStore\": false}'"`
 - `libs app-deploy --app <name> [--ssh-host <ip>] [--progress] [--verbose]` - deploy one app locally or remotely; `--progress` prints step headers to stderr and `--verbose` also prints raw command output
 - `libs app-deploy --app <name> --version <tag>` - deploy a specific image tag by overriding `W9_VERSION` without modifying the repo `.env`
 - `libs app-down --app <name> [--ssh-host <ip>] [--progress] [--json]` - tear one app down with `docker compose down -v`

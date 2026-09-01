@@ -17,10 +17,10 @@ Required inputs:
 
 Steps:
 1. Run `libs scan --app <app> --json`.
-2. Run `libs drift --app <app> --json`.
+2. Run `libs app-drift --app <app> --json`.
 3. Read repository facts from `apps/<app>/`, `metadata/maintenance.yaml`, and the app README or notes only when scan or drift outputs are incomplete.
 4. Classify the candidate as `patch`, `minor`, `major`, or `security`.
-5. Assess the database dependency when `libs drift` lists a DB engine image:
+5. Assess the database dependency when `libs app-drift` lists a DB engine image:
    - read `W9_DB_VERSION` from `apps/<app>/.env` as the authoritative current version
    - read `metadata/db-lifecycle.json`; refresh with `libs db-refresh` when stale
    - read the vendor-tested minimum from official docs, not from `externalDB`
@@ -52,7 +52,7 @@ Rules:
 - `defer` means record the candidate and check again in the next cadence
 - `skip` means no update work should start for this candidate
 - when recommending a target image tag, prefer `x.x` over `x.x.x` unless upstream does not provide the `x.x` tag or exact patch pinning is required
-- if `libs drift` returns `not-declared` or `source-error`, AI may research missing upstream sources, but should not repeat local dependency inventory already produced by CLI
+- if `libs app-drift` returns `not-declared` or `source-error`, AI may research missing upstream sources, but should not repeat local dependency inventory already produced by CLI
 
 Decision hints:
 - patch: prefer `auto-update`

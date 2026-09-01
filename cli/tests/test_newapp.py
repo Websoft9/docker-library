@@ -72,4 +72,4 @@ def test_scaffold_dry_run_and_write(repo_fixture, monkeypatch):
     assert (repo_fixture / "apps" / "demo" / ".env").exists()
     assert (repo_fixture / "apps" / "demo" / "CHANGELOG.md").exists()
     assert written["check"] == {"app": "demo", "ok": True}
-    assert "run libs gen-readme --app <app> after editing variables.json" in written["todo"]
+    assert "run libs app-gen-readme --app <app> after editing variables.json" in written["todo"]

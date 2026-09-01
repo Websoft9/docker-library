@@ -1,0 +1,24 @@
+{
+  "trademark": "AFFiNE",
+  "catalogBindings": [
+    {
+      "parentKey": "collaboration",
+      "childKey": "document"
+    },
+    {
+      "parentKey": "create",
+      "childKey": "whiteboard-and-note"
+    },
+    {
+      "parentKey": "cms",
+      "childKey": "kms"
+    }
+  ],
+  "summary": "Open-source workspace that combines docs, whiteboards, and knowledge organization in one self-hosted app.",
+  "overview": "AFFiNE brings documents, whiteboards, and structured knowledge into one workspace. Teams can write notes, organize pages, and collaborate visually without switching between multiple tools.\n\nThe self-hosted edition is suitable for users who want control over deployment, storage, and upgrade timing while keeping the official product experience.",
+  "description": "AFFiNE is an all-in-one knowledge and collaboration workspace. It combines rich-text documents, whiteboards, and content organization into a unified interface that works well for personal knowledge management and team collaboration.\n\nThis package deploys the official AFFiNE server with PostgreSQL and Redis. It follows the upstream 0.27 self-hosting model, including the migration job and config.json-based runtime configuration.\n\nTypical use cases include team notes, project documentation, lightweight visual planning, and self-hosted knowledge bases.",
+  "websiteurl": "https://affine.pro",
+  "screenshots": [
+    "https://docs.affine.pro/assets/self-host-first-run.png"
+  ]
+}

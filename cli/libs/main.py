@@ -8,7 +8,7 @@ from rich.console import Console
 from rich.table import Table
 
 from libs import app as app_ops
-from libs import app_deploy, app_tests, appstore_preview, contentful, dblifecycle, drift, http, maintenance, newapp, readme, remote, validate, versions
+from libs import app_build, app_deploy, app_tests, appstore_sync, catalog, contentful, dblifecycle, drift, http, maintenance, newapp, readme, remote, validate, versions
 from libs.metadata import app_dir
 from libs.output import print_output
 
@@ -47,7 +47,7 @@ def proxy_command(
 def help_command(ctx: typer.Context) -> None:
     """Show help for libs. Same as libs --help."""
     typer.echo(ctx.parent.get_help())
-    typer.echo("\nLocal by default; remote-aware commands read defaults from .secrets/remote.env (TARGET, SSH_HOST, SSH_USER, SSH_SECRET_PATH, DEPLOY_ROOT). Current remote-aware commands: app-deploy, app-down, app-tests, appstore-sync, appstore-deploy.")
+    typer.echo("\nLocal by default; remote-aware commands read defaults from .secrets/remote.env (TARGET, SSH_HOST, SSH_USER, SSH_SECRET_PATH, DEPLOY_ROOT, CONTAINER). Current remote-aware commands: app-deploy, app-build, app-down, app-tests, appstore-sync, appstore-deploy.")
 
 
 @app.command("list")
@@ -77,7 +77,7 @@ def list_command(
     print_output(output, as_json)
 
 
-@app.command("info")
+@app.command("app-info")
 def info_command(
     app_name: str = typer.Option(..., "--app", help="App name"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
@@ -120,7 +120,7 @@ def scan_command(
     print_output(payload, as_json)
 
 
-@app.command("check")
+@app.command("app-check")
 def check_command(
     app_name: str = typer.Option(..., "--app", help="App name"),
     gate: str = typer.Option("all", "--gate", help="all | structure | policy"),
@@ -133,7 +133,7 @@ def check_command(
         raise typer.Exit(code=1)
 
 
-@app.command("report")
+@app.command("app-report")
 def report_command(
     app_name: str = typer.Option(..., "--app", help="App name"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
@@ -154,7 +154,7 @@ def report_command(
         raise typer.Exit(code=1)
 
 
-@app.command("archive")
+@app.command("app-archive")
 def archive_command(
     app_name: str = typer.Option(..., "--app", help="App name"),
     reason: str = typer.Option("owner-retired", help="Archive reason"),
@@ -169,7 +169,7 @@ def archive_command(
     print_output(payload, as_json)
 
 
-@app.command("restore")
+@app.command("app-restore")
 def restore_command(
     app_name: str = typer.Option(..., "--app", help="App name"),
     cadence: str = typer.Option("monthly", help="Maintenance cadence after restore"),
@@ -187,7 +187,7 @@ def restore_command(
     print_output(payload, as_json)
 
 
-@app.command("drift")
+@app.command("app-drift")
 def drift_command(
     app_name: str = typer.Option(..., "--app", help="App name"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
@@ -297,7 +297,7 @@ def db_refresh_command(
     print_output(payload, as_json)
 
 
-@app.command("check-maintenance")
+@app.command("maintenance-check")
 def check_maintenance_command() -> None:
     """Validate maintenance/archive metadata against the app tree."""
     try:
@@ -308,7 +308,7 @@ def check_maintenance_command() -> None:
     typer.echo("maintenance metadata valid")
 
 
-@app.command("new-app")
+@app.command("app-new")
 def new_app_command(
     name: str = typer.Option(..., "--name", help="App name, lowercase directory name"),
     trademark: str = typer.Option(..., "--trademark", help="Brand display name, e.g. WordPress"),
@@ -351,7 +351,7 @@ def new_app_command(
     print_output(payload, as_json)
 
 
-@app.command("gen-readme")
+@app.command("app-gen-readme")
 def gen_readme_command(
     app_name: str = typer.Option(..., "--app", help="App name"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
@@ -365,23 +365,74 @@ def gen_readme_command(
     print_output(payload, as_json)
 
 
-@app.command("contentful-create")
-def contentful_create_command(
+@app.command("catalog-refresh")
+def catalog_refresh_command(
+    url: str = typer.Option(catalog.DEFAULT_CATALOG_URL, "--url", help="Published catalog artifact URL"),
+    output: str = typer.Option(catalog.DEFAULT_TAXONOMY_OUTPUT, "--output", help="Repo-relative taxonomy snapshot path"),
+    check_product_schema: bool = typer.Option(False, "--check-product-schema", help="Also validate the published product artifact shape"),
+    product_url: str = typer.Option(catalog.DEFAULT_PRODUCT_URL, "--product-url", help="Published product artifact URL used by --check-product-schema"),
+    apply: bool = typer.Option(False, "--apply", help="Write the snapshot instead of previewing"),
+    as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
+) -> None:
+    """Refresh the repo catalog taxonomy snapshot from a published catalog artifact."""
+    try:
+        payload = catalog.refresh_catalog(
+            url=url,
+            output=output,
+            apply=apply,
+            check_product_schema=check_product_schema,
+            product_url=product_url,
+        )
+    except ValueError as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=2)
+    print_output(payload, as_json)
+
+
+@app.command("catalog-pull")
+def catalog_pull_command(
+    app_name: str = typer.Option(..., "--app", help="App name"),
+    product_url: str = typer.Option(catalog.DEFAULT_PRODUCT_URL, "--product-url", help="Published product artifact URL"),
+    catalog_dir: str = typer.Option(catalog.DEFAULT_CATALOG_DIR, "--catalog-dir", help="Repo catalog directory"),
+    only_diff: bool = typer.Option(False, "--only-diff", help="Show differences only; do not include incoming payload"),
+    apply: bool = typer.Option(False, "--apply", help="Write the pulled catalog data instead of previewing"),
+    as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
+) -> None:
+    """Pull one app's published commercial data into metadata/catalog, or show a diff only."""
+    try:
+        payload = catalog.pull_catalog(
+            app_name=app_name,
+            product_url=product_url,
+            catalog_dir=catalog_dir,
+            apply=apply,
+            only_diff=only_diff,
+        )
+    except FileNotFoundError as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=4)
+    except ValueError as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=2)
+    print_output(payload, as_json)
+
+
+@app.command("catalog-push")
+def catalog_push_command(
     app_name: str = typer.Option(..., "--app", help="App name"),
     environment: str = typer.Option("master", "--environment", help="Contentful environment"),
-    drafts_dir: str = typer.Option(contentful.DEFAULT_DRAFTS_DIR, "--drafts-dir", help="Draft files directory, repo-relative"),
+    catalog_dir: str = typer.Option(catalog.DEFAULT_CATALOG_DIR, "--catalog-dir", help="Repo catalog directory"),
     token: str | None = typer.Option(None, "--token", help="Contentful access token; highest-priority override"),
     env_file: str | None = typer.Option(None, "--env-file", help="Contentful env file; overrides default .secrets/contentful.env"),
     apply: bool = typer.Option(False, "--apply", help="Write to Contentful instead of previewing"),
     update_machine: bool = typer.Option(False, "--update-machine", help="When the entry exists, refresh machine fields only"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
 ) -> None:
-    """Create a Contentful product entry for one app; previews by default."""
+    """Push one app's repo catalog data and machine fields to Contentful; previews by default."""
     try:
         payload = contentful.sync_app(
             app_name=app_name,
             environment=environment,
-            drafts_dir=drafts_dir,
+            drafts_dir=catalog_dir,
             apply=apply,
             update_machine=update_machine,
             token=token,
@@ -390,11 +441,14 @@ def contentful_create_command(
     except FileNotFoundError as error:
         typer.echo(str(error), err=True)
         raise typer.Exit(code=4)
+    except ValueError as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=2)
     print_output(payload, as_json)
 
 
-@app.command("contentful-update")
-def contentful_update_command(
+@app.command("catalog-update")
+def catalog_update_command(
     app_name: str = typer.Option(..., "--app", help="App name"),
     fields_json: str = typer.Option(
         ...,
@@ -407,7 +461,7 @@ def contentful_update_command(
     apply: bool = typer.Option(False, "--apply", help="Write to Contentful instead of previewing"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
 ) -> None:
-    """Update fields on an existing Contentful product entry; previews by default."""
+    """Update fields on an existing catalog/product entry in Contentful; previews by default."""
     try:
         fields = json.loads(fields_json)
         if not isinstance(fields, dict):
@@ -439,8 +493,8 @@ def appstore_sync_command(
     ssh_host: str | None = typer.Option(None, "--ssh-host", help="Remote host IP or name"),
     ssh_user: str | None = typer.Option(None, "--ssh-user", help="Remote SSH user (default root)"),
     ssh_secret_path: str | None = typer.Option(None, "--ssh-secret-path", help="SSH secret path (key or password file)"),
-    container: str = typer.Option(appstore_preview.DEFAULT_CONTAINER, "--container", help="Remote websoft9 container name"),
-    json_dir: str = typer.Option(appstore_preview.DEFAULT_JSON_DIR, "--json-dir", help="JSON directory inside the container"),
+    container: str | None = typer.Option(None, "--container", help="Remote websoft9 container name (default: CONTAINER in .secrets/remote.env, else websoft9)"),
+    json_dir: str = typer.Option(appstore_sync.DEFAULT_JSON_DIR, "--json-dir", help="JSON directory inside the container"),
     progress: bool = typer.Option(False, "--progress", help="Show step progress on stderr"),
     verbose: bool = typer.Option(False, "--verbose", help="Show step progress and raw subprocess output on stderr"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
@@ -448,7 +502,7 @@ def appstore_sync_command(
     """Sync one app into the remote websoft9 appstore JSON preview and app directory."""
     try:
         progress_writer = (lambda message: typer.echo(message, err=True)) if (progress or verbose) else None
-        payload = appstore_preview.prepare_preview(
+        payload = appstore_sync.prepare_preview(
             app_name=app_name,
             host=ssh_host,
             user=ssh_user,
@@ -465,22 +519,6 @@ def appstore_sync_command(
         typer.echo(str(error), err=True)
         raise typer.Exit(code=1)
     print_output(payload, as_json)
-
-
-@app.command("appstore-preview", hidden=True)
-def appstore_preview_command(
-    app_name: str = typer.Option(..., "--app", help="App name"),
-    ssh_host: str | None = typer.Option(None, "--ssh-host", help="Remote host IP or name"),
-    ssh_user: str | None = typer.Option(None, "--ssh-user", help="Remote SSH user (default root)"),
-    ssh_secret_path: str | None = typer.Option(None, "--ssh-secret-path", help="SSH secret path (key or password file)"),
-    container: str = typer.Option(appstore_preview.DEFAULT_CONTAINER, "--container", help="Remote websoft9 container name"),
-    json_dir: str = typer.Option(appstore_preview.DEFAULT_JSON_DIR, "--json-dir", help="JSON directory inside the container"),
-    progress: bool = typer.Option(False, "--progress", help="Show step progress on stderr"),
-    verbose: bool = typer.Option(False, "--verbose", help="Show step progress and raw subprocess output on stderr"),
-    as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
-) -> None:
-    """Deprecated alias of appstore-sync."""
-    appstore_sync_command(app_name, ssh_host, ssh_user, ssh_secret_path, container, json_dir, progress, verbose, as_json)
 
 
 @app.command("app-deploy")
@@ -515,6 +553,42 @@ def app_deploy_command(
     except FileNotFoundError as error:
         typer.echo(str(error), err=True)
         raise typer.Exit(code=4)
+    except Exception as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=1)
+    print_output(payload, as_json)
+
+
+@app.command("app-build")
+def app_build_command(
+    app_name: str = typer.Option(..., "--app", help="App name"),
+    push: bool = typer.Option(False, "--push", help="Push built image tags after a successful build"),
+    registry: str | None = typer.Option(None, "--registry", help="Optional registry hostname for docker login"),
+    username: str | None = typer.Option(None, "--username", help="Registry username; overrides connector/env value"),
+    password: str | None = typer.Option(None, "--password", help="Registry password; overrides connector/env value"),
+    token: str | None = typer.Option(None, "--token", help="Registry token; highest-priority secret override"),
+    env_file: str | None = typer.Option(None, "--env-file", help="Docker Hub env file; overrides default .secrets/dockerhub.env"),
+    progress: bool = typer.Option(False, "--progress", help="Show build/push progress on stderr"),
+    as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
+) -> None:
+    """Build one app's Dockerfile-backed services, and optionally push tagged images."""
+    try:
+        payload = app_build.build_app(
+            app_name=app_name,
+            push=push,
+            env_file=env_file,
+            username=username,
+            password=password,
+            token=token,
+            registry=registry,
+            progress=(lambda message: typer.echo(message, err=True)) if progress else None,
+        )
+    except FileNotFoundError as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=4)
+    except ValueError as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=2)
     except Exception as error:
         typer.echo(str(error), err=True)
         raise typer.Exit(code=1)

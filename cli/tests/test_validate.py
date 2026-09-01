@@ -53,7 +53,7 @@ def test_policy_result_requires_url_replace_when_app_url_uses_w9_url(repo_fixtur
         env=(
             "W9_URL=appname.example.com\n"
             "W9_URL_REPLACE=false\n"
-            "APP_URL=http://$W9_URL\n"
+            "APP_URL=http://${W9_URL}\n"
         ),
     )
 
@@ -71,7 +71,7 @@ def test_policy_result_accepts_url_replace_for_app_url(repo_fixture, app_factory
         env=(
             "W9_URL=appname.example.com\n"
             "W9_URL_REPLACE=true\n"
-            "ROOT_URL=http://$W9_URL\n"
+            "ROOT_URL=http://${W9_URL}\n"
         ),
     )
 
@@ -79,6 +79,24 @@ def test_policy_result_accepts_url_replace_for_app_url(repo_fixture, app_factory
 
     assert result["url_replace_required"] is True
     assert result["url_replace_required_ok"] is True
+
+
+def test_policy_result_accepts_braced_url_replace_form(repo_fixture, app_factory):
+    app_path = app_factory(
+        "demo",
+        env=(
+            "W9_URL=appname.example.com\n"
+            "W9_URL_REPLACE=true\n"
+            "ROOT_URL=http://${W9_URL}\n"
+        ),
+    )
+
+    result = validate._policy_result(app_path)
+
+    assert result["ok"] is True
+    assert result["url_replace_required"] is True
+    assert result["url_replace_required_ok"] is True
+    assert result["url_replace_ok"] is True
 
 
 def test_policy_result_rejects_hard_pinned_dependency_patch_tag(repo_fixture, app_factory):
@@ -104,7 +122,7 @@ def test_policy_result_allows_variable_or_two_segment_dependency_tags(repo_fixtu
         compose=(
             "services:\n"
             "  db:\n"
-            "    image: postgres:$W9_DB_VERSION\n"
+            "    image: postgres:${W9_DB_VERSION}\n"
             "  redis:\n"
             "    image: redis:7.0\n"
         ),

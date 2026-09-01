@@ -6,7 +6,7 @@ argument-hint: [app name] [archive reason]
 
 Use the `archive-app` skill to run the archive workflow.
 
-Usage: /archive-app <app name> <archive reason>
+Usage: /libs-archive-app <app name> <archive reason>
 
 If the task input is `help` or empty, echo the usage line, then ask the user for the app name or app list and the archive reason.
 

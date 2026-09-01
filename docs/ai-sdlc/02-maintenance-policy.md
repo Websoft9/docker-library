@@ -41,7 +41,7 @@ Machine-readable source:
 - `metadata/archive.yaml` stores archived app metadata
 - apps not listed in cadence, policy, or lifecycle buckets inherit the defaults
 - archived apps are excluded from active update checks
-- `libs check-maintenance` validates metadata against `apps/` and `archive/apps/`
+- `libs maintenance-check` validates metadata against `apps/` and `archive/apps/`
 
 Archive metadata shape:
 - `defaults`: shared archive behavior

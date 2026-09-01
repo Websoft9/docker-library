@@ -13,9 +13,10 @@ Read in this order:
 1. `docs/vision.md`
 2. `docs/architecture.md`
 3. `docs/code_owner.md`
-4. `docs/ai-sdlc/README.md`
-5. `docs/upstream-spec.md`
-6. `.github/copilot-instructions.md`
+4. `docs/w9-env-spec.md`
+5. `docs/ai-sdlc/README.md`
+6. `docs/upstream-spec.md`
+7. `.github/copilot-instructions.md`
 
 ## Core Rules
 
@@ -23,7 +24,7 @@ Read in this order:
 - Keep changes minimal and app-local unless the task is explicitly cross-cutting.
 - Prefer official images or trusted upstream images.
 - If `docker-compose.yml` references `./src/...`, the file must exist.
-- Follow env conventions, especially `W9_URL`, `W9_URL_REPLACE`, `W9_LOGIN_USER`, and `W9_LOGIN_PASSWORD`.
+- Follow env conventions. The canonical `W9_*` reference is `docs/w9-env-spec.md` (semantics + decision rules); use `metadata/templates/new-app/.env.tmpl` for layout. Read both before editing `.env` or `docker-compose.yml`.
 - Validate by deployment when the task changes runnable behavior.
 
 ## i18n

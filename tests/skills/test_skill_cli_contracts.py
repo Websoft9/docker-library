@@ -36,7 +36,7 @@ def test_update_assessment_skill_commands_contract(skill_repo_fixture, skill_app
     monkeypatch.setattr(versions_module, "fetch_candidates", lambda *args, **kwargs: ({"version": "7.0", "last_updated": "2026-08-13"}, None))
 
     scan_result = runner.invoke(main.app, ["scan", "--app", "wordpress", "--json"])
-    drift_result = runner.invoke(main.app, ["drift", "--app", "wordpress", "--json"])
+    drift_result = runner.invoke(main.app, ["app-drift", "--app", "wordpress", "--json"])
 
     assert scan_result.exit_code == 0
     assert drift_result.exit_code == 0
@@ -48,11 +48,11 @@ def test_deploy_validation_and_restore_skill_commands_contract(skill_repo_fixtur
     skill_app_factory("demo")
     skill_app_factory("archived-demo", archived=True)
 
-    check_result = runner.invoke(main.app, ["check", "--app", "demo", "--json"])
+    check_result = runner.invoke(main.app, ["app-check", "--app", "demo", "--json"])
     list_result = runner.invoke(main.app, ["list", "--include-archived", "--json"])
     restore_preview = runner.invoke(
         main.app,
-        ["restore", "--app", "archived-demo", "--cadence", "monthly", "--update-policy", "patch-minor", "--dry-run", "--json"],
+        ["app-restore", "--app", "archived-demo", "--cadence", "monthly", "--update-policy", "patch-minor", "--dry-run", "--json"],
     )
 
     assert check_result.exit_code == 0
@@ -68,7 +68,7 @@ def test_new_app_and_db_refresh_skill_commands_contract(skill_repo_fixture, monk
 
     new_app_result = runner.invoke(
         main.app,
-        ["new-app", "--name", "demo-app", "--trademark", "Demo App", "--version", "1.0", "--repo", "bitnami/demo-app", "--dry-run", "--json"],
+        ["app-new", "--name", "demo-app", "--trademark", "Demo App", "--version", "1.0", "--repo", "bitnami/demo-app", "--dry-run", "--json"],
     )
     db_refresh_result = runner.invoke(main.app, ["db-refresh", "--engine", "mysql", "--json"])
 
@@ -83,7 +83,7 @@ def test_skill_commands_work_from_app_subdirectory(skill_repo_fixture, skill_app
     nested = skill_repo_fixture / "apps" / "wordpress"
     monkeypatch.chdir(nested)
 
-    result = runner.invoke(main.app, ["info", "--app", "wordpress", "--json"])
+    result = runner.invoke(main.app, ["app-info", "--app", "wordpress", "--json"])
 
     assert result.exit_code == 0
     assert _json_output(result)["path"] == "apps/wordpress"

@@ -6,7 +6,7 @@ argument-hint: [app name] [trademark] [official reference URL]
 
 Use the `new-app` skill to run the new app workflow.
 
-Usage: /new-app <app name> <trademark> <official reference URL>
+Usage: /libs-new-app <app name> <trademark> <official reference URL>
 
 If the task input is `help` or empty, echo the usage line, then ask the user for the app name, trademark, and official upstream references.
 

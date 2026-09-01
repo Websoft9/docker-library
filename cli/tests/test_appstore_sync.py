@@ -6,15 +6,59 @@ from pathlib import Path
 import typer
 from typer.testing import CliRunner
 
-from libs import appstore_preview, main
+from libs import appstore_sync, main
 
 
 runner = CliRunner()
 
 
+def write_catalog_schema(repo_fixture):
+    source = Path(__file__).resolve().parents[2] / "metadata" / "catalog.schema.json"
+    target = repo_fixture / "metadata" / "catalog.schema.json"
+    target.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
+
+
+def write_catalog_support(repo_fixture, app_name: str, payload: dict, taxonomy: dict | None = None):
+    write_catalog_schema(repo_fixture)
+    metadata_dir = repo_fixture / "metadata"
+    (metadata_dir / "catalog").mkdir(exist_ok=True)
+    (metadata_dir / "catalog" / f"{app_name}.json").write_text(json.dumps(payload) + "\n", encoding="utf-8")
+    if taxonomy is None:
+        taxonomy = {
+            "version": 1,
+            "source": "https://example.com/catalog_en.json",
+            "locale": "en",
+            "categories": [
+                {
+                    "key": "collaboration",
+                    "title": "Collaboration & Office",
+                    "position": 7,
+                    "children": [{"key": "document", "title": "Document Collaboration", "position": 1}],
+                }
+            ],
+        }
+    (metadata_dir / "catalog-taxonomy.json").write_text(json.dumps(taxonomy) + "\n", encoding="utf-8")
+
+
+def test_appstore_container_defaults_to_websoft9(repo_fixture):
+    from libs import remote
+
+    assert remote.appstore_container(None) == "websoft9"
+
+
+def test_appstore_container_reads_from_remote_env(repo_fixture):
+    from libs import remote
+
+    (repo_fixture / ".secrets").mkdir(exist_ok=True)
+    (repo_fixture / ".secrets" / "remote.env").write_text("TARGET=remote\nCONTAINER=custom\n", encoding="utf-8")
+
+    assert remote.appstore_container(None) == "custom"
+    assert remote.appstore_container("explicit") == "explicit"
+
+
 def test_resolve_key_path_uses_default_and_relative_paths(repo_fixture):
-    default = appstore_preview.resolve_secret_path(None)
-    relative = appstore_preview.resolve_secret_path("custom.pem")
+    default = appstore_sync.resolve_secret_path(None)
+    relative = appstore_sync.resolve_secret_path("custom.pem")
 
     assert default == repo_fixture / ".secrets" / "ssh" / "default.pem"
     assert relative == repo_fixture / ".secrets" / "ssh" / "custom.pem"
@@ -32,7 +76,7 @@ def test_distribution_for_app_reads_variables(repo_fixture, app_factory):
         },
     )
 
-    assert appstore_preview.distribution_for_app("demo") == [{"key": "community", "value": ["1.0", "latest"]}]
+    assert appstore_sync.distribution_for_app("demo") == [{"key": "community", "value": ["1.0", "latest"]}]
 
 
 def test_patch_product_entries_updates_only_target_app():
@@ -41,7 +85,7 @@ def test_patch_product_entries_updates_only_target_app():
         {"key": "other", "distribution": [{"key": "community", "value": ["9.9"]}]},
     ]
 
-    old_distribution, new_distribution, updated, created = appstore_preview.patch_product_entries(
+    old_distribution, new_distribution, updated, created = appstore_sync.patch_product_entries(
         before,
         "demo",
         [{"key": "community", "value": ["2.0", "latest"]}],
@@ -57,7 +101,7 @@ def test_patch_product_entries_updates_only_target_app():
 def test_patch_product_entries_creates_missing_node():
     before = [{"key": "other", "distribution": [{"key": "community", "value": ["9.9"]}]}]
 
-    old_distribution, new_distribution, updated, created = appstore_preview.patch_product_entries(
+    old_distribution, new_distribution, updated, created = appstore_sync.patch_product_entries(
         before,
         "newapp",
         [{"key": "community", "value": ["1.0"]}],
@@ -69,9 +113,69 @@ def test_patch_product_entries_creates_missing_node():
     assert updated[-1] == {"key": "newapp", "distribution": [{"key": "community", "value": ["1.0"]}]}
 
 
-def test_appstore_preview_cli_contract(monkeypatch):
+def test_build_product_entry_from_repo_catalog(repo_fixture, app_factory):
+    app_factory(
+        "demo",
+        variables={
+            "name": "demo",
+            "trademark": "Demo",
+            "release": True,
+            "upstream": {"image": "https://hub.docker.com/_/demo/tags"},
+            "edition": [{"dist": "community", "version": ["1.0", "latest"]}],
+            "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
+        },
+    )
+    write_catalog_support(
+        repo_fixture,
+        "demo",
+        {
+            "trademark": "Demo",
+            "summary": "Summary",
+            "overview": "Overview",
+            "description": "Description",
+            "websiteurl": "https://example.com",
+            "screenshots": ["https://example.com/shot.png"],
+            "catalogBindings": [{"parentKey": "collaboration", "childKey": "document"}],
+        },
+    )
+
+    entry = appstore_sync.build_product_entry("demo")
+
+    assert entry["key"] == "demo"
+    assert entry["summary"] == "Summary"
+    assert entry["distribution"] == [{"key": "community", "value": ["1.0", "latest"]}]
+    assert entry["screenshots"][0]["value"] == "https://example.com/shot.png"
+    assert entry["catalogCollection"]["items"][0]["key"] == "document"
+    assert entry["catalogCollection"]["items"][0]["catalogCollection"]["items"][0]["key"] == "collaboration"
+
+
+def test_patch_product_entries_can_replace_with_full_entry():
+    before = [
+        {"key": "demo", "distribution": [{"key": "community", "value": ["1.0"]}], "summary": "old"},
+        {"key": "other", "distribution": [{"key": "community", "value": ["9.9"]}]},
+    ]
+    product_entry = {
+        "key": "demo",
+        "summary": "new",
+        "distribution": [{"key": "community", "value": ["2.0", "latest"]}],
+    }
+
+    old_distribution, new_distribution, updated, created = appstore_sync.patch_product_entries(
+        before,
+        "demo",
+        [{"key": "community", "value": ["2.0", "latest"]}],
+        product_entry,
+    )
+
+    assert old_distribution == [{"key": "community", "value": ["1.0"]}]
+    assert new_distribution == [{"key": "community", "value": ["2.0", "latest"]}]
+    assert created is False
+    assert updated[0] == product_entry
+
+
+def test_appstore_sync_cli_contract(monkeypatch):
     monkeypatch.setattr(
-        appstore_preview,
+        appstore_sync,
         "prepare_preview",
         lambda **kwargs: {
             "app": kwargs["app_name"],
@@ -120,7 +224,7 @@ def test_appstore_sync_cli_contract_progress_to_stderr(monkeypatch):
         kwargs["progress"]("[1/6] syncing app directory")
         return {"app": kwargs["app_name"], "deploy_dir": "/websoft9/library/apps"}
 
-    monkeypatch.setattr(appstore_preview, "prepare_preview", fake_prepare_preview)
+    monkeypatch.setattr(appstore_sync, "prepare_preview", fake_prepare_preview)
     monkeypatch.setattr(typer, "echo", lambda message, err=False: output.append((message, err)))
 
     main.appstore_sync_command(
@@ -152,9 +256,9 @@ def test_sync_app_dir_scp_to_staging_then_docker_cp(repo_fixture, app_factory, m
         calls.append(command)
         return ""
 
-    monkeypatch.setattr(appstore_preview, "_run", fake_run)
+    monkeypatch.setattr(appstore_sync, "_run", fake_run)
 
-    appstore_preview._sync_app_dir(
+    appstore_sync._sync_app_dir(
         app_name="demo",
         host="1.2.3.4",
         user="root",

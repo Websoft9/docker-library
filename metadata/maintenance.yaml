@@ -16,6 +16,7 @@ cadence:
   - jenkins
   - mattermost
   - metabase
+  - canvas
   - mongodb
   - moodle
   - mysql

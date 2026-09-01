@@ -1,0 +1,6 @@
+production:
+  url: <%= ENV.fetch('CANVAS_REDIS_URL', 'redis://canvas-redis') %>
+  connect_timeout: 0.5
+  circuit_breaker:
+    error_threshold: 1
+    error_timeout: 2

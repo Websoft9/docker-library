@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "trademark": { "type": "string", "minLength": 1 },
+    "summary": { "type": "string" },
+    "overview": { "type": "string" },
+    "description": { "type": "string" },
+    "websiteurl": { "type": "string", "minLength": 1 },
+    "screenshots": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "catalogBindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["parentKey", "childKey"],
+        "properties": {
+          "parentKey": { "type": "string", "minLength": 1 },
+          "childKey": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  },
+  "required": ["trademark"]
+}

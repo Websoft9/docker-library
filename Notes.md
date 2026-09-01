@@ -25,3 +25,8 @@ tests
 - root_url?
 
 radom key create
+
+- 商业数据：Contentful 优先，repo catalog 兜底
+- 技术数据：variables.json 唯一事实来源
+- Contentful 中的技术字段：允许存在，但只是投影，构建时不回读为真相
+- product_*.json：最终聚合读模型，不是事实源

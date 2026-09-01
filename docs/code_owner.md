@@ -41,10 +41,10 @@ Whether the container starts normally through [Health check](https://docs.docker
 
 ### Container name
 
-The main container is named $W9_ID, and other containers add a suffix to $W9_ID, such as $W9_ID-mysql.When container connections cannot be adapted to the common rules above, there are two ways to correspond:
+The main container is named ${W9_ID}, and other containers add a suffix to ${W9_ID}, such as ${W9_ID}-mysql.When container connections cannot be adapted to the common rules above, there are two ways to correspond:
 
-  - Add hostname, named $W9_RCODE
-  - Container named servicename-$W9_RCODE
+  - Add hostname, named ${W9_RCODE}
+  - Container named servicename-${W9_RCODE}
  
 ### Logs limit
 
@@ -52,8 +52,8 @@ Some application have lots of logs which will need storages. If you want to limi
 
 ```
   wordpress:
-    image: wordpress:$W9_VERSION
-    container_name: $W9_NAME
+    image: wordpress:${W9_VERSION}
+    container_name: ${W9_NAME}
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -79,6 +79,9 @@ Suggest use the unified bind mount *src* which include config or script files fo
 The environment variables of the container is the interface between the container and external interactions, the library all of the apps's environment variables are imported through **.env** file and cannot be directly defined in the docker-compose.yml, you can understand the basic composition and specifications through the [.env template file](../template/.env).
 
 The environments begin with **APP\_** is core environment variables. Generally speaking, developers only define and use them.
+
+For the canonical repository reference of `W9_*` variables, their decision rules, and common scenarios, read `docs/w9-env-spec.md` first.
+
 We will list and explain commonly used environmental variables as following table:
 
 | Variable name          | Description                                                                                                                                                          | Necessity |
@@ -161,7 +164,7 @@ Record some important items to remind all contributors.
 
 ### CHANGELOG.md
 
-Change logs
+Change logs. Use a pure-date heading `## YYYY-MM-DD` as the first-level heading for each change batch, with a bullet list of changes below it.
 
 ## FAQ
 
@@ -177,7 +180,7 @@ Create new application must use [template](../template/), then set your file:
 - Use after declaring volumes
 - The configuration file volumes uses the absolute path reference of src
 - Do not write upstream reference comments in docker-compose.yml; upstream references live only in `variables.json` `upstream`
-- Every published port line must carry an inline `# purpose` comment, e.g. `- "$W9_HTTP_PORT_SET:80" # Web Console`
+- Every published port line must carry an inline `# purpose` comment, e.g. `- "${W9_HTTP_PORT_SET}:80" # Web Console`
 
 2. .env
 

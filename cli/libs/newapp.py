@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import secrets
 import string
+from datetime import date
 
 import jsonschema
 from jinja2 import Environment, FileSystemLoader
@@ -116,6 +117,7 @@ def scaffold(
         "has_install_url": bool(docs.get("install")),
         "has_fork_url": bool(docs.get("github")),
         "power_password": random_password(),
+        "date": date.today().isoformat(),
     }
     files = {
         ".env": render_file(".env.tmpl", context),
@@ -149,7 +151,7 @@ def scaffold(
         "fill any missing upstream metadata in variables.json (releases, compose, env) when official sources exist",
         "design compose: volumes, healthcheck, db service and its version",
         "register new translatable W9_* keys in i18n/translation.json",
-        "run libs gen-readme --app <app> after editing variables.json",
+        "run libs app-gen-readme --app <app> after editing variables.json",
         "run the deploy-validation skill",
     ]
     return payload

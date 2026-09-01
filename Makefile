@@ -93,17 +93,31 @@ connector:
 	@bash -lc 'set -e; \
 	  current_choice=1; \
 	  if [ "${PROVIDER:-}" = "cloudflare" ] || [ "${PROVIDER:-}" = "2" ]; then current_choice=2; fi; \
-	  printf "Available providers:\n  1) contentful\n  2) cloudflare\n"; \
+	  printf "Available providers:\n  1) contentful\n  2) cloudflare\n  3) dockerhub\n"; \
 	  read -r -p "provider [$$current_choice]: " input_choice; input_choice="$${input_choice:-$$current_choice}"; \
 	  case "$$input_choice" in \
 	    1|contentful) provider="contentful"; file=".secrets/contentful.env"; key="CONTENTFUL_ACCESS_TOKEN" ;; \
 	    2|cloudflare) provider="cloudflare"; file=".secrets/cloudflare.env"; key="CLOUDFLARE_API_TOKEN" ;; \
+	    3|dockerhub) provider="dockerhub"; file=".secrets/dockerhub.env"; key="DOCKERHUB_TOKEN" ;; \
 	    *) echo "unsupported provider selection: $$input_choice" >&2; exit 1 ;; \
 	  esac; \
 	  if [ -f "$$file" ]; then echo "updating $$file"; else echo "creating $$file"; fi; \
-	  read -r -s -p "$$key: " input_token; echo; \
-	  if [ -z "$$input_token" ]; then echo "empty token is not allowed" >&2; exit 1; fi; \
-	  printf "%s=%s\n" "$$key" "$$input_token" > "$$file"; \
+	  if [ "$$provider" = "dockerhub" ]; then \
+	    read -r -p "DOCKERHUB_USERNAME: " input_user; \
+	    read -r -s -p "DOCKERHUB_PASSWORD (leave empty to use token): " input_password; echo; \
+	    if [ -n "$$input_password" ]; then \
+	      if [ -z "$$input_user" ]; then echo "username is required" >&2; exit 1; fi; \
+	      printf "DOCKERHUB_USERNAME=%s\nDOCKERHUB_PASSWORD=%s\n" "$$input_user" "$$input_password" > "$$file"; \
+	    else \
+	      read -r -s -p "DOCKERHUB_TOKEN: " input_token; echo; \
+	      if [ -z "$$input_user" ] || [ -z "$$input_token" ]; then echo "username and token are required" >&2; exit 1; fi; \
+	      printf "DOCKERHUB_USERNAME=%s\nDOCKERHUB_TOKEN=%s\n" "$$input_user" "$$input_token" > "$$file"; \
+	    fi; \
+	  else \
+	    read -r -s -p "$$key: " input_token; echo; \
+	    if [ -z "$$input_token" ]; then echo "empty token is not allowed" >&2; exit 1; fi; \
+	    printf "%s=%s\n" "$$key" "$$input_token" > "$$file"; \
+	  fi; \
 	  chmod 600 "$$file"; \
 	  echo "wrote $$file"'
 

@@ -1,26 +1,49 @@
 {
   "name": "affine",
   "trademark": "AFFiNE",
-  "release": false,
+  "release": true,
   "upstream": {
-    "image": "https://ghcr.io/toeverything/affine-graphql",
+    "image": "https://ghcr.io/toeverything/affine",
     "releases": "https://github.com/toeverything/AFFiNE",
+    "compose": {
+      "compose": "https://github.com/toeverything/AFFiNE/releases/latest/download/docker-compose.yml",
+      "env": "https://github.com/toeverything/AFFiNE/releases/latest/download/config.json.example"
+    },
     "docs": [
-      "https://github.com/toeverything/AFFiNE",
-      "https://docs.affine.pro/docs/self-host-affine"
+      "https://docs.affine.pro/self-host-affine/install/docker-compose-recommended",
+      "https://docs.affine.pro/self-host-affine/install/configuration"
     ]
   },
   "edition": [
     {
       "dist": "community",
       "version": [
+        "0.27.4",
         "latest"
       ]
     }
   ],
+  "database": {
+    "type": "postgresql",
+    "supported_modes": [
+      "bundled",
+      "external"
+    ],
+    "default_mode": "bundled",
+    "bundled": {
+      "service": "postgres",
+      "internal_host": "${W9_ID}-postgresql",
+      "database_env": "POSTGRES_DB",
+      "username_env": "POSTGRES_USER",
+      "password_env": "POSTGRES_PASSWORD"
+    }
+  },
   "requirements": {
-    "cpu": "1",
-    "memory": "1",
-    "disk": "1"
+    "cpu": "2",
+    "memory": "4",
+    "disk": "8"
+  },
+  "env": {
+    "first_startup_only": []
   }
 }

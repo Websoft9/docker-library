@@ -5,6 +5,7 @@ defaults:
     action: archive
     production: false
 apps:
+- adguardhome
 - alfresco
 - apex
 - discuz

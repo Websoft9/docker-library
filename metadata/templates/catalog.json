@@ -1,5 +1,11 @@
 {
   "trademark": "FFmpeg",
+  "catalogBindings": [
+    {
+      "parentKey": "architecture",
+      "childKey": "video-server"
+    }
+  ],
   "summary": "One-sentence summary shown on the appstore card.",
   "overview": "A few short paragraphs describing what the app does and its main features.",
   "description": "Long-form description for the product detail page.",

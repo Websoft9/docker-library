@@ -299,12 +299,12 @@ W9_POWER_PASSWORD=secure_password
 W9_ID=wordpress
 W9_NETWORK=websoft9
 W9_LOGIN_USER=admin
-W9_LOGIN_PASSWORD=$W9_POWER_PASSWORD
-W9_URL=internet_ip:$W9_HTTP_PORT_SET
+W9_LOGIN_PASSWORD=${W9_POWER_PASSWORD}
+W9_URL=internet_ip:${W9_HTTP_PORT_SET}
 W9_URL_REPLACE=true
 
 WORDPRESS_DB_HOST=wordpress-mariadb
-WORDPRESS_DB_PASSWORD=$W9_POWER_PASSWORD
+WORDPRESS_DB_PASSWORD=${W9_POWER_PASSWORD}
 ```
 
 ### Example: Nginx Deployment
@@ -315,7 +315,7 @@ W9_VERSION=latest
 W9_HTTP_PORT_SET=9001
 W9_ID=nginx
 W9_NETWORK=websoft9
-W9_URL=internet_ip:$W9_HTTP_PORT_SET
+W9_URL=internet_ip:${W9_HTTP_PORT_SET}
 # Note: No W9_LOGIN_USER/PASSWORD (no built-in auth)
 # Note: No W9_URL_REPLACE (URL not used in config)
 ```

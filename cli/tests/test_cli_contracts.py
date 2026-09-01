@@ -31,9 +31,9 @@ def test_list_info_scan_plan_only_and_drift_contracts(repo_fixture, app_factory)
     )
 
     list_result = runner.invoke(main.app, ["list", "--json"])
-    info_result = runner.invoke(main.app, ["info", "--app", "wordpress", "--json"])
+    info_result = runner.invoke(main.app, ["app-info", "--app", "wordpress", "--json"])
     scan_result = runner.invoke(main.app, ["scan", "--app", "wordpress", "--plan-only", "--json"])
-    drift_result = runner.invoke(main.app, ["drift", "--app", "wordpress", "--json"])
+    drift_result = runner.invoke(main.app, ["app-drift", "--app", "wordpress", "--json"])
 
     assert list_result.exit_code == 0
     assert info_result.exit_code == 0
@@ -50,7 +50,7 @@ def test_new_app_contracts_dry_run_and_duplicate_rejection(repo_fixture, app_fac
     dry_run = runner.invoke(
         main.app,
         [
-            "new-app",
+            "app-new",
             "--name",
             "demo-app",
             "--trademark",
@@ -74,7 +74,7 @@ def test_new_app_contracts_dry_run_and_duplicate_rejection(repo_fixture, app_fac
     app_factory("demo-app")
     duplicate = runner.invoke(
         main.app,
-        ["new-app", "--name", "demo-app", "--trademark", "Demo App", "--json"],
+        ["app-new", "--name", "demo-app", "--trademark", "Demo App", "--json"],
     )
 
     assert duplicate.exit_code == 4
@@ -84,10 +84,10 @@ def test_new_app_contracts_dry_run_and_duplicate_rejection(repo_fixture, app_fac
 def test_archive_and_restore_contracts(repo_fixture, app_factory):
     app_factory("ghost")
 
-    archive_result = runner.invoke(main.app, ["archive", "--app", "ghost", "--json"])
+    archive_result = runner.invoke(main.app, ["app-archive", "--app", "ghost", "--json"])
     restore_result = runner.invoke(
         main.app,
-        ["restore", "--app", "ghost", "--cadence", "weekly", "--update-policy", "lts-only", "--json"],
+        ["app-restore", "--app", "ghost", "--cadence", "weekly", "--update-policy", "lts-only", "--json"],
     )
 
     assert archive_result.exit_code == 0
@@ -113,7 +113,7 @@ def test_gen_readme_contract(repo_fixture, app_factory, monkeypatch):
         },
     )
 
-    result = runner.invoke(main.app, ["gen-readme", "--app", "demo", "--json"])
+    result = runner.invoke(main.app, ["app-gen-readme", "--app", "demo", "--json"])
 
     assert result.exit_code == 0
     payload = _json_output(result)
@@ -139,14 +139,14 @@ def test_repo_discovery_contract_from_subdirectory(repo_fixture, app_factory, mo
     nested = repo_fixture / "apps" / "wordpress"
     monkeypatch.chdir(nested)
 
-    result = runner.invoke(main.app, ["info", "--app", "wordpress", "--json"])
+    result = runner.invoke(main.app, ["app-info", "--app", "wordpress", "--json"])
 
     assert result.exit_code == 0
     assert _json_output(result)["path"] == "apps/wordpress"
 
 
 def test_check_maintenance_contract(repo_fixture):
-    result = runner.invoke(main.app, ["check-maintenance"])
+    result = runner.invoke(main.app, ["maintenance-check"])
 
     assert result.exit_code == 0
     assert "maintenance metadata valid" in result.stdout

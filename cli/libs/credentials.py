@@ -9,6 +9,7 @@ from libs.repo import repo_path
 PROVIDER_FILES = {
     "contentful": ".secrets/contentful.env",
     "cloudflare": ".secrets/cloudflare.env",
+    "dockerhub": ".secrets/dockerhub.env",
 }
 
 

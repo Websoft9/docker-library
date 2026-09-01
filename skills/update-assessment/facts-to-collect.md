@@ -17,7 +17,7 @@ Upstream facts:
 
 Database facts (when the app depends on a database):
 
-- current `W9_DB_VERSION` from `libs drift` dependency images
+- current `W9_DB_VERSION` from `libs app-drift` dependency images
 - app's verified DB min requirement from `variables.json` externalDB
 - engine lifecycle tracks and EOL from `metadata/db-lifecycle.json`
 - vendor-tested DB upper bound from release notes or official docs (prose, AI-only)

@@ -3,8 +3,8 @@
 
 services:
   activemq:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
     entrypoint: ["/bin/sh", "/opt/websoft9/entrypoint.sh"]
     healthcheck:
@@ -20,10 +20,10 @@ services:
       - activemq_data:/opt/apache-activemq/data
       - ./src/entrypoint.sh:/opt/websoft9/entrypoint.sh:ro
     ports:
-      - "$W9_HTTP_PORT_SET:8161"    # Web Console
-      - "$W9_AMQP_PORT_SET:5672"    # AMQP
-      - "$W9_OPENWIRE_PORT_SET:61616" # OpenWire
-      - "$W9_STOMP_PORT_SET:61613"  # STOMP
+      - "${W9_HTTP_PORT_SET}:8161"    # Web Console
+      - "${W9_AMQP_PORT_SET}:5672"    # AMQP
+      - "${W9_OPENWIRE_PORT_SET}:61616" # OpenWire
+      - "${W9_STOMP_PORT_SET}:61613"  # STOMP
       # - "1883:1883"   # MQTT
       # - "61614:61614" # WS
       # - "1099:1099"   # JMX

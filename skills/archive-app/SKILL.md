@@ -26,7 +26,7 @@ Supporting files in this skill:
 2. Move each target app from `apps/` to `archive/apps/`.
 3. Update `metadata/maintenance.yaml` if needed.
 4. Update `metadata/archive.yaml`.
-5. Set Contentful retirement flags: for each archived app, preview `make libs ARGS="contentful-update --app <app> --fields '{\"appStore\": false, \"production\": false}'"` and hand the `--apply` run to the owner.
+5. Set Contentful retirement flags: for each archived app, preview `make libs ARGS="catalog-update --app <app> --fields '{\"appStore\": false, \"production\": false}'"` and hand the `--apply` run to the owner.
 6. Produce a short archive report.
 
 ## Output
@@ -42,5 +42,5 @@ Supporting files in this skill:
 - Small batch archive is allowed only when reason and handling are identical.
 - Do not delete app history.
 - To bring an archived app back, use the `restore-app` skill, not this one.
-- Contentful updates use the `contentful_management` Python SDK (installed by `make install`). AI previews `contentful-update`; only the owner runs it with `--apply`.
+- Contentful updates use the `contentful_management` Python SDK (installed by `make install`). AI previews `catalog-update`; only the owner runs it with `--apply`.
 - Contentful retirement flags for archive are `appStore` and `production`, both set to `false`.

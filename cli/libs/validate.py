@@ -90,7 +90,9 @@ def _policy_result(target: Path) -> dict:
     ) or bool(URL_CONFIG_REF_RE.search(compose_text))
     url_replace_ok = True
     if "W9_URL_REPLACE" in env_map:
-        url_replace_ok = "$W9_URL" in compose_text or any("$W9_URL" in value for value in env_map.values())
+        url_replace_ok = bool(URL_CONFIG_REF_RE.search(compose_text)) or any(
+            bool(URL_CONFIG_REF_RE.search(value)) for value in env_map.values()
+        )
     url_replace_required_ok = True
     if url_replace_required:
         url_replace_required_ok = env_map.get("W9_URL_REPLACE", "").strip("'\"").lower() == "true"

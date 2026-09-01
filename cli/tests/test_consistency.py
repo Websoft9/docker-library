@@ -61,6 +61,7 @@ def test_new_app_templates_render_and_parse():
         "has_install_url": True,
         "has_fork_url": True,
         "power_password": "dummy-password",
+        "date": "2026-08-28",
     }
 
     env = Environment(loader=FileSystemLoader(str(template_root)), keep_trailing_newline=True, trim_blocks=True, lstrip_blocks=True)
@@ -71,10 +72,11 @@ def test_new_app_templates_render_and_parse():
     changelog_text = env.get_template("CHANGELOG.md.tmpl").render(**context)
 
     assert "W9_VERSION=1.0" in env_text
-    assert yaml.safe_load(compose_text)["services"]["demo-app"]["container_name"] == "$W9_ID"
+    assert yaml.safe_load(compose_text)["services"]["demo-app"]["container_name"] == "${W9_ID}"
     assert json.loads(variables_text)["name"] == "demo-app"
     assert "Demo App" in readme_text
     assert "# CHANGELOG" in changelog_text
+    assert "## 2026-08-28" in changelog_text
 
 
 def test_readme_template_renders_with_minimal_context():

@@ -34,6 +34,19 @@ def test_load_provider_env_missing_file_is_empty(repo_fixture):
     assert credentials.load_provider_env("contentful") == {}
 
 
+def test_load_provider_env_supports_dockerhub(repo_fixture):
+    (repo_fixture / ".secrets").mkdir(exist_ok=True)
+    (repo_fixture / ".secrets" / "dockerhub.env").write_text(
+        "DOCKERHUB_USERNAME=user\nDOCKERHUB_TOKEN=token\n",
+        encoding="utf-8",
+    )
+
+    data = credentials.load_provider_env("dockerhub")
+
+    assert data["DOCKERHUB_USERNAME"] == "user"
+    assert data["DOCKERHUB_TOKEN"] == "token"
+
+
 def test_resolve_secret_precedence(repo_fixture, monkeypatch):
     (repo_fixture / ".secrets").mkdir(exist_ok=True)
     (repo_fixture / ".secrets" / "contentful.env").write_text(

@@ -6,7 +6,7 @@ Before anything else, load the CLI venv (`make install` if `.venv/` missing) and
 
 ## Issue To Flags Rule
 
-The issue is prose. AI reads it, extracts name, trademark, and official reference URLs, researches the image and version, then calls `libs new-app` with flags. The CLI never reads GitHub or an issue body; it only validates flags and scaffolds.
+The issue is prose. AI reads it, extracts name, trademark, and official reference URLs, researches the image and version, then calls `libs app-new` with flags. The CLI never reads GitHub or an issue body; it only validates flags and scaffolds.
 
 ## Template Rule
 

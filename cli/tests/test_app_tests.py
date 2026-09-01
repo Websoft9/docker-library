@@ -22,7 +22,7 @@ class DummyResponse:
 def test_load_cases_and_env_resolution(repo_fixture, app_factory):
     app_factory(
         "demo",
-        env="W9_HTTP_PORT_SET=8080\nW9_LOGIN_USER=admin\nW9_LOGIN_PASSWORD=$W9_POWER_PASSWORD\nW9_POWER_PASSWORD=secret\n",
+        env="W9_HTTP_PORT_SET=8080\nW9_LOGIN_USER=admin\nW9_LOGIN_PASSWORD=${W9_POWER_PASSWORD}\nW9_POWER_PASSWORD=secret\n",
     )
     cases_dir = repo_fixture / "apps" / "demo" / "tests"
     cases_dir.mkdir()
@@ -73,7 +73,7 @@ def test_default_cases_add_container_healthy_when_healthcheck_exists(repo_fixtur
     app_factory(
         "demo",
         env="W9_HTTP_PORT_SET=8080\nW9_ID=demo\n",
-        compose="services:\n  demo:\n    container_name: $W9_ID\n    healthcheck:\n      test: ['CMD', 'true']\n",
+        compose="services:\n  demo:\n    container_name: ${W9_ID}\n    healthcheck:\n      test: ['CMD', 'true']\n",
     )
 
     cases = app_tests._default_cases(app_tests.load_env("demo"), app_tests.load_compose("demo"), "http://localhost:8080", "demo")
@@ -228,7 +228,7 @@ def test_run_app_tests_container_healthy_reads_inspect_state(repo_fixture, app_f
     app_factory(
         "demo",
         env="W9_HTTP_PORT_SET=8080\nW9_ID=demo\n",
-        compose="services:\n  demo:\n    container_name: $W9_ID\n    healthcheck:\n      test: ['CMD', 'true']\n",
+        compose="services:\n  demo:\n    container_name: ${W9_ID}\n    healthcheck:\n      test: ['CMD', 'true']\n",
     )
 
     def fake_run(command):

@@ -1,0 +1,20 @@
+{
+  "trademark": "Canvas",
+  "catalogBindings": [
+    {
+      "parentKey": "cms",
+      "childKey": "elearning"
+    },
+    {
+      "parentKey": "usecase",
+      "childKey": "education"
+    }
+  ],
+  "summary": "Open-source learning management system for schools, universities, and enterprise training.",
+  "overview": "Canvas is an open-source learning management system (LMS) that provides course management, assignments, grading, quizzes, discussions, and analytics for teachers and learners. This package deploys the official Canvas LMS image with bundled PostgreSQL 16 and Redis 7.4, giving educational institutions a self-hosted teaching platform.\n\nIt is well suited for universities, colleges, K-12 schools, and organizations that want to run their own e-learning platform with full control over data and infrastructure.",
+  "description": "Canvas LMS is an open-source learning management system maintained by Instructure. It is used by thousands of schools and organizations worldwide to deliver online courses, manage assignments and grading, run quizzes and discussions, and track learner progress.\n\nThis self-hosted package bundles PostgreSQL 16 and Redis 7.4 for a single-node deployment. On first startup, an admin account is created from the CANVAS_LMS_ADMIN_EMAIL, CANVAS_LMS_ADMIN_PASSWORD, and CANVAS_LMS_ACCOUNT_NAME settings.\n\nTypical use cases include course delivery, online exams, institutional e-learning portals, and internal training programs that need a reliable, self-hosted learning platform.",
+  "websiteurl": "https://www.instructure.com/canvas",
+  "screenshots": [
+    "https://www.instructure.com/sites/default/files/image/2021-10/Canvas_Home_LandingPage.png"
+  ]
+}

@@ -6,7 +6,7 @@ argument-hint: [app name] [evidence source]
 
 Use the `test-report-generation` skill to run the test report workflow.
 
-Usage: /test-report <app name> <evidence source>
+Usage: /libs-test-report <app name> <evidence source>
 
 If the task input is `help` or empty, echo the usage line, then ask the user for the app name and the validation evidence source.
 

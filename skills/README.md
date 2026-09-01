@@ -23,6 +23,7 @@ Current adapters:
 - opencode: `.opencode/opencode.json` via `skills.paths`
 
 Shared skills:
+- `catalog-seed`
 - `update-assessment`
 - `app-update`
 - `new-app`

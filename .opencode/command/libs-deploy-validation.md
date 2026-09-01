@@ -6,7 +6,7 @@ argument-hint: [app name] [--ssh-host ip --ssh-user name --ssh-secret-path path 
 
 Use the `deploy-validation` skill to run the validation workflow.
 
-Usage: /deploy-validation <app name> [--ssh-host ip --ssh-user name] [--ssh-secret-path path] [--deploy-root dir] [local]
+Usage: /libs-deploy-validation <app name> [--ssh-host ip --ssh-user name] [--ssh-secret-path path] [--deploy-root dir] [local]
 
 If the task input is `help` or empty, echo the usage line, then ask the user for the app name.
 

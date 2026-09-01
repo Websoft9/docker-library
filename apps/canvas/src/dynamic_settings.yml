@@ -1,0 +1,5 @@
+production:
+  config:
+    canvas:
+      rich-content-service:
+        app-host: 'http://rce.canvas.docker:3000'

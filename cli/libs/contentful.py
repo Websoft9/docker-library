@@ -2,18 +2,19 @@ from __future__ import annotations
 
 import json
 
+from libs import catalog
 from libs.credentials import resolve_secret
+from libs.repo import repo_path
 
 CONTENTFUL_TOKEN_ENV = "CONTENTFUL_ACCESS_TOKEN"
 SPACE_ID = "ffrhttfighww"
 CONTENT_TYPE = "product"
-DEFAULT_DRAFTS_DIR = "metadata/contentful-drafts"
-DRAFT_FIELD_KEYS = ("trademark", "summary", "overview", "description", "websiteurl", "screenshots")
+CATALOG_CONTENT_TYPE = "catalog"
+DEFAULT_DRAFTS_DIR = catalog.DEFAULT_CATALOG_DIR
+DRAFT_FIELD_KEYS = catalog.CATALOG_FIELD_KEYS
 
 
 def load_variables(app_name: str) -> dict:
-    from libs.repo import repo_path
-
     for root in ("apps", "archive/apps"):
         path = repo_path(root, app_name, "variables.json")
         if path.exists():
@@ -22,12 +23,7 @@ def load_variables(app_name: str) -> dict:
 
 
 def load_draft(app_name: str, drafts_dir: str) -> dict:
-    from libs.repo import repo_path
-
-    path = repo_path(drafts_dir, f"{app_name}.json")
-    if not path.exists():
-        return {}
-    return json.loads(path.read_text(encoding="utf-8"))
+    return catalog.load_catalog(app_name, drafts_dir)
 
 
 def build_machine_fields(variables: dict) -> dict:
@@ -64,6 +60,36 @@ def find_existing_entry(client, environment: str, app_name: str):
         return None
 
 
+def find_catalog_entry(client, environment: str, category_key: str):
+    try:
+        entries = client.entries(SPACE_ID, environment).all(
+            {"content_type": CATALOG_CONTENT_TYPE, "fields.key": category_key}
+        )
+        return entries[0] if entries else None
+    except Exception:
+        return None
+
+
+def build_catalog_links(client, environment: str, bindings: list[dict]) -> list[dict]:
+    links = []
+    missing = []
+    for binding in bindings:
+        child_key = binding["childKey"]
+        entry = find_catalog_entry(client, environment, child_key)
+        if not entry:
+            missing.append(child_key)
+            continue
+        entry_id = (getattr(entry, "sys", None) or {}).get("id")
+        if not entry_id:
+            missing.append(child_key)
+            continue
+        links.append({"sys": {"type": "Link", "linkType": "Entry", "id": entry_id}})
+    if missing:
+        joined = ", ".join(sorted(set(missing)))
+        raise ValueError(f"missing Contentful catalog entries for keys: {joined}")
+    return links
+
+
 def create_entry(client, environment: str, fields: dict):
     entry = client.entries(SPACE_ID, environment).create(CONTENT_TYPE, fields)
     entry.publish()
@@ -74,6 +100,16 @@ def update_machine_fields(entry, machine_fields: dict) -> None:
     for key, value in machine_fields.items():
         if value is not None:
             entry.fields("en-US")[key] = value
+    entry.save()
+    entry.publish()
+
+
+def update_entry_fields(entry, machine_fields: dict, draft_fields: dict, catalog_links: list[dict] | None = None) -> None:
+    for key, value in {**machine_fields, **draft_fields}.items():
+        if value is not None:
+            entry.fields("en-US")[key] = value
+    if catalog_links is not None:
+        entry.fields("en-US")["catalog"] = catalog_links
     entry.save()
     entry.publish()
 
@@ -104,6 +140,7 @@ def sync_app(
     draft = load_draft(app_name, drafts_dir)
     machine_fields = build_machine_fields(variables)
     draft_fields = build_draft_fields(draft)
+    catalog_bindings = catalog.validate_catalog_bindings(draft, catalog.load_taxonomy()) if draft.get("catalogBindings") else []
 
     payload = {
         "app": app_name,
@@ -111,23 +148,38 @@ def sync_app(
         "dry_run": not apply,
         "machine_fields": machine_fields,
         "draft_fields": draft_fields,
+        "catalog_bindings": catalog_bindings,
     }
     if not apply:
-        payload["action"] = "create"
+        try:
+            client = _load_client(token, env_file)
+        except FileNotFoundError:
+            client = None
+        if client is None:
+            payload["action"] = "create"
+            payload["exists_unknown"] = True
+        else:
+            existing = find_existing_entry(client, environment, app_name)
+            payload["action"] = "update" if existing else "create"
+            payload["exists"] = bool(existing)
         return payload
 
     client = _load_client(token, env_file)
     existing = find_existing_entry(client, environment, app_name)
+    catalog_links = build_catalog_links(client, environment, catalog_bindings) if catalog_bindings else None
     if existing:
         if update_machine:
             update_machine_fields(existing, machine_fields)
             payload["action"] = "update-machine"
         else:
-            payload["action"] = "exists"
+            update_entry_fields(existing, machine_fields, draft_fields, catalog_links)
+            payload["action"] = "updated"
         payload["dry_run"] = False
         return payload
 
     fields = localized({**machine_fields, **draft_fields})
+    if catalog_links is not None:
+        fields["catalog"] = {"en-US": catalog_links}
     create_entry(client, environment, fields)
     payload["action"] = "created"
     payload["dry_run"] = False
