@@ -7,6 +7,7 @@ Archived apps moved out of active maintenance:
 - `mediawiki`
 - `nodebb`
 - `sscms`
+- ...
 
 Source of truth:
 - lifecycle and archive reason: `metadata/archive.yaml`

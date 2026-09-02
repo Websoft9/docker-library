@@ -10,4 +10,4 @@ Use the smallest correct set of category bindings. Do not add broad categories j
 
 ## Validation Rule
 
-`libs catalog-push --app <app> --json` is the preview gate for this skill. The file is not ready until the preview succeeds.
+`.venv/bin/libs catalog-push --app <app> --json` is the preview gate for this skill. The file is not ready until the preview succeeds.

@@ -1,25 +1,47 @@
 {
   "name": "appwrite",
   "trademark": "Appwrite",
-  "release": false,
+  "release": true,
   "upstream": {
     "image": "https://hub.docker.com/r/appwrite/appwrite",
-    "releases": "https://github.com/appwrite/appwrite",
+    "releases": "https://github.com/appwrite/appwrite/releases",
+    "compose": {
+      "compose": "https://raw.githubusercontent.com/appwrite/appwrite/1.9.6/docker-compose.yml",
+      "env": "https://raw.githubusercontent.com/appwrite/appwrite/1.9.6/.env"
+    },
     "docs": [
-      "https://github.com/appwrite/appwrite"
+      "https://appwrite.io/docs/advanced/self-hosting",
+      "https://appwrite.io/docs/advanced/self-hosting/production/updates",
+      "https://appwrite.io/docs/advanced/self-hosting/configuration/environment-variables"
     ]
   },
   "edition": [
     {
       "dist": "community",
       "version": [
+        "1.9.6",
         "latest"
       ]
     }
   ],
+  "database": {
+    "type": "mongodb",
+    "supported_modes": [
+      "bundled",
+      "external"
+    ],
+    "default_mode": "bundled",
+    "bundled": {
+      "service": "mongodb",
+      "internal_host": "${W9_ID}-mongodb"
+    }
+  },
   "requirements": {
-    "cpu": "2",
-    "memory": "4",
-    "disk": "10"
+    "cpu": "4",
+    "memory": "8",
+    "disk": "20"
+  },
+  "env": {
+    "first_startup_only": []
   }
 }

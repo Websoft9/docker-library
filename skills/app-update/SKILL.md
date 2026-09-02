@@ -37,7 +37,7 @@ Supporting files in this skill:
 12. Healthchecks should default to the main app container only. Add healthchecks to sidecar or dependency containers only when the official upstream compose explicitly defines them or the task explicitly requires them.
 13. If the target app has app-local drift against the current repository rules (for example template, metadata, env policy, or generated README expectations), fix the minimum blocking or directly relevant items as part of the same update.
 14. Keep `apps/<app>/CHANGELOG.md` as the single source of app change history. Use a pure-date heading `## YYYY-MM-DD` as the first-level heading for each change batch; list all changes for that date below it. Do not duplicate changelog content into `README.md`.
-15. Run `libs app-gen-readme --app <app> --json` after metadata or README marker content changes so generated sections stay current.
+15. Run `.venv/bin/libs app-gen-readme --app <app> --json` after metadata or README marker content changes so generated sections stay current.
 16. For dependency images such as PostgreSQL, MySQL, MariaDB, Redis, or pgvector, prefer `x.x` tags even when upstream examples show `x.x.x`, unless exact patch pinning is demonstrably required. Hard-coded dependency `x.x.x` tags in `docker-compose.yml` are policy drift and should be normalized before handoff.
 17. Run the `deploy-validation` skill for the changed app.
 18. Produce a short test report.

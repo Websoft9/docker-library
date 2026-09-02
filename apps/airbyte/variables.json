@@ -1,25 +1,27 @@
 {
   "name": "airbyte",
   "trademark": "Airbyte",
+  "runtime": "k3s-helm",
   "release": false,
   "upstream": {
-    "image": "https://hub.docker.com/r/airbyte/webapp",
-    "releases": "https://github.com/airbytehq/airbyte",
+    "image": "https://hub.docker.com/r/airbyte/server",
+    "releases": "https://github.com/airbytehq/airbyte/releases",
     "docs": [
-      "https://github.com/airbytehq/airbyte"
+      "https://docs.airbyte.com/platform/deploying-airbyte",
+      "https://docs.airbyte.com/platform/deploying-airbyte/chart-v2-community"
     ]
   },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "latest"
+        "2.2.0"
       ]
     }
   ],
   "requirements": {
-    "cpu": "2",
-    "memory": "4",
-    "disk": "10"
+    "cpu": "4",
+    "memory": "8",
+    "disk": "20"
   }
 }

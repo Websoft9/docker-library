@@ -1,24 +1,21 @@
-# docs: https://docs.anythingllm.com/installation-docker/local-docker, https://github.com/Mintplex-Labs/anything-llm/blob/master/docker/HOW_TO_USE_DOCKER.md
-# docker-compose: https://github.com/Mintplex-Labs/anything-llm/blob/master/docker/docker-compose.yml
-
 services:
 
   anythingllm:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
     cap_add:
       - SYS_ADMIN
     ports:
-      - $W9_HTTP_PORT_SET:3001
+      - "${W9_HTTP_PORT_SET}:3001" # Web Console
     env_file: .env
     volumes:
       - anythingllm:/app/server/storage
 
 volumes:
   anythingllm:
-    
+
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

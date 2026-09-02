@@ -1,0 +1,7 @@
+skip:
+  - id: web-access
+
+optional:
+  - id: airbyte-health
+    type: script
+    script: wait-airbyte.sh

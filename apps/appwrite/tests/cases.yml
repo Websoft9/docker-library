@@ -1,0 +1,8 @@
+skip:
+  - id: container-healthy
+
+optional:
+  - id: appwrite-version-health
+    type: web-access
+    path: /v1/health/version
+    expect_status: 200

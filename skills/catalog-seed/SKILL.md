@@ -28,7 +28,7 @@ Supporting files in this skill:
 3. Read `apps/<app>/variables.json`, app README/Notes when useful, and the official website/docs when needed.
 4. Create or update `metadata/catalog/<app>.json` with `trademark`, `summary`, `overview`, `description`, `websiteurl`, `screenshots`, and optional `catalogBindings`.
 5. Keep category bindings in `catalogBindings` as `{ "parentKey": "...", "childKey": "..." }`, and choose only keys that exist in `metadata/catalog-taxonomy.json`.
-6. Preview the result with `libs catalog-push --app <app> --json`. Fix schema or taxonomy errors before handoff.
+6. Preview the result with `.venv/bin/libs catalog-push --app <app> --json`. Fix schema or taxonomy errors before handoff.
 7. Produce a short report.
 
 ## Output

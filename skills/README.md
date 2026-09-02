@@ -10,7 +10,7 @@ Rules:
 
 Running the CLI from a skill:
 - call `.venv/bin/libs ...` directly; the CLI auto-detects proxy environment variables and neutralizes a wildcard `no_proxy`
-- use `libs --proxy <url> ...` only when the host proxy is not exported
+- use `.venv/bin/libs --proxy <url> ...` only when the host proxy is not exported
 - `make libs ARGS="..."` is optional convenience, not a required convention
 - do not use `make cli`; it starts an interactive shell for humans
 

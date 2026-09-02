@@ -9,6 +9,7 @@
 - moved paths:
 - metadata updated:
 - Contentful handoff:
+- owner apply command: `.venv/bin/libs catalog-update --app <app> --fields '{"appStore": false, "production": false}' --apply`
 
 ## Notes
 

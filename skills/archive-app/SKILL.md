@@ -26,7 +26,7 @@ Supporting files in this skill:
 2. Move each target app from `apps/` to `archive/apps/`.
 3. Update `metadata/maintenance.yaml` if needed.
 4. Update `metadata/archive.yaml`.
-5. Set Contentful retirement flags: for each archived app, preview `make libs ARGS="catalog-update --app <app> --fields '{\"appStore\": false, \"production\": false}'"` and hand the `--apply` run to the owner.
+5. Set Contentful retirement flags: for each archived app, preview `.venv/bin/libs catalog-update --app <app> --fields '{"appStore": false, "production": false}'` and include the exact owner `--apply` command in the report.
 6. Produce a short archive report.
 
 ## Output
@@ -34,7 +34,7 @@ Supporting files in this skill:
 - archived apps
 - archive reason
 - metadata changes
-- Contentful handoff status
+- Contentful handoff status, including the exact owner `--apply` command
 
 ## Rules
 

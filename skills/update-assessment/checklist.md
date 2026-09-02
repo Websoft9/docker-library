@@ -1,8 +1,8 @@
 # Update Assessment Checklist
 
 - [ ] Read `apps/<app>/variables.json`
-- [ ] Run `libs scan --app <app> --json`
-- [ ] Run `libs app-drift --app <app> --json`
+- [ ] Run `.venv/bin/libs scan --app <app> --json`
+- [ ] Run `.venv/bin/libs app-drift --app <app> --json`
 - [ ] Read `apps/<app>/.env` only if scan or drift is missing required facts
 - [ ] Read `apps/<app>/docker-compose.yml` only if scan or drift is missing required facts
 - [ ] Read `metadata/maintenance.yaml`
@@ -14,9 +14,9 @@
 - [ ] Check deployment risk: compose, env, volumes, init flow, login flow, data path
 - [ ] Perform read-only conformance screening for app-local structure, policy, metadata, and generated README compatibility
 - [ ] Classify conformance finding: ok | minor-fixes | blocking-fixes
-- [ ] Identify DB dependency images from `libs app-drift` output
+- [ ] Identify DB dependency images from `.venv/bin/libs app-drift` output
 - [ ] Read `externalDB` in `apps/<app>/variables.json`
-- [ ] Read `metadata/db-lifecycle.json`; run `libs db-refresh` if engine missing or snapshot stale (>45 days)
+- [ ] Read `metadata/db-lifecycle.json`; run `.venv/bin/libs db-refresh` if engine missing or snapshot stale (>45 days)
 - [ ] Compute DB candidates: alive, >= min, LTS preferred over innovation
 - [ ] Judge vendor-tested DB upper bound from release notes or docs
 - [ ] Report DB finding: recommendation + reason, or `no change`

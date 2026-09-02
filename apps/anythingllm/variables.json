@@ -5,15 +5,21 @@
   "upstream": {
     "image": "https://hub.docker.com/r/mintplexlabs/anythingllm",
     "releases": "https://github.com/Mintplex-Labs/anything-llm",
+    "compose": {
+      "compose": "https://github.com/Mintplex-Labs/anything-llm/blob/master/docker/docker-compose.yml",
+      "env": "https://github.com/Mintplex-Labs/anything-llm/blob/master/docker/.env.example"
+    },
     "docs": [
-      "https://github.com/Mintplex-Labs/anything-llm"
+      "https://github.com/Mintplex-Labs/anything-llm",
+      "https://docs.anythingllm.com/installation-docker/local-docker",
+      "https://github.com/Mintplex-Labs/anything-llm/blob/master/docker/HOW_TO_USE_DOCKER.md"
     ]
   },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "1.8",
+        "1.16",
         "latest"
       ]
     }

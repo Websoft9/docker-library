@@ -1,14 +1,4 @@
-## docker-compose
-
-restart:
-
-| restart参数 |    重启前容器状态 -stop                                     | 重启前容器状态 -start |
-| ------ | --------------------------------------------- | ------ |
-| no |  stop | stop   |
-| on-failure   | stop | stop  |
-| unless-stopped   | stop | start  |
-| always  | start | start  |
-
+# Notes
 
 ## Todo
 
@@ -30,3 +20,8 @@ radom key create
 - 技术数据：variables.json 唯一事实来源
 - Contentful 中的技术字段：允许存在，但只是投影，构建时不回读为真相
 - product_*.json：最终聚合读模型，不是事实源
+
+
+Docker Model Runner
+1. 把 README/Notes 再补成“如何取默认登录邮箱、如何登录”的最终文案
+2. 继续排查 workload-launcher 的重启原因，争取把日志风险也压到最低

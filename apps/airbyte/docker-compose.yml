@@ -1,50 +1,63 @@
-# image,docs: https://hub.docker.com/_/wordpress/
+# Airbyte runs inside a dedicated k3s runtime container.
+# A lightweight installer container performs the Helm install and waits until
+# the real Airbyte health endpoint is ready.
 
 services:
-
-  wordpress:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+  airbyte:
+    image: ${AIRBYTE_K3S_IMAGE}
+    container_name: ${W9_ID}
+    privileged: true
     restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
+    mem_limit: ${AIRBYTE_RUNTIME_MEMORY_LIMIT}
     logging:
-      driver: "json-file"
+      driver: json-file
       options:
-          max-file: "5"
-          max-size: 10m
-    deploy:
-      resources:
-        limits:
-          memory: 5g
-          cpus: '0.7'
+        max-file: "5"
+        max-size: 10m
+    command:
+      - server
+      - --disable=traefik
+      - --disable=servicelb
+      - --tls-san=airbyte
+      - --write-kubeconfig=/shared/kubeconfig.yaml
+      - --write-kubeconfig-mode=644
     ports:
-      - $W9_HTTP_PORT_SET:80
-    env_file: .env
+      - "${W9_HTTP_PORT_SET}:${AIRBYTE_NODE_PORT}" # Web Console
+    tmpfs:
+      - /run
+      - /var/run
     volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
+      - kubeconfig:/shared
+      - k3s-data:/var/lib/rancher/k3s
+    healthcheck:
+      test: ["CMD-SHELL", "kubectl get nodes >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 10s
+      retries: 18
+      start_period: 30s
+    networks:
+      - default
 
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
-    restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
+  airbyte-installer:
+    image: alpine/helm:3.16.3
+    container_name: ${W9_ID}-installer
+    restart: "no"
+    depends_on:
+      airbyte:
+        condition: service_healthy
+    env_file: .env
+    entrypoint: ["/bin/sh", "/usr/local/bin/airbyte-installer.sh"]
     volumes:
-      - mysql_data:/var/lib/mysql
-    environment:
-      MYSQL_DATABASE: $WORDPRESS_DB_NAME
-      MYSQL_USER: $WORDPRESS_DB_USER
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      - kubeconfig:/shared
+      - ./src/installer/entrypoint.sh:/usr/local/bin/airbyte-installer.sh:ro
+    networks:
+      - default
 
 volumes:
-  wordpress:
-  mysql_data:
-    
+  kubeconfig:
+  k3s-data:
+
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

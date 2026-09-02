@@ -1,19 +1,16 @@
-# docs: https://airflow.apache.org/docs/apache-airflow/stable/index.html
-# image: https://hub.docker.com/r/apache/airflow
-
 x-airflow-common: &airflow-common
-  image: $W9_REPO:$W9_VERSION
+  image: ${W9_REPO}:${W9_VERSION}
   # build: .
   environment: &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
     AIRFLOW__CORE__AUTH_MANAGER: airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
-    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://$POSTGRES_USER:$POSTGRES_PASSWORD@$W9_ID-postgres/$POSTGRES_DB
-    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$W9_ID-postgres/$POSTGRES_DB
-    AIRFLOW__CELERY__BROKER_URL: redis://:@$W9_ID-redis:6379/0
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${W9_ID}-postgres/${POSTGRES_DB}
+    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${W9_ID}-postgres/${POSTGRES_DB}
+    AIRFLOW__CELERY__BROKER_URL: redis://:@${W9_ID}-redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'true'
-    AIRFLOW__CORE__EXECUTION_API_SERVER_URL: 'http://$W9_ID:8080/execution/'
+    AIRFLOW__CORE__EXECUTION_API_SERVER_URL: 'http://${W9_ID}:8080/execution/'
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
     AIRFLOW_CONFIG: '/opt/airflow/config/airflow.cfg'
@@ -31,14 +28,14 @@ x-airflow-common: &airflow-common
 
 services:
   postgres:
-    image: postgres:13
-    container_name: $W9_ID-postgres
+    image: postgres:${W9_DB_VERSION}
+    container_name: ${W9_ID}-postgres
     environment:
-      POSTGRES_USER: $POSTGRES_USER
-      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
-      POSTGRES_DB: $POSTGRES_DB
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - postgres-db:/var/lib/postgresql/data
+      - postgres-db:/var/lib/postgresql
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
       interval: 10s
@@ -48,7 +45,7 @@ services:
 
   redis:
     image: redis:7.2-bookworm
-    container_name: $W9_ID-redis
+    container_name: ${W9_ID}-redis
     expose:
       - 6379
     healthcheck:
@@ -61,10 +58,10 @@ services:
 
   airflow-apiserver:
     <<: *airflow-common
-    container_name: $W9_ID
+    container_name: ${W9_ID}
     command: api-server
     ports:
-      - $W9_HTTP_PORT_SET:8080
+      - "${W9_HTTP_PORT_SET}:8080" # Web Console
     env_file: .env
     healthcheck:
       test: [ "CMD", "curl", "--fail", "http://localhost:8080/api/v2/version" ]
@@ -80,7 +77,7 @@ services:
 
   airflow-scheduler:
     <<: *airflow-common
-    container_name: $W9_ID-scheduler
+    container_name: ${W9_ID}-scheduler
     command: scheduler
     healthcheck:
       test: [ "CMD", "curl", "--fail", "http://localhost:8974/health" ]
@@ -96,7 +93,7 @@ services:
 
   airflow-dag-processor:
     <<: *airflow-common
-    container_name: $W9_ID-dag-processor
+    container_name: ${W9_ID}-dag-processor
     command: dag-processor
     healthcheck:
       test: ["CMD-SHELL", 'airflow jobs check --job-type DagProcessorJob --hostname "$${HOSTNAME}"']
@@ -112,7 +109,7 @@ services:
 
   airflow-worker:
     <<: *airflow-common
-    container_name: $W9_ID-worker
+    container_name: ${W9_ID}-worker
     command: celery worker
     healthcheck:
       test:
@@ -133,7 +130,7 @@ services:
 
   airflow-triggerer:
     <<: *airflow-common
-    container_name: $W9_ID-triggerer
+    container_name: ${W9_ID}-triggerer
     command: triggerer
     healthcheck:
       test: [ "CMD-SHELL", 'airflow jobs check --job-type TriggererJob --hostname "$${HOSTNAME}"' ]
@@ -149,7 +146,7 @@ services:
 
   airflow-init:
     <<: *airflow-common
-    container_name: $W9_ID-init
+    container_name: ${W9_ID}-init
     entrypoint: /bin/bash
     command:
       - -c
@@ -203,8 +200,8 @@ services:
       <<: *airflow-common-env
       _AIRFLOW_DB_MIGRATE: 'true'
       _AIRFLOW_WWW_USER_CREATE: 'true'
-      _AIRFLOW_WWW_USER_USERNAME: $W9_LOGIN_USER
-      _AIRFLOW_WWW_USER_PASSWORD: $W9_LOGIN_PASSWORD
+      _AIRFLOW_WWW_USER_USERNAME: ${W9_LOGIN_USER}
+      _AIRFLOW_WWW_USER_PASSWORD: ${W9_LOGIN_PASSWORD}
       _PIP_ADDITIONAL_REQUIREMENTS: ''
     user: "0:0"
     volumes:
@@ -212,7 +209,7 @@ services:
 
   airflow-cli:
     <<: *airflow-common
-    container_name: $W9_ID-cli
+    container_name: ${W9_ID}-cli
     profiles:
       - debug
     environment:
@@ -227,7 +224,7 @@ services:
     
   # flower:
   #   <<: *airflow-common
-  #   container_name: $W9_ID-flower
+  #   container_name: ${W9_ID}-flower
   #   command: celery flower
   #   profiles:
   #     - flower

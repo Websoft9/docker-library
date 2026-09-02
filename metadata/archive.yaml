@@ -6,8 +6,16 @@ defaults:
     production: false
 apps:
 - adguardhome
+- aitable
+- akaunting
 - alfresco
+- answer
 - apex
+- automatisch
+- azimutt
+- bigagi
+- cadvisor
+- chat2db
 - discuz
 - joomla
 - magento
@@ -16,4 +24,20 @@ apps:
 - nodebb
 - sscms
 - weblate
-overrides: {}
+overrides:
+  aitable:
+    archive_reason: Low user demand
+  akaunting:
+    archive_reason: Not maintained by upstream
+  answer:
+    archive_reason: Low user demand
+  automatisch:
+    archive_reason: Low user demand
+  azimutt:
+    archive_reason: Low user demand
+  bigagi:
+    archive_reason: Low user demand
+  cadvisor:
+    archive_reason: Low user demand
+  chat2db:
+    archive_reason: Low user demand
