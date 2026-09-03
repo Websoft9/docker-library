@@ -1,8 +1,3 @@
-# image: https://hub.docker.com/r/appsmith/appsmith-ce
-# docs: https://docs.appsmith.com/getting-started/setup/installation-guides/docker/
-
-version: '3.8'
-
 services:
   appsmith:
     image: $W9_REPO:$W9_VERSION

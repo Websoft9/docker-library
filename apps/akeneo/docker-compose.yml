@@ -1,39 +1,102 @@
-version: '3.8'
-
 services:
   akeneo:
     image: ${W9_REPO}:${W9_VERSION}
+    build:
+      context: .
+      dockerfile: src/Dockerfile
+      args:
+        AKENEO_VERSION: ${W9_VERSION}
     container_name: ${W9_ID}
+    restart: unless-stopped
     env_file: .env
+    command: ["web"]
+    environment:
+      APP_ENV: ${APP_ENV}
+      APP_DEBUG: ${APP_DEBUG}
+      APP_DEFAULT_LOCALE: ${APP_DEFAULT_LOCALE}
+      APP_SECRET: ${APP_SECRET}
+      AKENEO_PIM_URL: ${AKENEO_PIM_URL}
+      AKENEO_ADMIN_USER: ${AKENEO_ADMIN_USER}
+      AKENEO_ADMIN_PASSWORD: ${AKENEO_ADMIN_PASSWORD}
+      AKENEO_ADMIN_EMAIL: ${AKENEO_ADMIN_EMAIL}
+      APP_DATABASE_HOST: ${APP_DATABASE_HOST}
+      APP_DATABASE_PORT: ${APP_DATABASE_PORT}
+      APP_DATABASE_NAME: ${APP_DATABASE_NAME}
+      APP_DATABASE_USER: ${APP_DATABASE_USER}
+      APP_DATABASE_PASSWORD: ${APP_DATABASE_PASSWORD}
+      APP_INDEX_HOSTS: ${APP_INDEX_HOSTS}
     ports:
-      - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
+      - "${W9_HTTP_PORT_SET}:80" # Web Console
     volumes:
-      - akeneo:/var/www/html
-      - ./src/000-default.conf:/etc/apache2/sites-available/000-default.conf
+      - akeneo_storage:/var/www/html/var/file_storage
+      - akeneo_logs:/var/www/html/var/logs
+    depends_on:
+      - mysql
+      - elasticsearch
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 20
+      start_period: 300s
+
+  worker:
+    image: ${W9_REPO}:${W9_VERSION}
+    build:
+      context: .
+      dockerfile: src/Dockerfile
+      args:
+        AKENEO_VERSION: ${W9_VERSION}
+    container_name: ${W9_ID}-worker
     restart: unless-stopped
-      
+    env_file: .env
+    command: ["worker"]
+    environment:
+      APP_ENV: ${APP_ENV}
+      APP_DEBUG: ${APP_DEBUG}
+      APP_DEFAULT_LOCALE: ${APP_DEFAULT_LOCALE}
+      APP_SECRET: ${APP_SECRET}
+      AKENEO_PIM_URL: ${AKENEO_PIM_URL}
+      AKENEO_ADMIN_USER: ${AKENEO_ADMIN_USER}
+      AKENEO_ADMIN_PASSWORD: ${AKENEO_ADMIN_PASSWORD}
+      AKENEO_ADMIN_EMAIL: ${AKENEO_ADMIN_EMAIL}
+      APP_DATABASE_HOST: ${APP_DATABASE_HOST}
+      APP_DATABASE_PORT: ${APP_DATABASE_PORT}
+      APP_DATABASE_NAME: ${APP_DATABASE_NAME}
+      APP_DATABASE_USER: ${APP_DATABASE_USER}
+      APP_DATABASE_PASSWORD: ${APP_DATABASE_PASSWORD}
+      APP_INDEX_HOSTS: ${APP_INDEX_HOSTS}
+    volumes:
+      - akeneo_storage:/var/www/html/var/file_storage
+      - akeneo_logs:/var/www/html/var/logs
+    depends_on:
+      akeneo:
+        condition: service_healthy
+
   mysql:
-    image: mysql:$W9_MYSQL_VERSION
-    container_name: $W9_ID-mysql
+    image: mysql:${W9_DB_VERSION}
+    container_name: ${W9_ID}-mysql
     restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    command: --log_bin_trust_function_creators=1 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: ${W9_ID}
-      MYSQL_USER: ${W9_ID}
-      MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
+      MYSQL_DATABASE: ${APP_DATABASE_NAME}
+      MYSQL_USER: ${APP_DATABASE_USER}
+      MYSQL_PASSWORD: ${APP_DATABASE_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
 
   elasticsearch:
-    image: elasticsearch:$W9_ES_VERSION
+    image: elastic/elasticsearch:${W9_ES_VERSION}
     container_name: ${W9_ID}-elasticsearch
     restart: unless-stopped
     volumes:
       - elasticsearch:/usr/share/elasticsearch/data
     environment:
-      ES_JAVA_OPTS: '${ES_JAVA_OPTS:--Xms512m -Xmx512m}'
-      discovery.type: 'single-node'
+      ES_JAVA_OPTS: ${ES_JAVA_OPTS}
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      indices.id_field_data.enabled: "true"
 
 networks:
   default:
@@ -41,6 +104,7 @@ networks:
     external: true
 
 volumes:
-  akeneo:
+  akeneo_storage:
+  akeneo_logs:
   mysql:
   elasticsearch:

@@ -6,7 +6,8 @@
 - [ ] Read upstream release notes and upgrade notes
 - [ ] Choose `x.x` or `x.x.x` tag using repository policy
 - [ ] Update only required files
-- [ ] Use braced `${VAR}` form for all environment variable references in edited files
+- [ ] Use braced `${VAR}` form for **all** environment-variable references in every edited file (`.env`, `docker-compose.yml`, mounted config templates), not only the lines changed this run
+- [ ] Scan edited files for remaining bare `$VAR` references and fix all hits before handoff
 - [ ] Fix minimum app-local conformance drift required by current gates or generation rules
 - [ ] Keep changes app-local
 - [ ] Update `apps/<app>/CHANGELOG.md` with a pure-date heading `## YYYY-MM-DD` for this change batch

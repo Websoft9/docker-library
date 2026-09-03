@@ -6,14 +6,14 @@
     "image": "https://hub.docker.com/_/arangodb",
     "releases": "https://github.com/arangodb/arangodb",
     "docs": [
-      "https://github.com/arangodb/arangodb"
+      "https://hub.docker.com/_/arangodb"
     ]
   },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "3.12.4",
+        "3.12",
         "latest"
       ]
     }

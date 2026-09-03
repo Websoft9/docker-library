@@ -197,8 +197,8 @@ Examples:
 Rules:
 
 - use `${VAR}` for every variable reference in `.env`, `docker-compose.yml`, and mounted config templates
-- do not use the bare `$VAR` form in new or updated app packages
-- the policy gate still accepts the legacy bare `$W9_URL` form, so existing packages pass without churn
+- whenever `.env`, `docker-compose.yml`, or a mounted config template is edited, convert **every** variable reference in the whole file to the braced form `${VAR}`; do not leave bare `$VAR` on old, otherwise-untouched lines of an edited file
+- the policy gate still accepts the legacy bare `$W9_URL` form, so untouched existing packages pass without churn
 
 ## `W9_URL_REPLACE` Decision Rule
 
@@ -375,5 +375,6 @@ Before editing `.env` or `docker-compose.yml`:
 2. read `metadata/templates/new-app/.env.tmpl`
 3. check whether the app needs `W9_URL_REPLACE`
 4. check whether login is package-controlled or interactive
-5. use `${VAR}` for all variable references (never bare `$VAR`)
-6. run `libs app-check --app <app> --gate policy` after edits
+5. once you edit a file, use `${VAR}` for **all** variable references in it (never bare `$VAR`, even on lines you did not otherwise change)
+6. scan the edited files for remaining bare `$VAR` references before handoff
+7. run `libs app-check --app <app> --gate policy` after edits

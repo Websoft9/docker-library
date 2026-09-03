@@ -11,7 +11,10 @@ apps:
 - alfresco
 - answer
 - apex
+- appwrite
+- aria2
 - automatisch
+- awx
 - azimutt
 - bigagi
 - cadvisor
@@ -31,8 +34,14 @@ overrides:
     archive_reason: Not maintained by upstream
   answer:
     archive_reason: Low user demand
+  appwrite:
+    archive_reason: Too many containers
+  aria2:
+    archive_reason: Not maintained by upstream
   automatisch:
     archive_reason: Low user demand
+  awx:
+    archive_reason: Not maintained by upstream
   azimutt:
     archive_reason: Low user demand
   bigagi:

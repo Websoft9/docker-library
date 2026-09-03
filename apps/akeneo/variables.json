@@ -5,16 +5,21 @@
   "upstream": {
     "image": "https://hub.docker.com/r/websoft9dev/akeneo",
     "releases": "https://github.com/akeneo/pim-community-dev",
+    "compose": {
+      "compose": "https://raw.githubusercontent.com/akeneo/pim-community-dev/v2026.4/docker-compose.yml",
+      "env": "https://raw.githubusercontent.com/akeneo/pim-community-dev/v2026.4/.env"
+    },
     "docs": [
-      "https://github.com/akeneo/pim-community-dev"
+      "https://packagist.org/packages/akeneo/pim-community-standard",
+      "https://docs.akeneo.com/master/install_pim/docker/installation_docker.html",
+      "https://docs.akeneo.com/master/technical_architecture/technical_information/server_side_setup_for_hosting.html"
     ]
   },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "v7.0.22",
-        "latest"
+        "v2026.4"
       ]
     }
   ],
@@ -22,5 +27,14 @@
     "cpu": "2",
     "memory": "4",
     "disk": "1"
+  },
+  "env": {
+    "first_startup_only": [
+      "AKENEO_ADMIN_USER",
+      "AKENEO_ADMIN_PASSWORD"
+    ]
+  },
+  "help": {
+    "db": "Akeneo requires MySQL 8.4 and Elasticsearch 8.17 for this package. This package bundles MySQL 8.4 and Elasticsearch 8.17.0 for a single-node deployment."
   }
 }
