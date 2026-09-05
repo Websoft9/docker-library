@@ -14,7 +14,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v7
       with:
         # 确保拉取的是 pull request 的代码
         ref: ${{ github.event.pull_request.head.sha }}

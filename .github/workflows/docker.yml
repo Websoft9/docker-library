@@ -74,13 +74,13 @@ jobs:
     - name: Install minimal CLI dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pyyaml rich typer
+        pip install pyyaml
 
     - name: Generate build plan
       run: |
         APP=${{ matrix.app }}
         CHANNEL=$([ "${{ github.ref_name }}" = "main" ] && echo stable || echo dev)
-        PYTHONPATH=cli python -c "from libs.main import run; run()" app-build-plan --app "$APP" --channel "$CHANNEL" --git-sha "${{ github.sha }}" --json > plan.json
+        PYTHONPATH=cli python -c "import json,sys; from libs.app_build import build_plan; print(json.dumps(build_plan(app_name=sys.argv[1], channel=sys.argv[2], git_sha=sys.argv[3]), indent=2, ensure_ascii=False))" "$APP" "$CHANNEL" "${{ github.sha }}" > plan.json
         cat plan.json
         echo "APP=$(jq -r '.app' plan.json)" >> $GITHUB_ENV
         echo "CHANNEL=$(jq -r '.channel' plan.json)" >> $GITHUB_ENV
@@ -142,7 +142,11 @@ jobs:
     - name: Promote dev image to stable tags (main)
       if: env.CHANNEL == 'stable'
       run: |
-        docker buildx imagetools inspect "${{ env.SOURCE_IMAGE }}"
+        if ! docker buildx imagetools inspect "${{ env.SOURCE_IMAGE }}" >/dev/null 2>&1; then
+          echo "ERROR: source dev image missing: ${{ env.SOURCE_IMAGE }}" >&2
+          echo "Expected this image to be built and pushed by the dev branch workflow before main promotion." >&2
+          exit 1
+        fi
         TAG_ARGS=""
         for tag in $(echo "${{ env.TAGS }}" | tr ',' ' '); do
           TAG_ARGS="$TAG_ARGS --tag $tag"

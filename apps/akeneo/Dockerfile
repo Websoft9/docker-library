@@ -8,7 +8,7 @@ LABEL org.opencontainers.image.authors="https://www.websoft9.com" \
       org.opencontainers.image.description="Akeneo packaged by Websoft9" \
       org.opencontainers.image.source="https://github.com/Websoft9/docker-library/tree/main/apps/akeneo" \
       org.opencontainers.image.title="akeneo" \
-      org.opencontainers.image.vendor="Websoft9 Inc." \
+      org.opencontainers.image.vendor="Websoft9" \
       org.opencontainers.image.version="${AKENEO_VERSION}"
 
 ENV APP_ENV=prod \
