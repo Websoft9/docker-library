@@ -123,7 +123,7 @@ def scan_command(
 @app.command("app-check")
 def check_command(
     app_name: str = typer.Option(..., "--app", help="App name"),
-    gate: str = typer.Option("all", "--gate", help="all | structure | policy"),
+    gate: str = typer.Option("all", "--gate", help="all | structure | policy | version"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
 ) -> None:
     """Run quality gate checks for one app."""
@@ -146,6 +146,7 @@ def report_command(
         "automated_checks": {
             "structure": check["structure"],
             "policy": check["policy"],
+            "version": check["version"],
         },
         "owner_e2e_focus": [],
     }
@@ -563,6 +564,12 @@ def app_deploy_command(
 def app_build_command(
     app_name: str = typer.Option(..., "--app", help="App name"),
     push: bool = typer.Option(False, "--push", help="Push built image tags after a successful build"),
+    confirm_stable: bool = typer.Option(False, "--confirm-stable", help="Allow pushing stable tags outside CI (controlled backdoor)"),
+    target: str | None = typer.Option(None, "--target", help="local | remote"),
+    ssh_host: str | None = typer.Option(None, "--ssh-host", help="Remote host IP or name"),
+    ssh_user: str | None = typer.Option(None, "--ssh-user", help="Remote SSH user (default root)"),
+    ssh_secret_path: str | None = typer.Option(None, "--ssh-secret-path", help="SSH secret path (key or password file)"),
+    deploy_root: str | None = typer.Option(None, "--deploy-root", help="Remote deploy root"),
     registry: str | None = typer.Option(None, "--registry", help="Optional registry hostname for docker login"),
     username: str | None = typer.Option(None, "--username", help="Registry username; overrides connector/env value"),
     password: str | None = typer.Option(None, "--password", help="Registry password; overrides connector/env value"),
@@ -571,11 +578,17 @@ def app_build_command(
     progress: bool = typer.Option(False, "--progress", help="Show build/push progress on stderr"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
 ) -> None:
-    """Build one app's Dockerfile-backed services, and optionally push tagged images."""
+    """Build one app's Dockerfile-backed services on local or remote host, and optionally push tagged images."""
     try:
         payload = app_build.build_app(
             app_name=app_name,
             push=push,
+            confirm_stable=confirm_stable,
+            target=target,
+            ssh_host=ssh_host,
+            ssh_user=ssh_user,
+            ssh_secret_path=ssh_secret_path,
+            deploy_root=deploy_root,
             env_file=env_file,
             username=username,
             password=password,
@@ -592,6 +605,29 @@ def app_build_command(
     except Exception as error:
         typer.echo(str(error), err=True)
         raise typer.Exit(code=1)
+    print_output(payload, as_json)
+
+
+@app.command("app-build-plan")
+def app_build_plan_command(
+    app_name: str = typer.Option(..., "--app", help="App name"),
+    channel: str = typer.Option("stable", "--channel", help="stable | dev"),
+    git_sha: str | None = typer.Option(None, "--git-sha", help="Git SHA used for dev image tags"),
+    as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
+) -> None:
+    """Emit the canonical build/tag plan for one app. Shared by CI and controlled manual push."""
+    try:
+        payload = app_build.build_plan(
+            app_name=app_name,
+            channel=channel,
+            git_sha=git_sha,
+        )
+    except FileNotFoundError as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=4)
+    except ValueError as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=2)
     print_output(payload, as_json)
 
 

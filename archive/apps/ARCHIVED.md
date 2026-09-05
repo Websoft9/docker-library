@@ -6,6 +6,8 @@ Archived apps moved out of active maintenance:
 - `magento`
 - `mediawiki`
 - `nodebb`
+- `screego`
+- `scratch`
 - `sscms`
 - ...
 

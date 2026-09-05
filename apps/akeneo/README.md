@@ -85,6 +85,8 @@ Configuration files live inside the image; mount a single file read-only to over
 
 - [Official docs](https://docs.akeneo.com/master/technical_architecture/technical_information/server_side_setup_for_hosting.html)
 
+- [Official docs](https://docs.akeneo.com/master/install_pim/manual/scheduled_job.html)
+
 
 <!-- W9_TROUBLESHOOT_START -->
 ## Troubleshooting

@@ -12,12 +12,13 @@ This repository keeps local secrets and remote execution defaults outside git.
 | `.secrets/ssh/default.pem` | Default SSH key for remote deploy-validation (chmod 600) |
 | `.secrets/contentful.env` | Contentful token file for `libs catalog-push --apply` (`CONTENTFUL_ACCESS_TOKEN=...`) |
 | `.secrets/cloudflare.env` | Cloudflare token file for CLI or publish operations (`CLOUDFLARE_API_TOKEN=...`) |
-| `.secrets/dockerhub.env` | Docker Hub credentials for `libs app-build --push` (`DOCKERHUB_USERNAME=...` and `DOCKERHUB_PASSWORD=...`, or `DOCKERHUB_TOKEN=...`) |
+| `.secrets/dockerhub.env` | Docker Hub credentials for the controlled `libs app-build --push` backdoor (`DOCKERHUB_USERNAME=...` and `DOCKERHUB_PASSWORD=...`, or `DOCKERHUB_TOKEN=...`) |
 
 ## Manual vs CI
 
 - **Manual / local runs** read from `.secrets/` by default.
 - **CI never reads this directory.** CI obtains the same values from GitHub Actions secrets and injects them via environment variables (e.g. `CONTENTFUL_ACCESS_TOKEN`).
+- CI should derive tags and build arguments from `libs app-build-plan`; `libs app-build --push` remains available as an owner/maintainer fallback when CI cannot be used.
 
 ## Rules
 
@@ -26,3 +27,4 @@ This repository keeps local secrets and remote execution defaults outside git.
 - Run `make remote` to regenerate `.secrets/remote.env` interactively; the default deploy root is `/websoft9/library/apps`.
 - Run `make connector` to create or update provider token files such as `.secrets/contentful.env`, `.secrets/cloudflare.env`, and `.secrets/dockerhub.env` interactively.
 - Provider env files store the token directly as standard environment variables; no extra file indirection is used.
+- `libs app-build --push` is a controlled backdoor: outside CI, pushing stable tags requires `--confirm-stable`.

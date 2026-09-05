@@ -11,6 +11,7 @@ from pathlib import Path
 import yaml
 
 from libs import remote
+from libs import app_build
 from libs.metadata import app_dir
 from libs.repo import repo_path
 
@@ -35,14 +36,6 @@ def _run(command: list[str], *, progress: ProgressWriter | None = None, verbose:
 
 def _run_remote(host: str, user: str, secret_path: Path, script: str, *, progress: ProgressWriter | None = None, verbose: bool = False) -> subprocess.CompletedProcess:
     return _run(remote.ssh_base(host, user, secret_path) + [script], progress=progress, verbose=verbose)
-
-
-def _run_stream(command: list[str], *, progress: ProgressWriter | None = None) -> subprocess.CompletedProcess:
-    return remote.stream_command(command, on_line=progress)
-
-
-def _run_remote_stream(host: str, user: str, secret_path: Path, script: str, *, progress: ProgressWriter | None = None) -> subprocess.CompletedProcess:
-    return remote.stream_ssh(host, user, secret_path, script, on_line=progress)
 
 
 def _sync_app_dir(
@@ -89,10 +82,6 @@ def _remote_compose_script(target: str, action: str) -> str:
     return f"docker compose -f {target}/docker-compose.yml --env-file {target}/.env {action}"
 
 
-def _remote_compose_script_with_progress(target: str, action: str) -> str:
-    return f"docker compose --progress plain -f {target}/docker-compose.yml --env-file {target}/.env {action}"
-
-
 def _compose_services(target: Path) -> dict:
     compose_path = target / "docker-compose.yml"
     if not compose_path.exists():
@@ -101,31 +90,20 @@ def _compose_services(target: Path) -> dict:
     return compose.get("services") or {}
 
 
-def _compose_has_build(target: Path) -> bool:
+def _pull_services(app_name: str, target: Path) -> list[str]:
+    """Services whose images must be pulled (not built locally/remotely)."""
     services = _compose_services(target)
-    return any(isinstance(service, dict) and service.get("build") for service in services.values())
-
-
-def _compose_build_services(target: Path) -> list[str]:
-    services = _compose_services(target)
-    return [name for name, service in services.items() if isinstance(service, dict) and service.get("build")]
-
-
-def _compose_pull_services(target: Path) -> list[str]:
-    services = _compose_services(target)
-    build_images = {
-        service.get("image")
-        for service in services.values()
-        if isinstance(service, dict) and service.get("build") and isinstance(service.get("image"), str)
-    }
-    return [
-        name
-        for name, service in services.items()
-        if isinstance(service, dict)
-        and not service.get("build")
-        and isinstance(service.get("image"), str)
-        and service.get("image") not in build_images
-    ]
+    local_build_refs = set(app_build.build_image_refs(app_name))
+    pull = []
+    for name, service in services.items():
+        if not isinstance(service, dict) or not isinstance(service.get("image"), str):
+            continue
+        image = service["image"]
+        resolved = app_build.resolve_image(app_name, image)
+        if image in local_build_refs or resolved in local_build_refs:
+            continue
+        pull.append(name)
+    return pull
 
 
 def _target_mode(target: str | None, ssh_host: str | None) -> str:
@@ -182,6 +160,32 @@ def _announce(progress: ProgressWriter | None, index: int, total: int, message: 
         progress(f"[{index}/{total}] {message}")
 
 
+def _build_via_app_build(
+    app_name: str,
+    mode: str,
+    *,
+    ssh_host: str | None = None,
+    ssh_user: str | None = None,
+    ssh_secret_path: str | None = None,
+    deploy_root: str | None = None,
+    compose_env_file: str | None = None,
+    progress: ProgressWriter | None = None,
+) -> None:
+    """Delegate image build to app_build so deploy and build share one implementation."""
+    app_build.build_app(
+        app_name,
+        push=False,
+        target=mode,
+        ssh_host=ssh_host,
+        ssh_user=ssh_user,
+        ssh_secret_path=ssh_secret_path,
+        deploy_root=deploy_root,
+        compose_env_file=compose_env_file,
+        skip_sync=(mode == "remote"),
+        progress=progress,
+    )
+
+
 def deploy(
     app_name: str,
     target: str | None = None,
@@ -200,16 +204,15 @@ def deploy(
 
     mode = _target_mode(target, ssh_host)
     action = "down -v" if down else "up -d"
-    has_build = _compose_has_build(source)
-    build_services = _compose_build_services(source)
-    pull_services = _compose_pull_services(source)
+    needs_build = app_build.can_build(app_name)
+    pull_services = _pull_services(app_name, source)
 
     if mode == "local":
         target_path = repo_path("apps", app_name)
         env_file = _patched_env_file(app_name, version) if version else None
         try:
             step = 1
-            total = 3 if down else (6 if has_build else 5)
+            total = 3 if down else (6 if needs_build else 5)
 
             if not down:
                 _announce(progress, step, total, "ensuring shared network")
@@ -227,22 +230,14 @@ def deploy(
                     pull = _run(_local_compose_args(target_path, env_file) + ["pull", *pull_services], progress=progress, verbose=verbose)
                     if pull.returncode != 0:
                         raise RuntimeError(pull.stderr.strip() or pull.stdout.strip() or "compose pull failed")
-                if has_build:
+                if needs_build:
                     _announce(progress, step + 2, total, "building local images")
-                    build = _run_stream([
-                        "docker",
-                        "compose",
-                        "--progress",
-                        "plain",
-                        "-f",
-                        str(target_path / "docker-compose.yml"),
-                        "--env-file",
-                        str(env_file if env_file is not None else target_path / ".env"),
-                        "build",
-                        *build_services,
-                    ], progress=progress)
-                    if build.returncode != 0:
-                        raise RuntimeError(build.stdout.strip() or "compose build failed")
+                    _build_via_app_build(
+                        app_name,
+                        "local",
+                        compose_env_file=str(env_file) if env_file else None,
+                        progress=progress,
+                    )
                     _announce(progress, step + 3, total, "starting application")
                     result = _run(_local_compose_args(target_path, env_file) + ["up", "-d"], progress=progress, verbose=verbose)
                     ps_step = step + 4
@@ -283,7 +278,7 @@ def deploy(
     app_target = f"{deploy_root_value}/{app_name}"
 
     step = 1
-    total = 4 if down else (7 if has_build else 6)
+    total = 4 if down else (7 if needs_build else 6)
 
     _announce(progress, step, total, "syncing deploy package")
     _sync_app_dir(app_name, host, user, secret_path, deploy_root_value, progress=progress, verbose=verbose)
@@ -308,11 +303,17 @@ def deploy(
             pull = _run_remote(host, user, secret_path, _remote_compose_script(app_target, f"pull {' '.join(pull_services)}"), progress=progress, verbose=verbose)
             if pull.returncode != 0:
                 raise RuntimeError(pull.stderr.strip() or pull.stdout.strip() or "remote compose pull failed")
-        if has_build:
+        if needs_build:
             _announce(progress, step + 2, total, "building application images")
-            build = _run_remote_stream(host, user, secret_path, _remote_compose_script_with_progress(app_target, f"build {' '.join(build_services)}"), progress=progress)
-            if build.returncode != 0:
-                raise RuntimeError(build.stdout.strip() or "remote compose build failed")
+            _build_via_app_build(
+                app_name,
+                "remote",
+                ssh_host=host,
+                ssh_user=user,
+                ssh_secret_path=str(secret_path),
+                deploy_root=deploy_root_value,
+                progress=progress,
+            )
             _announce(progress, step + 3, total, "starting application")
             result = _run_remote(host, user, secret_path, _remote_compose_script(app_target, "up -d"), progress=progress, verbose=verbose)
             ps_step = step + 4

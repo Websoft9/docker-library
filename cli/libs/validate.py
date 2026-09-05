@@ -133,6 +133,48 @@ def _policy_result(target: Path) -> dict:
     }
 
 
+def _version_result(target: Path) -> dict:
+    """W9_VERSION (.env) must be declared in variables.json edition (community).
+
+    Rule source: docs/image-tag-spec.md.
+    Apps without variables.json, without W9_VERSION, or whose W9_VERSION is a
+    floating alias (latest) are reported as not_applicable rather than failing.
+    """
+    env_path = target / ".env"
+    variables_path = target / "variables.json"
+    if not env_path.exists() or not variables_path.exists():
+        return {"ok": True, "status": "not_applicable", "note": "missing .env or variables.json"}
+
+    variables = json.loads(variables_path.read_text(encoding="utf-8"))
+    declared = [
+        str(v)
+        for edition in variables.get("edition", [])
+        if edition.get("dist") == "community"
+        for v in edition.get("version", [])
+    ]
+
+    w9_version = None
+    for line in env_path.read_text(encoding="utf-8").splitlines():
+        if not line or line.lstrip().startswith("#") or not line.startswith("W9_VERSION="):
+            continue
+        w9_version = line.split("=", 1)[1].strip().strip("'\"")
+        break
+
+    if not w9_version:
+        return {"ok": True, "status": "not_applicable", "note": "W9_VERSION not found in .env"}
+
+    if w9_version.lower() in ("latest", "main", "stable"):
+        return {"ok": True, "status": "not_applicable", "note": f"W9_VERSION is a floating alias: {w9_version}"}
+
+    found = w9_version in declared
+    return {
+        "ok": found,
+        "status": "ok" if found else "mismatch",
+        "w9_version": w9_version,
+        "declared": sorted(declared),
+    }
+
+
 def _resolve_app_or_exit(app_name: str) -> Path:
     target = app_dir(app_name)
     if not target:
@@ -144,16 +186,20 @@ def check_app(app_name: str, gate: str = "all") -> dict:
     target = _resolve_app_or_exit(app_name)
     structure = _structure_result(target)
     policy = _policy_result(target)
+    version = _version_result(target)
 
     if gate == "structure":
         return {"app": app_name, "gate": gate, "result": structure, "ok": structure["ok"]}
     if gate == "policy":
         return {"app": app_name, "gate": gate, "result": policy, "ok": policy["ok"]}
+    if gate == "version":
+        return {"app": app_name, "gate": gate, "result": version, "ok": version["ok"]}
 
     return {
         "app": app_name,
         "structure": structure,
         "policy": policy,
+        "version": version,
         "ok": structure["ok"] and policy["ok"],
     }
 
@@ -192,6 +238,17 @@ def policy(
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
 ) -> None:
     payload = check_app(app_name, gate="policy")
+    print_output(payload, as_json)
+    if not payload["ok"]:
+        raise typer.Exit(code=1)
+
+
+@app.command()
+def version(
+    app_name: str = typer.Option(..., "--app", help="App name"),
+    as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
+) -> None:
+    payload = check_app(app_name, gate="version")
     print_output(payload, as_json)
     if not payload["ok"]:
         raise typer.Exit(code=1)

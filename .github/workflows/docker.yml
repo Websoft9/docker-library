@@ -1,16 +1,26 @@
-# This action is used for building multiply applications to DockerHub at one time
-# It need LABEL version="" at your dockerfile. And it can divide version. e.g version v3.4.0.3 will divide to latest,v3,v3.4,v3.4.0,v3.4.0.3
-# When version include "-", it not divide version and build ony one test image
-# It have enable multiPlatform, you add more platform at platform: linux/amd64...
-# If you add more paths for trigger, please update app_list= at set-matrix for it also
+# Build and push custom Docker images to DockerHub.
+#
+# Version source of truth: docs/image-tag-spec.md.
+#
+# Tag namespaces (same repository, tag differs by branch):
+#   main branch -> stable tags from W9_VERSION
+#   dev branch  -> dev-<git-sha> (primary) + dev-latest (rolling alias)
+#
+# Build contract: the Dockerfile MUST declare a version ARG whose name is
+# ${APP^^}_VERSION (e.g. apps/akeneo -> AKENEO_VERSION). CI reads W9_VERSION
+# from apps/<app>/.env, injects it as that build-arg, and tags from W9_VERSION.
+# Apps that do not declare this ARG are not built by CI; migrate them when touched.
+#
+# If you add more paths for trigger, please update app_list= at set-matrix for it also.
 
 name: Build image to DockerHub
 
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
     paths:
       - "apps/*/Dockerfile"
+      - "apps/*/.env"
       - "apps/*/cmd.sh"
       - "apps/*/entrypoint.sh"
 
@@ -27,10 +37,22 @@ jobs:
 
     - id: set-matrix
       run: |
-        git diff --name-only HEAD^ HEAD
         changed_files=$(git diff --name-only HEAD^ HEAD)
-        app_list=$(echo "$changed_files" | grep -E 'apps/.*/(Dockerfile|cmd.sh|entrypoint.sh)' | awk -F'/' '{print $2}' | sort | uniq)
-        app_list_json=$(echo $app_list | jq -R -s -c 'split(" ")')
+        app_list=$(echo "$changed_files" | grep -E 'apps/.*/(Dockerfile|.env|cmd.sh|entrypoint.sh)$' | awk -F'/' '{print $2}' | sort | uniq)
+        valid_list=""
+        for app in $app_list; do
+          if [ ! -f "apps/$app/Dockerfile" ]; then
+            continue
+          fi
+          app_upper=$(echo "$app" | tr '[:lower:]' '[:upper:]')
+          version_arg="${app_upper}_VERSION"
+          if ! grep -qE "^ARG[[:space:]]+${version_arg}=" "apps/$app/Dockerfile"; then
+            echo "skip (no ${version_arg} ARG): $app"
+            continue
+          fi
+          valid_list="$valid_list $app"
+        done
+        app_list_json=$(echo "$valid_list" | xargs | jq -R -s -c 'split(" ")')
         echo "::set-output name=matrix::{\"app\": $app_list_json}"
 
   build:
@@ -42,33 +64,59 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       with:
-        fetch-depth: 2
+        fetch-depth: 0
 
-    - name: Prepare tags and files for Docker build
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install minimal CLI dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyyaml rich typer
+
+    - name: Generate build plan
       run: |
         APP=${{ matrix.app }}
-        TAG=$(grep 'org.opencontainers.image.version' "apps/$APP/Dockerfile" | cut -d'"' -f2 | xargs)
-        echo $APP version is $TAG
-        if [[ "$TAG" == *"-"* ]]; then
-          TAGS="$TAG"
-        else
-          IFS='.' read -ra PARTS <<< "$TAG"
-          TAGS="latest"
-          TAG_PART=""
-          for i in "${!PARTS[@]}"; do 
-            if [ "$i" -eq 0 ]; then 
-              TAG_PART="${PARTS[$i]}"
-            else 
-              TAG_PART="${TAG_PART}.${PARTS[$i]}"
-            fi
-            TAGS="${TAGS},${TAG_PART}"
-          done
-        fi
-        echo "Building and pushing Docker image for $APP with tags: $TAGS"
-        echo "TAGS=$TAGS" >> $GITHUB_ENV
-        echo "APP=$APP" >> $GITHUB_ENV
-        echo "DIRECTORY=apps/$APP" >> $GITHUB_ENV
+        CHANNEL=$([ "${{ github.ref_name }}" = "main" ] && echo stable || echo dev)
+        PYTHONPATH=cli python -c "from libs.main import run; run()" app-build-plan --app "$APP" --channel "$CHANNEL" --git-sha "${{ github.sha }}" --json > plan.json
+        cat plan.json
+        echo "APP=$(jq -r '.app' plan.json)" >> $GITHUB_ENV
+        echo "CHANNEL=$(jq -r '.channel' plan.json)" >> $GITHUB_ENV
+        echo "DIRECTORY=$(jq -r '.context' plan.json)" >> $GITHUB_ENV
+        echo "DOCKERFILE=$(jq -r '.dockerfile' plan.json)" >> $GITHUB_ENV
         echo "README=apps/$APP/README.md" >> $GITHUB_ENV
+        echo "VERSION_ARG=$(jq -r '.version_arg' plan.json)" >> $GITHUB_ENV
+        echo "W9_VERSION=$(jq -r '.w9_version' plan.json)" >> $GITHUB_ENV
+        echo "TAGS=$(jq -r '.tags | join(",")' plan.json)" >> $GITHUB_ENV
+
+    - name: Resolve promotion source (main only)
+      if: github.ref_name == 'main'
+      run: |
+        APP=${{ matrix.app }}
+        if git rev-parse --verify HEAD^2 >/dev/null 2>&1; then
+          SOURCE_SHA=$(git rev-parse --short=7 HEAD^2)
+        else
+          SOURCE_SHA=$(git rev-parse --short=7 HEAD)
+        fi
+        echo "SOURCE_SHA=$SOURCE_SHA" >> $GITHUB_ENV
+        echo "SOURCE_IMAGE=websoft9dev/${APP}:dev-${SOURCE_SHA}" >> $GITHUB_ENV
+
+    - name: Build summary
+      run: |
+        echo "::group::Build plan summary"
+        echo "app:        ${{ matrix.app }}"
+        echo "channel:    ${{ env.CHANNEL }}"
+        echo "context:    ${{ env.DIRECTORY }}"
+        echo "dockerfile: ${{ env.DOCKERFILE }}"
+        echo "build-arg:  ${{ env.VERSION_ARG }}=${{ env.W9_VERSION }}"
+        if [ "${{ github.ref_name }}" = "main" ]; then
+          echo "promote from: ${{ env.SOURCE_IMAGE }}"
+        fi
+        echo "tags:"
+        echo "${{ env.TAGS }}" | tr ',' '\n' | sed 's/^/  /'
+        echo "::endgroup::"
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
@@ -79,19 +127,27 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Prepare Docker tags
-      id: meta
-      run: |
-        TAGS_LIST=$(echo "${{env.TAGS}}" | tr ',' '\n' | sed "s|^|websoft9dev/${{env.APP}}:|" | tr '\n' ',' | sed 's/,$//')
-        echo "tags=$TAGS_LIST" >> $GITHUB_OUTPUT
-
-    - name: Build and push Docker image
+    - name: Build and push Docker image (dev)
+      if: env.CHANNEL == 'dev'
       uses: docker/build-push-action@v4
       with:
         context: ${{env.DIRECTORY}}
+        file: ${{env.DOCKERFILE}}
         push: true
-        tags: ${{steps.meta.outputs.tags}}
+        tags: ${{env.TAGS}}
         platforms: linux/amd64
+        build-args: |
+          ${{ env.VERSION_ARG }}=${{ env.W9_VERSION }}
+
+    - name: Promote dev image to stable tags (main)
+      if: env.CHANNEL == 'stable'
+      run: |
+        docker buildx imagetools inspect "${{ env.SOURCE_IMAGE }}"
+        TAG_ARGS=""
+        for tag in $(echo "${{ env.TAGS }}" | tr ',' ' '); do
+          TAG_ARGS="$TAG_ARGS --tag $tag"
+        done
+        docker buildx imagetools create $TAG_ARGS "${{ env.SOURCE_IMAGE }}"
 
     - name: Docker Hub Description
       uses: peter-evans/dockerhub-description@v3
@@ -101,4 +157,3 @@ jobs:
         repository: websoft9dev/${{env.APP}}
         readme-filepath: ${{env.README}}
       if: needs.setup.outputs.matrix != ''
-

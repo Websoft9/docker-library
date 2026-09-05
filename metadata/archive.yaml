@@ -25,6 +25,8 @@ apps:
 - mediawiki
 - mingdao
 - nodebb
+- scratch
+- screego
 - sscms
 - weblate
 overrides:
@@ -49,4 +51,8 @@ overrides:
   cadvisor:
     archive_reason: Low user demand
   chat2db:
+    archive_reason: Low user demand
+  scratch:
+    archive_reason: Low user demand
+  screego:
     archive_reason: Low user demand

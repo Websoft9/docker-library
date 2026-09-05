@@ -1,35 +1,33 @@
+x-akeneo-common: &akeneo-common
+  image: ${W9_REPO}:${W9_VERSION}
+  restart: unless-stopped
+  env_file: .env
+  environment:
+    APP_ENV: ${APP_ENV}
+    APP_DEBUG: ${APP_DEBUG}
+    APP_DEFAULT_LOCALE: ${APP_DEFAULT_LOCALE}
+    APP_SECRET: ${APP_SECRET}
+    AKENEO_PIM_URL: ${AKENEO_PIM_URL}
+    AKENEO_ADMIN_USER: ${AKENEO_ADMIN_USER}
+    AKENEO_ADMIN_PASSWORD: ${AKENEO_ADMIN_PASSWORD}
+    AKENEO_ADMIN_EMAIL: ${AKENEO_ADMIN_EMAIL}
+    APP_DATABASE_HOST: ${APP_DATABASE_HOST}
+    APP_DATABASE_PORT: ${APP_DATABASE_PORT}
+    APP_DATABASE_NAME: ${APP_DATABASE_NAME}
+    APP_DATABASE_USER: ${APP_DATABASE_USER}
+    APP_DATABASE_PASSWORD: ${APP_DATABASE_PASSWORD}
+    APP_INDEX_HOSTS: ${APP_INDEX_HOSTS}
+  volumes:
+    - akeneo_storage:/var/www/html/var/file_storage
+    - akeneo_logs:/var/www/html/var/logs
+
 services:
   akeneo:
-    image: ${W9_REPO}:${W9_VERSION}
-    build:
-      context: .
-      dockerfile: src/Dockerfile
-      args:
-        AKENEO_VERSION: ${W9_VERSION}
+    <<: *akeneo-common
     container_name: ${W9_ID}
-    restart: unless-stopped
-    env_file: .env
     command: ["web"]
-    environment:
-      APP_ENV: ${APP_ENV}
-      APP_DEBUG: ${APP_DEBUG}
-      APP_DEFAULT_LOCALE: ${APP_DEFAULT_LOCALE}
-      APP_SECRET: ${APP_SECRET}
-      AKENEO_PIM_URL: ${AKENEO_PIM_URL}
-      AKENEO_ADMIN_USER: ${AKENEO_ADMIN_USER}
-      AKENEO_ADMIN_PASSWORD: ${AKENEO_ADMIN_PASSWORD}
-      AKENEO_ADMIN_EMAIL: ${AKENEO_ADMIN_EMAIL}
-      APP_DATABASE_HOST: ${APP_DATABASE_HOST}
-      APP_DATABASE_PORT: ${APP_DATABASE_PORT}
-      APP_DATABASE_NAME: ${APP_DATABASE_NAME}
-      APP_DATABASE_USER: ${APP_DATABASE_USER}
-      APP_DATABASE_PASSWORD: ${APP_DATABASE_PASSWORD}
-      APP_INDEX_HOSTS: ${APP_INDEX_HOSTS}
     ports:
       - "${W9_HTTP_PORT_SET}:80" # Web Console
-    volumes:
-      - akeneo_storage:/var/www/html/var/file_storage
-      - akeneo_logs:/var/www/html/var/logs
     depends_on:
       - mysql
       - elasticsearch
@@ -41,34 +39,9 @@ services:
       start_period: 300s
 
   worker:
-    image: ${W9_REPO}:${W9_VERSION}
-    build:
-      context: .
-      dockerfile: src/Dockerfile
-      args:
-        AKENEO_VERSION: ${W9_VERSION}
+    <<: *akeneo-common
     container_name: ${W9_ID}-worker
-    restart: unless-stopped
-    env_file: .env
     command: ["worker"]
-    environment:
-      APP_ENV: ${APP_ENV}
-      APP_DEBUG: ${APP_DEBUG}
-      APP_DEFAULT_LOCALE: ${APP_DEFAULT_LOCALE}
-      APP_SECRET: ${APP_SECRET}
-      AKENEO_PIM_URL: ${AKENEO_PIM_URL}
-      AKENEO_ADMIN_USER: ${AKENEO_ADMIN_USER}
-      AKENEO_ADMIN_PASSWORD: ${AKENEO_ADMIN_PASSWORD}
-      AKENEO_ADMIN_EMAIL: ${AKENEO_ADMIN_EMAIL}
-      APP_DATABASE_HOST: ${APP_DATABASE_HOST}
-      APP_DATABASE_PORT: ${APP_DATABASE_PORT}
-      APP_DATABASE_NAME: ${APP_DATABASE_NAME}
-      APP_DATABASE_USER: ${APP_DATABASE_USER}
-      APP_DATABASE_PASSWORD: ${APP_DATABASE_PASSWORD}
-      APP_INDEX_HOSTS: ${APP_INDEX_HOSTS}
-    volumes:
-      - akeneo_storage:/var/www/html/var/file_storage
-      - akeneo_logs:/var/www/html/var/logs
     depends_on:
       akeneo:
         condition: service_healthy

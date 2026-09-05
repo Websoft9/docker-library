@@ -49,13 +49,12 @@ def test_app_deploy_local_step_sequence(monkeypatch, repo_fixture, app_factory):
             progress(f"$ {' '.join(command)}")
         return types.SimpleNamespace(returncode=0, stdout="ok", stderr="")
 
-    def fake_stream(command, *, progress=None):
+    def fake_build(app_name, mode, *, compose_env_file=None, progress=None, **kwargs):
         if progress:
             progress("build line")
-        return types.SimpleNamespace(returncode=0, stdout="ok", stderr="")
 
     monkeypatch.setattr(app_deploy, "_run", fake_run)
-    monkeypatch.setattr(app_deploy, "_run_stream", fake_stream)
+    monkeypatch.setattr(app_deploy, "_build_via_app_build", fake_build)
 
     payload = app_deploy.deploy("demo", target="local", progress=output.append, verbose=False)
 
@@ -79,11 +78,6 @@ def test_app_deploy_remote_step_sequence_for_down(monkeypatch, repo_fixture, app
     monkeypatch.setattr(
         app_deploy,
         "_run_remote",
-        lambda *args, **kwargs: types.SimpleNamespace(returncode=0, stdout="ok", stderr=""),
-    )
-    monkeypatch.setattr(
-        app_deploy,
-        "_run_remote_stream",
         lambda *args, **kwargs: types.SimpleNamespace(returncode=0, stdout="ok", stderr=""),
     )
     monkeypatch.setattr(app_deploy.remote, "ssh_host", lambda value=None: value or "1.2.3.4")
@@ -153,6 +147,7 @@ def test_app_down_cli_forwards_down_flag(monkeypatch):
 def test_app_deploy_remote_version_patches_remote_env(monkeypatch, repo_fixture, app_factory):
     app_factory("demo", compose="services:\n  web:\n    build: .\n    image: demo:1\n  jobs:\n    image: demo:1\n  db:\n    image: postgres:16\n")
     calls = []
+    build_calls = []
     (repo_fixture / ".secrets" / "ssh").mkdir(parents=True, exist_ok=True)
     (repo_fixture / ".secrets" / "ssh" / "default.pem").write_text("-----BEGIN OPENSSH PRIVATE KEY-----\n", encoding="utf-8")
 
@@ -168,17 +163,17 @@ def test_app_deploy_remote_version_patches_remote_env(monkeypatch, repo_fixture,
     )
     monkeypatch.setattr(
         app_deploy,
-        "_run_remote_stream",
-        lambda *args, **kwargs: (calls.append(args[3]), types.SimpleNamespace(returncode=0, stdout="ok", stderr=""))[1],
+        "_build_via_app_build",
+        lambda app_name, mode, **kwargs: (build_calls.append((app_name, mode, kwargs)), None)[1],
     )
 
     payload = app_deploy.deploy("demo", target="remote", version="7.0")
 
     assert payload["version"] == "7.0"
     assert any("W9_VERSION='7.0'" in call for call in calls)
-    assert any("docker compose --progress plain" in call for call in calls)
     assert any("pull db" in call for call in calls)
     assert not any("pull jobs" in call for call in calls)
+    assert build_calls == [("demo", "remote", {"ssh_host": "1.2.3.4", "ssh_user": "root", "ssh_secret_path": str(repo_fixture / ".secrets" / "ssh" / "default.pem"), "deploy_root": "/websoft9/library/apps", "progress": None})]
 
 
 def test_app_deploy_skips_build_when_compose_has_no_build(monkeypatch, repo_fixture, app_factory):

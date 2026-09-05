@@ -12,7 +12,8 @@
     "docs": [
       "https://packagist.org/packages/akeneo/pim-community-standard",
       "https://docs.akeneo.com/master/install_pim/docker/installation_docker.html",
-      "https://docs.akeneo.com/master/technical_architecture/technical_information/server_side_setup_for_hosting.html"
+      "https://docs.akeneo.com/master/technical_architecture/technical_information/server_side_setup_for_hosting.html",
+      "https://docs.akeneo.com/master/install_pim/manual/scheduled_job.html"
     ]
   },
   "edition": [
@@ -26,7 +27,7 @@
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "1"
+    "disk": "5"
   },
   "env": {
     "first_startup_only": [
