@@ -39,7 +39,7 @@ jobs:
       run: |
         changed_files=$(git diff --name-only HEAD^ HEAD)
         app_list=$(echo "$changed_files" | grep -E 'apps/.*/(Dockerfile|.env|cmd.sh|entrypoint.sh)$' | awk -F'/' '{print $2}' | sort | uniq)
-        valid_list=""
+        valid_list=()
         for app in $app_list; do
           if [ ! -f "apps/$app/Dockerfile" ]; then
             continue
@@ -50,9 +50,9 @@ jobs:
             echo "skip (no ${version_arg} ARG): $app"
             continue
           fi
-          valid_list="$valid_list $app"
+          valid_list+=("$app")
         done
-        app_list_json=$(echo "$valid_list" | xargs | jq -R -s -c 'split(" ")')
+        app_list_json=$(jq -cn '$ARGS.positional' --args "${valid_list[@]}")
         echo "::set-output name=matrix::{\"app\": $app_list_json}"
 
   build:
