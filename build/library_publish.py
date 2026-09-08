@@ -23,6 +23,7 @@ CHANNEL_PACKAGE_NAMES = {
     "release": "library-latest.zip",
 }
 V2_FULL_LATEST_NAME = "latest.zip"
+MIN_WEBSOFT9_VERSION = "2.4.2"
 CATALOG_FILE_NAMES = (
     "catalog_en.json",
     "catalog_zh.json",
@@ -329,6 +330,7 @@ def build_appstore_manifest(
         "schemaVersion": "1",
         "datasetVersion": dataset_version,
         "channel": channel,
+        "minWebsoft9Version": MIN_WEBSOFT9_VERSION,
         "catalog": {
             "manifest": "catalog/manifest.json",
             "datasetVersion": catalog_dsv,

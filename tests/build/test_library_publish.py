@@ -124,6 +124,7 @@ def test_manifest_builders_have_expected_shape():
     appstore = library_publish.build_appstore_manifest(
         "a-dsv", "dev", "2026-01-01T00:00:00Z", "c-dsv", "l-dsv"
     )
+    assert appstore["minWebsoft9Version"] == library_publish.MIN_WEBSOFT9_VERSION
     assert appstore["catalog"]["manifest"] == "catalog/manifest.json"
     assert appstore["library"]["manifest"] == "library/manifest.json"
 

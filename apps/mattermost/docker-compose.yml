@@ -5,13 +5,15 @@ version: '3.8'
 
 services:
   mattermost:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
     ports:
       - ${W9_HTTP_PORT_SET}:8065
+      - ${W9_TCP_PORT_SET}:8443/tcp
+      - ${W9_UDP_PORT_SET}:8443/udp
     volumes:
       - mattermost_config:/mattermost/config:rw
       - mattermost_data:/mattermost/data:rw
@@ -20,19 +22,19 @@ services:
       - mattermost_client_plugins:/mattermost/client/plugins:rw
       - mattermost_bleve-indexes:/mattermost/bleve-indexes:rw
     env_file: .env
-    depends_on: 
+    depends_on:
       - postgres
 
   postgres:
-    container_name: $W9_ID-postgresql
-    image: postgres:$W9_DB_VERSION
+    container_name: ${W9_ID}-postgresql
+    image: postgres:${W9_DB_VERSION}
     restart: unless-stopped
     volumes:
       - postgres:/var/lib/postgresql/data
     environment:
       - TZ
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=$W9_RCODE
+      - POSTGRES_PASSWORD=${W9_RCODE}
       - POSTGRES_DB=mattermost
 
 networks:

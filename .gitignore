@@ -8,6 +8,8 @@ mk.sh
 .venv
 *.egg-info
 .pytest_cache
+__pycache__/
+*.py[cod]
 tests/__pycache__
 cli/.pytest_cache
 .opencode/node_modules
