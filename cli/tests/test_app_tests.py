@@ -276,6 +276,22 @@ def test_run_app_tests_remote_preflight_failure_stops_immediately(repo_fixture, 
     assert "Connection refused" in payload["results"][0]["error"]
 
 
+def test_remote_context_accepts_legacy_remote_path_profile(repo_fixture, app_factory):
+    app_factory("demo", env="W9_HTTP_PORT_SET=8080\nW9_ID=demo\n")
+    secret_path = repo_fixture / ".secrets" / "ssh" / "default.pem"
+    secret_path.parent.mkdir(parents=True, exist_ok=True)
+    secret_path.write_text("-----BEGIN OPENSSH PRIVATE KEY-----\n", encoding="utf-8")
+    (repo_fixture / ".secrets" / "remote.env").write_text(
+        "TARGET=remote\nSSH_HOST=1.2.3.4\nSSH_USER=root\nSSH_SECRET_PATH=.secrets/ssh/default.pem\nREMOTE_PATH=/legacy/apps\n",
+        encoding="utf-8",
+    )
+
+    remote_ctx = app_tests._remote_context("demo", None, None, None, None)
+
+    assert remote_ctx is not None
+    assert remote_ctx["app_target"] == "/legacy/apps/demo"
+
+
 def test_scrub_ssh_warning_removes_known_hosts_noise():
     cleaned = app_tests.remote.scrub_ssh_stderr(
         "Warning: Permanently added '1.2.3.4' (ED25519) to the list of known hosts.\npermission denied\n"

@@ -56,6 +56,7 @@ py -m venv .venv
 ## Commands
 
 - `libs list` - list active apps
+- `libs image-stats` - summarize image usage across all apps by registry: docker.io total with the Docker official vs docker.io third-party split (official % of docker.io), plus other registries; `--app <name>` for one app, `--include-archived` adds archived apps
 - `libs app-info --app <name>` - show one app
 - `libs scan` - scan upstream versions
 - `libs app-check --app <name>` - run structure + policy gates

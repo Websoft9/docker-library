@@ -1,28 +1,23 @@
-# image compose and docs: https://hub.docker.com/_/nextcloud
-# add depends_on because that nextcloud may wait for db service starting
-
-version: '3.8'
-
 services:
   nextcloud:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
+    restart: unless-stopped
     ports:
-      - ${W9_HTTP_PORT_SET}:80
+      - "${W9_HTTP_PORT_SET}:80" # Web Console
     volumes:
       - nextcloud:/var/www/html
       - nextcloud-data:/var/www/html/data
     env_file: .env
     environment:
-      - MYSQL_PASSWORD=${W9_POWER_PASSWORD}
-      - MYSQL_DATABASE=nextcloud
-      - MYSQL_USER=nextcloud
-      - MYSQL_HOST=${W9_ID}-mysql
+      MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
+      MYSQL_HOST: ${W9_ID}-mysql
     depends_on:
       db:
         condition: service_healthy
         restart: true
-    restart: unless-stopped
 
   db:
     image: mysql:${W9_DB_VERSION}

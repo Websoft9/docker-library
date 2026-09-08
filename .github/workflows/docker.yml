@@ -31,7 +31,7 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v7
       with:
         fetch-depth: 2
 
@@ -62,56 +62,49 @@ jobs:
       matrix: ${{fromJson(needs.setup.outputs.matrix)}}
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
+      uses: actions/checkout@v7
 
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v7
       with:
-        python-version: '3.11'
+        python-version: '3.12'
 
     - name: Install minimal CLI dependencies
       run: |
         python -m pip install --upgrade pip
         pip install pyyaml
 
-    - name: Generate build plan
+    - name: Resolve channel
       run: |
-        APP=${{ matrix.app }}
-        CHANNEL=$([ "${{ github.ref_name }}" = "main" ] && echo stable || echo dev)
-        PYTHONPATH=cli python -c "import json,sys; from libs.app_build import build_plan; print(json.dumps(build_plan(app_name=sys.argv[1], channel=sys.argv[2], git_sha=sys.argv[3]), indent=2, ensure_ascii=False))" "$APP" "$CHANNEL" "${{ github.sha }}" > plan.json
+        echo "APP=${{ matrix.app }}" >> $GITHUB_ENV
+        if [ "${{ github.ref_name }}" = "main" ]; then
+          echo "CHANNEL=promote" >> $GITHUB_ENV
+        else
+          echo "CHANNEL=dev" >> $GITHUB_ENV
+        fi
+
+    - name: Generate build/promote plan
+      run: |
+        PYTHONPATH=cli python -c "import json,sys; from libs.app_build import build_plan; print(json.dumps(build_plan(app_name=sys.argv[1], channel=sys.argv[2], git_sha=sys.argv[3]), indent=2, ensure_ascii=False))" "${{ env.APP }}" "${{ env.CHANNEL }}" "${{ github.sha }}" > plan.json
         cat plan.json
-        echo "APP=$(jq -r '.app' plan.json)" >> $GITHUB_ENV
         echo "CHANNEL=$(jq -r '.channel' plan.json)" >> $GITHUB_ENV
         echo "DIRECTORY=$(jq -r '.context' plan.json)" >> $GITHUB_ENV
         echo "DOCKERFILE=$(jq -r '.dockerfile' plan.json)" >> $GITHUB_ENV
-        echo "README=apps/$APP/README.md" >> $GITHUB_ENV
+        echo "README=apps/${{ env.APP }}/README.md" >> $GITHUB_ENV
         echo "VERSION_ARG=$(jq -r '.version_arg' plan.json)" >> $GITHUB_ENV
         echo "W9_VERSION=$(jq -r '.w9_version' plan.json)" >> $GITHUB_ENV
         echo "TAGS=$(jq -r '.tags | join(",")' plan.json)" >> $GITHUB_ENV
+        echo "SOURCE_IMAGE=$(jq -r '.source_image // empty' plan.json)" >> $GITHUB_ENV
 
-    - name: Resolve promotion source (main only)
-      if: github.ref_name == 'main'
+    - name: Build/promote summary
       run: |
-        APP=${{ matrix.app }}
-        if git rev-parse --verify HEAD^2 >/dev/null 2>&1; then
-          SOURCE_SHA=$(git rev-parse --short=7 HEAD^2)
-        else
-          SOURCE_SHA=$(git rev-parse --short=7 HEAD)
-        fi
-        echo "SOURCE_SHA=$SOURCE_SHA" >> $GITHUB_ENV
-        echo "SOURCE_IMAGE=websoft9dev/${APP}:dev-${SOURCE_SHA}" >> $GITHUB_ENV
-
-    - name: Build summary
-      run: |
-        echo "::group::Build plan summary"
-        echo "app:        ${{ matrix.app }}"
-        echo "channel:    ${{ env.CHANNEL }}"
-        echo "context:    ${{ env.DIRECTORY }}"
-        echo "dockerfile: ${{ env.DOCKERFILE }}"
-        echo "build-arg:  ${{ env.VERSION_ARG }}=${{ env.W9_VERSION }}"
-        if [ "${{ github.ref_name }}" = "main" ]; then
+        echo "::group::Build/promote plan summary"
+        echo "app:          ${{ matrix.app }}"
+        echo "channel:      ${{ env.CHANNEL }}"
+        echo "context:      ${{ env.DIRECTORY }}"
+        echo "dockerfile:   ${{ env.DOCKERFILE }}"
+        echo "build-arg:    ${{ env.VERSION_ARG }}=${{ env.W9_VERSION }}"
+        if [ "${{ env.CHANNEL }}" = "promote" ]; then
           echo "promote from: ${{ env.SOURCE_IMAGE }}"
         fi
         echo "tags:"
@@ -119,17 +112,17 @@ jobs:
         echo "::endgroup::"
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      uses: docker/setup-buildx-action@v4
 
     - name: Log in to Docker Hub
-      uses: docker/login-action@v2
+      uses: docker/login-action@v4
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build and push Docker image (dev)
       if: env.CHANNEL == 'dev'
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v7
       with:
         context: ${{env.DIRECTORY}}
         file: ${{env.DOCKERFILE}}
@@ -140,7 +133,7 @@ jobs:
           ${{ env.VERSION_ARG }}=${{ env.W9_VERSION }}
 
     - name: Promote dev image to stable tags (main)
-      if: env.CHANNEL == 'stable'
+      if: env.CHANNEL == 'promote'
       run: |
         if ! docker buildx imagetools inspect "${{ env.SOURCE_IMAGE }}" >/dev/null 2>&1; then
           echo "ERROR: source dev image missing: ${{ env.SOURCE_IMAGE }}" >&2
@@ -154,7 +147,7 @@ jobs:
         docker buildx imagetools create $TAG_ARGS "${{ env.SOURCE_IMAGE }}"
 
     - name: Docker Hub Description
-      uses: peter-evans/dockerhub-description@v3
+      uses: peter-evans/dockerhub-description@v5
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}

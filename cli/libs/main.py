@@ -8,7 +8,7 @@ from rich.console import Console
 from rich.table import Table
 
 from libs import app as app_ops
-from libs import app_build, app_deploy, app_tests, appstore_sync, catalog, contentful, dblifecycle, drift, http, maintenance, newapp, readme, remote, validate, versions
+from libs import app_build, app_deploy, app_tests, appstore_sync, catalog, contentful, dblifecycle, drift, http, imagestats, maintenance, newapp, readme, remote, validate, versions
 from libs.metadata import app_dir
 from libs.output import print_output
 
@@ -88,6 +88,60 @@ def info_command(
     except FileNotFoundError:
         raise typer.Exit(code=4)
     print_output(payload, as_json)
+
+
+@app.command(
+    "image-stats",
+    epilog=(
+        "Examples:\n"
+        "  libs image-stats\n"
+        "  libs image-stats --json\n"
+        "  libs image-stats --app wordpress\n"
+        "  libs image-stats --include-archived"
+    ),
+)
+def image_stats_command(
+    app_name: str | None = typer.Option(None, "--app", help="Restrict the scan to one app"),
+    include_archived: bool = typer.Option(False, "--include-archived", help="Include archived apps"),
+    as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
+) -> None:
+    """Summarize Docker official vs non-official images across all apps."""
+    try:
+        payload = imagestats.compute_stats(app_filter=app_name, include_archived=include_archived)
+    except FileNotFoundError as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=4)
+
+    if as_json:
+        print_output(payload, as_json)
+        return
+
+    console = Console()
+    console.print(f"scanned apps: {len(payload['scanned_apps'])}")
+    if payload["skipped_apps"]:
+        console.print(f"skipped apps: {len(payload['skipped_apps'])}")
+        for item in payload["skipped_apps"]:
+            console.print(f"  - {item['app']}: {item['reason']}")
+    if payload["unresolved"]:
+        console.print(f"unresolved refs: {len(payload['unresolved'])}")
+        for item in payload["unresolved"]:
+            console.print(f"  - {item['app']}: {item['image']}")
+    console.print(
+        f"pull image references: {payload['references']} (excludes {payload['locally_built_excluded']} locally built)"
+    )
+    console.print(f"total unique images: {payload['unique_images']}")
+    console.print(f"docker.io images: {payload['dockerio_images']}")
+    console.print(
+        f"  docker official: {payload['docker_official_images']} "
+        f"({payload['docker_official_percent']}% of docker.io)"
+    )
+    console.print(
+        f"  docker.io non-official: {payload['dockerio_non_official_images']}"
+    )
+    console.print(f"other registries images: {payload['non_dockerio_images']}")
+    console.print("registries:")
+    for item in payload["registries"]:
+        console.print(f"  {item['registry']}: {item['images']}")
 
 
 @app.command(
@@ -611,8 +665,9 @@ def app_build_command(
 @app.command("app-build-plan")
 def app_build_plan_command(
     app_name: str = typer.Option(..., "--app", help="App name"),
-    channel: str = typer.Option("stable", "--channel", help="stable | dev"),
+    channel: str = typer.Option("stable", "--channel", help="stable | dev | promote"),
     git_sha: str | None = typer.Option(None, "--git-sha", help="Git SHA used for dev image tags"),
+    source_sha: str | None = typer.Option(None, "--source-sha", help="Validated dev SHA to promote from (channel=promote)"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
 ) -> None:
     """Emit the canonical build/tag plan for one app. Shared by CI and controlled manual push."""
@@ -621,6 +676,7 @@ def app_build_plan_command(
             app_name=app_name,
             channel=channel,
             git_sha=git_sha,
+            source_sha=source_sha,
         )
     except FileNotFoundError as error:
         typer.echo(str(error), err=True)

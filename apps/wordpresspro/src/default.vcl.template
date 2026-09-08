@@ -1,0 +1,63 @@
+vcl 4.0;
+
+backend default {
+    .host = "__WORDPRESS_BACKEND__";
+    .port = "80";
+}
+
+sub vcl_recv {
+    if (req.method != "GET" && req.method != "HEAD") {
+        return (pass);
+    }
+
+    if (req.http.Authorization) {
+        return (pass);
+    }
+
+    if (req.url ~ "^/wp-admin/" || req.url ~ "^/wp-login.php" || req.url ~ "^/wp-cron.php") {
+        return (pass);
+    }
+
+    if (req.url ~ "preview=true" || req.url ~ "customize_changeset_uuid=") {
+        return (pass);
+    }
+
+    if (req.http.Cookie ~ "wordpress_|wordpress_logged_in_|wordpress_sec_|wp-postpass_|comment_author_") {
+        return (pass);
+    }
+
+    if (!req.http.X-Forwarded-Proto) {
+        set req.http.X-Forwarded-Proto = "http";
+    }
+
+    return (hash);
+}
+
+sub vcl_backend_response {
+    if (bereq.url ~ "^/wp-admin/" || bereq.url ~ "^/wp-login.php" || bereq.url ~ "^/wp-cron.php") {
+        set beresp.uncacheable = true;
+        return (deliver);
+    }
+
+    if (beresp.http.Set-Cookie) {
+        set beresp.uncacheable = true;
+        return (deliver);
+    }
+
+    if (beresp.http.Cache-Control ~ "private" || beresp.http.Cache-Control ~ "no-cache" || beresp.http.Cache-Control ~ "no-store") {
+        set beresp.uncacheable = true;
+        return (deliver);
+    }
+
+    if (beresp.ttl <= 0s) {
+        set beresp.ttl = 1h;
+    }
+}
+
+sub vcl_deliver {
+    if (obj.hits > 0) {
+        set resp.http.X-Cache = "HIT";
+    } else {
+        set resp.http.X-Cache = "MISS";
+    }
+}

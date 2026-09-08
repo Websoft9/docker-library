@@ -1,22 +1,7 @@
-# image,docs: https://hub.docker.com/_/wordpress/
-
 services:
-  init:
-    image: docker:latest
-    container_name: $W9_ID-init
-    restart: on-failure
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./src/init.sh:/data/init.sh
-    env_file: .env
-    depends_on:
-      - varnish
-    working_dir: /data
-    command: ["sh", "-c", "chmod +x /data/init.sh;/data/init.sh"]
-
   wordpress:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID-wordpress
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}-wordpress
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -29,33 +14,37 @@ services:
     volumes:
       - wordpress:/var/www/html
       - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
+      - ./src/websoft9-url.php:/usr/local/share/websoft9-url.php:ro
       
   mysql:
-    image: mysql:$W9_DB_VERSION
-    container_name: $W9_ID-mysql
+    image: mysql:${W9_DB_VERSION}
+    container_name: ${W9_ID}-mysql
     restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
     volumes:
       - mysql_data:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: $W9_ID
-      MYSQL_USER: $W9_ID
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      MYSQL_DATABASE: ${W9_ID}
+      MYSQL_USER: ${W9_ID}
+      MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
       
   varnish:
     image: varnish:latest
-    container_name: $W9_ID
+    container_name: ${W9_ID}
     restart: unless-stopped
     user: root
     ports:
-      - $W9_HTTP_PORT_SET:80
+      - "${W9_HTTP_PORT_SET}:80" # Web Console
     env_file: .env
     depends_on:
       - wordpress
+    volumes:
+      - ./src/default.vcl.template:/etc/varnish/default.vcl.template:ro
+      - ./src/run-varnish.sh:/usr/local/bin/run-varnish.sh:ro
     tmpfs:
       - /var/lib/varnish/varnishd:exec
-    command: varnishd -F -b $W9_ID-wordpress:80 -a :80 -s malloc,$VARNISH_SIZE
+    command: ["/bin/sh", "/usr/local/bin/run-varnish.sh"]
 
 volumes:
   wordpress:
@@ -63,5 +52,5 @@ volumes:
 
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

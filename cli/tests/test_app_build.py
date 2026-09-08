@@ -53,6 +53,25 @@ def test_build_plan_uses_root_dockerfile_and_env_version(repo_fixture, app_facto
     assert payload["w9_version"] == "v1.2.3"
     assert payload["primary_image"] == "demo-repo:latest"
     assert payload["tags"] == ["demo-repo:latest", "demo-repo:v1", "demo-repo:v1.2", "demo-repo:v1.2.3"]
+    assert payload["source_image"] is None
+
+
+def test_build_plan_promote_uses_dev_latest_source(repo_fixture, app_factory):
+    app_path = app_factory(
+        "demo",
+        compose="services:\n  web:\n    image: demo-repo:${W9_VERSION}\n",
+        env="W9_REPO=demo-repo\nW9_VERSION=v1.2.3\n",
+    )
+    (app_path / "Dockerfile").write_text(
+        'ARG DEMO_VERSION=v1.2.3\nFROM alpine\nLABEL org.opencontainers.image.version="${DEMO_VERSION}"\n',
+        encoding="utf-8",
+    )
+
+    payload = app_build.build_plan("demo", channel="promote")
+    assert payload["channel"] == "promote"
+    assert payload["source_image"] == "demo-repo:dev-latest"
+    assert payload["tags"] == ["demo-repo:latest", "demo-repo:v1", "demo-repo:v1.2", "demo-repo:v1.2.3"]
+    assert payload["primary_image"] == "demo-repo:dev-latest"
 
 
 def test_build_app_push_uses_dockerhub_credentials(repo_fixture, app_factory, monkeypatch):
@@ -146,9 +165,9 @@ def test_app_build_plan_cli_contract(monkeypatch):
     monkeypatch.setattr(app_build, "build_plan", fake_build_plan)
     monkeypatch.setattr(typer, "echo", lambda message, err=False: output.append((message, err)))
 
-    main.app_build_plan_command(app_name="demo", channel="dev", git_sha="1234567890", as_json=True)
+    main.app_build_plan_command(app_name="demo", channel="dev", git_sha="1234567890", source_sha=None, as_json=True)
 
-    assert calls == {"app_name": "demo", "channel": "dev", "git_sha": "1234567890"}
+    assert calls == {"app_name": "demo", "channel": "dev", "git_sha": "1234567890", "source_sha": None}
     assert output == [
         (json.dumps({"app": "demo", "channel": "dev", "tags": ["demo:dev-1234567"]}, indent=2, ensure_ascii=False), False),
     ]

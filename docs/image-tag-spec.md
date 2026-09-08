@@ -58,6 +58,6 @@ docker compose up -d
 - This spec is repository-wide. Migration applies to the app being worked on; remaining apps migrate when touched.
 - Branch promotion policy (dev builds, main promotes) is defined in `docs/git-workflow-spec.md`.
 - CI tag channels (same repository, tag differs by branch):
-  - `main` push → stable tags from `W9_VERSION` (see Tag Rules).
-  - `dev` push → `dev-<git-sha>` (immutable) plus `dev-latest` (rolling alias).
+  - PR merged into `main` → promote `dev-<head-sha>` to stable tags from `W9_VERSION` (see Tag Rules).
+  - `dev` push → build and push `dev-<git-sha>` (immutable) plus `dev-latest` (rolling alias).
 - CI only builds apps whose Dockerfile declares `ARG <APP>_VERSION`; apps without it are not built by CI. Migrate them when touched.

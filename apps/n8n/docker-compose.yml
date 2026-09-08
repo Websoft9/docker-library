@@ -1,24 +1,18 @@
-# docs: https://docs.n8n.io/hosting/installation/docker
-
-
-version: '3.8'
-
 services:
   n8n:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
     env_file:
       - .env
     ports:
-      - '${W9_HTTP_PORT_SET}:5678'
+      - "${W9_HTTP_PORT_SET}:5678" # Web Console
     volumes:
-      - 'n8n:/home/node/.n8n'
-      - './src/my-config.json:$N8N_CONFIG_FILES'
+      - n8n:/home/node/.n8n
 
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

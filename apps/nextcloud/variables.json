@@ -6,7 +6,7 @@
     {
       "dist": "community",
       "version": [
-        "31.0.2",
+        "34.0",
         "latest"
       ]
     }
@@ -17,6 +17,20 @@
     "disk": "4"
   },
   "upstream": {
-    "image": "https://hub.docker.com/_/nextcloud"
+    "image": "https://hub.docker.com/_/nextcloud",
+    "releases": "https://nextcloud.com/changelog/",
+    "docs": [
+      "https://github.com/nextcloud/docker",
+      "https://docs.nextcloud.com/server/latest/admin_manual/installation/system_requirements.html"
+    ]
+  },
+  "env": {
+    "first_startup_only": [
+      "NEXTCLOUD_ADMIN_USER",
+      "NEXTCLOUD_ADMIN_PASSWORD"
+    ]
+  },
+  "help": {
+    "db": "Nextcloud 34 supports MySQL 8.4 / 9.7 and MariaDB 10.11+. This package bundles MySQL 8.4 for a single-node deployment."
   }
 }

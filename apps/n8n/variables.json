@@ -6,7 +6,7 @@
     {
       "dist": "community",
       "version": [
-        "1.122.4",
+        "2.38.4",
         "latest"
       ]
     }
@@ -17,6 +17,12 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/n8nio/n8n"
+    "image": "https://hub.docker.com/r/n8nio/n8n",
+    "releases": "https://github.com/n8n-io/n8n/releases/tag/n8n%402.38.4",
+    "docs": [
+      "https://docs.n8n.io/deploy/host-n8n/install-options/install-with-docker.md",
+      "https://docs.n8n.io/deploy/host-n8n/configure-n8n/basic-configuration/use-environment-variables/deployment.md",
+      "https://docs.n8n.io/deploy/host-n8n/configure-n8n/basic-configuration/configuration-examples/configure-webhook-urls-with-reverse-proxy.md"
+    ]
   }
 }

@@ -50,7 +50,9 @@ def ssh_secret_path(value: str | None = None) -> str:
 
 
 def deploy_root(value: str | None = None) -> str:
-    return value or load_profile().get("DEPLOY_ROOT") or DEFAULT_DEPLOY_ROOT
+    profile = load_profile()
+    # Keep reading the old REMOTE_PATH key so existing local profiles keep working.
+    return value or profile.get("DEPLOY_ROOT") or profile.get("REMOTE_PATH") or DEFAULT_DEPLOY_ROOT
 
 
 def appstore_container(value: str | None = None) -> str:

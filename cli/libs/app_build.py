@@ -159,8 +159,27 @@ def _dockerfile_plan(app_name: str) -> dict:
     }
 
 
-def build_plan(app_name: str, channel: str = "stable", git_sha: str | None = None) -> dict:
+def _stable_tags(repo: str, version: str) -> list[str]:
+    if "-" in version:
+        return [f"{repo}:{version}"]
+    tags = [f"{repo}:latest"]
+    part = ""
+    for index, fragment in enumerate(version.split(".")):
+        if index == 0:
+            part = fragment
+        else:
+            part = f"{part}.{fragment}"
+        tags.append(f"{repo}:{part}")
+    return tags
+
+
+def build_plan(app_name: str, channel: str = "stable", git_sha: str | None = None, source_sha: str | None = None) -> dict:
     """Return the canonical image build/tag plan for one app.
+
+    Channels:
+    - stable: tags derived from W9_VERSION
+    - dev: candidate tags dev-<git-sha> + dev-latest (build)
+    - promote: stable tags; source is dev-latest (re-tag, no build)
 
     This is the shared rules entrypoint for CI and controlled manual push.
     """
@@ -169,29 +188,20 @@ def build_plan(app_name: str, channel: str = "stable", git_sha: str | None = Non
     channel = (channel or "stable").strip().lower()
     version = plan["w9_version"]
     repo = plan["w9_repo"]
-    if channel not in {"stable", "dev"}:
+    if channel not in {"stable", "dev", "promote"}:
         raise ValueError(f"unsupported channel: {channel}")
 
+    source_image = None
     if channel == "dev":
         resolved_sha = (git_sha or "").strip() or None
-        if not resolved_sha:
-            resolved_sha = None
         if not resolved_sha:
             raise ValueError("git_sha is required for dev channel")
         short_sha = resolved_sha[:7]
         tags = [f"{repo}:dev-{short_sha}", f"{repo}:dev-latest"]
     else:
-        if "-" in version:
-            tags = [f"{repo}:{version}"]
-        else:
-            tags = [f"{repo}:latest"]
-            part = ""
-            for index, fragment in enumerate(version.split(".")):
-                if index == 0:
-                    part = fragment
-                else:
-                    part = f"{part}.{fragment}"
-                tags.append(f"{repo}:{part}")
+        tags = _stable_tags(repo, version)
+        if channel == "promote":
+            source_image = f"{repo}:dev-latest"
 
     return {
         "app": app_name,
@@ -204,7 +214,8 @@ def build_plan(app_name: str, channel: str = "stable", git_sha: str | None = Non
         "w9_version": version,
         "w9_repo": repo,
         "tags": tags,
-        "primary_image": tags[0],
+        "source_image": source_image,
+        "primary_image": source_image or tags[0],
         "source_path": str(source.relative_to(repo_path())),
     }
 

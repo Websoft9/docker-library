@@ -115,3 +115,17 @@ services:
 
     assert data_dirs == [{"volume": "shared_cache", "path": "/cache"}]
     assert config_overrides == [{"source": "./src/demo.conf", "target": "/etc/demo.conf"}]
+
+
+def test_compose_volumes_accepts_hyphenated_src_filenames():
+    data_dirs, config_overrides = readme._compose_volumes(
+        """
+services:
+  app:
+    volumes:
+      - ./src/websoft9-url.php:/usr/local/share/websoft9-url.php:ro
+"""
+    )
+
+    assert data_dirs == []
+    assert config_overrides == [{"source": "./src/websoft9-url.php", "target": "/usr/local/share/websoft9-url.php"}]

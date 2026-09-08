@@ -4,11 +4,11 @@
   "release": true,
   "upstream": {
     "image": "https://hub.docker.com/_/wordpress",
-    "releases": "https://github.com/WordPress/wordpress-develop",
+    "releases": "https://wordpress.org/news/category/releases/",
     "compose": {},
     "docs": [
       "https://github.com/docker-library/wordpress",
-      "https://www.wordpress.org/docs/user_guide/en/install-requirements.html",
+      "https://wordpress.org/documentation/article/requirements/",
       "https://make.wordpress.org/hosting/handbook/compatibility"
     ]
   },
@@ -16,7 +16,7 @@
     {
       "dist": "community",
       "version": [
-        "6.9",
+        "7.1",
         "latest"
       ]
     }
@@ -27,6 +27,6 @@
     "disk": "1"
   },
   "help": {
-    "db": "MySQL 8.0+ or MariaDB 10.11+"
+    "db": "WordPress recommends MySQL 8.0+ or MariaDB 10.11+. This package bundles MySQL 8.4 for a single-node deployment."
   }
 }

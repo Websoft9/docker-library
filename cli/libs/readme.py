@@ -18,7 +18,7 @@ TROUBLE_END = "<!-- W9_TROUBLESHOOT_END -->"
 NOTE_START = "<!-- W9_NOTE_START -->"
 NOTE_END = "<!-- W9_NOTE_END -->"
 PORT_LINE_RE = re.compile(r'^\s*-\s*"?\$?\{?(?P<var>[A-Z0-9_]+)\}?:(?P<cport>\d+)"?\s*(?:#\s*(?P<note>.*))?$')
-VOLUME_LINE_RE = re.compile(r'^\s*-\s*(?P<src>[\w.\/]+):(?P<dst>\/\S+?)(?::ro)?$')
+VOLUME_LINE_RE = re.compile(r'^\s*-\s*(?P<src>[\w.\/-]+):(?P<dst>\/\S+?)(?::ro)?$')
 
 
 def _link_url(value: str) -> str:

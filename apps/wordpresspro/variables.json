@@ -2,11 +2,20 @@
   "name": "wordpresspro",
   "trademark": "WordPress Pro",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/_/wordpress",
+    "releases": "https://wordpress.org/news/category/releases/",
+    "docs": [
+      "https://github.com/docker-library/wordpress",
+      "https://wordpress.org/documentation/article/requirements/",
+      "https://make.wordpress.org/hosting/handbook/compatibility"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "6.9",
+        "7.1",
         "latest"
       ]
     }
@@ -16,7 +25,7 @@
     "memory": "1",
     "disk": "1"
   },
-  "upstream": {
-    "image": "https://hub.docker.com/_/wordpress"
+  "help": {
+    "db": "WordPress recommends MySQL 8.0+ or MariaDB 10.11+. This package bundles MySQL 8.4 and Varnish for a single-node deployment."
   }
 }
