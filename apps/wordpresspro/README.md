@@ -93,4 +93,8 @@ Environment variables are defined in the app's `.env` file; see the reference se
 
 **Port not reachable?**
 - Ensure the firewall / security group allows the port.
+
+**Startup logs say "WordPress not found ... copying now" or "No 'wp-config.php' found"?**
+- Normal first-run behavior: the official image copies WordPress into the empty `/var/www/html` volume and generates `wp-config.php` from the `WORDPRESS_*` variables.
+- Only investigate when these lines repeat on every restart (data volume not persisting) or are followed by database / PHP errors.
 <!-- W9_TROUBLESHOOT_END -->

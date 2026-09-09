@@ -9,6 +9,9 @@ services:
           max-file: "5"
           max-size: 10m
     env_file: .env
+    environment:
+      W9_URL: ${W9_URL}
+      W9_URL_REPLACE: ${W9_URL_REPLACE}
     depends_on:
       - mysql
     volumes:

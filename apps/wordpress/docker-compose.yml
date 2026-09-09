@@ -11,6 +11,9 @@ services:
     ports:
       - "${W9_HTTP_PORT_SET}:80" # Web Console
     env_file: .env
+    environment:
+      W9_URL: ${W9_URL}
+      W9_URL_REPLACE: ${W9_URL_REPLACE}
     depends_on:
       - mysql
     volumes:

@@ -64,115 +64,6 @@ def test_resolve_key_path_uses_default_and_relative_paths(repo_fixture):
     assert relative == repo_fixture / ".secrets" / "ssh" / "custom.pem"
 
 
-def test_distribution_for_app_reads_variables(repo_fixture, app_factory):
-    app_factory(
-        "demo",
-        variables={
-            "name": "demo",
-            "release": True,
-            "upstream": {"image": "https://hub.docker.com/_/demo/tags"},
-            "edition": [{"dist": "community", "version": ["1.0", "latest"]}],
-            "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
-        },
-    )
-
-    assert appstore_sync.distribution_for_app("demo") == [{"key": "community", "value": ["1.0", "latest"]}]
-
-
-def test_patch_product_entries_updates_only_target_app():
-    before = [
-        {"key": "demo", "distribution": [{"key": "community", "value": ["1.0"]}]},
-        {"key": "other", "distribution": [{"key": "community", "value": ["9.9"]}]},
-    ]
-
-    old_distribution, new_distribution, updated, created = appstore_sync.patch_product_entries(
-        before,
-        "demo",
-        [{"key": "community", "value": ["2.0", "latest"]}],
-    )
-
-    assert old_distribution == [{"key": "community", "value": ["1.0"]}]
-    assert new_distribution == [{"key": "community", "value": ["2.0", "latest"]}]
-    assert created is False
-    assert updated[0]["distribution"] == [{"key": "community", "value": ["2.0", "latest"]}]
-    assert updated[1]["distribution"] == [{"key": "community", "value": ["9.9"]}]
-
-
-def test_patch_product_entries_creates_missing_node():
-    before = [{"key": "other", "distribution": [{"key": "community", "value": ["9.9"]}]}]
-
-    old_distribution, new_distribution, updated, created = appstore_sync.patch_product_entries(
-        before,
-        "newapp",
-        [{"key": "community", "value": ["1.0"]}],
-    )
-
-    assert old_distribution is None
-    assert new_distribution == [{"key": "community", "value": ["1.0"]}]
-    assert created is True
-    assert updated[-1] == {"key": "newapp", "distribution": [{"key": "community", "value": ["1.0"]}]}
-
-
-def test_build_product_entry_from_repo_catalog(repo_fixture, app_factory):
-    app_factory(
-        "demo",
-        variables={
-            "name": "demo",
-            "trademark": "Demo",
-            "release": True,
-            "upstream": {"image": "https://hub.docker.com/_/demo/tags"},
-            "edition": [{"dist": "community", "version": ["1.0", "latest"]}],
-            "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
-        },
-    )
-    write_catalog_support(
-        repo_fixture,
-        "demo",
-        {
-            "trademark": "Demo",
-            "summary": "Summary",
-            "overview": "Overview",
-            "description": "Description",
-            "websiteurl": "https://example.com",
-            "screenshots": ["https://example.com/shot.png"],
-            "catalogBindings": [{"parentKey": "collaboration", "childKey": "document"}],
-        },
-    )
-
-    entry = appstore_sync.build_product_entry("demo")
-
-    assert entry["key"] == "demo"
-    assert entry["summary"] == "Summary"
-    assert entry["distribution"] == [{"key": "community", "value": ["1.0", "latest"]}]
-    assert entry["screenshots"][0]["value"] == "https://example.com/shot.png"
-    assert entry["catalogCollection"]["items"][0]["key"] == "document"
-    assert entry["catalogCollection"]["items"][0]["catalogCollection"]["items"][0]["key"] == "collaboration"
-
-
-def test_patch_product_entries_can_replace_with_full_entry():
-    before = [
-        {"key": "demo", "distribution": [{"key": "community", "value": ["1.0"]}], "summary": "old"},
-        {"key": "other", "distribution": [{"key": "community", "value": ["9.9"]}]},
-    ]
-    product_entry = {
-        "key": "demo",
-        "summary": "new",
-        "distribution": [{"key": "community", "value": ["2.0", "latest"]}],
-    }
-
-    old_distribution, new_distribution, updated, created = appstore_sync.patch_product_entries(
-        before,
-        "demo",
-        [{"key": "community", "value": ["2.0", "latest"]}],
-        product_entry,
-    )
-
-    assert old_distribution == [{"key": "community", "value": ["1.0"]}]
-    assert new_distribution == [{"key": "community", "value": ["2.0", "latest"]}]
-    assert created is False
-    assert updated[0] == product_entry
-
-
 def test_appstore_sync_cli_contract(monkeypatch):
     monkeypatch.setattr(
         appstore_sync,
@@ -181,14 +72,13 @@ def test_appstore_sync_cli_contract(monkeypatch):
             "app": kwargs["app_name"],
             "host": kwargs["host"],
             "container": kwargs["container"],
-            "json_dir": kwargs["json_dir"],
             "deploy_dir": "/websoft9/library/apps",
+            "catalog_dir": "/websoft9/library/metadata/catalog",
             "app_target": "/websoft9/library/apps/demo",
-            "created_entry": False,
+            "catalog_source": "metadata/catalog/demo.json",
+            "catalog_target": "/websoft9/library/metadata/catalog/demo.json",
             "backup_dir": "/tmp/backup-demo",
-            "distribution_before": [{"key": "community", "value": ["1.0"]}],
-            "distribution_after": [{"key": "community", "value": ["2.0", "latest"]}],
-            "rollback": ["cmd1", "cmd2", "cmd3"],
+            "rollback": ["cmd1", "cmd2"],
         },
     )
 
@@ -202,8 +92,8 @@ def test_appstore_sync_cli_contract(monkeypatch):
             "1.2.3.4",
             "--container",
             "websoft9",
-            "--json-dir",
-            "/websoft9/media/json",
+            "--catalog-dir",
+            "/websoft9/library/metadata/catalog",
             "--json",
         ],
     )
@@ -212,7 +102,7 @@ def test_appstore_sync_cli_contract(monkeypatch):
     payload = json.loads(result.stdout)
     assert payload["app"] == "demo"
     assert payload["deploy_dir"] == "/websoft9/library/apps"
-    assert payload["distribution_after"][0]["value"] == ["2.0", "latest"]
+    assert payload["catalog_target"] == "/websoft9/library/metadata/catalog/demo.json"
 
 
 def test_appstore_sync_cli_contract_progress_to_stderr(monkeypatch):
@@ -221,7 +111,7 @@ def test_appstore_sync_cli_contract_progress_to_stderr(monkeypatch):
     def fake_prepare_preview(**kwargs):
         assert callable(kwargs["progress"])
         assert kwargs["verbose"] is False
-        kwargs["progress"]("[1/6] syncing app directory")
+        kwargs["progress"]("[1/2] syncing app directory")
         return {"app": kwargs["app_name"], "deploy_dir": "/websoft9/library/apps"}
 
     monkeypatch.setattr(appstore_sync, "prepare_preview", fake_prepare_preview)
@@ -233,14 +123,14 @@ def test_appstore_sync_cli_contract_progress_to_stderr(monkeypatch):
         ssh_user=None,
         ssh_secret_path=None,
         container="websoft9",
-        json_dir="/websoft9/media/json",
+        catalog_dir="/websoft9/library/metadata/catalog",
         progress=True,
         verbose=False,
         as_json=True,
     )
 
     assert output == [
-        ("[1/6] syncing app directory", True),
+        ("[1/2] syncing app directory", True),
         (json.dumps({"app": "demo", "deploy_dir": "/websoft9/library/apps"}, indent=2, ensure_ascii=False), False),
     ]
 
@@ -271,6 +161,7 @@ def test_sync_app_dir_scp_to_staging_then_docker_cp(repo_fixture, app_factory, m
     prepare = " ".join(calls[0])
     assert "rm -rf /tmp/websoft9-appstore-staging-demo && mkdir -p /tmp/websoft9-appstore-staging-demo" in prepare
     assert "mkdir -p /tmp/backup-demo" in prepare
+    assert "docker exec websoft9 sh -c 'test -d /websoft9/library/apps/demo'" in prepare
     assert "docker exec websoft9 sh -c 'tar czf - -C /websoft9/library/apps demo' > /tmp/backup-demo/demo.tgz" in prepare
 
     scp_call = calls[1]
@@ -282,6 +173,120 @@ def test_sync_app_dir_scp_to_staging_then_docker_cp(repo_fixture, app_factory, m
     assert "docker exec websoft9 sh -c 'rm -rf /websoft9/library/apps/demo'" in apply_ssh
     assert "docker cp /tmp/websoft9-appstore-staging-demo/demo websoft9:/websoft9/library/apps" in apply_ssh
     assert "rm -rf /tmp/websoft9-appstore-staging-demo" in apply_ssh
+
+
+def test_sync_catalog_file_scp_then_docker_cp(repo_fixture, app_factory, monkeypatch):
+    app_factory("demo")
+    write_catalog_support(repo_fixture, "demo", {"trademark": "Demo", "summary": "Summary"})
+    calls = []
+    secret_path = repo_fixture / ".secrets" / "ssh" / "default.pem"
+    secret_path.parent.mkdir(parents=True, exist_ok=True)
+    secret_path.write_text("-----BEGIN OPENSSH PRIVATE KEY-----\n", encoding="utf-8")
+
+    def fake_run(command, *, progress=None, verbose=False):
+        calls.append(command)
+        return ""
+
+    monkeypatch.setattr(appstore_sync, "_run", fake_run)
+
+    catalog_rel = appstore_sync._sync_catalog_file(
+        app_name="demo",
+        host="1.2.3.4",
+        user="root",
+        secret_path=secret_path,
+        container="websoft9",
+        catalog_dir="/websoft9/library/metadata/catalog",
+        backup_dir="/tmp/backup-demo",
+    )
+
+    assert catalog_rel == "metadata/catalog/demo.json"
+
+    prepare = " ".join(calls[0])
+    assert "mkdir -p /tmp/websoft9-appstore-staging-demo" in prepare
+    assert "docker exec websoft9 sh -c 'test -f /websoft9/library/metadata/catalog/demo.json'" in prepare
+    assert "docker cp websoft9:/websoft9/library/metadata/catalog/demo.json /tmp/backup-demo/catalog-demo.json.bak" in prepare
+
+    scp_call = calls[1]
+    assert scp_call[0] == "scp"
+    assert any(arg.endswith("/metadata/catalog/demo.json") for arg in scp_call)
+    assert scp_call[-1] == "root@1.2.3.4:/tmp/websoft9-appstore-staging-demo/"
+
+    apply_ssh = " ".join(calls[2])
+    assert "docker exec websoft9 sh -c 'mkdir -p /websoft9/library/metadata/catalog'" in apply_ssh
+    assert "docker cp /tmp/websoft9-appstore-staging-demo/demo.json websoft9:/websoft9/library/metadata/catalog/demo.json" in apply_ssh
+    assert "rm -rf /tmp/websoft9-appstore-staging-demo" in apply_ssh
+
+
+def test_sync_catalog_file_missing_catalog_data_raises(repo_fixture, app_factory, monkeypatch):
+    app_factory("demo")
+    write_catalog_schema(repo_fixture)
+    secret_path = repo_fixture / ".secrets" / "ssh" / "default.pem"
+    secret_path.parent.mkdir(parents=True, exist_ok=True)
+    secret_path.write_text("-----BEGIN OPENSSH PRIVATE KEY-----\n", encoding="utf-8")
+
+    try:
+        appstore_sync._sync_catalog_file(
+            app_name="demo",
+            host="1.2.3.4",
+            user="root",
+            secret_path=secret_path,
+            container="websoft9",
+            catalog_dir="/websoft9/library/metadata/catalog",
+            backup_dir="/tmp/backup-demo",
+        )
+    except FileNotFoundError as error:
+        assert "metadata/catalog/demo.json" in str(error)
+    else:
+        raise AssertionError("expected FileNotFoundError for missing catalog data")
+
+
+def test_prepare_preview_missing_catalog_still_syncs_app_dir(repo_fixture, app_factory, monkeypatch):
+    app_factory("demo")
+    write_catalog_schema(repo_fixture)
+    calls = []
+    secret_path = repo_fixture / ".secrets" / "ssh" / "default.pem"
+    secret_path.parent.mkdir(parents=True, exist_ok=True)
+    secret_path.write_text("-----BEGIN OPENSSH PRIVATE KEY-----\n", encoding="utf-8")
+
+    monkeypatch.setattr(appstore_sync, "_run", lambda *args, **kwargs: "")
+    monkeypatch.setattr(appstore_sync, "_sync_app_dir", lambda *args, **kwargs: None)
+
+    payload = appstore_sync.prepare_preview(
+        app_name="demo",
+        host="1.2.3.4",
+        user="root",
+        secret_path=".secrets/ssh/default.pem",
+        container="websoft9",
+    )
+
+    assert payload["catalog_synced"] is False
+    assert payload["catalog_source"] is None
+    assert payload["app_target"] == "/websoft9/library/apps/demo"
+    assert len(payload["rollback"]) == 1
+
+
+def test_prepare_preview_with_catalog_syncs_both(repo_fixture, app_factory, monkeypatch):
+    app_factory("demo")
+    write_catalog_support(repo_fixture, "demo", {"trademark": "Demo", "summary": "Summary"})
+    secret_path = repo_fixture / ".secrets" / "ssh" / "default.pem"
+    secret_path.parent.mkdir(parents=True, exist_ok=True)
+    secret_path.write_text("-----BEGIN OPENSSH PRIVATE KEY-----\n", encoding="utf-8")
+
+    monkeypatch.setattr(appstore_sync, "_run", lambda *args, **kwargs: "")
+    monkeypatch.setattr(appstore_sync, "_sync_app_dir", lambda *args, **kwargs: None)
+
+    payload = appstore_sync.prepare_preview(
+        app_name="demo",
+        host="1.2.3.4",
+        user="root",
+        secret_path=".secrets/ssh/default.pem",
+        container="websoft9",
+    )
+
+    assert payload["catalog_synced"] is True
+    assert payload["catalog_source"] == "metadata/catalog/demo.json"
+    assert payload["catalog_target"] == "/websoft9/library/metadata/catalog/demo.json"
+    assert len(payload["rollback"]) == 2
 
 
 def test_appstore_deploy_stub_not_implemented():

@@ -78,7 +78,7 @@ py -m venv .venv
 - `libs app-deploy --app <name> [--ssh-host <ip>] [--progress] [--verbose]` - deploy one app locally or remotely; `--progress` prints step headers to stderr and `--verbose` also prints raw command output
 - `libs app-deploy --app <name> --version <tag>` - deploy a specific image tag by overriding `W9_VERSION` without modifying the repo `.env`
 - `libs app-down --app <name> [--ssh-host <ip>] [--progress] [--json]` - tear one app down with `docker compose down -v`
-- `libs appstore-sync --app <name> --ssh-host <ip> [--progress] [--verbose]` - patch remote `product_en.json` / `product_zh.json` distribution and sync one app directory for appstore testing
+- `libs appstore-sync --app <name> --ssh-host <ip> [--progress] [--verbose]` - sync one app directory into the remote websoft9 container library and sync `metadata/catalog/<app>.json` into the container catalog directory for appstore testing
 - `libs appstore-deploy --app <name> --ssh-host <ip> [--progress] [--verbose]` - deploy one app into a websoft9 container appstore (not implemented yet; pending the websoft9 container CLI)
 - remote-aware commands suppress the routine `known hosts` add warning from ephemeral SSH targets; real stderr still passes through
 - `libs proxy` - show, save, or clear the saved proxy

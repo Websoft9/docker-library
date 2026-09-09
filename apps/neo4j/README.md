@@ -12,7 +12,10 @@
 ### Usage
 
 1. Open the Neo4j Browser from the published web port and sign in as `neo4j`.
-2. Create a small test graph or run a simple Cypher query to confirm the database is working.
+2. When the login page asks for a Connection URL, use `bolt://<server-ip>:<W9_DB_PORT_SET>` where `<server-ip>` is an address reachable from your browser and `<W9_DB_PORT_SET>` is the published Bolt port (the one shown in the Websoft9 console).
+3. Create a small test graph or run a simple Cypher query to confirm the database is working.
+
+Note: the Connection URL is resolved from your browser directly to the Bolt port. Using an intranet IP with the host port, or a container name with the container port (for example `bolt://neo4j:7687`), is not supported.
 
 ### Change Password
 

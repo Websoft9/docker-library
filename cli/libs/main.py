@@ -549,12 +549,12 @@ def appstore_sync_command(
     ssh_user: str | None = typer.Option(None, "--ssh-user", help="Remote SSH user (default root)"),
     ssh_secret_path: str | None = typer.Option(None, "--ssh-secret-path", help="SSH secret path (key or password file)"),
     container: str | None = typer.Option(None, "--container", help="Remote websoft9 container name (default: CONTAINER in .secrets/remote.env, else websoft9)"),
-    json_dir: str = typer.Option(appstore_sync.DEFAULT_JSON_DIR, "--json-dir", help="JSON directory inside the container"),
+    catalog_dir: str = typer.Option(appstore_sync.DEFAULT_CATALOG_DIR, "--catalog-dir", help="Catalog metadata directory inside the container"),
     progress: bool = typer.Option(False, "--progress", help="Show step progress on stderr"),
     verbose: bool = typer.Option(False, "--verbose", help="Show step progress and raw subprocess output on stderr"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
 ) -> None:
-    """Sync one app into the remote websoft9 appstore JSON preview and app directory."""
+    """Sync one app directory and its repo catalog commercial data into the remote websoft9 container."""
     try:
         progress_writer = (lambda message: typer.echo(message, err=True)) if (progress or verbose) else None
         payload = appstore_sync.prepare_preview(
@@ -563,7 +563,7 @@ def appstore_sync_command(
             user=ssh_user,
             secret_path=ssh_secret_path,
             container=container,
-            json_dir=json_dir,
+            catalog_dir=catalog_dir,
             progress=progress_writer,
             verbose=verbose,
         )
