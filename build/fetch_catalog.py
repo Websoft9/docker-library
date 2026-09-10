@@ -42,7 +42,7 @@ query($locale: String!) {
 """
 PRODUCT_QUERY = """
 query($locale: String!, $skip: Int!, $production: Boolean) {
-  productCollection(locale: $locale, where: {appStore: true, production: $production}, limit: 100, skip: $skip) {
+  productCollection(locale: $locale, where: {appStore: true, production: $production}, order: sys_id_ASC, limit: 100, skip: $skip) {
     total
     items {
       sys { id }
@@ -135,6 +135,11 @@ def fetch_product_entries(token: str, locale: str, production: bool | None) -> l
         total = collection.get("total") or 0
         items.extend(collection.get("items") or [])
         skip += 100
+
+    entry_ids = [entry.get("sys", {}).get("id") for entry in items]
+    duplicate_ids = sorted({entry_id for entry_id in entry_ids if entry_id and entry_ids.count(entry_id) > 1})
+    if duplicate_ids:
+        raise SystemExit(f"duplicate Contentful product sys.id values: {', '.join(duplicate_ids)}")
     return items
 
 

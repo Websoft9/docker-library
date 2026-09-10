@@ -41,6 +41,27 @@ def test_fetch_product_entries_paginates_until_total(monkeypatch):
     assert len(items) == 2
 
 
+def test_fetch_product_entries_uses_stable_id_ordering():
+    assert "order: sys_id_ASC" in fetch_catalog.PRODUCT_QUERY
+
+
+def test_fetch_product_entries_rejects_duplicate_ids_across_pages(monkeypatch):
+    def fake_run_query(token, query, variables):
+        return {
+            "productCollection": {
+                "total": 120,
+                "items": [{"sys": {"id": "duplicate"}, "key": "demo"}],
+            }
+        }
+
+    monkeypatch.setattr(fetch_catalog, "run_query", fake_run_query)
+
+    import pytest
+
+    with pytest.raises(SystemExit, match="duplicate Contentful product sys.id values: duplicate"):
+        fetch_catalog.fetch_product_entries("token", "en-US", True)
+
+
 def test_write_json_writes_pretty_json(tmp_path):
     path = tmp_path / "catalog_en.json"
 
