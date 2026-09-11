@@ -18,7 +18,7 @@
   },
   "upstream": {
     "image": "https://hub.docker.com/r/n8nio/n8n",
-    "releases": "https://github.com/n8n-io/n8n/releases/tag/n8n%402.38.4",
+    "releases": "https://github.com/n8n-io/n8n",
     "docs": [
       "https://docs.n8n.io/deploy/host-n8n/install-options/install-with-docker.md",
       "https://docs.n8n.io/deploy/host-n8n/configure-n8n/basic-configuration/use-environment-variables/deployment.md",

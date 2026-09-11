@@ -6,6 +6,7 @@
     {
       "dist": "community",
       "version": [
+        "18",
         "17",
         "16",
         "15",
@@ -24,6 +25,19 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/_/postgres"
+    "image": "https://hub.docker.com/_/postgres",
+    "releases": "https://www.postgresql.org/docs/release/",
+    "docs": [
+      "https://github.com/docker-library/postgres",
+      "https://www.postgresql.org/docs/",
+      "https://www.postgresql.org/support/versioning/"
+    ]
+  },
+  "env": {
+    "first_startup_only": [
+      "POSTGRES_DB",
+      "POSTGRES_PASSWORD",
+      "POSTGRES_USER"
+    ]
   }
 }
