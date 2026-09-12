@@ -28,32 +28,12 @@ services:
       - gitlab_logs:/var/log/gitlab
       - gitlab_data:/var/opt/gitlab
 
-  runner-init:
-    image: gitlab/gitlab-runner:latest
-    container_name: ${W9_ID}-runner-init
-    profiles:
-      - runner
-    restart: "no"
-    entrypoint:
-      - "sh"
-      - "-c"
-      - |
-        if [ ! -s /etc/gitlab-runner/config.toml ]; then
-          cp /seed/config.toml /etc/gitlab-runner/config.toml
-        fi
-    volumes:
-      - gitlab_runner:/etc/gitlab-runner
-      - ./src/runner-config.toml:/seed/config.toml:ro
-
   runner:
     image: gitlab/gitlab-runner:latest
     container_name: ${W9_ID}-runner
     profiles:
       - runner
     restart: unless-stopped
-    depends_on:
-      runner-init:
-        condition: service_completed_successfully
     volumes:
       - gitlab_runner:/etc/gitlab-runner
       - /var/run/docker.sock:/var/run/docker.sock

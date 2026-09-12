@@ -15,6 +15,12 @@
     "memory": "2",
     "disk": "1"
   },
+  "credentials": {
+    "password": {
+      "source": "container-log",
+      "pattern": "Bootstrap Password:"
+    }
+  },
   "upstream": {
     "image": "https://hub.docker.com/r/rancher/rancher"
   }

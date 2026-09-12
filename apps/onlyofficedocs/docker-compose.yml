@@ -1,15 +1,4 @@
-# image: https://hub.docker.com/r/onlyoffice/documentserver
-# docs: https://github.com/ONLYOFFICE/DocumentServer
-# compose: https://github.com/ONLYOFFICE/Docker-DocumentServer/blob/master/docker-compose.yml
-
-# license.lic should storaged to data
-# volumes cache,mq is define at image but documentation not mention them
-# volumes fonts,forgotten is special define
-# it starting need lots cpu and long time, so set cpu_percent: 50
-# Add RabbitMQ, otherwise Onlyofficedocs need long time to start because the inner rabbitmq some time not start: https://github.com/ONLYOFFICE/Docker-DocumentServer/issues/699
-
-version: '3.8'
-services:     
+services:
   onlyofficedocs:
     container_name: ${W9_ID}
     image: ${W9_REPO}:${W9_VERSION}
@@ -18,30 +7,22 @@ services:
       - .env
     cpu_percent: 50
     ports:
-      - ${W9_HTTP_PORT_SET}:80
+      - "${W9_HTTP_PORT_SET}:80" # Web Console
     expose:
       - '80'
       - '443'
-    environment:
-      - AMQP_URI=amqp://guest:guest@${W9_ID}-rabbitmq
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/info/info.json"]
+      interval: 30s
+      retries: 5
+      start_period: 60s
+      timeout: 10s
     volumes:
       - data:/var/www/onlyoffice/Data
       - log:/var/log/onlyoffice
-      - db:/var/lib/postgresql/data
       - lib:/var/lib/onlyoffice
-      - cache:/var/lib/redis
-      - mq:/var/lib/rabbitmq
       - fonts:/usr/share/fonts/truetype/custom
       - forgotten:/var/lib/onlyoffice/documentserver/App_Data/cache/files/forgotten
-
-  rabbitmq:
-    container_name: ${W9_ID}-rabbitmq
-    image: rabbitmq
-    restart: unless-stopped
-    expose:
-      - '5672'
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
 
 networks:
   default:
@@ -51,10 +32,6 @@ networks:
 volumes:
   data:
   log:
-  db:
   lib:
-  cache:
-  mq:
   fonts:
   forgotten:
-  rabbitmq_data:

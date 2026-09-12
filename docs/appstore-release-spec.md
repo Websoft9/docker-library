@@ -32,6 +32,39 @@
 - 若个别版本要求不同，在同一句话中注明，例如 `MySQL 8.0+ (7.0+ requires 8.4+)`
 - 不做版本键控对象，避免额外维护负担
 
+### 凭据获取元数据
+
+`variables.json` 可声明 machine-readable 的 `credentials` 对象，供消费端在部署后解析管理员密码、token 等动态凭据。
+
+- `credentials` 不是人类文案；它是消费端执行固定逻辑时读取的结构化声明
+- `credentials` 不替代 `.env` 中已有的字面值凭据；若 `W9_LOGIN_PASSWORD` 本身就是固定值，仍直接使用 `.env`
+- `credentials` 仅描述“凭据从哪里取”，不允许在仓库中写任意宿主级 shell
+
+当前约定先只支持 `password` 槽位，结构如下：
+
+```json
+{
+  "credentials": {
+    "password": {
+      "source": "container-file",
+      "path": "/var/jenkins_home/secrets/initialAdminPassword"
+    }
+  }
+}
+```
+
+支持的 `source`：
+
+- `container-file`: 密码存在目标应用容器内的某个文件，由消费端在 `websoft9` 容器中执行固定 `docker exec <W9_ID> cat <path>` 读取
+- `container-log`: 密码存在目标应用容器日志中，由消费端在 `websoft9` 容器中执行固定 `docker logs <W9_ID>` 并按 `pattern` 提取
+
+字段规则：
+
+- `credentials.password.source=container-file` 时必须声明 `path`
+- `credentials.password.source=container-log` 时必须声明 `pattern`
+- `credentials` 为 machine-readable 结构，不做自由文本，不在其中嵌入完整 shell 命令
+- 旧的 `W9_LOGIN_GET_PASSWORD` 可作为兼容兜底，但新 app 或被触达的 app 不再推荐新增使用
+
 ### 职责边界
 
 | 本项目负责 | 本项目不负责 |

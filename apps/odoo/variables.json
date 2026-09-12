@@ -3,7 +3,14 @@
   "trademark": "Odoo",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/_/odoo"
+    "image": "https://hub.docker.com/_/odoo",
+    "releases": "https://www.odoo.com/documentation/master/administration/supported_versions.html",
+    "docs": [
+      "https://github.com/odoo/docker",
+      "https://www.odoo.com/documentation/master/administration/on_premise/deploy.html",
+      "https://www.odoo.com/documentation/master/administration/install.html",
+      "https://www.odoo.com/odoo-19-release-notes"
+    ]
   },
   "edition": [
     {
@@ -11,7 +18,8 @@
       "version": [
         "19.0",
         "18.0",
-        "17.0"
+        "17.0",
+        "latest"
       ]
     }
   ],

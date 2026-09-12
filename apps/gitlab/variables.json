@@ -21,10 +21,12 @@
   },
   "upstream": {
     "image": "https://hub.docker.com/r/gitlab/gitlab-ce",
+    "releases": "https://github.com/gitlabhq/gitlabhq/tags",
     "docs": [
-      "https://docs.gitlab.com/install/docker/installation/",
-      "https://docs.gitlab.com/update/upgrade_paths/",
-      "https://docs.gitlab.com/update/versions/gitlab_19_changes/"
+      "https://docs.gitlab.com/install/docker/installation",
+      "https://docs.gitlab.com/update/upgrade_paths",
+      "https://docs.gitlab.com/runner/install/docker",
+      "https://docs.gitlab.com/update/versions/gitlab_19_changes"
     ]
   },
   "env": {

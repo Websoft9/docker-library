@@ -33,7 +33,7 @@ GitLab official upgrade guidance requires stepped upgrade stops across `18.2`, `
 
 For browser access and generated clone URLs to stay correct, set `W9_URL` to the real externally used host or host:port before the first container startup.
 
-GitLab Runner requires its own registration and `config.toml`; starting an unconfigured runner causes repeated log errors without helping the base GitLab deployment, so it is kept behind an optional compose profile. The profile seeds a minimal `config.toml` with no deployment-specific parameters, so the runner starts cleanly and can then be registered.
+GitLab Runner is kept behind an optional compose profile and follows the official single-container pattern: one runner container plus a persistent configuration volume. It is not started by default. Because `config.toml` is created by `gitlab-runner register` rather than by the runner's first start, the container logs `Failed to load config ... config.toml` until it is registered; this is expected upstream behavior and stops after registration.
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.
@@ -73,7 +73,7 @@ Note: `W9_LOGIN_PASSWORD` take effect on first startup only; changing them after
 ### Configuration Files
 
 
-Configuration is overridden by mounting `./src/runner-config.toml` to `/seed/config.toml`.
+Configuration files live inside the image; mount a single file read-only to override, and never replace the whole directory.
 
 
 ## References
@@ -82,11 +82,15 @@ Configuration is overridden by mounting `./src/runner-config.toml` to `/seed/con
 
 - [Docker Hub image](https://hub.docker.com/r/gitlab/gitlab-ce)
 
-- [Official docs](https://docs.gitlab.com/install/docker/installation/)
+- [Releases](https://github.com/gitlabhq/gitlabhq/tags)
 
-- [Official docs](https://docs.gitlab.com/update/upgrade_paths/)
+- [Official docs](https://docs.gitlab.com/install/docker/installation)
 
-- [Official docs](https://docs.gitlab.com/update/versions/gitlab_19_changes/)
+- [Official docs](https://docs.gitlab.com/update/upgrade_paths)
+
+- [Official docs](https://docs.gitlab.com/runner/install/docker)
+
+- [Official docs](https://docs.gitlab.com/update/versions/gitlab_19_changes)
 
 
 <!-- W9_TROUBLESHOOT_START -->
@@ -100,4 +104,8 @@ Configuration is overridden by mounting `./src/runner-config.toml` to `/seed/con
 
 **Forgot the root password?**
 - Reset it from inside the container with `gitlab-rake "gitlab:password:reset[root]"`; changing `W9_LOGIN_PASSWORD` in `.env` does not reset an existing installation.
+
+**GitLab Runner keeps logging `Failed to load config ... /etc/gitlab-runner/config.toml`?**
+- This is expected until the runner is registered. The `config.toml` file is created by `gitlab-runner register`, not by the runner's first start, so an unregistered runner logs this error in a loop without exiting.
+- Register it with `docker exec -it <runner-container> gitlab-runner register`, then restart the runner container; the error stops and the configuration persists in the `gitlab_runner` volume.
 <!-- W9_TROUBLESHOOT_END -->

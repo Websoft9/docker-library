@@ -33,7 +33,9 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 19.0, 18.0, 17.0.
+Supported versions: 19.0, 18.0, 17.0, latest.
+
+The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
 
 ### Ports
@@ -69,6 +71,16 @@ Configuration files live inside the image; mount a single file read-only to over
 - [Odoo Administrator Guide](https://support.websoft9.com/docs/odoo) by Websoft9
 
 - [Docker Hub image](https://hub.docker.com/_/odoo)
+
+- [Releases](https://www.odoo.com/documentation/master/administration/supported_versions.html)
+
+- [GitHub docs](https://github.com/odoo/docker)
+
+- [Official docs](https://www.odoo.com/documentation/master/administration/on_premise/deploy.html)
+
+- [Official docs](https://www.odoo.com/documentation/master/administration/install.html)
+
+- [Official docs](https://www.odoo.com/odoo-19-release-notes)
 
 
 <!-- W9_TROUBLESHOOT_START -->

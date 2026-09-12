@@ -8,7 +8,8 @@ services:
     ports:
       - "${W9_DB_PORT_SET}:5432" # PostgreSQL
     volumes:
-      - postgres:/var/lib/postgresql/data
+      # PostgreSQL 18+ data path; for PostgreSQL 17 and below mount at /var/lib/postgresql/data.
+      - postgres:/var/lib/postgresql
     env_file: .env
 
   database-backup-service:

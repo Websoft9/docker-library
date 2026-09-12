@@ -349,6 +349,10 @@ Use:
 
 Do not add login pair unless the package really controls it.
 
+If the consumer can resolve the generated password after deployment, prefer declaring a machine-readable
+`variables.json.credentials.password` source such as `container-file` or `container-log` instead of
+adding `W9_LOGIN_USER` / `W9_LOGIN_PASSWORD` or the legacy `W9_LOGIN_GET_PASSWORD` command string.
+
 ### Web App With Bundled PostgreSQL Or MySQL
 
 Usually add:

@@ -26,14 +26,18 @@
 Websoft9 packages this app from the official [PostgreSQL Docker image](https://hub.docker.com/_/postgres) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
+### Data Path and Version Notes
 
+This package ships PostgreSQL 18. Data lives under `/var/lib/postgresql/18/docker` and the volume is mounted at `/var/lib/postgresql`. PostgreSQL 17 and below use `/var/lib/postgresql/data`; mounting an older major at `/var/lib/postgresql` loses data.
+
+Each major keeps its own `/var/lib/postgresql/<major>/docker` directory, so upgrading leaves the old data in place. To upgrade: back up, stop the stack, run `pg_upgrade` with an image that bundles both majors (`--link` works because both directories share the volume), then start the new major. Coming from a pre-18 package (data at `/var/lib/postgresql/data`), first move the files into `/var/lib/postgresql/<old-major>/docker/`.
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 18, 17, 16, 15, 14, 13, 12, 11, 9.6, latest.
+Supported versions: 18, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
@@ -48,7 +52,7 @@ The `latest` tag is not guaranteed to remain valid; pin a specific version for p
 ### Data Directory
 
 
-- `postgres` → `/var/lib/postgresql/data`
+- `postgres` → `/var/lib/postgresql`
 - `backup` → `/backup`
 
 

@@ -1,25 +1,19 @@
-# image: https://hub.docker.com/r/jenkins/jenkins
-# docs:" https://github.com/jenkinsci/docker/blob/master/README.md"
-
-version: '3.8'
-
 services:
   jenkins:
-    container_name: $W9_ID
-    image: $W9_REPO:$W9_VERSION
-    env_file: .env
-    user: root
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
+    user: root
     ports:
-      - $W9_HTTP_PORT_SET:8080
+      - "${W9_HTTP_PORT_SET}:8080" # Web Console
+    env_file: .env
     volumes:
       - jenkins:/var/jenkins_home
 
-networks:
-  default:
-    name: $W9_NETWORK
-    external: true
-
 volumes:
   jenkins:
-    driver: local
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

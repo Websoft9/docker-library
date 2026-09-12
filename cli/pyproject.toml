@@ -15,7 +15,7 @@ dependencies = [
   "packaging>=24",
   "jsonschema>=4",
   "Jinja2>=3",
-  "contentful_management>=0.13"
+  "contentful_management>=2.16,<3"
 ]
 
 [project.scripts]

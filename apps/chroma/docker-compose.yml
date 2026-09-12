@@ -1,21 +1,23 @@
-# image: https://hub.docker.com/r/chromadb/chroma
-# docs: https://docs.trychroma.com/
-
 services:
   chromadb:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     volumes:
-      - ./src/config.yaml:/config.yaml
       - chroma_data:/data
     ports:
-      - $W9_DB_PORT_SET:8000
+      - "${W9_DB_PORT_SET}:8000" # Chroma API
     env_file: .env
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v2/heartbeat')\" >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true
 
 volumes:
