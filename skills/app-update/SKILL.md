@@ -41,8 +41,9 @@ Supporting files in this skill:
 16. Run `.venv/bin/libs app-gen-readme --app <app> --json` after metadata or README marker content changes so generated sections stay current.
 17. For dependency images such as PostgreSQL, MySQL, MariaDB, Redis, or pgvector, prefer `x.x` tags even when upstream examples show `x.x.x`, unless exact patch pinning is demonstrably required. Hard-coded dependency `x.x.x` tags in `docker-compose.yml` are policy drift and should be normalized before handoff.
 18. Verify braced references: scan the touched `.env` and `docker-compose.yml` for any remaining bare `$VAR` reference (for example `grep -nE '\$W9_[A-Z_]+'`); fix every hit to `${VAR}` before handoff. A file that was touched must contain no bare `$VAR` anywhere.
-19. Run the `deploy-validation` skill for the changed app.
-20. Produce a short test report.
+19. Ensure `apps/<app>/tests/cases.yml` exists and reflects the app's real functional path. Follow `docs/app-tests.md`: keep the built-in adaptive checks and add the minimum app-specific cases the defaults cannot cover, such as `http-basic` for an authenticated console or API, `web-access` for a dedicated health endpoint, or `script` only when built-ins are insufficient. Do not add a case that duplicates a default check.
+20. Run the `deploy-validation` skill for the changed app.
+21. Produce a short test report.
 
 ## Output
 
@@ -59,6 +60,7 @@ Supporting files in this skill:
 - The update is not a blind version bump. The changed app must still pass the current quality gates after the work is complete.
 - Do not perform broad cosmetic template re-alignment. Fix only the app-local conformance items that are blocking, directly relevant to the update, or required by current gates and generators.
 - Keep `upstream.image` as the single version source. Never write `version_from`, `fork_url`, or `requirements.url`.
+- Do not hand off an app whose only functional coverage is the default adaptive checks when its core path needs an app-specific check; author or refresh `apps/<app>/tests/cases.yml`.
 - Prefer official or trusted upstream images.
 - Produce the report in the same language the user used unless the user asks otherwise.
 - Use `report-template.md` when the user asks for a formal implementation report.

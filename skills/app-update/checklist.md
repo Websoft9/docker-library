@@ -9,6 +9,7 @@
 - [ ] Use braced `${VAR}` form for **all** environment-variable references in every edited file (`.env`, `docker-compose.yml`, mounted config templates), not only the lines changed this run
 - [ ] Scan edited files for remaining bare `$VAR` references and fix all hits before handoff
 - [ ] Fix minimum app-local conformance drift required by current gates or generation rules
+- [ ] Author or refresh `apps/<app>/tests/cases.yml` per `docs/app-tests.md` (built-in checks plus the minimum app-specific cases)
 - [ ] Keep changes app-local
 - [ ] Update `apps/<app>/CHANGELOG.md` with a pure-date heading `## YYYY-MM-DD` for this change batch
 - [ ] Register new translatable env keys in `i18n/translation.json` if needed

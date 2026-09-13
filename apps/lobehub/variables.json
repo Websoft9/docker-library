@@ -1,0 +1,45 @@
+{
+  "name": "lobehub",
+  "trademark": "LobeHub",
+  "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/lobehub/lobehub",
+    "releases": "https://github.com/lobehub/lobehub/releases",
+    "compose": {
+      "compose": "https://raw.githubusercontent.com/lobehub/lobehub/canary/docker-compose/deploy/docker-compose.yml",
+      "env": "https://raw.githubusercontent.com/lobehub/lobehub/canary/docker-compose/deploy/.env.example"
+    },
+    "docs": [
+      "https://lobehub.com/docs/self-hosting/platform/docker-compose",
+      "https://github.com/lobehub/lobehub"
+    ]
+  },
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "2.2.17",
+        "latest"
+      ]
+    }
+  ],
+  "database": {
+    "type": "postgresql",
+    "supported_modes": [
+      "bundled"
+    ],
+    "default_mode": "bundled",
+    "bundled": {
+      "service": "postgresql",
+      "internal_host": "${W9_ID}-postgresql",
+      "database_env": "LOBE_DB_NAME",
+      "username_env": "POSTGRES_USER",
+      "password_env": "POSTGRES_PASSWORD"
+    }
+  },
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10"
+  }
+}

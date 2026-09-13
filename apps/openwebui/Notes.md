@@ -4,19 +4,26 @@
 
 ### Quick Start
 
-1. Create administrator credential when Open WebUI setup
-2. Go to the **Settings > Admin Settings** to add a LLM, e.g [tinydolphin](https://ollama.com/library/tinydolphin) which not exceeding 1GB
-3. You can select **tinydolphin** for chat now
+1. Create the administrator credential on first sign-up.
+2. Go to **Settings > Admin Settings** to add an LLM provider, e.g. [tinydolphin](https://ollama.com/library/tinydolphin) which does not exceed 1GB.
+3. Select the model for chat.
 
-### Running with GPU?
+### Optional local AI containers
 
-1. Select version **cuda** when create this application
-2. Edit this application with Compose and change `docker-compose-gpu.yml` to `docker-compose.yml`
-3. Recreate this application
+`ollama` and `chroma` are optional Docker Compose profiles and are **not started by default**:
+
+- `ollama`: local LLM runtime. Start it with `docker compose --profile ollama up -d`, then pull a model with `docker exec <app>-ollama ollama pull <model>`.
+- `chroma`: external vector database for RAG. Start it with `docker compose --profile chroma up -d`, then set `CHROMA_HTTP_HOST=${W9_ID}-chroma` and `CHROMA_HTTP_PORT=8000` in `.env` and rebuild the app.
+
+Neither profile publishes host ports; both are reachable only on the `websoft9` network.
+
+### GPU / CUDA
+
+Open WebUI also publishes CUDA image tags (for example `cuda` and `v0.11.3-cuda`) for NVIDIA GPU hosts. This package does not use the CUDA variant; GPU support is out of scope here.
 
 ### Config
 
-- Config Ollama URL: **设置 > 管理员设置**
-- Mutiply Languages: Yes
+- Ollama URL: **Settings > Admin Settings > Connections**
+- Multiple languages: yes
 
 ## FAQ

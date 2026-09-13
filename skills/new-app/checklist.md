@@ -12,6 +12,7 @@
 - [ ] Apply `docs/w9-env-spec.md` decision rules for `W9_URL`, `W9_URL_REPLACE`, `W9_LOGIN*`, `_SET` ports, and dependency helpers
 - [ ] Fill `.env` "image environment variables" section: single Docs URL, used vars, up to 5 unused vars commented out
 - [ ] Write `CHANGELOG.md` with the pure-date heading `## YYYY-MM-DD` for the initial change batch
+- [ ] Author `apps/<app>/tests/cases.yml` per `docs/app-tests.md` (built-in checks plus the minimum app-specific cases)
 - [ ] Run `.venv/bin/libs app-check --app <app>` and deploy/reachability validation
 - [ ] Produce a short test report
 - [ ] Assign cadence/update policy by writing the app into `metadata/maintenance.yaml` buckets, and state it in the report

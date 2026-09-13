@@ -1,0 +1,13 @@
+{
+  "trademark": "Chroma",
+  "catalogBindings": [
+    {
+      "parentKey": "database",
+      "childKey": "vector-databases"
+    }
+  ],
+  "summary": "Open-source vector database for AI.",
+  "overview": "Chroma is an open-source vector database for AI applications, providing storage, indexing, and search over embeddings through a simple API.",
+  "description": "Chroma is an open-source search infrastructure for AI. It stores embeddings together with their documents and metadata, and provides vector, full-text, and metadata search through Python, JavaScript, and Rust clients.\n\nThis package deploys the official chromadb/chroma server as a single container. Data is persisted in a named volume mounted at /data, and the HTTP API is published on port 8000. No custom configuration is required for a default single-node deployment.\n\nTypical use cases include retrieval-augmented generation (RAG), semantic search, recommendation systems, and any application that needs to store and query embeddings.",
+  "websiteurl": "https://www.trychroma.com"
+}

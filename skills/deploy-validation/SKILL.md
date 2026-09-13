@@ -28,7 +28,7 @@ Supporting files in this skill:
 
 1. Run the gates locally: `make --no-print-directory libs ARGS="check --app <app> --json"`. On failure, stop and report the first blocking error.
 2. Run `make --no-print-directory libs ARGS="app-deploy --app <app> [--target <local|remote>] [--ssh-host <ip> --ssh-user <name> --ssh-secret-path <path> --deploy-root <dir>] --json"` to perform the compose deployment primitive. It handles local vs remote resolution, sync, network creation, `config`, `up -d`, and `ps` evidence.
-3. Run `make --no-print-directory libs ARGS="app-tests --app <app> [--base-url <url>] [--ssh-host <ip> --ssh-user <name> --ssh-secret-path <path> --deploy-root <dir>] --json"` to perform functional checks. When `tests/cases.yml` is absent, the command still runs the default required checks.
+3. Run `make --no-print-directory libs ARGS="app-tests --app <app> [--base-url <url>] [--ssh-host <ip> --ssh-user <name> --ssh-secret-path <path> --deploy-root <dir>] --json"` to perform functional checks. When `tests/cases.yml` is absent, the command still runs the default required checks; report the absence as an app-local test gap when the app's core path needs an app-specific check.
 4. Check container logs for blocking errors.
 5. Cleanup in all outcomes with `make --no-print-directory libs ARGS="app-deploy --app <app> [--target <local|remote>] [--ssh-host <ip> --ssh-user <name> --ssh-secret-path <path> --deploy-root <dir>] --down --json"`. For remote, the server itself stays running; deletion stays manual.
 6. Return validation evidence: gates, deploy, functional checks, logs, cleanup, and the server identity when remote.
