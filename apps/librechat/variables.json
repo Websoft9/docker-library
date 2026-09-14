@@ -24,6 +24,14 @@
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 3080
+    },
+    "admin": {
+      "port": 3000
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

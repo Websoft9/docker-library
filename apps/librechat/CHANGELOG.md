@@ -10,3 +10,4 @@
 - Fixed the RAG API URL from `http://${W9_ID}-8000` to `http://${W9_ID}-rag:8000`.
 - Added a main-container healthcheck against `/health`, converted all variable references to the braced form, and added the port purpose comments.
 - Updated `src/librechat.yaml` to configuration version `1.3.16`.
+- Declared `variables.json.access` with the `web` (`3080`) and `admin` (`3000`) container ports.

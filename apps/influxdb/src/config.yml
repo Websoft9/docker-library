@@ -1,0 +1,20 @@
+# InfluxDB 2.x configuration file.
+#
+# This file is mounted to /etc/influxdb2/config.yml and is read by `influxd`
+# on startup. Image defaults apply for any option left commented out.
+#
+# Configuration precedence (highest first): CLI flags > environment variables > this file.
+#
+# Docs: https://docs.influxdata.com/influxdb/v2/reference/config-options/
+
+# Example: WAL fsync delay (the CLI equivalent is --storage-wal-fsync-delay)
+# storage-wal-fsync-delay: 15m
+
+# Example: HTTP bind address
+# http-bind-address: ":8086"
+
+# Example: query concurrency
+# query-concurrency: 10
+
+# Example: log level
+# log-level: info

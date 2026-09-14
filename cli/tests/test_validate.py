@@ -135,6 +135,60 @@ def test_policy_result_allows_variable_or_two_segment_dependency_tags(repo_fixtu
     assert result["dependency_patch_tags"] == []
 
 
+def test_policy_result_flags_access_port_missing_from_compose(repo_fixture, app_factory):
+    app_path = app_factory(
+        "demo",
+        compose=(
+            "services:\n"
+            "  web:\n"
+            "    ports:\n"
+            '      - "${W9_HTTP_PORT_SET}:8080"\n'
+        ),
+        variables={
+            "name": "demo",
+            "trademark": "Demo",
+            "release": True,
+            "edition": [{"dist": "community", "version": ["1.0"]}],
+            "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
+            "access": {"web": {"port": 8080}, "admin": {"port": 3000}},
+        },
+    )
+
+    result = validate._policy_result(app_path)
+
+    assert result["ok"] is False
+    assert result["access_ports_ok"] is False
+    assert result["access_missing_ports"] == [{"key": "admin", "port": 3000}]
+
+
+def test_policy_result_accepts_access_port_present_in_compose(repo_fixture, app_factory):
+    app_path = app_factory(
+        "demo",
+        compose=(
+            "services:\n"
+            "  web:\n"
+            "    ports:\n"
+            '      - "${W9_HTTP_PORT_SET}:3080"\n'
+            "  admin:\n"
+            "    ports:\n"
+            '      - "${W9_ADMIN_GUI_PORT_SET}:3000"\n'
+        ),
+        variables={
+            "name": "demo",
+            "trademark": "Demo",
+            "release": True,
+            "edition": [{"dist": "community", "version": ["1.0"]}],
+            "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
+            "access": {"web": {"port": 3080}, "admin": {"port": 3000}},
+        },
+    )
+
+    result = validate._policy_result(app_path)
+
+    assert result["access_ports_ok"] is True
+    assert result["access_missing_ports"] == []
+
+
 def test_check_app_returns_gate_specific_payload(repo_fixture, app_factory):
     app_factory("demo")
 

@@ -1,0 +1,32 @@
+services:
+
+  influxdb:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    ports:
+      - "${W9_HTTP_PORT_SET}:8181" # InfluxDB 3 Core HTTP API
+    env_file: .env
+    command:
+      - influxdb3
+      - serve
+      - --node-id=node0
+      - --object-store=file
+      - --data-dir=/var/lib/influxdb3
+      - --disable-authz=health
+    volumes:
+      - influxdb-data:/var/lib/influxdb3
+    healthcheck:
+      test: ["CMD", "curl", "--silent", "--fail", "http://localhost:8181/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+volumes:
+  influxdb-data:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

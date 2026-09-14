@@ -25,6 +25,10 @@
 ### Change Password
 
 Open WebUI manages accounts in the app, not in `.env`. Sign in, open **Settings > Account**, and change the password there. To reset the administrator password, use the Open WebUI admin panel or the database.
+
+### GPU / CUDA
+
+Open WebUI also publishes CUDA image tags (for example `cuda` and `v0.11.3-cuda`) for NVIDIA GPU hosts. This package does not use the CUDA variant; GPU support is out of scope here.
 <!-- W9_GUIDE_END -->
 
 ## Configuration Reference

@@ -10,12 +10,34 @@
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 8080,
+      "path": "/"
+    },
+    "admin": {
+      "port": 8080,
+      "path": "/app"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "8",
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/frappe/erpnext"
+    "image": "https://hub.docker.com/r/frappe/erpnext",
+    "docs": [
+      "https://github.com/frappe/frappe_docker"
+    ]
+  },
+  "env": {
+    "first_startup_only": [
+      "W9_LOGIN_PASSWORD",
+      "W9_POWER_PASSWORD"
+    ]
+  },
+  "help": {
+    "db": "ERPNext requires MariaDB 10.6+ and Redis. This package bundles MariaDB 11.8 and Redis 6.2 for a single-node deployment."
   }
 }

@@ -1,21 +1,17 @@
-# image:https://hub.docker.com/_/phpmyadmin
-# db container for test
-
-version: "3.8"
 services:
   phpmyadmin:
-      image: $W9_REPO:$W9_VERSION
-      container_name: $W9_ID
-      volumes:
-       - ./src/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
-      env_file: .env
-      restart: unless-stopped
-      ports:
-       - $W9_HTTP_PORT_SET:80
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./src/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+    ports:
+      - "${W9_HTTP_PORT_SET}:80" # Web Console
 
   db:
     image: mariadb:10.3
-    container_name: $W9_ID-mariadb
+    container_name: ${W9_ID}-mariadb
     restart: unless-stopped
     env_file: .env
     environment:
@@ -25,5 +21,5 @@ services:
 
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

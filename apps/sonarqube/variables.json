@@ -2,18 +2,46 @@
   "name": "sonarqube",
   "trademark": "SonarQube",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/_/sonarqube",
+    "releases": "https://github.com/SonarSource/docker-sonarqube/releases",
+    "compose": {
+      "compose": "https://github.com/SonarSource/docker-sonarqube/blob/master/example-compose-files/sq-with-postgres/docker-compose.yml"
+    },
+    "docs": [
+      "https://github.com/SonarSource/docker-sonarqube",
+      "https://docs.sonarsource.com/sonarqube-server/server-installation/from-docker-image/"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "community",
+        "26.9.0.129388-community",
         "latest"
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 9000,
+      "path": "/"
+    },
+    "api": {
+      "port": 9000,
+      "path": "/api"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "4",
     "disk": "15"
+  },
+  "credentials": {},
+  "env": {
+    "first_startup_only": []
+  },
+  "help": {
+    "db": "Bundled PostgreSQL 17 stores SonarQube data; the embedded H2 database is not suitable for production."
   }
 }
