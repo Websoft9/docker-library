@@ -1,8 +1,3 @@
-# docs: https://docs.tooljet.com/docs/setup/docker/
-# image: https://hub.docker.com/r/tooljet/tooljet-ce
-
-version: '3.8'
-
 services:
   tooljet:
     tty: true
@@ -12,7 +7,7 @@ services:
     restart: unless-stopped
     env_file: .env
     ports:
-      - ${W9_HTTP_PORT_SET}:80
+      - "${W9_HTTP_PORT_SET}:80" # Web Console
     depends_on:
       - postgres
       - redis
@@ -23,7 +18,7 @@ services:
 
   postgres:
     container_name: ${W9_ID}-postgresql
-    image: postgres:13
+    image: postgres:${W9_DB_VERSION}
     restart: unless-stopped
     volumes:
       - postgres:/var/lib/postgresql/data
@@ -33,14 +28,13 @@ services:
 
   postgrest:
     container_name: ${W9_ID}-postgrest
-    image: postgrest/postgrest:latest
+    image: postgrest/postgrest:v12.0.2
     restart: unless-stopped
     depends_on:
       - postgres
+    env_file: .env
     environment:
       - PGRST_SERVER_PORT=80
-      - PGRST_DB_URI=postgres://postgres:$W9_RCODE@$W9_ID-postgresql/tooljet_db
-      - PGRST_JWT_SECRET=52bbe1c671a9c62d89e594dfd91597988542c27afaefa84a73$W9_RCODE
 
   redis:
     container_name: ${W9_ID}-redis
@@ -54,32 +48,31 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
 
   database-backup-service:
-    image: postgres:alpine
+    image: postgres:${W9_DB_VERSION}
     container_name: ${W9_ID}-backup
-    #env_file: .env
     volumes:
       - backup:/backup
     depends_on:
       - postgres
     command: >
-      sh -c 'if [ "$DATABASE_BACKUP" = "true" ]; then
-        until PGPASSWORD=$PG_PASS pg_isready -h ${W9_ID}-postgresql -p 5432; do
+      sh -c 'if [ "${DATABASE_BACKUP}" = "true" ]; then
+        until PGPASSWORD=${PG_PASS} pg_isready -h ${W9_ID}-postgresql -p 5432; do
           echo "Waiting for PostgreSQL to become available..." && sleep 1;
         done;
-        PGPASSWORD=$PG_PASS pg_dump --host=${W9_ID}-postgresql --port=5432 --username=$PG_USER --dbname=$PG_DB -f "/backup/dump_$(date +'%Y%m%d%H%M%S').sql" &&
+        PGPASSWORD=${PG_PASS} pg_dump --host=${W9_ID}-postgresql --port=5432 --username=${PG_USER} --dbname=${PG_DB} -f "/backup/dump_$(date +'%Y%m%d%H%M%S').sql" &&
         find /backup -type f -mtime +30 -delete &&
         echo "Dump taken successfully." &&
         exit 0;
       else
         echo "Skipping backup." &&
-        exit 1;
-      fi'      
+        exit 0;
+      fi'
 
 volumes:
   redis_data:
   postgres:
   backup:
-    
+
 networks:
   default:
     name: ${W9_NETWORK}

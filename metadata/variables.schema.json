@@ -1,0 +1,257 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$comment": "Contract for apps/<app>/variables.json. Additions must stay backward compatible: new fields are optional.",
+  "type": "object",
+  "required": [
+    "name",
+    "trademark",
+    "release",
+    "edition",
+    "requirements"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "trademark": {
+      "type": "string",
+      "minLength": 1
+    },
+    "release": {
+      "type": "boolean"
+    },
+    "scope": {
+      "type": "string"
+    },
+    "runtime": {
+      "type": "string"
+    },
+    "upstream": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "image": {
+          "type": "string",
+          "minLength": 1
+        },
+        "releases": {
+          "type": "string",
+          "minLength": 1
+        },
+        "compose": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "compose": {
+              "type": "string",
+              "minLength": 1
+            },
+            "env": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "docs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "edition": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "dist",
+          "version"
+        ],
+        "properties": {
+          "dist": {
+            "type": "string",
+            "minLength": 1
+          },
+          "version": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "access": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "web": {
+          "$ref": "#/$defs/accessEntry"
+        },
+        "admin": {
+          "$ref": "#/$defs/accessEntry"
+        },
+        "api": {
+          "$ref": "#/$defs/accessEntry"
+        }
+      }
+    },
+    "requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cpu",
+        "memory",
+        "disk"
+      ],
+      "properties": {
+        "cpu": {
+          "type": [
+            "string",
+            "number"
+          ]
+        },
+        "memory": {
+          "type": [
+            "string",
+            "number"
+          ]
+        },
+        "disk": {
+          "type": [
+            "string",
+            "number"
+          ]
+        }
+      }
+    },
+    "database": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "postgresql",
+            "mysql",
+            "mariadb",
+            "mongodb",
+            "redis"
+          ]
+        },
+        "supported_modes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "bundled",
+              "external"
+            ]
+          }
+        },
+        "default_mode": {
+          "type": "string",
+          "enum": [
+            "bundled",
+            "external"
+          ]
+        },
+        "bundled": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "service": {
+              "type": "string"
+            },
+            "internal_host": {
+              "type": "string"
+            },
+            "database_env": {
+              "type": "string"
+            },
+            "username_env": {
+              "type": "string"
+            },
+            "password_env": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "env": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "first_startup_only": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "credentials": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "password": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "source"
+          ],
+          "properties": {
+            "source": {
+              "type": "string",
+              "enum": [
+                "container-file",
+                "container-log"
+              ]
+            },
+            "path": {
+              "type": "string"
+            },
+            "pattern": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "help": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "$defs": {
+    "accessEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "port"
+      ],
+      "properties": {
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535,
+          "description": "Container port the service listens on (not the host port)."
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^/",
+          "description": "URL path; omit for '/'."
+        }
+      }
+    }
+  }
+}

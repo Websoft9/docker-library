@@ -36,6 +36,37 @@ def _read_compose(path: Path) -> dict:
         return yaml.safe_load(file) or {}
 
 
+def _container_port(entry) -> int | None:
+    if isinstance(entry, bool):
+        return None
+    if isinstance(entry, int):
+        return entry
+    if isinstance(entry, dict):
+        try:
+            return int(entry.get("target"))
+        except (TypeError, ValueError):
+            return None
+    if isinstance(entry, str):
+        token = entry.strip().strip("'\"").rsplit(":", 1)[-1].split("/", 1)[0]
+        try:
+            return int(token)
+        except ValueError:
+            return None
+    return None
+
+
+def _compose_container_ports(compose: dict) -> set[int]:
+    ports: set[int] = set()
+    for service in (compose.get("services") or {}).values():
+        if not isinstance(service, dict):
+            continue
+        for entry in service.get("ports", []) or []:
+            port = _container_port(entry)
+            if port is not None:
+                ports.add(port)
+    return ports
+
+
 def _structure_result(target: Path) -> dict:
     missing = [name for name in REQUIRED_FILES if not (target / name).exists()]
     missing_src = []
@@ -112,6 +143,22 @@ def _policy_result(target: Path) -> dict:
             dependency_patch_tags.append({"service": service_name, "image": image})
     dependency_tag_policy_ok = not dependency_patch_tags
 
+    access_missing_ports = []
+    variables_path = target / "variables.json"
+    if variables_path.exists():
+        try:
+            variables = json.loads(variables_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            variables = {}
+        container_ports = _compose_container_ports(compose)
+        for key, entry in (variables.get("access") or {}).items():
+            if not isinstance(entry, dict):
+                continue
+            port = entry.get("port")
+            if isinstance(port, int) and port not in container_ports:
+                access_missing_ports.append({"key": key, "port": port})
+    access_ports_ok = not access_missing_ports
+
     ok = (
         not missing_translation
         and login_pair_ok
@@ -119,6 +166,7 @@ def _policy_result(target: Path) -> dict:
         and url_replace_ok
         and url_replace_required_ok
         and dependency_tag_policy_ok
+        and access_ports_ok
     )
     return {
         "ok": ok,
@@ -130,6 +178,8 @@ def _policy_result(target: Path) -> dict:
         "url_replace_required_ok": url_replace_required_ok,
         "dependency_patch_tags": dependency_patch_tags,
         "dependency_tag_policy_ok": dependency_tag_policy_ok,
+        "access_ports_ok": access_ports_ok,
+        "access_missing_ports": access_missing_ports,
     }
 
 

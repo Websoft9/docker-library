@@ -1,0 +1,5 @@
+optional:
+  - id: ready
+    type: web-access
+    path: /-/ready
+    expect_status: 200

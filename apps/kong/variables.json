@@ -11,6 +11,17 @@
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 8000
+    },
+    "admin": {
+      "port": 8002
+    },
+    "api": {
+      "port": 8001
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

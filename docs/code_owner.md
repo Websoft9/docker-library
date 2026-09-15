@@ -68,11 +68,13 @@ Suggest use the unified bind mount *src* which include config or script files fo
 
 | file name          | Description                                                                                                                                                          | Necessity |
 | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| nginx_proxy.conf         | nginx config code section which will insert to server{} by websoft9 api, and it can override the exist location                                 | no        |
+| nginx-proxy.conf         | nginx config code section which will insert to server{} by websoft9 api, and it can override the exist location                                 | no        |
 | php_exra.ini         | extra php.ini for PHP application, you can add it to docker-compose.yml if you want to use it                    | no        |
 
 
-> you should add **proxy_pass  $forward_scheme://$server:$port$request_uri;** to your nginx_proxy.conf if you override default location /{}
+> you should add **proxy_pass  $forward_scheme://$server:$port$request_uri;** to your nginx-proxy.conf if you override default location /{}
+
+> The Websoft9 platform reads this file as exactly `src/nginx-proxy.conf` and injects it into the Nginx Proxy Manager Proxy Host `server{}` block. It is not mounted into the app container, so `docker-compose.yml` does not reference it. Only server-context directives belong here; http-context directives such as `limit_req_zone` / `limit_conn_zone` are defined platform-side and must not be declared in this file.
 
 ## Environments
 

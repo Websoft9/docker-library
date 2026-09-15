@@ -1,0 +1,13 @@
+{
+  "trademark": "SonarQube",
+  "catalogBindings": [
+    {
+      "parentKey": "itdeveloper",
+      "childKey": "devops"
+    }
+  ],
+  "summary": "Code quality and security analysis platform.",
+  "overview": "Open-source platform for code quality and security analysis across 20+ languages. This package bundles the official image with PostgreSQL 17.",
+  "description": "SonarQube Community Build is the free, open-source edition of SonarQube, a self-managed platform for continuous inspection of code quality and security. It detects bugs, vulnerabilities, and code smells across more than 20 programming languages and frameworks, and enforces quality gates in CI/CD pipelines.\n\nThis package deploys the official sonarqube image with a bundled PostgreSQL 17 database. SonarQube data, extensions, logs, and temporary files are persisted in named volumes. The web console is published on port 9000, and the default administrator account is admin/admin, which must be changed after the first sign-in.\n\nTypical use cases include static analysis in CI/CD, enforcing code quality gates on merge requests, tracking technical debt, and centralizing code security findings for development teams.",
+  "websiteurl": "https://www.sonarsource.com/products/sonarqube/"
+}

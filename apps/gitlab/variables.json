@@ -6,7 +6,7 @@
     {
       "dist": "community",
       "version": [
-        "18.1.3-ce.0",
+        "19.3.2-ce.0",
         "latest"
       ]
     }
@@ -16,7 +16,22 @@
     "memory": "8",
     "disk": "10"
   },
+  "help": {
+    "runner": "This package deploys GitLab only. GitLab Runner is not started by default because it requires separate registration and runner-specific configuration."
+  },
   "upstream": {
-    "image": "https://hub.docker.com/r/gitlab/gitlab-ce"
+    "image": "https://hub.docker.com/r/gitlab/gitlab-ce",
+    "releases": "https://github.com/gitlabhq/gitlabhq/tags",
+    "docs": [
+      "https://docs.gitlab.com/install/docker/installation",
+      "https://docs.gitlab.com/update/upgrade_paths",
+      "https://docs.gitlab.com/runner/install/docker",
+      "https://docs.gitlab.com/update/versions/gitlab_19_changes"
+    ]
+  },
+  "env": {
+    "first_startup_only": [
+      "W9_LOGIN_PASSWORD"
+    ]
   }
 }

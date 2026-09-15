@@ -6,17 +6,30 @@
     {
       "dist": "community",
       "version": [
-        "5.2.1",
+        "5.2",
         "latest"
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 80,
+      "path": "/"
+    },
+    "admin": {
+      "port": 80,
+      "path": "/phpmyadmin/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "2",
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/_/phpmyadmin"
+    "image": "https://hub.docker.com/_/phpmyadmin",
+    "docs": [
+      "https://github.com/phpmyadmin/docker"
+    ]
   }
 }

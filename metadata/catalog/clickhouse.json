@@ -1,0 +1,13 @@
+{
+  "trademark": "ClickHouse",
+  "catalogBindings": [
+    {
+      "parentKey": "database",
+      "childKey": "data-warehouse"
+    }
+  ],
+  "summary": "Open-source columnar OLAP database for analytics.",
+  "overview": "Open-source column-oriented database for real-time analytics and OLAP. This package deploys the official ClickHouse server with a generated admin user.",
+  "description": "ClickHouse is an open-source, column-oriented database management system for online analytical processing (OLAP). It executes SQL queries over large datasets in real time, making it suitable for analytics, dashboards, log and event processing, and data warehousing.\n\nThis package deploys the official clickhouse/clickhouse-server image. On first start it creates an admin user and a default database from environment variables, and data, logs, and configuration are persisted in named volumes. The HTTP interface and Play UI are published on port 8123.\n\nTypical use cases include real-time analytics, business intelligence dashboards, log and metrics storage, time-series analysis, and large-scale data aggregation.",
+  "websiteurl": "https://clickhouse.com"
+}

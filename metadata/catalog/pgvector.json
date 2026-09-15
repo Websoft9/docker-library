@@ -1,0 +1,13 @@
+{
+  "trademark": "pgvector",
+  "catalogBindings": [
+    {
+      "parentKey": "database",
+      "childKey": "vector-databases"
+    }
+  ],
+  "summary": "Vector similarity search for PostgreSQL.",
+  "overview": "pgvector adds vector similarity search to PostgreSQL, letting embeddings be stored and queried alongside relational data.",
+  "description": "pgvector is an open-source extension that brings vector similarity search to PostgreSQL. It adds a vector data type plus indexing and distance operators, enabling exact and approximate nearest neighbor search directly in SQL.\n\nThis package deploys the official pgvector/pgvector image, which is built on PostgreSQL 18 (Debian trixie) and ships the pgvector extension. On first startup an init script enables the vector extension in the default database, so it can be used immediately. The image tag is pinned to pg18-trixie.\n\nTypical use cases include semantic search, recommendation systems, retrieval-augmented generation (RAG) for AI applications, image and text similarity, and any workload that needs vector search next to relational data.",
+  "websiteurl": "https://github.com/pgvector/pgvector"
+}

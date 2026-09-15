@@ -198,6 +198,7 @@ Current commands expected to support these shared options:
 - `libs app-down`
 - `libs appstore-sync`
 - `libs appstore-deploy` (currently a stub; it still exposes the shared options in help)
+- `libs websoft9-upgrade`
 
 Business inputs SHOULD be passed as arguments, not hidden in environment variables.
 

@@ -1,0 +1,22 @@
+{
+  "trademark": "LobeHub",
+  "catalogBindings": [
+    {
+      "parentKey": "ai",
+      "childKey": "aiui"
+    },
+    {
+      "parentKey": "ai",
+      "childKey": "ai-agent-chat"
+    }
+  ],
+  "summary": "Open-source AI agent workspace.",
+  "overview": "Self-hosted AI workspace for building, running, and collaborating with agents across multiple LLM providers.",
+  "description": "LobeHub (formerly LobeChat) is an open-source, self-hosted AI workspace for working with large language models and agents. It provides a unified interface for multiple model providers, plugins and skills, knowledge bases, and team collaboration.\n\nThis package deploys the official LobeHub server with bundled PostgreSQL, Redis, and S3-compatible object storage (RustFS), following the upstream server deployment model. Users register and sign in directly in the web interface.\n\nTypical use cases include personal AI assistants, multi-model chat, team agent workspaces, retrieval-augmented knowledge bases, and self-hosted alternatives to hosted AI chat platforms.",
+  "websiteurl": "https://lobehub.com",
+  "screenshots": [
+    "https://github.com/user-attachments/assets/5f78ae58-ed4f-4d38-8037-96109fbba58c",
+    "https://github.com/user-attachments/assets/949b8166-486d-4750-ad7a-cfe7bfcb84e3",
+    "https://github.com/user-attachments/assets/e51526c6-e09c-4a5a-9cec-dcd3fd68a3a8"
+  ]
+}

@@ -2,20 +2,39 @@
   "name": "librechat",
   "trademark": "LibreChat",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/librechat/librechat",
+    "releases": "https://github.com/danny-avila/LibreChat/releases",
+    "compose": {
+      "compose": "https://raw.githubusercontent.com/danny-avila/LibreChat/main/docker-compose.yml",
+      "env": "https://raw.githubusercontent.com/danny-avila/LibreChat/main/.env.example"
+    },
+    "docs": [
+      "https://www.librechat.ai/docs/local/docker",
+      "https://www.librechat.ai/docs/configuration/dotenv",
+      "https://github.com/danny-avila/LibreChat"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
+        "v0.8.7",
         "latest"
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 3080
+    },
+    "admin": {
+      "port": 3000
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "4",
     "disk": "10"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/librechat/librechat"
   }
 }

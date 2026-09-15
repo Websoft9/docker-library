@@ -1,30 +1,95 @@
-# ONLYOFFICE Docs on Docker  
+# ONLYOFFICE Docs on Docker
 
-This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for ONLYOFFICE Docs:
+## Quick Start
+
+### Deploy Verification
+
+1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **ONLYOFFICE Docs**.
+2. In the **Access** tab, get the login URL and credentials.
+3. Open the login URL in a browser and sign in to confirm the app works.
+
+<!-- W9_GUIDE_START -->
+### Usage
+
+1. Make sure you are signed in to the ONLYOFFICE Docs admin console.
+2. Try a core feature.
+
+### Change Password
+
+1. In the [Websoft9](https://www.websoft9.com) console, open the app's **Compose** tab.
+2. Update the password in `.env` and save.
+3. Rebuild the app.
+<!-- W9_GUIDE_END -->
+
+## Configuration Reference
+
+Websoft9 packages this app from the official [ONLYOFFICE Docs Docker image](https://hub.docker.com/r/onlyoffice/documentserver) and makes some improvements below.
+
+<!-- W9_NOTE_START -->
+
+<!-- W9_NOTE_END -->
+
+Apps run as containers; rebuild after any configuration change.
+
+### Version Support
+
+Supported versions: 9.4, latest.
+
+The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
 
- - community:  8.3, latest
+### Ports
 
- - enterprise:  8.3, latest
+| Purpose | Port |
+| --- | --- |
+| Web Console | 80 |
 
- - developer :  8.3, latest
+
+### Data Directory
 
 
-## System Requirements
+- `data` → `/var/www/onlyoffice/Data`
+- `log` → `/var/log/onlyoffice`
+- `lib` → `/var/lib/onlyoffice`
+- `fonts` → `/usr/share/fonts/truetype/custom`
+- `forgotten` → `/var/lib/onlyoffice/documentserver/App_Data/cache/files/forgotten`
 
-The following are the minimal [recommended requirements](https://github.com/ONLYOFFICE/Docker-DocumentServer#recommended-system-requirements):
 
-* **RAM**: 2 GB or more
-* **CPU**: 1 cores or higher
-* **Disk**: at least 1 GB of free space
-* **bandwidth**: more fluent experience over 100M  
 
-## Install
+### Environment Variables
 
-You can install this ONLYOFFICE Docs by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+Environment variables are defined in the app's `.env` file; see the reference section at the end of `.env` for supported variables.
 
-If you want use ONLYOFFICE Docs with **Websoft9 Business Support** free, you can [subscribe ONLYOFFICE Docs](https://www.websoft9.com/apps) on Cloud platform
 
-## Documentation
+### Configuration Files
 
-[ONLYOFFICE Docs Administrator Guide](https://support.websoft9.com/docs/onlyofficedocs) powered by Websoft9
+
+Configuration files live inside the image; mount a single file read-only to override, and never replace the whole directory.
+
+
+## References
+
+- [ONLYOFFICE Docs Administrator Guide](https://support.websoft9.com/docs/onlyofficedocs) by Websoft9
+
+- [Docker Hub image](https://hub.docker.com/r/onlyoffice/documentserver)
+
+- [Releases](https://github.com/ONLYOFFICE/DocumentServer/releases)
+
+- [Official compose](https://raw.githubusercontent.com/ONLYOFFICE/Docker-DocumentServer/master/docker-compose.yml)
+
+- [Official docs](https://helpcenter.onlyoffice.com/docs/installation/docs-community-install-docker.aspx)
+
+- [Official docs](https://api.onlyoffice.com/docs/docs-api/get-started/basic-concepts/)
+
+- [GitHub docs](https://github.com/ONLYOFFICE/Docker-DocumentServer)
+
+
+<!-- W9_TROUBLESHOOT_START -->
+## Troubleshooting
+
+**App fails to start?**
+- Check `docker compose logs`.
+
+**Port not reachable?**
+- Ensure the firewall / security group allows the port.
+<!-- W9_TROUBLESHOOT_END -->

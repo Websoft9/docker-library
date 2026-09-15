@@ -25,3 +25,9 @@ radom key create
 Docker Model Runner
 1. 把 README/Notes 再补成“如何取默认登录邮箱、如何登录”的最终文案
 2. 继续排查 workload-launcher 的重启原因，争取把日志风险也压到最低
+
+InfluxDB 开源时序数据库
+OpenClaw 
+Canvas LMS
+laravel
+Semaphore 

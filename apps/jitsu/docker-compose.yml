@@ -1,50 +1,250 @@
-# image,docs: https://hub.docker.com/_/wordpress/
-
 services:
 
-  wordpress:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+  postgres:
+    image: postgres:${JITSU_POSTGRES_VERSION}
+    container_name: ${W9_ID}-postgres
     restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
-    logging:
-      driver: "json-file"
-      options:
-          max-file: "5"
-          max-size: 10m
-    deploy:
-      resources:
-        limits:
-          memory: 5g
-          cpus: '0.7'
-    ports:
-      - $W9_HTTP_PORT_SET:80
-    env_file: .env
-    volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
-
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
-    restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
-    volumes:
-      - mysql_data:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: $WORDPRESS_DB_NAME
-      MYSQL_USER: $WORDPRESS_DB_USER
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${JITSU_POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d postgres -U postgres"]
+      interval: 5s
+      timeout: 10s
+      retries: 12
+
+  mongodb:
+    image: mongo:${JITSU_MONGODB_VERSION}
+    container_name: ${W9_ID}-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: ${JITSU_MONGODB_PASSWORD}
+    volumes:
+      - mongodb_data:/data/db
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:${JITSU_CLICKHOUSE_VERSION}
+    container_name: ${W9_ID}-clickhouse
+    restart: unless-stopped
+    environment:
+      CLICKHOUSE_DB: default
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: ${JITSU_CLICKHOUSE_PASSWORD}
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:${JITSU_REDPANDA_VERSION}
+    container_name: ${W9_ID}-redpanda
+    restart: unless-stopped
+    command:
+      - redpanda
+      - start
+      - --kafka-addr
+      - internal://0.0.0.0:9092
+      - --advertise-kafka-addr
+      - internal://redpanda:9092
+      - --pandaproxy-addr
+      - 0.0.0.0:8082
+      - --schema-registry-addr
+      - 0.0.0.0:8081
+      - --rpc-addr
+      - redpanda:33145
+      - --advertise-rpc-addr
+      - redpanda:33145
+      - --mode
+      - dev-container
+      - --smp
+      - "1"
+      - --memory
+      - 1G
+    volumes:
+      - redpanda_data:/var/lib/redpanda/data
+
+  console:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+      clickhouse:
+        condition: service_started
+      redpanda:
+        condition: service_started
+    ports:
+      - "${W9_HTTP_PORT_SET}:3000" # Web Console
+    environment:
+      NODE_ENV: development
+      LOG_LEVEL: debug
+      LOG_FORMAT: text
+      NEXT_PUBLIC_LOG_LEVEL: debug
+      DATABASE_URL: postgresql://postgres:${JITSU_POSTGRES_PASSWORD}@postgres:5432/postgres?schema=newjitsu
+      APP_DATABASE_URL: postgresql://postgres:${JITSU_POSTGRES_PASSWORD}@postgres:5432/postgres?schema=newjitsu
+      CLICKHOUSE_URL: http://clickhouse:8123/
+      CLICKHOUSE_HOST: clickhouse:8123
+      CLICKHOUSE_USERNAME: default
+      CLICKHOUSE_PASSWORD: ${JITSU_CLICKHOUSE_PASSWORD}
+      CLICKHOUSE_DATABASE: default
+      CLICKHOUSE_SSL: "false"
+      MONGODB_URL: mongodb://admin:${JITSU_MONGODB_PASSWORD}@mongodb:27017/admin
+      MONGODB_TIMEOUT_MS: "1000"
+      KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+      KAFKA_SSL: "false"
+      JWT_SECRET: 6de1460fd8ba429285c9e72cc5339291
+      EE_API_AUTH_TOKENS: 5f92ff738db8432899737fbdc7259bbd
+      EE_CONNECTION: http://console:3000?jwtSecret=6de1460fd8ba429285c9e72cc5339291
+      CONSOLE_RAW_AUTH_TOKENS: ${JITSU_CONSOLE_TOKEN}
+      BULKER_URL: http://bulker:3042
+      BULKER_AUTH_KEY: ${JITSU_BULKER_TOKEN}
+      ROTOR_URL: http://rotor:3401
+      ROTOR_AUTH_KEY: ${JITSU_ROTOR_TOKEN}
+      DISABLE_SIGNUP: "false"
+      ENABLE_CREDENTIALS_LOGIN: "true"
+      SEED_USER_EMAIL: ${SEED_USER_EMAIL}
+      SEED_USER_PASSWORD: ${SEED_USER_PASSWORD}
+      SEED_DEMO_CONFIGURATION: ${SEED_DEMO_CONFIGURATION}
+      JITSU_INGEST_PUBLIC_URL: ${JITSU_INGEST_PUBLIC_URL}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/healthcheck"]
+      interval: 10s
+      timeout: 10s
+      retries: 6
+      start_period: 60s
+
+  bulker:
+    image: jitsucom/bulker:${W9_VERSION}
+    container_name: ${W9_ID}-bulker
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      clickhouse:
+        condition: service_started
+      redpanda:
+        condition: service_started
+      console:
+        condition: service_healthy
+    environment:
+      LOG_LEVEL: debug
+      BULKER_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+      BULKER_RAW_AUTH_TOKENS: ${JITSU_BULKER_TOKEN}
+      BULKER_CONFIG_SOURCE: http://console:3000/api/admin/export/bulker-connections
+      BULKER_CONFIG_SOURCE_HTTP_AUTH_TOKEN: service-admin-account:${JITSU_CONSOLE_TOKEN}
+      BULKER_CACHE_DIR: /tmp/cache
+      BULKER_CLICKHOUSE_HOST: clickhouse:8123
+      BULKER_CLICKHOUSE_PASSWORD: ${JITSU_CLICKHOUSE_PASSWORD}
+      BULKER_CLICKHOUSE_DATABASE: default
+      KAFKA_COMPRESSION_TYPE: snappy
+      KAFKA_COMPRESSION_CODEC: snappy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3042/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 6
+      start_period: 40s
+
+  rotor:
+    image: jitsucom/rotor:${W9_VERSION}
+    container_name: ${W9_ID}-rotor
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+      clickhouse:
+        condition: service_started
+      redpanda:
+        condition: service_started
+      console:
+        condition: service_healthy
+      bulker:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      LOG_LEVEL: debug
+      LOG_FORMAT: text
+      DATABASE_URL: postgresql://postgres:${JITSU_POSTGRES_PASSWORD}@postgres:5432/postgres?schema=newjitsu
+      APP_DATABASE_URL: postgresql://postgres:${JITSU_POSTGRES_PASSWORD}@postgres:5432/postgres?schema=newjitsu
+      CLICKHOUSE_URL: http://clickhouse:8123/
+      CLICKHOUSE_HOST: clickhouse:8123
+      CLICKHOUSE_USERNAME: default
+      CLICKHOUSE_PASSWORD: ${JITSU_CLICKHOUSE_PASSWORD}
+      CLICKHOUSE_DATABASE: default
+      CLICKHOUSE_SSL: "false"
+      MONGODB_URL: mongodb://admin:${JITSU_MONGODB_PASSWORD}@mongodb:27017/admin
+      MONGODB_TIMEOUT_MS: "1000"
+      KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+      KAFKA_SSL: "false"
+      BULKER_URL: http://bulker:3042
+      BULKER_AUTH_KEY: ${JITSU_BULKER_TOKEN}
+      ROTOR_RAW_AUTH_TOKENS: ${JITSU_ROTOR_TOKEN}
+      REPOSITORY_BASE_URL: http://console:3000/api/admin/export
+      REPOSITORY_AUTH_TOKEN: service-admin-account:${JITSU_CONSOLE_TOKEN}
+      REPOSITORY_CACHE_DIR: /tmp/cache
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3401/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  ingest:
+    image: jitsucom/ingest:${W9_VERSION}
+    container_name: ${W9_ID}-ingest
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      clickhouse:
+        condition: service_started
+      redpanda:
+        condition: service_started
+      console:
+        condition: service_healthy
+      rotor:
+        condition: service_healthy
+    ports:
+      - "${W9_API_PORT_SET}:3049" # Ingest API
+    environment:
+      LOG_LEVEL: debug
+      INGEST_PUBLIC_URL: ${JITSU_INGEST_PUBLIC_URL}/
+      INGEST_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+      INGEST_RAW_AUTH_TOKENS: ${JITSU_BULKER_TOKEN}
+      INGEST_REPOSITORY_URL: http://console:3000/api/admin/export/streams-with-destinations
+      INGEST_SCRIPT_ORIGIN: http://console:3000/api/s/javascript-library
+      INGEST_REPOSITORY_AUTH_TOKEN: service-admin-account:${JITSU_CONSOLE_TOKEN}
+      INGEST_CACHE_DIR: /tmp/cache
+      INGEST_ROTOR_URL: http://rotor:3401
+      INGEST_ROTOR_AUTH_KEY: ${JITSU_BULKER_TOKEN}
+      INGEST_CLICKHOUSE_HOST: clickhouse:8123
+      INGEST_CLICKHOUSE_PASSWORD: ${JITSU_CLICKHOUSE_PASSWORD}
+      INGEST_CLICKHOUSE_DATABASE: default
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3049/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 6
+      start_period: 40s
 
 volumes:
-  wordpress:
-  mysql_data:
-    
+  postgres_data:
+  mongodb_data:
+  clickhouse_data:
+  redpanda_data:
+
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

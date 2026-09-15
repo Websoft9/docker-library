@@ -26,10 +26,18 @@ Supporting files in this skill:
 1. Confirm `apps/<app>/variables.json` exists. If the app is missing, stop and route: new package work uses `new-app`, not this skill.
 2. Read `metadata/templates/catalog.json`, `metadata/catalog.schema.json`, and `metadata/catalog-taxonomy.json` when category bindings are needed.
 3. Read `apps/<app>/variables.json`, app README/Notes when useful, and the official website/docs when needed.
-4. Create or update `metadata/catalog/<app>.json` with `trademark`, `summary`, `overview`, `description`, `websiteurl`, `screenshots`, and optional `catalogBindings`.
+4. Create or update `metadata/catalog/<app>.json` with `trademark`, `summary`, `overview`, `description`, `websiteurl`, `screenshots`, and optional `catalogBindings`. Keep `summary` and `overview` within the Field Length Limits below.
 5. Keep category bindings in `catalogBindings` as `{ "parentKey": "...", "childKey": "..." }`, and choose only keys that exist in `metadata/catalog-taxonomy.json`.
 6. Preview the result with `.venv/bin/libs catalog-push --app <app> --json`. Fix schema or taxonomy errors before handoff.
 7. Produce a short report.
+
+## Field Length Limits
+
+- `summary`: at most 8 words; prefer 5 words or fewer.
+- `overview`: at most 30 words; prefer 20 words or fewer.
+- `description`: no hard limit; keep it factual and concise.
+
+Count the words before writing. Aim for the preferred length; use the maximum only when the shorter form would drop essential meaning.
 
 ## Output
 
@@ -43,6 +51,7 @@ Supporting files in this skill:
 
 - This skill edits repo catalog data only; it does not apply writes to Contentful.
 - Prefer concise, factual commercial writing over marketing fluff.
+- Enforce the Field Length Limits: `summary` ≤ 8 words (prefer ≤ 5), `overview` ≤ 30 words (prefer ≤ 20).
 - Unless the user explicitly asks otherwise, write the repo catalog fields in English because the current Contentful write path targets `en-US`.
 - Do not invent screenshots or website URLs; use verified upstream sources only.
 - If category choice is ambiguous, use the fewest correct bindings and note the ambiguity in the report.

@@ -2,11 +2,24 @@
   "name": "prestashop",
   "trademark": "Prestashop",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/prestashop/prestashop",
+    "releases": "https://github.com/PrestaShop/PrestaShop/releases",
+    "compose": {
+      "compose": "https://devdocs.prestashop-project.org/9/basics/installation/environments/docker/"
+    },
+    "docs": [
+      "https://github.com/PrestaShop/docker",
+      "https://devdocs.prestashop-project.org/",
+      "https://docs.prestashop-project.org/",
+      "https://devdocs.prestashop-project.org/9/basics/installation/system-requirements/"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "8.2",
+        "9.1",
         "latest"
       ]
     }
@@ -16,7 +29,13 @@
     "memory": "2",
     "disk": "1"
   },
-  "upstream": {
-    "image": "https://hub.docker.com/r/prestashop/prestashop"
+  "env": {
+    "first_startup_only": [
+      "ADMIN_MAIL",
+      "ADMIN_PASSWD"
+    ]
+  },
+  "help": {
+    "db": "PrestaShop 9 supports MySQL 5.7+ and MariaDB 10.2+. This package bundles MySQL 8.4 LTS for a single-node deployment."
   }
 }

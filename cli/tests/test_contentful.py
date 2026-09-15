@@ -34,6 +34,7 @@ def make_args(**overrides):
 def test_build_machine_fields_from_variables():
     variables = {
         "name": "demo",
+        "trademark": "Demo",
         "release": True,
         "edition": [{"dist": "community", "version": ["1.0", "latest"]}],
         "requirements": {"cpu": "2", "memory": "4", "disk": "20"},
@@ -43,12 +44,19 @@ def test_build_machine_fields_from_variables():
 
     assert fields == {
         "key": "demo",
+        "title": "Demo",
         "distribution": [{"key": "community", "value": ["1.0", "latest"]}],
         "vcpu": 2,
         "memory": 4,
         "storage": 20,
         "production": True,
     }
+
+
+def test_build_machine_fields_title_falls_back_to_name():
+    fields = contentful.build_machine_fields({"name": "demo"})
+
+    assert fields["title"] == "demo"
 
 
 def test_build_draft_fields_filters_empty_values():
@@ -356,8 +364,12 @@ class FakeEntries:
             return [self.catalogs[key]] if key in self.catalogs else []
         return [self.existing] if self.existing else []
 
-    def create(self, content_type, fields):
-        self.created = (content_type, fields)
+    def create(self, resource_id=None, attributes=None):
+        assert resource_id is None
+        assert attributes is not None
+        assert "content_type_id" in attributes
+        assert "fields" in attributes
+        self.created = (resource_id, attributes)
         return FakeEntry()
 
 
@@ -386,9 +398,11 @@ def test_sync_app_apply_creates_entry_when_absent(repo_fixture, app_factory, mon
 
     entries = fake_client.entries_map["master"]
     assert payload["action"] == "created"
-    assert entries.created[0] == "product"
-    assert entries.created[1]["key"]["en-US"] == "demo"
-    assert entries.created[1]["production"]["en-US"] is False
+    assert entries.created[0] is None
+    assert entries.created[1]["content_type_id"] == "product"
+    assert entries.created[1]["fields"]["key"]["en-US"] == "demo"
+    assert entries.created[1]["fields"]["title"]["en-US"] == "Demo"
+    assert entries.created[1]["fields"]["production"]["en-US"] is False
 
 
 def test_sync_app_apply_creates_entry_with_catalog_links(repo_fixture, app_factory, monkeypatch):
@@ -444,7 +458,7 @@ def test_sync_app_apply_creates_entry_with_catalog_links(repo_fixture, app_facto
     entries = fake_client.entries_map["master"]
     assert payload["action"] == "created"
     assert payload["catalog_bindings"] == [{"parentKey": "collaboration", "childKey": "document"}]
-    assert entries.created[1]["catalog"]["en-US"] == [
+    assert entries.created[1]["fields"]["catalog"]["en-US"] == [
         {"sys": {"type": "Link", "linkType": "Entry", "id": "doc-entry-id"}}
     ]
 

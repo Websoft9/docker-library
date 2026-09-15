@@ -6,17 +6,33 @@
     {
       "dist": "community",
       "version": [
-        "5.4.0",
+        "6.0",
         "latest"
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 8000,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "4"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/jupyterhub/jupyterhub"
+    "image": "https://hub.docker.com/r/jupyterhub/jupyterhub",
+    "docs": [
+      "https://jupyterhub.readthedocs.io/en/6.0.1/tutorial/quickstart-docker.html",
+      "https://jupyterhub.readthedocs.io/en/6.0.1/tutorial/getting-started/config-basics.html",
+      "https://jupyterhub.readthedocs.io/en/6.0.1/howto/upgrading-v6.html"
+    ]
+  },
+  "env": {
+    "first_startup_only": [
+      "W9_LOGIN_PASSWORD"
+    ]
   }
 }

@@ -6,6 +6,10 @@ backend default {
 }
 
 sub vcl_recv {
+    if (!req.http.X-Forwarded-Proto) {
+        set req.http.X-Forwarded-Proto = "http";
+    }
+
     if (req.method != "GET" && req.method != "HEAD") {
         return (pass);
     }
@@ -14,7 +18,11 @@ sub vcl_recv {
         return (pass);
     }
 
-    if (req.url ~ "^/wp-admin/" || req.url ~ "^/wp-login.php" || req.url ~ "^/wp-cron.php") {
+    if (req.url ~ "^/wp-admin/" || req.url ~ "^/wp-login.php" || req.url ~ "^/wp-cron.php" || req.url ~ "^/xmlrpc.php") {
+        return (pass);
+    }
+
+    if (req.url ~ "^/(cart|checkout|my-account)(/|$)" || req.url ~ "[?&]add-to-cart=") {
         return (pass);
     }
 
@@ -22,19 +30,24 @@ sub vcl_recv {
         return (pass);
     }
 
-    if (req.http.Cookie ~ "wordpress_|wordpress_logged_in_|wordpress_sec_|wp-postpass_|comment_author_") {
+    if (req.http.Cookie ~ "wordpress_|wordpress_logged_in_|wordpress_sec_|wp-postpass_|comment_author_|woocommerce_|wp_woocommerce_session_|woocommerce_items_in_cart|woocommerce_cart_hash") {
         return (pass);
     }
 
-    if (!req.http.X-Forwarded-Proto) {
-        set req.http.X-Forwarded-Proto = "http";
+    if (req.url ~ "\.(css|js|jpe?g|png|gif|svg|webp|ico|woff2?|ttf|eot|map|avif)(\?.*)?$") {
+        unset req.http.Cookie;
+        return (hash);
+    }
+
+    if (req.url ~ "\?" && req.url !~ "\.(css|js|jpe?g|png|gif|svg|webp|ico|woff2?|ttf|eot|map|avif)(\?.*)?$") {
+        return (pass);
     }
 
     return (hash);
 }
 
 sub vcl_backend_response {
-    if (bereq.url ~ "^/wp-admin/" || bereq.url ~ "^/wp-login.php" || bereq.url ~ "^/wp-cron.php") {
+    if (bereq.url ~ "^/wp-admin/" || bereq.url ~ "^/wp-login.php" || bereq.url ~ "^/wp-cron.php" || bereq.url ~ "^/xmlrpc.php") {
         set beresp.uncacheable = true;
         return (deliver);
     }
@@ -49,9 +62,16 @@ sub vcl_backend_response {
         return (deliver);
     }
 
-    if (beresp.ttl <= 0s) {
-        set beresp.ttl = 1h;
+    if (bereq.url ~ "\.(css|js|jpe?g|png|gif|svg|webp|ico|woff2?|ttf|eot|map|avif)(\?.*)?$") {
+        set beresp.ttl = 24h;
+        return (deliver);
     }
+
+    if (beresp.ttl <= 0s) {
+        set beresp.ttl = 10m;
+    }
+
+    set beresp.grace = 1h;
 }
 
 sub vcl_deliver {

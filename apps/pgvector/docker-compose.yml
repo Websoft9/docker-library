@@ -1,0 +1,25 @@
+services:
+
+  pgvector:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    ports:
+      - "${W9_DB_PORT_SET}:5432" # PostgreSQL
+    volumes:
+      - pgvector:/var/lib/postgresql
+      - ./src/init-vector.sql:/docker-entrypoint-initdb.d/init-vector.sql:ro
+    env_file: .env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${W9_LOGIN_USER} -d ${W9_ID}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgvector:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

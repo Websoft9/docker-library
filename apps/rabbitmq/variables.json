@@ -1,14 +1,20 @@
 {
   "name": "rabbitmq",
-  "trademark": "RabbitQM",
+  "trademark": "RabbitMQ",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/_/rabbitmq",
+    "releases": "https://github.com/rabbitmq/rabbitmq-server/releases",
+    "docs": [
+      "https://github.com/docker-library/rabbitmq",
+      "https://www.rabbitmq.com/docs",
+      "https://www.rabbitmq.com/docs/upgrade"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
-      "version": [
-        "4.1-management",
-        "3.13-management"
-      ]
+      "version": ["4.3-management"]
     }
   ],
   "requirements": {
@@ -16,7 +22,10 @@
     "memory": "1",
     "disk": "4"
   },
-  "upstream": {
-    "image": "https://hub.docker.com/_/rabbitmq"
+  "env": {
+    "first_startup_only": [
+      "RABBITMQ_DEFAULT_USER",
+      "RABBITMQ_DEFAULT_PASS"
+    ]
   }
 }

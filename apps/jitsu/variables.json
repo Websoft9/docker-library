@@ -1,21 +1,55 @@
 {
   "name": "jitsu",
   "trademark": "Jitsu",
-  "release": false,
+  "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/jitsucom/console",
+    "releases": "https://github.com/jitsucom/jitsu/releases",
+    "compose": {
+      "compose": "https://raw.githubusercontent.com/jitsucom/jitsu/newjitsu/docker/docker-compose.yml",
+      "env": "https://raw.githubusercontent.com/jitsucom/jitsu/newjitsu/docker/.env"
+    },
+    "docs": [
+      "https://github.com/jitsucom/jitsu",
+      "https://jitsu.com/docs/self-hosting/quick-start",
+      "https://jitsu.com/docs/self-hosting/production-deployment"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "latest"
+        "2.15"
       ]
     }
   ],
-  "requirements": {
-    "cpu": "2",
-    "memory": "4",
-    "disk": "10"
+  "access": {
+    "web": {
+      "port": 3000,
+      "path": "/"
+    },
+    "admin": {
+      "port": 3000,
+      "path": "/login"
+    },
+    "api": {
+      "port": 3049
+    }
   },
-  "upstream": {
-    "image": "https://hub.docker.com/r/jitsucom/bulker"
+  "requirements": {
+    "cpu": "4",
+    "memory": "8",
+    "disk": "20"
+  },
+  "credentials": {},
+  "env": {
+    "first_startup_only": [
+      "W9_LOGIN_USER",
+      "W9_LOGIN_PASSWORD",
+      "W9_POWER_PASSWORD"
+    ]
+  },
+  "help": {
+    "db": "Jitsu core mode bundles PostgreSQL 14, MongoDB 7.0, ClickHouse 26.8, and Redpanda v26.2.2. Full functions, profile builders, and connector syncs still require Kubernetes upstream."
   }
 }

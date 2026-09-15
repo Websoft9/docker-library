@@ -1,0 +1,5 @@
+optional:
+  - id: login-page
+    type: web-access
+    path: /hub/login
+    expect_status: 200

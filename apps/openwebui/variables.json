@@ -2,12 +2,21 @@
   "name": "openwebui",
   "trademark": "Open WebUI",
   "release": true,
+  "upstream": {
+    "image": "ghcr.io/open-webui/open-webui",
+    "releases": "https://github.com/open-webui/open-webui/releases",
+    "docs": [
+      "https://docs.openwebui.com/",
+      "https://docs.openwebui.com/getting-started/quick-start/",
+      "https://docs.openwebui.com/reference/env-configuration/"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "main",
-        "cuda"
+        "0.11",
+        "main"
       ]
     }
   ],
@@ -15,8 +24,5 @@
     "cpu": "2",
     "memory": "4",
     "disk": "10"
-  },
-  "upstream": {
-    "image": "https://github.com/open-webui/open-webui/pkgs/container/open-webui"
   }
 }

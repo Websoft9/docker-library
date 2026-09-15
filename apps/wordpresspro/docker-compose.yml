@@ -14,6 +14,7 @@ services:
       W9_URL_REPLACE: ${W9_URL_REPLACE}
     depends_on:
       - mysql
+      - redis
     volumes:
       - wordpress:/var/www/html
       - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
@@ -31,6 +32,37 @@ services:
       MYSQL_USER: ${W9_ID}
       MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: ${W9_ID}-redis
+    restart: unless-stopped
+    command:
+      - redis-server
+      - --save
+      - "60"
+      - "1"
+      - --loglevel
+      - warning
+    volumes:
+      - redis_data:/data
+
+  redis-bootstrap:
+    image: wordpress:cli-2.12-php8.4
+    container_name: ${W9_ID}-redis-bootstrap
+    user: root
+    restart: on-failure
+    env_file: .env
+    depends_on:
+      - wordpress
+      - redis
+    volumes:
+      - wordpress:/var/www/html
+      - ./src/configure-redis.sh:/usr/local/bin/configure-redis.sh:ro
+      - ./src/websoft9-url.php:/usr/local/share/websoft9-url.php:ro
+    command:
+      - /bin/sh
+      - /usr/local/bin/configure-redis.sh
       
   varnish:
     image: varnish:latest
@@ -52,6 +84,7 @@ services:
 volumes:
   wordpress:
   mysql_data:
+  redis_data:
 
 networks:
   default:

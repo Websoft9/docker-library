@@ -1,0 +1,10 @@
+optional:
+  - id: console-health
+    type: web-access
+    path: /api/healthcheck
+    expect_status: 200
+
+  - id: login-page
+    type: web-access
+    path: /login
+    expect_status: 200

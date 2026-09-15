@@ -1,18 +1,18 @@
-# image: https://hub.docker.com/r/clickhouse/clickhouse-server
-# docs: https://github.com/ClickHouse/ClickHouse/tree/master/docker
-
-version: '3.8'
-
 services:
+
   clickhouse:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
-    cap_add:  
-      - SYS_NICE
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
+    cap_add:
+      - SYS_NICE
+    env_file: .env
     ports:
-      - $W9_HTTP_PORT_SET:8123 # http port
-      #- 9000:9000  # tcp port
+      - "${W9_HTTP_PORT_SET}:8123" # HTTP interface and Play UI
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
     volumes:
       - clickhouse-data:/var/lib/clickhouse
       - clickhouse_logs:/var/log/clickhouse-server
@@ -20,20 +20,14 @@ services:
       - clickhouse-userconfig:/etc/clickhouse-server/users.d
       - ./src/extra_config.xml:/etc/clickhouse-server/config.d/extra_config.xml
       - ./src/extra_user.xml:/etc/clickhouse-server/users.d/extra_user.xml
-    ulimits:
-      nofile:
-        soft: 262144
-        hard: 262144
-    env_file:
-      - .env
-
-networks:
-  default:
-    name: ${W9_NETWORK}
-    external: true
 
 volumes:
   clickhouse-userconfig:
   clickhouse-config:
   clickhouse-data:
   clickhouse_logs:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

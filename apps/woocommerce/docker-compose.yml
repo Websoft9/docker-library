@@ -1,0 +1,61 @@
+services:
+  woocommerce:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+          max-file: "5"
+          max-size: 10m
+    ports:
+      - "${W9_HTTP_PORT_SET}:80" # Web Console
+    env_file: .env
+    environment:
+      W9_URL: ${W9_URL}
+      W9_URL_REPLACE: ${W9_URL_REPLACE}
+    depends_on:
+      - mysql
+    volumes:
+      - wordpress:/var/www/html
+      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
+      - ./src/websoft9-url.php:/usr/local/share/websoft9-url.php:ro
+
+  mysql:
+    image: mysql:${W9_DB_VERSION}
+    container_name: ${W9_ID}-mysql
+    restart: unless-stopped
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${W9_ID}
+      MYSQL_USER: ${W9_ID}
+      MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
+
+  woocommerce-bootstrap:
+    image: wordpress:cli-2.12-php8.4
+    container_name: ${W9_ID}-bootstrap
+    user: root
+    restart: on-failure
+    env_file: .env
+    depends_on:
+      - woocommerce
+      - mysql
+    volumes:
+      - wordpress:/var/www/html
+      - ./src/configure-woocommerce.sh:/usr/local/bin/configure-woocommerce.sh:ro
+      - ./src/websoft9-url.php:/usr/local/share/websoft9-url.php:ro
+    command:
+      - /bin/sh
+      - /usr/local/bin/configure-woocommerce.sh
+
+volumes:
+  wordpress:
+  mysql_data:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

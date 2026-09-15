@@ -8,7 +8,7 @@ Default required checks are adaptive:
 - add `container-healthy` when the main service defines `healthcheck`
 - add `web-access` when `.env` exposes `W9_HTTP_PORT_SET`
 
-Optional app-specific checks live in `apps/<app>/tests/cases.yml`.
+The default adaptive checks always run. App-specific checks live in `apps/<app>/tests/cases.yml` and are required when the defaults do not exercise the app's core path (for example an authenticated console or API, a dedicated health endpoint, or a startup wait). The `new-app` and `app-update` skills require authoring or refreshing this file; the `deploy-validation` step validates it.
 
 Minimal shape:
 

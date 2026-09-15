@@ -1,0 +1,94 @@
+services:
+  lobehub:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    ports:
+      - "${W9_HTTP_PORT_SET}:3210" # Web Console
+    env_file: .env
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rustfs:
+        condition: service_healthy
+      rustfs-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "/bin/node", "-e", "fetch('http://127.0.0.1:3210/',{redirect:'manual'}).then(r=>process.exit(r.status<500?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+
+  postgresql:
+    image: paradedb/paradedb:${W9_DB_VERSION}
+    container_name: ${W9_ID}-postgresql
+    restart: unless-stopped
+    command: ['postgres', '-c', 'shared_preload_libraries=pg_search,pg_cron']
+    environment:
+      POSTGRES_DB: ${LOBE_DB_NAME}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${W9_POWER_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: ${W9_ID}-redis
+    restart: unless-stopped
+    command: redis-server --save 60 1000 --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    volumes:
+      - redis_data:/data
+
+  rustfs:
+    image: rustfs/rustfs:latest
+    container_name: ${W9_ID}-rustfs
+    restart: unless-stopped
+    environment:
+      RUSTFS_CONSOLE_ENABLE: "true"
+      RUSTFS_ACCESS_KEY: ${RUSTFS_ACCESS_KEY}
+      RUSTFS_SECRET_KEY: ${RUSTFS_SECRET_KEY}
+    command: ['--access-key', '${RUSTFS_ACCESS_KEY}', '--secret-key', '${RUSTFS_SECRET_KEY}', '/data']
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:9000/health >/dev/null 2>&1 || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    volumes:
+      - rustfs_data:/data
+
+  rustfs-init:
+    image: quay.io/minio/mc:latest
+    container_name: ${W9_ID}-rustfs-init
+    restart: "no"
+    depends_on:
+      rustfs:
+        condition: service_healthy
+    volumes:
+      - ./src/bucket.config.json:/bucket.config.json:ro
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - 'set -eux; mc alias set rustfs "http://${W9_ID}-rustfs:9000" "${RUSTFS_ACCESS_KEY}" "${RUSTFS_SECRET_KEY}"; mc mb "rustfs/lobe" --ignore-existing; mc anonymous set-json "/bucket.config.json" "rustfs/lobe";'
+
+volumes:
+  postgresql_data:
+  redis_data:
+  rustfs_data:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

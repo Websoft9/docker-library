@@ -1,22 +1,16 @@
-# imag: https://hub.docker.com/_/postgres
 # database-backup-service only for your references
 
-version: '3.8'
 services:
   postgres:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-     - ${W9_DB_PORT_SET}:5432
+      - "${W9_DB_PORT_SET}:5432" # PostgreSQL
     volumes:
-      - postgres:/var/lib/postgresql/data
+      # PostgreSQL 18+ data path; for PostgreSQL 17 and below mount at /var/lib/postgresql/data.
+      - postgres:/var/lib/postgresql
     env_file: .env
-    environment:
-      POSTGRES_DB: ${W9_ID}
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${W9_POWER_PASSWORD}
-
 
   database-backup-service:
     image: postgres:alpine
@@ -28,19 +22,19 @@ services:
     profiles:
       - backup
     command: >
-      sh -c 'if [ "$DATABASE_BACKUP" = "true" ]; then
-        until PGPASSWORD=$W9_POWER_PASSWORD pg_isready -h ${W9_ID} -p 5432; do
+      sh -c 'if [ "${DATABASE_BACKUP}" = "true" ]; then
+        until PGPASSWORD=${W9_POWER_PASSWORD} pg_isready -h ${W9_ID} -p 5432; do
           echo "Waiting for PostgreSQL to become available..." && sleep 1;
         done;
-        PGPASSWORD=$W9_POWER_PASSWORD pg_dump --host=${W9_ID} --port=5432 --username=postgres --dbname=$W9_ID -f "/backup/dump_$(date +'%Y%m%d%H%M%S').sql" &&
+        PGPASSWORD=${W9_POWER_PASSWORD} pg_dump --host=${W9_ID} --port=5432 --username=${W9_LOGIN_USER} --dbname=${W9_ID} -f "/backup/dump_$(date +'%Y%m%d%H%M%S').sql" &&
         find /backup -type f -mtime +30 -delete &&
         echo "Dump taken successfully." &&
         exit 0;
       else
         echo "Skipping backup." &&
         exit 1;
-      fi' 
-    
+      fi'
+
 volumes:
   postgres:
   backup:

@@ -1,0 +1,16 @@
+{
+  "trademark": "WooCommerce",
+  "catalogBindings": [
+    {
+      "parentKey": "cms",
+      "childKey": "ecommerce"
+    }
+  ],
+  "summary": "Open-source eCommerce platform built on WordPress.",
+  "overview": "WooCommerce is the leading open-source eCommerce plugin for WordPress. This package deploys WordPress with WooCommerce installed and activated, plus bundled MySQL, so you can run a self-hosted online store.",
+  "description": "WooCommerce is an open-source eCommerce plugin for WordPress, maintained by Automattic. It turns a WordPress site into an online store with products, cart, checkout, payments, shipping, taxes, orders, and customer management.\n\nThis package is based on the official WordPress image and bundles MySQL 8.4 for a single-node deployment. On first startup, a helper installs and activates the WooCommerce plugin after the WordPress site is initialized, so the store features are available by default.\n\nTypical use cases include online shops, digital product stores, subscription stores, and small to medium business websites that need full control over their store data and infrastructure.",
+  "websiteurl": "https://woocommerce.com/",
+  "screenshots": [
+    "https://ps.w.org/woocommerce/assets/screenshot-1.png"
+  ]
+}

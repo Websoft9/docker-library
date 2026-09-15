@@ -1,0 +1,5 @@
+optional:
+  - id: management-api
+    type: http-basic
+    path: /api/overview
+    expect_status: 200

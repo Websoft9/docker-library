@@ -2,20 +2,42 @@
   "name": "checkmate",
   "trademark": "Checkmate",
   "release": true,
+  "upstream": {
+    "image": "ghcr.io/bluewave-labs/checkmate",
+    "releases": "https://github.com/bluewave-labs/checkmate/releases",
+    "compose": {
+      "compose": "https://github.com/bluewave-labs/checkmate/blob/v3.12.0/docker/docker-compose.yaml",
+      "env": "https://github.com/bluewave-labs/checkmate/blob/v3.12.0/server/.env.example"
+    },
+    "docs": [
+      "https://github.com/bluewave-labs/checkmate"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
+        "v3.12.0",
         "latest"
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 52345,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "4",
     "disk": "8"
   },
-  "upstream": {
-    "image": "ghcr.io/bluewave-labs/checkmate-backend"
+  "credentials": {},
+  "env": {
+    "first_startup_only": []
+  },
+  "help": {
+    "db": "Bundled MongoDB 8.2 stores Checkmate data."
   }
 }

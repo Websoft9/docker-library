@@ -1,26 +1,39 @@
-# image: https://github.com/bluewave-labs/Checkmate/pkgs/container/checkmate-backend-mono
-# docs: https://docs.checkmate.so/users-guide/quickstart
-
 services:
+
   checkmate:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
-    ports:
-      - "$W9_HTTP_PORT_SET:52345"
-    env_file: .env
+    stop_grace_period: 60s
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
+    ports:
+      - "${W9_HTTP_PORT_SET}:52345" # Web Console
+    env_file: .env
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:52346/livez',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))",
+        ]
+      interval: 15s
+      timeout: 3s
+      start_period: 60s
+      start_interval: 2s
+      retries: 3
 
   mongodb:
-    image: ghcr.io/bluewave-labs/checkmate-mongo:$W9_VERSION
-    container_name: $W9_ID-mongodb
+    image: mongo:${W9_DB_VERSION}
+    container_name: ${W9_ID}-mongodb
     restart: unless-stopped
     command: ["mongod", "--quiet", "--replSet", "rs0", "--bind_ip_all"]
     volumes:
       - mongo_data:/data/db
     healthcheck:
-      test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'mongodb:27017'}]}) }" | mongosh --port 27017 --quiet
+      test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'${W9_ID}-mongodb:27017'}]}) }" | mongosh --port 27017 --quiet
       interval: 5s
       timeout: 30s
       start_period: 0s
@@ -29,8 +42,8 @@ services:
 
 volumes:
   mongo_data:
-    
+
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

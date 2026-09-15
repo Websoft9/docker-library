@@ -6,14 +6,39 @@
     {
       "dist": "community",
       "version": [
-        "17.0.2",
+        "19.3.2",
         "latest"
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 80,
+      "path": "/"
+    },
+    "admin": {
+      "port": 80,
+      "path": "/admin"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "8",
-    "disk": "1"
+    "disk": "2"
+  },
+  "upstream": {
+    "image": "https://registry.gitlab.cn/omnibus/gitlab-jh",
+    "docs": [
+      "https://docs.gitlab.cn/jh/install/docker.html",
+      "https://gitlab.cn/"
+    ]
+  },
+  "env": {
+    "first_startup_only": [
+      "W9_LOGIN_PASSWORD"
+    ]
+  },
+  "help": {
+    "db": "JiHu GitLab bundles PostgreSQL, Redis, and other services inside the omnibus container."
   }
 }
