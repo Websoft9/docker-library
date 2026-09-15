@@ -1,0 +1,5 @@
+optional:
+  - id: ping
+    type: web-access
+    path: /ping
+    expect_status: 200

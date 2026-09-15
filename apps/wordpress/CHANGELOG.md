@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-09-15
+- Added `src/nginx-proxy.conf` so the Websoft9 Gateway (Nginx Proxy Manager) applies the package upload limit and the platform client rate/concurrency limits for this app.
+- The gateway advanced config is consumed platform-side from `src/nginx-proxy.conf`; it is not mounted into any container.
+
 ## 2026-09-09
 - Declared `W9_URL_REPLACE=true` and passed `W9_URL` / `W9_URL_REPLACE` to the container explicitly so the runtime URL override keeps redirects on the external access address.
 - Added a Troubleshooting note clarifying that the first-run `WordPress not found ... copying now` and `wp-config.php` generation logs are normal.

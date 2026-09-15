@@ -1,0 +1,5 @@
+optional:
+  - id: healthz
+    type: web-access
+    path: /api/healthz
+    expect_status: 200

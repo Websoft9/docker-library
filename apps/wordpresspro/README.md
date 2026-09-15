@@ -29,6 +29,12 @@ Websoft9 packages this app from the official [WordPress Pro Docker image](https:
 The package mounts `src/websoft9-url.php` with `auto_prepend_file` so `W9_URL` can override `WP_HOME` and `WP_SITEURL` at runtime. The published web entrypoint stays on the Varnish container, which bypasses admin and authenticated traffic while caching anonymous frontend requests.
 
 Varnish loads `src/run-varnish.sh` on startup: the script renders `src/default.vcl.template` into the effective VCL and replaces the `__WORDPRESS_BACKEND__` placeholder with the `${W9_ID}-wordpress` container name. This keeps the backend host instance-specific so multiple WordPress Pro instances on the same Docker host do not share a hard-coded backend name.
+
+The package also includes a bundled Redis service and a one-shot `redis-bootstrap` helper. The existing `src/websoft9-url.php` runtime hook now injects `WP_REDIS_*` constants and `WP_CACHE` from `.env`, so the Redis connection settings are present from startup without editing `wp-config.php`. For this package, Redis stays on the internal Docker network without password auth. After the first WordPress site install finishes, the helper installs and activates the `Redis Object Cache` plugin and runs `wp redis enable` automatically. The final cache enablement still depends on the site having completed its first web-based install.
+
+Varnish is configured for anonymous request caching, not only raw file passthrough. The VCL now explicitly caches common static assets, strips cookies from those asset requests, bypasses admin/login/cart/checkout/account and authenticated traffic, and avoids caching dynamic non-asset query-string requests. In practice this means static assets should produce `X-Cache: HIT` on repeated anonymous requests, while stateful WordPress and WooCommerce flows continue to bypass cache.
+
+The package also ships `src/nginx-proxy.conf`, which the Websoft9 Gateway reads and injects into the Proxy Host `server{}` block. It raises the gateway upload limit to match the package PHP limits and applies the platform client rate/concurrency limits. It is not mounted into the container and is unrelated to `docker-compose.yml`.
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.
@@ -52,6 +58,7 @@ The `latest` tag is not guaranteed to remain valid; pin a specific version for p
 
 - `wordpress` → `/var/www/html`
 - `mysql_data` → `/var/lib/mysql`
+- `redis_data` → `/data`
 
 
 
@@ -65,6 +72,7 @@ Environment variables are defined in the app's `.env` file; see the reference se
 
 - `./src/php_exra.ini` → `/usr/local/etc/php/conf.d/php_exra.ini`
 - `./src/websoft9-url.php` → `/usr/local/share/websoft9-url.php`
+- `./src/configure-redis.sh` → `/usr/local/bin/configure-redis.sh`
 - `./src/default.vcl.template` → `/etc/varnish/default.vcl.template`
 - `./src/run-varnish.sh` → `/usr/local/bin/run-varnish.sh`
 

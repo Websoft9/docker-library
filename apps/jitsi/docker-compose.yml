@@ -1,20 +1,35 @@
-# image: https://hub.docker.com/r/jitsi/web/
-# compose: https://github.com/jitsi/docker-jitsi-meet
-
 services:
     # Frontend
     web:
-        image: $W9_REPO:$W9_VERSION
-        container_name: $W9_ID
+        image: ${W9_REPO}:${W9_VERSION}
+        container_name: ${W9_ID}
         restart: unless-stopped
         env_file: .env
         ports:
-            - '${W9_HTTPS_PORT_SET}:443'
+            - "${W9_HTTPS_PORT_SET}:8443" # Web Console (HTTPS)
         volumes:
             - web_config:/config:Z
             - web_crontabs:/var/spool/cron/crontabs:Z
             - web_transcripts:/usr/share/jitsi-meet/transcripts:Z
         environment:
+            - AUDIO_TRANSLATION_DUCKED_VOLUME
+            - DISABLE_AV1_DECODE_FOR_FF
+            - ENABLE_ADVANCED_AUDIO_SETTINGS
+            - ENABLE_AUDIO_TRANSLATION
+            - ENABLE_ICE_RESTART
+            - ENABLE_ICE_RESTART_ON_NETWORK_CHANGE
+            - ENABLE_THIRD_PARTY_REQUESTS
+            - VIDEOQUALITY_AV1_SCALABILITY_MODE_ENABLED
+            - VIDEOQUALITY_AV1_USE_KSVC
+            - VIDEOQUALITY_AV1_USE_SIMULCAST
+            - VIDEOQUALITY_H264_SCALABILITY_MODE_ENABLED
+            - VIDEOQUALITY_MIN_HEIGHT_FOR_QUALITY_LVL
+            - VIDEOQUALITY_MOBILE_SCREENSHARE_CODEC
+            - VIDEOQUALITY_SCREENSHARE_CODEC
+            - VIDEOQUALITY_VP8_SCALABILITY_MODE_ENABLED
+            - VIDEOQUALITY_VP9_SCALABILITY_MODE_ENABLED
+            - VIDEOQUALITY_VP9_USE_KSVC
+            - VIDEOQUALITY_VP9_USE_SIMULCAST
             - AMPLITUDE_ID
             - ANALYTICS_SCRIPT_URLS
             - ANALYTICS_WHITELISTED_EVENTS
@@ -200,8 +215,8 @@ services:
 
     # XMPP server
     prosody:
-        image: jitsi/prosody:${W9_VERSION}
-        container_name: $W9_ID-prosody
+        image: ghcr.io/jitsi/prosody:${W9_VERSION}
+        container_name: ${W9_ID}-prosody
         restart: unless-stopped
         expose:
             - '${XMPP_PORT:-5222}'
@@ -212,6 +227,9 @@ services:
             - prosody_config:/config:Z
             - prosody_plugins_custom:/prosody-plugins-custom:Z
         environment:
+            - ENABLE_AUDIO_TRANSLATION
+            - ENABLE_TRACING
+            - TRACING_HTTP_ENDPOINT
             - AUTH_TYPE
             - DISABLE_POLLS
             - ENABLE_AUTH
@@ -353,8 +371,8 @@ services:
 
     # Focus component
     jicofo:
-        image: jitsi/jicofo:${W9_VERSION}
-        container_name: $W9_ID-jicofo
+        image: ghcr.io/jitsi/jicofo:${W9_VERSION}
+        container_name: ${W9_ID}-jicofo
         restart: unless-stopped
         # ports:
         #     - '127.0.0.1:${JICOFO_REST_PORT:-8888}:8888'
@@ -362,6 +380,12 @@ services:
             - jicofo_config:/config:Z
         environment:
             - AUTH_TYPE
+            - ENABLE_TRACING
+            - JICOFO_TRANSLATION_CF_ACCESS_CLIENT_ID
+            - JICOFO_TRANSLATION_CF_ACCESS_CLIENT_SECRET
+            - JICOFO_TRANSLATION_URL_TEMPLATE
+            - TRACING_ENDPOINT
+            - TRACING_PROTOCOL
             - BRIDGE_AVG_PARTICIPANT_STRESS
             - BRIDGE_STRESS_THRESHOLD
             - ENABLE_AUTH
@@ -446,15 +470,18 @@ services:
 
     # Video bridge
     jvb:
-        image: jitsi/jvb:${W9_VERSION}
-        container_name: $W9_ID-jvb
+        image: ghcr.io/jitsi/jvb:${W9_VERSION}
+        container_name: ${W9_ID}-jvb
         restart: unless-stopped
         ports:
-            - '${W9_UDP_PORT_SET:-10000}:${W9_UDP_PORT_SET:-10000}/udp'
+            - '${W9_UDP_PORT_SET:-10000}:${W9_UDP_PORT_SET:-10000}/udp' # JVB media (UDP)
         #     - '127.0.0.1:${JVB_COLIBRI_PORT:-8080}:8080'
         volumes:
             - jvb_config:/config:Z
         environment:
+            - ENABLE_TRACING
+            - TRACING_ENDPOINT
+            - TRACING_PROTOCOL
             - AUTOSCALER_SIDECAR_KEY_FILE
             - AUTOSCALER_SIDECAR_KEY_ID
             - AUTOSCALER_SIDECAR_GROUP_NAME

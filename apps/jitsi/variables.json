@@ -2,20 +2,40 @@
   "name": "jitsi",
   "trademark": "Jitsi",
   "release": true,
+  "upstream": {
+    "image": "ghcr.io/jitsi/web",
+    "releases": "https://github.com/jitsi/docker-jitsi-meet/releases",
+    "compose": {
+      "compose": "https://github.com/jitsi/docker-jitsi-meet/blob/stable-11248/docker-compose.yml",
+      "env": "https://github.com/jitsi/docker-jitsi-meet/blob/stable-11248/env.example"
+    },
+    "docs": [
+      "https://jitsi.github.io/handbook/docs/devops-guide/devops-guide-docker",
+      "https://github.com/jitsi/docker-jitsi-meet"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "stable-10888"
+        "stable-11248"
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 8443,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "4",
     "disk": "10"
   },
-  "upstream": {
-    "image": "https://github.com/jitsi/docker-jitsi-meet"
-  }
+  "credentials": {},
+  "env": {
+    "first_startup_only": []
+  },
+  "help": {}
 }

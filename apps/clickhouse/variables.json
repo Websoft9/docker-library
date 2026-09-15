@@ -2,21 +2,37 @@
   "name": "clickhouse",
   "trademark": "ClickHouse",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/clickhouse/clickhouse-server",
+    "releases": "https://github.com/ClickHouse/ClickHouse/releases",
+    "docs": [
+      "https://github.com/ClickHouse/ClickHouse/tree/master/docker",
+      "https://clickhouse.com/docs"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "25.11",
+        "26.8",
         "latest"
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 8123,
+      "path": "/play"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "2"
   },
-  "upstream": {
-    "image": "https://hub.docker.com/r/clickhouse/clickhouse-server"
-  }
+  "credentials": {},
+  "env": {
+    "first_startup_only": []
+  },
+  "help": {}
 }

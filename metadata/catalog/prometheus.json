@@ -1,0 +1,13 @@
+{
+  "trademark": "Prometheus",
+  "catalogBindings": [
+    {
+      "parentKey": "itdevops",
+      "childKey": "fullmonitor"
+    }
+  ],
+  "summary": "Open-source monitoring and alerting toolkit.",
+  "overview": "Open-source monitoring and alerting toolkit that scrapes metrics into a time-series database. This package adds Pushgateway and Alertmanager.",
+  "description": "Prometheus is an open-source systems monitoring and alerting toolkit. It collects metrics by scraping HTTP endpoints, stores them in a built-in time-series database, and provides a powerful query language (PromQL) plus alerting rules for building dashboards and alerts.\n\nThis package deploys the official prom/prometheus image together with Pushgateway for pushing batch-job metrics and Alertmanager for handling alerts. The scrape configuration lives in src/prometheus.yml and the web console is published on port 9090. Metrics and alert state are persisted in named volumes.\n\nTypical use cases include infrastructure and application monitoring, Kubernetes and cloud-native observability, capacity planning, and alerting pipelines integrated with Grafana or other visualization tools.",
+  "websiteurl": "https://prometheus.io"
+}

@@ -1,0 +1,44 @@
+{
+  "name": "woocommerce",
+  "trademark": "WooCommerce",
+  "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/_/wordpress",
+    "releases": "https://wordpress.org/news/category/releases/",
+    "docs": [
+      "https://github.com/woocommerce/woocommerce",
+      "https://woocommerce.com/documentation/woocommerce/getting-started/",
+      "https://woocommerce.com/document/server-requirements/"
+    ]
+  },
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["7.1", "latest"]
+    }
+  ],
+  "access": {
+    "web": {
+      "port": 80,
+      "path": "/"
+    },
+    "admin": {
+      "port": 80,
+      "path": "/wp-admin"
+    }
+  },
+  "requirements": {
+    "cpu": "1",
+    "memory": "2",
+    "disk": "1"
+  },
+  "credentials": {},
+  "env": {
+    "first_startup_only": [
+      "WOOCOMMERCE_VERSION"
+    ]
+  },
+  "help": {
+    "db": "WooCommerce requires WordPress 6.9+, PHP 8.3+, and MySQL 8.0+ or MariaDB 10.6+. This package bundles WordPress 7.1 and MySQL 8.4 for a single-node deployment."
+  }
+}
