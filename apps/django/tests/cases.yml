@@ -1,0 +1,5 @@
+optional:
+  - id: admin-login
+    type: web-access
+    path: /admin/login/
+    expect_status: 200

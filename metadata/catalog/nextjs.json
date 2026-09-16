@@ -1,0 +1,20 @@
+{
+  "trademark": "Next.js",
+  "catalogBindings": [
+    {
+      "parentKey": "itdeveloper",
+      "childKey": "webframework"
+    },
+    {
+      "parentKey": "runtime",
+      "childKey": "node"
+    }
+  ],
+  "summary": "React web framework runtime and scaffold.",
+  "overview": "Next.js runtime environment with a built-in scaffold workflow. Upload your project source, install dependencies automatically, build, and run it on the bundled Node runtime.",
+  "description": "Next.js is the React framework maintained by Vercel for building full-stack web applications with routing, rendering, data fetching, and deployment tooling. This package provides a self-hosted runtime environment for Next.js projects instead of a finished business app.\n\nOn first startup, if the mounted source directory is empty, the package scaffolds a default Next.js 16.3.5 project with create-next-app. When a user later uploads their own Next.js project source into the mounted app directory, the container automatically detects the package manager, installs dependencies, builds the project, and starts it with `next start`.\n\nTypical use cases include development sandboxes, customer-owned runtime environments, internal app hosting, and managed self-hosting where users want to upload already-developed Next.js code and run it without preparing a custom Docker image first.",
+  "websiteurl": "https://nextjs.org/",
+  "screenshots": [
+    "https://nextjs.org/api/docs-og?title=Next.js"
+  ]
+}

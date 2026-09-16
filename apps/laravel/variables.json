@@ -1,7 +1,7 @@
 {
   "name": "laravel",
   "trademark": "Laravel",
-  "release": false,
+  "release": true,
   "upstream": {
     "image": "https://github.com/laravel/framework",
     "releases": "https://github.com/laravel/framework/releases",

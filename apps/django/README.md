@@ -1,17 +1,17 @@
-# Laravel on Docker
+# Django on Docker
 
 ## Quick Start
 
 ### Deploy Verification
 
-1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Laravel**.
+1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Django**.
 2. In the **Access** tab, get the login URL and credentials.
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
 ### Usage
 
-1. Make sure you are signed in to the Laravel admin console.
+1. Make sure you are signed in to the Django admin console.
 2. Try a core feature.
 
 ### Change Password
@@ -23,18 +23,17 @@
 
 ## Configuration Reference
 
-Websoft9 packages this app from the official [Laravel Docker image](https://github.com/laravel/framework) and makes some improvements below.
+Websoft9 packages this app from the official [Django Docker image](https://github.com/django/django) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
 ### Change Database
 
 Edit the connection in `.env`, then rebuild the app:
 
-- `DB_CONNECTION`: database driver (default `mysql`)
 - `DB_HOST`: database host
-- `DB_PORT`: database port (default `3306`)
-- `DB_DATABASE`: database name
-- `DB_USERNAME`: database user
+- `DB_PORT`: database port (default `5432`)
+- `DB_NAME`: database name
+- `DB_USER`: database user
 - `DB_PASSWORD`: database password
 
 The app reads these on startup, so a rebuild applies the new connection.
@@ -44,7 +43,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 13.31.0, latest.
+Supported versions: 6.1.1, 5.2.17, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
@@ -53,14 +52,14 @@ The `latest` tag is not guaranteed to remain valid; pin a specific version for p
 
 | Purpose | Port |
 | --- | --- |
-| Web Console | 8080 |
+| Web Console | 8000 |
 
 
 ### Data Directory
 
 
-- `laravel_app` → `/var/www/html`
-- `mysql_data` → `/var/lib/mysql`
+- `django_app` → `/app`
+- `postgres_data` → `/var/lib/postgresql/data`
 
 
 
@@ -72,24 +71,22 @@ Environment variables are defined in the app's `.env` file; see the reference se
 ### Configuration Files
 
 
-- `./src/entrypoint.d/10-scaffold.sh` → `/etc/entrypoint.d/10-scaffold.sh`
-- `./src/entrypoint.d/20-composer-install.sh` → `/etc/entrypoint.d/20-composer-install.sh`
-
+Configuration is overridden by mounting `./src/entrypoint.sh` to `/entrypoint.sh`.
 
 
 ## References
 
-- [Laravel Administrator Guide](https://support.websoft9.com/docs/laravel) by Websoft9
+- [Django Administrator Guide](https://support.websoft9.com/docs/django) by Websoft9
 
-- [Docker Hub image](https://github.com/laravel/framework)
+- [Docker Hub image](https://github.com/django/django)
 
-- [Releases](https://github.com/laravel/framework/releases)
+- [Releases](https://github.com/django/django/releases)
 
-- [Official docs](https://laravel.com/framework/docs/installation)
+- [Official docs](https://docs.djangoproject.com/)
 
-- [Official docs](https://laravel.com/docs/13.x/deployment)
+- [Official docs](https://docs.djangoproject.com/en/5.2/howto/deployment/)
 
-- [Official docs](https://frankenphp.dev/docs/laravel/)
+- [Official docs](https://docs.djangoproject.com/en/5.2/howto/deployment/wsgi/gunicorn/)
 
 
 <!-- W9_TROUBLESHOOT_START -->

@@ -1,0 +1,5 @@
+optional:
+  - id: actuator-health
+    type: web-access
+    path: /actuator/health
+    expect_status: 200

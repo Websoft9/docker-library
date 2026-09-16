@@ -1,0 +1,64 @@
+services:
+  django:
+    image: ${W9_REPO}:3.13-slim
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    user: "1000:1000"
+    env_file: .env
+    ports:
+      - "${W9_HTTP_PORT_SET}:8000" # Web Console
+    volumes:
+      - django_app:/app
+      - ./src/entrypoint.sh:/entrypoint.sh:ro
+    working_dir: /app
+    entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    environment:
+      - HOME=/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      permissions:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "python", "-c", "import os,urllib.request,sys; p=os.environ.get('W9_ADMIN_PATH','/admin').strip('/'); sys.exit(0 if urllib.request.urlopen(f'http://127.0.0.1:8000/{p}/login/').status < 500 else 1)"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+
+  permissions:
+    image: alpine:3.21
+    container_name: ${W9_ID}-permissions
+    restart: "no"
+    user: root
+    command:
+      - sh
+      - -c
+      - "chown -R 1000:1000 /app && chmod -R u+rwX,g+rwX /app"
+    volumes:
+      - django_app:/app
+
+  postgres:
+    image: postgres:${W9_DB_VERSION}
+    container_name: ${W9_ID}-postgresql
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  django_app:
+  postgres_data:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true
