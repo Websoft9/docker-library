@@ -1,21 +1,26 @@
-# image: https://hub.docker.com/r/websoft9dev/moodle (self-built, base: moodlehq/moodle-php-apache)
-# docs: https://docs.moodle.org/en/Installation_quick_guide
-
 services:
+
   moodle:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     restart: unless-stopped
     env_file: .env
     ports:
-      - "${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}"
+      - "${W9_HTTP_PORT_SET}:80" # Web Console
     volumes:
-      - moodle_app:/var/www/html
+      - moodle_html:/var/www/html
       - moodle_data:/var/moodledata
-      - ./src/php.ini:/usr/local/etc/php/conf.d/moodle.ini
+      - ./src/php.ini:/usr/local/etc/php/conf.d/zz-websoft9.ini:ro
+      - ./src/disable-sslproxy.sh:/docker-entrypoint.d/25-disable-sslproxy.sh:ro
     depends_on:
       mariadb:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1/login/index.php || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 180s
 
   mariadb:
     image: mariadb:${W9_DB_VERSION}
@@ -34,10 +39,9 @@ services:
       start_period: 30s
 
 volumes:
-  moodle_app:
+  moodle_html:
   moodle_data:
   mariadb_data:
-
 
 networks:
   default:

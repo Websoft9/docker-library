@@ -1,0 +1,16 @@
+{
+  "trademark": "Hermes Agent",
+  "catalogBindings": [
+    {
+      "parentKey": "ai",
+      "childKey": "ai-agent-chat"
+    }
+  ],
+  "summary": "Self-improving autonomous AI agent gateway",
+  "overview": "Runs a persistent AI agent with a web dashboard, an OpenAI-compatible API, memory, skills, cron jobs, and 20+ messaging integrations.",
+  "description": "Hermes Agent is a self-improving autonomous AI agent built by Nous Research. It runs as a persistent gateway and can be reached from a web dashboard, an OpenAI-compatible API, or 20+ messaging platforms such as Telegram, Discord, Slack, and WhatsApp. The agent maintains long-term memory, creates and refines reusable skills, searches its own past conversations, and schedules unattended tasks with a built-in cron engine.\n\nThis package deploys the official nousresearch/hermes-agent image as a single container. All state — configuration, sessions, memories, skills, and logs — is persisted in the hermes_agent_data volume mounted at /opt/data, so the image can be upgraded without losing data. The dashboard is published on port 9119 with password authentication, and the OpenAI-compatible API server is available on port 8642 once an LLM provider key is configured.\n\nTypical use cases include a personal AI assistant reachable from chat apps, an autonomous task runner on a small VPS, and an OpenAI-compatible backend for tools such as Open WebUI or LobeChat.",
+  "websiteurl": "https://hermes-agent.nousresearch.com",
+  "screenshots": [
+    "https://raw.githubusercontent.com/NousResearch/hermes-agent/main/assets/banner.png"
+  ]
+}

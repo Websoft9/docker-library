@@ -8,13 +8,13 @@ services:
       - "${W9_HTTP_PORT_SET}:8080" # Web Console
     volumes:
       - laravel_app:/var/www/html
-      - ./src/entrypoint.d/10-scaffold.sh:/etc/entrypoint.d/10-scaffold.sh:ro
-      - ./src/entrypoint.d/20-composer-install.sh:/etc/entrypoint.d/20-composer-install.sh:ro
+      - ./src/entrypoint.sh:/opt/websoft9/entrypoint.sh:ro
+      - ./src/entrypoint.d:/opt/websoft9/entrypoint.d:ro
     depends_on:
-      mysql:
-        condition: service_healthy
       permissions:
         condition: service_completed_successfully
+    entrypoint: ["/bin/bash", "/opt/websoft9/entrypoint.sh"]
+    command: ["frankenphp", "run", "--config", "/etc/frankenphp/Caddyfile", "--adapter", "caddyfile"]
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/up"]
       interval: 30s
@@ -34,26 +34,8 @@ services:
     volumes:
       - laravel_app:/var/www/html
 
-  mysql:
-    image: mysql:${W9_DB_VERSION}
-    container_name: ${W9_ID}-mysql
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
-    healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-    volumes:
-      - mysql_data:/var/lib/mysql
-
 volumes:
   laravel_app:
-  mysql_data:
 
 networks:
   default:

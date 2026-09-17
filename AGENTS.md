@@ -14,9 +14,10 @@ Read in this order:
 2. `docs/architecture.md`
 3. `docs/code_owner.md`
 4. `docs/w9-env-spec.md`
-5. `docs/ai-sdlc/README.md`
-6. `docs/upstream-spec.md`
-7. `.github/copilot-instructions.md`
+5. `docs/runtime-app-spec.md`
+6. `docs/ai-sdlc/README.md`
+7. `docs/upstream-spec.md`
+8. `.github/copilot-instructions.md`
 
 ## Core Rules
 
@@ -25,6 +26,7 @@ Read in this order:
 - Prefer official images or trusted upstream images.
 - If `docker-compose.yml` references `./src/...`, the file must exist.
 - Follow env conventions. The canonical `W9_*` reference is `docs/w9-env-spec.md` (semantics + decision rules); use `metadata/templates/new-app/.env.tmpl` for layout. Read both before editing `.env` or `docker-compose.yml`.
+- Runtime/scaffold apps follow `docs/runtime-app-spec.md` (entrypoint hooks + optional `DATABASE_URL`).
 - Validate by deployment when the task changes runnable behavior.
 
 ## i18n

@@ -36,3 +36,11 @@ if [ -f .env ] && ! grep -q '^APP_KEY=base64:' .env; then
   echo "Generating application key"
   php artisan key:generate --force
 fi
+
+# Laravel defaults to SQLite. Make sure the database file exists so the first
+# migration can run without an interactive prompt.
+if [ -z "${DB_CONNECTION:-}" ] || [ "${DB_CONNECTION}" = "sqlite" ]; then
+  if [ -d "$APP_DIR/database" ] && [ ! -f "$APP_DIR/database/database.sqlite" ]; then
+    : > "$APP_DIR/database/database.sqlite"
+  fi
+fi

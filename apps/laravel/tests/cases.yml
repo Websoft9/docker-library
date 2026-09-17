@@ -1,0 +1,5 @@
+optional:
+  - id: health-endpoint
+    type: web-access
+    path: /up
+    expect_status: 200

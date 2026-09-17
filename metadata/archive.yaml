@@ -24,18 +24,39 @@ apps:
 - chronograf
 - comentario
 - discuz
+- g4f
 - gitness
+- gladys
+- glance
+- gogs
+- gopeed
+- gotify
+- graphite
+- guacamole
+- heyform
+- huggingchat
 - huginn
+- humhub
+- hyperswitch
+- inngest
+- istio
+- jetty
 - joomla
 - jumpserver
+- kaspersky
+- krakend
 - magento
+- mailpit
+- mastodon
 - mediawiki
 - mingdao
 - nodebb
 - onlyoffice
+- rainbond
 - scratch
 - screego
 - sscms
+- tailscale
 - weblate
 - xinference
 overrides:
@@ -82,4 +103,46 @@ overrides:
   gitness:
     archive_reason: Low user demand
   xinference:
+    archive_reason: Low user demand
+  rainbond:
+    archive_reason: Low user demand
+  heyform:
+    archive_reason: Low user demand
+  guacamole:
+    archive_reason: Low user demand
+  huggingchat:
+    archive_reason: Low user demand
+  humhub:
+    archive_reason: Low user demand
+  hyperswitch:
+    archive_reason: Low user demand
+  inngest:
+    archive_reason: Low user demand
+  istio:
+    archive_reason: Low user demand
+  jetty:
+    archive_reason: Low user demand
+  kaspersky:
+    archive_reason: Low user demand
+  g4f:
+    archive_reason: Low user demand
+  gladys:
+    archive_reason: Low user demand
+  glance:
+    archive_reason: Low user demand
+  gogs:
+    archive_reason: Low user demand
+  gopeed:
+    archive_reason: Low user demand
+  gotify:
+    archive_reason: Low user demand
+  graphite:
+    archive_reason: Low user demand
+  tailscale:
+    archive_reason: Low user demand
+  krakend:
+    archive_reason: Low user demand
+  mailpit:
+    archive_reason: Low user demand
+  mastodon:
     archive_reason: Low user demand

@@ -1,0 +1,5 @@
+optional:
+  - id: health
+    type: web-access
+    path: /health
+    expect_status: 200

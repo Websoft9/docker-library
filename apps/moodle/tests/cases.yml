@@ -1,0 +1,5 @@
+optional:
+  - id: login-page
+    type: web-access
+    path: /login/index.php
+    expect_status: 200

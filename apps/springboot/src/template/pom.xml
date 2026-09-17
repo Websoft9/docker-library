@@ -48,7 +48,7 @@
 
     <profiles>
         <!-- Enable with: mvn -Ppostgres ... ; the container activates it when
-             COMPOSE_PROFILES contains "postgres". -->
+             DATABASE_URL uses a postgres:// scheme. -->
         <profile>
             <id>postgres</id>
             <dependencies>
@@ -59,6 +59,22 @@
                 <dependency>
                     <groupId>org.postgresql</groupId>
                     <artifactId>postgresql</artifactId>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+        <!-- Enable with: mvn -Pmysql ... ; the container activates it when
+             DATABASE_URL uses a mysql:// scheme. -->
+        <profile>
+            <id>mysql</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-jdbc</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>com.mysql</groupId>
+                    <artifactId>mysql-connector-j</artifactId>
                     <scope>runtime</scope>
                 </dependency>
             </dependencies>

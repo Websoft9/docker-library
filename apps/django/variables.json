@@ -1,7 +1,7 @@
 {
   "name": "django",
   "trademark": "Django",
-  "release": false,
+  "release": true,
   "upstream": {
     "image": "https://github.com/django/django",
     "releases": "https://github.com/django/django/releases",
@@ -39,5 +39,8 @@
     "cpu": "2",
     "memory": "2",
     "disk": "5"
+  },
+  "help": {
+    "db": "No database by default (SQLite). Uncomment DATABASE_URL in .env to use an external PostgreSQL or MySQL database."
   }
 }

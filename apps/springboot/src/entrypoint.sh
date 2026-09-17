@@ -1,46 +1,50 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
-WORKSPACE=/workspace
-TEMPLATE=/opt/template
+APP_DIR="${APP_DIR:-/workspace}"
+PACKAGE_HOOKS_DIR="/opt/websoft9/entrypoint.d"
+USER_HOOKS_DIR="${APP_DIR}/.w9/entrypoint.d"
+PACKAGE_START="/opt/websoft9/start.sh"
+USER_START="${APP_DIR}/.w9/start.sh"
 
-case "${W9_VERSION:-}" in
-  ""|latest|main|stable) SPRING_BOOT_VERSION="4.1.1" ;;
-  *) SPRING_BOOT_VERSION="${W9_VERSION}" ;;
-esac
+log() {
+  echo "[springboot-runtime] $*"
+}
 
-DB_ENABLED=0
-case ",${COMPOSE_PROFILES:-}," in
-  *,postgres,*) DB_ENABLED=1 ;;
-esac
+run_hooks() {
+  local -A hooks=()
+  local dir file name
 
-mkdir -p "$WORKSPACE"
-
-if [ ! -f "$WORKSPACE/pom.xml" ]; then
-  echo "No Maven project found; creating a default Spring Boot project (${SPRING_BOOT_VERSION})..."
-  cp -a "$TEMPLATE/." "$WORKSPACE/"
-  sed -i "s/@SPRING_BOOT_VERSION@/${SPRING_BOOT_VERSION}/g" "$WORKSPACE/pom.xml"
-  echo "$SPRING_BOOT_VERSION" > "$WORKSPACE/.w9-springboot-version"
-  echo "Default project created in /workspace. Edit the code, then run: mvn spring-boot:run"
-fi
-
-cd "$WORKSPACE"
-
-if [ "$DB_ENABLED" = "1" ]; then
-  case ",${SPRING_PROFILES_ACTIVE:-}," in
-    *,postgres,*) ;;
-    *) SPRING_PROFILES_ACTIVE="${SPRING_PROFILES_ACTIVE:+${SPRING_PROFILES_ACTIVE},}postgres" ;;
-  esac
-  export SPRING_PROFILES_ACTIVE
-  echo "PostgreSQL enabled; waiting for ${W9_ID}-postgresql:5432 ..."
-  for _ in $(seq 1 60); do
-    if (echo > "/dev/tcp/${W9_ID}-postgresql/5432") >/dev/null 2>&1; then
-      echo "PostgreSQL is reachable."
-      break
-    fi
-    sleep 2
+  for dir in "${PACKAGE_HOOKS_DIR}" "${USER_HOOKS_DIR}"; do
+    [ -d "${dir}" ] || continue
+    for file in "${dir}"/*.sh; do
+      [ -e "${file}" ] || continue
+      name="$(basename "${file}")"
+      hooks["${name}"]="${file}"
+    done
   done
-  exec mvn -q -DskipTests -Ppostgres spring-boot:run
+
+  if [ "${#hooks[@]}" -eq 0 ]; then
+    return 0
+  fi
+
+  while IFS= read -r name; do
+    log "hook: ${name}"
+    bash "${hooks[${name}]}"
+  done < <(printf '%s\n' "${!hooks[@]}" | sort)
+}
+
+mkdir -p "${APP_DIR}"
+cd "${APP_DIR}"
+export APP_DIR
+
+run_hooks
+
+# Start must be exec'd so Maven/Spring becomes PID 1 and receives signals.
+if [ -f "${USER_START}" ]; then
+  log "starting with user start script: ${USER_START}"
+  exec bash "${USER_START}"
 fi
 
-exec mvn -q -DskipTests spring-boot:run
+log "starting with default start script"
+exec bash "${PACKAGE_START}"

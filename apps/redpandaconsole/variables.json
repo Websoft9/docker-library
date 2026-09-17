@@ -2,21 +2,32 @@
   "name": "redpandaconsole",
   "trademark": "Redpanda Console",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/redpandadata/console",
+    "releases": "https://github.com/redpanda-data/console/releases",
+    "docs": [
+      "https://docs.redpanda.com/current/reference/console/config/",
+      "https://github.com/redpanda-data/console"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "v3.1.3",
+        "v3.12.0",
         "latest"
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 8080,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "2",
     "disk": "2"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/redpandadata/console"
   }
 }

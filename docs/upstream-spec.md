@@ -180,6 +180,10 @@ Rules:
 - required variables
 - URL or login related config
 
+Note: `W9_URL` uses a domain-style placeholder (for example `appname.example.com` or
+`example.youdomain.com`). Do not use `internet_ip:${W9_HTTP_PORT_SET}`; host substitution is the
+consumer's concern, not this repository's. The canonical rule lives in `docs/w9-env-spec.md`.
+
 ## AI Fallback Boundary
 
 When `libs app-drift` runs:

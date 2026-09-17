@@ -9,14 +9,14 @@ services:
       - "${W9_HTTP_PORT_SET}:8000" # Web Console
     volumes:
       - django_app:/app
-      - ./src/entrypoint.sh:/entrypoint.sh:ro
+      - ./src/entrypoint.sh:/opt/websoft9/entrypoint.sh:ro
+      - ./src/entrypoint.d:/opt/websoft9/entrypoint.d:ro
+      - ./src/start.sh:/opt/websoft9/start.sh:ro
     working_dir: /app
-    entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    entrypoint: ["/bin/bash", "/opt/websoft9/entrypoint.sh"]
     environment:
       - HOME=/app
     depends_on:
-      postgres:
-        condition: service_healthy
       permissions:
         condition: service_completed_successfully
     healthcheck:
@@ -38,25 +38,8 @@ services:
     volumes:
       - django_app:/app
 
-  postgres:
-    image: postgres:${W9_DB_VERSION}
-    container_name: ${W9_ID}-postgresql
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
 volumes:
   django_app:
-  postgres_data:
 
 networks:
   default:

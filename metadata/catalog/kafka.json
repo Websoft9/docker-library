@@ -1,0 +1,13 @@
+{
+  "trademark": "Kafka",
+  "catalogBindings": [
+    {
+      "parentKey": "architecture",
+      "childKey": "mq"
+    }
+  ],
+  "summary": "Distributed event streaming platform.",
+  "overview": "Apache Kafka is a distributed event streaming platform for high-throughput publish-subscribe messaging, storage, and stream processing.",
+  "description": "Apache Kafka is an open-source distributed event streaming platform. It provides durable, high-throughput publish-subscribe messaging, topic-based storage, and stream processing, and is widely used for event-driven architectures, data integration, and real-time pipelines.\n\nThis package deploys the official apache/kafka image in KRaft mode as a single-node broker and controller. Message data is persisted in a named volume mounted at /var/lib/kafka/data, and the broker is published on port 9092. No ZooKeeper or external database is required.\n\nTypical use cases include event streaming, log and metrics pipelines, message queuing between services, and the data backbone for stream processing.",
+  "websiteurl": "https://kafka.apache.org"
+}

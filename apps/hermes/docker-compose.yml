@@ -1,0 +1,31 @@
+services:
+
+  hermes:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    command: ["gateway", "run"]
+    env_file: .env
+    ports:
+      - "${W9_HTTP_PORT_SET}:9119" # Web Dashboard
+      - "${W9_API_PORT_SET}:8642" # OpenAI-compatible API server
+    volumes:
+      - hermes_data:/opt/data
+    healthcheck:
+      test:
+        - "CMD"
+        - "/opt/hermes/.venv/bin/python"
+        - "-c"
+        - "import urllib.request, urllib.error\ntry:\n    urllib.request.urlopen('http://127.0.0.1:9119/', timeout=5)\nexcept urllib.error.HTTPError:\n    pass"
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+
+volumes:
+  hermes_data:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

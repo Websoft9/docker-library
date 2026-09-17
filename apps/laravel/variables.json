@@ -30,5 +30,8 @@
     "cpu": "2",
     "memory": "2",
     "disk": "5"
+  },
+  "help": {
+    "db": "No database by default (SQLite). Uncomment DATABASE_URL in .env to use an external MySQL or PostgreSQL database."
   }
 }

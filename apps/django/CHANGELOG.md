@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2026-09-16
+
+- Split the Django startup into ordered hooks under `src/entrypoint.d/` plus a `src/start.sh`, with a user hook directory at `/app/.w9/entrypoint.d/` and an optional `/app/.w9/start.sh` override.
+- Removed the bundled PostgreSQL service; the default project now runs on SQLite and needs no database.
+- Kept `settings.py` and `urls.py` native: the environment overrides moved to a generated `settings_runtime.py` wrapper and `urls_runtime.py`.
+- Added an optional `DATABASE_URL` in `.env`; when set, the wrapper overrides `DATABASES` (PostgreSQL/MySQL), otherwise SQLite is kept.
+
 ## 2026-09-15
 
 - Created the Django package based on the maintained `python:3.13-slim` image, serving through Gunicorn (WSGI).

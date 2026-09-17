@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2026-09-17
+
+- Added a thin runtime orchestrator in front of the base image entrypoint so the unified `DATABASE_URL` is mapped to Laravel's `DB_CONNECTION`/`DB_URL` (the base `/etc/entrypoint.d/` scripts run in subshells and cannot export to the main process).
+- Moved the package startup hooks under the runtime hook convention (user hooks at `/var/www/html/.w9/entrypoint.d/`, optional `/var/www/html/.w9/start.sh` override).
+- Removed the bundled MySQL service; the default Laravel application now uses SQLite and needs no database.
+- Added an optional `DATABASE_URL` in `.env` (`mysql://` or `postgres://`).
+
 ## 2026-09-15
 
 - Reworked the package from a self-built `php:8.3-apache` image into the maintained `serversideup/php:8.3-frankenphp-debian` image (FrankenPHP application server), removing the custom `Dockerfile` and the old PHP build scripts.

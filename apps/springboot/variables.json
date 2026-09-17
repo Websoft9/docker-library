@@ -1,7 +1,7 @@
 {
   "name": "springboot",
   "trademark": "Spring Boot",
-  "release": false,
+  "release": true,
   "upstream": {
     "image": "https://github.com/spring-projects/spring-boot",
     "releases": "https://github.com/spring-projects/spring-boot/releases",
@@ -35,6 +35,6 @@
     "first_startup_only": []
   },
   "help": {
-    "db": "No database by default. Uncomment COMPOSE_PROFILES=postgres in .env to start a bundled PostgreSQL and wire the app to it."
+    "db": "No database by default. Uncomment DATABASE_URL in .env to connect an external PostgreSQL database."
   }
 }
