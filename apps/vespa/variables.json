@@ -1,11 +1,12 @@
 {
   "name": "vespa",
   "trademark": "Vespa",
-  "release": false,
+  "release": true,
   "edition": [
     {
       "dist": "community",
       "version": [
+        "8.751.13",
         "latest"
       ]
     }
@@ -13,9 +14,13 @@
   "requirements": {
     "cpu": "2",
     "memory": "8",
-    "disk": "128"
+    "disk": "5"
   },
   "upstream": {
-    "image": "https://github.com/vespa-engine/vespa"
+    "image": "https://hub.docker.com/r/vespaengine/vespa",
+    "releases": "https://github.com/vespa-engine/vespa/releases",
+    "docs": [
+      "https://docs.vespa.ai/en/operations/self-managed/docker-containers.html"
+    ]
   }
 }

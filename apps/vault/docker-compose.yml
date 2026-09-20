@@ -1,23 +1,22 @@
-# image: https://hub.docker.com/r/hashicorp/vault
-# docs: https://www.vaultproject.io/
-
-version: '3.8'
-
 services:
   vault:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
-    cap_add: 
+    cap_add:
       - IPC_LOCK
     ports:
-      - '${W9_HTTP_PORT_SET}:8200'
+      - "${W9_HTTP_PORT_SET}:8200" # Vault UI and HTTP API and CLI
     env_file:
       - .env
-    environment:
-      - VAULT_LOCAL_CONFIG={}
     volumes:
-      - 'vault-logs:/vault/logs'
-      - 'vault-file:/vault/file'
+      - vault-logs:/vault/logs
+      - vault-file:/vault/file
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8200/v1/sys/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 networks:
   default:

@@ -1,0 +1,9 @@
+# The Wazuh dashboard is HTTPS-only, so the adaptive HTTP web-access check does
+# not apply. The custom script waits for the dashboard over HTTPS instead.
+skip:
+  - id: web-access
+
+optional:
+  - id: dashboard-https
+    type: script
+    script: check.sh

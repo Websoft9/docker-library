@@ -1,0 +1,5 @@
+optional:
+  - id: status-endpoint
+    type: web-access
+    path: /status
+    expect_status: 200

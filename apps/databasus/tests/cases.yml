@@ -1,0 +1,5 @@
+optional:
+  - id: system-health
+    type: web-access
+    path: /api/v1/system/health
+    expect_status: 200

@@ -2,21 +2,35 @@
   "name": "cloudbeaver",
   "trademark": "CloudBeaver",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/dbeaver/cloudbeaver",
+    "docs": [
+      "https://github.com/dbeaver/cloudbeaver/wiki/Server-configuration"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "25.2.2",
+        "26.2",
         "latest"
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 8978,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "2",
     "disk": "4"
   },
-  "upstream": {
-    "image": "https://hub.docker.com/r/dbeaver/cloudbeaver"
+  "env": {
+    "first_startup_only": [
+      "W9_LOGIN_PASSWORD"
+    ]
   }
 }

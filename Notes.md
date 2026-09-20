@@ -29,5 +29,17 @@ Docker Model Runner
 InfluxDB 开源时序数据库
 OpenClaw 
 Canvas LMS
-laravel
 Semaphore 
+
+
+cloudreve，compreface，commafeed， coze，dashy，ejbca, frigate, falcon
+
+Qdrant
+e2e test for: zammad, vaultwarden, wazuh, varnish
+varnish not have config file
+pangolin.net
+RustDesk 
+elizaOS
+Nuclear
+
+port define?

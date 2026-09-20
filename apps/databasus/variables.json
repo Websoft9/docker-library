@@ -2,21 +2,35 @@
   "name": "databasus",
   "trademark": "Databasus",
   "release": false,
+  "upstream": {
+    "image": "https://hub.docker.com/r/databasus/databasus",
+    "releases": "https://github.com/databasus/databasus/releases",
+    "docs": [
+      "https://databasus.com/installation",
+      "https://databasus.com/advanced-config"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "v3.9.0",
+        "v3.57.1",
         "latest"
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 4005,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "4",
     "disk": "10"
   },
-  "upstream": {
-    "image": "https://hub.docker.com/r/databasus/databasus"
+  "env": {
+    "first_startup_only": []
   }
 }

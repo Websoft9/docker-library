@@ -6,16 +6,28 @@
     {
       "dist": "community",
       "version": [
-        "2025.2.89748"
+        "2026.2.18991"
       ]
     }
   ],
+  "credentials": {
+    "password": {
+      "source": "container-file",
+      "pattern": "/opt/youtrack/conf/internal/services/configurationWizard/wizard_token.txt"
+    }
+  },
   "requirements": {
     "cpu": "2",
-    "memory": "1",
-    "disk": "1.5"
+    "memory": "1.5",
+    "disk": "10"
+  },
+  "env": {
+    "first_startup_only": []
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/jetbrains/youtrack"
+    "image": "https://hub.docker.com/r/jetbrains/youtrack",
+    "docs": [
+      "https://www.jetbrains.com/help/youtrack/server/youtrack-docker-installation.html"
+    ]
   }
 }

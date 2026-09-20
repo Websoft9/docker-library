@@ -1,0 +1,13 @@
+{
+  "trademark": "Vespa",
+  "catalogBindings": [
+    {
+      "parentKey": "database",
+      "childKey": "vector-databases"
+    }
+  ],
+  "summary": "Open-source AI search and vector database.",
+  "overview": "Vespa is an open-source search engine and vector database for AI, serving low-latency search and ranking at scale.",
+  "description": "Vespa is an open-source, distributed compute engine for search and AI. It combines vector search, text search, and structured filtering with machine-learned ranking, and serves low-latency queries over large datasets.\n\nThis package deploys the official vespaengine/vespa image as a single container running both the config server and the services role. The config server / deployment API is published on port 19071, and the query and document HTTP API on port 8080. Application data and logs are persisted in named volumes mounted at /opt/vespa/var and /opt/vespa/logs. Vespa starts serving the HTTP API on port 8080 only after an application package is deployed to the config server.\n\nTypical use cases include vector and hybrid search, retrieval-augmented generation (RAG) for AI applications, recommendation and ranking systems, and large-scale document search.",
+  "websiteurl": "https://vespa.ai"
+}

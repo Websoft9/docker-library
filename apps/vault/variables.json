@@ -6,7 +6,7 @@
     {
       "dist": "community",
       "version": [
-        "1.21",
+        "2.1",
         "latest"
       ]
     }
@@ -16,7 +16,18 @@
     "memory": "2",
     "disk": "1"
   },
+  "credentials": {
+    "password": {
+      "source": "container-log",
+      "pattern": "Root Token:"
+    }
+  },
   "upstream": {
-    "image": "https://hub.docker.com/r/hashicorp/vault"
+    "image": "https://hub.docker.com/r/hashicorp/vault",
+    "releases": "https://github.com/hashicorp/vault/releases",
+    "docs": [
+      "https://developer.hashicorp.com/vault/docs",
+      "https://hub.docker.com/r/hashicorp/vault"
+    ]
   }
 }

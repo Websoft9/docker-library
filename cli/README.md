@@ -34,7 +34,7 @@ Windows PowerShell:
 Or without activating:
 
 ```bash
-make libs ARGS="check --app wordpress --json"
+make libs ARGS="app-check --app wordpress --json"
 ```
 
 One-off without install:

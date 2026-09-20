@@ -1,38 +1,32 @@
-# image: https://hub.docker.com/r/tuxgasy/dolibarr
-# docs: https://github.com/tuxgasy/docker-dolibarr
-
-version: '3.8'
-
 services:
-    dolibarr:
-        image: $W9_REPO:$W9_VERSION
-        container_name: $W9_ID
-        restart: unless-stopped
-        env_file: 
-          - .env
-        ports:
-          - "$W9_HTTP_PORT_SET:80"
-        volumes:
-          - dolibarr_html:/var/www/html
-          - dolibarr_documents:/var/www/documents
-        links:
-            - mariadb
+  dolibarr:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "${W9_HTTP_PORT_SET}:80" # Web Console
+    volumes:
+      - dolibarr_html:/var/www/html
+      - dolibarr_documents:/var/www/documents
+    depends_on:
+      - mariadb
 
-    mariadb:
-        image: mariadb:$W9_MARIADB_VERSION
-        container_name: $W9_ID-mariadb
-        restart: unless-stopped
-        environment:
-          - MARIADB_DATABASE=$W9_ID
-          - MARIADB_USER=$W9_ID
-          - MARIADB_PASSWORD=$W9_POWER_PASSWORD
-          - MARIADB_ROOT_PASSWORD=$W9_POWER_PASSWORD
-        volumes:
-          - mariadb:/var/lib/mysql
+  mariadb:
+    image: mariadb:${W9_DB_VERSION}
+    container_name: ${W9_ID}-mariadb
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${W9_ID}
+      MARIADB_USER: ${W9_ID}
+      MARIADB_PASSWORD: ${W9_POWER_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
+    volumes:
+      - mariadb:/var/lib/mysql
 
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

@@ -1,0 +1,8 @@
+skip:
+  - id: web-access
+
+optional:
+  - id: readiness
+    type: web-access
+    path: /v1/.well-known/ready
+    expect_status: 200

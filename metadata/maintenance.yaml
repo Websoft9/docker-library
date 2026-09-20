@@ -34,7 +34,6 @@ cadence:
   - woocommerce
   - wordpress
   - wordpresspro
-  - zabbix
 update_policy: {}
 lifecycle:
   frozen: []

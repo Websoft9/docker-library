@@ -57,8 +57,17 @@ apps:
 - screego
 - sscms
 - tailscale
+- v2ray
+- webcheck
 - weblate
+- wikijs
+- windmill
+- wireguard
 - xinference
+- zabbix
+- zerotier
+- zitadel
+- zookeeper
 overrides:
   aitable:
     archive_reason: Low user demand
@@ -145,4 +154,22 @@ overrides:
   mailpit:
     archive_reason: Low user demand
   mastodon:
+    archive_reason: Low user demand
+  zerotier:
+    archive_reason: Low user demand
+  wireguard:
+    archive_reason: Low user demand
+  windmill:
+    archive_reason: Low user demand
+  wikijs:
+    archive_reason: Low user demand
+  zookeeper:
+    archive_reason: Low user demand
+  zitadel:
+    archive_reason: Low user demand
+  zabbix:
+    archive_reason: Low user demand
+  webcheck:
+    archive_reason: Low user demand
+  v2ray:
     archive_reason: Low user demand

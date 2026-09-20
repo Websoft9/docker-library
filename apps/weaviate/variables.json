@@ -6,7 +6,7 @@
     {
       "dist": "community",
       "version": [
-        "1.26.6",
+        "1.39.5",
         "latest"
       ]
     }
@@ -17,6 +17,11 @@
     "disk": "10"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/semitechnologies/weaviate"
+    "image": "https://hub.docker.com/r/semitechnologies/weaviate",
+    "releases": "https://github.com/weaviate/weaviate/releases",
+    "docs": [
+      "https://weaviate.io/developers/weaviate/installation/docker-compose",
+      "https://weaviate.io/developers/weaviate/config-refs/env-vars"
+    ]
   }
 }

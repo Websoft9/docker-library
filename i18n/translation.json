@@ -7,9 +7,17 @@
         "App HTTP Port",
         "应用 HTTP 端口"
     ],
+    "W9_GRPC_PORT_SET": [
+        "",
+        ""
+    ],
     "W9_AGENT_PORT_SET": [
         "App Agent Port",
         "应用代理端口"
+    ],
+    "W9_ENROLLMENT_PORT_SET": [
+        "",
+        ""
     ],
     "W9_SSH_PORT_SET": [
         "App SSH Port",

@@ -2,21 +2,31 @@
   "name": "uptimekuma",
   "trademark": "Uptime Kuma",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/louislam/uptime-kuma",
+    "releases": "https://github.com/louislam/uptime-kuma/releases",
+    "docs": [
+      "https://github.com/louislam/uptime-kuma/wiki/Environment-Variables"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "2.0.2",
-        "1"
+        "2.5.5",
+        "latest"
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 3001,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "1"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/louislam/uptime-kuma"
   }
 }
