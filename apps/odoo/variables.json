@@ -3,7 +3,14 @@
   "trademark": "Odoo",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/_/odoo"
+    "image": "https://hub.docker.com/_/odoo",
+    "releases": "https://www.odoo.com/documentation/master/administration/supported_versions.html",
+    "docs": [
+      "https://github.com/odoo/docker",
+      "https://www.odoo.com/documentation/master/administration/on_premise/deploy.html",
+      "https://www.odoo.com/documentation/master/administration/install.html",
+      "https://www.odoo.com/odoo-19-release-notes"
+    ]
   },
   "edition": [
     {
@@ -12,8 +19,6 @@
         "19.0",
         "18.0",
         "17.0",
-        "16.0",
-        "15.0",
         "latest"
       ]
     }
@@ -24,6 +29,6 @@
     "disk": "1"
   },
   "help": {
-    "db": "PostgreSQL 14+ (15.0 requires 11+, 16.0 requires 13+)"
+    "db": "Odoo 17-19 requires PostgreSQL. This package bundles PostgreSQL 15 for single-node deployments and keeps the external-db installation override for an external PostgreSQL service."
   }
 }

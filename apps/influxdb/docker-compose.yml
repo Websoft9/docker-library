@@ -1,26 +1,26 @@
-# image: https://hub.docker.com/_/influxdb
-# docs: https://docs.influxdata.com/influxdb/latest/install/?t=Docker
-
-version: '3.8'
-
 services:
+
   influxdb:
-    image: $W9_REPO:$W9_VERSION
+    image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
-    ports:
-      - '${W9_HTTP_PORT_SET}:8086'
-    env_file:
-      - .env
-    volumes:
-      - influxdb2-data:/var/lib/influxdb2
-      - influxdb2-config:/etc/influxdb2
     restart: unless-stopped
+    ports:
+      - "${W9_HTTP_PORT_SET}:8086" # InfluxDB HTTP API and UI
+    env_file: .env
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+      - ./src/config.yml:/etc/influxdb2/config.yml
+    healthcheck:
+      test: ["CMD", "curl", "--silent", "--fail", "http://localhost:8086/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+volumes:
+  influxdb-data:
 
 networks:
   default:
     name: ${W9_NETWORK}
     external: true
-
-volumes:
-  influxdb2-data:
-  influxdb2-config:

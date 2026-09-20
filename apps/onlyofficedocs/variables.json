@@ -6,31 +6,26 @@
     {
       "dist": "community",
       "version": [
-        "9.1",
-        "latest"
-      ]
-    },
-    {
-      "dist": "enterprise",
-      "version": [
-        "9.1",
-        "latest"
-      ]
-    },
-    {
-      "dist": "developer ",
-      "version": [
-        "9.1",
+        "9.4",
         "latest"
       ]
     }
   ],
   "requirements": {
-    "cpu": "1",
-    "memory": "2",
-    "disk": "1"
+    "cpu": "2",
+    "memory": "4",
+    "disk": "2"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/onlyoffice/documentserver"
+    "image": "https://hub.docker.com/r/onlyoffice/documentserver",
+    "releases": "https://github.com/ONLYOFFICE/DocumentServer/releases",
+    "compose": {
+      "compose": "https://raw.githubusercontent.com/ONLYOFFICE/Docker-DocumentServer/master/docker-compose.yml"
+    },
+    "docs": [
+      "https://helpcenter.onlyoffice.com/docs/installation/docs-community-install-docker.aspx",
+      "https://api.onlyoffice.com/docs/docs-api/get-started/basic-concepts/",
+      "https://github.com/ONLYOFFICE/Docker-DocumentServer"
+    ]
   }
 }

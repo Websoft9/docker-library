@@ -1,14 +1,9 @@
-# image: https://hub.docker.com/_/odoo
-# docs: https://github.com/odoo/docker
-
-version: "3.8"
-
 services:
   odoo:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     ports:
-      - ${W9_HTTP_PORT_SET}:8069
+      - "${W9_HTTP_PORT_SET}:8069" # Web Console
     volumes:
       - odoo_web:/var/lib/odoo
       - odoo_config:/etc/odoo
@@ -19,14 +14,14 @@ services:
     restart: unless-stopped
 
   postgresql:
-    image: postgres:$W9_DB_VERSION
+    image: postgres:${W9_DB_VERSION}
     container_name: ${W9_ID}-postgresql
     restart: unless-stopped
     volumes:
       - postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: postgres
-      POSTGRES_USER: $W9_ID
+      POSTGRES_USER: ${W9_ID}
       POSTGRES_PASSWORD: ${W9_POWER_PASSWORD}
       POSTGRES_INITDB_ARGS: --data-checksums
       POSTGRES_HOST_AUTH_METHOD: trust

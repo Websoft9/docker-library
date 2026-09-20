@@ -1,0 +1,13 @@
+{
+  "trademark": "Redpanda Console",
+  "catalogBindings": [
+    {
+      "parentKey": "itdeveloper",
+      "childKey": "devops"
+    }
+  ],
+  "summary": "Web UI for Kafka clusters.",
+  "overview": "Redpanda Console is a web UI for Kafka that browses topics, inspects messages, and monitors consumer groups and lag.",
+  "description": "Redpanda Console is an open-source web UI for Kafka-compatible clusters. It provides a graphical way to browse topics and partitions, inspect and produce messages, monitor consumer groups and lag, edit consumer offsets, and manage Schema Registry and Kafka Connect resources.\n\nThis package deploys the official Redpanda Console image. Console is a front-end only: it must connect to a Kafka broker at startup and exits if no broker is reachable. The broker address is configured through W9_KAFKA_BROKERS_SET and defaults to the Websoft9 Kafka package's internal listener (kafka:19092). Authentication and RBAC are enterprise features and are disabled by default.\n\nTypical use cases include operating a self-hosted Apache Kafka cluster, debugging message flows, and giving teams a read/write view of topics without command-line tools.",
+  "websiteurl": "https://redpanda.com/redpanda-console"
+}

@@ -1,26 +1,103 @@
-# Laravel on Docker  
+# Laravel on Docker
 
-This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Laravel:
+## Quick Start
+
+### Deploy Verification
+
+1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Laravel**.
+2. In the **Access** tab, get the login URL and credentials.
+3. Open the login URL in a browser and sign in to confirm the app works.
+
+<!-- W9_GUIDE_START -->
+### Usage
+
+1. Make sure you are signed in to the Laravel admin console.
+2. Try a core feature.
+
+### Change Password
+
+1. In the [Websoft9](https://www.websoft9.com) console, open the app's **Compose** tab.
+2. Update the password in `.env` and save.
+3. Rebuild the app.
+<!-- W9_GUIDE_END -->
+
+## Configuration Reference
+
+Websoft9 packages this app from the official [Laravel Docker image](https://github.com/laravel/framework) and makes some improvements below.
+
+<!-- W9_NOTE_START -->
+### Change Database
+
+Edit the connection in `.env`, then rebuild the app:
+
+- `DB_CONNECTION`: database driver (default `mysql`)
+- `DB_HOST`: database host
+- `DB_PORT`: database port (default `3306`)
+- `DB_DATABASE`: database name
+- `DB_USERNAME`: database user
+- `DB_PASSWORD`: database password
+
+The app reads these on startup, so a rebuild applies the new connection.
+<!-- W9_NOTE_END -->
+
+Apps run as containers; rebuild after any configuration change.
+
+### Version Support
+
+Supported versions: 13.31.0, latest.
+
+The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
 
- - community:  12.0.7, latest
+### Ports
+
+| Purpose | Port |
+| --- | --- |
+| Web Console | 8080 |
 
 
-## System Requirements
+### Data Directory
 
-The following are the minimal [recommended requirements](https://hub.docker.com/_/php):
 
-* **RAM**: 1 GB or more
-* **CPU**: 1 cores or higher
-* **Disk**: at least 1 GB of free space
-* **bandwidth**: more fluent experience over 100M  
+- `laravel_app` → `/var/www/html`
+- `mysql_data` → `/var/lib/mysql`
 
-## Install
 
-You can install this Laravel by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use Laravel with **Websoft9 Business Support** free, you can [subscribe Laravel](https://www.websoft9.com/apps) on Cloud platform
+### Environment Variables
 
-## Documentation
+Environment variables are defined in the app's `.env` file; see the reference section at the end of `.env` for supported variables.
 
-[Laravel Administrator Guide](https://support.websoft9.com/docs/laravel) powered by Websoft9
+
+### Configuration Files
+
+
+- `./src/entrypoint.d/10-scaffold.sh` → `/etc/entrypoint.d/10-scaffold.sh`
+- `./src/entrypoint.d/20-composer-install.sh` → `/etc/entrypoint.d/20-composer-install.sh`
+
+
+
+## References
+
+- [Laravel Administrator Guide](https://support.websoft9.com/docs/laravel) by Websoft9
+
+- [Docker Hub image](https://github.com/laravel/framework)
+
+- [Releases](https://github.com/laravel/framework/releases)
+
+- [Official docs](https://laravel.com/framework/docs/installation)
+
+- [Official docs](https://laravel.com/docs/13.x/deployment)
+
+- [Official docs](https://frankenphp.dev/docs/laravel/)
+
+
+<!-- W9_TROUBLESHOOT_START -->
+## Troubleshooting
+
+**App fails to start?**
+- Check `docker compose logs`.
+
+**Port not reachable?**
+- Ensure the firewall / security group allows the port.
+<!-- W9_TROUBLESHOOT_END -->

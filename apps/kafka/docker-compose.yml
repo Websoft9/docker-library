@@ -1,37 +1,30 @@
-# kafka image: https://hub.docker.com/r/apache/kafka
-
 services:
   kafka:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
-    hostname: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    hostname: ${W9_ID}
     restart: unless-stopped
+    # Listener ports (defined in .env):
+    #   9092  PLAINTEXT_HOST - external clients, published below
+    #   19092 PLAINTEXT      - in-network clients such as Redpanda Console; internal only
+    #   29093 CONTROLLER     - KRaft controller quorum; internal only
+    # Only the external listener is published. 19092 and 29093 intentionally stay on
+    # the websoft9 network and must not be exposed to the host.
     ports:
-      - "$W9_DB_KAFKA_PORT_SET:9092"
+      - "${W9_MQ_PORT_SET}:9092" # Kafka broker (external clients)
+
     env_file: .env
-    environment:
-      CLUSTER_ID: ${CLUSTER_ID}
-      KAFKA_NODE_ID: ${KAFKA_NODE_ID}
-      KAFKA_PROCESS_ROLES: ${KAFKA_PROCESS_ROLES}
-      KAFKA_LISTENERS: ${KAFKA_LISTENERS}
-      KAFKA_ADVERTISED_LISTENERS: ${KAFKA_ADVERTISED_LISTENERS}
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: ${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP}
-      KAFKA_CONTROLLER_QUORUM_VOTERS: ${KAFKA_CONTROLLER_QUORUM_VOTERS}
-      KAFKA_CONTROLLER_LISTENER_NAMES: ${KAFKA_CONTROLLER_LISTENER_NAMES}
-      KAFKA_INTER_BROKER_LISTENER_NAME: ${KAFKA_INTER_BROKER_LISTENER_NAME}
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: ${KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR}
-      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: ${KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS}
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: ${KAFKA_TRANSACTION_STATE_LOG_MIN_ISR}
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: ${KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR}
-      KAFKA_SHARE_COORDINATOR_STATE_TOPIC_REPLICATION_FACTOR: ${KAFKA_SHARE_COORDINATOR_STATE_TOPIC_REPLICATION_FACTOR}
-      KAFKA_SHARE_COORDINATOR_STATE_TOPIC_MIN_ISR: ${KAFKA_SHARE_COORDINATOR_STATE_TOPIC_MIN_ISR}
-      KAFKA_LOG_DIRS: /var/lib/kafka/data
     volumes:
       - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:19092 >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 
 volumes:
   kafka_data:
-    driver: local
 
 networks:
   default:

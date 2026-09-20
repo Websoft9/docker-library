@@ -1,51 +1,67 @@
-# composefile: https://github.com/danny-avila/LibreChat/blob/main/docker-compose.yml
-# docs: https://www.librechat.ai/docs/local/docker
-
 services:
   api:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
-    ports:
-      - $W9_HTTP_PORT_SET:3080
-    depends_on:
-      - mongodb
-      - rag_api
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    env_file:
-      - .env
+    ports:
+      - "${W9_HTTP_PORT_SET}:3080" # Web Console
+    env_file: .env
     environment:
       - HOST=0.0.0.0
       - NODE_ENV=production
       - MONGO_URI=mongodb://${W9_ID}-mongodb:27017/LibreChat
       - MEILI_HOST=http://${W9_ID}-meilisearch:7700
       - RAG_PORT=8000
-      - RAG_API_URL=http://${W9_ID}-8000
+      - RAG_API_URL=http://${W9_ID}-rag:8000
+    depends_on:
+      mongodb:
+        condition: service_started
+      rag_api:
+        condition: service_started
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
-      - ./src/librechat.yaml:/app/librechat.yaml
+      - ./src/librechat.yaml:/app/librechat.yaml:ro
       - app-images:/app/client/public/images
       - app-uploads:/app/uploads
-      - app-logs:/app/api/logs
+      - app-logs:/app/logs
+      - app-data:/app/data
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3080/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  admin-panel:
+    image: registry.librechat.ai/clickhouse/librechat-admin-panel:latest
+    container_name: ${W9_ID}-admin-panel
+    restart: unless-stopped
+    ports:
+      - "${W9_ADMIN_GUI_PORT_SET}:3000" # Admin Panel
+    depends_on:
+      api:
+        condition: service_started
+    environment:
+      - PORT=3000
+      - SESSION_SECRET=${ADMIN_PANEL_SESSION_SECRET}
+      - API_SERVER_URL=http://${W9_ID}:3080
+      - VITE_API_BASE_URL=http://${W9_URL}
+      - SESSION_COOKIE_SECURE=${ADMIN_PANEL_SESSION_COOKIE_SECURE}
 
   mongodb:
-    image: mongo
+    image: mongo:7.0
     container_name: ${W9_ID}-mongodb
-    # ports:  # Uncomment this to access mongodb from outside docker, not safe in deployment
-    #   - 27018:27017
     restart: unless-stopped
+    command: mongod --noauth
     volumes:
       - mongodata:/data/db
-    command: mongod --noauth
 
   meilisearch:
-    image: getmeili/meilisearch:v1.12.3
+    image: getmeili/meilisearch:v1.35
     container_name: ${W9_ID}-meilisearch
     restart: unless-stopped
-    # ports: # Uncomment this to access meilisearch from outside docker
-    #   - 7700:7700 # if exposing these ports, make sure your master key is not the default value
-    env_file:
-      - .env
+    env_file: .env
     environment:
       - MEILI_HOST=http://${W9_ID}-meilisearch:7700
       - MEILI_NO_ANALYTICS=true
@@ -54,40 +70,46 @@ services:
       - meilisearch:/meili_data
 
   vectordb:
-    image: ankane/pgvector:latest
+    image: pgvector/pgvector:${W9_DB_VERSION}
     container_name: ${W9_ID}-postgresql
+    restart: unless-stopped
     environment:
       POSTGRES_DB: librechat
       POSTGRES_USER: librechat
       POSTGRES_PASSWORD: ${W9_POWER_PASSWORD}
-    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U librechat -d librechat"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - pgdata:/var/lib/postgresql/data
 
   rag_api:
-    image: ghcr.io/danny-avila/librechat-rag-api-dev-lite:latest
+    image: ghcr.io/danny-avila/librechat-rag-api-dev-lite:v0.6.0
     container_name: ${W9_ID}-rag
+    restart: unless-stopped
+    env_file: .env
     environment:
       - DB_HOST=${W9_ID}-postgresql
       - POSTGRES_DB=librechat
       - POSTGRES_USER=librechat
       - POSTGRES_PASSWORD=${W9_POWER_PASSWORD}
       - RAG_PORT=8000
-    restart: unless-stopped
     depends_on:
-      - vectordb
-    env_file:
-      - .env
+      vectordb:
+        condition: service_healthy
 
 volumes:
   app-images:
   app-uploads:
   app-logs:
+  app-data:
   mongodata:
   pgdata:
   meilisearch:
-    
+
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

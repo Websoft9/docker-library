@@ -2,21 +2,40 @@
   "name": "superset",
   "trademark": "Superset",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/apache/superset",
+    "releases": "https://github.com/apache/superset/releases",
+    "docs": [
+      "https://superset.apache.org/docs/installation/installing-superset-using-docker-compose",
+      "https://github.com/apache/superset/blob/6.1.0/UPDATING.md"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "4.1.1",
+        "6.1.0",
         "latest"
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 8088,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "8",
     "disk": "3"
   },
-  "upstream": {
-    "image": "https://hub.docker.com/r/apache/superset"
+  "credentials": {},
+  "env": {
+    "first_startup_only": [
+      "W9_LOGIN_PASSWORD",
+      "ADMIN_PASSWORD",
+      "SUPERSET_SECRET_KEY"
+    ]
   }
 }

@@ -1,0 +1,13 @@
+{
+  "trademark": "Checkmate",
+  "catalogBindings": [
+    {
+      "parentKey": "itdevops",
+      "childKey": "fullmonitor"
+    }
+  ],
+  "summary": "Open-source uptime and infrastructure monitoring.",
+  "overview": "Open-source uptime monitoring tool that tracks servers, websites, and services with alerts and public status pages. Bundles MongoDB 8.2.",
+  "description": "Checkmate is an open-source, self-hosted monitoring application for uptime and infrastructure. It continuously checks servers, websites, APIs, and network services, records response times and incidents, and raises alerts through email or other channels. Public status pages can be published for users and stakeholders.\n\nThis package deploys the official mono image together with a bundled MongoDB 8.2 database. Configuration is driven by DB_CONNECTION_STRING, CLIENT_HOST, and JWT_SECRET; the web console is published on port 52345 and data is persisted in a named volume.\n\nTypical use cases include uptime and latency monitoring, server and container health tracking, incident alerting, and publishing public service status pages.",
+  "websiteurl": "https://checkmate.so"
+}

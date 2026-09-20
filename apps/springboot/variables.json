@@ -1,0 +1,40 @@
+{
+  "name": "springboot",
+  "trademark": "Spring Boot",
+  "release": true,
+  "upstream": {
+    "image": "https://github.com/spring-projects/spring-boot",
+    "releases": "https://github.com/spring-projects/spring-boot/releases",
+    "docs": [
+      "https://docs.spring.io/spring-boot/installing.html",
+      "https://hub.docker.com/_/maven"
+    ]
+  },
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "4.1.1",
+        "latest"
+      ]
+    }
+  ],
+  "access": {
+    "web": {
+      "port": 8080,
+      "path": "/"
+    }
+  },
+  "requirements": {
+    "cpu": "1",
+    "memory": "2",
+    "disk": "5"
+  },
+  "credentials": {},
+  "env": {
+    "first_startup_only": []
+  },
+  "help": {
+    "db": "No database by default. Uncomment DATABASE_URL in .env to connect an external PostgreSQL database."
+  }
+}

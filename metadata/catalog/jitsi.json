@@ -1,0 +1,13 @@
+{
+  "trademark": "Jitsi",
+  "catalogBindings": [
+    {
+      "parentKey": "communication",
+      "childKey": "meeting"
+    }
+  ],
+  "summary": "Open-source video conferencing and meeting platform.",
+  "overview": "Open-source video conferencing platform with secure meetings, screen sharing, chat, and recording. This package deploys the official Docker stack.",
+  "description": "Jitsi Meet is an open-source video conferencing platform. It provides secure, scalable meetings with screen sharing, chat, breakout rooms, virtual backgrounds, and optional recording, and can be embedded in other applications or joined from a browser without installing a client.\n\nThis package deploys the official Jitsi Docker stack: the web frontend, the Prosody XMPP server, the Jicofo focus component, and the JVB video bridge. Configuration follows the upstream environment file, and meeting media is exposed over UDP port 10000. HTTPS is required and the domain must be bound; the service is not reachable by bare IP.\n\nTypical use cases include internal team meetings, webinars, online classes, telehealth consultations, and embedding video calls into existing products.",
+  "websiteurl": "https://jitsi.org"
+}

@@ -1,0 +1,33 @@
+services:
+
+  springboot:
+    image: ${W9_REPO}:3.9-eclipse-temurin-21
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    env_file: .env
+    working_dir: /workspace
+    entrypoint: ["/bin/bash", "/opt/websoft9/entrypoint.sh"]
+    ports:
+      - "${W9_HTTP_PORT_SET}:8080" # Web Console
+    volumes:
+      - springboot_workspace:/workspace
+      - springboot_m2:/root/.m2
+      - ./src/entrypoint.sh:/opt/websoft9/entrypoint.sh:ro
+      - ./src/entrypoint.d:/opt/websoft9/entrypoint.d:ro
+      - ./src/start.sh:/opt/websoft9/start.sh:ro
+      - ./src/template:/opt/template:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8080/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 300s
+
+volumes:
+  springboot_workspace:
+  springboot_m2:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

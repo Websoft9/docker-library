@@ -1,0 +1,45 @@
+{
+  "name": "nextjs",
+  "trademark": "Next.js",
+  "release": true,
+  "upstream": {
+    "image": "https://github.com/vercel/next.js",
+    "releases": "https://github.com/vercel/next.js/releases",
+    "docs": [
+      "https://nextjs.org/docs/app/getting-started/installation",
+      "https://nextjs.org/docs/app/getting-started/deploying",
+      "https://nextjs.org/docs/app/guides/self-hosting",
+      "https://hub.docker.com/_/node"
+    ]
+  },
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "16.3.5",
+        "latest"
+      ]
+    }
+  ],
+  "access": {
+    "web": {
+      "port": 3000,
+      "path": "/"
+    }
+  },
+  "requirements": {
+    "cpu": "2",
+    "memory": "2",
+    "disk": "5"
+  },
+  "credentials": {},
+  "env": {
+    "first_startup_only": [
+      "NEXTJS_CREATE_FLAGS",
+      "NEXTJS_PACKAGE_MANAGER"
+    ]
+  },
+  "help": {
+    "db": "Next.js itself does not require a database. Upload your project source into the mounted app directory and connect any database or API from your own application code."
+  }
+}

@@ -1,39 +1,32 @@
-# image: https://hub.docker.com/r/apache/superset
-# docs: https://github.com/apache/superset
-# docs: https://superset.apache.org/docs/installation/installing-superset-using-docker-compose/
-# compose: https://github.com/apache/superset/blob/master/docker-compose-non-dev.yml 
+# Upstream compose reference: https://github.com/apache/superset/blob/6.1.0/docker-compose-non-dev.yml
 
-x-superset-image: &superset-image $W9_REPO:$W9_VERSION
-x-superset-depends-on: &superset-depends-on
-  - db
-  - redis
+x-superset-image: &superset-image ${W9_REPO}:${W9_VERSION}
 x-superset-volumes:
   &superset-volumes # /app/pythonpath_docker will be appended to the PYTHONPATH in the final container
   - ./src/docker:/app/docker
   - superset_home:/app/superset_home
 
-version: "3.8"
 services:
   redis:
     image: redis:7
-    container_name: $W9_ID-cache
+    container_name: ${W9_ID}-cache
     restart: unless-stopped
     volumes:
       - redis:/data
 
   db:
-    image: postgres:15
-    container_name: $W9_ID-postgresql
+    image: postgres:${W9_DB_VERSION}
+    container_name: ${W9_ID}-postgresql
     restart: unless-stopped
     environment:
-      - POSTGRES_DB=$DATABASE_DB
-      - POSTGRES_USER=$DATABASE_USER
-      - POSTGRES_PASSWORD=$DATABASE_PASSWORD
-      - EXAMPLES_DB=examples
-      - EXAMPLES_HOST=$W9_ID-postgresql
-      - EXAMPLES_USER=examples
-      - EXAMPLES_PASSWORD=$W9_POWER_PASSWORD
-      - EXAMPLES_PORT=5432   
+      - POSTGRES_DB=${DATABASE_DB}
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - EXAMPLES_DB=${EXAMPLES_DB}
+      - EXAMPLES_HOST=${EXAMPLES_HOST}
+      - EXAMPLES_USER=${EXAMPLES_USER}
+      - EXAMPLES_PASSWORD=${EXAMPLES_PASSWORD}
+      - EXAMPLES_PORT=5432
     volumes:
       - postgresql:/var/lib/postgresql/data
       - ./src/docker/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
@@ -41,21 +34,27 @@ services:
   superset:
     env_file: .env
     image: *superset-image
-    container_name: $W9_ID
+    container_name: ${W9_ID}
     restart: unless-stopped
     command: ["/app/docker/docker-bootstrap.sh", "app-gunicorn"]
     ports:
-      - '$W9_HTTP_PORT_SET:8088'
+      - "${W9_HTTP_PORT_SET}:8088" # Web Console
     user: root
-    depends_on: *superset-depends-on
+    depends_on:
+      superset-init:
+        condition: service_completed_successfully
     volumes: *superset-volumes
 
   superset-init:
     env_file: .env
     image: *superset-image
-    container_name: $W9_ID-init
+    container_name: ${W9_ID}-init
     command: ["/app/docker/docker-init.sh"]
-    depends_on: *superset-depends-on
+    depends_on:
+      db:
+        condition: service_started
+      redis:
+        condition: service_started
     user: "root"
     volumes: *superset-volumes
     healthcheck:
@@ -64,10 +63,12 @@ services:
   superset-worker:
     env_file: .env
     image: *superset-image
-    container_name: $W9_ID-worker
+    container_name: ${W9_ID}-worker
     command: ["/app/docker/docker-bootstrap.sh", "worker"]
     restart: unless-stopped
-    depends_on: *superset-depends-on
+    depends_on:
+      superset-init:
+        condition: service_completed_successfully
     user: "root"
     volumes: *superset-volumes
     healthcheck:
@@ -80,10 +81,12 @@ services:
   superset-worker-beat:
     env_file: .env
     image: *superset-image
-    container_name: $W9_ID-worker-beat
+    container_name: ${W9_ID}-worker-beat
     command: ["/app/docker/docker-bootstrap.sh", "beat"]
     restart: unless-stopped
-    depends_on: *superset-depends-on
+    depends_on:
+      superset-init:
+        condition: service_completed_successfully
     user: "root"
     volumes: *superset-volumes
     healthcheck:

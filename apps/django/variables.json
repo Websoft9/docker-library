@@ -1,0 +1,46 @@
+{
+  "name": "django",
+  "trademark": "Django",
+  "release": true,
+  "upstream": {
+    "image": "https://github.com/django/django",
+    "releases": "https://github.com/django/django/releases",
+    "docs": [
+      "https://docs.djangoproject.com/",
+      "https://docs.djangoproject.com/en/5.2/howto/deployment/",
+      "https://docs.djangoproject.com/en/5.2/howto/deployment/wsgi/gunicorn/"
+    ]
+  },
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "6.1.1",
+        "5.2.17",
+        "latest"
+      ]
+    }
+  ],
+  "access": {
+    "web": {
+      "port": 8000,
+      "path": "/"
+    },
+    "admin": {
+      "port": 8000,
+      "path": "/admin/"
+    },
+    "api": {
+      "port": 8000,
+      "path": "/mcp"
+    }
+  },
+  "requirements": {
+    "cpu": "2",
+    "memory": "2",
+    "disk": "5"
+  },
+  "help": {
+    "db": "No database by default (SQLite). Uncomment DATABASE_URL in .env to use an external PostgreSQL or MySQL database."
+  }
+}

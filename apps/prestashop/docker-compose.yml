@@ -1,24 +1,19 @@
-# image: https://hub.docker.com/r/prestashop/prestashop
-# docs: https://github.com/PrestaShop/docker
-# docs: https://devdocs.prestashop-project.org/8/basics/installation/environments/docker/
-
-version: '3.8'
-
 services:
   prestashop:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
+    restart: unless-stopped
     ports:
-      - ${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}
-    volumes:
-      - prestashop:/var/www/html
+      - "${W9_HTTP_PORT_SET}:80" # Web Console
     env_file: .env
     depends_on:
       - mysql
-    restart: unless-stopped
+    volumes:
+      - prestashop:/var/www/html
+      - ./src/remove-install.sh:/tmp/init-scripts/remove-install.sh:ro
 
   mysql:
-    image: mysql:$W9_DB_VERSION
+    image: mysql:${W9_DB_VERSION}
     container_name: ${W9_ID}-mysql
     restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
@@ -30,11 +25,11 @@ services:
       MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
 
+volumes:
+  prestashop:
+  mysql_data:
+
 networks:
   default:
     name: ${W9_NETWORK}
     external: true
-
-volumes:
-  prestashop:
-  mysql_data:

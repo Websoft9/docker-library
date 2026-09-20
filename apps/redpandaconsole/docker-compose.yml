@@ -1,16 +1,19 @@
-# docs: https://docs.redpanda.com/current/get-started/quick-start/?tab=tabs-1-single-broker#deploy-redpanda
-
-version: '3.8'
-
 services:
   redpanda-console:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
     env_file: .env
     ports:
-      - $W9_HTTP_PORT_SET:8080
-      
+      - "${W9_HTTP_PORT_SET}:8080" # Web Console
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

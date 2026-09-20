@@ -1,13 +1,7 @@
-# image: https://hub.docker.com/r/gitea/gitea
-# docs: https://docs.gitea.io/zh-cn/install-with-docker
-
-
-version: '3.8'
-
 services:
   gitea:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     environment:
       - USER_UID=1000
       - USER_GID=1000
@@ -19,8 +13,14 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     ports:
-      - "$W9_HTTP_PORT_SET:3000"
-      - "$W9_SSH_PORT_SET:$W9_SSH_PORT_SET"
+      - "${W9_HTTP_PORT_SET}:3000" # Web UI
+      - "${W9_SSH_PORT_SET}:${W9_SSH_PORT_SET}" # Git SSH
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 
 networks:
   default:

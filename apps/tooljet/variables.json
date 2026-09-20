@@ -1,22 +1,36 @@
 {
   "name": "tooljet",
-  "trademark": "TooleJet",
+  "trademark": "ToolJet",
   "release": true,
   "edition": [
     {
       "dist": "community",
       "version": [
-        "v3.15.1",
+        "v3.20.226-lts",
         "latest"
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 80,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/tooljet/tooljet-ce"
+    "image": "https://hub.docker.com/r/tooljet/tooljet-ce",
+    "docs": [
+      "https://github.com/ToolJet/ToolJet",
+      "https://docs.tooljet.com/docs/setup/docker/",
+      "https://docs.tooljet.com/docs/setup/env-vars"
+    ]
+  },
+  "help": {
+    "db": "ToolJet bundles PostgreSQL 13 for a single-node deployment."
   }
 }

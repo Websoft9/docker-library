@@ -1,0 +1,17 @@
+{
+  "trademark": "Django",
+  "catalogBindings": [
+    {
+      "parentKey": "itdeveloper",
+      "childKey": "webframework"
+    }
+  ],
+  "summary": "Production-ready Python web framework.",
+  "overview": "Django is a high-level Python web framework for building secure, scalable web applications quickly.",
+  "description": "Django is an open-source, high-level Python web framework that encourages rapid development and clean, pragmatic design. It ships with an ORM, authentication, an admin interface, and built-in protection against common web vulnerabilities.\n\nThis package deploys a production-style Django stack: Gunicorn on Python 3.13, PostgreSQL 17, and a named volume for the application code. On first start it creates a default Django project so the admin interface is reachable, and you can then replace it with your own code.\n\nTypical use cases include content sites, internal tools, REST APIs, and data-driven web applications.",
+  "websiteurl": "https://www.djangoproject.com/",
+  "screenshots": [
+    "https://docs.djangoproject.com/en/5.2/_images/admin01.png",
+    "https://docs.djangoproject.com/en/5.2/_images/admin02.png"
+  ]
+}

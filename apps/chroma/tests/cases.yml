@@ -1,0 +1,8 @@
+skip:
+  - id: web-access
+
+optional:
+  - id: heartbeat
+    type: web-access
+    path: /api/v2/heartbeat
+    expect_status: 200

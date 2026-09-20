@@ -2,21 +2,40 @@
   "name": "gitea",
   "trademark": "Gitea",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/gitea/gitea",
+    "releases": "https://github.com/go-gitea/gitea/releases",
+    "docs": [
+      "https://docs.gitea.com/installation/install-with-docker",
+      "https://docs.gitea.com/administration/config-cheat-sheet"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "1.25",
+        "1.27",
         "latest"
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 3000,
+      "path": "/"
+    },
+    "admin": {
+      "port": 3000,
+      "path": "/-/admin"
+    },
+    "api": {
+      "port": 3000,
+      "path": "/api/v1"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "4"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/gitea/gitea"
   }
 }

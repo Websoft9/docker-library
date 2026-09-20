@@ -1,19 +1,18 @@
-# image: https://github.com/SonarSource/docker-sonarqube/blob/master/example-compose-files/sq-with-postgres/docker-compose.yml
-# docs: https://docs.sonarsource.com/sonarqube-server/latest/setup-and-upgrade/install-the-server/installing-sonarqube-from-docker/
-
 services:
 
   app:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
     read_only: true
     depends_on:
       db:
         condition: service_healthy
     ports:
-      - $W9_HTTP_PORT_SET:9000
+      - "${W9_HTTP_PORT_SET}:9000" # Web Console
     env_file: .env
+    tmpfs:
+      - /tmp:size=256M,mode=1777
     volumes:
       - sonarqube_data:/opt/sonarqube/data
       - sonarqube_extensions:/opt/sonarqube/extensions
@@ -21,8 +20,8 @@ services:
       - sonarqube_temp:/opt/sonarqube/temp
 
   db:
-    image: postgres:17
-    container_name: $W9_ID-postgresql
+    image: postgres:${W9_DB_VERSION}
+    container_name: ${W9_ID}-postgresql
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
@@ -42,8 +41,8 @@ volumes:
   sonarqube_extensions:
   sonarqube_logs:
   postgresql_data:
-    
+
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

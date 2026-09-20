@@ -1,0 +1,42 @@
+services:
+  nextjs:
+    image: ${W9_REPO}:${NODE_IMAGE_TAG}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    env_file: .env
+    working_dir: /usr/src/app
+    ports:
+      - "${W9_HTTP_PORT_SET}:3000" # Web Console
+    volumes:
+      - nextjs_app:/usr/src/app
+      - ./src/entrypoint.sh:/opt/websoft9/entrypoint.sh:ro
+      - ./src/entrypoint.d:/opt/websoft9/entrypoint.d:ro
+      - ./src/start.sh:/opt/websoft9/start.sh:ro
+    command:
+      - /bin/bash
+      - /opt/websoft9/entrypoint.sh
+    environment:
+      NODE_ENV: production
+      PORT: "${W9_HTTP_PORT}"
+      HOSTNAME: 0.0.0.0
+      HOME: /usr/src/app
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://127.0.0.1:3000/', (res) => process.exit(res.statusCode < 500 ? 0 : 1)).on('error', () => process.exit(1))"
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 300s
+
+volumes:
+  nextjs_app:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

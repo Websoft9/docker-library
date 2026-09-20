@@ -1,0 +1,13 @@
+{
+  "trademark": "Spring Boot",
+  "catalogBindings": [
+    {
+      "parentKey": "itdeveloper",
+      "childKey": "webframework"
+    }
+  ],
+  "summary": "Production-grade Java application framework.",
+  "overview": "Spring Boot is a Java framework for building production-ready applications. This package provides a ready-to-run workspace with a demo project, Maven, and JDK 21.",
+  "description": "Spring Boot is an open-source Java framework for building standalone, production-grade applications and services with minimal configuration. It provides auto-configuration, an embedded web server, health and metrics endpoints through Actuator, and a large ecosystem of starters.\n\nThis package deploys the official Maven image with JDK 21 and bootstraps a default Spring Boot demo project into a persistent workspace volume on first start. The demo exposes a root endpoint, a JSON `/hello` endpoint, and `/actuator/health`. Developers can exec into the container, edit the code under `/workspace`, run `mvn test`, and package the application.\n\nTypical use cases include REST APIs, microservices, internal tools, and as a hands-on workspace for learning and prototyping Spring Boot applications.",
+  "websiteurl": "https://spring.io/projects/spring-boot"
+}

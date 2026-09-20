@@ -1,0 +1,13 @@
+{
+  "trademark": "Gitea",
+  "catalogBindings": [
+    {
+      "parentKey": "itdeveloper",
+      "childKey": "repository"
+    }
+  ],
+  "summary": "Self-hosted Git service for teams.",
+  "overview": "Gitea is a lightweight self-hosted Git service with repositories, issues, pull requests, and CI, deployable as a single container.",
+  "description": "Gitea is a lightweight, open-source Git service for self-hosting source code. It provides Git repositories over HTTP and SSH together with issues, pull requests, code review, wikis, packages, and Gitea Actions for CI/CD.\n\nThis package deploys the official gitea/gitea image as a single container. Repository data is persisted in a named volume mounted at /data, the web UI is published on port 3000, and Git over SSH is exposed through the configured SSH port. No external database is required for a default single-node deployment.\n\nTypical use cases include private source code hosting, small team collaboration, and a lightweight alternative to larger Git platforms.",
+  "websiteurl": "https://about.gitea.com"
+}

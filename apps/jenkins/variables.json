@@ -6,7 +6,7 @@
     {
       "dist": "community",
       "version": [
-        "2.540",
+        "2.581",
         "latest"
       ]
     }
@@ -16,7 +16,19 @@
     "memory": "2",
     "disk": "8"
   },
+  "credentials": {
+    "password": {
+      "source": "container-file",
+      "path": "/var/jenkins_home/secrets/initialAdminPassword"
+    }
+  },
   "upstream": {
-    "image": "https://hub.docker.com/r/jenkins/jenkins"
+    "image": "https://hub.docker.com/r/jenkins/jenkins",
+    "releases": "https://www.jenkins.io/changelog/",
+    "docs": [
+      "https://github.com/jenkinsci/docker",
+      "https://www.jenkins.io/doc/",
+      "https://www.jenkins.io/doc/book/installing/docker/"
+    ]
   }
 }

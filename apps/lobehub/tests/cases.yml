@@ -1,0 +1,8 @@
+skip:
+  - id: web-access
+
+optional:
+  - id: signin-page
+    type: web-access
+    path: /signin
+    expect_status: 200

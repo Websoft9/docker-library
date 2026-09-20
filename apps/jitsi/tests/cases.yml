@@ -1,0 +1,7 @@
+skip:
+  - id: web-access
+
+optional:
+  - id: web-https
+    type: script
+    script: check.sh

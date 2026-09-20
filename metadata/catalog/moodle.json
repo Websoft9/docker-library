@@ -1,0 +1,13 @@
+{
+  "trademark": "Moodle",
+  "catalogBindings": [
+    {
+      "parentKey": "cms",
+      "childKey": "elearning"
+    }
+  ],
+  "summary": "Open-source learning management system.",
+  "overview": "Open-source learning management system for online courses, assessments, and collaboration. This package bundles the official image with MariaDB.",
+  "description": "Moodle is an open-source learning management system (LMS) used by schools, universities, and organizations to deliver online courses. It provides course management, assignments, quizzes, grading, forums, wikis, and analytics for teachers and learners.\n\nThis package deploys the elestio/moodle image with a bundled MariaDB database. On first start it installs Moodle automatically from environment variables and creates the initial administrator account. Moodle cron runs inside the container, and the application source and uploaded files are persisted in named volumes.\n\nTypical use cases include academic course delivery, corporate training, certification programs, and blended learning.",
+  "websiteurl": "https://moodle.org"
+}

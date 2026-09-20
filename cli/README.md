@@ -80,6 +80,7 @@ py -m venv .venv
 - `libs app-down --app <name> [--ssh-host <ip>] [--progress] [--json]` - tear one app down with `docker compose down -v`
 - `libs appstore-sync --app <name> --ssh-host <ip> [--progress] [--verbose]` - sync one app directory into the remote websoft9 container library and sync `metadata/catalog/<app>.json` into the container catalog directory for appstore testing
 - `libs appstore-deploy --app <name> --ssh-host <ip> [--progress] [--verbose]` - deploy one app into a websoft9 container appstore (not implemented yet; pending the websoft9 container CLI)
+- `libs websoft9-upgrade [--container <name>] [--tag <tag>] [--tag-var <var>] [--compose-dir <dir>] [--target local|remote] [--ssh-host <ip>] [--progress] [--verbose]` - upgrade the Websoft9 platform container: set the image tag (default `dev`), run `docker compose pull`, then `docker compose up -d`; the compose project is discovered from the container labels unless `--compose-dir` is given
 - remote-aware commands suppress the routine `known hosts` add warning from ephemeral SSH targets; real stderr still passes through
 - `libs proxy` - show, save, or clear the saved proxy
 - `libs help` - show help, same as `libs --help`

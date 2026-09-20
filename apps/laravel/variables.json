@@ -1,22 +1,37 @@
 {
   "name": "laravel",
   "trademark": "Laravel",
-  "release": false,
+  "release": true,
+  "upstream": {
+    "image": "https://github.com/laravel/framework",
+    "releases": "https://github.com/laravel/framework/releases",
+    "docs": [
+      "https://laravel.com/framework/docs/installation",
+      "https://laravel.com/docs/13.x/deployment",
+      "https://frankenphp.dev/docs/laravel/"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "12.0.7",
+        "13.31.0",
         "latest"
       ]
     }
   ],
-  "requirements": {
-    "cpu": "1",
-    "memory": "1",
-    "disk": "1"
+  "access": {
+    "web": {
+      "port": 8080,
+      "path": "/"
+    }
   },
-  "upstream": {
-    "image": "https://hub.docker.com/_/php"
+  "requirements": {
+    "cpu": "2",
+    "memory": "2",
+    "disk": "5"
+  },
+  "help": {
+    "db": "No database by default (SQLite). Uncomment DATABASE_URL in .env to use an external MySQL or PostgreSQL database."
   }
 }

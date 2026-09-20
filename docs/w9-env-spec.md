@@ -105,6 +105,8 @@ Rules:
 - declare `W9_LOGIN_USER` and `W9_LOGIN_PASSWORD` only when the app has built-in administrator credentials controlled by the package
 - never declare only one of the login pair
 - declare `W9_URL` for web apps
+- use a domain-style placeholder for `W9_URL`, for example `appname.example.com` or `example.youdomain.com`
+- do NOT use the legacy `internet_ip:${W9_HTTP_PORT_SET}` form; host substitution is the consumer's concern, not this repository's
 - set `W9_URL_REPLACE=true` only when app config or env actively references `${W9_URL}`
 - typical URL-aware upstream keys include `ROOT_URL`, `BASE_URL`, `SITE_URL`, `APP_URL`, `PUBLIC_URL`, `EXTERNAL_URL`, `HOST`, `DOMAIN`, `PUBLIC_URI`
 
@@ -348,6 +350,10 @@ Use:
 - `W9_URL_REPLACE` only when config/env references `${W9_URL}`
 
 Do not add login pair unless the package really controls it.
+
+If the consumer can resolve the generated password after deployment, prefer declaring a machine-readable
+`variables.json.credentials.password` source such as `container-file` or `container-log` instead of
+adding `W9_LOGIN_USER` / `W9_LOGIN_PASSWORD` or the legacy `W9_LOGIN_GET_PASSWORD` command string.
 
 ### Web App With Bundled PostgreSQL Or MySQL
 

@@ -1,0 +1,16 @@
+{
+  "trademark": "Jitsu",
+  "catalogBindings": [
+    {
+      "parentKey": "analytics",
+      "childKey": "dintegration"
+    }
+  ],
+  "summary": "Warehouse-first event data platform.",
+  "overview": "Self-hosted event data platform that collects web and app events and routes them to warehouses in near real time.",
+  "description": "Jitsu is an open-source event data platform and Segment alternative. It collects events from websites, apps, and backend services, then routes them to data warehouses and downstream tools with near-real-time delivery. The console provides stream, destination, and pipeline management, while the ingest endpoint receives SDK and HTTP API traffic.\n\nThis package deploys Jitsu's official Docker Compose core stack: Console, Bulker, Rotor, Ingest, PostgreSQL, MongoDB, ClickHouse, and Redpanda. It is suitable for the upstream Compose-based core mode, but Jitsu documents that a feature-complete deployment since 2.14 requires Kubernetes for functions, profile builders, and connector sync jobs.\n\nTypical use cases include customer data collection, warehouse-first analytics pipelines, event transformation, and self-hosted CDP deployments where teams need control over event delivery and storage.",
+  "websiteurl": "https://jitsu.com",
+  "screenshots": [
+    "https://github.com/jitsucom/jitsu/raw/newjitsu/.readme-assets/overview-screenshot.png?raw=true"
+  ]
+}

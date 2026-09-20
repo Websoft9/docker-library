@@ -25,11 +25,22 @@
       "version": ["{{ version }}", "latest"]
     }
   ],
+  "access": {
+    "web": {
+      "port": 80,
+      "path": "/"
+    },
+    "admin": {
+      "port": 80,
+      "path": "/admin"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "1"
   },
+  "credentials": {},
   "env": {
     "first_startup_only": []
   },

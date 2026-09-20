@@ -1,0 +1,7 @@
+# Kafka exposes no HTTP interface, so there is no web-access or http-basic case.
+# The adaptive checks cover its functional path:
+#   - compose-config
+#   - container-up
+#   - container-healthy  (runs kafka-broker-api-versions.sh against the internal listener)
+# Add cases here only if a future deployment exposes an HTTP endpoint or a
+# remote-runnable script path.

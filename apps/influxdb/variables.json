@@ -2,12 +2,24 @@
   "name": "influxdb",
   "trademark": "InfluxDB",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/_/influxdb",
+    "releases": "https://github.com/influxdata/influxdb/releases",
+    "docs": [
+      "https://docs.influxdata.com/influxdb/v2/install/",
+      "https://docs.influxdata.com/influxdb/v2/reference/",
+      "https://docs.influxdata.com/influxdb/v2/admin/",
+      "https://docs.influxdata.com/influxdb3/core/install/",
+      "https://docs.influxdata.com/influxdb3/core/get-started/"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "2.7",
-        "latest"
+        "2.9",
+        "latest",
+        "3-core"
       ]
     }
   ],
@@ -15,8 +27,5 @@
     "cpu": "1",
     "memory": "1",
     "disk": "1"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/_/influxdb"
   }
 }

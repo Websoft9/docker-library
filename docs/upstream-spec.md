@@ -180,6 +180,10 @@ Rules:
 - required variables
 - URL or login related config
 
+Note: `W9_URL` uses a domain-style placeholder (for example `appname.example.com` or
+`example.youdomain.com`). Do not use `internet_ip:${W9_HTTP_PORT_SET}`; host substitution is the
+consumer's concern, not this repository's. The canonical rule lives in `docs/w9-env-spec.md`.
+
 ## AI Fallback Boundary
 
 When `libs app-drift` runs:
@@ -241,3 +245,30 @@ Division of labor:
 Do not ask CLI to understand arbitrary webpages.
 
 Do not ask AI to perform routine deterministic scanning when a stable source type exists.
+
+## Runtime Credential Metadata
+
+Some apps generate an initial password or token at first startup instead of taking it from `.env`.
+For these cases, app packages may declare machine-readable credential sources in `variables.json`.
+
+Current minimal shape:
+
+```json
+{
+  "credentials": {
+    "password": {
+      "source": "container-file",
+      "path": "/var/jenkins_home/secrets/initialAdminPassword"
+    }
+  }
+}
+```
+
+Rules:
+
+- `container-file` means the consumer executes a fixed `docker exec <W9_ID> cat <path>` flow in the
+  `websoft9` container and captures stdout as the password value
+- `container-log` means the consumer executes a fixed `docker logs <W9_ID>` flow in the `websoft9`
+  container and extracts the password by `pattern`
+- keep this metadata declarative; do not store full shell commands in `variables.json`
+- prefer `credentials.password` over the legacy `W9_LOGIN_GET_PASSWORD` when a touched app needs this behavior

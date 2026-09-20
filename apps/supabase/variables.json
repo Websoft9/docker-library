@@ -6,13 +6,34 @@
     {
       "dist": "community",
       "version": [
-        "latest"
+        "0.8.1"
       ]
     }
   ],
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "2"
+    "disk": "40"
+  },
+  "upstream": {
+    "image": "https://github.com/supabase/supabase/releases/tag/self-hosted/v0.8.1",
+    "releases": "https://github.com/supabase/supabase/tags",
+    "compose": {
+      "compose": "https://raw.githubusercontent.com/supabase/supabase/self-hosted/v0.8.1/docker/docker-compose.yml",
+      "env": "https://raw.githubusercontent.com/supabase/supabase/self-hosted/v0.8.1/docker/.env.example"
+    },
+    "docs": [
+      "https://supabase.com/docs/guides/self-hosting/docker",
+      "https://github.com/supabase/supabase/blob/master/docker/CHANGELOG.md",
+      "https://github.com/supabase/supabase/blob/master/docker/versions.md"
+    ]
+  },
+  "env": {
+    "first_startup_only": [
+      "POSTGRES_PASSWORD"
+    ]
+  },
+  "help": {
+    "db": "This package rebuilds Supabase against self-hosted v0.8.1 and follows the upstream Postgres 17 base stack. External database, Kong, logs/analytics, PgBouncer, and TLS proxy overrides are not enabled in the base package."
   }
 }

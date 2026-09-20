@@ -30,6 +30,7 @@ def build_machine_fields(variables: dict) -> dict:
     requirements = variables.get("requirements") or {}
     return {
         "key": variables.get("name"),
+        "title": variables.get("trademark") or variables.get("name"),
         "distribution": [
             {"key": edition.get("dist"), "value": edition.get("version", [])}
             for edition in variables.get("edition", [])
@@ -91,7 +92,8 @@ def build_catalog_links(client, environment: str, bindings: list[dict]) -> list[
 
 
 def create_entry(client, environment: str, fields: dict):
-    entry = client.entries(SPACE_ID, environment).create(CONTENT_TYPE, fields)
+    attributes = {"fields": fields, "content_type_id": CONTENT_TYPE}
+    entry = client.entries(SPACE_ID, environment).create(attributes=attributes)
     entry.publish()
     return entry
 
