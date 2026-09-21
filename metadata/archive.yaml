@@ -56,10 +56,22 @@ apps:
 - scratch
 - screego
 - sscms
+- taskingai
 - tailscale
+- theia
+- tinyproxy
+- tomee
+- tooljet
+- traccar
+- trafficserver
+- triggerdev
 - v2ray
 - webcheck
 - weblate
+- twenty
+- ttrss
+- tyk
+- unleash
 - wikijs
 - windmill
 - wireguard
@@ -94,6 +106,8 @@ overrides:
   scratch:
     archive_reason: Low user demand
   screego:
+    archive_reason: Low user demand
+  taskingai:
     archive_reason: Low user demand
   onlyoffice:
     archive_reason: Not maintained by upstream
@@ -149,6 +163,20 @@ overrides:
     archive_reason: Low user demand
   tailscale:
     archive_reason: Low user demand
+  theia:
+    archive_reason: Low user demand
+  tinyproxy:
+    archive_reason: Low user demand
+  tomee:
+    archive_reason: Low user demand
+  tooljet:
+    archive_reason: Low user demand
+  traccar:
+    archive_reason: Low user demand
+  trafficserver:
+    archive_reason: Low user demand
+  triggerdev:
+    archive_reason: Low user demand
   krakend:
     archive_reason: Low user demand
   mailpit:
@@ -172,4 +200,12 @@ overrides:
   webcheck:
     archive_reason: Low user demand
   v2ray:
+    archive_reason: Low user demand
+  twenty:
+    archive_reason: Low user demand
+  ttrss:
+    archive_reason: Low user demand
+  tyk:
+    archive_reason: Low user demand
+  unleash:
     archive_reason: Low user demand

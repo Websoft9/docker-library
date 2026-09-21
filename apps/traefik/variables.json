@@ -6,7 +6,7 @@
     {
       "dist": "community",
       "version": [
-        "v3.6",
+        "v3.7",
         "latest"
       ]
     }
@@ -17,6 +17,11 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/_/traefik"
+    "image": "https://hub.docker.com/_/traefik",
+    "releases": "https://github.com/traefik/traefik",
+    "docs": [
+      "https://doc.traefik.io/traefik/reference/install-configuration/providers/docker/",
+      "https://doc.traefik.io/traefik/migrate/v3/"
+    ]
   }
 }

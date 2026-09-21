@@ -2,21 +2,32 @@
   "name": "trivy",
   "trademark": "Trivy",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/aquasec/trivy",
+    "releases": "https://github.com/aquasecurity/trivy/releases",
+    "docs": [
+      "https://trivy.dev/latest/docs/references/modes/client-server/",
+      "https://trivy.dev/latest/docs/references/configuration/cli/trivy_server/"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "0.68.1",
+        "0.74.0",
         "latest"
       ]
     }
   ],
+  "access": {
+    "api": {
+      "port": 4954,
+      "path": "/healthz"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "2"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/aquasec/trivy"
+    "disk": "4"
   }
 }

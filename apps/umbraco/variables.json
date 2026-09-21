@@ -1,18 +1,46 @@
 {
   "name": "umbraco",
   "trademark": "Umbraco",
-  "release": false,
+  "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/websoft9dev/umbraco",
+    "releases": "https://github.com/umbraco/Umbraco-CMS/releases",
+    "docs": [
+      "https://docs.umbraco.com/umbraco-cms/get-started/installation/running-umbraco-on-docker-locally",
+      "https://docs.umbraco.com/umbraco-cms/run-in-production/infrastructure-and-ops/server-setup/running-umbraco-in-docker"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "latest"
+        "18.2.0"
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 8080,
+      "path": "/"
+    },
+    "admin": {
+      "port": 8080,
+      "path": "/umbraco"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "1"
+    "disk": "4"
+  },
+  "credentials": {},
+  "env": {
+    "first_startup_only": [
+      "W9_LOGIN_USER",
+      "W9_LOGIN_PASSWORD"
+    ]
+  },
+  "help": {
+    "db": "Bundled SQLite database; the administrator account is created on first start."
   }
 }

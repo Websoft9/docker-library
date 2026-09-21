@@ -16,7 +16,29 @@
     "memory": "4",
     "disk": "1"
   },
+  "env": {
+    "first_startup_only": [
+      "TYPO3_DB_DRIVER",
+      "TYPO3_DB_HOST",
+      "TYPO3_DB_PORT",
+      "TYPO3_DB_DBNAME",
+      "TYPO3_DB_USERNAME",
+      "TYPO3_DB_PASSWORD",
+      "TYPO3_SETUP_ADMIN_USERNAME",
+      "TYPO3_SETUP_ADMIN_PASSWORD",
+      "TYPO3_SETUP_ADMIN_EMAIL",
+      "TYPO3_PROJECT_NAME",
+      "TYPO3_SETUP_CREATE_SITE",
+      "TYPO3_SERVER_TYPE"
+    ]
+  },
   "upstream": {
-    "image": "https://hub.docker.com/r/martinhelmich/typo3"
+    "image": "https://hub.docker.com/r/martinhelmich/typo3",
+    "releases": "https://github.com/TYPO3/typo3/releases",
+    "docs": [
+      "https://github.com/martin-helmich/docker-typo3",
+      "https://github.com/TYPO3/typo3",
+      "https://docs.typo3.org/"
+    ]
   }
 }

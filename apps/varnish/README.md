@@ -37,7 +37,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 9.0, stable, latest.
+Supported versions: 9.0, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
@@ -71,6 +71,12 @@ Configuration is overridden by mounting `./src/default.vcl` to `/etc/varnish/def
 - [Varnish Administrator Guide](https://support.websoft9.com/docs/varnish) by Websoft9
 
 - [Docker Hub image](https://hub.docker.com/_/varnish)
+
+- [Releases](https://github.com/varnish/varnish/releases)
+
+- [Official docs](https://varnish-cache.org/docs/)
+
+- [GitHub docs](https://github.com/varnish/docker-varnish)
 
 
 <!-- W9_TROUBLESHOOT_START -->

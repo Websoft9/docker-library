@@ -7,7 +7,6 @@
       "dist": "community",
       "version": [
         "9.0",
-        "stable",
         "latest"
       ]
     }
@@ -18,6 +17,11 @@
     "disk": "8"
   },
   "upstream": {
-    "image": "https://hub.docker.com/_/varnish"
+    "image": "https://hub.docker.com/_/varnish",
+    "releases": "https://github.com/varnish/varnish/releases",
+    "docs": [
+      "https://varnish-cache.org/docs/",
+      "https://github.com/varnish/docker-varnish"
+    ]
   }
 }

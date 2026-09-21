@@ -6,7 +6,7 @@
     {
       "dist": "community",
       "version": [
-        "2.19.0-jupyter",
+        "2.20.0-jupyter",
         "latest-jupyter"
       ]
     }

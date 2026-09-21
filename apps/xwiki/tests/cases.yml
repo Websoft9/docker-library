@@ -1,0 +1,7 @@
+# The adaptive checks cover compose config, container state, the healthcheck and
+# the web root. XWiki is served from the ROOT context, so the app-specific check
+# follows the redirect chain and asserts the XWiki webapp is actually rendered.
+custom:
+  - id: xwiki-webapp
+    type: script
+    script: check.sh

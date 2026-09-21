@@ -2,15 +2,28 @@
   "name": "teleport",
   "trademark": "Teleport",
   "release": true,
+  "upstream": {
+    "image": "https://gallery.ecr.aws/gravitational/teleport-distroless",
+    "releases": "https://github.com/gravitational/teleport/releases",
+    "docs": [
+      "https://goteleport.com/docs/installation/single-machine/docker/"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "14.0",
-        "13.0"
+        "18.10",
+        "18"
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 3080,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

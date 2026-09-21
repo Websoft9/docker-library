@@ -371,3 +371,76 @@ def test_emit_case_detail_prefers_health_summary_over_raw_stdout():
     )
 
     assert output == ["status=running health=healthy"]
+
+
+def test_remote_script_command_sources_env_and_uses_localhost():
+    remote_ctx = {"app_target": "/opt/apps/demo"}
+
+    command = app_tests._remote_script_command(
+        remote_ctx, "demo", "smoke.sh", {"W9_HTTP_PORT_SET": "8080"}, "http://1.2.3.4:8080"
+    )
+
+    assert command.startswith("cd /opt/apps/demo && ")
+    assert "set -a; [ -f .env ] && . ./.env; set +a;" in command
+    assert "BASE_URL=http://localhost:8080" in command
+    assert "APP_NAME=demo" in command
+    assert "W9_TARGET=remote" in command
+    assert command.endswith("bash tests/smoke.sh")
+
+
+def test_remote_script_command_falls_back_to_base_url_without_port():
+    command = app_tests._remote_script_command(
+        {"app_target": "/opt/apps/demo"}, "demo", "smoke.sh", {}, "http://1.2.3.4:9000"
+    )
+
+    assert "BASE_URL=http://1.2.3.4:9000" in command
+
+
+def test_script_case_runs_on_remote_by_default(repo_fixture, app_factory, monkeypatch):
+    root = app_factory("demo", env="W9_HTTP_PORT_SET=8080\nW9_ID=demo\n")
+    tests_dir = root / "tests"
+    tests_dir.mkdir()
+    (tests_dir / "smoke.sh").write_text("#!/usr/bin/env bash\ntrue\n", encoding="utf-8")
+
+    calls = {}
+
+    def fake_remote_script(remote_ctx, command):
+        calls["remote_ctx"] = remote_ctx
+        calls["command"] = command
+        return types.SimpleNamespace(returncode=0, stdout="remote ok", stderr="")
+
+    monkeypatch.setattr(app_tests, "_run_remote_script", fake_remote_script)
+
+    remote_ctx = {"host": "1.2.3.4", "user": "root", "secret_path": "/tmp/key", "app_target": "/opt/apps/demo"}
+    result = app_tests.run_case(
+        "demo", {"id": "welcome", "type": "script", "script": "smoke.sh"}, app_tests.load_env("demo"), "http://1.2.3.4:8080", remote_ctx
+    )
+
+    assert result["ok"] is True
+    assert result["stdout"] == "remote ok"
+    assert calls["remote_ctx"] == remote_ctx
+    assert "bash tests/smoke.sh" in calls["command"]
+
+
+def test_script_case_target_local_forces_local_execution(repo_fixture, app_factory, monkeypatch):
+    root = app_factory("demo", env="W9_HTTP_PORT_SET=8080\nW9_ID=demo\n")
+    tests_dir = root / "tests"
+    tests_dir.mkdir()
+    (tests_dir / "smoke.sh").write_text("#!/usr/bin/env bash\necho local-run target=${W9_TARGET:-unset}\n", encoding="utf-8")
+
+    def fail_remote(*args, **kwargs):
+        raise AssertionError("remote execution not expected for target: local")
+
+    monkeypatch.setattr(app_tests, "_run_remote_script", fail_remote)
+
+    remote_ctx = {"host": "1.2.3.4", "user": "root", "secret_path": "/tmp/key", "app_target": "/opt/apps/demo"}
+    result = app_tests.run_case(
+        "demo",
+        {"id": "smoke", "type": "script", "script": "smoke.sh", "target": "local"},
+        app_tests.load_env("demo"),
+        "http://1.2.3.4:8080",
+        remote_ctx,
+    )
+
+    assert result["ok"] is True
+    assert "local-run target=local" in result["stdout"]

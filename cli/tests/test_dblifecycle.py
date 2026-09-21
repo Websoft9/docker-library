@@ -53,7 +53,9 @@ def test_refresh_lifecycle_writes_snapshot(repo_fixture, monkeypatch):
     assert payload["engines"]["mysql"]["tracks"] == [{"version": "8.4", "track": "lts", "eol": "2032-04-30"}]
 
 
-def test_is_stale_detects_missing_invalid_and_old_snapshots(repo_fixture):
+def test_is_stale_detects_missing_invalid_and_old_snapshots(repo_fixture, monkeypatch):
+    # Pin "today" so the hardcoded snapshot dates stay deterministic over time.
+    monkeypatch.setattr(dblifecycle, "date", FakeDate)
     path = repo_fixture / "metadata" / "db-lifecycle.json"
 
     assert dblifecycle.is_stale() is True

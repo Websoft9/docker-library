@@ -46,6 +46,13 @@ Rules:
 - use `http-basic` only for real HTTP Basic Auth apps
 - use `script` only when built-in checks are insufficient
 
+Script execution target:
+
+- `script` cases run on the deployment target by default: locally for a local deploy, and over SSH for a remote deploy.
+- On remote, the script runs from the deployed app directory with the deployed `.env` sourced, and `BASE_URL` is rewritten to `http://localhost:<W9_HTTP_PORT_SET>`. This lets a script use the remote Docker CLI (for example `docker cp`/`docker exec`) to exercise paths the HTTP-only checks cannot reach.
+- Set `target: local` on a case to force runner-side execution (for example a check that must run from the caller's network position). On a local deploy every script runs locally regardless.
+- Scripts must be self-contained and idempotent; they receive `BASE_URL`, `APP_NAME`, `W9_TARGET` (`local` or `remote`), and the app `.env` variables. Because a script already runs on the deployment target, it normally does not need to branch on `W9_TARGET`; use it only when the check must behave differently on the runner.
+
 Readiness behavior:
 
 - readiness checks retry for `--wait-timeout` seconds

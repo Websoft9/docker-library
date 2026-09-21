@@ -1,0 +1,7 @@
+# The adaptive checks cover the compose config, container state, the compose
+# healthcheck (/api/heartbeat) and the web root. The authenticated path is the
+# core of Umami, so it is exercised explicitly.
+custom:
+  - id: login-api
+    type: script
+    script: check.sh

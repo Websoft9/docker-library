@@ -1,0 +1,5 @@
+optional:
+  - id: backoffice
+    type: web-access
+    path: /umbraco
+    expect_status: [200]

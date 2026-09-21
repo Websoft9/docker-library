@@ -1,11 +1,35 @@
-version: '3.8'
-
 services:
-  
-networks:
-  default:
-      name: ${W9_NAME}
+
+  umbraco:
+    image: ${W9_REPO}:${W9_VERSION}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        UMBRACO_VERSION: ${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "${W9_HTTP_PORT_SET}:8080" # Web Console
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__umbracoDbDSN: "${UMBRACO_DB_DSN}"
+      ConnectionStrings__umbracoDbDSN_ProviderName: Microsoft.Data.Sqlite
+      Umbraco__CMS__WebRouting__UmbracoApplicationUrl: http://${W9_URL}
+      Umbraco__CMS__Unattended__InstallUnattended: "true"
+      Umbraco__CMS__Unattended__UnattendedUserName: Administrator
+      Umbraco__CMS__Unattended__UnattendedUserEmail: ${W9_LOGIN_USER}
+      Umbraco__CMS__Unattended__UnattendedUserPassword: ${W9_LOGIN_PASSWORD}
+    volumes:
+      - umbraco_data:/app/umbraco
+      - umbraco_media:/app/wwwroot/media
 
 volumes:
-  mysql:
-  suitecrm:
+  umbraco_data:
+  umbraco_media:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

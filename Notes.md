@@ -35,7 +35,7 @@ Semaphore
 cloudreve，compreface，commafeed， coze，dashy，ejbca, frigate, falcon
 
 Qdrant
-e2e test for: zammad, vaultwarden, wazuh, varnish
+e2e test for: vaultwarden, varnish
 varnish not have config file
 pangolin.net
 RustDesk 

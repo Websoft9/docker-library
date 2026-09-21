@@ -6,7 +6,7 @@
     {
       "dist": "community",
       "version": [
-        "2.0",
+        "2.1",
         "latest"
       ]
     }
@@ -16,7 +16,17 @@
     "memory": "2",
     "disk": "2"
   },
+  "env": {
+    "first_startup_only": [
+      "W9_LOGIN_USER",
+      "W9_LOGIN_PASSWORD"
+    ]
+  },
   "upstream": {
-    "image": "https://hub.docker.com/r/syncthing/syncthing"
+    "image": "https://hub.docker.com/r/syncthing/syncthing",
+    "docs": [
+      "https://docs.syncthing.net/intro/getting-started.html"
+    ],
+    "version_notes": "https://github.com/syncthing/syncthing/releases/tag/v2.1.5"
   }
 }

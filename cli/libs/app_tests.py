@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+import shlex
 import subprocess
 import time
 from collections.abc import Callable
@@ -208,6 +209,28 @@ def _run_remote_script(remote_ctx: dict, script: str) -> subprocess.CompletedPro
     return remote.run_ssh(remote_ctx["host"], remote_ctx["user"], remote_ctx["secret_path"], script)
 
 
+def _remote_script_command(remote_ctx: dict, app_name: str, script_name: str, env: dict, base_url: str | None) -> str:
+    """Build the command that runs a tests/<script> case on the remote host.
+
+    The script is synced with the app package, so it runs from the deployed app
+    directory with the deployed .env sourced (keeps secrets out of the SSH
+    command line). BASE_URL is rewritten to localhost because the script now
+    runs on the host that publishes the port.
+    """
+    app_target = remote_ctx["app_target"]
+    remote_base_url = base_url or ""
+    port = env.get("W9_HTTP_PORT_SET")
+    if port:
+        remote_base_url = f"http://localhost:{port}"
+    script_rel = f"tests/{script_name}"
+    return (
+        f"cd {shlex.quote(app_target)} && "
+        f"{{ set -a; [ -f .env ] && . ./.env; set +a; }} && "
+        f"BASE_URL={shlex.quote(remote_base_url)} APP_NAME={shlex.quote(app_name)} W9_TARGET=remote "
+        f"bash {shlex.quote(script_rel)}"
+    )
+
+
 def run_case(app_name: str, case: dict, env: dict, base_url: str | None, remote_ctx: dict | None) -> dict:
     target = app_dir(app_name)
     assert target is not None
@@ -276,8 +299,16 @@ def run_case(app_name: str, case: dict, env: dict, base_url: str | None, remote_
         script = target / "tests" / case["script"]
         if not script.exists():
             raise FileNotFoundError(f"missing test script: {script.relative_to(repo_path())}")
-        run_env = {**env, "BASE_URL": base_url or "", "APP_NAME": app_name}
-        result = subprocess.run(["bash", str(script)], check=False, capture_output=True, text=True, env=run_env)
+        # Script cases run on the deployment target by default: locally for a
+        # local deploy, over SSH for a remote deploy. Set `target: local` on the
+        # case to force runner-side execution.
+        if remote_ctx and case.get("target", "auto") != "local":
+            result = _run_remote_script(
+                remote_ctx, _remote_script_command(remote_ctx, app_name, case["script"], env, base_url)
+            )
+        else:
+            run_env = {**env, "BASE_URL": base_url or "", "APP_NAME": app_name, "W9_TARGET": "local"}
+            result = subprocess.run(["bash", str(script)], check=False, capture_output=True, text=True, env=run_env)
         return {"id": case_id, "ok": result.returncode == 0, "stdout": result.stdout, "stderr": result.stderr}
 
     raise ValueError(f"unsupported test type: {case_type}")

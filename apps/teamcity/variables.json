@@ -6,7 +6,7 @@
     {
       "dist": "community",
       "version": [
-        "2025.07",
+        "2026.2",
         "latest"
       ]
     }
@@ -17,6 +17,12 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/jetbrains/teamcity-server"
+    "image": "https://hub.docker.com/r/jetbrains/teamcity-server",
+    "releases": "https://www.jetbrains.com/teamcity/download/",
+    "docs": [
+      "https://www.jetbrains.com/help/teamcity/teamcity-documentation.html",
+      "https://github.com/JetBrains/teamcity-docker-server",
+      "https://github.com/JetBrains/teamcity-docker-samples"
+    ]
   }
 }

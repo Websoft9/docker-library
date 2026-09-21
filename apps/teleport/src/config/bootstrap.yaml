@@ -1,0 +1,31 @@
+#
+# Bootstrap resources, applied once on the cluster's first start.
+#
+# Creates the first administrator and a full-access role. The account has no
+# password yet: generate a setup link with
+#   docker exec <container> /usr/local/bin/tctl users reset admin
+# and open it to set the password. MFA is disabled (see teleport.yaml).
+#
+# Applied with --bootstrap, so it is ignored once the cluster is initialized.
+#
+kind: role
+version: v7
+metadata:
+  name: admin
+spec:
+  options:
+    max_session_ttl: 12h
+  allow:
+    logins: ["root", "ubuntu", "ec2-user"]
+    node_labels:
+      "*": "*"
+    rules:
+      - resources: ["*"]
+        verbs: ["*"]
+---
+kind: user
+version: v2
+metadata:
+  name: admin
+spec:
+  roles: ["admin"]

@@ -1,7 +1,3 @@
-# image: https://hub.docker.com/r/thingsboard/tb-postgres/
-# docs: https://thingsboard.io/docs/user-guide/install/docker/
-
-
 services:
   thingsboard-ce:
     restart: unless-stopped
@@ -10,7 +6,7 @@ services:
     env_file:
       - .env
     ports:
-      - ${W9_HTTP_PORT_SET}:8080
+      - "${W9_HTTP_PORT_SET}:8080" # Web Console
     logging:
       driver: "json-file"
       options:
@@ -25,14 +21,14 @@ services:
 
   postgres:
     restart: unless-stopped
-    image: postgres:16
+    image: postgres:${W9_DB_VERSION}
     container_name: ${W9_ID}-postgres
     environment:
       - POSTGRES_USER=${POSTGRESQL_USER}
       - POSTGRES_DB=${POSTGRESQL_DATABASE_NAME}
       - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "${POSTGRESQL_USER}", "-d", "${POSTGRESQL_DATABASE_NAME}"]
       interval: 5s

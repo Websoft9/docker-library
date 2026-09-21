@@ -1,0 +1,10 @@
+# The adaptive checks cover compose config, container health and the web root.
+# Tomcat's core path is deploying a WAR, so war-deploy.sh builds a tiny WAR
+# inside the container, waits for auto-deploy and verifies the context serves it.
+optional:
+  - id: welcome-page
+    type: script
+    script: smoke.sh
+  - id: war-deploy
+    type: script
+    script: war-deploy.sh
