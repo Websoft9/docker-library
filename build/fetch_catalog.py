@@ -16,6 +16,12 @@ LOCALES = {
     "en-US": "en",
     "zh-CN": "zh",
 }
+# Fallback logos used when a Contentful product entry has no logo, so consumers
+# do not reject the whole catalog for incomplete data. Keyed by locale short code.
+DEFAULT_LOGO_URLS = {
+    "en": "https://libs.websoft9.com/Websoft9/logo/product/websoft9-en.png",
+    "zh": "https://libs.websoft9.com/Websoft9/logo/product/websoft9.png",
+}
 CATALOG_QUERY = """
 query($locale: String!) {
   catalog(id: \"2Yp0TY3kBHgG6VDjsHZNpK\", locale: $locale) {
@@ -121,6 +127,15 @@ def fetch_catalog_entries(token: str, locale: str) -> list[dict]:
     return collection.get("items") or []
 
 
+def apply_default_logo(entry: dict, locale_code: str) -> dict:
+    """Return the entry with a usable logo URL, filling in a locale default when absent."""
+    logo = entry.get("logo") or {}
+    if logo.get("imageurl"):
+        return entry
+    fallback = DEFAULT_LOGO_URLS.get(locale_code) or DEFAULT_LOGO_URLS["en"]
+    return {**entry, "logo": {"imageurl": fallback}}
+
+
 def fetch_product_entries(token: str, locale: str, production: bool | None) -> list[dict]:
     items: list[dict] = []
     skip = 0
@@ -141,7 +156,9 @@ def fetch_product_entries(token: str, locale: str, production: bool | None) -> l
     duplicate_ids = sorted({entry_id for entry_id in entry_ids if entry_id and entry_ids.count(entry_id) > 1})
     if duplicate_ids:
         raise SystemExit(f"duplicate Contentful product sys.id values: {', '.join(duplicate_ids)}")
-    return items
+
+    locale_code = LOCALES.get(locale, "en")
+    return [apply_default_logo(entry, locale_code) for entry in items]
 
 
 def write_json(path: Path, payload: list[dict]) -> None:
