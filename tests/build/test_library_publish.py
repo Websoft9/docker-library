@@ -17,6 +17,22 @@ def test_hash_content_is_deterministic_and_input_sensitive():
     assert len(library_publish._hash_content("a")) == 16
 
 
+def test_compute_catalog_dataset_version_is_content_sensitive(tmp_path: Path):
+    catalog_dir = tmp_path / "catalog"
+    catalog_dir.mkdir()
+    for file_name in library_publish.CATALOG_FILE_NAMES:
+        (catalog_dir / file_name).write_text("[]\n", encoding="utf-8")
+
+    baseline = library_publish.compute_catalog_dataset_version(catalog_dir)
+    assert len(baseline) == 16
+    assert baseline == library_publish.compute_catalog_dataset_version(catalog_dir)
+
+    (catalog_dir / "product_en.json").write_text('[{"key": "lobechat"}]\n', encoding="utf-8")
+    changed = library_publish.compute_catalog_dataset_version(catalog_dir)
+
+    assert changed != baseline
+
+
 def test_summarize_versions_deduplicates_and_preserves_order():
     editions = [
         {"dist": "community", "version": ["1.0", "1.0", "2.0"]},
