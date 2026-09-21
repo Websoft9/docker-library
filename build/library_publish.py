@@ -144,6 +144,19 @@ def write_checksum_file(path: Path) -> str:
     return checksum_path.name
 
 
+def compute_catalog_dataset_version(catalog_dir: Path) -> str:
+    """Derive catalog datasetVersion from the actual content of the catalog files.
+
+    Must hash file contents, not checksum file names, otherwise the version is a
+    constant and consumers can never detect catalog changes.
+    """
+    parts = [
+        f"{file_name}={sha256_file(catalog_dir / file_name)}"
+        for file_name in CATALOG_FILE_NAMES
+    ]
+    return _hash_content(",".join(parts))
+
+
 def create_zip_from_directory(source_dir: Path, destination_zip: Path) -> None:
     with ZipFile(destination_zip, "w", compression=ZIP_DEFLATED) as archive:
         for path in sorted(path for path in source_dir.rglob("*") if path.is_file()):
@@ -563,8 +576,7 @@ def build_v2_appstore_artifacts(
         elif file_name == "product_zh.json":
             catalog_checksums["productZh"] = write_checksum_file(destination)
 
-    catalog_checksum_values = ",".join(f"{k}={v}" for k, v in sorted(catalog_checksums.items()))
-    catalog_dsv = _hash_content(catalog_checksum_values)
+    catalog_dsv = compute_catalog_dataset_version(catalog_dir)
 
     # ── catalog full package ─────────────────────────────────
     catalog_full_dir = catalog_dir / "full"

@@ -45,6 +45,10 @@ def test_fetch_product_entries_uses_stable_id_ordering():
     assert "order: sys_id_ASC" in fetch_catalog.PRODUCT_QUERY
 
 
+def test_product_query_requests_production_field():
+    assert "\n      production\n" in fetch_catalog.PRODUCT_QUERY
+
+
 def test_fetch_product_entries_rejects_duplicate_ids_across_pages(monkeypatch):
     def fake_run_query(token, query, variables):
         return {
