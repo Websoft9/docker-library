@@ -277,12 +277,15 @@ artifact/appstore/<channel>/
   "hash": "d80b08f74959...",
   "versions": ["1.26", "latest"],
   "path": "apps/nginx",
+  "updatedAt": "2026-09-20T09:52:48Z",
   "package": { "latest": "apps/nginx/latest.zip" },
   "checksum": { "latest": "apps/nginx/latest.zip.sha256" }
 }
 ```
 
 客户端通过对比 `hash` 字段判断 app 是否变更。
+
+`updatedAt` 是该应用安装模板（`apps/<app>` 整个目录）最后一次内容变更的时间，取自 Git 提交的 author date，统一为 UTC。它只用于展示"最近更新"，不参与增量判断；应用没有可用的 Git 记录时回退为本次发布的 `generatedAt`。
 
 ---
 
@@ -406,7 +409,10 @@ artifact/appstore/<channel>/
   → 校验 full/latest.zip.sha256
    → 解压到本地 apps/ 目录
 
-5. 保存本次下载的 appstore-manifest.json 到本地作为状态锚点
+5. 下载并缓存 apps-index-<datasetVersion>.json
+  → 读取每个应用的 updatedAt（模板最后变更时间）
+
+6. 保存本次下载的 appstore-manifest.json 到本地作为状态锚点
 ```
 
 ### 11.2 增量更新
@@ -418,6 +424,8 @@ artifact/appstore/<channel>/
    → 如果 catalog.datasetVersion 不同：
        下载 catalog/manifest.json → 逐个对比 checksum → 下载变更的 JSON
    → 如果 library.datasetVersion 不同：
+       下载 apps-index-<datasetVersion>.json 并替换本地缓存
+         （未变更应用的 updatedAt 只能从这里获得）
        if supportsPartialUpdate:
          下载 apps-delta → 下载 changed/added app 的 latest.zip
        else:
@@ -434,6 +442,8 @@ artifact/appstore/<channel>/
 | 无变化 | 1（appstore-manifest.json，~200B） |
 | 仅 catalog 变了 1 个文件 | 3（根 manifest + catalog manifest + 1 个 JSON） |
 | 仅 library 变了 2 个 app | 4（根 manifest + library manifest + delta + 2 个 zip） |
+
+> 需要展示 `updatedAt` 时，library 更新会额外包含 1 次 `apps-index` 请求（约 136 KB，gzip 后约 24 KB）。
 
 ### 11.3 异常恢复
 
@@ -454,6 +464,7 @@ schemaVersion 不在本地支持列表中：
 | `appstore-manifest.json` | Cache-Control: 60s | 入口文件，需及时感知更新 |
 | `catalog/manifest.json` | Cache-Control: 60s | 体积极小，变更频率低 |
 | `catalog/full/latest.zip` | Cache-Control: 60s | 冷启动与兜底恢复入口，覆盖发布后需尽快生效 |
+| `apps-index-*.json` | Cache-Control: 60s | 应用索引与 updatedAt，仅在 datasetVersion 变化时重新下载 |
 | `apps-delta-*.json` | Cache-Control: 60s | 体积极小 |
 | `apps/{app}/latest.zip` | Cache-Control: 60s | 模板文件体积极小，变更后需立即生效 |
 | `library/full/latest.zip` | Cache-Control: 60s | library 全量固定入口 |
