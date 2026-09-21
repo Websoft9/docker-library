@@ -49,6 +49,25 @@ def test_product_query_requests_production_field():
     assert "\n      production\n" in fetch_catalog.PRODUCT_QUERY
 
 
+def test_apply_default_logo_fills_missing_logo_per_locale():
+    en = fetch_catalog.apply_default_logo({"key": "vespa", "logo": None}, "en")
+    assert en["logo"] == {"imageurl": fetch_catalog.DEFAULT_LOGO_URLS["en"]}
+
+    zh = fetch_catalog.apply_default_logo({"key": "vespa", "logo": None}, "zh")
+    assert zh["logo"] == {"imageurl": fetch_catalog.DEFAULT_LOGO_URLS["zh"]}
+
+    assert fetch_catalog.DEFAULT_LOGO_URLS["en"] != fetch_catalog.DEFAULT_LOGO_URLS["zh"]
+
+    for logo in ({}, {"imageurl": ""}):
+        filled = fetch_catalog.apply_default_logo({"key": "vespa", "logo": logo}, "zh")
+        assert filled["logo"]["imageurl"] == fetch_catalog.DEFAULT_LOGO_URLS["zh"]
+
+
+def test_apply_default_logo_keeps_existing_logo():
+    existing = {"key": "gitea", "logo": {"imageurl": "https://libs.websoft9.com/gitea.png"}}
+    assert fetch_catalog.apply_default_logo(existing, "en") is existing
+
+
 def test_fetch_product_entries_rejects_duplicate_ids_across_pages(monkeypatch):
     def fake_run_query(token, query, variables):
         return {
