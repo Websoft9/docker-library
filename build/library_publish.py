@@ -144,6 +144,17 @@ def write_checksum_file(path: Path) -> str:
     return checksum_path.name
 
 
+def to_utc_z(value: str) -> str:
+    """Normalize an ISO 8601 timestamp to UTC with a Z suffix."""
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return value
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
 def compute_catalog_dataset_version(catalog_dir: Path) -> str:
     """Derive catalog datasetVersion from the actual content of the catalog files.
 
@@ -207,7 +218,38 @@ def build_app_checksum_entry(app_name: str) -> dict:
     return {"latest": f"apps/{app_name}/{APP_PACKAGE_NAME}.sha256"}
 
 
-def build_apps_index(dataset_version: str, channel: str, generated_at: str) -> dict:
+def build_app_updated_at_map() -> dict[str, str]:
+    """Map each app to the commit date of its last change under apps/.
+
+    git log lists commits newest first, so the first time an app path appears is
+    its most recent change. Author date is used because it survives rebases,
+    unlike the committer date.
+    """
+    try:
+        output = run_git("log", "--format=@@%aI", "--name-only", "--", "apps")
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return {}
+
+    updated: dict[str, str] = {}
+    current: str | None = None
+    for line in output.splitlines():
+        if line.startswith("@@"):
+            current = line[2:].strip()
+            continue
+        if not current or not line.startswith("apps/"):
+            continue
+        parts = line.split("/", 2)
+        if len(parts) >= 2 and parts[1] and parts[1] not in updated:
+            updated[parts[1]] = to_utc_z(current)
+    return updated
+
+
+def build_apps_index(
+    channel: str,
+    generated_at: str,
+    app_updated_at: dict[str, str] | None = None,
+) -> dict:
+    updated_map = app_updated_at or {}
     apps = []
     for app_dir in sorted(path for path in APPS_DIR.iterdir() if path.is_dir()):
         variables = load_variables_json(app_dir)
@@ -221,6 +263,7 @@ def build_apps_index(dataset_version: str, channel: str, generated_at: str) -> d
                 "versions": summarize_versions(variables.get("edition", [])),
                 "path": f"apps/{app_name}",
                 "hash": current_app_fingerprint(app_dir),
+                "updatedAt": updated_map.get(app_name, generated_at),
                 "package": build_app_package_entry(app_name),
                 "checksum": build_app_checksum_entry(app_name),
             }
@@ -228,12 +271,28 @@ def build_apps_index(dataset_version: str, channel: str, generated_at: str) -> d
 
     return {
         "schemaVersion": "1",
-        "datasetVersion": dataset_version,
         "channel": channel,
         "generatedAt": generated_at,
         "appCount": len(apps),
         "apps": apps,
     }
+
+
+def build_apps_index_with_version(
+    channel: str,
+    generated_at: str,
+    app_updated_at: dict[str, str] | None = None,
+) -> tuple[dict, str]:
+    """Build the apps index and derive its datasetVersion from its own content.
+
+    The version has to be computed before it is stored, otherwise the file would
+    carry a version that does not describe it (for example the catalog version).
+    """
+    apps_index = build_apps_index(channel, generated_at, app_updated_at)
+    serialized = json.dumps(apps_index, sort_keys=True, ensure_ascii=False)
+    dataset_version = _hash_content(serialized)
+    apps_index["datasetVersion"] = dataset_version
+    return apps_index, dataset_version
 
 
 def apps_in_ref(from_ref: str | None) -> set[str]:
@@ -605,9 +664,8 @@ def build_v2_appstore_artifacts(
     apps_packages_dir.mkdir(parents=True, exist_ok=True)
 
     # ── library – compute index & delta BEFORE per-app zips ──
-    apps_index = build_apps_index(catalog_dsv, channel, generated_at)
-    serialized_index = json.dumps(apps_index, sort_keys=True, ensure_ascii=False)
-    library_dsv = _hash_content(serialized_index)
+    app_updated_at = build_app_updated_at_map()
+    apps_index, library_dsv = build_apps_index_with_version(channel, generated_at, app_updated_at)
     full_latest_name = V2_FULL_LATEST_NAME
 
     with tempfile.TemporaryDirectory() as tmp_dir_name:

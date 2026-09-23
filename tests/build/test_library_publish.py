@@ -17,6 +17,29 @@ def test_hash_content_is_deterministic_and_input_sensitive():
     assert len(library_publish._hash_content("a")) == 16
 
 
+def test_to_utc_z_normalizes_offsets():
+    assert library_publish.to_utc_z("2022-11-29T10:49:58+08:00") == "2022-11-29T02:49:58Z"
+    assert library_publish.to_utc_z("2026-09-20T09:52:48Z") == "2026-09-20T09:52:48Z"
+
+
+def test_build_app_updated_at_map_keeps_latest_per_app(monkeypatch):
+    output = "\n".join(
+        [
+            "@@2026-09-20T09:52:48Z",
+            "apps/alpha/docker-compose.yml",
+            "apps/beta/README.md",
+            "@@2026-08-01T00:00:00+08:00",
+            "apps/alpha/.env",
+        ]
+    )
+    monkeypatch.setattr(library_publish, "run_git", lambda *args, **kwargs: output)
+
+    mapping = library_publish.build_app_updated_at_map()
+
+    assert mapping["alpha"] == "2026-09-20T09:52:48Z"
+    assert mapping["beta"] == "2026-09-20T09:52:48Z"
+
+
 def test_compute_catalog_dataset_version_is_content_sensitive(tmp_path: Path):
     catalog_dir = tmp_path / "catalog"
     catalog_dir.mkdir()
@@ -47,13 +70,28 @@ def test_app_package_and_checksum_entry_shapes():
     assert library_publish.build_app_checksum_entry("demo") == {"latest": "apps/demo/latest.zip.sha256"}
 
 
+def test_apps_index_dataset_version_describes_its_own_content(build_fixture, monkeypatch):
+    monkeypatch.setattr(library_publish, "APPS_DIR", build_fixture / "apps")
+    monkeypatch.setattr(library_publish, "ROOT", build_fixture)
+
+    index, dataset_version = library_publish.build_apps_index_with_version("dev", "2026-01-01T00:00:00Z")
+
+    assert index["datasetVersion"] == dataset_version
+    assert len(dataset_version) == 16
+
+    body = {key: value for key, value in index.items() if key != "datasetVersion"}
+    expected = library_publish._hash_content(json.dumps(body, sort_keys=True, ensure_ascii=False))
+    assert dataset_version == expected
+
+
 def test_build_apps_index_with_fixture_apps(build_fixture, monkeypatch):
     monkeypatch.setattr(library_publish, "APPS_DIR", build_fixture / "apps")
     monkeypatch.setattr(library_publish, "ROOT", build_fixture)
 
-    index = library_publish.build_apps_index("2026.01.01", "dev", "2026-01-01T00:00:00Z")
+    index = library_publish.build_apps_index("dev", "2026-01-01T00:00:00Z")
 
     assert index["schemaVersion"] == "1"
+    assert "datasetVersion" not in index
     assert index["appCount"] == 1
     entry = index["apps"][0]
     assert entry["app"] == "demo"
@@ -62,9 +100,19 @@ def test_build_apps_index_with_fixture_apps(build_fixture, monkeypatch):
     assert entry["release"] is True
     assert entry["versions"] == ["1.0", "latest"]
     assert entry["path"] == "apps/demo"
+    assert entry["updatedAt"] == "2026-01-01T00:00:00Z"
     assert entry["package"] == {"latest": "apps/demo/latest.zip"}
     assert entry["checksum"] == {"latest": "apps/demo/latest.zip.sha256"}
     assert len(entry["hash"]) == 64
+
+
+def test_build_apps_index_uses_provided_updated_at(build_fixture, monkeypatch):
+    monkeypatch.setattr(library_publish, "APPS_DIR", build_fixture / "apps")
+    monkeypatch.setattr(library_publish, "ROOT", build_fixture)
+
+    index = library_publish.build_apps_index("dev", "2026-01-01T00:00:00Z", {"demo": "2026-05-05T00:00:00Z"})
+
+    assert index["apps"][0]["updatedAt"] == "2026-05-05T00:00:00Z"
 
 
 def test_build_apps_delta_computes_added_changed_removed(monkeypatch):
