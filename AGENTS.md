@@ -28,6 +28,7 @@ Read in this order:
 - Follow env conventions. The canonical `W9_*` reference is `docs/w9-env-spec.md` (semantics + decision rules); use `metadata/templates/new-app/.env.tmpl` for layout. Read both before editing `.env` or `docker-compose.yml`.
 - Runtime/scaffold apps follow `docs/runtime-app-spec.md` (entrypoint hooks + optional `DATABASE_URL`).
 - Validate by deployment when the task changes runnable behavior.
+- When `.secrets/remote.env` exists, prefer remote-first for all runtime, deployment, debugging, and validation work; do not default to local container execution unless the user explicitly asks for local reproduction.
 
 ## i18n
 

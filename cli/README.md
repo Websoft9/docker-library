@@ -81,6 +81,9 @@ py -m venv .venv
 - `libs appstore-sync --app <name> --ssh-host <ip> [--progress] [--verbose]` - sync one app directory into the remote websoft9 container library and sync `metadata/catalog/<app>.json` into the container catalog directory for appstore testing
 - `libs appstore-deploy --app <name> --ssh-host <ip> [--progress] [--verbose]` - deploy one app into a websoft9 container appstore (not implemented yet; pending the websoft9 container CLI)
 - `libs websoft9-upgrade [--container <name>] [--tag <tag>] [--tag-var <var>] [--compose-dir <dir>] [--target local|remote] [--ssh-host <ip>] [--progress] [--verbose]` - upgrade the Websoft9 platform container: set the image tag (default `dev`), run `docker compose pull`, then `docker compose up -d`; the compose project is discovered from the container labels unless `--compose-dir` is given
+- `libs dns-bind [--domain <domain>] [--target local|remote] [--ip <ip>] [--json]` - point the wildcard record `*.<domain>` at the remote host or `127.0.0.1`; it creates the record when missing, updates it when the value differs, and is a no-op (`action = unchanged`) when the IP already matches, so repeated runs never error; `--domain` defaults to `ALIYUN_DNS_DOMAIN`, and `--target` defaults to `TARGET` in `.secrets/remote.env` (add `--ssh-host` to override)
+  - on success it also runs `websoft9 setconfig --section domain --key wildcard_domain --value <domain>` inside the Websoft9 container to bind the platform domain; the container name comes from `CONTAINER` in `.secrets/remote.env` (default `websoft9`, override with `--container`); if the container is absent or unreachable this step is skipped silently and reported as `container_config.status = skipped`; pass `--no-container` to skip it explicitly
+- `libs dns-delete [--domain <domain>] [--json]` - delete the single wildcard record `*.<domain>` managed for the domain; errors when it is missing or ambiguous
 - remote-aware commands suppress the routine `known hosts` add warning from ephemeral SSH targets; real stderr still passes through
 - `libs proxy` - show, save, or clear the saved proxy
 - `libs help` - show help, same as `libs --help`
@@ -103,8 +106,8 @@ Network behavior:
 - `cli/proxy.conf` is machine-local and gitignored
 
 Credentials:
-- provider-specific token files live under `.secrets/`, for example `.secrets/contentful.env` and `.secrets/cloudflare.env` (gitignored)
-- each provider file stores the token directly as a standard env var, e.g. `CONTENTFUL_ACCESS_TOKEN=...` or `CLOUDFLARE_API_TOKEN=...`
+- provider-specific token files live under `.secrets/`, for example `.secrets/contentful.env`, `.secrets/cloudflare.env`, and `.secrets/aliyun.env` (gitignored)
+- each provider file stores the token directly as a standard env var, e.g. `CONTENTFUL_ACCESS_TOKEN=...`, `CLOUDFLARE_API_TOKEN=...`, or `ALIYUN_ACCESS_KEY_ID=...` / `ALIYUN_ACCESS_KEY_SECRET=...` (with an optional `ALIYUN_DNS_DOMAIN=libs.websoft9.cn`)
 - a command may accept a per-invocation token flag (e.g. `--token`) and an explicit provider env file path (e.g. `--env-file`) as overrides
 - resolution order: command flag > explicit `--env-file` > environment variable > default provider file
 - CI keeps passing secrets as environment variables from GitHub Actions secrets; it does not use `.secrets/`

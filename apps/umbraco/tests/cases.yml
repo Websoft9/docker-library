@@ -1,5 +1,9 @@
+# Umbraco serves the backoffice over HTTPS with a self-signed certificate, so
+# the adaptive HTTP web-access check does not apply.
+skip:
+  - id: web-access
+
 optional:
-  - id: backoffice
-    type: web-access
-    path: /umbraco
-    expect_status: [200]
+  - id: backoffice-https
+    type: script
+    script: check.sh

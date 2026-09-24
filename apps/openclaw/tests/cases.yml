@@ -1,0 +1,8 @@
+# The default adaptive checks cover compose-config, container-up,
+# container-healthy, and the Control UI root path. Add a dedicated check for
+# the Gateway health endpoint so the core runtime path is exercised explicitly.
+optional:
+  - id: gateway-health
+    type: web-access
+    path: /healthz
+    expect_status: 200

@@ -1,8 +1,7 @@
 {
     "gateway": {
         "controlUi": {
-            "dangerouslyAllowHostHeaderOriginFallback": true,
-            "dangerouslyDisableDeviceAuth": true
+            "dangerouslyAllowHostHeaderOriginFallback": true
         }
     }
 }

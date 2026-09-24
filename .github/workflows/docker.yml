@@ -2,14 +2,21 @@
 #
 # Version source of truth: docs/image-tag-spec.md.
 #
-# Tag namespaces (same repository, tag differs by branch):
-#   main branch -> stable tags from W9_VERSION
-#   dev branch  -> dev-<git-sha> (primary) + dev-latest (rolling alias)
+# Tag namespaces (same repository, tag differs by branch/event):
+#   dev push          -> dev-<git-sha> (primary) + dev-latest (rolling alias)
+#                        amd64 is required; arm64 is best-effort and warns on failure
+#                        final tags are assembled from digests; no temporary arch tags are published
+#   PR merged to main -> promote the PR head's dev-<sha> to stable tags (no rebuild)
+#   main push         -> not wired; main promotion happens only on a merged PR
 #
 # Build contract: the Dockerfile MUST declare a version ARG whose name is
 # ${APP^^}_VERSION (e.g. apps/akeneo -> AKENEO_VERSION). CI reads W9_VERSION
 # from apps/<app>/.env, injects it as that build-arg, and tags from W9_VERSION.
 # Apps that do not declare this ARG are not built by CI; migrate them when touched.
+#
+# Manual runs (workflow_dispatch) target one app:
+#   run on dev  -> build dev-<sha> + dev-latest for the chosen app
+#   run on main -> promote the chosen app; source_sha (the validated dev-<sha>) is required
 #
 # If you add more paths for trigger, please update app_list= at set-matrix for it also.
 
@@ -17,15 +24,36 @@ name: Build image to DockerHub
 
 on:
   push:
-    branches: [main, dev]
+    branches: [dev]
     paths:
       - "apps/*/Dockerfile"
       - "apps/*/.env"
+      - "apps/*/src/**"
       - "apps/*/cmd.sh"
       - "apps/*/entrypoint.sh"
+  pull_request:
+    types: [closed]
+    branches: [main]
+    paths:
+      - "apps/*/Dockerfile"
+      - "apps/*/.env"
+      - "apps/*/src/**"
+      - "apps/*/cmd.sh"
+      - "apps/*/entrypoint.sh"
+  workflow_dispatch:
+    inputs:
+      app:
+        description: "App name to build or promote (e.g. strapi)"
+        required: true
+        type: string
+      source_sha:
+        description: "Validated dev commit SHA to promote (required for manual promote on main)"
+        required: false
+        type: string
 
 jobs:
   setup:
+    if: ${{ github.event_name != 'pull_request' || (github.event.pull_request.merged && github.event.pull_request.base.ref == 'main') }}
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
@@ -33,15 +61,33 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v7
       with:
-        fetch-depth: 2
+        # Pin the PR head (dev commit) because the pull_request merge ref can be
+        # gone by the time a merged PR's `closed` event runs.
+        ref: ${{ github.event.pull_request.head.sha || github.sha }}
+        fetch-depth: 0
 
     - id: set-matrix
+      env:
+        EVENT_NAME: ${{ github.event_name }}
+        INPUT_APP: ${{ inputs.app }}
+        PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
       run: |
-        changed_files=$(git diff --name-only HEAD^ HEAD)
-        app_list=$(echo "$changed_files" | grep -E 'apps/.*/(Dockerfile|.env|cmd.sh|entrypoint.sh)$' | awk -F'/' '{print $2}' | sort | uniq)
+        if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+          app_list="$INPUT_APP"
+        elif [ "$EVENT_NAME" = "pull_request" ]; then
+          app_list=$(git diff --name-only "$PR_BASE_SHA" "$PR_HEAD_SHA" | grep -E 'apps/.*/(Dockerfile|.env|cmd.sh|entrypoint.sh|src/.*)$' | awk -F'/' '{print $2}' | sort | uniq)
+        else
+          changed_files=$(git diff --name-only HEAD^ HEAD)
+          app_list=$(echo "$changed_files" | grep -E 'apps/.*/(Dockerfile|.env|cmd.sh|entrypoint.sh|src/.*)$' | awk -F'/' '{print $2}' | sort | uniq)
+        fi
         valid_list=()
         for app in $app_list; do
+          if [ -z "$app" ]; then
+            continue
+          fi
           if [ ! -f "apps/$app/Dockerfile" ]; then
+            echo "skip (no Dockerfile): $app"
             continue
           fi
           app_upper=$(echo "$app" | tr '[:lower:]' '[:upper:]')
@@ -52,17 +98,24 @@ jobs:
           fi
           valid_list+=("$app")
         done
+        if [ "$EVENT_NAME" = "workflow_dispatch" ] && [ "${#valid_list[@]}" -eq 0 ]; then
+          echo "error: app '$INPUT_APP' is not buildable (missing Dockerfile or <APP>_VERSION ARG)" >&2
+          exit 1
+        fi
         app_list_json=$(jq -cn '$ARGS.positional' --args "${valid_list[@]}")
-        echo "::set-output name=matrix::{\"app\": $app_list_json}"
+        echo "matrix={\"app\": $app_list_json}" >> "$GITHUB_OUTPUT"
 
   build:
     needs: setup
+    if: ${{ github.event_name != 'pull_request' || (github.event.pull_request.merged && github.event.pull_request.base.ref == 'main') }}
     runs-on: ubuntu-latest
     strategy:
       matrix: ${{fromJson(needs.setup.outputs.matrix)}}
     steps:
     - name: Checkout code
       uses: actions/checkout@v7
+      with:
+        ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
     - name: Set up Python
       uses: actions/setup-python@v7
@@ -75,17 +128,45 @@ jobs:
         pip install pyyaml
 
     - name: Resolve channel
+      env:
+        EVENT_NAME: ${{ github.event_name }}
+        REF_NAME: ${{ github.ref_name }}
+        PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        INPUT_SOURCE_SHA: ${{ inputs.source_sha }}
       run: |
         echo "APP=${{ matrix.app }}" >> $GITHUB_ENV
-        if [ "${{ github.ref_name }}" = "main" ]; then
+        if [ "$EVENT_NAME" = "pull_request" ]; then
+          # main promotion: promote the exact dev commit that was merged and built.
           echo "CHANNEL=promote" >> $GITHUB_ENV
+          echo "SOURCE_SHA=$PR_HEAD_SHA" >> $GITHUB_ENV
+        elif [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+          case "$REF_NAME" in
+            dev)
+              echo "CHANNEL=dev" >> $GITHUB_ENV
+              echo "SOURCE_SHA=" >> $GITHUB_ENV
+              ;;
+            main)
+              if [ -z "$INPUT_SOURCE_SHA" ]; then
+                echo "error: manual promote on main requires source_sha (the validated dev-<sha>)" >&2
+                exit 1
+              fi
+              echo "CHANNEL=promote" >> $GITHUB_ENV
+              echo "SOURCE_SHA=$INPUT_SOURCE_SHA" >> $GITHUB_ENV
+              ;;
+            *)
+              echo "error: manual runs must target the dev or main branch (got '$REF_NAME')" >&2
+              exit 1
+              ;;
+          esac
         else
+          # push to dev: build candidate images.
           echo "CHANNEL=dev" >> $GITHUB_ENV
+          echo "SOURCE_SHA=" >> $GITHUB_ENV
         fi
 
     - name: Generate build/promote plan
       run: |
-        PYTHONPATH=cli python -c "import json,sys; from libs.app_build import build_plan; print(json.dumps(build_plan(app_name=sys.argv[1], channel=sys.argv[2], git_sha=sys.argv[3]), indent=2, ensure_ascii=False))" "${{ env.APP }}" "${{ env.CHANNEL }}" "${{ github.sha }}" > plan.json
+        PYTHONPATH=cli python -c "import json,os,sys; from libs.app_build import build_plan; print(json.dumps(build_plan(app_name=sys.argv[1], channel=sys.argv[2], git_sha=sys.argv[3], source_sha=(os.environ.get('SOURCE_SHA') or None)), indent=2, ensure_ascii=False))" "${{ env.APP }}" "${{ env.CHANNEL }}" "${{ github.sha }}" > plan.json
         cat plan.json
         echo "CHANNEL=$(jq -r '.channel' plan.json)" >> $GITHUB_ENV
         echo "DIRECTORY=$(jq -r '.context' plan.json)" >> $GITHUB_ENV
@@ -122,26 +203,72 @@ jobs:
 
     - name: Build and push Docker image (dev)
       if: env.CHANNEL == 'dev'
-      uses: docker/build-push-action@v7
-      with:
-        context: ${{env.DIRECTORY}}
-        file: ${{env.DOCKERFILE}}
-        push: true
-        tags: ${{env.TAGS}}
-        platforms: linux/amd64
-        build-args: |
-          ${{ env.VERSION_ARG }}=${{ env.W9_VERSION }}
+      shell: bash
+      run: |
+        IFS=',' read -r -a TAG_ARRAY <<< "${{ env.TAGS }}"
+
+        IMAGE_REPO="${TAG_ARRAY[0]%:*}"
+        AMD64_META=$(mktemp)
+        ARM64_META=$(mktemp)
+        trap 'rm -f "$AMD64_META" "$ARM64_META"' EXIT
+
+        docker buildx build \
+          --platform linux/amd64 \
+          -f "${{ env.DOCKERFILE }}" \
+          --build-arg "${{ env.VERSION_ARG }}=${{ env.W9_VERSION }}" \
+          --metadata-file "$AMD64_META" \
+          --output "type=image,name=${IMAGE_REPO},push-by-digest=true,name-canonical=true,push=true" \
+          "${{ env.DIRECTORY }}"
+
+        AMD64_DIGEST=$(jq -r '."containerimage.digest" // empty' "$AMD64_META")
+        if [ -z "$AMD64_DIGEST" ]; then
+          echo "ERROR: amd64 build completed but no digest was recorded for ${{ matrix.app }}" >&2
+          exit 1
+        fi
+
+        ARM64_OK=true
+        if ! docker buildx build \
+          --platform linux/arm64 \
+          -f "${{ env.DOCKERFILE }}" \
+          --build-arg "${{ env.VERSION_ARG }}=${{ env.W9_VERSION }}" \
+          --metadata-file "$ARM64_META" \
+          --output "type=image,name=${IMAGE_REPO},push-by-digest=true,name-canonical=true,push=true" \
+          "${{ env.DIRECTORY }}"; then
+          ARM64_OK=false
+          echo "::warning::arm64 image build failed for ${{ matrix.app }}; published amd64-only tags"
+        fi
+
+        ARM64_DIGEST=""
+        if [ "$ARM64_OK" = true ]; then
+          ARM64_DIGEST=$(jq -r '."containerimage.digest" // empty' "$ARM64_META")
+          if [ -z "$ARM64_DIGEST" ]; then
+            ARM64_OK=false
+            echo "::warning::arm64 build completed but no digest was recorded for ${{ matrix.app }}; published amd64-only tags"
+          fi
+        fi
+
+        for tag in "${TAG_ARRAY[@]}"; do
+          if [ "$ARM64_OK" = true ]; then
+            docker buildx imagetools create --tag "$tag" "${IMAGE_REPO}@${AMD64_DIGEST}" "${IMAGE_REPO}@${ARM64_DIGEST}"
+          else
+            docker buildx imagetools create --tag "$tag" "${IMAGE_REPO}@${AMD64_DIGEST}"
+          fi
+        done
 
     - name: Promote dev image to stable tags (main)
       if: env.CHANNEL == 'promote'
       run: |
-        if ! docker buildx imagetools inspect "${{ env.SOURCE_IMAGE }}" >/dev/null 2>&1; then
+        if ! SOURCE_DIGEST=$(docker buildx imagetools inspect "${{ env.SOURCE_IMAGE }}" --format '{{.Manifest.Digest}}' 2>/dev/null); then
           echo "ERROR: source dev image missing: ${{ env.SOURCE_IMAGE }}" >&2
           echo "Expected this image to be built and pushed by the dev branch workflow before main promotion." >&2
           exit 1
         fi
         TAG_ARGS=""
         for tag in $(echo "${{ env.TAGS }}" | tr ',' ' '); do
+          existing=$(docker buildx imagetools inspect "$tag" --format '{{.Manifest.Digest}}' 2>/dev/null || true)
+          if [ -n "$existing" ] && [ "$existing" != "$SOURCE_DIGEST" ]; then
+            echo "::warning::overwriting existing $tag ($existing) with ${{ env.SOURCE_IMAGE }} ($SOURCE_DIGEST)"
+          fi
           TAG_ARGS="$TAG_ARGS --tag $tag"
         done
         docker buildx imagetools create $TAG_ARGS "${{ env.SOURCE_IMAGE }}"

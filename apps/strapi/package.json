@@ -1,0 +1,26 @@
+{
+  "name": "strapi",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A Strapi 5 application packaged by Websoft9",
+  "scripts": {
+    "build": "strapi build",
+    "start": "strapi start",
+    "strapi": "strapi"
+  },
+  "dependencies": {
+    "@strapi/plugin-users-permissions": "5.54.0",
+    "@strapi/strapi": "5.54.0",
+    "better-sqlite3": "12.8.0",
+    "mysql2": "3.20.0",
+    "pg": "8.20.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.30.3",
+    "styled-components": "^6.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0 <=26.x.x",
+    "npm": ">=10.0.0"
+  }
+}

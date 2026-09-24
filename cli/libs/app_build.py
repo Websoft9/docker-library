@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import platform as _host
 import re
 import subprocess
 from pathlib import Path
@@ -16,6 +17,128 @@ from libs.repo import repo_path
 DOCKERHUB_USER_ENV = "DOCKERHUB_USERNAME"
 DOCKERHUB_PASSWORD_ENV = "DOCKERHUB_PASSWORD"
 DOCKERHUB_TOKEN_ENV = "DOCKERHUB_TOKEN"
+DOCKERHUB_ORG_ENV = "DOCKERHUB_ORG"
+
+DEFAULT_PLATFORM = "amd64"
+PLATFORM_CHOICES = {
+    "amd64": "linux/amd64",
+    "arm64": "linux/arm64",
+    "both": "linux/amd64,linux/arm64",
+}
+
+
+BINFMT_HANDLERS = {"amd64": "qemu-x86_64", "arm64": "qemu-aarch64"}
+BINFMT_IMAGE = "tonistiigi/binfmt"
+BUILDER_HINT = (
+    "the current buildx builder does not support multi-platform builds; create a container builder first: "
+    "docker buildx create --name multiarch --driver docker-container --use"
+)
+
+GIT_SHA_RE = re.compile(r"^[0-9a-fA-F]{7,40}$")
+
+
+def _promote_source_ref(source_sha: str | None) -> str:
+    """Resolve the promote source tag from an optional commit SHA.
+
+    Returns ``dev-<short-sha>`` for a validated SHA, otherwise the rolling
+    ``dev-latest`` alias. Pinning the SHA keeps the promoted stable artifact
+    identical to the validated candidate instead of tracking a moving alias.
+    """
+    candidate = (source_sha or "").strip()
+    if candidate.startswith("dev-"):
+        candidate = candidate[4:]
+    if not candidate:
+        return "dev-latest"
+    if not GIT_SHA_RE.fullmatch(candidate):
+        raise ValueError(f"source_sha must be a 7-40 character hex commit SHA, got: {source_sha!r}")
+    return f"dev-{candidate[:7]}"
+
+
+def _resolve_platform(platform: str | None) -> str | None:
+    """Normalize a platform choice; None keeps the builder host-native.
+
+    The CLI defaults to `amd64`; internal callers such as app-deploy pass None
+    so a build for the target host is not forced into a cross-build.
+    """
+    if platform is None or not str(platform).strip():
+        return None
+    key = str(platform).strip().lower()
+    if key not in PLATFORM_CHOICES:
+        raise ValueError(f"unsupported platform: {platform} (expected amd64, arm64, or both)")
+    return key
+
+
+def _normalize_arch(machine: str | None) -> str | None:
+    value = (machine or "").strip().lower()
+    if value in {"x86_64", "amd64"}:
+        return "amd64"
+    if value in {"aarch64", "arm64"}:
+        return "arm64"
+    return None
+
+
+def _local_arch() -> str | None:
+    return _normalize_arch(_host.machine())
+
+
+def _required_binfmt_archs(platform_key: str | None, host_arch: str | None) -> list[str]:
+    """Foreign arches that need emulation on the build host."""
+    if not platform_key:
+        return []
+    targets = ["amd64", "arm64"] if platform_key == "both" else [platform_key]
+    return [arch for arch in targets if arch != host_arch]
+
+
+def _ensure_binfmt_local(archs: list[str], progress=None) -> None:
+    if not archs or _host.system().lower() != "linux":
+        return
+    for arch in archs:
+        if Path(f"/proc/sys/fs/binfmt_misc/{BINFMT_HANDLERS[arch]}").exists():
+            continue
+        if progress:
+            progress(f"installing {arch} emulation via {BINFMT_IMAGE}")
+        result = subprocess.run(
+            ["docker", "run", "--privileged", "--rm", BINFMT_IMAGE, "--install", arch],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if progress and result.stdout.strip():
+            progress(result.stdout.strip())
+        if result.returncode != 0:
+            raise RuntimeError(
+                result.stderr.strip()
+                or f"failed to install {arch} emulation; run: docker run --privileged --rm {BINFMT_IMAGE} --install {arch}"
+            )
+
+
+def _ensure_binfmt_remote(host: str, user: str, secret_path: Path, archs: list[str], progress=None) -> None:
+    if not archs:
+        return
+    checks = " ".join(
+        f"if [ ! -e /proc/sys/fs/binfmt_misc/{BINFMT_HANDLERS[arch]} ]; then "
+        f"echo installing {arch} emulation; docker run --privileged --rm {BINFMT_IMAGE} --install {arch}; fi;"
+        for arch in archs
+    )
+    script = f'if [ "$(uname -s)" = "Linux" ]; then {checks} fi'
+    result = remote.stream_ssh(host, user, secret_path, script, on_line=progress)
+    if result.returncode != 0:
+        raise RuntimeError(result.stdout.strip() or "failed to install binfmt emulation on remote host")
+
+
+def _remote_arch(host: str, user: str, secret_path: Path) -> str | None:
+    result = remote.run_command(remote.ssh_base(host, user, secret_path) + ["uname -m"])
+    if result.returncode != 0:
+        return None
+    return _normalize_arch(result.stdout)
+
+
+def _buildx_error(output: str) -> str:
+    text = output.strip() or "docker buildx build failed"
+    lowered = text.lower()
+    if "multiple platforms" in lowered or "not supported for docker driver" in lowered:
+        return f"{text}\n{BUILDER_HINT}"
+    return text
 
 
 def _env_map(target: Path) -> dict[str, str]:
@@ -127,10 +250,26 @@ def resolve_image(app_name: str, image: str) -> str:
     return _resolve_image_template(image, _env_map(target))
 
 
-def _dockerfile_plan(app_name: str) -> dict:
+def _namespace_image(image: str, org: str | None) -> str:
+    """Prefix a bare image repository with the default org; keep namespaced refs as-is.
+
+    `wordpress:latest` -> `<org>/wordpress:latest`; `websoft9dev/akeneo:v1` stays.
+    """
+    if not org:
+        return image
+    slash = image.rfind("/")
+    colon = image.rfind(":")
+    repository = image[:colon] if colon > slash else image
+    if "/" in repository:
+        return image
+    return f"{org}/{image}"
+
+
+def _dockerfile_plan(app_name: str, org: str | None = None) -> dict:
     """Plan a direct Dockerfile build (pull-only app). Per docs/image-tag-spec.md.
 
-    Returns {version_arg, w9_version, images}; build must run with CWD = app dir.
+    Returns {version_arg, w9_version, w9_repo, images}; build must run with CWD = app dir.
+    When `org` is set, a bare W9_REPO is published under that Docker Hub namespace.
     """
     target = app_dir(app_name)
     if not target:
@@ -151,11 +290,12 @@ def _dockerfile_plan(app_name: str) -> dict:
         raise ValueError(f"app {app_name} W9_VERSION missing in .env")
     if not w9_repo:
         raise ValueError(f"app {app_name} W9_REPO missing in .env")
+    repo = _namespace_image(w9_repo, org)
     return {
         "version_arg": version_arg,
         "w9_version": w9_version,
-        "w9_repo": w9_repo,
-        "images": [f"{w9_repo}:{w9_version}"],
+        "w9_repo": repo,
+        "images": [f"{repo}:{w9_version}"],
     }
 
 
@@ -173,18 +313,34 @@ def _stable_tags(repo: str, version: str) -> list[str]:
     return tags
 
 
-def build_plan(app_name: str, channel: str = "stable", git_sha: str | None = None, source_sha: str | None = None) -> dict:
+def _resolve_dockerhub_org(env_file: str | None = None, org: str | None = None) -> str | None:
+    if org:
+        return org
+    value = resolve_secret(DOCKERHUB_ORG_ENV, "dockerhub", env_file=env_file)
+    return value or None
+
+
+def build_plan(
+    app_name: str,
+    channel: str = "stable",
+    git_sha: str | None = None,
+    source_sha: str | None = None,
+    org: str | None = None,
+    env_file: str | None = None,
+) -> dict:
     """Return the canonical image build/tag plan for one app.
 
     Channels:
     - stable: tags derived from W9_VERSION
     - dev: candidate tags dev-<git-sha> + dev-latest (build)
-    - promote: stable tags; source is dev-latest (re-tag, no build)
+    - promote: stable tags; source is dev-<source_sha> when provided, otherwise
+      the rolling dev-latest alias (re-tag, no build)
 
     This is the shared rules entrypoint for CI and controlled manual push.
     """
     source, compose = _load_compose(app_name)
-    plan = _dockerfile_plan(app_name)
+    resolved_org = _resolve_dockerhub_org(env_file=env_file, org=org)
+    plan = _dockerfile_plan(app_name, org=resolved_org)
     channel = (channel or "stable").strip().lower()
     version = plan["w9_version"]
     repo = plan["w9_repo"]
@@ -201,7 +357,7 @@ def build_plan(app_name: str, channel: str = "stable", git_sha: str | None = Non
     else:
         tags = _stable_tags(repo, version)
         if channel == "promote":
-            source_image = f"{repo}:dev-latest"
+            source_image = f"{repo}:{_promote_source_ref(source_sha)}"
 
     return {
         "app": app_name,
@@ -213,6 +369,7 @@ def build_plan(app_name: str, channel: str = "stable", git_sha: str | None = Non
         "version_arg": plan["version_arg"],
         "w9_version": version,
         "w9_repo": repo,
+        "org": resolved_org,
         "tags": tags,
         "source_image": source_image,
         "primary_image": source_image or tags[0],
@@ -301,6 +458,9 @@ def build_app(
     username: str | None = None,
     password: str | None = None,
     token: str | None = None,
+    org: str | None = None,
+    platform: str | None = None,
+    binfmt: bool = True,
     registry: str | None = None,
     skip_sync: bool = False,
     compose_env_file: str | None = None,
@@ -308,12 +468,23 @@ def build_app(
 ) -> dict:
     source, compose = _load_compose(app_name)
     build_services = _build_services(compose)
+    platform_key = _resolve_platform(platform)
+    multi_arch = platform_key == "both"
+    platform_flag = PLATFORM_CHOICES[platform_key] if platform_key else None
+    if build_services and platform_key not in (None, DEFAULT_PLATFORM):
+        raise ValueError(
+            f"app {app_name} uses compose build services; --platform {platform_key} "
+            "is only supported for Dockerfile apps"
+        )
+    if multi_arch and not push:
+        raise ValueError("--platform both builds a multi-arch manifest and requires --push")
+    resolved_org = _resolve_dockerhub_org(env_file=env_file, org=org) if push else None
 
     if build_services:
         images = _tagged_images(source, compose, build_services)
         build_services_out = build_services
     else:
-        plan = _dockerfile_plan(app_name)
+        plan = _dockerfile_plan(app_name, org=resolved_org)
         images = plan["images"]
         build_services_out = []
 
@@ -336,6 +507,9 @@ def build_app(
         mode = remote.default_target()
 
     if mode == "local":
+        if platform_key and not build_services and binfmt:
+            _ensure_binfmt_local(_required_binfmt_archs(platform_key, _local_arch()), progress=progress)
+        pushed: list[str] = []
         if build_services:
             build_command = [
                 "docker",
@@ -349,10 +523,44 @@ def build_app(
                 "build",
                 *build_services,
             ]
-        else:
+            build_result = _run_stream(build_command, progress=progress)
+            if build_result.returncode != 0:
+                raise RuntimeError(build_result.stdout.strip() or "docker build failed")
+            if push:
+                login_username, login_password = _resolve_dockerhub_credentials(env_file, username, password, token)
+                _docker_login(registry, login_username, login_password, progress=progress)
+                for image in images:
+                    result = _run_stream(["docker", "push", image], progress=progress)
+                    if result.returncode != 0:
+                        raise RuntimeError(result.stdout.strip() or f"docker push failed for {image}")
+                    pushed.append(image)
+        elif multi_arch:
+            login_username, login_password = _resolve_dockerhub_credentials(env_file, username, password, token)
+            _docker_login(registry, login_username, login_password, progress=progress)
             build_command = [
                 "docker",
+                "buildx",
                 "build",
+                "--platform",
+                platform_flag,
+                "-f",
+                str(source / "Dockerfile"),
+                "--build-arg",
+                f"{plan['version_arg']}={plan['w9_version']}",
+                "-t",
+                images[0],
+                "--push",
+                str(source),
+            ]
+            build_result = _run_stream(build_command, progress=progress)
+            if build_result.returncode != 0:
+                raise RuntimeError(_buildx_error(build_result.stdout))
+            pushed = list(images)
+        else:
+            build_command = ["docker", "build"]
+            if platform_flag:
+                build_command += ["--platform", platform_flag]
+            build_command += [
                 "-f",
                 str(source / "Dockerfile"),
                 "--build-arg",
@@ -361,23 +569,23 @@ def build_app(
                 images[0],
                 str(source),
             ]
-        build_result = _run_stream(build_command, progress=progress)
-        if build_result.returncode != 0:
-            raise RuntimeError(build_result.stdout.strip() or "docker build failed")
-
-        pushed: list[str] = []
-        if push:
-            login_username, login_password = _resolve_dockerhub_credentials(env_file, username, password, token)
-            _docker_login(registry, login_username, login_password, progress=progress)
-            for image in images:
-                result = _run_stream(["docker", "push", image], progress=progress)
-                if result.returncode != 0:
-                    raise RuntimeError(result.stdout.strip() or f"docker push failed for {image}")
-                pushed.append(image)
+            build_result = _run_stream(build_command, progress=progress)
+            if build_result.returncode != 0:
+                raise RuntimeError(build_result.stdout.strip() or "docker build failed")
+            if push:
+                login_username, login_password = _resolve_dockerhub_credentials(env_file, username, password, token)
+                _docker_login(registry, login_username, login_password, progress=progress)
+                for image in images:
+                    result = _run_stream(["docker", "push", image], progress=progress)
+                    if result.returncode != 0:
+                        raise RuntimeError(result.stdout.strip() or f"docker push failed for {image}")
+                    pushed.append(image)
 
         return {
             "app": app_name,
             "target": "local",
+            "org": resolved_org,
+            "platform": platform_key or "host",
             "build_services": build_services_out,
             "images": images,
             "pushed": pushed,
@@ -398,29 +606,60 @@ def build_app(
     if not skip_sync:
         _sync_app_dir(app_name, host, user, secret_path, deploy_root_value, progress=progress)
 
+    if platform_key and not build_services and binfmt:
+        _ensure_binfmt_remote(
+            host,
+            user,
+            secret_path,
+            _required_binfmt_archs(platform_key, _remote_arch(host, user, secret_path)),
+            progress=progress,
+        )
+
+    pushed = []
     if build_services:
         build_script = (
             f"docker compose --progress plain -f {app_target}/docker-compose.yml "
             f"--env-file {app_target}/.env build {' '.join(build_services)}"
         )
-    else:
-        build_script = (
-            f"cd {app_target} && docker build -f Dockerfile "
-            f"--build-arg {plan['version_arg']}={plan['w9_version']} -t {images[0]} ."
-        )
-    build_result = remote.stream_ssh(host, user, secret_path, build_script, on_line=progress)
-    if build_result.returncode != 0:
-        raise RuntimeError(build_result.stdout.strip() or "remote docker build failed")
-
-    pushed = []
-    if push:
+        build_result = remote.stream_ssh(host, user, secret_path, build_script, on_line=progress)
+        if build_result.returncode != 0:
+            raise RuntimeError(build_result.stdout.strip() or "remote docker build failed")
+        if push:
+            login_username, login_password = _resolve_dockerhub_credentials(env_file, username, password, token)
+            _docker_login_remote(host, user, secret_path, registry, login_username, login_password, progress=progress)
+            for image in images:
+                result = remote.run_command(remote.ssh_base(host, user, secret_path) + [f"docker push {image}"])
+                if result.returncode != 0:
+                    raise RuntimeError(result.stdout.strip() or f"remote docker push failed for {image}")
+                pushed.append(image)
+    elif multi_arch:
         login_username, login_password = _resolve_dockerhub_credentials(env_file, username, password, token)
         _docker_login_remote(host, user, secret_path, registry, login_username, login_password, progress=progress)
-        for image in images:
-            result = remote.run_command(remote.ssh_base(host, user, secret_path) + [f"docker push {image}"])
-            if result.returncode != 0:
-                raise RuntimeError(result.stdout.strip() or f"remote docker push failed for {image}")
-            pushed.append(image)
+        build_script = (
+            f"cd {app_target} && docker buildx build --platform {platform_flag} -f Dockerfile "
+            f"--build-arg {plan['version_arg']}={plan['w9_version']} -t {images[0]} --push ."
+        )
+        build_result = remote.stream_ssh(host, user, secret_path, build_script, on_line=progress)
+        if build_result.returncode != 0:
+            raise RuntimeError(_buildx_error(build_result.stdout))
+        pushed = list(images)
+    else:
+        platform_arg = f" --platform {platform_flag}" if platform_flag else ""
+        build_script = (
+            f"cd {app_target} && docker build{platform_arg} -f Dockerfile "
+            f"--build-arg {plan['version_arg']}={plan['w9_version']} -t {images[0]} ."
+        )
+        build_result = remote.stream_ssh(host, user, secret_path, build_script, on_line=progress)
+        if build_result.returncode != 0:
+            raise RuntimeError(build_result.stdout.strip() or "remote docker build failed")
+        if push:
+            login_username, login_password = _resolve_dockerhub_credentials(env_file, username, password, token)
+            _docker_login_remote(host, user, secret_path, registry, login_username, login_password, progress=progress)
+            for image in images:
+                result = remote.run_command(remote.ssh_base(host, user, secret_path) + [f"docker push {image}"])
+                if result.returncode != 0:
+                    raise RuntimeError(result.stdout.strip() or f"remote docker push failed for {image}")
+                pushed.append(image)
 
     return {
         "app": app_name,
@@ -430,6 +669,8 @@ def build_app(
         "ssh_secret_path": str(secret_path),
         "deploy_root": deploy_root_value,
         "app_target": app_target,
+        "org": resolved_org,
+        "platform": platform_key or "host",
         "build_services": build_services_out,
         "images": images,
         "pushed": pushed,

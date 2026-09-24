@@ -1,0 +1,49 @@
+#
+# Teleport configuration file (v18 schema).
+#
+# Things to update:
+#  1. teleport.nodename / auth_service.cluster_name / proxy_service.public_addr:
+#     the init service rewrites them from ${W9_URL} before Teleport starts.
+#  2. proxy_service.public_addr: keep the ":443" port so generated URLs omit the
+#     internal 3080 port.
+#  3. license.pem: retrieve a license from https://teleport.sh only if you are an
+#     Enterprise customer.
+#
+# MFA is disabled for local users (second_factor: off). Teleport 18 refuses this
+# unless the container runs with TELEPORT_ALLOW_NO_SECOND_FACTOR=true, which the
+# package sets in .env. Remove both to require MFA.
+#
+# Regenerate a starter file with:
+#   docker run --rm --entrypoint /usr/local/bin/teleport \
+#     public.ecr.aws/gravitational/teleport-distroless:18.10 \
+#     configure --roles=proxy,auth,ssh
+#
+version: v3
+teleport:
+  nodename: ${W9_URL}
+  data_dir: /var/lib/teleport
+  log:
+    output: stderr
+    severity: INFO
+    format:
+      output: text
+  ca_pin: ""
+  diag_addr: ""
+auth_service:
+  enabled: "yes"
+  listen_addr: 0.0.0.0:3025
+  cluster_name: ${W9_URL}
+  proxy_listener_mode: multiplex
+  authentication:
+    type: local
+    second_factor: off
+ssh_service:
+  enabled: "yes"
+proxy_service:
+  enabled: "yes"
+  web_listen_addr: 0.0.0.0:3080
+  https_keypairs: []
+  https_keypairs_reload_interval: 0s
+  acme: {}
+  public_addr:
+    - '${W9_URL}:443'

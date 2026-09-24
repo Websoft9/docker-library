@@ -47,6 +47,19 @@ def test_load_provider_env_supports_dockerhub(repo_fixture):
     assert data["DOCKERHUB_TOKEN"] == "token"
 
 
+def test_load_provider_env_supports_aliyun(repo_fixture):
+    (repo_fixture / ".secrets").mkdir(exist_ok=True)
+    (repo_fixture / ".secrets" / "aliyun.env").write_text(
+        "ALIYUN_ACCESS_KEY_ID=id\nALIYUN_ACCESS_KEY_SECRET=secret\nALIYUN_DNS_DOMAIN=libs.websoft9.cn\n",
+        encoding="utf-8",
+    )
+
+    data = credentials.load_provider_env("aliyun")
+
+    assert data["ALIYUN_DNS_DOMAIN"] == "libs.websoft9.cn"
+    assert credentials.provider_env_path("aliyun").name == "aliyun.env"
+
+
 def test_resolve_secret_precedence(repo_fixture, monkeypatch):
     (repo_fixture / ".secrets").mkdir(exist_ok=True)
     (repo_fixture / ".secrets" / "contentful.env").write_text(

@@ -8,6 +8,7 @@ and versions prior to 0.8.0 do not strictly follow this format.
 ## [0.8.0] - Unreleased
 
 ### Added
+- `libs dns-bind` / `libs dns-delete` for Aliyun DNS wildcard records, plus the `aliyun` provider in `make connector`
 - Appstore Publish workflow with v2/catalog/library/manifest output model
 - Channel-aware distribution merge for dev channel
 - `workflow_dispatch` support for manual dev/rc/release publishing

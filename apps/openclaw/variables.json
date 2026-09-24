@@ -2,20 +2,38 @@
   "name": "openclaw",
   "trademark": "OpenClaw",
   "release": true,
+  "upstream": {
+    "image": "ghcr.io/openclaw/openclaw",
+    "releases": "https://github.com/openclaw/openclaw/releases",
+    "docs": [
+      "https://docs.openclaw.ai/install/docker"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "2026.3.13-1"
+        "2026.9.6"
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 18789,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "2",
     "disk": "10"
   },
-  "upstream": {
-    "image": "https://github.com/openclaw/openclaw/releases"
+  "credentials": {},
+  "env": {
+    "first_startup_only": []
+  },
+  "help": {
+    "db": "No bundled database. The Gateway token is seeded from W9_LOGIN_PASSWORD, and the package derives the external Control UI origin from OPENCLAW_PUBLIC_ORIGIN or OPENCLAW_PUBLIC_SCHEME plus W9_URL on each recreate."
   }
 }

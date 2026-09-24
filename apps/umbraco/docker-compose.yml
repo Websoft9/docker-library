@@ -2,21 +2,20 @@ services:
 
   umbraco:
     image: ${W9_REPO}:${W9_VERSION}
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        UMBRACO_VERSION: ${W9_VERSION}
     container_name: ${W9_ID}
     restart: unless-stopped
     env_file: .env
     ports:
-      - "${W9_HTTP_PORT_SET}:8080" # Web Console
+      - "${W9_HTTPS_PORT_SET}:8443" # HTTPS
     environment:
-      ASPNETCORE_URLS: http://+:8080
+      ASPNETCORE_URLS: https://+:8443;http://+:8080
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: /app/umbraco/certs/umbraco-selfsigned.pfx
+      ASPNETCORE_Kestrel__Certificates__Default__Password: ${UMBRACO_HTTPS_CERT_PASSWORD}
       ConnectionStrings__umbracoDbDSN: "${UMBRACO_DB_DSN}"
       ConnectionStrings__umbracoDbDSN_ProviderName: Microsoft.Data.Sqlite
-      Umbraco__CMS__WebRouting__UmbracoApplicationUrl: http://${W9_URL}
+      Umbraco__CMS__Global__UseHttps: "true"
+      Umbraco__CMS__WebRouting__UmbracoApplicationUrl: https://${W9_URL}
       Umbraco__CMS__Unattended__InstallUnattended: "true"
       Umbraco__CMS__Unattended__UnattendedUserName: Administrator
       Umbraco__CMS__Unattended__UnattendedUserEmail: ${W9_LOGIN_USER}

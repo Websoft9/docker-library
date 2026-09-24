@@ -11,7 +11,7 @@
 <!-- W9_GUIDE_START -->
 ### Usage
 
-1. Open the Umbraco site from the **Access** tab.
+1. Open `https://<host>:${W9_HTTPS_PORT_SET}` from the **Access** tab and accept the self-signed certificate warning.
 2. Sign in to the backoffice at `/umbraco` with the credentials from the **Access** tab.
 3. Create your first content node to confirm the publishing flow.
 
@@ -27,9 +27,14 @@ Websoft9 packages this app from the official [Umbraco Docker image](https://hub.
 
 <!-- W9_NOTE_START -->
 
+- Umbraco runs HTTPS by default with a self-signed certificate generated on first start and stored in the `umbraco_data` volume.
+- Application logs are written to both `docker logs` and the persisted Umbraco log files under `/app/umbraco/Logs`.
+
 <!-- W9_NOTE_END -->
 
-Apps run as containers; rebuild after any configuration change.
+`docker compose up` uses the prebuilt image `${W9_REPO}:${W9_VERSION}`. The local `Dockerfile` is kept for separate image build/publish workflows and is not invoked by the runtime compose file.
+
+Apps run as containers; recreate after any configuration change.
 
 ### Version Support
 
@@ -40,7 +45,7 @@ Supported versions: 18.2.0.
 
 | Purpose | Port |
 | --- | --- |
-| Web Console | 8080 |
+| HTTPS | 8443 |
 
 
 ### Data Directory
@@ -84,6 +89,9 @@ Configuration files live inside the image; mount a single file read-only to over
 **App fails to start?**
 - Check `docker compose logs`.
 
+**Certificate warning in the browser?**
+- The package serves a self-signed certificate by default. Open `https://<host>:${W9_HTTPS_PORT_SET}` and accept the warning, or replace it with your own certificate at the reverse proxy layer.
+
 **Port not reachable?**
-- Ensure the firewall / security group allows the port.
+- Ensure the firewall / security group allows the HTTPS port.
 <!-- W9_TROUBLESHOOT_END -->

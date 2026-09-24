@@ -1,0 +1,9 @@
+skip:
+  - id: web-access
+    reason: validate the Strapi admin console instead of the root path.
+
+optional:
+  - id: admin-console
+    type: web-access
+    path: /admin
+    expect_status: 200

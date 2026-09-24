@@ -2,6 +2,13 @@
   "name": "tensorflow",
   "trademark": "Tensorflow",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/tensorflow/tensorflow",
+    "docs": [
+      "https://www.tensorflow.org/install/docker",
+      "https://github.com/tensorflow/tensorflow"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
@@ -11,12 +18,31 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8888,
+      "path": "/"
+    },
+    "admin": {
+      "port": 8888,
+      "path": "/lab"
+    },
+    "metrics": {
+      "port": 6006,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "1"
   },
-  "upstream": {
-    "image": "https://hub.docker.com/r/tensorflow/tensorflow"
+  "credentials": {},
+  "env": {
+    "first_startup_only": []
+  },
+  "help": {
+    "db": "No bundled database. JupyterLab uses the fixed token from W9_LOGIN_PASSWORD and TensorBoard starts automatically with logs under /tf/notebooks/logs."
   }
 }

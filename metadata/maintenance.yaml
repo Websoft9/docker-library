@@ -29,7 +29,6 @@ cadence:
   - prestashop
   - rabbitmq
   - redmine
-  - rocketmq
   - superset
   - woocommerce
   - wordpress

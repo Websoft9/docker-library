@@ -3,3 +3,6 @@ optional:
     type: web-access
     path: /lab
     expect_status: 200
+  - id: tensorboard-ui
+    type: script
+    script: check.sh

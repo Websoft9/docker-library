@@ -3,12 +3,21 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     restart: unless-stopped
+    command: ["bash", "/usr/local/bin/w9-tensorflow-entrypoint.sh"]
     ports:
-      - "${W9_HTTP_PORT_SET}:8888" # Jupyter Notebook
+      - "${W9_HTTP_PORT_SET}:8888" # JupyterLab
       - "${W9_GUI_PORT_SET}:6006" # TensorBoard
     env_file: .env
+    environment:
+      JUPYTER_TOKEN: ${JUPYTER_TOKEN}
+      TENSORBOARD_AUTOSTART: ${TENSORBOARD_AUTOSTART}
+      TENSORBOARD_LOGDIR: ${TENSORBOARD_LOGDIR}
+      TENSORBOARD_DEMO: ${TENSORBOARD_DEMO}
     volumes:
       - tensorflow:/tf/notebooks
+      - ./src/entrypoint.sh:/usr/local/bin/w9-tensorflow-entrypoint.sh:ro
+      - ./src/seed_demo.py:/opt/w9/seed_demo.py:ro
+      - ./src/tensorboard_demo.py:/opt/w9/tensorboard_demo.py:ro
 
 networks:
   default:

@@ -11,14 +11,13 @@
 <!-- W9_GUIDE_START -->
 ### Usage
 
-1. Set `W9_URL` and `proxy_service.public_addr` in `src/config/teleport.yaml` to the domain that resolves to this host.
-2. Start the app. On first run it creates the `admin` user automatically.
-3. Generate the password setup link with `docker exec <container> /usr/local/bin/tctl users reset admin`, then open it to set the admin password. MFA is disabled; enable it later from the Web UI if needed.
+1. Set `W9_URL` to the domain that resolves to this host, then rebuild or restart the app so the init service regenerates `src/config/teleport.yaml` before Teleport starts.
+2. Open `https://<host>:<port>/` and sign in with the username and password from the **Access** tab (`W9_LOGIN_USER` / `W9_LOGIN_PASSWORD` in `.env`). MFA is disabled; enable it later from the Web UI if needed.
 
 ### Change Password
 
-1. Reset the user from inside the container: `docker exec <container> /usr/local/bin/tctl users reset <username>`.
-2. Open the printed reset URL to set a new password.
+1. Change it in the Teleport Web UI; the new password is kept across restarts.
+2. To change the initial password before first startup, update `W9_LOGIN_PASSWORD` in `.env` and redeploy. The init service regenerates `src/config/bootstrap.yaml` from the current value.
 <!-- W9_GUIDE_END -->
 
 ## Configuration Reference

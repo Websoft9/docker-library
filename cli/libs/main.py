@@ -8,7 +8,7 @@ from rich.console import Console
 from rich.table import Table
 
 from libs import app as app_ops
-from libs import app_build, app_deploy, app_tests, appstore_sync, catalog, contentful, dblifecycle, drift, http, imagestats, maintenance, newapp, readme, remote, validate, versions, websoft9_upgrade
+from libs import app_build, app_deploy, app_tests, appstore_sync, catalog, contentful, dblifecycle, dns, drift, http, imagestats, maintenance, newapp, readme, remote, validate, versions, websoft9_upgrade
 from libs.metadata import app_dir
 from libs.output import print_output
 
@@ -47,7 +47,7 @@ def proxy_command(
 def help_command(ctx: typer.Context) -> None:
     """Show help for libs. Same as libs --help."""
     typer.echo(ctx.parent.get_help())
-    typer.echo("\nLocal by default; remote-aware commands read defaults from .secrets/remote.env (TARGET, SSH_HOST, SSH_USER, SSH_SECRET_PATH, DEPLOY_ROOT, CONTAINER). Current remote-aware commands: app-deploy, app-build, app-down, app-tests, appstore-sync, appstore-deploy, websoft9-upgrade.")
+    typer.echo("\nLocal by default; remote-aware commands read defaults from .secrets/remote.env (TARGET, SSH_HOST, SSH_USER, SSH_SECRET_PATH, DEPLOY_ROOT, CONTAINER). Current remote-aware commands: app-deploy, app-build, app-down, app-tests, appstore-sync, appstore-deploy, websoft9-upgrade, dns-bind.")
 
 
 @app.command("list")
@@ -628,6 +628,9 @@ def app_build_command(
     username: str | None = typer.Option(None, "--username", help="Registry username; overrides connector/env value"),
     password: str | None = typer.Option(None, "--password", help="Registry password; overrides connector/env value"),
     token: str | None = typer.Option(None, "--token", help="Registry token; highest-priority secret override"),
+    org: str | None = typer.Option(None, "--org", help="Docker Hub org namespace for bare W9_REPO; overrides DOCKERHUB_ORG"),
+    platform: str = typer.Option(app_build.DEFAULT_PLATFORM, "--platform", help="Target platform: amd64 | arm64 | both (both = multi-arch manifest, requires --push)"),
+    binfmt: bool = typer.Option(True, "--binfmt/--no-binfmt", help="Auto-install cross-arch emulation (binfmt/QEMU) when the target platform differs from the build host"),
     env_file: str | None = typer.Option(None, "--env-file", help="Docker Hub env file; overrides default .secrets/dockerhub.env"),
     progress: bool = typer.Option(False, "--progress", help="Show build/push progress on stderr"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
@@ -647,6 +650,9 @@ def app_build_command(
             username=username,
             password=password,
             token=token,
+            org=org,
+            platform=platform,
+            binfmt=binfmt,
             registry=registry,
             progress=(lambda message: typer.echo(message, err=True)) if progress else None,
         )
@@ -668,6 +674,8 @@ def app_build_plan_command(
     channel: str = typer.Option("stable", "--channel", help="stable | dev | promote"),
     git_sha: str | None = typer.Option(None, "--git-sha", help="Git SHA used for dev image tags"),
     source_sha: str | None = typer.Option(None, "--source-sha", help="Validated dev SHA to promote from (channel=promote)"),
+    org: str | None = typer.Option(None, "--org", help="Docker Hub org namespace for bare W9_REPO; overrides DOCKERHUB_ORG"),
+    env_file: str | None = typer.Option(None, "--env-file", help="Docker Hub env file; overrides default .secrets/dockerhub.env"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
 ) -> None:
     """Emit the canonical build/tag plan for one app. Shared by CI and controlled manual push."""
@@ -677,6 +685,8 @@ def app_build_plan_command(
             channel=channel,
             git_sha=git_sha,
             source_sha=source_sha,
+            org=org,
+            env_file=env_file,
         )
     except FileNotFoundError as error:
         typer.echo(str(error), err=True)
@@ -776,6 +786,94 @@ def websoft9_upgrade_command(
         typer.echo(str(error), err=True)
         raise typer.Exit(code=4)
     except ValueError as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=2)
+    except Exception as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=1)
+    print_output(payload, as_json)
+
+
+@app.command("dns-bind")
+def dns_bind_command(
+    domain: str | None = typer.Option(None, "--domain", help="Wildcard base domain, e.g. libs.websoft9.cn; defaults to ALIYUN_DNS_DOMAIN"),
+    target: str | None = typer.Option(None, "--target", help="local | remote; defaults to TARGET in .secrets/remote.env"),
+    ip: str | None = typer.Option(None, "--ip", help="Explicit IPv4 value; overrides target resolution"),
+    ssh_host: str | None = typer.Option(None, "--ssh-host", help="Remote host; overrides SSH_HOST in .secrets/remote.env"),
+    ssh_user: str | None = typer.Option(None, "--ssh-user", help="Remote SSH user (default root)"),
+    ssh_secret_path: str | None = typer.Option(None, "--ssh-secret-path", help="SSH secret path (key or password file)"),
+    container: str | None = typer.Option(None, "--container", help="Websoft9 container name (default: CONTAINER in .secrets/remote.env, else websoft9)"),
+    no_container: bool = typer.Option(False, "--no-container", help="Skip the optional Websoft9 container domain binding"),
+    record_type: str = typer.Option(dns.DEFAULT_RECORD_TYPE, "--type", help="DNS record type"),
+    ttl: int = typer.Option(dns.DEFAULT_TTL, "--ttl", help="Record TTL in seconds"),
+    access_key_id: str | None = typer.Option(None, "--access-key-id", help="Aliyun AccessKey ID; overrides connector/env value"),
+    access_key_secret: str | None = typer.Option(None, "--access-key-secret", help="Aliyun AccessKey Secret; overrides connector/env value"),
+    endpoint: str | None = typer.Option(None, "--endpoint", help="Aliyun DNS API endpoint; overrides ALIYUN_DNS_ENDPOINT"),
+    env_file: str | None = typer.Option(None, "--env-file", help="Aliyun env file; overrides default .secrets/aliyun.env"),
+    as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
+) -> None:
+    """Point the wildcard record (*.<domain>) at the remote host or localhost, updating it when present.
+
+    When the Websoft9 container is reachable it also sets its wildcard_domain config; otherwise it skips silently.
+    """
+    try:
+        resolved_domain = dns.resolve_domain(domain, env_file)
+        payload = dns.bind(
+            domain=resolved_domain,
+            value=dns.resolve_target_ip(target=target, ip=ip, ssh_host=ssh_host),
+            access_key_id=access_key_id,
+            access_key_secret=access_key_secret,
+            record_type=record_type,
+            ttl=ttl,
+            endpoint=endpoint,
+            env_file=env_file,
+        )
+    except FileNotFoundError as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=4)
+    except (ValueError, dns.DnsError) as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=2)
+    except Exception as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=1)
+
+    if not no_container:
+        payload["container_config"] = dns.configure_container(
+            resolved_domain,
+            target=target,
+            container=container,
+            ssh_host=ssh_host,
+            ssh_user=ssh_user,
+            ssh_secret_path=ssh_secret_path,
+        )
+    print_output(payload, as_json)
+
+
+@app.command("dns-delete")
+def dns_delete_command(
+    domain: str | None = typer.Option(None, "--domain", help="Wildcard base domain, e.g. libs.websoft9.cn; defaults to ALIYUN_DNS_DOMAIN"),
+    record_type: str = typer.Option(dns.DEFAULT_RECORD_TYPE, "--type", help="DNS record type"),
+    access_key_id: str | None = typer.Option(None, "--access-key-id", help="Aliyun AccessKey ID; overrides connector/env value"),
+    access_key_secret: str | None = typer.Option(None, "--access-key-secret", help="Aliyun AccessKey Secret; overrides connector/env value"),
+    endpoint: str | None = typer.Option(None, "--endpoint", help="Aliyun DNS API endpoint; overrides ALIYUN_DNS_ENDPOINT"),
+    env_file: str | None = typer.Option(None, "--env-file", help="Aliyun env file; overrides default .secrets/aliyun.env"),
+    as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
+) -> None:
+    """Delete the single wildcard record (*.<domain>) managed for the domain."""
+    try:
+        payload = dns.delete(
+            domain=dns.resolve_domain(domain, env_file),
+            access_key_id=access_key_id,
+            access_key_secret=access_key_secret,
+            record_type=record_type,
+            endpoint=endpoint,
+            env_file=env_file,
+        )
+    except FileNotFoundError as error:
+        typer.echo(str(error), err=True)
+        raise typer.Exit(code=4)
+    except (ValueError, dns.DnsError) as error:
         typer.echo(str(error), err=True)
         raise typer.Exit(code=2)
     except Exception as error:

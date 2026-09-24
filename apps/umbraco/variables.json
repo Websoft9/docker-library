@@ -19,12 +19,13 @@
     }
   ],
   "access": {
+    "defaultScheme": "https",
     "web": {
-      "port": 8080,
+      "port": 8443,
       "path": "/"
     },
     "admin": {
-      "port": 8080,
+      "port": 8443,
       "path": "/umbraco"
     }
   },

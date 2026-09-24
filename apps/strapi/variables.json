@@ -2,21 +2,51 @@
   "name": "strapi",
   "trademark": "Strapi",
   "release": true,
+  "upstream": {
+    "image": "https://github.com/strapi/strapi",
+    "releases": "https://github.com/strapi/strapi/releases",
+    "docs": [
+      "https://docs.strapi.io/cms/installation/docker",
+      "https://docs.strapi.io/cms/configurations/environment",
+      "https://docs.strapi.io/cms/migration/v4-to-v5/introduction-and-faq"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "3.6.8",
+        "5.54.0",
         "latest"
       ]
     }
   ],
-  "requirements": {
-    "cpu": "1",
-    "memory": "1",
-    "disk": "1"
+  "access": {
+    "web": {
+      "port": 1337,
+      "path": "/"
+    },
+    "admin": {
+      "port": 1337,
+      "path": "/admin"
+    },
+    "api": {
+      "port": 1337,
+      "path": "/api"
+    }
   },
-  "upstream": {
-    "image": "https://hub.docker.com/r/strapi/strapi"
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "5"
+  },
+  "credentials": {},
+  "env": {
+    "first_startup_only": [
+      "W9_LOGIN_USER",
+      "W9_LOGIN_PASSWORD"
+    ]
+  },
+  "help": {
+    "db": "Bundled SQLite database stored in the strapi_data volume. An external PostgreSQL or MySQL database can be selected with DATABASE_CLIENT and the DATABASE_* connection variables in .env; the external database must be empty on first start because existing SQLite data is not migrated automatically. Strapi 5 does not support attaching directly to a Strapi v3 database."
   }
 }

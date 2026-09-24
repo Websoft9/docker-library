@@ -272,3 +272,49 @@ Rules:
   container and extracts the password by `pattern`
 - keep this metadata declarative; do not store full shell commands in `variables.json`
 - prefer `credentials.password` over the legacy `W9_LOGIN_GET_PASSWORD` when a touched app needs this behavior
+
+## Access Metadata
+
+`variables.json` access metadata declares how a user reaches the app. It separates
+the logical surface (which entry) from the transport (scheme / port / path).
+
+Current shape:
+
+```json
+{
+  "access": {
+    "defaultScheme": "https",
+    "web": {
+      "port": 8443,
+      "path": "/"
+    },
+    "admin": {
+      "port": 8443,
+      "path": "/umbraco"
+    },
+    "ws": {
+      "scheme": "wss",
+      "port": 6001,
+      "path": "/socket"
+    }
+  }
+}
+```
+
+Rules:
+
+- `defaultScheme` is the scheme applied to every surface unless that surface overrides it.
+  It should be `http` or `https`; omit only for untouched legacy apps.
+- Use `scheme: https` when the package default entry is HTTPS-only or when the documented
+  default access expects HTTPS first.
+- Surface keys are a closed vocabulary:
+  `web` (end-user UI), `admin` (privileged console), `api` (programmatic API),
+  `ws` (WebSocket), `ssh` (shell), `metrics` (monitoring).
+  Add a custom key only when none applies, and document its meaning.
+- A surface may override `defaultScheme` with its own `scheme` (for example `wss` for a
+  WebSocket surface, or `ssh` for a shell surface).
+- `path` and `port` keep their existing meaning per surface.
+- Do not use `protocol` at the access level. Reserve `protocol` for the transport layer
+  (`tcp` / `udp`) in port mappings.
+- The per-surface `scheme` form is still valid as an override, so legacy apps remain valid
+  and migrate only when touched.

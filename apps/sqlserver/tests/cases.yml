@@ -1,0 +1,4 @@
+custom:
+  - id: sqlcmd-query
+    type: script
+    script: check.sh
