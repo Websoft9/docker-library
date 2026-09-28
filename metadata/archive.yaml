@@ -53,12 +53,52 @@ apps:
 - nodebb
 - onlyoffice
 - rainbond
+- rclone
+- redash
+- rocketmq
+- rowy
+- rudderstack
+- runtime
+- rustdesk
+- safeline
+- sakai
+- saleor
+- scmmanager
 - scratch
 - screego
+- snipeit
+- squid
+- srs
 - sscms
+- stirlingpdf
+- streampipes
+- suitecrm
+- supertokens
+- syncthing
 - tailscale
+- taskingai
+- theia
+- tinyproxy
+- tomee
+- tooljet
+- traccar
+- trafficserver
+- triggerdev
+- ttrss
+- twenty
+- tyk
+- unleash
+- v2ray
+- webcheck
 - weblate
+- wikijs
+- windmill
+- wireguard
 - xinference
+- zabbix
+- zerotier
+- zitadel
+- zookeeper
 overrides:
   aitable:
     archive_reason: Low user demand
@@ -85,6 +125,8 @@ overrides:
   scratch:
     archive_reason: Low user demand
   screego:
+    archive_reason: Low user demand
+  taskingai:
     archive_reason: Low user demand
   onlyoffice:
     archive_reason: Not maintained by upstream
@@ -140,9 +182,89 @@ overrides:
     archive_reason: Low user demand
   tailscale:
     archive_reason: Low user demand
+  theia:
+    archive_reason: Low user demand
+  tinyproxy:
+    archive_reason: Low user demand
+  tomee:
+    archive_reason: Low user demand
+  tooljet:
+    archive_reason: Low user demand
+  traccar:
+    archive_reason: Low user demand
+  trafficserver:
+    archive_reason: Low user demand
+  triggerdev:
+    archive_reason: Low user demand
   krakend:
     archive_reason: Low user demand
   mailpit:
     archive_reason: Low user demand
   mastodon:
+    archive_reason: Low user demand
+  zerotier:
+    archive_reason: Low user demand
+  wireguard:
+    archive_reason: Low user demand
+  windmill:
+    archive_reason: Low user demand
+  wikijs:
+    archive_reason: Low user demand
+  zookeeper:
+    archive_reason: Low user demand
+  zitadel:
+    archive_reason: Low user demand
+  zabbix:
+    archive_reason: Low user demand
+  webcheck:
+    archive_reason: Low user demand
+  v2ray:
+    archive_reason: Low user demand
+  twenty:
+    archive_reason: Low user demand
+  ttrss:
+    archive_reason: Low user demand
+  tyk:
+    archive_reason: Low user demand
+  unleash:
+    archive_reason: Low user demand
+  supertokens:
+    archive_reason: Low user demand
+  srs:
+    archive_reason: Low user demand
+  suitecrm:
+    archive_reason: Low user demand
+  streampipes:
+    archive_reason: Low user demand
+  stirlingpdf:
+    archive_reason: Low user demand
+  snipeit:
+    archive_reason: Low user demand
+  squid:
+    archive_reason: Low user demand
+  snapdrop:
+    archive_reason: Low user demand
+  scmmanager:
+    archive_reason: Low user demand
+  saleor:
+    archive_reason: Low user demand
+  sakai:
+    archive_reason: Low user demand
+  syncthing:
+    archive_reason: Low user demand
+  safeline:
+    archive_reason: Low user demand
+  runtime:
+    archive_reason: Low user demand
+  rustdesk:
+    archive_reason: Low user demand
+  rudderstack:
+    archive_reason: Low user demand
+  rowy:
+    archive_reason: Low user demand
+  rocketmq:
+    archive_reason: Low user demand
+  rclone:
+    archive_reason: Low user demand
+  redash:
     archive_reason: Low user demand

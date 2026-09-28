@@ -2,21 +2,45 @@
   "name": "vault",
   "trademark": "Vault",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/hashicorp/vault",
+    "releases": "https://github.com/hashicorp/vault/releases",
+    "docs": [
+      "https://developer.hashicorp.com/vault/docs",
+      "https://hub.docker.com/r/hashicorp/vault"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "1.21",
+        "2.1",
         "latest"
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8200,
+      "path": "/"
+    },
+    "api": {
+      "port": 8200,
+      "path": "/v1/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "2",
     "disk": "1"
   },
-  "upstream": {
-    "image": "https://hub.docker.com/r/hashicorp/vault"
+  "credentials": {
+    "token": {
+      "source": "container-log",
+      "match": "regex",
+      "pattern": "Root Token:\\s*(.+)",
+      "group": 1
+    }
   }
 }

@@ -1,0 +1,8 @@
+skip:
+  - id: web-access
+
+optional:
+  - id: dashboard
+    type: web-access
+    path: /dashboard/
+    expect_status: 200

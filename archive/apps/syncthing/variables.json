@@ -1,0 +1,32 @@
+{
+  "name": "syncthing",
+  "trademark": "Syncthing",
+  "release": true,
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "2.1",
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "2",
+    "disk": "2"
+  },
+  "env": {
+    "first_startup_only": [
+      "W9_LOGIN_USER",
+      "W9_LOGIN_PASSWORD"
+    ]
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/syncthing/syncthing",
+    "docs": [
+      "https://docs.syncthing.net/intro/getting-started.html"
+    ],
+    "version_notes": "https://github.com/syncthing/syncthing/releases/tag/v2.1.5"
+  }
+}

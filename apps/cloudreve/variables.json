@@ -2,6 +2,9 @@
   "name": "cloudreve",
   "trademark": "Cloudreve",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/cloudreve/cloudreve"
+  },
   "edition": [
     {
       "dist": "community",
@@ -11,12 +14,16 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 5212,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "2",
     "disk": "10"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/cloudreve/cloudreve"
   }
 }

@@ -1,0 +1,7 @@
+skip:
+  - id: web-access
+
+optional:
+  - id: server-http
+    type: script
+    script: check.sh

@@ -1,0 +1,5 @@
+optional:
+  - id: entry-page-api
+    type: web-access
+    path: /api/entry-page
+    expect_status: 200

@@ -23,6 +23,22 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 3010,
+      "path": "/"
+    },
+    "admin": {
+      "port": 3010,
+      "path": "/admin"
+    }
+  },
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "8"
+  },
   "database": {
     "type": "postgresql",
     "supported_modes": [
@@ -37,11 +53,6 @@
       "username_env": "POSTGRES_USER",
       "password_env": "POSTGRES_PASSWORD"
     }
-  },
-  "requirements": {
-    "cpu": "2",
-    "memory": "4",
-    "disk": "8"
   },
   "env": {
     "first_startup_only": []

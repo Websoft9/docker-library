@@ -1,0 +1,12 @@
+skip:
+  - id: web-access
+
+optional:
+  - id: backend-login
+    type: web-access
+    path: /typo3/
+    expect_status: [200]
+  - id: install-tool
+    type: web-access
+    path: /typo3/install.php
+    expect_status: [200]

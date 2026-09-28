@@ -1,1 +1,0 @@
-# Uptime Kuma

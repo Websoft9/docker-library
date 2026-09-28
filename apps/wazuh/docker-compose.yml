@@ -1,50 +1,148 @@
-# image,docs: https://hub.docker.com/_/wordpress/
-
 services:
-
-  wordpress:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
-    restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
-    logging:
-      driver: "json-file"
-      options:
-          max-file: "5"
-          max-size: 10m
-    deploy:
-      resources:
-        limits:
-          memory: 5g
-          cpus: '0.7'
-    ports:
-      - $W9_HTTP_PORT_SET:80
-    env_file: .env
-    volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
-
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
-    restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
-    volumes:
-      - mysql_data:/var/lib/mysql
+  wazuh-certs:
+    image: wazuh/wazuh-certs-generator:0.0.4
+    container_name: ${W9_ID}-certs
+    restart: "no"
     environment:
-      MYSQL_DATABASE: $WORDPRESS_DB_NAME
-      MYSQL_USER: $WORDPRESS_DB_USER
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      CERT_TOOL_VERSION: "4.14"
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        if [ ! -f /certificates/wazuh.indexer.pem ]; then
+          rm -rf /wazuh-certificates
+          /entrypoint.sh
+        fi
+        chmod 755 /certificates
+    volumes:
+      - ./src/wazuh_indexer_ssl_certs:/certificates
+      - ./src/certs.yml:/config/certs.yml
+    networks:
+      - wazuh-internal
+
+  busybox:
+    image: busybox
+    container_name: ${W9_ID}-sysctl
+    restart: "no"
+    command: /bin/sh -c "sysctl -w vm.max_map_count=262144 || true"
+    privileged: true
+    networks:
+      - wazuh-internal
+
+  wazuh.indexer:
+    image: wazuh/wazuh-indexer:${W9_VERSION}
+    container_name: ${W9_ID}-indexer
+    hostname: wazuh.indexer
+    restart: always
+    env_file: .env
+    depends_on:
+      wazuh-certs:
+        condition: service_completed_successfully
+      busybox:
+        condition: service_completed_successfully
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    healthcheck:
+      test: ["CMD-SHELL", "curl -k -s -u admin:$${INDEXER_PASSWORD} https://localhost:9200/_cluster/health | grep -q '\"status\"'"]
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 60s
+    volumes:
+      - wazuh-indexer-data:/var/lib/wazuh-indexer
+      - ./src/wazuh_indexer_ssl_certs:/usr/share/wazuh-indexer/config/certs
+      - ./src/wazuh.indexer.yml:/usr/share/wazuh-indexer/config/opensearch.yml
+      - ./src/internal_users.yml:/usr/share/wazuh-indexer/config/opensearch-security/internal_users.yml
+    networks:
+      - wazuh-internal
+
+  wazuh.manager:
+    image: wazuh/wazuh-manager:${W9_VERSION}
+    container_name: ${W9_ID}-manager
+    hostname: wazuh.manager
+    restart: always
+    env_file: .env
+    depends_on:
+      wazuh.indexer:
+        condition: service_healthy
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 655360
+        hard: 655360
+    ports:
+      - "${W9_AGENT_PORT_SET}:1514" # Agent Connection
+      - "${W9_ENROLLMENT_PORT_SET}:1515" # Agent Enrollment
+      # Uncomment to collect syslog from external devices:
+      # - "${W9_SYSLOG_UDP_PORT_SET}:514/udp" # Syslog Collection
+      # Uncomment to expose the Wazuh REST API to external automation:
+      # - "${W9_API_PORT_SET}:55000" # Manager API
+    volumes:
+      - wazuh_api_configuration:/var/ossec/api/configuration
+      - wazuh_etc:/var/ossec/etc
+      - wazuh_logs:/var/ossec/logs
+      - wazuh_queue:/var/ossec/queue
+      - wazuh_var_multigroups:/var/ossec/var/multigroups
+      - wazuh_integrations:/var/ossec/integrations
+      - wazuh_active_response:/var/ossec/active-response/bin
+      - wazuh_agentless:/var/ossec/agentless
+      - wazuh_wodles:/var/ossec/wodles
+      - filebeat_etc:/etc/filebeat
+      - filebeat_var:/var/lib/filebeat
+      - ./src/wazuh_indexer_ssl_certs:/etc/ssl/wazuh
+      - ./src/wazuh_manager.conf:/wazuh-config-mount/etc/ossec.conf
+    networks:
+      - wazuh-internal
+
+  wazuh.dashboard:
+    image: wazuh/wazuh-dashboard:${W9_VERSION}
+    container_name: ${W9_ID}
+    hostname: wazuh.dashboard
+    restart: always
+    env_file: .env
+    depends_on:
+      wazuh.indexer:
+        condition: service_healthy
+      wazuh.manager:
+        condition: service_started
+    ports:
+      - "${W9_HTTPS_PORT_SET}:5601" # Web Console
+    volumes:
+      - ./src/wazuh_indexer_ssl_certs:/usr/share/wazuh-dashboard/certs
+      - ./src/opensearch_dashboards.yml:/usr/share/wazuh-dashboard/config/opensearch_dashboards.yml
+      - ./src/wazuh.yml:/usr/share/wazuh-dashboard/data/wazuh/config/wazuh.yml
+      - wazuh-dashboard-config:/usr/share/wazuh-dashboard/data/wazuh/config
+      - wazuh-dashboard-custom:/usr/share/wazuh-dashboard/plugins/wazuh/public/assets/custom
+    networks:
+      - wazuh-internal
+      - default
 
 volumes:
-  wordpress:
-  mysql_data:
-    
+  wazuh-indexer-data:
+  wazuh_api_configuration:
+  wazuh_etc:
+  wazuh_logs:
+  wazuh_queue:
+  wazuh_var_multigroups:
+  wazuh_integrations:
+  wazuh_active_response:
+  wazuh_agentless:
+  wazuh_wodles:
+  filebeat_etc:
+  filebeat_var:
+  wazuh-dashboard-config:
+  wazuh-dashboard-custom:
+
 networks:
+  wazuh-internal:
+    name: ${W9_ID}-internal
+    driver: bridge
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

@@ -1,19 +1,27 @@
-# image: https://hub.docker.com/_/tomcat
-
-version: '3.8'
 services:
   tomcat:
     container_name: ${W9_ID}
-    image: $W9_REPO:$W9_VERSION
+    image: ${W9_REPO}:${W9_VERSION}
     restart: unless-stopped
     env_file: .env
+    working_dir: /usr/local/tomcat
+    entrypoint: ["/bin/bash", "/opt/websoft9/entrypoint.sh"]
+    environment:
+      - APP_DIR=/usr/local/tomcat
     ports:
-      - '${W9_HTTP_PORT_SET}:8080'
+      - "${W9_HTTP_PORT_SET}:8080" # Tomcat HTTP
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/ >/dev/null"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     volumes:
-     - tomcat:/usr/local/tomcat
-     - ./src/cmd.sh:/usr/src/app/cmd.sh
-    command: /bin/bash -c "bash /usr/src/app/cmd.sh && catalina.sh run"
-    
+      - tomcat:/usr/local/tomcat
+      - ./src/entrypoint.sh:/opt/websoft9/entrypoint.sh:ro
+      - ./src/entrypoint.d:/opt/websoft9/entrypoint.d:ro
+      - ./src/start.sh:/opt/websoft9/start.sh:ro
+
 networks:
   default:
     name: ${W9_NETWORK}

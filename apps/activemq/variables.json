@@ -20,6 +20,17 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8161,
+      "path": "/"
+    },
+    "admin": {
+      "port": 8161,
+      "path": "/admin"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

@@ -1,0 +1,32 @@
+#
+# Bootstrap resources, applied once on the cluster's first start.
+#
+# The init service renders this template into /etc/teleport/bootstrap.yaml using
+# the current W9_LOGIN_PASSWORD value so App Store password rewrites take effect
+# before Teleport initializes the cluster.
+#
+# Applied with --bootstrap, so it is ignored once the cluster is initialized.
+#
+kind: role
+version: v7
+metadata:
+  name: admin
+spec:
+  options:
+    max_session_ttl: 12h
+  allow:
+    logins: ["root", "ubuntu", "ec2-user"]
+    node_labels:
+      "*": "*"
+    rules:
+      - resources: ["*"]
+        verbs: ["*"]
+---
+kind: user
+version: v2
+metadata:
+  name: ${W9_LOGIN_USER}
+spec:
+  roles: ["admin"]
+  local_auth:
+    password_hash: ${W9_LOGIN_PASSWORD_HASH}

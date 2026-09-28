@@ -6,17 +6,24 @@
     {
       "dist": "community",
       "version": [
-        "21.7",
+        "22.6",
         "latest"
       ]
     }
   ],
+  "credentials": {},
   "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "4"
   },
+  "env": {
+    "first_startup_only": []
+  },
   "upstream": {
-    "image": "https://hub.docker.com/r/easysoft/zentao"
+    "image": "https://hub.docker.com/r/easysoft/zentao",
+    "docs": [
+      "https://github.com/easysoft/zentaopms"
+    ]
   }
 }

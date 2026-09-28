@@ -1,23 +1,49 @@
-# image: https://gallery.ecr.aws/gravitational/teleport
-# docs: https://goteleport.com/docs/management/guides/docker/
-# docs: https://goteleport.com/docs/try-out-teleport/docker-compose/
-
-
-version: '3.8'
-
 services:
+
+  teleport-init:
+    image: httpd:2.4-alpine
+    container_name: ${W9_ID}-init
+    restart: "no"
+    env_file: .env
+    entrypoint:
+      - /bin/sh
+      - -ec
+      - |
+        password_hash="$$(htpasswd -nbBC 10 "" "$${W9_LOGIN_PASSWORD}" | sed 's/^://')"
+        password_hash_b64="$$(printf '%s' "$${password_hash}" | base64 | tr -d '\n')"
+        sed -e "s|\$${W9_URL}|$${W9_URL}|g" /templates/teleport.yaml.tmpl > /work/teleport.yaml
+        sed \
+          -e "s|\$${W9_LOGIN_USER}|$${W9_LOGIN_USER}|g" \
+          -e "s|\$${W9_LOGIN_PASSWORD_HASH}|$${password_hash_b64}|g" \
+          /templates/bootstrap.yaml.tmpl > /work/bootstrap.yaml
+    volumes:
+      - ./src/config:/work
+      - ./src/config/teleport.yaml.tmpl:/templates/teleport.yaml.tmpl:ro
+      - ./src/config/bootstrap.yaml.tmpl:/templates/bootstrap.yaml.tmpl:ro
+
   teleport:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     hostname: localhost
+    restart: unless-stopped
+    depends_on:
+      teleport-init:
+        condition: service_completed_successfully
+    entrypoint: ["/usr/bin/dumb-init", "/usr/local/bin/teleport", "start", "-c", "/etc/teleport/teleport.yaml", "--bootstrap=/etc/teleport/bootstrap.yaml"]
+    env_file: .env
     ports:
-      - ${W9_HTTPS_PORT_SET}:3080 # HTTPS for API
-      #- 3025:3025 # SSH port
-      #- 3023:3023 # Node Tunneling
+      - "${W9_HTTPS_PORT_SET}:3080" # Teleport Proxy HTTPS (Web UI + API)
+      # - "3025:3025" # Auth Service (internal)
+      # - "3023:3023" # Node Tunneling (internal)
     volumes:
       - ./src/config:/etc/teleport
       - teleport_data:/var/lib/teleport
-    env_file: .env
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/tctl", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 networks:
   default:
@@ -25,5 +51,4 @@ networks:
     external: true
 
 volumes:
-  teleport_config:
   teleport_data:

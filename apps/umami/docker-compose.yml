@@ -1,32 +1,31 @@
-# image: https://github.com/plausible/hosting
-# docs: https://umami.is/docs/install
-# compose: https://github.com/umami-software/umami/blob/master/docker-compose.yml
-
-version: '3.8'
 services:
   umami:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    init: true
     env_file:
       - .env
     ports:
-      - $W9_HTTP_PORT_SET:3000
+      - "${W9_HTTP_PORT_SET}:3000" # Web Console
     depends_on:
-      - postgresql
-    restart: unless-stopped
+      postgresql:
+        condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl http://localhost:3000/api/heartbeat"]
+      test: ["CMD-SHELL", "curl -fsS http://localhost:3000/api/heartbeat"]
       interval: 5s
       timeout: 5s
       retries: 5
+      start_period: 30s
 
   postgresql:
-    image: postgres:15-alpine
-    container_name: $W9_ID-postgresql
+    image: postgres:${W9_DB_VERSION}-alpine
+    container_name: ${W9_ID}-postgresql
+    restart: unless-stopped
     environment:
       POSTGRES_DB: umami
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: $W9_POWER_PASSWORD
+      POSTGRES_PASSWORD: ${W9_POWER_PASSWORD}
       POSTGRES_UMAMI_PASSWORD: ${W9_RCODE}
     volumes:
       - postgresql:/var/lib/postgresql/data
@@ -36,7 +35,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-      
+      start_period: 20s
+
 networks:
   default:
     name: ${W9_NETWORK}

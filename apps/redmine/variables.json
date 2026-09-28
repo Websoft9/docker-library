@@ -2,6 +2,9 @@
   "name": "redmine",
   "trademark": "Redmine",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/_/redmine"
+  },
   "edition": [
     {
       "dist": "community",
@@ -11,12 +14,16 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 3000,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "1"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/_/redmine"
   }
 }

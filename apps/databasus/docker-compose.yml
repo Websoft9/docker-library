@@ -1,20 +1,18 @@
-# image,docs: https://databasus.com/installation
-
 services:
   databasus:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
     env_file: .env
     ports:
-      - "$W9_HTTP_PORT_SET:4005"
+      - "${W9_HTTP_PORT_SET}:4005" # Web Console
     volumes:
       - databasus-data:/databasus-data
-    restart: unless-stopped
 
 volumes:
   databasus-data:
-    
+
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

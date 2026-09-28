@@ -2,6 +2,9 @@
   "name": "portainer",
   "trademark": "Portainer",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/portainer/portainer-ce"
+  },
   "edition": [
     {
       "dist": "community",
@@ -11,12 +14,16 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 9000,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "4"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/portainer/portainer-ce"
   }
 }

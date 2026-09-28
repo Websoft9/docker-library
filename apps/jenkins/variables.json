@@ -2,6 +2,15 @@
   "name": "jenkins",
   "trademark": "Jenkins",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/jenkins/jenkins",
+    "releases": "https://www.jenkins.io/changelog/",
+    "docs": [
+      "https://github.com/jenkinsci/docker",
+      "https://www.jenkins.io/doc/",
+      "https://www.jenkins.io/doc/book/installing/docker/"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
@@ -11,6 +20,13 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8080,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "2",
@@ -19,16 +35,8 @@
   "credentials": {
     "password": {
       "source": "container-file",
-      "path": "/var/jenkins_home/secrets/initialAdminPassword"
+      "path": "/var/jenkins_home/secrets/initialAdminPassword",
+      "format": "text"
     }
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/jenkins/jenkins",
-    "releases": "https://www.jenkins.io/changelog/",
-    "docs": [
-      "https://github.com/jenkinsci/docker",
-      "https://www.jenkins.io/doc/",
-      "https://www.jenkins.io/doc/book/installing/docker/"
-    ]
   }
 }

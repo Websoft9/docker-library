@@ -1,0 +1,23 @@
+services:
+  syncthing:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    hostname: syncthing
+    restart: unless-stopped
+    entrypoint:
+      - /bin/sh
+      - /websoft9/init-syncthing.sh
+    env_file: .env
+    volumes:
+      - ${SYNC_PATH}/${W9_ID}:/var/syncthing
+      - ./src/init-syncthing.sh:/websoft9/init-syncthing.sh:ro
+    ports:
+      - "${W9_HTTP_PORT_SET}:8384" # Web Console
+      # - 22000:22000/tcp # TCP file transfers
+      # - 22000:22000/udp # QUIC file transfers
+      # - 21027:21027/udp # Receive local discovery broadcasts
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

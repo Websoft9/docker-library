@@ -2,19 +2,6 @@
   "name": "canvas",
   "trademark": "Canvas",
   "release": true,
-  "edition": [
-    {
-      "dist": "community",
-      "version": [
-        "2026-05-20.143"
-      ]
-    }
-  ],
-  "requirements": {
-    "cpu": "4",
-    "memory": "8",
-    "disk": "20"
-  },
   "upstream": {
     "image": "https://hub.docker.com/r/websoft9dev/canvas",
     "releases": "https://github.com/instructure/canvas-lms",
@@ -25,6 +12,30 @@
       "https://github.com/instructure/canvas-lms/wiki/Production-Start",
       "https://raw.githubusercontent.com/instructure/canvas-lms/master/Dockerfile.production"
     ]
+  },
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "2026-05-20.143"
+      ]
+    }
+  ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 80,
+      "path": "/"
+    },
+    "admin": {
+      "port": 80,
+      "path": "/login/canvas"
+    }
+  },
+  "requirements": {
+    "cpu": "4",
+    "memory": "8",
+    "disk": "20"
   },
   "env": {
     "first_startup_only": [

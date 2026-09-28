@@ -1,21 +1,35 @@
 {
   "name": "wazuh",
   "trademark": "Wazuh",
-  "release": false,
+  "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/wazuh/wazuh-dashboard",
+    "releases": "https://github.com/wazuh/wazuh/releases",
+    "compose": {
+      "compose": "https://raw.githubusercontent.com/wazuh/wazuh-docker/v4.14.7/single-node/docker-compose.yml"
+    },
+    "docs": [
+      "https://documentation.wazuh.com/current/deployment-options/docker/wazuh-container.html",
+      "https://github.com/wazuh/wazuh-docker"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "latest"
+        "4.14.7"
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 5601,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "4",
     "disk": "10"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/wazuh/wazuh-manager"
   }
 }

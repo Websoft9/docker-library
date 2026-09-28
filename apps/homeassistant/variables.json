@@ -2,6 +2,9 @@
   "name": "homeassistant",
   "trademark": "Home Assistant",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/homeassistant/home-assistant"
+  },
   "edition": [
     {
       "dist": "community",
@@ -11,12 +14,16 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8123,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "4"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/homeassistant/home-assistant"
   }
 }

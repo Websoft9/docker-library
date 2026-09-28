@@ -2,6 +2,13 @@
   "name": "dolibarr",
   "trademark": "Dolibarr",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/tuxgasy/dolibarr",
+    "docs": [
+      "https://github.com/tuxgasy/docker-dolibarr",
+      "https://github.com/Dolibarr/dolibarr"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
@@ -11,12 +18,27 @@
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 80,
+      "path": "/"
+    },
+    "admin": {
+      "port": 80,
+      "path": "/admin"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "1"
   },
-  "upstream": {
-    "image": "https://hub.docker.com/r/tuxgasy/dolibarr"
+  "env": {
+    "first_startup_only": [
+      "W9_LOGIN_PASSWORD"
+    ]
+  },
+  "help": {
+    "db": "Dolibarr requires MariaDB or MySQL. This package bundles MariaDB for a single-node deployment."
   }
 }

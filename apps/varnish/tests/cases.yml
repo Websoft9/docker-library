@@ -1,0 +1,4 @@
+optional:
+  - id: varnish-smoke
+    type: script
+    script: smoke.sh

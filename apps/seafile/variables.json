@@ -6,17 +6,44 @@
     {
       "dist": "community",
       "version": [
-        "13.0.8",
-        "12.0-latest"
+        "13.0-latest"
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 80,
+      "path": "/"
+    },
+    "admin": {
+      "port": 80,
+      "path": "/accounts/login/"
+    }
+  },
   "requirements": {
-    "cpu": "1",
+    "cpu": "2",
     "memory": "2",
     "disk": "4"
   },
+  "env": {
+    "first_startup_only": [
+      "INIT_SEAFILE_MYSQL_ROOT_PASSWORD",
+      "INIT_SEAFILE_ADMIN_EMAIL",
+      "INIT_SEAFILE_ADMIN_PASSWORD"
+    ]
+  },
+  "help": {
+    "db": "Bundled MariaDB and Redis are initialized from the package env on first deployment.",
+    "login": "The initial administrator account comes from W9_LOGIN_USER and W9_LOGIN_PASSWORD on first startup; later edits do not backfill existing data.",
+    "url": "Set SEAFILE_SERVER_PROTOCOL=https when the app is published behind an HTTPS gateway or domain, and set SEAFILE_EXTERNAL_HOSTPORT to a reachable IP:port when no domain is bound."
+  },
   "upstream": {
-    "image": "https://hub.docker.com/r/seafileltd/seafile-mc"
+    "image": "https://hub.docker.com/r/seafileltd/seafile-mc",
+    "docs": [
+      "https://manual.seafile.com/latest/setup/setup_ce_by_docker/",
+      "https://manual.seafile.com/latest/extension/only_office/",
+      "https://manual.seafile.com/latest/upgrade/upgrade_notes_for_13.0.x/",
+      "https://manual.seafile.com/latest/setup/use_other_reverse_proxy/"
+    ]
   }
 }

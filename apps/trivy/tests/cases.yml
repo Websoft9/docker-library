@@ -1,0 +1,8 @@
+skip:
+  - id: web-access
+
+optional:
+  - id: server-health
+    type: web-access
+    path: /healthz
+    expect_status: 200

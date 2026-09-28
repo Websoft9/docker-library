@@ -7,9 +7,17 @@
         "App HTTP Port",
         "应用 HTTP 端口"
     ],
+    "W9_GRPC_PORT_SET": [
+        "",
+        ""
+    ],
     "W9_AGENT_PORT_SET": [
         "App Agent Port",
         "应用代理端口"
+    ],
+    "W9_ENROLLMENT_PORT_SET": [
+        "",
+        ""
     ],
     "W9_SSH_PORT_SET": [
         "App SSH Port",
@@ -123,6 +131,10 @@
         "Administrator Password",
         "管理员密码"
     ],
+    "W9_LOGIN_MYSQL_CONNECTION_STRING": [
+        "",
+        ""
+    ],
     "W9_LOGIN_WORKSPACE": [
         "Login Workspace",
         "Workspace"
@@ -134,6 +146,10 @@
     "W9_OPENAI_API_KEY_SET": [
         "OPENAI API KEY",
         "OPENAI API 密钥"
+    ],
+    "W9_DEEPSEEK_API_KEY_SET": [
+        "DEEPSEEK API KEY",
+        "DEEPSEEK API 密钥"
     ],
     "W9_LOGIN_OPENAI_API_KEY": [
         "OPENAI LOGIN KEY",

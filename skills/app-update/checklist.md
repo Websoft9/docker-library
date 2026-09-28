@@ -13,6 +13,6 @@
 - [ ] Keep changes app-local
 - [ ] Update `apps/<app>/CHANGELOG.md` with a pure-date heading `## YYYY-MM-DD` for this change batch
 - [ ] Register new translatable env keys in `i18n/translation.json` if needed
-- [ ] When an interactive app exposes its initial password or token from a container file or logs, prefer `variables.json.credentials.password` over the legacy `W9_LOGIN_GET_PASSWORD`
+- [ ] When an interactive app exposes an initial username, password, or token after deployment, prefer declarative `variables.json.credentials.<slot>` metadata (`inline`, `container-env`, `container-file`, `container-log`, `container-cli`) over legacy `W9_LOGIN_GET_PASSWORD` / `W9_LOGIN_GET_TOKEN`
 - [ ] Run structure, policy, deploy, and reachability checks when applicable
 - [ ] Produce a short test report

@@ -1,0 +1,4 @@
+optional:
+  - id: api-login
+    type: script
+    script: check.sh

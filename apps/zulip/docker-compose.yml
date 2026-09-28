@@ -1,23 +1,18 @@
-# docker：https://hub.docker.com/r/zulip/docker-zulip
-# docs: https://github.com/zulip/docker-zulip/blob/main/README.md
-
-version: "3.8"
-
 services:
   database:
     image: "zulip/zulip-postgresql:14"
-    container_name: $W9_ID-postgresql
+    container_name: ${W9_ID}-postgresql
     restart: unless-stopped
     environment:
       POSTGRES_DB: "zulip"
       POSTGRES_USER: "zulip"
-      POSTGRES_PASSWORD: $W9_POWER_PASSWORD
+      POSTGRES_PASSWORD: ${W9_POWER_PASSWORD}
     volumes:
       - "postgresql-14:/var/lib/postgresql/data:rw"
 
   memcached:
     image: "memcached:alpine"
-    container_name: $W9_ID-memcached
+    container_name: ${W9_ID}-memcached
     restart: unless-stopped
     command:
       - "sh"
@@ -30,21 +25,25 @@ services:
     environment:
       SASL_CONF_PATH: "/home/memcache/memcached.conf"
       MEMCACHED_SASL_PWDB: "/home/memcache/memcached-sasl-db"
-      MEMCACHED_PASSWORD: $W9_POWER_PASSWORD
+      MEMCACHED_PASSWORD: ${W9_POWER_PASSWORD}
 
   rabbitmq:
-    image: "rabbitmq:3.7.7"
-    container_name: $W9_ID-rabbitmq
+    image: "rabbitmq:4.2"
+    container_name: ${W9_ID}-rabbitmq
     restart: unless-stopped
-    environment:
-      RABBITMQ_DEFAULT_USER: "zulip"
-      RABBITMQ_DEFAULT_PASS: $W9_RCODE
+    command:
+      - "sh"
+      - "-euc"
+      - |
+        echo 'default_user = zulip' >> /etc/rabbitmq/rabbitmq.conf
+        echo 'default_pass = ${W9_RCODE}' >> /etc/rabbitmq/rabbitmq.conf
+        exec docker-entrypoint.sh rabbitmq-server
     volumes:
       - "rabbitmq:/var/lib/rabbitmq:rw"
 
   redis:
     image: "redis:alpine"
-    container_name: $W9_ID-redis
+    container_name: ${W9_ID}-redis
     restart: unless-stopped
     command:
       - "sh"
@@ -53,23 +52,29 @@ services:
         echo "requirepass '$$REDIS_PASSWORD'" > /etc/redis.conf
         exec redis-server /etc/redis.conf
     environment:
-      REDIS_PASSWORD: $W9_POWER_PASSWORD
+      REDIS_PASSWORD: ${W9_POWER_PASSWORD}
     volumes:
       - "redis:/data:rw"
 
   zulip:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - $W9_HTTPS_PORT_SET:443
+      - "${W9_HTTPS_PORT_SET}:443" # HTTPS
     env_file: .env
     volumes:
       - "zulip:/data:rw"
+      - ./src/create-default-realm.sh:/data/post-setup.d/10-create-default-realm.sh:ro
     ulimits:
       nofile:
         soft: 1000000
         hard: 1048576
+    depends_on:
+      - database
+      - memcached
+      - rabbitmq
+      - redis
 
 volumes:
   zulip:
@@ -80,5 +85,5 @@ volumes:
 
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

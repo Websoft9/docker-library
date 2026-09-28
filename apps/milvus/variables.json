@@ -2,6 +2,9 @@
   "name": "milvus",
   "trademark": "Milvus",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/milvusdb/milvus"
+  },
   "edition": [
     {
       "dist": "community",
@@ -11,12 +14,20 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 9091,
+      "path": "/"
+    },
+    "admin": {
+      "port": 9091,
+      "path": "/webui"
+    }
+  },
   "requirements": {
     "cpu": "8",
     "memory": "32",
     "disk": "4"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/milvusdb/milvus"
   }
 }

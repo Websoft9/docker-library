@@ -1,0 +1,5 @@
+optional:
+  - id: guided-setup-api
+    type: web-access
+    path: /api/v1/getting_started
+    expect_status: 200

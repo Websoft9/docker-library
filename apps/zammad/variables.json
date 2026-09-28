@@ -2,21 +2,46 @@
   "name": "zammad",
   "trademark": "Zammad",
   "release": true,
+  "upstream": {
+    "image": "ghcr.io/zammad/zammad",
+    "releases": "https://github.com/zammad/zammad-docker-compose/releases",
+    "compose": {
+      "compose": "https://github.com/zammad/zammad-docker-compose/blob/v17.2.0/docker-compose.yml",
+      "env": "https://github.com/zammad/zammad-docker-compose/blob/v17.2.0/.env.dist"
+    },
+    "docs": [
+      "https://docs.zammad.org/en/latest/install/docker-compose.html",
+      "https://docs.zammad.org/en/latest/install/docker-compose/environment.html"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "6.5",
+        "7.1",
         "latest"
       ]
     }
   ],
-  "requirements": {
-    "cpu": "1",
-    "memory": "2",
-    "disk": "2"
+  "access": {
+    "web": {
+      "port": 8080,
+      "path": "/"
+    }
   },
-  "upstream": {
-    "image": "https://hub.docker.com/r/zammad/zammad-docker-compose"
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "8"
+  },
+  "credentials": {},
+  "env": {
+    "first_startup_only": [
+      "W9_POWER_PASSWORD",
+      "W9_RCODE"
+    ]
+  },
+  "help": {
+    "db": "Bundled PostgreSQL 17 stores Zammad data; bundled Elasticsearch 9 powers search and reports."
   }
 }

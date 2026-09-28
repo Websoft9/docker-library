@@ -2,6 +2,9 @@
   "name": "ghost",
   "trademark": "Ghost",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/_/ghost"
+  },
   "edition": [
     {
       "dist": "community",
@@ -11,12 +14,20 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 2368,
+      "path": "/"
+    },
+    "admin": {
+      "port": 2368,
+      "path": "/ghost"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "4"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/_/ghost"
   }
 }

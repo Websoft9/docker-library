@@ -1,8 +1,3 @@
-# image: https://hub.docker.com/_/traefik
-# docs: https://doc.traefik.io/traefik/providers/docker/
-
-version: '3.8'
-
 services:
   traefik:
     image: ${W9_REPO}:${W9_VERSION}
@@ -16,9 +11,8 @@ services:
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
     ports:
-      - ${W9_HTTP_PORT_SET}:80 # For HTTP traffic
-      #- 4433:443  # For HTTPS traffic
-      - 8080:8080   # ← 已启用 Dashboard 端口
+      - "${W9_HTTP_PORT_SET}:8080" # Web Console
+      - "${W9_API_PORT_SET}:80" # HTTP Entrypoint
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./src/traefik.yml:/etc/traefik/traefik.yml

@@ -1,22 +1,26 @@
-# image: https://hub.docker.com/r/aquasec/trivy
-# docs: https://aquasecurity.github.io/trivy/v0.53/getting-started/installation/#docker
-
-version: '3.8'
-
 services:
 
   trivy:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
+    command: server --listen 0.0.0.0:4954
     env_file: .env
+    ports:
+      - "${W9_HTTP_PORT_SET}:4954" # Trivy Server API
     volumes:
-      # If you want to scan docker image, you can use the following mount
-      # - /var/run/docker.sock:/var/run/docker.sock
-      - $W9_SCAN_PATH_SET:/myproject
-    entrypoint: tail -f /dev/null
-    
+      - trivy_cache:/root/.cache/trivy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://127.0.0.1:4954/healthz | grep -q ok"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true
+
+volumes:
+  trivy_cache:

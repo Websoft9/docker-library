@@ -2,6 +2,9 @@
   "name": "portkey",
   "trademark": "Portkey",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/portkeyai/gateway"
+  },
   "edition": [
     {
       "dist": "community",
@@ -11,12 +14,20 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8787,
+      "path": "/"
+    },
+    "admin": {
+      "port": 8787,
+      "path": "/public"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "1"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/portkeyai/gateway"
   }
 }

@@ -1,0 +1,7 @@
+skip:
+  - id: web-access
+
+custom:
+  - id: gui-auth
+    type: script
+    script: check.sh

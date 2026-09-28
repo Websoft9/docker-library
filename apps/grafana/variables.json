@@ -2,6 +2,9 @@
   "name": "grafana",
   "trademark": "Grafana",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/grafana/grafana"
+  },
   "edition": [
     {
       "dist": "community",
@@ -11,12 +14,16 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 3000,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "2",
     "disk": "2"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/grafana/grafana"
   }
 }

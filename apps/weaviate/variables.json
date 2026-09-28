@@ -6,17 +6,29 @@
     {
       "dist": "community",
       "version": [
-        "1.26.6",
+        "1.39.5",
         "latest"
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "api": {
+      "port": 8080,
+      "path": "/v1/"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "4",
     "disk": "10"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/semitechnologies/weaviate"
+    "image": "https://hub.docker.com/r/semitechnologies/weaviate",
+    "releases": "https://github.com/weaviate/weaviate/releases",
+    "docs": [
+      "https://weaviate.io/developers/weaviate/installation/docker-compose",
+      "https://weaviate.io/developers/weaviate/config-refs/env-vars"
+    ]
   }
 }

@@ -2,6 +2,9 @@
   "name": "rancher",
   "trademark": "Rancher",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/rancher/rancher"
+  },
   "edition": [
     {
       "dist": "community",
@@ -10,6 +13,13 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "https",
+    "web": {
+      "port": 443,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "2",
@@ -18,10 +28,9 @@
   "credentials": {
     "password": {
       "source": "container-log",
-      "pattern": "Bootstrap Password:"
+      "match": "regex",
+      "pattern": "Bootstrap Password:\\s*(.+)",
+      "group": 1
     }
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/rancher/rancher"
   }
 }

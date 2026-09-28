@@ -1,31 +1,38 @@
-# image and compose: https://hub.docker.com/r/martinhelmich/typo3
-
-version: '3.8'
-
 services:
   typo3:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
+    restart: unless-stopped
+    env_file: .env
+    entrypoint: ["/bin/bash", "/usr/local/bin/websoft9-entrypoint.sh"]
+    command: ["apache2-foreground"]
     ports:
-      - ${W9_HTTP_PORT_SET}:80
+      - "${W9_HTTP_PORT_SET}:80" # Web Console
     volumes:
+      - ./src/entrypoint.sh:/usr/local/bin/websoft9-entrypoint.sh:ro
       - typo3fileadmin:/var/www/html/fileadmin
       - typo3conf:/var/www/html/typo3conf
       - typo3uploads:/var/www/html/uploads
       - typo3temp:/var/www/html/typo3temp
-    restart: unless-stopped
-    env_file: .env
-      
+    depends_on:
+      - mysql
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1/typo3/install.php >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+      start_period: 120s
+
   mysql:
-    image: mysql:$W9_DB_VERSION
+    image: mysql:${W9_DB_VERSION}
     container_name: ${W9_ID}-mysql
     restart: unless-stopped
     command: [mysqld, --character-set-server=utf8mb4, --collation-server=utf8mb4_unicode_ci]
     volumes:
       - mysql_data:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: typo3
-      MYSQL_USER: typo3
+      MYSQL_DATABASE: ${W9_ID}
+      MYSQL_USER: ${W9_ID}
       MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
 

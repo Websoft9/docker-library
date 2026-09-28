@@ -2,21 +2,33 @@
   "name": "thingsboard",
   "trademark": "ThingsBoard",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/thingsboard/tb-node",
+    "releases": "https://github.com/thingsboard/thingsboard/releases",
+    "docs": [
+      "https://thingsboard.io/docs/installation/docker/",
+      "https://github.com/thingsboard/thingsboard"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "4.2.0",
+        "4.3.1",
         "latest"
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8080,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "2",
     "disk": "2"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/thingsboard/tb-postgres"
   }
 }

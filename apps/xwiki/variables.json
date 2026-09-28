@@ -2,21 +2,36 @@
   "name": "xwiki",
   "trademark": "XWiki",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/_/xwiki",
+    "releases": "https://github.com/xwiki/xwiki-platform/releases",
+    "compose": {
+      "compose": "https://raw.githubusercontent.com/xwiki/xwiki-docker/master/18/mysql-tomcat/docker-compose.yml",
+      "env": "https://raw.githubusercontent.com/xwiki/xwiki-docker/master/18/mysql-tomcat/.env"
+    },
+    "docs": [
+      "https://www.xwiki.org/xwiki/bin/view/Documentation/AdminGuide/Installation/",
+      "https://github.com/xwiki/xwiki-docker"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "17.10",
+        "18.7",
         "latest"
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 8080,
+      "path": "/xwiki/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "2",
     "disk": "8"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/_/xwiki"
   }
 }

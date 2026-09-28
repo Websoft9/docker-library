@@ -53,11 +53,26 @@ docker build -f Dockerfile --build-arg <APP>_VERSION=${W9_VERSION} -t ${W9_REPO}
 docker compose up -d
 ```
 
+### Platform
+
+`libs app-build --platform` selects the target architecture for Dockerfile-backed apps (compose build services are not covered yet):
+
+| Value | Build command | Notes |
+|---|---|---|
+| `amd64` (default) | `docker build --platform linux/amd64` | two-phase build, then push |
+| `arm64` | `docker build --platform linux/arm64` | single-arch; cross-build needs QEMU/binfmt |
+| `both` | `docker buildx build --platform linux/amd64,linux/arm64 --push` | multi-arch manifest; requires `--push` |
+
+A multi-arch manifest cannot be stored locally, so `--platform both` pushes during the build and therefore requires `--push`. `libs app-build` defaults to `amd64`; internal deploy builds pass no platform and stay host-native. CI currently publishes `linux/amd64` only.
+
+When the requested platform differs from the build host (local or remote), `libs app-build` automatically installs the missing cross-arch emulation (`tonistiigi/binfmt`) before building, and skips it when the handler already exists or the host is not Linux (Docker Desktop bundles QEMU). Disable with `--no-binfmt`. If the active buildx builder cannot do multi-platform builds, the command fails with the `docker buildx create --name multiarch --driver docker-container --use` hint.
+
 ## 5. Maintenance
 
 - This spec is repository-wide. Migration applies to the app being worked on; remaining apps migrate when touched.
 - Branch promotion policy (dev builds, main promotes) is defined in `docs/git-workflow-spec.md`.
-- CI tag channels (same repository, tag differs by branch):
-  - PR merged into `main` → promote `dev-<head-sha>` to stable tags from `W9_VERSION` (see Tag Rules).
+- CI tag channels (same repository, tag differs by branch/event):
+  - PR merged into `main` → promote `dev-<pull_request.head.sha>` to stable tags from `W9_VERSION` (see Tag Rules); no rebuild.
   - `dev` push → build and push `dev-<git-sha>` (immutable) plus `dev-latest` (rolling alias).
+  - manual `workflow_dispatch` → target one app: on `dev` build candidate tags; on `main` promote a required `source_sha` (`dev-<sha>`) to stable tags.
 - CI only builds apps whose Dockerfile declares `ARG <APP>_VERSION`; apps without it are not built by CI. Migrate them when touched.

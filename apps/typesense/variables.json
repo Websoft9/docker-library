@@ -6,10 +6,17 @@
     {
       "dist": "community",
       "version": [
-        "29.0"
+        "30.2"
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "api": {
+      "port": 8108,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

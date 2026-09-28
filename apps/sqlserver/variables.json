@@ -6,15 +6,27 @@
     {
       "dist": "community",
       "version": [
-        "2022",
-        "2019",
-        "2017"
+        "2025",
+        "2022"
       ]
     }
   ],
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "1"
+    "disk": "2"
+  },
+  "upstream": {
+    "image": "https://mcr.microsoft.com/product/mssql/server/about",
+    "docs": [
+      "https://learn.microsoft.com/en-us/sql/linux/install-upgrade/quickstart-install-docker?view=sql-server-ver17",
+      "https://learn.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker?view=sql-server-ver16",
+      "https://mcr.microsoft.com/product/mssql/server/tags"
+    ]
+  },
+  "env": {
+    "first_startup_only": [
+      "MSSQL_SA_PASSWORD"
+    ]
   }
 }

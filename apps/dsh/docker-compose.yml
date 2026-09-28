@@ -1,0 +1,28 @@
+services:
+
+  dsh:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${W9_HTTP_PORT_SET}:3080" # Web Console
+    volumes:
+      - dsh_home:${DSH_HOME}
+      - dsh_workspace:${DSH_WORKSPACE}
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3080/').then((r) => process.exit(r.status === 200 || r.status === 401 ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 120s
+
+volumes:
+  dsh_home:
+  dsh_workspace:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

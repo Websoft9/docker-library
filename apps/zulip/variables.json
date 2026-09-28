@@ -6,17 +6,47 @@
     {
       "dist": "community",
       "version": [
-        "9.1-3",
-        "latest"
+        "12.2-0"
       ]
     }
   ],
+  "access": {
+    "web": {
+      "port": 443,
+      "path": "/"
+    },
+    "admin": {
+      "port": 443,
+      "path": "/login/"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "2",
     "disk": "10"
   },
+  "credentials": {},
+  "env": {
+    "first_startup_only": [
+      "W9_LOGIN_USER",
+      "W9_LOGIN_PASSWORD",
+      "W9_ZULIP_REALM_NAME",
+      "W9_ZULIP_REALM_STRING_ID",
+      "W9_ZULIP_ADMIN_FULL_NAME"
+    ]
+  },
+  "help": {
+    "db": "Bundled PostgreSQL, RabbitMQ, Redis, and Memcached credentials are initialized from the first-start settings on the initial deployment.",
+    "login": "On first startup the package creates a default Zulip organization and owner account from W9_ZULIP_REALM_* and W9_LOGIN_*; later edits do not backfill existing data."
+  },
   "upstream": {
-    "image": "https://hub.docker.com/r/zulip/docker-zulip"
+    "image": "https://ghcr.io/zulip/zulip-server",
+    "releases": "https://github.com/zulip/docker-zulip/releases",
+    "docs": [
+      "https://github.com/zulip/docker-zulip/blob/main/README.md",
+      "https://zulip.readthedocs.io/projects/docker/en/latest/how-to/compose-upgrading-from-legacy.html",
+      "https://zulip.readthedocs.io/projects/docker/en/latest/reference/environment-vars.html",
+      "https://zulip.readthedocs.io/en/latest/production/management-commands.html"
+    ]
   }
 }

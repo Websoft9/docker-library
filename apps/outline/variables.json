@@ -2,6 +2,9 @@
   "name": "outline",
   "trademark": "Outline",
   "release": false,
+  "upstream": {
+    "image": "https://hub.docker.com/r/outlinewiki/outline"
+  },
   "edition": [
     {
       "dist": "community",
@@ -10,12 +13,16 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 3000,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "4",
     "disk": "1"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/outlinewiki/outline"
   }
 }

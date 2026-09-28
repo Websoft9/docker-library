@@ -1,23 +1,20 @@
-# image: https://hub.docker.com/r/easysoft/zentao
-# docs: https://github.com/easysoft/zentaopms
-
 version: '3.8'
 
 services:
   zentao:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     ports:
-      - $W9_HTTP_PORT_SET:80
+      - "${W9_HTTP_PORT_SET}:80" # Web Console
     volumes:
       - zentao:/data
     env_file:
       - .env
     restart: unless-stopped
-      
+
   mysql:
-    image: mysql:5.7
-    container_name: $W9_ID-mysql
+    image: mysql:${W9_DB_VERSION}
+    container_name: ${W9_ID}-mysql
     restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     env_file:
@@ -26,11 +23,11 @@ services:
       - mysql_data:/var/lib/mysql
     environment:
       MYSQL_DATABASE: zentao
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
-      
+      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
+
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

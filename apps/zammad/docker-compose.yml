@@ -1,92 +1,124 @@
-# image: https://hub.docker.com/r/zammad/zammad-docker-compose
-# docs: https://docs.zammad.org/en/latest/install/docker-compose.html#getting-started-with-zammad-docker-compose
-# github: https://github.com/zammad/zammad-docker-compose
-
-version: '3.8'
-
 x-shared:
   zammad-service: &zammad-service
     image: ${W9_REPO}:${W9_VERSION}
+    init: true
     restart: unless-stopped
     env_file: .env
     volumes:
       - zammad-storage:/opt/zammad/storage
-      - zammad-var:/opt/zammad/var
     depends_on:
-      - zammad-postgresql
-      - zammad-redis
+      zammad-memcached:
+        condition: service_healthy
+      zammad-postgresql:
+        condition: service_healthy
+      zammad-redis:
+        condition: service_healthy
 
 services:
+
   zammad-nginx:
     <<: *zammad-service
-    container_name: $W9_ID
+    container_name: ${W9_ID}
     command: ["zammad-nginx"]
     ports:
-      - $W9_HTTP_PORT_SET:8080
-    expose:
-      - "8080"
+      - "${W9_HTTP_PORT_SET}:8080" # Web Console
     depends_on:
-      - zammad-railsserver
-    volumes:
-      - zammad-var:/opt/zammad/var:ro # required for the zammad-ready check file
+      zammad-railsserver:
+        condition: service_healthy
 
   zammad-init:
     <<: *zammad-service
+    container_name: ${W9_ID}-init
     command: ["zammad-init"]
-    container_name: $W9_ID-init
-    depends_on:
-      - zammad-postgresql
     restart: on-failure
     user: 0:0
 
+  zammad-elasticsearch:
+    image: elasticsearch:${ELASTICSEARCH_VERSION}
+    container_name: ${W9_ID}-elasticsearch
+    restart: unless-stopped
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+
   zammad-railsserver:
-    container_name: $W9_ID-railsserver
     <<: *zammad-service
+    container_name: ${W9_ID}-railsserver
     command: ["zammad-railsserver"]
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://127.0.0.1:3000"]
+      interval: 30s
+      timeout: 5s
+      start_period: 120s
+      retries: 3
 
   zammad-scheduler:
     <<: *zammad-service
-    container_name: $W9_ID-scheduler
+    container_name: ${W9_ID}-scheduler
     command: ["zammad-scheduler"]
 
   zammad-websocket:
     <<: *zammad-service
-    container_name: $W9_ID-websocket
+    container_name: ${W9_ID}-websocket
     command: ["zammad-websocket"]
 
   zammad-memcached:
-    command: memcached -m 256M
-    container_name: $W9_ID-memcached
     image: memcached:${MEMCACHE_VERSION}
+    container_name: ${W9_ID}-memcached
+    restart: unless-stopped
+    command: memcached -m 256M
+    healthcheck:
+      test: ["CMD", "nc", "-z", "127.0.0.1", "11211"]
+      interval: 10s
+      timeout: 5s
+      start_period: 10s
+      retries: 5
 
   zammad-redis:
-    container_name: $W9_ID-redis
     image: redis:${REDIS_VERSION}
+    container_name: ${W9_ID}-redis
+    restart: unless-stopped
     volumes:
       - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      start_period: 10s
+      retries: 5
 
   zammad-postgresql:
-    container_name: $W9_ID-postgresql
-    hostname: $W9_RCODE-postgresql
+    image: postgres:${W9_DB_VERSION}
+    container_name: ${W9_ID}-postgresql
+    hostname: ${W9_RCODE}-postgresql
+    restart: unless-stopped
     environment:
-      POSTGRES_DB: zammad
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${W9_POWER_PASSWORD}
-      POSTGRES_ZAMMAD_PASSWORD: ${W9_RCODE}
-    image: postgres:${POSTGRESQL_VERSION}
+      ZAMMAD_DB: zammad_production
+      ZAMMAD_DB_USER: zammad
+      ZAMMAD_DB_PASS: ${W9_RCODE}
     volumes:
       - postgresql-data:/var/lib/postgresql/data
-      - ./src/postgresql_init.sh:/docker-entrypoint-initdb.d/postgresql_init.sh
+      - ./src/postgresql_init.sh:/docker-entrypoint-initdb.d/postgresql_init.sh:ro
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - |-
+          PGPASSWORD="$${ZAMMAD_DB_PASS}" psql --no-password --quiet --output /dev/null --variable ON_ERROR_STOP=1 --host 127.0.0.1 --username "$${ZAMMAD_DB_USER}" --dbname "$${ZAMMAD_DB}" --command "SELECT 1"
+      interval: 10s
+      timeout: 5s
+      start_period: 60s
+      retries: 5
 
 volumes:
+  elasticsearch-data:
   postgresql-data:
-    driver: local
   redis-data:
-    driver: local
   zammad-storage:
-    driver: local
-  zammad-var:
-    driver: local
 
 networks:
   default:

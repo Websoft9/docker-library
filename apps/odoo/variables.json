@@ -23,6 +23,17 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8069,
+      "path": "/"
+    },
+    "admin": {
+      "port": 8069,
+      "path": "/web/login"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

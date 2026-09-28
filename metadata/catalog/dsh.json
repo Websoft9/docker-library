@@ -1,0 +1,21 @@
+{
+  "trademark": "DeepSeek Harness",
+  "catalogBindings": [
+    {
+      "parentKey": "ai",
+      "childKey": "ai-agent-chat"
+    },
+    {
+      "parentKey": "itdeveloper",
+      "childKey": "ide"
+    }
+  ],
+  "summary": "Open-source AI agent harness.",
+  "overview": "Self-hosted web UI for building, running, and inspecting AI coding agents with pluggable tools and models.",
+  "description": "DeepSeek Harness is an open-source agent harness from DeepSeek AI for building, running, and inspecting AI agents in real-world environments. It provides a browser-based UI, plugin-based runtime composition, session traces, and tooling for models, skills, sandboxes, storage, and workflows.\n\nThis Websoft9 package deploys DeepSeek Harness as a single container built from the official Node.js 22 image and the upstream `@deepseek-ai/dsh` npm distribution. Persistent state such as sessions and attachments is stored in the `dsh_home` volume, and a dedicated `/workspace` volume is provided as the default working directory for projects opened in the UI.\n\nTypical use cases include evaluating coding agents, experimenting with agent tooling and workflows, creating plugin-based harness presets, and running a self-hosted agent workbench for development teams.",
+  "websiteurl": "https://www.deepseek.com/harness/en/",
+  "screenshots": [
+    "https://www.deepseek.com/harness/images/harness/feat-plugin.en.png",
+    "https://www.deepseek.com/harness/images/harness/trajectory-real-view.en.png"
+  ]
+}

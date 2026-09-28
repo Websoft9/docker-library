@@ -93,24 +93,48 @@ connector:
 	@bash -lc 'set -e; \
 	  current_choice=1; \
 	  if [ "${PROVIDER:-}" = "cloudflare" ] || [ "${PROVIDER:-}" = "2" ]; then current_choice=2; fi; \
-	  printf "Available providers:\n  1) contentful\n  2) cloudflare\n  3) dockerhub\n"; \
+	  if [ "${PROVIDER:-}" = "dockerhub" ] || [ "${PROVIDER:-}" = "3" ]; then current_choice=3; fi; \
+	  if [ "${PROVIDER:-}" = "aliyun" ] || [ "${PROVIDER:-}" = "4" ]; then current_choice=4; fi; \
+	  printf "Available providers:\n  1) contentful\n  2) cloudflare\n  3) dockerhub\n  4) aliyun (DNS)\n"; \
 	  read -r -p "provider [$$current_choice]: " input_choice; input_choice="$${input_choice:-$$current_choice}"; \
 	  case "$$input_choice" in \
 	    1|contentful) provider="contentful"; file=".secrets/contentful.env"; key="CONTENTFUL_ACCESS_TOKEN" ;; \
 	    2|cloudflare) provider="cloudflare"; file=".secrets/cloudflare.env"; key="CLOUDFLARE_API_TOKEN" ;; \
 	    3|dockerhub) provider="dockerhub"; file=".secrets/dockerhub.env"; key="DOCKERHUB_TOKEN" ;; \
+	    4|aliyun) provider="aliyun"; file=".secrets/aliyun.env"; key="ALIYUN_ACCESS_KEY_SECRET" ;; \
 	    *) echo "unsupported provider selection: $$input_choice" >&2; exit 1 ;; \
 	  esac; \
 	  if [ -f "$$file" ]; then echo "updating $$file"; else echo "creating $$file"; fi; \
-	  if [ "$$provider" = "dockerhub" ]; then \
-	    read -r -p "DOCKERHUB_USERNAME: " input_user; \
-	    read -r -s -p "DOCKERHUB_PASSWORD (leave empty to use token): " input_password; echo; \
-	    if [ -n "$$input_password" ]; then \
-	      if [ -z "$$input_user" ]; then echo "username is required" >&2; exit 1; fi; \
-	      printf "DOCKERHUB_USERNAME=%s\nDOCKERHUB_PASSWORD=%s\n" "$$input_user" "$$input_password" > "$$file"; \
+	  if [ "$$provider" = "aliyun" ]; then \
+	    cur_id=""; cur_secret=""; cur_domain=""; \
+	    if [ -f "$$file" ]; then \
+	      cur_id="$$(grep -E '^ALIYUN_ACCESS_KEY_ID=' "$$file" | cut -d= -f2-)"; \
+	      cur_secret="$$(grep -E '^ALIYUN_ACCESS_KEY_SECRET=' "$$file" | cut -d= -f2-)"; \
+	      cur_domain="$$(grep -E '^ALIYUN_DNS_DOMAIN=' "$$file" | cut -d= -f2-)"; \
+	    fi; \
+	    read -r -p "ALIYUN_ACCESS_KEY_ID [$$cur_id]: " input_id; input_id="$${input_id:-$$cur_id}"; \
+	    read -r -s -p "ALIYUN_ACCESS_KEY_SECRET [keep existing]: " input_secret; echo; input_secret="$${input_secret:-$$cur_secret}"; \
+	    read -r -p "ALIYUN_DNS_DOMAIN (wildcard base, e.g. libs.websoft9.cn) [$$cur_domain]: " input_domain; input_domain="$${input_domain:-$$cur_domain}"; \
+	    if [ -z "$$input_id" ] || [ -z "$$input_secret" ]; then echo "access key id and secret are required" >&2; exit 1; fi; \
+	    if [ -n "$$input_domain" ]; then \
+	      printf "ALIYUN_ACCESS_KEY_ID=%s\nALIYUN_ACCESS_KEY_SECRET=%s\nALIYUN_DNS_DOMAIN=%s\n" "$$input_id" "$$input_secret" "$$input_domain" > "$$file"; \
 	    else \
-	      read -r -s -p "DOCKERHUB_TOKEN: " input_token; echo; \
-	      if [ -z "$$input_user" ] || [ -z "$$input_token" ]; then echo "username and token are required" >&2; exit 1; fi; \
+	      printf "ALIYUN_ACCESS_KEY_ID=%s\nALIYUN_ACCESS_KEY_SECRET=%s\n" "$$input_id" "$$input_secret" > "$$file"; \
+	    fi; \
+	  elif [ "$$provider" = "dockerhub" ]; then \
+	    cur_user=""; cur_token=""; cur_org=""; \
+	    if [ -f "$$file" ]; then \
+	      cur_user="$$(grep -E '^DOCKERHUB_USERNAME=' "$$file" | cut -d= -f2-)"; \
+	      cur_token="$$(grep -E '^DOCKERHUB_TOKEN=' "$$file" | cut -d= -f2-)"; \
+	      cur_org="$$(grep -E '^DOCKERHUB_ORG=' "$$file" | cut -d= -f2-)"; \
+	    fi; \
+	    read -r -p "DOCKERHUB_USERNAME [$$cur_user]: " input_user; input_user="$${input_user:-$$cur_user}"; \
+	    read -r -s -p "DOCKERHUB_TOKEN [keep existing]: " input_token; echo; input_token="$${input_token:-$$cur_token}"; \
+	    read -r -p "DOCKERHUB_ORG (optional default push namespace) [$$cur_org]: " input_org; input_org="$${input_org:-$$cur_org}"; \
+	    if [ -z "$$input_user" ] || [ -z "$$input_token" ]; then echo "username and token are required" >&2; exit 1; fi; \
+	    if [ -n "$$input_org" ]; then \
+	      printf "DOCKERHUB_USERNAME=%s\nDOCKERHUB_TOKEN=%s\nDOCKERHUB_ORG=%s\n" "$$input_user" "$$input_token" "$$input_org" > "$$file"; \
+	    else \
 	      printf "DOCKERHUB_USERNAME=%s\nDOCKERHUB_TOKEN=%s\n" "$$input_user" "$$input_token" > "$$file"; \
 	    fi; \
 	  else \

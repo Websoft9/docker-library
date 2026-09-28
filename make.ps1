@@ -144,35 +144,50 @@ switch ($Target) {
   }
   "connector" {
     New-Item -ItemType Directory -Force ".secrets" | Out-Null
-    $currentChoice = if ($Args.Count -gt 0 -and ($Args[0] -eq "cloudflare" -or $Args[0] -eq "2")) { "2" } else { "1" }
+    $currentChoice = "1"
+    if ($Args.Count -gt 0) {
+      switch ($Args[0].ToLowerInvariant()) {
+        "contentful" { $currentChoice = "1" }
+        "cloudflare" { $currentChoice = "2" }
+        "dockerhub" { $currentChoice = "3" }
+        "aliyun" { $currentChoice = "4" }
+        "1" { $currentChoice = "1" }
+        "2" { $currentChoice = "2" }
+        "3" { $currentChoice = "3" }
+        "4" { $currentChoice = "4" }
+      }
+    }
     Write-Host "Available providers:"
     Write-Host "  1) contentful"
     Write-Host "  2) cloudflare"
+    Write-Host "  3) dockerhub"
+    Write-Host "  4) aliyun (DNS)"
     $provider = Read-Host "provider [$currentChoice]"
     if (-not $provider) {
       $provider = $currentChoice
     }
 
     switch ($provider.ToLowerInvariant()) {
-      "1" {
-        $file = ".secrets/contentful.env"
-        $key = "CONTENTFUL_ACCESS_TOKEN"
-      }
-      "contentful" {
-        $file = ".secrets/contentful.env"
-        $key = "CONTENTFUL_ACCESS_TOKEN"
-      }
-      "2" {
-        $file = ".secrets/cloudflare.env"
-        $key = "CLOUDFLARE_API_TOKEN"
-      }
-      "cloudflare" {
-        $file = ".secrets/cloudflare.env"
-        $key = "CLOUDFLARE_API_TOKEN"
-      }
-      default {
-        throw "Unsupported provider: $provider"
-      }
+      "1" { $provider = "contentful" }
+      "2" { $provider = "cloudflare" }
+      "3" { $provider = "dockerhub" }
+      "4" { $provider = "aliyun" }
+    }
+
+    if ($provider -eq "contentful") {
+      $file = ".secrets/contentful.env"
+      $key = "CONTENTFUL_ACCESS_TOKEN"
+    } elseif ($provider -eq "cloudflare") {
+      $file = ".secrets/cloudflare.env"
+      $key = "CLOUDFLARE_API_TOKEN"
+    } elseif ($provider -eq "dockerhub") {
+      $file = ".secrets/dockerhub.env"
+      $key = "DOCKERHUB_TOKEN"
+    } elseif ($provider -eq "aliyun") {
+      $file = ".secrets/aliyun.env"
+      $key = "ALIYUN_ACCESS_KEY_SECRET"
+    } else {
+      throw "Unsupported provider: $provider"
     }
 
     if (Test-Path $file) {
@@ -181,17 +196,58 @@ switch ($Target) {
       Write-Host "creating $file"
     }
 
-    $secure = Read-Host $key -AsSecureString
-    $ptr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
-    try {
-      $token = [System.Runtime.InteropServices.Marshal]::PtrToStringBSTR($ptr)
-    } finally {
-      [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($ptr)
+    function Read-SecretValue([string]$Prompt) {
+      $secure = Read-Host $Prompt -AsSecureString
+      $ptr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
+      try {
+        return [System.Runtime.InteropServices.Marshal]::PtrToStringBSTR($ptr)
+      } finally {
+        [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($ptr)
+      }
     }
-    if (-not $token) {
-      throw "empty token is not allowed"
+
+    $existing = @{}
+    if (Test-Path $file) {
+      foreach ($line in Get-Content $file) {
+        if ($line -match '^\s*([^#=]+)=(.*)$') {
+          $existing[$matches[1].Trim()] = $matches[2].Trim()
+        }
+      }
     }
-    Set-Content -Encoding UTF8 -Path $file -Value "$key=$token"
+
+    if ($provider -eq "dockerhub") {
+      $curUser = $existing["DOCKERHUB_USERNAME"]
+      $curToken = $existing["DOCKERHUB_TOKEN"]
+      $curOrg = $existing["DOCKERHUB_ORG"]
+      $inputUser = Read-Host "DOCKERHUB_USERNAME [$curUser]"
+      if (-not $inputUser) { $inputUser = $curUser }
+      $inputToken = Read-SecretValue "DOCKERHUB_TOKEN [keep existing]"
+      if (-not $inputToken) { $inputToken = $curToken }
+      $inputOrg = Read-Host "DOCKERHUB_ORG (optional default push namespace) [$curOrg]"
+      if (-not $inputOrg) { $inputOrg = $curOrg }
+      if (-not $inputUser -or -not $inputToken) { throw "username and token are required" }
+      $lines = @("DOCKERHUB_USERNAME=$inputUser", "DOCKERHUB_TOKEN=$inputToken")
+      if ($inputOrg) { $lines += "DOCKERHUB_ORG=$inputOrg" }
+      Set-Content -Encoding UTF8 -Path $file -Value $lines
+    } elseif ($provider -eq "aliyun") {
+      $curId = $existing["ALIYUN_ACCESS_KEY_ID"]
+      $curSecret = $existing["ALIYUN_ACCESS_KEY_SECRET"]
+      $curDomain = $existing["ALIYUN_DNS_DOMAIN"]
+      $inputId = Read-Host "ALIYUN_ACCESS_KEY_ID [$curId]"
+      if (-not $inputId) { $inputId = $curId }
+      $inputSecret = Read-SecretValue "ALIYUN_ACCESS_KEY_SECRET [keep existing]"
+      if (-not $inputSecret) { $inputSecret = $curSecret }
+      $inputDomain = Read-Host "ALIYUN_DNS_DOMAIN (wildcard base, e.g. libs.websoft9.cn) [$curDomain]"
+      if (-not $inputDomain) { $inputDomain = $curDomain }
+      if (-not $inputId -or -not $inputSecret) { throw "access key id and secret are required" }
+      $lines = @("ALIYUN_ACCESS_KEY_ID=$inputId", "ALIYUN_ACCESS_KEY_SECRET=$inputSecret")
+      if ($inputDomain) { $lines += "ALIYUN_DNS_DOMAIN=$inputDomain" }
+      Set-Content -Encoding UTF8 -Path $file -Value $lines
+    } else {
+      $token = Read-SecretValue $key
+      if (-not $token) { throw "empty token is not allowed" }
+      Set-Content -Encoding UTF8 -Path $file -Value "$key=$token"
+    }
     Write-Host "wrote $file"
   }
   "test-cli" {

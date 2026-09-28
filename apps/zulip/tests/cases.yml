@@ -1,0 +1,7 @@
+skip:
+  - id: web-access
+
+custom:
+  - id: login-page
+    type: script
+    script: login-page.sh

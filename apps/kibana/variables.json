@@ -2,6 +2,9 @@
   "name": "kibana",
   "trademark": "Kibana",
   "release": true,
+  "upstream": {
+    "image": "https://www.docker.elastic.co/r/kibana"
+  },
   "edition": [
     {
       "dist": "community",
@@ -10,12 +13,16 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 5601,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "4",
     "disk": "5"
-  },
-  "upstream": {
-    "image": "https://www.docker.elastic.co/r/kibana"
   }
 }

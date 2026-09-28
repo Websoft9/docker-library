@@ -2,21 +2,41 @@
   "name": "traefik",
   "trademark": "Traefik",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/_/traefik",
+    "releases": "https://github.com/traefik/traefik",
+    "docs": [
+      "https://doc.traefik.io/traefik/reference/install-configuration/providers/docker/",
+      "https://doc.traefik.io/traefik/migrate/v3/"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "v3.6",
+        "v3.7",
         "latest"
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8080,
+      "path": "/"
+    },
+    "admin": {
+      "port": 8080,
+      "path": "/dashboard/"
+    },
+    "api": {
+      "port": 8080,
+      "path": "/api/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "1"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/_/traefik"
   }
 }

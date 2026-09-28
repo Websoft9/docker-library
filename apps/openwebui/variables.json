@@ -20,6 +20,17 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8080,
+      "path": "/"
+    },
+    "admin": {
+      "port": 8080,
+      "path": "/admin"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

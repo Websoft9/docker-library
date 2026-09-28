@@ -1,0 +1,5 @@
+optional:
+  - id: alive
+    type: web-access
+    path: /alive
+    expect_status: 200

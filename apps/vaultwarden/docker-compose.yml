@@ -1,34 +1,38 @@
-# image: https://hub.docker.com/r/vaultwarden/server
-# docs: https://github.com/dani-garcia/vaultwarden/wiki
-
-version: '3.8'
 services:
   vaultwarden:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - $W9_HTTP_PORT_SET:80
-    env_file: .env
+      - "${W9_HTTP_PORT_SET}:80" # Web vault and API
+    env_file:
+      - .env
     volumes:
-      - "vaultwarden_vol:/data/"
+      - vaultwarden_vol:/data/
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1/alive || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
   mariadb:
-    image: mariadb:$W9_DB_VERSION
-    container_name: "$W9_ID-mariadb"
+    image: mariadb:${W9_DB_VERSION}
+    container_name: ${W9_ID}-mariadb
     restart: unless-stopped
     volumes:
-      - "mariadb_vol:/var/lib/mysql"
-      - "/etc/localtime:/etc/localtime:ro"
+      - mariadb_vol:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
     environment:
-      - "MYSQL_ROOT_PASSWORD=$W9_RCODE"
-      - "MYSQL_PASSWORD=$W9_RCODE"
-      - "MYSQL_DATABASE=vaultwarden"
-      - "MYSQL_USER=vaultwarden"
+      - MYSQL_ROOT_PASSWORD=${W9_RCODE}
+      - MYSQL_PASSWORD=${W9_RCODE}
+      - MYSQL_DATABASE=vaultwarden
+      - MYSQL_USER=vaultwarden
+
 volumes:
   vaultwarden_vol:
   mariadb_vol:
-    
+
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

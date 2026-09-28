@@ -2,6 +2,9 @@
   "name": "knowage",
   "trademark": "Knowage",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/knowagelabs/knowage-server-docker"
+  },
   "edition": [
     {
       "dist": "community",
@@ -10,12 +13,20 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8080,
+      "path": "/"
+    },
+    "admin": {
+      "port": 8080,
+      "path": "/knowage"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "4",
     "disk": "3"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/knowagelabs/knowage-server-docker"
   }
 }

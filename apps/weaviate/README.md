@@ -1,26 +1,87 @@
-# Weaviate on Docker  
+# Weaviate on Docker
 
-This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Weaviate:
+## Quick Start
+
+### Deploy Verification
+
+1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Weaviate**.
+2. In the **Access** tab, get the login URL and credentials.
+3. Open the login URL in a browser and sign in to confirm the app works.
+
+<!-- W9_GUIDE_START -->
+### Usage
+
+1. Make sure you are signed in to the Weaviate admin console.
+2. Try a core feature.
+
+### Change Password
+
+1. In the [Websoft9](https://www.websoft9.com) console, open the app's **Compose** tab.
+2. Update the password in `.env` and save.
+3. Rebuild the app.
+<!-- W9_GUIDE_END -->
+
+## Configuration Reference
+
+Websoft9 packages this app from the official [Weaviate Docker image](https://hub.docker.com/r/semitechnologies/weaviate) and makes some improvements below.
+
+<!-- W9_NOTE_START -->
+
+<!-- W9_NOTE_END -->
+
+Apps run as containers; rebuild after any configuration change.
+
+### Version Support
+
+Supported versions: 1.39.5, latest.
+
+The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
 
- - community:  1.26.6, latest
+### Ports
+
+| Purpose | Port |
+| --- | --- |
+| HTTP API | 8080 |
+| gRPC API | 50051 |
 
 
-## System Requirements
+### Data Directory
 
-The following are the minimal [recommended requirements](https://weaviate.io/developers/weaviate/current/):
 
-* **RAM**: 4 GB or more
-* **CPU**: 2 cores or higher
-* **Disk**: at least 10 GB of free space
-* **bandwidth**: more fluent experience over 100M  
+Data is persisted in the `weaviate_data` volume, mounted at `/var/lib/weaviate`.
 
-## Install
 
-You can install this Weaviate by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+### Environment Variables
 
-If you want use Weaviate with **Websoft9 Business Support** free, you can [subscribe Weaviate](https://www.websoft9.com/apps) on Cloud platform
+Environment variables are defined in the app's `.env` file; see the reference section at the end of `.env` for supported variables.
 
-## Documentation
 
-[Weaviate Administrator Guide](https://support.websoft9.com/docs/weaviate) powered by Websoft9
+### Configuration Files
+
+
+Configuration files live inside the image; mount a single file read-only to override, and never replace the whole directory.
+
+
+## References
+
+- [Weaviate Administrator Guide](https://support.websoft9.com/docs/weaviate) by Websoft9
+
+- [Docker Hub image](https://hub.docker.com/r/semitechnologies/weaviate)
+
+- [Releases](https://github.com/weaviate/weaviate/releases)
+
+- [Official docs](https://weaviate.io/developers/weaviate/installation/docker-compose)
+
+- [Official docs](https://weaviate.io/developers/weaviate/config-refs/env-vars)
+
+
+<!-- W9_TROUBLESHOOT_START -->
+## Troubleshooting
+
+**App fails to start?**
+- Check `docker compose logs`.
+
+**Port not reachable?**
+- Ensure the firewall / security group allows the port.
+<!-- W9_TROUBLESHOOT_END -->

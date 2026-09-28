@@ -11,6 +11,13 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "https",
+    "web": {
+      "port": 8443,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "1",

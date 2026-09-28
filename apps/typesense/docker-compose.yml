@@ -1,10 +1,3 @@
-# image: https://hub.docker.com/r/typesense/typesense/tags
-# docs: https://typesense.org/docs/guide/install-typesense.html
-# https://typesense.org/docs/guide/docsearch.html#add-docsearch-meta-tags-optional
-# https://typesense.org/docs/0.23.0/api/server-configuration.html#using-command-line-arguments
-
-version: "3.8"
-
 services:
   typesense:
     image: ${W9_REPO}:${W9_VERSION}
@@ -13,10 +6,10 @@ services:
     logging:
       driver: "json-file"
       options:
-          max-file: "5"
-          max-size: 10m
+        max-file: "5"
+        max-size: 10m
     ports:
-      - "${W9_HTTP_PORT_SET}:8108"
+      - "${W9_HTTP_PORT_SET}:8108" # Typesense HTTP API
     volumes:
       - typesense:/data
     env_file: .env
@@ -30,8 +23,8 @@ services:
     logging:
       driver: "json-file"
       options:
-          max-file: "5"
-          max-size: 10m
+        max-file: "5"
+        max-size: 10m
     deploy:
       resources:
         limits:
