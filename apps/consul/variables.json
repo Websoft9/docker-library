@@ -2,6 +2,9 @@
   "name": "consul",
   "trademark": "Consul",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/hashicorp/consul"
+  },
   "edition": [
     {
       "dist": "community",
@@ -11,12 +14,16 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8500,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "4",
     "disk": "10"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/hashicorp/consul"
   }
 }

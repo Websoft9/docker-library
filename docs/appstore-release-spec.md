@@ -40,14 +40,20 @@
 - `credentials` 不替代 `.env` 中已有的字面值凭据；若 `W9_LOGIN_PASSWORD` 本身就是固定值，仍直接使用 `.env`
 - `credentials` 仅描述“凭据从哪里取”，不允许在仓库中写任意宿主级 shell
 
-当前约定先只支持 `password` 槽位，结构如下：
+当前约定支持 3 个固定槽位：`username`、`password`、`token`。每个槽位都声明“值从哪里来”的 source。
 
 ```json
 {
   "credentials": {
     "password": {
-      "source": "container-file",
-      "path": "/var/jenkins_home/secrets/initialAdminPassword"
+      "username": {
+        "source": "inline",
+        "value": "admin"
+      },
+      "password": {
+        "source": "container-file",
+        "path": "/var/jenkins_home/secrets/initialAdminPassword"
+      }
     }
   }
 }
@@ -55,15 +61,75 @@
 
 支持的 `source`：
 
-- `container-file`: 密码存在目标应用容器内的某个文件，由消费端在 `websoft9` 容器中执行固定 `docker exec <W9_ID> cat <path>` 读取
-- `container-log`: 密码存在目标应用容器日志中，由消费端在 `websoft9` 容器中执行固定 `docker logs <W9_ID>` 并按 `pattern` 提取
+- `inline`: 值直接内联写在 `variables.json` 中，适合固定且非敏感的登录标识，例如 `username`
+- `container-env`: 值存在目标应用容器的运行环境变量中，消费端读取声明的 `name`
+- `container-file`: 密码存在目标应用容器内的某个文本或结构化文件，消费端以只读方式读取 `path`；实现不应假设容器内存在 `cat`、`sh` 或其他特定用户空间工具
+- `container-log`: 密码存在目标应用容器日志中，消费端读取 `docker logs <W9_ID>` 的输出并按 `pattern` 提取
+- `container-cli`: 密码需要通过目标应用容器内的官方只读 CLI 获取，消费端按 `argv` 直接执行，不通过 shell 拼接
 
 字段规则：
 
-- `credentials.password.source=container-file` 时必须声明 `path`
-- `credentials.password.source=container-log` 时必须声明 `pattern`
+- `credentials.<slot>.source=inline` 时必须声明 `value`
+- `credentials.<slot>.source=container-env` 时必须声明 `name`
+- `credentials.<slot>.source=container-file` 时必须声明 `path`
+- `credentials.<slot>.source=container-log` 时必须声明 `pattern`
+- `credentials.<slot>.source=container-cli` 时必须声明 `argv`
+- `slot` 当前只允许 `username`、`password`、`token`
+- `format` 可选，当前支持 `text`、`json`、`env`
+- `format=json` 时必须声明 `jsonPath`
+- `format=env` 时必须声明 `key`
+- `match` 可选，当前支持 `substring`、`regex`
+- `match=regex` 时必须声明 `group`
+- `trim` 可选，默认由消费端按 `true` 处理
 - `credentials` 为 machine-readable 结构，不做自由文本，不在其中嵌入完整 shell 命令
-- 旧的 `W9_LOGIN_GET_PASSWORD` 可作为兼容兜底，但新 app 或被触达的 app 不再推荐新增使用
+- `inline` 主要用于固定、非敏感值；不要把动态生成的 secret 明文内联到 `variables.json`
+- `container-cli.argv` 必须是参数数组，不接受完整 shell 字符串，也不应用于重置密码、创建密码等带副作用动作
+- 旧的 `W9_LOGIN_GET_PASSWORD` / `W9_LOGIN_GET_TOKEN` 可作为兼容兜底，但新 app 或被触达的 app 不再推荐新增使用
+
+示例：
+
+```json
+{
+  "credentials": {
+    "username": {
+      "source": "inline",
+      "value": "admin@example.com"
+    },
+    "password": {
+      "source": "container-env",
+      "name": "BOOTSTRAP_INFO",
+      "format": "json",
+      "jsonPath": "$.admin.password"
+    }
+  }
+}
+```
+
+```json
+{
+  "credentials": {
+    "token": {
+      "source": "container-log",
+      "match": "regex",
+      "pattern": "Root Token:\\s*(.+)",
+      "group": 1
+    }
+  }
+}
+```
+
+```json
+{
+  "credentials": {
+    "token": {
+      "source": "container-cli",
+      "argv": ["myapp", "admin", "show-bootstrap", "--json"],
+      "format": "json",
+      "jsonPath": "$.token"
+    }
+  }
+}
+```
 
 ### 职责边界
 

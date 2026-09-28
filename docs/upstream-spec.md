@@ -248,14 +248,18 @@ Do not ask AI to perform routine deterministic scanning when a stable source typ
 
 ## Runtime Credential Metadata
 
-Some apps generate an initial password or token at first startup instead of taking it from `.env`.
+Some apps generate an initial username, password, or token at first startup instead of taking it from `.env`.
 For these cases, app packages may declare machine-readable credential sources in `variables.json`.
 
-Current minimal shape:
+Current shape:
 
 ```json
 {
   "credentials": {
+    "username": {
+      "source": "inline",
+      "value": "admin"
+    },
     "password": {
       "source": "container-file",
       "path": "/var/jenkins_home/secrets/initialAdminPassword"
@@ -266,12 +270,20 @@ Current minimal shape:
 
 Rules:
 
-- `container-file` means the consumer executes a fixed `docker exec <W9_ID> cat <path>` flow in the
-  `websoft9` container and captures stdout as the password value
-- `container-log` means the consumer executes a fixed `docker logs <W9_ID>` flow in the `websoft9`
-  container and extracts the password by `pattern`
+- fixed slots are `username`, `password`, and `token`
+- `inline` means the credential value is stored directly in `variables.json`; use it mainly for fixed,
+  non-sensitive values such as `username`
+- `container-env` means the credential value is read from the target container runtime environment by `name`
+- `container-file` means the password is stored in a file inside the target container; consumers should
+  read `path` in a read-only way and must not assume `cat`, `sh`, or other specific user-space tools exist
+- `container-log` means the consumer reads `docker logs <W9_ID>` output and extracts the password by
+  `pattern`; `match=regex` with a capture `group` is allowed when a plain substring is not enough
+- `container-cli` means the consumer runs a read-only in-container CLI command expressed as `argv`
+  without shell wrapping; use this only when the app exposes an official credential-printing command
+- `format=json` with `jsonPath` and `format=env` with `key` may be used for structured outputs
 - keep this metadata declarative; do not store full shell commands in `variables.json`
-- prefer `credentials.password` over the legacy `W9_LOGIN_GET_PASSWORD` when a touched app needs this behavior
+- prefer `credentials.<slot>` over the legacy `W9_LOGIN_GET_PASSWORD` or `W9_LOGIN_GET_TOKEN` when a touched
+  app needs this behavior
 
 ## Access Metadata
 

@@ -10,6 +10,13 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "api": {
+      "port": 8108,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

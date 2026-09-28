@@ -1,0 +1,50 @@
+{
+  "name": "dsh",
+  "trademark": "DeepSeek Harness",
+  "release": false,
+  "upstream": {
+    "image": "https://www.npmjs.com/package/@deepseek-ai/dsh",
+    "releases": "https://github.com/deepseek-ai/deepseek-harness/releases",
+    "docs": [
+      "https://github.com/deepseek-ai/deepseek-harness",
+      "https://deepseek-harness.github.io/deepseek-harness/en/guide/quickstart",
+      "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/master/SAFETY.md"
+    ]
+  },
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["0.1.7-rc.2", "latest"]
+    }
+  ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 3080,
+      "path": "/"
+    },
+    "admin": {
+      "port": 3080,
+      "path": "/?token=xxxx"
+    }
+  },
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10"
+  },
+  "credentials": {
+    "token": {
+      "source": "container-log",
+      "match": "regex",
+      "pattern": "dsh web: http://127\\.0\\.0\\.1:3081/\\?token=([^\\s]+)",
+      "group": 1
+    }
+  },
+  "env": {
+    "first_startup_only": []
+  },
+  "help": {
+    "db": "No bundled database is required. DeepSeek Harness stores sessions, attachments, and local state in the dsh_home volume mounted at /var/lib/dsh. The dsh_workspace volume mounted at /workspace is the default project area exposed to the Web UI."
+  }
+}

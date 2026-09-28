@@ -2,6 +2,9 @@
   "name": "oracle",
   "trademark": "Oracle Database",
   "release": true,
+  "upstream": {
+    "image": "https://container-registry.oracle.com/ords/ocr/ba/database/express"
+  },
   "edition": [
     {
       "dist": "community",
@@ -12,12 +15,20 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "https",
+    "web": {
+      "port": 5500,
+      "path": "/"
+    },
+    "admin": {
+      "port": 5500,
+      "path": "/em"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "8",
     "disk": "1"
-  },
-  "upstream": {
-    "image": "https://container-registry.oracle.com/ords/ocr/ba/database/express"
   }
 }

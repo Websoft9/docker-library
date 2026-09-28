@@ -27,7 +27,8 @@ Websoft9 packages this app from the official [OpenClaw Docker image](https://ghc
 
 <!-- W9_NOTE_START -->
 - Leave `OPENCLAW_PUBLIC_SCHEME` and `OPENCLAW_PUBLIC_ORIGIN` empty for direct IP/LAN access. For domain access, set `OPENCLAW_PUBLIC_SCHEME=https` to derive the exact browser origin from `W9_URL`, or set `OPENCLAW_PUBLIC_ORIGIN` to an exact override before recreating the app.
-- The package re-applies `gateway.publicOrigin` and `gateway.controlUi.allowedOrigins` on every recreate through `openclaw-init`, so domain-related config changes do not get stuck in the persisted volume.
+- When a reverse proxy terminates the request, set `OPENCLAW_TRUSTED_PROXIES` to the proxy source IP(s) the Gateway sees (space- or comma-separated). Without it, forwarded headers are rejected with `proxy_attribution_required`; keep the list narrow and make the proxy overwrite `X-Forwarded-*`.
+- The package re-applies `gateway.publicOrigin`, `gateway.controlUi.allowedOrigins`, and `gateway.trustedProxies` on every recreate through `openclaw-init`, so domain-related config changes do not get stuck in the persisted volume.
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.

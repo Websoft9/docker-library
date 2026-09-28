@@ -2,19 +2,6 @@
   "name": "supabase",
   "trademark": "Supabase",
   "release": true,
-  "edition": [
-    {
-      "dist": "community",
-      "version": [
-        "0.8.1"
-      ]
-    }
-  ],
-  "requirements": {
-    "cpu": "2",
-    "memory": "4",
-    "disk": "40"
-  },
   "upstream": {
     "image": "https://github.com/supabase/supabase/releases/tag/self-hosted/v0.8.1",
     "releases": "https://github.com/supabase/supabase/tags",
@@ -27,6 +14,30 @@
       "https://github.com/supabase/supabase/blob/master/docker/CHANGELOG.md",
       "https://github.com/supabase/supabase/blob/master/docker/versions.md"
     ]
+  },
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "0.8.1"
+      ]
+    }
+  ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8000,
+      "path": "/"
+    },
+    "api": {
+      "port": 8000,
+      "path": "/"
+    }
+  },
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "40"
   },
   "env": {
     "first_startup_only": [

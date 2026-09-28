@@ -24,11 +24,16 @@ def _app_names(root: Path) -> list[str]:
     return sorted(path.name for path in root.iterdir() if path.is_dir())
 
 
+def _has_root_dockerfile(target: Path | None) -> bool:
+    return bool(target and (target / "Dockerfile").exists())
+
+
 def collect_apps(include_archived: bool = False, scope: str | None = None) -> list[dict]:
     names = [path.name for path in active_app_dirs()]
     output = []
 
     for name in names:
+        target = app_dir(name)
         metadata = resolve_app_metadata(name)
         item = {
             "name": name,
@@ -36,6 +41,7 @@ def collect_apps(include_archived: bool = False, scope: str | None = None) -> li
             "cadence": metadata.cadence,
             "update_policy": metadata.update_policy,
             "scope": _app_scope(name),
+            "dockerfile": _has_root_dockerfile(target),
         }
         if scope and item["scope"] != scope:
             continue
@@ -43,6 +49,7 @@ def collect_apps(include_archived: bool = False, scope: str | None = None) -> li
 
     if include_archived:
         for name in _app_names(repo_path("archive", "apps")):
+            target = app_dir(name)
             metadata = resolve_app_metadata(name)
             item = {
                 "name": name,
@@ -50,6 +57,7 @@ def collect_apps(include_archived: bool = False, scope: str | None = None) -> li
                 "cadence": metadata.cadence,
                 "update_policy": metadata.update_policy,
                 "scope": _app_scope(name),
+                "dockerfile": _has_root_dockerfile(target),
             }
             if scope and item["scope"] != scope:
                 continue
@@ -237,9 +245,16 @@ def list_apps(
     output = collect_apps(include_archived=include_archived, scope=scope)
 
     if not as_json:
-        table = Table("name", "status", "cadence", "update policy", "scope", header_style="dim", box=box.SIMPLE)
+        table = Table("name", "status", "cadence", "update policy", "scope", "dockerfile", header_style="dim", box=box.SIMPLE)
         for item in output:
-            table.add_row(item["name"], item["status"], item["cadence"], item["update_policy"], item["scope"])
+            table.add_row(
+                item["name"],
+                item["status"],
+                item["cadence"],
+                item["update_policy"],
+                item["scope"],
+                "yes" if item["dockerfile"] else "no",
+            )
         Console().print(table)
         return
 

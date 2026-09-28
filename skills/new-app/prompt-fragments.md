@@ -22,4 +22,4 @@ Prove the app can be deployed, not just generated.
 
 ## Credential Source Rule
 
-When an app does not control a fixed first admin password in `.env` but the consumer can resolve it after deployment, declare a declarative `variables.json.credentials.password` source such as `container-file` or `container-log`. Prefer this over embedding a full `docker exec` or `docker logs` command in `W9_LOGIN_GET_PASSWORD`.
+When an app does not control a fixed first admin username, password, or token in `.env` but the consumer can resolve it after deployment, declare declarative `variables.json.credentials.<slot>` metadata where `<slot>` is `username`, `password`, or `token`. Supported sources are `inline`, `container-env`, `container-file`, `container-log`, and `container-cli`. Prefer this over embedding full commands in `W9_LOGIN_GET_PASSWORD` or `W9_LOGIN_GET_TOKEN`.

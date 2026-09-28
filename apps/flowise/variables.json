@@ -2,6 +2,9 @@
   "name": "flowise",
   "trademark": "Flowise",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/flowiseai/flowise"
+  },
   "edition": [
     {
       "dist": "community",
@@ -11,12 +14,16 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 3000,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "2"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/flowiseai/flowise"
   }
 }

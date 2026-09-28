@@ -7,7 +7,7 @@ from libs import app as app_module
 
 def test_collect_apps_includes_archived_and_filters_scope(repo_fixture, app_factory):
     app_factory("public-app")
-    app_factory("internal-app", variables={
+    internal_app = app_factory("internal-app", variables={
         "name": "internal-app",
         "scope": "internal",
         "release": True,
@@ -15,6 +15,7 @@ def test_collect_apps_includes_archived_and_filters_scope(repo_fixture, app_fact
         "edition": [{"dist": "community", "version": ["1.0"]}],
     })
     app_factory("archived-app", archived=True)
+    (internal_app / "Dockerfile").write_text("FROM busybox\n", encoding="utf-8")
 
     archive_path = repo_fixture / "metadata" / "archive.yaml"
     archive = yaml.safe_load(archive_path.read_text(encoding="utf-8"))
@@ -23,9 +24,12 @@ def test_collect_apps_includes_archived_and_filters_scope(repo_fixture, app_fact
 
     all_names = [item["name"] for item in app_module.collect_apps(include_archived=True)]
     internal_names = [item["name"] for item in app_module.collect_apps(scope="internal")]
+    apps = {item["name"]: item for item in app_module.collect_apps(include_archived=True)}
 
     assert all_names == ["archived-app", "internal-app", "public-app"]
     assert internal_names == ["internal-app"]
+    assert apps["internal-app"]["dockerfile"] is True
+    assert apps["public-app"]["dockerfile"] is False
 
 
 def test_collect_app_info_returns_relative_path(app_factory):

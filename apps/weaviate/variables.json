@@ -11,6 +11,13 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "api": {
+      "port": 8080,
+      "path": "/v1/"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

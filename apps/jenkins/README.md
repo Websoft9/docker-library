@@ -28,7 +28,7 @@ Websoft9 packages this app from the official [Jenkins Docker image](https://hub.
 <!-- W9_NOTE_START -->
 Jenkins generates a one-time initial admin password at first startup. The value is stored in `/var/jenkins_home/secrets/initialAdminPassword` inside the container.
 
-Appstore consumers that support `variables.json.credentials.password` can resolve and display this value automatically. If your consumer does not support that metadata yet, read the file manually from the Jenkins container.
+Appstore consumers that support `variables.json.credentials` metadata can resolve and display this value automatically. If your consumer does not support that metadata yet, read the file manually from the Jenkins container.
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.

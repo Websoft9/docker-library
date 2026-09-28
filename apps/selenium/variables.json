@@ -2,6 +2,9 @@
   "name": "selenium",
   "trademark": "selenium",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/selenium/standalone-chrome"
+  },
   "edition": [
     {
       "dist": "community",
@@ -11,12 +14,16 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 4444,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "2",
     "disk": "1"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/selenium/standalone-chrome"
   }
 }

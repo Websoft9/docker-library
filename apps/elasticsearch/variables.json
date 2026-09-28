@@ -10,6 +10,13 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "https",
+    "api": {
+      "port": 9200,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

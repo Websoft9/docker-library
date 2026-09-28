@@ -2,6 +2,15 @@
   "name": "n8n",
   "trademark": "n8n",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/n8nio/n8n",
+    "releases": "https://github.com/n8n-io/n8n",
+    "docs": [
+      "https://docs.n8n.io/deploy/host-n8n/install-options/install-with-docker.md",
+      "https://docs.n8n.io/deploy/host-n8n/configure-n8n/basic-configuration/use-environment-variables/deployment.md",
+      "https://docs.n8n.io/deploy/host-n8n/configure-n8n/basic-configuration/configuration-examples/configure-webhook-urls-with-reverse-proxy.md"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
@@ -11,18 +20,16 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 5678,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "1"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/n8nio/n8n",
-    "releases": "https://github.com/n8n-io/n8n",
-    "docs": [
-      "https://docs.n8n.io/deploy/host-n8n/install-options/install-with-docker.md",
-      "https://docs.n8n.io/deploy/host-n8n/configure-n8n/basic-configuration/use-environment-variables/deployment.md",
-      "https://docs.n8n.io/deploy/host-n8n/configure-n8n/basic-configuration/configuration-examples/configure-webhook-urls-with-reverse-proxy.md"
-    ]
   }
 }

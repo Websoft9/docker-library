@@ -2,6 +2,9 @@
   "name": "bytebase",
   "trademark": "Bytebase",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/bytebase/bytebase"
+  },
   "edition": [
     {
       "dist": "community",
@@ -11,12 +14,16 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8080,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "2",
     "disk": "2"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/bytebase/bytebase"
   }
 }

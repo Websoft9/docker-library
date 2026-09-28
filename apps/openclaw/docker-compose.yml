@@ -12,30 +12,33 @@ services:
       - OPENCLAW_CONFIG_PATH=/home/node/.openclaw/openclaw.json
       - OPENCLAW_PUBLIC_SCHEME=${OPENCLAW_PUBLIC_SCHEME:-}
       - OPENCLAW_PUBLIC_ORIGIN=${OPENCLAW_PUBLIC_ORIGIN:-}
+      - OPENCLAW_TRUSTED_PROXIES=${OPENCLAW_TRUSTED_PROXIES:-}
     entrypoint:
       - "sh"
       - "-c"
       - |
         mkdir -p /home/node/.openclaw
         [ ! -s /home/node/.openclaw/openclaw.json ] && cp /seed/openclaw.json /home/node/.openclaw/openclaw.json
-        RESOLVED_PUBLIC_ORIGIN="$${OPENCLAW_PUBLIC_ORIGIN}"
-        if [ -z "$${RESOLVED_PUBLIC_ORIGIN}" ] && [ -n "$${OPENCLAW_PUBLIC_SCHEME}" ] && [ -n "$${W9_URL}" ]; then
-          RESOLVED_PUBLIC_ORIGIN="$${OPENCLAW_PUBLIC_SCHEME}://$${W9_URL}"
-        fi
-        if [ -n "$${RESOLVED_PUBLIC_ORIGIN}" ]; then
-          printf '%s\n' \
-            '{' \
-            '  gateway: {' \
-            '    publicOrigin: "'"$${RESOLVED_PUBLIC_ORIGIN}"'" ,' \
-            '    controlUi: {' \
-            '      allowedOrigins: ["'"$${RESOLVED_PUBLIC_ORIGIN}"'"],' \
-            '    },' \
-            '  },' \
-            '}' > /tmp/websoft9-openclaw.patch.json5
-          node dist/index.js config patch --file /tmp/websoft9-openclaw.patch.json5
+        rm -f /tmp/w9-origin.json5 /tmp/w9-proxies.json5
+        node -e '
+        const fs = require("fs");
+        const scheme = process.env.OPENCLAW_PUBLIC_SCHEME || "";
+        const host = process.env.W9_URL || "";
+        const origin = (process.env.OPENCLAW_PUBLIC_ORIGIN || "").trim() || (scheme && host ? scheme + "://" + host : "");
+        if (origin) fs.writeFileSync("/tmp/w9-origin.json5", JSON.stringify({ gateway: { publicOrigin: origin, controlUi: { allowedOrigins: [origin] } } }));
+        const proxies = (process.env.OPENCLAW_TRUSTED_PROXIES || "").split(/[\s,]+/).filter(Boolean);
+        if (proxies.length) fs.writeFileSync("/tmp/w9-proxies.json5", JSON.stringify({ gateway: { trustedProxies: proxies } }));
+        '
+        if [ -f /tmp/w9-origin.json5 ]; then
+          node dist/index.js config patch --file /tmp/w9-origin.json5
         else
           node dist/index.js config unset gateway.publicOrigin || true
           node dist/index.js config unset gateway.controlUi.allowedOrigins || true
+        fi
+        if [ -f /tmp/w9-proxies.json5 ]; then
+          node dist/index.js config patch --file /tmp/w9-proxies.json5
+        else
+          node dist/index.js config unset gateway.trustedProxies || true
         fi
         chown -R 1000:1000 /home/node/.openclaw
     volumes:

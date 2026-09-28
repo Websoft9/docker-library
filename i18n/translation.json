@@ -147,6 +147,10 @@
         "OPENAI API KEY",
         "OPENAI API 密钥"
     ],
+    "W9_DEEPSEEK_API_KEY_SET": [
+        "DEEPSEEK API KEY",
+        "DEEPSEEK API 密钥"
+    ],
     "W9_LOGIN_OPENAI_API_KEY": [
         "OPENAI LOGIN KEY",
         "OPENAI 登陆密码"

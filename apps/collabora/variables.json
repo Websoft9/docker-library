@@ -2,6 +2,9 @@
   "name": "collabora",
   "trademark": "Collabora",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/collabora/code"
+  },
   "edition": [
     {
       "dist": "community",
@@ -11,12 +14,20 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 9980,
+      "path": "/"
+    },
+    "admin": {
+      "port": 9980,
+      "path": "/browser/dist/admin/admin.html"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "2",
     "disk": "4"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/collabora/code"
   }
 }

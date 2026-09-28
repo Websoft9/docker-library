@@ -34,6 +34,6 @@
     "first_startup_only": []
   },
   "help": {
-    "db": "No bundled database. The Gateway token is seeded from W9_LOGIN_PASSWORD, and the package derives the external Control UI origin from OPENCLAW_PUBLIC_ORIGIN or OPENCLAW_PUBLIC_SCHEME plus W9_URL on each recreate."
+    "db": "No bundled database. The Gateway token is seeded from W9_LOGIN_PASSWORD; the package derives the external Control UI origin from OPENCLAW_PUBLIC_ORIGIN or OPENCLAW_PUBLIC_SCHEME plus W9_URL, and applies OPENCLAW_TRUSTED_PROXIES for reverse-proxy forwarded-header attribution on each recreate."
   }
 }

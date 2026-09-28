@@ -2,6 +2,9 @@
   "name": "bookstack",
   "trademark": "BookStack",
   "release": true,
+  "upstream": {
+    "image": "https://github.com/linuxserver/docker-bookstack/pkgs/container/bookstack"
+  },
   "edition": [
     {
       "dist": "community",
@@ -11,12 +14,20 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 80,
+      "path": "/"
+    },
+    "admin": {
+      "port": 80,
+      "path": "/login"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "2",
     "disk": "10"
-  },
-  "upstream": {
-    "image": "https://github.com/linuxserver/docker-bookstack/pkgs/container/bookstack"
   }
 }

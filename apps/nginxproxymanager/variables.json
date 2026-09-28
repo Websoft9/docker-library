@@ -11,6 +11,13 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 81,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "1",

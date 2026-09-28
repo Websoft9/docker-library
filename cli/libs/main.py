@@ -63,15 +63,23 @@ def list_command(
         all_apps = app_ops.collect_apps(include_archived=True)
         internal = sum(1 for item in active if item["scope"] == "internal")
         public = len(active) - internal
+        dockerfile = sum(1 for item in active if item["dockerfile"])
         archived = len(all_apps) - len(active)
         Console().print(
-            f"[dim]total {len(all_apps)} | active {len(active)} (public {public}, internal {internal}) | archived {archived}[/dim]"
+            f"[dim]total {len(all_apps)} | active {len(active)} (public {public}, internal {internal}, dockerfile {dockerfile}) | archived {archived}[/dim]"
         )
         if not include_archived:
             Console().print("[dim]use --include-archived to show archived apps[/dim]")
-        table = Table("name", "status", "cadence", "update policy", "scope", header_style="dim", box=box.SIMPLE)
+        table = Table("name", "status", "cadence", "update policy", "scope", "dockerfile", header_style="dim", box=box.SIMPLE)
         for item in output:
-            table.add_row(item["name"], item["status"], item["cadence"], item["update_policy"], item["scope"])
+            table.add_row(
+                item["name"],
+                item["status"],
+                item["cadence"],
+                item["update_policy"],
+                item["scope"],
+                "yes" if item["dockerfile"] else "no",
+            )
         Console().print(table)
         return
     print_output(output, as_json)

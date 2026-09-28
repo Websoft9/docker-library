@@ -2,6 +2,9 @@
   "name": "emqx",
   "trademark": "EMQX",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/emqx/emqx"
+  },
   "edition": [
     {
       "dist": "community",
@@ -18,12 +21,16 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 18083,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "2"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/emqx/emqx"
   }
 }

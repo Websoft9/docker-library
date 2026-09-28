@@ -33,6 +33,7 @@ cadence:
   - woocommerce
   - wordpress
   - wordpresspro
+  - dsh
 update_policy: {}
 lifecycle:
   frozen: []

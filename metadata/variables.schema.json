@@ -91,6 +91,13 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "defaultScheme": {
+          "type": "string",
+          "enum": [
+            "http",
+            "https"
+          ]
+        },
         "web": {
           "$ref": "#/$defs/accessEntry"
         },
@@ -201,27 +208,14 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "username": {
+          "$ref": "#/$defs/credentialSource"
+        },
         "password": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "source"
-          ],
-          "properties": {
-            "source": {
-              "type": "string",
-              "enum": [
-                "container-file",
-                "container-log"
-              ]
-            },
-            "path": {
-              "type": "string"
-            },
-            "pattern": {
-              "type": "string"
-            }
-          }
+          "$ref": "#/$defs/credentialSource"
+        },
+        "token": {
+          "$ref": "#/$defs/credentialSource"
         }
       }
     },
@@ -233,6 +227,360 @@
     }
   },
   "$defs": {
+    "credentialSource": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "source",
+            "value"
+          ],
+          "properties": {
+            "source": {
+              "const": "inline"
+            },
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "source",
+            "name"
+          ],
+          "properties": {
+            "source": {
+              "const": "container-env"
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "format": {
+              "type": "string",
+              "enum": [
+                "text",
+                "json",
+                "env"
+              ]
+            },
+            "jsonPath": {
+              "type": "string",
+              "minLength": 1
+            },
+            "key": {
+              "type": "string",
+              "minLength": 1
+            },
+            "match": {
+              "type": "string",
+              "enum": [
+                "substring",
+                "regex"
+              ]
+            },
+            "pattern": {
+              "type": "string",
+              "minLength": 1
+            },
+            "group": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "trim": {
+              "type": "boolean"
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "format": {
+                    "const": "json"
+                  }
+                },
+                "required": [
+                  "format"
+                ]
+              },
+              "then": {
+                "required": [
+                  "jsonPath"
+                ]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "format": {
+                    "const": "env"
+                  }
+                },
+                "required": [
+                  "format"
+                ]
+              },
+              "then": {
+                "required": [
+                  "key"
+                ]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "match": {
+                    "const": "regex"
+                  }
+                },
+                "required": [
+                  "match"
+                ]
+              },
+              "then": {
+                "required": [
+                  "group"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "source",
+            "path"
+          ],
+          "properties": {
+            "source": {
+              "const": "container-file"
+            },
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "format": {
+              "type": "string",
+              "enum": [
+                "text",
+                "json",
+                "env"
+              ]
+            },
+            "jsonPath": {
+              "type": "string",
+              "minLength": 1
+            },
+            "key": {
+              "type": "string",
+              "minLength": 1
+            },
+            "trim": {
+              "type": "boolean"
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "format": {
+                    "const": "json"
+                  }
+                },
+                "required": [
+                  "format"
+                ]
+              },
+              "then": {
+                "required": [
+                  "jsonPath"
+                ]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "format": {
+                    "const": "env"
+                  }
+                },
+                "required": [
+                  "format"
+                ]
+              },
+              "then": {
+                "required": [
+                  "key"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "source",
+            "pattern"
+          ],
+          "properties": {
+            "source": {
+              "const": "container-log"
+            },
+            "match": {
+              "type": "string",
+              "enum": [
+                "substring",
+                "regex"
+              ]
+            },
+            "pattern": {
+              "type": "string",
+              "minLength": 1
+            },
+            "group": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "trim": {
+              "type": "boolean"
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "match": {
+                    "const": "regex"
+                  }
+                },
+                "required": [
+                  "match"
+                ]
+              },
+              "then": {
+                "required": [
+                  "group"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "source",
+            "argv"
+          ],
+          "properties": {
+            "source": {
+              "const": "container-cli"
+            },
+            "argv": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "format": {
+              "type": "string",
+              "enum": [
+                "text",
+                "json",
+                "env"
+              ]
+            },
+            "jsonPath": {
+              "type": "string",
+              "minLength": 1
+            },
+            "key": {
+              "type": "string",
+              "minLength": 1
+            },
+            "match": {
+              "type": "string",
+              "enum": [
+                "substring",
+                "regex"
+              ]
+            },
+            "pattern": {
+              "type": "string",
+              "minLength": 1
+            },
+            "group": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "trim": {
+              "type": "boolean"
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "format": {
+                    "const": "json"
+                  }
+                },
+                "required": [
+                  "format"
+                ]
+              },
+              "then": {
+                "required": [
+                  "jsonPath"
+                ]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "format": {
+                    "const": "env"
+                  }
+                },
+                "required": [
+                  "format"
+                ]
+              },
+              "then": {
+                "required": [
+                  "key"
+                ]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "match": {
+                    "const": "regex"
+                  }
+                },
+                "required": [
+                  "match"
+                ]
+              },
+              "then": {
+                "required": [
+                  "group"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
     "accessEntry": {
       "type": "object",
       "additionalProperties": false,

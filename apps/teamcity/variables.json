@@ -2,6 +2,15 @@
   "name": "teamcity",
   "trademark": "TeamCity",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/jetbrains/teamcity-server",
+    "releases": "https://www.jetbrains.com/teamcity/download/",
+    "docs": [
+      "https://www.jetbrains.com/help/teamcity/teamcity-documentation.html",
+      "https://github.com/JetBrains/teamcity-docker-server",
+      "https://github.com/JetBrains/teamcity-docker-samples"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
@@ -11,18 +20,16 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8111,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "4",
     "disk": "1"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/jetbrains/teamcity-server",
-    "releases": "https://www.jetbrains.com/teamcity/download/",
-    "docs": [
-      "https://www.jetbrains.com/help/teamcity/teamcity-documentation.html",
-      "https://github.com/JetBrains/teamcity-docker-server",
-      "https://github.com/JetBrains/teamcity-docker-samples"
-    ]
   }
 }

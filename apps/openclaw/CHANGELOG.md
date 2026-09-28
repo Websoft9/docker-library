@@ -10,3 +10,4 @@
 - Add `OPENCLAW_PUBLIC_ORIGIN` and patch `gateway.publicOrigin` plus `gateway.controlUi.allowedOrigins` during init so domain settings are package-managed and re-applied on every recreate without changing the upstream gateway entrypoint.
 - Remove the retired inert `gateway.controlUi.dangerouslyDisableDeviceAuth` seed key from the packaged config.
 - Let `OPENCLAW_PUBLIC_ORIGIN` override the exact external origin, and otherwise derive it from `OPENCLAW_PUBLIC_SCHEME` plus `W9_URL` so domain access can follow standard Websoft9 host metadata without hardcoding.
+- Add `OPENCLAW_TRUSTED_PROXIES` and re-apply `gateway.trustedProxies` on each recreate so reverse-proxy forwarded-header attribution (`proxy_attribution_required`) can be configured without hardcoding proxy IPs.

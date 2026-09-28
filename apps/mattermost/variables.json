@@ -2,6 +2,9 @@
   "name": "mattermost",
   "trademark": "Mattermost",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/mattermost/mattermost-team-edition"
+  },
   "edition": [
     {
       "dist": "community",
@@ -10,12 +13,16 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8065,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "2",
     "disk": "8"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/mattermost/mattermost-team-edition"
   }
 }
