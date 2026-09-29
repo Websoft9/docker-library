@@ -24,10 +24,6 @@
       "port": 8888,
       "path": "/"
     },
-    "admin": {
-      "port": 8888,
-      "path": "/lab"
-    },
     "metrics": {
       "port": 6006,
       "path": "/"

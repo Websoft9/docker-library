@@ -18,5 +18,12 @@
   },
   "upstream": {
     "image": "https://hub.docker.com/r/kern/filepizza"
+  },
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8080,
+      "path": "/"
+    }
   }
 }

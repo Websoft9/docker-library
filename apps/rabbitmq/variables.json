@@ -14,7 +14,9 @@
   "edition": [
     {
       "dist": "community",
-      "version": ["4.3-management"]
+      "version": [
+        "4.3-management"
+      ]
     }
   ],
   "requirements": {
@@ -27,5 +29,12 @@
       "RABBITMQ_DEFAULT_USER",
       "RABBITMQ_DEFAULT_PASS"
     ]
+  },
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 15672,
+      "path": "/"
+    }
   }
 }

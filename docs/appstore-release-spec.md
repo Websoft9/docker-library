@@ -31,6 +31,8 @@
 - 每个 key 一条单句字符串
 - 若个别版本要求不同，在同一句话中注明，例如 `MySQL 8.0+ (7.0+ requires 8.4+)`
 - 不做版本键控对象，避免额外维护负担
+- 复杂登录（例如必须先完成一次性初始化、再使用固定账号密码）**必须**声明 `help.login`，且界面应把它展示在凭据区**之上**，让用户先阅读说明再登录
+- `help.login` 不可省略：凭据区只展示最终账号密码，缺少 `help.login` 时用户不知道还存在初始化步骤
 
 ### 凭据获取元数据
 
@@ -38,6 +40,7 @@
 
 - `credentials` 不是人类文案；它是消费端执行固定逻辑时读取的结构化声明
 - `credentials` 不替代 `.env` 中已有的字面值凭据；若 `W9_LOGIN_PASSWORD` 本身就是固定值，仍直接使用 `.env`
+- 复杂登录（一次性初始化 + 固定终态账号）：`.env` 的 `W9_LOGIN_USER` / `W9_LOGIN_PASSWORD` 供当前前端渲染，同时用 `variables.json.credentials`（如 `container-env` 指向 `W9_LOGIN_PASSWORD`）供 machine-readable 消费端与未来渲染；并配置 `help.login` 说明初始化步骤，不要用 `container-log` + 易变 `pattern` 去解析一次性密码
 - `credentials` 仅描述“凭据从哪里取”，不允许在仓库中写任意宿主级 shell
 
 当前约定支持 3 个固定槽位：`username`、`password`、`token`。每个槽位都声明“值从哪里来”的 source。

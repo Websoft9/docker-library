@@ -22,5 +22,12 @@
     "docs": [
       "https://docs.vespa.ai/en/operations/self-managed/docker-containers.html"
     ]
+  },
+  "access": {
+    "defaultScheme": "http",
+    "api": {
+      "port": 8080,
+      "path": "/"
+    }
   }
 }

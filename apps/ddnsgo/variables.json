@@ -18,5 +18,12 @@
   },
   "upstream": {
     "image": "https://hub.docker.com/r/jeessy/ddns-go"
+  },
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 9876,
+      "path": "/"
+    }
   }
 }

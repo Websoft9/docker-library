@@ -7,7 +7,7 @@ description: Use when the user wants to implement an approved app update after a
 
 Implement one approved app update with minimal app-local changes.
 
-When the caller provides only an app name, first detect a candidate target version and gather upstream references, then present that candidate for owner confirmation before implementation. Do not skip confirmation unless the target version is already fixed by an issue, an approved assessment, or an explicit owner instruction in the current conversation.
+When the caller provides only an app name, first detect the best candidate stable target version and gather upstream references. Continue implementation automatically when the candidate is clear and fits the maintenance policy. Stop and obtain owner confirmation only when the candidate is ambiguous, risky, `review-first`, or multiple reasonable targets exist.
 
 This skill follows `docs/ai-sdlc/03-update-pipeline.md`, `docs/ai-sdlc/05-quality-gates.md`, and `docs/ai-sdlc/06-test-report-format.md`.
 
@@ -20,13 +20,13 @@ Supporting files in this skill:
 ## Inputs
 
 - app name (required)
-- target version (optional at entry; required before editing files unless already fixed by the issue, an approved assessment, or an explicit owner confirmation after detection)
+- target version (optional at entry; required before editing files, but may be auto-detected by this workflow when the upstream choice is clear)
 - upstream references (required before editing files)
 
 ## Steps
 
 1. Read repository facts from `apps/<app>/`, `metadata/maintenance.yaml`, and the app notes when relevant.
-2. If the caller did not provide a target version, detect a candidate target version first by checking the current package version, the upstream image tags, and the upstream release notes or changelog. If the candidate is not already fixed by issue context or approved assessment, stop and obtain owner confirmation before editing files.
+2. If the caller did not provide a target version, detect the best candidate stable target version first by checking the current package version, the upstream image tags, and the upstream release notes or changelog. Prefer the newest stable version that matches the app's maintenance policy and image-tag policy. If one candidate is clearly correct, proceed with implementation and report the chosen target version. Stop and obtain owner confirmation only when the candidate is ambiguous, risky, `review-first`, or not clearly better than alternatives.
 3. Read `docs/w9-env-spec.md` before touching `.env` or `docker-compose.yml`; use it as the canonical `W9_*` reference, then mirror `metadata/templates/new-app/.env.tmpl` for layout.
 4. Read the approved assessment result, if one exists.
 5. Read upstream release notes, upgrade notes, image tags, and requirements.
@@ -59,7 +59,7 @@ Supporting files in this skill:
 ## Rules
 
 - Do not start implementation for a `review-first` candidate unless the owner has approved continuation.
-- When only an app name is provided, discovery is allowed, but file edits must wait until the owner confirms the detected candidate version unless approval already exists in issue context or a prior assessment.
+- When only an app name is provided, the workflow should normally detect the best stable target version and continue automatically. Ask the owner before editing only when the detected target is ambiguous, risky, `review-first`, or otherwise needs judgment beyond the documented maintenance policy.
 - Keep the smallest correct change.
 - The update is not a blind version bump. The changed app must still pass the current quality gates after the work is complete.
 - Do not perform broad cosmetic template re-alignment. Fix only the app-local conformance items that are blocking, directly relevant to the update, or required by current gates and generators.

@@ -1,0 +1,4 @@
+custom:
+  - id: graylog-web-ui
+    type: script
+    script: check.sh

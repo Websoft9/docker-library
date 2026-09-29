@@ -18,5 +18,12 @@
   },
   "upstream": {
     "image": "https://hub.docker.com/r/listmonk/listmonk"
+  },
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 9000,
+      "path": "/"
+    }
   }
 }

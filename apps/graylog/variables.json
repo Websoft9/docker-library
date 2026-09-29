@@ -2,20 +2,44 @@
   "name": "graylog",
   "trademark": "Graylog",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/graylog/graylog",
+    "docs": [
+      "https://go2docs.graylog.org/current/downloading_and_installing_graylog/docker_installation.htm",
+      "https://go2docs.graylog.org/current/upgrading_graylog/upgrading_graylog_in_docker.htm"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "7.0"
+        "7.1"
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 9000,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "4",
     "disk": "1"
   },
-  "upstream": {
-    "image": "https://hub.docker.com/r/graylog/graylog"
+  "credentials": {
+    "username": {
+      "source": "inline",
+      "value": "admin"
+    },
+    "password": {
+      "source": "container-env",
+      "value": "admin"
+    }
+  },
+  "help": {
+    "login": "First run: read the temporary admin password from the container logs (docker logs graylog) to complete initialization, then log in with the account and password shown below."
   }
 }

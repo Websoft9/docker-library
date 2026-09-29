@@ -27,5 +27,12 @@
       "https://docs.trychroma.com/reference/server-env-vars",
       "https://github.com/chroma-core/chroma/releases/tag/1.5.9"
     ]
+  },
+  "access": {
+    "defaultScheme": "http",
+    "api": {
+      "port": 8000,
+      "path": "/"
+    }
   }
 }

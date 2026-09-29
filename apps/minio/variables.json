@@ -11,6 +11,17 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 9001,
+      "path": "/"
+    },
+    "api": {
+      "port": 9000,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

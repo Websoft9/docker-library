@@ -310,6 +310,24 @@ Examples:
 - no: apps that create the first admin interactively in the browser
 - no: apps with no built-in auth
 
+### Complex Or Multi-Stage Login
+
+Some apps log in in two stages: a one-time bootstrap credential (often generated at first startup and
+shown only in the container logs) followed by a fixed account that the package controls. Treat this as a
+complex login:
+
+- keep the fixed final credential in `.env` as `W9_LOGIN_USER` and `W9_LOGIN_PASSWORD`; the current
+  front end renders these directly
+- also declare the same fixed credential in `variables.json.credentials` for machine-readable consumers
+  and future rendering; point `credentials.password` at `W9_LOGIN_PASSWORD` with `source=container-env`
+  instead of copying the literal value, so it follows `.env`
+- add `variables.json.help.login` as a single sentence that tells the user to complete the one-time
+  initialization first and then log in with the account and password shown below
+- `help.login` is required for a complex login, not optional: the credential area only shows the final
+  account and password, so without it users do not know an initialization step exists
+- do not add a `container-log` source with a fragile `pattern` only to auto-resolve a one-time password;
+  when the pattern would be hard to maintain, document the step in `help.login` instead
+
 ## Translation Rule
 
 Keys requiring entries in `i18n/translation.json`:

@@ -19,10 +19,6 @@
     "web": {
       "port": 8787,
       "path": "/"
-    },
-    "admin": {
-      "port": 8787,
-      "path": "/public"
     }
   },
   "requirements": {

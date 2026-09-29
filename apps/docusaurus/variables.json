@@ -17,5 +17,12 @@
   },
   "upstream": {
     "image": "https://hub.docker.com/r/awesometic/docusaurus"
+  },
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 80,
+      "path": "/"
+    }
   }
 }

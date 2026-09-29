@@ -18,5 +18,12 @@
   },
   "upstream": {
     "image": "https://hub.docker.com/_/registry"
+  },
+  "access": {
+    "defaultScheme": "http",
+    "api": {
+      "port": 5000,
+      "path": "/"
+    }
   }
 }

@@ -19,10 +19,6 @@
     "web": {
       "port": 3000,
       "path": "/"
-    },
-    "admin": {
-      "port": 3000,
-      "path": "/login"
     }
   },
   "requirements": {

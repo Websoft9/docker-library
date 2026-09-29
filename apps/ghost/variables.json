@@ -3,13 +3,18 @@
   "trademark": "Ghost",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/_/ghost"
+    "image": "https://hub.docker.com/_/ghost",
+    "releases": "https://github.com/TryGhost/Ghost/releases",
+    "docs": [
+      "https://ghost.org/docs/config/",
+      "https://ghost.org/docs/install/docker/"
+    ]
   },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "6.9",
+        "6.65",
         "latest"
       ]
     }
@@ -29,5 +34,8 @@
     "cpu": "1",
     "memory": "1",
     "disk": "4"
+  },
+  "help": {
+    "login": "First run: open /ghost and create the administrator account in the browser, then log in with those credentials."
   }
 }

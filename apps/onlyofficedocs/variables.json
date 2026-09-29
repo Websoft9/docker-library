@@ -27,5 +27,12 @@
       "https://api.onlyoffice.com/docs/docs-api/get-started/basic-concepts/",
       "https://github.com/ONLYOFFICE/Docker-DocumentServer"
     ]
+  },
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 80,
+      "path": "/"
+    }
   }
 }

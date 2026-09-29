@@ -18,5 +18,12 @@
   },
   "upstream": {
     "image": "https://hub.docker.com/r/postgrest/postgrest"
+  },
+  "access": {
+    "defaultScheme": "http",
+    "api": {
+      "port": 3000,
+      "path": "/"
+    }
   }
 }
