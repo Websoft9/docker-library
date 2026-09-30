@@ -3,13 +3,18 @@
   "trademark": "Redmine",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/_/redmine"
+    "image": "https://hub.docker.com/_/redmine",
+    "releases": "https://www.redmine.org/projects/redmine/wiki/Download",
+    "docs": [
+      "https://github.com/docker-library/docs/blob/master/redmine/README.md",
+      "https://www.redmine.org/projects/redmine/wiki/RedmineInstall"
+    ]
   },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "6.1",
+        "7.0",
         "latest"
       ]
     }

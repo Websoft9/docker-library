@@ -6,8 +6,8 @@
     {
       "dist": "community",
       "version": [
+        "11.4-apache",
         "11.2.2-apache",
-        "11.0.5-apache",
         "10.3.2-apache"
       ]
     }
@@ -25,6 +25,11 @@
     "disk": "2"
   },
   "upstream": {
-    "image": "https://hub.docker.com/_/drupal"
+    "image": "https://hub.docker.com/_/drupal",
+    "releases": "https://www.drupal.org/project/drupal/releases",
+    "docs": [
+      "https://www.drupal.org/project/drupal/releases",
+      "https://github.com/docker-library/docs/blob/master/drupal/README.md"
+    ]
   }
 }

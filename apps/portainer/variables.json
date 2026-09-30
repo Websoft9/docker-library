@@ -9,7 +9,7 @@
     {
       "dist": "community",
       "version": [
-        "2.34.0",
+        "2.45.1",
         "latest"
       ]
     }
@@ -25,5 +25,16 @@
     "cpu": "1",
     "memory": "1",
     "disk": "4"
+  },
+  "credentials": {
+    "token": {
+      "source": "container-log",
+      "match": "regex",
+      "pattern": "setup_token=([0-9a-fA-F]+)",
+      "group": 1
+    }
+  },
+  "help": {
+    "login": "On an uninitialized instance, Portainer prints a one-time setup token to the container log; paste it into the setup screen to create the administrator account."
   }
 }

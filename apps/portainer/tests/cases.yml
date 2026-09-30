@@ -1,0 +1,5 @@
+optional:
+  - id: system-status
+    type: web-access
+    path: /api/system/status
+    expect_status: 200

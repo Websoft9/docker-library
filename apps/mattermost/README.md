@@ -1,26 +1,85 @@
-# Mattermost on Docker  
+# Mattermost on Docker
 
-This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Mattermost:
+## Quick Start
+
+### Deploy Verification
+
+1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Mattermost**.
+2. In the **Access** tab, get the login URL and credentials.
+3. Open the login URL in a browser and sign in to confirm the app works.
+
+<!-- W9_GUIDE_START -->
+### Usage
+
+1. Make sure you are signed in to the Mattermost admin console.
+2. Try a core feature.
+
+### Change Password
+
+1. In the [Websoft9](https://www.websoft9.com) console, open the app's **Compose** tab.
+2. Update the password in `.env` and save.
+3. Rebuild the app.
+<!-- W9_GUIDE_END -->
+
+## Configuration Reference
+
+Websoft9 packages this app from the official [Mattermost Docker image](https://hub.docker.com/r/mattermost/mattermost-team-edition) and makes some improvements below.
+
+<!-- W9_NOTE_START -->
+
+<!-- W9_NOTE_END -->
+
+Apps run as containers; rebuild after any configuration change.
+
+### Version Support
+
+Supported versions: 11.11.
 
 
- - community:  10.9
+### Ports
+
+| Purpose | Port |
+| --- | --- |
+| Mattermost web UI and REST API | 8065 |
 
 
-## System Requirements
+### Data Directory
 
-The following are the minimal [recommended requirements](https://docs.mattermost.com/install/install-docker.html/):
 
-* **RAM**: 2 GB or more
-* **CPU**: 1 cores or higher
-* **Disk**: at least 8 GB of free space
-* **bandwidth**: more fluent experience over 100M  
+- `mattermost_config` → `/mattermost/config:rw`
+- `mattermost_data` → `/mattermost/data:rw`
+- `mattermost_logs` → `/mattermost/logs:rw`
+- `mattermost_plugins` → `/mattermost/plugins:rw`
+- `mattermost_client_plugins` → `/mattermost/client/plugins:rw`
+- `mattermost_bleve-indexes` → `/mattermost/bleve-indexes:rw`
+- `postgres` → `/var/lib/postgresql/data`
 
-## Install
 
-You can install this Mattermost by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use Mattermost with **Websoft9 Business Support** free, you can [subscribe Mattermost](https://www.websoft9.com/apps) on Cloud platform
+### Environment Variables
 
-## Documentation
+Environment variables are defined in the app's `.env` file; see the reference section at the end of `.env` for supported variables.
 
-[Mattermost Administrator Guide](https://support.websoft9.com/docs/mattermost) powered by Websoft9
+
+### Configuration Files
+
+
+Configuration files live inside the image; mount a single file read-only to override, and never replace the whole directory.
+
+
+## References
+
+- [Mattermost Administrator Guide](https://support.websoft9.com/docs/mattermost) by Websoft9
+
+- [Docker Hub image](https://hub.docker.com/r/mattermost/mattermost-team-edition)
+
+
+<!-- W9_TROUBLESHOOT_START -->
+## Troubleshooting
+
+**App fails to start?**
+- Check `docker compose logs`.
+
+**Port not reachable?**
+- Ensure the firewall / security group allows the port.
+<!-- W9_TROUBLESHOOT_END -->

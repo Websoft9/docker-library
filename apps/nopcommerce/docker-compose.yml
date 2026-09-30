@@ -1,36 +1,32 @@
-# compose: https://github.com/nopSolutions/nopCommerce/blob/develop/docker-compose.yml
-# image: https://hub.docker.com/r/nopcommerceteam/nopcommerce/tags
-
-version: '3.8'
-
 services:
   nopcommerce:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     ports:
-      - ${W9_HTTP_PORT_SET}:80
+      - "${W9_HTTP_PORT_SET}:80" # Web Console
     volumes:
       - nopcommerce:/app
-    depends_on: 
+    depends_on:
       - mysql
     restart: unless-stopped
     env_file: .env
 
   mysql:
-    image: mysql:$W9_DB_VERSION
-    container_name: $W9_ID-mysql
+    image: mysql:${W9_DB_VERSION}
+    container_name: ${W9_ID}-mysql
     restart: unless-stopped
-    command: 
-      - --character-set-server=utf8mb4 
+    command:
+      - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
       - --default-authentication-plugin=mysql_native_password
     volumes:
       - mysql:/var/lib/mysql
+    env_file: .env
     environment:
-      MYSQL_DATABASE: nopcommerce
-      MYSQL_USER: nopcommerce
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
 
 networks:
   default:

@@ -6,6 +6,7 @@
     {
       "dist": "community",
       "version": [
+        "8.10",
         "8.0",
         "7.4",
         "7.2",
@@ -23,6 +24,11 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/redis/redisinsight"
+    "image": "https://hub.docker.com/_/redis",
+    "releases": "https://github.com/redis/redis/releases",
+    "docs": [
+      "https://github.com/docker-library/docs/blob/master/redis/README.md",
+      "https://redis.io/docs/latest/operate/oss_and_stack/management/config/"
+    ]
   }
 }

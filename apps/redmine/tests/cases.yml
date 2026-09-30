@@ -1,0 +1,6 @@
+# The adaptive web-access check covers reachability of the Redmine root.
+# This exercises the core authenticated path with the built-in admin account.
+custom:
+  - id: admin-login
+    type: script
+    script: check.sh

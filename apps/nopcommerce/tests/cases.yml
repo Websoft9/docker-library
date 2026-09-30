@@ -1,0 +1,4 @@
+custom:
+  - id: install-page
+    type: script
+    script: smoke-install-page.sh

@@ -1,15 +1,18 @@
 {
   "name": "selenium",
-  "trademark": "selenium",
+  "trademark": "Selenium",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/r/selenium/standalone-chrome"
+    "image": "https://hub.docker.com/r/selenium/standalone-chrome",
+    "docs": [
+      "https://github.com/SeleniumHQ/docker-selenium"
+    ]
   },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "137.0-20250727",
+        "153.0",
         "latest"
       ]
     }
@@ -19,11 +22,21 @@
     "web": {
       "port": 4444,
       "path": "/"
+    },
+    "admin": {
+      "port": 7900,
+      "path": "/?autoconnect=1&resize=scale"
+    }
+  },
+  "credentials": {
+    "password": {
+      "source": "container-env",
+      "name": "W9_LOGIN_PASSWORD"
     }
   },
   "requirements": {
-    "cpu": "1",
-    "memory": "2",
-    "disk": "1"
+    "cpu": "2",
+    "memory": "4",
+    "disk": "2"
   }
 }

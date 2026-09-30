@@ -6,7 +6,7 @@
     {
       "dist": "community",
       "version": [
-        "2.70",
+        "3.8",
         "latest"
       ]
     }
@@ -24,6 +24,10 @@
     "disk": "4"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/redis/redisinsight"
+    "image": "https://hub.docker.com/r/redis/redisinsight",
+    "releases": "https://github.com/RedisInsight/RedisInsight/releases",
+    "docs": [
+      "https://redis.io/docs/latest/operate/redisinsight/install/install-on-docker/"
+    ]
   }
 }

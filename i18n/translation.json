@@ -263,6 +263,10 @@
         "ADMIN GUI PORT",
         "管理页面端口"
     ],
+    "W9_ADMIN_PORT_SET": [
+        "Admin Port",
+        "管理端口"
+    ],
     "W9_URI_SET": [
         "URI",
         "连接URI"

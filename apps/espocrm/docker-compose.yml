@@ -1,44 +1,49 @@
-# image: https://hub.docker.com/r/espocrm/espocrm
-# dockfile: https://github.com/espocrm/espocrm-docker
-# docs: https://docs.espocrm.com/administration/installation-by-script/
-# docker compose: https://docs.espocrm.com/administration/docker/installation/#install-espocrm-with-docker-compose
-
-version: '3.8'
-
 services:
 
   mariadb:
-    image: mariadb:$W9_DB_VERSION
-    container_name: $W9_ID-mariadb
+    image: mariadb:${W9_DB_VERSION}
+    container_name: ${W9_ID}-mariadb
     restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
     volumes:
       - mariadb:/var/lib/mysql
+    env_file:
+      - .env
     environment:
-      MARIADB_DATABASE: espocrm
-      MARIADB_USER: espocrm
-      MARIADB_PASSWORD: $W9_POWER_PASSWORD
-      MARIADB_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
 
   espocrm:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     env_file: 
       - .env
     volumes:
-      - espocrm:/var/www/html
+      - espocrm-data:/var/www/html/data
+      - espocrm-custom:/var/www/html/custom
+      - espocrm-custom-client:/var/www/html/client/custom
     restart: unless-stopped
     ports:
-      - ${W9_HTTP_PORT_SET}:80
+      - "${W9_HTTP_PORT_SET}:80" # Web Console
+    depends_on:
+      - mariadb
 
   # This is need for Cron
   espocrm-daemon:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID-daemon
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}-daemon
+    env_file:
+      - .env
     volumes:
-      - espocrm:/var/www/html
+      - espocrm-data:/var/www/html/data
+      - espocrm-custom:/var/www/html/custom
+      - espocrm-custom-client:/var/www/html/client/custom
     restart: unless-stopped
     entrypoint: docker-daemon.sh
+    depends_on:
+      - espocrm
           
 networks:
   default:
@@ -47,4 +52,6 @@ networks:
       
 volumes:
   mariadb:
-  espocrm:
+  espocrm-data:
+  espocrm-custom:
+  espocrm-custom-client:

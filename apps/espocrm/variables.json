@@ -6,7 +6,7 @@
     {
       "dist": "community",
       "version": [
-        "9.2.2",
+        "10.0",
         "latest"
       ]
     }
@@ -16,8 +16,19 @@
     "memory": "2",
     "disk": "8"
   },
+  "env": {
+    "first_startup_only": [
+      "ESPOCRM_ADMIN_USERNAME",
+      "ESPOCRM_ADMIN_PASSWORD",
+      "ESPOCRM_SITE_URL"
+    ]
+  },
   "upstream": {
-    "image": "https://hub.docker.com/r/espocrm/espocrm"
+    "image": "https://hub.docker.com/_/espocrm",
+    "releases": "https://github.com/espocrm/espocrm/releases",
+    "docs": [
+      "https://docs.espocrm.com/administration/docker/installation/#install-espocrm-with-docker-compose"
+    ]
   },
   "access": {
     "defaultScheme": "http",

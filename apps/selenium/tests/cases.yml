@@ -1,0 +1,13 @@
+# The adaptive checks cover compose config, container state and the WebDriver
+# entry point. Selenium's core path is a ready WebDriver API plus the
+# password-protected noVNC admin console, so both are exercised explicitly.
+optional:
+  - id: webdriver-status
+    type: web-access
+    path: /status
+    expect_status: 200
+
+custom:
+  - id: novnc-admin-password
+    type: script
+    script: check.sh
