@@ -2,11 +2,19 @@
   "name": "registry",
   "trademark": "Docker Registry",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/_/registry",
+    "releases": "https://github.com/distribution/distribution/releases",
+    "docs": [
+      "https://distribution.github.io/distribution/about/configuration/",
+      "https://distribution.github.io/distribution/about/deploying/"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "3.0",
+        "3.1",
         "latest"
       ]
     }
@@ -16,14 +24,11 @@
     "memory": "4",
     "disk": "1"
   },
-  "upstream": {
-    "image": "https://hub.docker.com/_/registry"
-  },
   "access": {
     "defaultScheme": "http",
     "api": {
       "port": 5000,
-      "path": "/"
+      "path": "/v2/"
     }
   }
 }

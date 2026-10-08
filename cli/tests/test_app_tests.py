@@ -111,9 +111,10 @@ def test_app_tests_cli_contract(monkeypatch):
     monkeypatch.setattr(
         app_tests,
         "run_app_tests",
-        lambda app_name=None, base_url=None, ssh_host=None, ssh_user=None, ssh_secret_path=None, deploy_root=None, wait_timeout=60, wait_interval=5, progress=None, verbose=False: {
+        lambda app_name=None, base_url=None, target=None, ssh_host=None, ssh_user=None, ssh_secret_path=None, deploy_root=None, wait_timeout=60, wait_interval=5, progress=None, verbose=False: {
             "app": app_name,
             "base_url": base_url,
+            "target": target or "local",
             "ok": True,
             "results": [],
         },
@@ -125,6 +126,23 @@ def test_app_tests_cli_contract(monkeypatch):
     payload = json.loads(result.stdout)
     assert payload["app"] == "demo"
     assert payload["base_url"] == "http://localhost:8080"
+
+
+def test_app_tests_cli_forwards_target(monkeypatch):
+    calls = {}
+
+    def fake_run_app_tests(app_name=None, **kwargs):
+        calls["app_name"] = app_name
+        calls.update(kwargs)
+        return {"app": app_name, "target": kwargs.get("target") or "local", "ok": True, "results": []}
+
+    monkeypatch.setattr(app_tests, "run_app_tests", fake_run_app_tests)
+
+    result = runner.invoke(main.app, ["app-tests", "--app", "demo", "--target", "local", "--json"])
+
+    assert result.exit_code == 0
+    assert calls["app_name"] == "demo"
+    assert calls["target"] == "local"
 
 
 def test_app_tests_cli_forwards_wait_options(monkeypatch):
@@ -286,7 +304,7 @@ def test_remote_context_accepts_legacy_remote_path_profile(repo_fixture, app_fac
         encoding="utf-8",
     )
 
-    remote_ctx = app_tests._remote_context("demo", None, None, None, None)
+    remote_ctx = app_tests._remote_context("demo", "remote", None, None, None, None)
 
     assert remote_ctx is not None
     assert remote_ctx["app_target"] == "/legacy/apps/demo"
@@ -315,6 +333,7 @@ def test_app_tests_cli_contract_progress_to_stderr(monkeypatch):
     main.app_tests_command(
         app_name="demo",
         base_url=None,
+        target=None,
         ssh_host=None,
         ssh_user=None,
         ssh_secret_path=None,
@@ -328,6 +347,27 @@ def test_app_tests_cli_contract_progress_to_stderr(monkeypatch):
         ("[1/3] running compose-config", True),
         (json.dumps({"app": "demo", "target": "local", "ok": True, "results": []}, indent=2, ensure_ascii=False), False),
     ]
+
+
+def test_run_app_tests_target_local_ignores_remote_default(repo_fixture, app_factory, monkeypatch):
+    app_factory("demo", env="W9_HTTP_PORT_SET=8080\nW9_ID=demo\n")
+
+    monkeypatch.setattr(app_tests.remote, "default_target", lambda: "remote")
+    monkeypatch.setattr(app_tests.remote, "ssh_host", lambda value=None: value or "1.2.3.4")
+
+    def fake_run(command):
+        if command[:2] == ["docker", "ps"]:
+            return types.SimpleNamespace(returncode=0, stdout="demo Up\n", stderr="")
+        return types.SimpleNamespace(returncode=0, stdout="", stderr="")
+
+    monkeypatch.setattr(app_tests, "_run_subprocess", fake_run)
+    monkeypatch.setattr(app_tests.requests, "get", lambda *args, **kwargs: DummyResponse(200, url=args[0]))
+
+    payload = app_tests.run_app_tests("demo", target="local")
+
+    assert payload["ok"] is True
+    assert payload["target"] == "local"
+    assert payload["base_url"] == "http://localhost:8080"
 
 
 def test_run_app_tests_remote_progress_starts_with_connectivity_check(repo_fixture, app_factory, monkeypatch):

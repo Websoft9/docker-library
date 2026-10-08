@@ -52,11 +52,29 @@ apps:
 - mingdao
 - nodebb
 - onlyoffice
+- palworld
+- pangolin
+- paperlessngx
+- papermc
+- passbolt
+- penpot
+- photoprism
+- phpfpmapache
+- phpfpmnginx
+- plane
+- plex
+- pmm
+- portkey
+- posteio
+- ragflow
 - rainbond
 - rclone
 - redash
+- rethinkdb
+- rocketchat
 - rocketmq
 - rowy
+- ruby
 - rudderstack
 - runtime
 - rustdesk
@@ -267,4 +285,40 @@ overrides:
   rclone:
     archive_reason: Low user demand
   redash:
+    archive_reason: Low user demand
+  rethinkdb:
+    archive_reason: Low user demand
+  rocketchat:
+    archive_reason: Low user demand
+  ruby:
+    archive_reason: Low user demand
+  ragflow:
+    archive_reason: Low user demand
+  palworld:
+    archive_reason: Low user demand
+  pangolin:
+    archive_reason: Low user demand
+  paperlessngx:
+    archive_reason: Low user demand
+  papermc:
+    archive_reason: Low user demand
+  passbolt:
+    archive_reason: Low user demand
+  penpot:
+    archive_reason: Low user demand
+  photoprism:
+    archive_reason: Low user demand
+  phpfpmapache:
+    archive_reason: Low user demand
+  phpfpmnginx:
+    archive_reason: Low user demand
+  plane:
+    archive_reason: Low user demand
+  plex:
+    archive_reason: Low user demand
+  pmm:
+    archive_reason: Low user demand
+  portkey:
+    archive_reason: Low user demand
+  posteio:
     archive_reason: Low user demand

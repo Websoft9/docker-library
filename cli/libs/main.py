@@ -894,6 +894,7 @@ def dns_delete_command(
 def app_tests_command(
     app_name: str = typer.Option(..., "--app", help="App name"),
     base_url: str | None = typer.Option(None, "--base-url", help="Override the base URL used by web checks"),
+    target: str | None = typer.Option(None, "--target", help="local | remote"),
     ssh_host: str | None = typer.Option(None, "--ssh-host", help="Remote host IP or name"),
     ssh_user: str | None = typer.Option(None, "--ssh-user", help="Remote SSH user (default root)"),
     ssh_secret_path: str | None = typer.Option(None, "--ssh-secret-path", help="SSH secret path (key or password file)"),
@@ -909,6 +910,7 @@ def app_tests_command(
         payload = app_tests.run_app_tests(
             app_name,
             base_url=base_url,
+            target=target,
             ssh_host=ssh_host,
             ssh_user=ssh_user,
             ssh_secret_path=ssh_secret_path,

@@ -81,13 +81,21 @@ def load_env(app_name: str) -> dict:
     return resolved
 
 
-def _base_url(env: dict, explicit: str | None, ssh_host: str | None) -> str | None:
+def _target_mode(target: str | None, ssh_host: str | None) -> str:
+    if target:
+        return target
+    if ssh_host:
+        return "remote"
+    return remote.default_target()
+
+
+def _base_url(env: dict, explicit: str | None, target: str, ssh_host: str | None) -> str | None:
     if explicit:
         return explicit.rstrip("/")
     port = env.get("W9_HTTP_PORT_SET")
     if not port:
         return None
-    resolved_ssh_host = ssh_host or (remote.ssh_host() if remote.default_target() == "remote" else None)
+    resolved_ssh_host = ssh_host or (remote.ssh_host() if target == "remote" else None)
     if resolved_ssh_host:
         return f"http://{resolved_ssh_host}:{port}"
     return f"http://localhost:{port}"
@@ -190,8 +198,15 @@ def _wait_for(wait_timeout: int, wait_interval: int, attempt: Callable[[], dict]
     return last
 
 
-def _remote_context(app_name: str, ssh_host: str | None, ssh_user: str | None, ssh_secret_path: str | None, deploy_root: str | None) -> dict | None:
-    resolved_host = ssh_host or (remote.ssh_host() if remote.default_target() == "remote" else None)
+def _remote_context(
+    app_name: str,
+    target: str,
+    ssh_host: str | None,
+    ssh_user: str | None,
+    ssh_secret_path: str | None,
+    deploy_root: str | None,
+) -> dict | None:
+    resolved_host = ssh_host or (remote.ssh_host() if target == "remote" else None)
     if not resolved_host:
         return None
     secret_path = remote.resolve_secret_path(ssh_secret_path)
@@ -326,6 +341,7 @@ def _default_cases(env: dict, compose: dict, base_url: str | None, app_name: str
 def run_app_tests(
     app_name: str,
     base_url: str | None = None,
+    target: str | None = None,
     ssh_host: str | None = None,
     ssh_user: str | None = None,
     ssh_secret_path: str | None = None,
@@ -338,8 +354,9 @@ def run_app_tests(
     env = load_env(app_name)
     cases = load_cases(app_name)
     compose = load_compose(app_name)
-    resolved_base_url = _base_url(env, base_url, ssh_host)
-    remote_ctx = _remote_context(app_name, ssh_host, ssh_user, ssh_secret_path, deploy_root)
+    mode = _target_mode(target, ssh_host)
+    resolved_base_url = _base_url(env, base_url, mode, ssh_host)
+    remote_ctx = _remote_context(app_name, mode, ssh_host, ssh_user, ssh_secret_path, deploy_root)
 
     skip_ids = {item["id"] for item in (cases.get("skip") or [])}
     results = []
@@ -422,7 +439,7 @@ def run_app_tests(
     return {
         "app": app_name,
         "base_url": resolved_base_url,
-        "target": "remote" if remote_ctx else "local",
+        "target": mode,
         "ok": all(item.get("ok") for item in results),
         "results": results,
     }

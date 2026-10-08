@@ -2,11 +2,20 @@
   "name": "rundeck",
   "trademark": "Rundeck",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/rundeck/rundeck",
+    "releases": "https://github.com/rundeck/rundeck/releases",
+    "docs": [
+      "https://docs.rundeck.com/docs/administration/install/docker.html",
+      "https://docs.rundeck.com/docs/administration/configuration/docker.html"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "5.17.0"
+        "6.2.1",
+        "latest"
       ]
     }
   ],
@@ -22,7 +31,14 @@
     "memory": "2",
     "disk": "4"
   },
-  "upstream": {
-    "image": "https://hub.docker.com/r/rundeck/rundeck"
+  "credentials": {
+    "username": {
+      "source": "inline",
+      "value": "admin"
+    },
+    "password": {
+      "source": "container-env",
+      "name": "W9_LOGIN_PASSWORD"
+    }
   }
 }

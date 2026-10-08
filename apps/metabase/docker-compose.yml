@@ -1,32 +1,28 @@
-# docs: https://www.metabase.com/docs/latest/operations-guide/running-metabase-on-docker.html
-# image: https://hub.docker.com/r/metabase/metabase
-
-version: '3.8'
 services:
   metabase:
-    image: $W9_REPO:$W9_VERSION
+    image: ${W9_REPO}:${W9_VERSION}
     restart: unless-stopped
-    container_name: $W9_ID
-    hostname: $W9_ID
-    volumes: 
-     - metabase-data:/metabase-data
-     - metabase-plugins:/plugins
+    container_name: ${W9_ID}
+    hostname: ${W9_ID}
+    volumes:
+      - metabase-data:/metabase-data
+      - metabase-plugins:/plugins
     ports:
-      - '$W9_HTTP_PORT_SET:$W9_HTTP_PORT'
+      - '${W9_HTTP_PORT_SET}:3000' # Web Console
     env_file: .env
-    depends_on: 
+    depends_on:
       - postgres
 
   postgres:
-    container_name: $W9_ID-postgresql
-    image: postgres:$W9_DB_VERSION
+    container_name: ${W9_ID}-postgresql
+    image: postgres:${W9_DB_VERSION}
     restart: unless-stopped
     volumes:
       - postgres:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=$W9_POWER_PASSWORD
-      - POSTGRES_DB=$W9_ID
+      - POSTGRES_PASSWORD=${W9_POWER_PASSWORD}
+      - POSTGRES_DB=${W9_ID}
 
 volumes:
   postgres:
