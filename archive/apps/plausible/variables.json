@@ -1,0 +1,45 @@
+{
+  "name": "plausible",
+  "trademark": "Plausible",
+  "release": true,
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "v3.2.1",
+        "latest"
+      ]
+    }
+  ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8000,
+      "path": "/"
+    }
+  },
+  "requirements": {
+    "cpu": "2",
+    "memory": "2",
+    "disk": "2"
+  },
+  "upstream": {
+    "image": "https://github.com/plausible/analytics/pkgs/container/community-edition",
+    "releases": "https://github.com/plausible/analytics/releases",
+    "compose": {
+      "compose": "https://github.com/plausible/community-edition/blob/v3.2.1/compose.yml"
+    },
+    "docs": [
+      "https://plausible.io/docs/self-hosting",
+      "https://github.com/plausible/community-edition/blob/v3.2.1/README.md",
+      "https://github.com/plausible/community-edition/wiki/Upgrade-PostgreSQL"
+    ]
+  },
+  "credentials": {},
+  "env": {
+    "first_startup_only": []
+  },
+  "help": {
+    "db": "This package uses PostgreSQL 16 and ClickHouse 24.12, aligned with Plausible Community Edition v3.2.1. Existing PostgreSQL 14 data should be migrated before reusing old volumes."
+  }
+}

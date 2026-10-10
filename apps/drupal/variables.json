@@ -6,9 +6,8 @@
     {
       "dist": "community",
       "version": [
-        "11.4-apache",
-        "11.2.2-apache",
-        "10.3.2-apache"
+        "11.4",
+        "latest"
       ]
     }
   ],

@@ -2,19 +2,28 @@
   "name": "openhands",
   "trademark": "OpenHands",
   "release": true,
+  "upstream": {
+    "image": "ghcr.io/openhands/agent-canvas",
+    "releases": "https://github.com/OpenHands/OpenHands/releases",
+    "docs": [
+      "https://docs.openhands.dev/openhands/usage/agent-canvas/backend-setup/docker",
+      "https://docs.openhands.dev/openhands/usage/agent-canvas/setup"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "0.28"
+        "1.26.0",
+        "latest"
       ]
     }
   ],
   "access": {
     "defaultScheme": "http",
     "web": {
-      "port": 3000,
-      "path": "/"
+      "port": 8000,
+      "path": "/canvas"
     }
   },
   "requirements": {
@@ -22,7 +31,19 @@
     "memory": "4",
     "disk": "10"
   },
-  "upstream": {
-    "image": "https://github.com/All-Hands-AI/OpenHands/pkgs/container/openhands"
+  "env": {
+    "secrets": [
+      "LOCAL_BACKEND_API_KEY",
+      "OH_SECRET_KEY"
+    ]
+  },
+  "credentials": {
+    "token": {
+      "source": "container-env",
+      "name": "LOCAL_BACKEND_API_KEY"
+    }
+  },
+  "help": {
+    "login": "Open the site and enter the access token on the API key login screen. The token is the `LOCAL_BACKEND_API_KEY` value."
   }
 }

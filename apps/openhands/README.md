@@ -1,26 +1,89 @@
-# OpenHands on Docker  
+# OpenHands on Docker
 
-This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for OpenHands:
+## Quick Start
+
+### Deploy Verification
+
+1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **OpenHands**.
+2. In the **Access** tab, get the login URL and credentials.
+3. Open the login URL in a browser and sign in to confirm the app works.
+
+<!-- W9_GUIDE_START -->
+### Usage
+
+1. Make sure you are signed in to the OpenHands admin console.
+2. Try a core feature.
+
+### Change Password
+
+1. In the [Websoft9](https://www.websoft9.com) console, open the app's **Compose** tab.
+2. Update the password in `.env` and save.
+3. Rebuild the app.
+<!-- W9_GUIDE_END -->
+
+## Configuration Reference
+
+Websoft9 packages this app from the official [OpenHands Docker image](https://ghcr.io/openhands/agent-canvas) and makes some improvements below.
+
+<!-- W9_NOTE_START -->
+
+<!-- W9_NOTE_END -->
+
+Apps run as containers; rebuild after any configuration change.
+
+### Version Support
+
+Supported versions: 1.26.0, latest.
+
+The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
 
- - community:  0.28
+### Ports
+
+| Purpose | Port |
+| --- | --- |
+| Web Console | 8000 |
 
 
-## System Requirements
+### Data Directory
 
-The following are the minimal [recommended requirements](https://www.all-hands.dev):
 
-* **RAM**: 4 GB or more
-* **CPU**: 2 cores or higher
-* **Disk**: at least 10 GB of free space
-* **bandwidth**: more fluent experience over 100M  
+- `/var/run/docker.sock` → `/var/run/docker.sock`
+- `openhands-home` → `/home/openhands/.openhands`
+- `openhands-projects` → `/projects`
 
-## Install
 
-You can install this OpenHands by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use OpenHands with **Websoft9 Business Support** free, you can [subscribe OpenHands](https://www.websoft9.com/apps) on Cloud platform
+### Environment Variables
 
-## Documentation
+Environment variables are defined in the app's `.env` file; see the reference section at the end of `.env` for supported variables.
 
-[OpenHands Administrator Guide](https://support.websoft9.com/docs/openhands) powered by Websoft9
+
+### Configuration Files
+
+
+Configuration files live inside the image; mount a single file read-only to override, and never replace the whole directory.
+
+
+## References
+
+- [OpenHands Administrator Guide](https://support.websoft9.com/docs/openhands) by Websoft9
+
+- [GHCR image](https://ghcr.io/openhands/agent-canvas)
+
+- [Releases](https://github.com/OpenHands/OpenHands/releases)
+
+- [Official docs](https://docs.openhands.dev/openhands/usage/agent-canvas/backend-setup/docker)
+
+- [Official docs](https://docs.openhands.dev/openhands/usage/agent-canvas/setup)
+
+
+<!-- W9_TROUBLESHOOT_START -->
+## Troubleshooting
+
+**App fails to start?**
+- Check `docker compose logs`.
+
+**Port not reachable?**
+- Ensure the firewall / security group allows the port.
+<!-- W9_TROUBLESHOOT_END -->

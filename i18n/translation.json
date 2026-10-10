@@ -135,6 +135,10 @@
         "",
         ""
     ],
+    "W9_LOGIN_MYSQL_CONNECTION_STRING_PASSWORD": [
+        "",
+        ""
+    ],
     "W9_LOGIN_WORKSPACE": [
         "Login Workspace",
         "Workspace"

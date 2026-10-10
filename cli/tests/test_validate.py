@@ -189,6 +189,135 @@ def test_policy_result_accepts_access_port_present_in_compose(repo_fixture, app_
     assert result["access_missing_ports"] == []
 
 
+def test_policy_result_requires_declared_secrets_present_and_non_empty(repo_fixture, app_factory):
+    app_path = app_factory(
+        "demo",
+        env="APP_KEY=secretvalue\nEMPTY_KEY=\n",
+        variables={
+            "name": "demo",
+            "trademark": "Demo",
+            "release": True,
+            "edition": [{"dist": "community", "version": ["1.0"]}],
+            "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
+            "env": {"secrets": ["APP_KEY", "MISSING_KEY", "EMPTY_KEY"]},
+        },
+    )
+
+    result = validate._policy_result(app_path)
+
+    assert result["ok"] is False
+    assert result["secrets_ok"] is False
+    assert result["secrets_declared"] == ["APP_KEY", "MISSING_KEY", "EMPTY_KEY"]
+    assert result["secrets_missing"] == ["MISSING_KEY"]
+    assert result["secrets_empty"] == ["EMPTY_KEY"]
+
+
+def test_policy_result_accepts_declared_secrets_with_values(repo_fixture, app_factory):
+    app_path = app_factory(
+        "demo",
+        env="APP_KEY=secretvalue\nOH_KEY=anothervalue\n",
+        variables={
+            "name": "demo",
+            "trademark": "Demo",
+            "release": True,
+            "edition": [{"dist": "community", "version": ["1.0"]}],
+            "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
+            "env": {"secrets": ["APP_KEY", "OH_KEY"]},
+        },
+    )
+
+    result = validate._policy_result(app_path)
+
+    assert result["ok"] is True
+    assert result["secrets_ok"] is True
+    assert result["secrets_missing"] == []
+    assert result["secrets_empty"] == []
+
+
+def test_policy_result_flags_invalid_setup_access_service_and_duplicate_ids(repo_fixture, app_factory):
+    app_path = app_factory(
+        "demo",
+        compose=(
+            "services:\n"
+            "  app:\n"
+            "    ports:\n"
+            '      - "${W9_HTTP_PORT_SET}:8080"\n'
+        ),
+        variables={
+            "name": "demo",
+            "trademark": "Demo",
+            "release": True,
+            "edition": [{"dist": "community", "version": ["1.0"]}],
+            "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
+            "access": {"web": {"port": 8080, "path": "/"}},
+            "setup": {
+                "steps": [
+                    {
+                        "id": "setup-token",
+                        "text": "Read logs.",
+                        "action": {"type": "show-log", "service": "missing", "tail": 50},
+                    },
+                    {
+                        "id": "setup-token",
+                        "text": "Open setup.",
+                        "action": {"type": "open", "access": "admin", "path": "/setup"},
+                    },
+                ]
+            },
+        },
+    )
+
+    result = validate._policy_result(app_path)
+
+    assert result["ok"] is False
+    assert result["setup_ok"] is False
+    assert result["setup_missing_services"] == [{"step": "setup-token", "service": "missing"}]
+    assert result["setup_missing_access"] == [{"step": "setup-token", "access": "admin"}]
+    assert result["setup_duplicate_ids"] == ["setup-token"]
+
+
+def test_policy_result_accepts_valid_setup_steps(repo_fixture, app_factory):
+    app_path = app_factory(
+        "demo",
+        compose=(
+            "services:\n"
+            "  app:\n"
+            "    ports:\n"
+            '      - "${W9_HTTP_PORT_SET}:8080"\n'
+        ),
+        variables={
+            "name": "demo",
+            "trademark": "Demo",
+            "release": True,
+            "edition": [{"dist": "community", "version": ["1.0"]}],
+            "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
+            "access": {"web": {"port": 8080, "path": "/"}},
+            "setup": {
+                "steps": [
+                    {
+                        "id": "setup-token",
+                        "text": "Read logs.",
+                        "action": {"type": "show-log", "service": "app", "tail": 50},
+                    },
+                    {
+                        "id": "setup-wizard",
+                        "text": "Open setup.",
+                        "action": {"type": "open", "access": "web", "path": "/setup"},
+                    },
+                ]
+            },
+        },
+    )
+
+    result = validate._policy_result(app_path)
+
+    assert result["ok"] is True
+    assert result["setup_ok"] is True
+    assert result["setup_missing_services"] == []
+    assert result["setup_missing_access"] == []
+    assert result["setup_duplicate_ids"] == []
+
+
 def test_check_app_returns_gate_specific_payload(repo_fixture, app_factory):
     app_factory("demo")
 

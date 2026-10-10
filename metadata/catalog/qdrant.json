@@ -1,0 +1,20 @@
+{
+  "trademark": "Qdrant",
+  "catalogBindings": [
+    {
+      "parentKey": "database",
+      "childKey": "vector-databases"
+    },
+    {
+      "parentKey": "ai",
+      "childKey": "ai-agent-chat"
+    }
+  ],
+  "summary": "Vector database for AI search.",
+  "overview": "Qdrant stores embeddings and payloads for vector search, hybrid retrieval, and semantic AI applications.",
+  "description": "Qdrant is an open-source vector database and similarity search engine designed for production AI workloads. It stores embeddings with JSON payloads, exposes REST and gRPC APIs, and supports filtering, hybrid search, quantization, multitenancy, snapshots, and a built-in web UI.\n\nThis package deploys the official single-node Qdrant server, publishes both the REST and gRPC ports, and persists vector storage in a named volume. The default deployment keeps authentication disabled to match the upstream quickstart, so operators should enable API keys before exposing it to untrusted networks.\n\nTypical use cases include RAG systems, semantic search, recommendation engines, multimodal retrieval, and other applications that need fast vector indexing and nearest-neighbor search.",
+  "websiteurl": "https://qdrant.tech/",
+  "screenshots": [
+    "https://qdrant.tech/documentation/gettingstarted/web-ui.png"
+  ]
+}

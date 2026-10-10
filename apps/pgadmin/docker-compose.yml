@@ -1,17 +1,12 @@
-# image: https://hub.docker.com/r/dpage/pgadmin4
-# docs: https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html
-# postgres only for test
-
-version: "3.8"
 services:
   pgadmin:
-    image: $W9_REPO:$W9_VERSION
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
-    container_name: $W9_ID
     volumes:
       - pgadmin:/var/lib/pgadmin
     ports:
-      - "${W9_HTTP_PORT_SET}:80"
+      - "${W9_HTTP_PORT_SET}:80" # Web Console
     env_file: .env
 
 networks:

@@ -1,22 +1,31 @@
 {
   "name": "pimcore",
-  "trademark": "Pimcore ",
+  "trademark": "Pimcore",
   "release": false,
   "edition": [
     {
       "dist": "community",
       "version": [
-        "php8.2-latest"
+        "php8.5-v5"
       ]
     }
   ],
   "requirements": {
     "cpu": "2",
     "memory": "4",
-    "disk": "1"
+    "disk": "2"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/pimcore/pimcore"
+    "image": "https://hub.docker.com/r/pimcore/pimcore",
+    "releases": "https://github.com/pimcore/pimcore/releases",
+    "compose": {
+      "compose": "https://github.com/pimcore/skeleton/blob/2024.x/docker-compose.yaml"
+    },
+    "docs": [
+      "https://github.com/pimcore/docker/blob/5.x/README.md",
+      "https://packagist.org/packages/pimcore/skeleton",
+      "https://packagist.org/packages/pimcore/pimcore"
+    ]
   },
   "access": {
     "defaultScheme": "http",
@@ -24,5 +33,13 @@
       "port": 80,
       "path": "/"
     }
+  },
+  "credentials": {},
+  "env": {
+    "first_startup_only": []
+  },
+  "help": {
+    "login": "This package boots a Pimcore skeleton project and exposes the web installer. Complete the installer in the browser; current upstream setup requires a Pimcore product key during installation.",
+    "db": "This package uses MariaDB 10.11 and Redis for a minimal single-node Pimcore setup. It intentionally stops at the installer stage instead of forcing a product-key-dependent noninteractive install."
   }
 }

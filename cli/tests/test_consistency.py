@@ -114,6 +114,127 @@ def test_new_app_schema_accepts_sample_request():
     jsonschema.Draft202012Validator(schema).validate(sample)
 
 
+def test_variables_schema_accepts_env_secrets():
+    schema = json.loads((REPO_ROOT / "metadata" / "variables.schema.json").read_text(encoding="utf-8"))
+    sample = {
+        "name": "demo",
+        "trademark": "Demo",
+        "release": True,
+        "edition": [{"dist": "community", "version": ["1.0"]}],
+        "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
+        "env": {"secrets": ["APP_KEY", "OH_KEY"], "first_startup_only": ["APP_KEY"]},
+    }
+
+    jsonschema.Draft202012Validator(schema).validate(sample)
+
+
+def test_variables_schema_rejects_unknown_env_keys():
+    import pytest
+
+    schema = json.loads((REPO_ROOT / "metadata" / "variables.schema.json").read_text(encoding="utf-8"))
+    sample = {
+        "name": "demo",
+        "trademark": "Demo",
+        "release": True,
+        "edition": [{"dist": "community", "version": ["1.0"]}],
+        "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
+        "env": {"rules": ["APP_KEY"]},
+    }
+
+    with pytest.raises(jsonschema.ValidationError):
+        jsonschema.Draft202012Validator(schema).validate(sample)
+
+
+def test_variables_schema_accepts_setup_steps():
+    schema = json.loads((REPO_ROOT / "metadata" / "variables.schema.json").read_text(encoding="utf-8"))
+    sample = {
+        "name": "demo",
+        "trademark": "Demo",
+        "release": True,
+        "edition": [{"dist": "community", "version": ["1.0"]}],
+        "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
+        "access": {"web": {"port": 8080, "path": "/"}},
+        "setup": {
+            "summary": "Bootstrap this app first.",
+            "steps": [
+                {
+                    "id": "setup-token",
+                    "text": "Read the one-time token from logs.",
+                    "action": {"type": "show-log", "service": "app", "tail": 50},
+                },
+                {
+                    "id": "setup-wizard",
+                    "text": "Open the setup screen.",
+                    "action": {"type": "open", "access": "web", "path": "/setup"},
+                },
+            ],
+        },
+    }
+
+    jsonschema.Draft202012Validator(schema).validate(sample)
+
+
+def test_variables_schema_rejects_setup_pattern_group_model():
+    import pytest
+
+    schema = json.loads((REPO_ROOT / "metadata" / "variables.schema.json").read_text(encoding="utf-8"))
+    sample = {
+        "name": "demo",
+        "trademark": "Demo",
+        "release": True,
+        "edition": [{"dist": "community", "version": ["1.0"]}],
+        "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
+        "setup": {
+            "steps": [
+                {
+                    "id": "setup-token",
+                    "text": "Bad old pattern model.",
+                    "action": {
+                        "type": "show-log",
+                        "service": "app",
+                        "pattern": "token=(.+)",
+                        "group": 1,
+                    },
+                }
+            ]
+        },
+    }
+
+    with pytest.raises(jsonschema.ValidationError):
+        jsonschema.Draft202012Validator(schema).validate(sample)
+
+
+def test_repository_variables_json_match_schema():
+    schema = json.loads((REPO_ROOT / "metadata" / "variables.schema.json").read_text(encoding="utf-8"))
+    validator = jsonschema.Draft202012Validator(schema)
+    problems: dict[str, list[str]] = {}
+    for variables_path in sorted((REPO_ROOT / "apps").glob("*/variables.json")):
+        data = json.loads(variables_path.read_text(encoding="utf-8"))
+        errors = sorted(validator.iter_errors(data), key=lambda e: list(e.path))
+        if errors:
+            problems[variables_path.parent.name] = [
+                f"{'/'.join(map(str, e.path)) or '<root>'}: {e.message}" for e in errors
+            ]
+    assert problems == {}, f"apps with variables.json schema violations: {problems}"
+
+
+def test_declared_env_secrets_exist_in_dotenv():
+    from libs.drift import parse_env_file
+
+    problems: dict[str, list[str]] = {}
+    for variables_path in sorted((REPO_ROOT / "apps").glob("*/variables.json")):
+        data = json.loads(variables_path.read_text(encoding="utf-8"))
+        secrets = (data.get("env") or {}).get("secrets") or []
+        if not secrets:
+            continue
+        env_path = variables_path.parent / ".env"
+        env = parse_env_file(env_path) if env_path.exists() else {}
+        missing = [name for name in secrets if name not in env]
+        if missing:
+            problems[variables_path.parent.name] = missing
+    assert problems == {}, f"apps declare env.secrets missing from .env: {problems}"
+
+
 def test_repository_variables_json_have_consistent_shapes():
     for variables_path in sorted((REPO_ROOT / "apps").glob("*/variables.json")):
         data = json.loads(variables_path.read_text(encoding="utf-8"))

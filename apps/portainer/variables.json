@@ -26,15 +26,28 @@
     "memory": "1",
     "disk": "4"
   },
-  "credentials": {
-    "token": {
-      "source": "container-log",
-      "match": "regex",
-      "pattern": "setup_token=([0-9a-fA-F]+)",
-      "group": 1
-    }
+  "setup": {
+    "steps": [
+      {
+        "id": "setup-token",
+        "text": "View the container logs and copy the one-time setup token printed by Portainer.",
+        "action": {
+          "type": "show-log",
+          "service": "portainer",
+          "tail": 50
+        }
+      },
+      {
+        "id": "setup-wizard",
+        "text": "Open Portainer and paste the setup token to create the first administrator account.",
+        "action": {
+          "type": "open",
+          "access": "web"
+        }
+      }
+    ]
   },
   "help": {
-    "login": "On an uninitialized instance, Portainer prints a one-time setup token to the container log; paste it into the setup screen to create the administrator account."
+    "login": "After the setup wizard finishes, sign in with the administrator account and password you created there."
   }
 }

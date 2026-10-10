@@ -1,21 +1,30 @@
-# image: https://hub.docker.com/r/elestio/pocketbase
-
 services:
   pocketbase:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        POCKETBASE_VERSION: ${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - $W9_HTTP_PORT_SET:8090
-    env_file: 
+      - "${W9_HTTP_PORT_SET}:8090" # Web Console and API
+    env_file:
       - .env
     volumes:
-      - pb_data:/pb_data
+      - pb_data:${POCKETBASE_DIR}
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 -O - http://127.0.0.1:8090/api/health >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
 
 volumes:
   pb_data:
-    
+
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

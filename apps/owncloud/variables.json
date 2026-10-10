@@ -1,29 +1,52 @@
 {
   "name": "owncloud",
-  "trademark": "Owncloud",
+  "trademark": "ownCloud",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/owncloud/ocis",
+    "releases": "https://github.com/owncloud/ocis/releases",
+    "docs": [
+      "https://github.com/owncloud/ocis/tree/master/deployments/examples/ocis_full"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "10.16",
+        "8.2",
         "latest"
       ]
     }
   ],
   "access": {
-    "defaultScheme": "http",
+    "defaultScheme": "https",
     "web": {
-      "port": 8080,
+      "port": 9200,
       "path": "/"
     }
   },
   "requirements": {
     "cpu": "1",
-    "memory": "1",
-    "disk": "1"
+    "memory": "2",
+    "disk": "2"
   },
-  "upstream": {
-    "image": "https://hub.docker.com/r/owncloud/server"
+  "credentials": {
+    "username": {
+      "source": "inline",
+      "value": "admin"
+    },
+    "password": {
+      "source": "container-env",
+      "name": "W9_LOGIN_PASSWORD"
+    }
+  },
+  "env": {
+    "first_startup_only": [
+      "IDM_ADMIN_PASSWORD"
+    ]
+  },
+  "help": {
+    "login": "This package now deploys ownCloud Infinite Scale (oCIS). The built-in `admin` account password comes from `W9_LOGIN_PASSWORD` and is only applied on first startup.",
+    "db": "This package no longer bundles MySQL or Redis because ownCloud Infinite Scale uses its own integrated single-node services in the default deployment profile."
   }
 }

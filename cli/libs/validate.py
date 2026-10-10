@@ -144,6 +144,12 @@ def _policy_result(target: Path) -> dict:
     dependency_tag_policy_ok = not dependency_patch_tags
 
     access_missing_ports = []
+    secrets_declared: list[str] = []
+    secrets_missing: list[str] = []
+    secrets_empty: list[str] = []
+    setup_missing_access: list[dict] = []
+    setup_missing_services: list[dict] = []
+    setup_duplicate_ids: list[str] = []
     variables_path = target / "variables.json"
     if variables_path.exists():
         try:
@@ -151,13 +157,46 @@ def _policy_result(target: Path) -> dict:
         except json.JSONDecodeError:
             variables = {}
         container_ports = _compose_container_ports(compose)
+        compose_services = set((compose.get("services") or {}).keys())
+        access_keys = set((variables.get("access") or {}).keys())
         for key, entry in (variables.get("access") or {}).items():
             if not isinstance(entry, dict):
                 continue
             port = entry.get("port")
             if isinstance(port, int) and port not in container_ports:
                 access_missing_ports.append({"key": key, "port": port})
+        for name in (variables.get("env") or {}).get("secrets") or []:
+            if not isinstance(name, str):
+                continue
+            secrets_declared.append(name)
+            if name not in env_map:
+                secrets_missing.append(name)
+            elif env_map[name].strip().strip("'\"").strip() == "":
+                secrets_empty.append(name)
+        seen_setup_ids: set[str] = set()
+        for step in (variables.get("setup") or {}).get("steps") or []:
+            if not isinstance(step, dict):
+                continue
+            step_id = step.get("id")
+            if isinstance(step_id, str):
+                if step_id in seen_setup_ids:
+                    setup_duplicate_ids.append(step_id)
+                seen_setup_ids.add(step_id)
+            action = step.get("action")
+            if not isinstance(action, dict):
+                continue
+            action_type = action.get("type")
+            if action_type == "open":
+                access_key = action.get("access")
+                if isinstance(access_key, str) and access_key not in access_keys:
+                    setup_missing_access.append({"step": step_id, "access": access_key})
+            if action_type == "show-log":
+                service = action.get("service")
+                if isinstance(service, str) and service not in compose_services:
+                    setup_missing_services.append({"step": step_id, "service": service})
     access_ports_ok = not access_missing_ports
+    secrets_ok = not secrets_missing and not secrets_empty
+    setup_ok = not setup_missing_access and not setup_missing_services and not setup_duplicate_ids
 
     ok = (
         not missing_translation
@@ -167,6 +206,8 @@ def _policy_result(target: Path) -> dict:
         and url_replace_required_ok
         and dependency_tag_policy_ok
         and access_ports_ok
+        and secrets_ok
+        and setup_ok
     )
     return {
         "ok": ok,
@@ -180,6 +221,14 @@ def _policy_result(target: Path) -> dict:
         "dependency_tag_policy_ok": dependency_tag_policy_ok,
         "access_ports_ok": access_ports_ok,
         "access_missing_ports": access_missing_ports,
+        "secrets_ok": secrets_ok,
+        "secrets_declared": secrets_declared,
+        "secrets_missing": secrets_missing,
+        "secrets_empty": secrets_empty,
+        "setup_ok": setup_ok,
+        "setup_missing_access": setup_missing_access,
+        "setup_missing_services": setup_missing_services,
+        "setup_duplicate_ids": setup_duplicate_ids,
     }
 
 

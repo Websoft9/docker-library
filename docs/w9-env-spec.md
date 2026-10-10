@@ -137,6 +137,26 @@ Rules:
 - do not keep dead helper variables in `.env`
 - if the upstream has no package-controlled credential flow, omit these keys
 
+### Declared Secrets
+
+When a package must ship several plain-text secrets that are injected before `docker compose up`
+(shared across services, or needed by the UI at login), list their `.env` key names in
+`variables.json`:
+
+```json
+{ "env": { "secrets": ["LOCAL_BACKEND_API_KEY", "OH_SECRET_KEY"] } }
+```
+
+Rules:
+
+- declare names only; there are no per-secret length/charset/pattern rules
+- each declared name must exist in `.env` with a non-empty plain-text default; that default is the
+  shape template, not a production secret
+- consumers may regenerate a same-shaped value and overwrite the instance `.env`; redeploy must never
+  auto-rotate it
+- `W9_POWER_PASSWORD` is the single-value special case of this mechanism
+- the canonical consumer contract lives in `docs/appstore-release-spec.md`
+
 ### Dependency Modeling
 
 | Variable | Meaning | Typical use |
@@ -321,12 +341,13 @@ complex login:
 - also declare the same fixed credential in `variables.json.credentials` for machine-readable consumers
   and future rendering; point `credentials.password` at `W9_LOGIN_PASSWORD` with `source=container-env`
   instead of copying the literal value, so it follows `.env`
-- add `variables.json.help.login` as a single sentence that tells the user to complete the one-time
-  initialization first and then log in with the account and password shown below
+- when the app requires structured pre-login steps (for example, read a setup token from logs and then
+  open a wizard), declare `variables.json.setup.steps`; the front end renders setup before the login area
+- keep `variables.json.help.login` as the final sign-in note shown with the rendered credentials
 - `help.login` is required for a complex login, not optional: the credential area only shows the final
-  account and password, so without it users do not know an initialization step exists
-- do not add a `container-log` source with a fragile `pattern` only to auto-resolve a one-time password;
-  when the pattern would be hard to maintain, document the step in `help.login` instead
+  account and password, so without it users do not know which account works after setup
+- for setup tokens or one-time bootstrap values printed in logs, prefer `setup.steps[].action.type=show-log`
+  over `credentials.container-log` with `pattern` / `group`; the former is simpler and more stable
 
 ## Translation Rule
 

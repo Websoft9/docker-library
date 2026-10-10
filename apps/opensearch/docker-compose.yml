@@ -1,14 +1,8 @@
-# image: https://hub.docker.com/r/opensearchproject/opensearch
-# image: https://hub.docker.com/r/opensearchproject/opensearch-dashboards
-# doc  : https://opensearch.org/downloads.html
-
-version: '3.8'
-
 services:
   opensearch:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
-    hostname: $W9_RCODE
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    hostname: ${W9_RCODE}
     env_file: .env
     environment:
       - discovery.type=single-node
@@ -25,17 +19,26 @@ services:
     volumes:
       - opensearch-data:/usr/share/opensearch/data
     ports:
-      - $W9_HTTPS_PORT_SET:9200
+      - "${W9_HTTPS_PORT_SET}:9200" # HTTPS API
+    healthcheck:
+      test: ["CMD-SHELL", "curl -skf https://127.0.0.1:9200 >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
 
   opensearch-dashboards:
-    image: $W9_REPO-dashboards:$W9_VERSION
-    container_name: $W9_ID-dashboards
+    image: ${W9_REPO}-dashboards:${W9_VERSION}
+    container_name: ${W9_ID}-dashboards
+    restart: unless-stopped
+    depends_on:
+      - opensearch
     ports:
-      - $W9_DASHBOARD_PORT_SET:5601
+      - "${W9_DASHBOARD_PORT_SET}:5601" # Dashboards
     expose:
       - '5601'
     environment:
-      OPENSEARCH_HOSTS: '["https://$W9_RCODE:9200"]'
+      OPENSEARCH_HOSTS: '["https://${W9_RCODE}:9200"]'
+    env_file: .env
 
   busybox:
     image: busybox

@@ -134,6 +134,144 @@
 }
 ```
 
+### 声明式 Secret（`env.secrets`）
+
+有些应用在启动前就需要一组**明文 secret**（典型来源是 `.env`，并在 `docker compose up` 之前注入）。`credentials` 只解决“部署后从哪里读回凭据”，解决不了“启动前先有值”。为此 `variables.json` 提供 `env.secrets`。
+
+它**只声明名字，不声明任何生成规则**：
+
+```json
+{
+  "env": {
+    "secrets": ["LOCAL_BACKEND_API_KEY", "OH_SECRET_KEY"]
+  }
+}
+```
+
+语义（固定，不随应用变化）：
+
+- `.env` 里为每个声明名提供一个**明文默认值**，该默认值同时充当“形状模板”。
+- 消费端（AppOS/Console）可以在**创建实例时**生成、或在界面上由用户触发**“重新生成”**，用新值覆盖实例 `.env`。
+- **重建 / redeploy 绝不自动重算**，否则每次 `up` 都会更换密钥，导致数据或加密失效。
+- 生成规则只有一条：**产出与当前值同形状（同长度、同字符类）的随机串**。因此不提供 length/charset 规则。
+- 生成结果必须能安全放进 `.env`/compose：**不得包含 `$`、空格、`#`、换行**（`$` 会触发 compose 插值）。默认使用 `alnum` 或 `base64url`（去掉 `=`）。
+- 默认值是**占位/形状模板，不是生产密钥**，可以进 git；规范要求默认值本身必须形状正确且接近生产强度。
+
+`W9_POWER_PASSWORD` 是这套机制的**单值特例**，等价于：
+
+```json
+{ "env": { "secrets": ["W9_POWER_PASSWORD"] } }
+```
+
+因此已有使用 `W9_POWER_PASSWORD` 的应用无需迁移；需要**多个、形状不同**的 secret 时，改用 `env.secrets` 列多个名字即可。
+
+校验规则（`libs app-check --gate policy`）：
+
+- `env.secrets` 中每个名字都必须真实存在于该应用的 `.env`
+- 每个名字的默认值不得为空
+
+非目标：
+
+- 不引入 per-secret 的 length/charset/pattern 规则，也不引入模板语言
+- 格式极端（校验位、派生、特定编码）的 secret 仍由应用包内生成（init/entrypoint），不进 `env.secrets`
+
+示例（`openhands`）：
+
+`.env`
+
+```env
+LOCAL_BACKEND_API_KEY=Kx7Qm2TpR9wZb4HnV1sLc6Dg0Fj3YaQd
+OH_SECRET_KEY=Pv5Rt8Wy2Nk7Mc4Xb1Lz6Df0Gh3Jq9Ue
+```
+
+`variables.json`
+
+```json
+{
+  "env": {
+    "secrets": ["LOCAL_BACKEND_API_KEY", "OH_SECRET_KEY"]
+  }
+}
+```
+
+### 登录前步骤（`setup.steps`）
+
+有些应用在最终登录之前，必须先完成一组前置动作，例如：查看容器日志中的一次性 token、
+读取容器文件中的初始化密码、执行官方只读 CLI 查看 bootstrap 信息、或者打开初始化向导。
+
+为此 `variables.json` 提供 `setup` 对象：
+
+```json
+{
+  "setup": {
+    "summary": "可选，总说明",
+    "steps": [
+      {
+        "id": "setup-token",
+        "text": "先查看容器日志，复制其中的一次性 setup token。",
+        "action": {
+          "type": "show-log",
+          "service": "portainer",
+          "tail": 50
+        }
+      },
+      {
+        "id": "setup-wizard",
+        "text": "打开页面并完成初始化向导。",
+        "action": {
+          "type": "open",
+          "access": "web"
+        }
+      }
+    ]
+  }
+}
+```
+
+前端渲染顺序：
+
+- `setup` 区域必须显示在 login / credentials 区域之前
+- `setup.summary` 为整体摘要，可省略
+- `setup.steps[].text` 为每一步的人类说明
+
+`action` 的 v1 支持范围（封闭词汇）：
+
+- `show-log`: 展示某个 compose service 的容器日志原文；字段：`service`，可选 `tail`
+- `show-env`: 展示容器运行环境中的某个变量；字段：`name`
+- `show-file`: 展示容器内文件或从结构化文件读值；字段：`path`，可选 `format=text|json|env`，以及 `jsonPath` / `key`
+- `show-cli`: 执行容器内官方只读 CLI 并展示输出；字段：`argv`，可选 `format=text|json|env`，以及 `jsonPath` / `key`
+- `open`: 打开应用入口；字段：`access`，可选 `path`
+
+容器目标规则：
+
+- `show-env` / `show-file` / `show-cli` 默认作用于主应用容器（即 `${W9_ID}`），与现有 `credentials` 的读取规则保持一致
+- `show-log` 因为日志通常需要区分 compose service，所以显式声明 `service`
+
+`open` 与 `access` 的统一规则：
+
+- `open` 不再自己定义 host / port / scheme
+- `access` 必须引用 `variables.json.access` 中已有键（如 `web` / `admin` / `api`）
+- 最终 URL 的 scheme / port 来自 `access[<key>]`
+- 若声明了 `action.path`，它覆盖该 access 的默认 path；否则使用 `access[<key>].path`（缺省视为 `/`）
+
+边界与非目标：
+
+- 不支持 `pattern` / `group`
+- 不支持任意 shell，不支持宿主命令
+- 不支持自动执行有副作用的命令；v1 只负责渲染说明、展示值、打开页面
+- 不支持条件分支、多结果工作流或状态机
+
+与 `credentials` 的职责分工：
+
+- `setup`：登录前需要看到或完成的临时/初始化信息
+- `credentials`：最终登录时要使用的 username / password / token
+
+迁移建议：
+
+- 现有 `credentials.container-log` + `pattern` / `group` 保留兼容
+- 新 app 或被触达的 app，如果日志中的值只是 setup token / bootstrap 信息，优先改用 `setup.steps[].action.type=show-log`
+- `help.login` 继续保留，用来描述 setup 完成后的最终登录方式
+
 ### 职责边界
 
 | 本项目负责 | 本项目不负责 |

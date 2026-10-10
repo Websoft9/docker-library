@@ -2,11 +2,18 @@
   "name": "ollama",
   "trademark": "Ollama",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/ollama/ollama",
+    "releases": "https://github.com/ollama/ollama/releases",
+    "docs": [
+      "https://github.com/ollama/ollama/blob/main/docs/docker.md"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "0.13.1",
+        "0.40.2",
         "latest"
       ]
     }
@@ -15,9 +22,6 @@
     "cpu": "2",
     "memory": "4",
     "disk": "10"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/r/ollama/ollama"
   },
   "access": {
     "defaultScheme": "http",

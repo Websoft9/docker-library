@@ -1,50 +1,543 @@
-# image,docs: https://hub.docker.com/_/wordpress/
+# docs: https://posthog.com/docs/self-host
+
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-file: "5"
+    max-size: 10m
 
 services:
-
-  wordpress:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+  proxy:
+    image: caddy:2
+    container_name: ${W9_ID}
     restart: unless-stopped
-    #This is for access host from container
-    # extra_hosts: ["host.docker.internal:host-gateway"]
-    # command: |
-    #   /bin/bash -c "ping -c 3 host.docker.internal"
-    logging:
-      driver: "json-file"
-      options:
-          max-file: "5"
-          max-size: 10m
-    deploy:
-      resources:
-        limits:
-          memory: 5g
-          cpus: '0.7'
+    logging: *default-logging
     ports:
-      - $W9_HTTP_PORT_SET:80
-    env_file: .env
-    volumes:
-      - wordpress:/var/www/html
-      - ./src/php_exra.ini:/usr/local/etc/php/conf.d/php_exra.ini
-
-  mariadb:
-    image: mariadb:10.4
-    container_name: $W9_ID-mariadb
-    restart: unless-stopped
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_log_buffer_size=30M
-    volumes:
-      - mysql_data:/var/lib/mysql
+      - "${W9_HTTP_PORT_SET}:80" # Web Console
+    command:
+      - sh
+      - -c
+      - |
+        printf '%s\n' "$${CADDYFILE}" > /etc/caddy/Caddyfile
+        exec caddy run -c /etc/caddy/Caddyfile
     environment:
-      MYSQL_DATABASE: $W9_ID
-      MYSQL_USER: $W9_ID
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
+      CADDYFILE: |
+        :80 {
+            @replay_capture {
+                path /s
+                path /s/
+                path /s/*
+            }
+
+            @capture {
+                path /e
+                path /e/
+                path /e/*
+                path /i/v0
+                path /i/v0/
+                path /i/v0/*
+                path /i/v1/analytics/events
+                path /i/v1/analytics/events/
+                path /batch
+                path /batch/
+                path /batch/*
+                path /capture
+                path /capture/
+                path /capture/*
+            }
+
+            @flags {
+                path /flags
+                path /flags/
+                path /flags/*
+                path /api/feature_flag/local_evaluation
+                path /api/feature_flag/local_evaluation/
+                path /api/feature_flag/local_evaluation/*
+            }
+
+            @webhooks {
+                path /public/webhooks
+                path /public/webhooks/
+                path /public/webhooks/*
+                path /public/m/
+                path /public/m/*
+            }
+
+            @objectstorage {
+                path /posthog
+                path /posthog/
+                path /posthog/*
+            }
+
+            handle @replay_capture {
+                reverse_proxy replay-capture:3000
+            }
+
+            handle @capture {
+                reverse_proxy capture:3000
+            }
+
+            handle @flags {
+                reverse_proxy feature-flags:3001
+            }
+
+            handle @webhooks {
+                reverse_proxy plugins:6738
+            }
+
+            handle @objectstorage {
+                reverse_proxy objectstorage:19000
+            }
+
+            handle {
+                reverse_proxy web:8000
+            }
+        }
+    depends_on:
+      web:
+        condition: service_started
+
+  db:
+    image: postgres:${W9_DB_VERSION}
+    container_name: ${W9_ID}-postgresql
+    restart: unless-stopped
+    logging: *default-logging
+    environment:
+      POSTGRES_USER: ${POSTHOG_DB_USER}
+      POSTGRES_DB: ${POSTHOG_DB_NAME}
+      POSTGRES_PASSWORD: ${POSTHOG_DB_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTHOG_DB_USER}"]
+      interval: 5s
+      timeout: 30s
+      retries: 30
+      start_period: 10s
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  redis7:
+    image: redis:${REDIS_VERSION}
+    container_name: ${W9_ID}-redis
+    restart: unless-stopped
+    logging: *default-logging
+    command: redis-server --maxmemory-policy allkeys-lru --maxmemory 200mb
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 10s
+      retries: 10
+    volumes:
+      - redis-data:/data
+
+  valkey:
+    image: valkey/valkey:${VALKEY_VERSION}
+    container_name: ${W9_ID}-valkey
+    restart: unless-stopped
+    logging: *default-logging
+    command: valkey-server --maxmemory-policy allkeys-lru --maxmemory 200mb
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 3s
+      timeout: 10s
+      retries: 10
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:${CLICKHOUSE_VERSION}
+    container_name: ${W9_ID}-clickhouse
+    restart: unless-stopped
+    logging: *default-logging
+    environment:
+      CLICKHOUSE_SKIP_USER_SETUP: "1"
+      KAFKA_HOSTS: kafka:9092
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8123/ping || exit 1"]
+      interval: 3s
+      timeout: 10s
+      retries: 10
+    volumes:
+      - clickhouse-data:/var/lib/clickhouse
+
+  kafka:
+    image: docker.io/redpandadata/redpanda:${KAFKA_VERSION}
+    container_name: ${W9_ID}-kafka
+    restart: unless-stopped
+    logging: *default-logging
+    command:
+      - redpanda
+      - start
+      - --kafka-addr
+      - internal://0.0.0.0:9092,external://0.0.0.0:19092
+      - --advertise-kafka-addr
+      - internal://kafka:9092,external://localhost:19092
+      - --pandaproxy-addr
+      - internal://0.0.0.0:8082,external://0.0.0.0:18082
+      - --advertise-pandaproxy-addr
+      - internal://kafka:8082,external://localhost:18082
+      - --schema-registry-addr
+      - internal://0.0.0.0:8081,external://0.0.0.0:18081
+      - --rpc-addr
+      - kafka:33145
+      - --advertise-rpc-addr
+      - kafka:33145
+      - --mode
+      - dev-container
+      - --smp
+      - "2"
+      - --memory
+      - 3G
+      - --reserve-memory
+      - 500M
+      - --overprovisioned
+      - --set
+      - redpanda.empty_seed_starts_cluster=false
+      - --seeds
+      - kafka:33145
+      - --set
+      - redpanda.auto_create_topics_enabled=true
+    environment:
+      ALLOW_PLAINTEXT_LISTENER: "true"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9644/v1/status/ready || exit 1"]
+      interval: 3s
+      timeout: 10s
+      retries: 10
+    volumes:
+      - kafka-data:/var/lib/redpanda/data
+
+  objectstorage:
+    image: chrislusf/seaweedfs:${OBJECTSTORAGE_VERSION}
+    container_name: ${W9_ID}-objectstorage
+    restart: unless-stopped
+    logging: *default-logging
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        (
+            while true; do
+                printf 's3.configure -access_key=%s -secret_key=%s -user=posthog -actions=Admin -apply\ns3.bucket.create -name posthog\ns3.bucket.create -name ai-blobs\n' "${OBJECT_STORAGE_ACCESS_KEY_ID}" "${OBJECT_STORAGE_SECRET_ACCESS_KEY}" | /usr/bin/weed shell -master=localhost:19001 >/dev/null 2>&1 || true
+                if echo 's3.bucket.list' | /usr/bin/weed shell -master=localhost:19001 2>/dev/null | grep -q ai-blobs && echo 's3.configure' | /usr/bin/weed shell -master=localhost:19001 2>/dev/null | grep -q "${OBJECT_STORAGE_ACCESS_KEY_ID}"; then
+                    touch /tmp/objectstorage-ready
+                    break
+                fi
+                sleep 1
+            done
+        ) &
+        exec /usr/bin/weed "$$@"
+      - --
+    command:
+      - server
+      - -master.port=19001
+      - -s3
+      - -s3.port=19000
+      - -dir=/data
+      - -volume.max=1000
+      - -master.volumePreallocate=false
+    healthcheck:
+      test: ["CMD", "test", "-f", "/tmp/objectstorage-ready"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
+    volumes:
+      - objectstorage-data:/data
+
+  geoip:
+    image: alpine:3.20
+    container_name: ${W9_ID}-geoip
+    restart: "no"
+    logging: *default-logging
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        apk add --no-cache brotli curl >/dev/null
+        mkdir -p /share
+        if [ ! -s /share/GeoLite2-City.mmdb ]; then
+          curl -fsSL https://mmdbcdn.posthog.net/ | brotli -d > /share/GeoLite2-City.mmdb
+        fi
+    volumes:
+      - share-data:/share
+
+  web:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}-web
+    restart: unless-stopped
+    logging: *default-logging
+    command: /compose/start
+    env_file:
+      - .env
+    volumes:
+      - ./src/compose:/compose:ro
+    environment:
+      SECRET_KEY: ${POSTHOG_SECRET}
+      SITE_URL: ${SITE_URL}
+      DEPLOYMENT: hobby
+      FEATURE_FLAGS_SERVICE_URL: http://feature-flags:3001
+      OBJECT_STORAGE_ENABLED: "true"
+      INTERNAL_API_SECRET: ${POSTHOG_SECRET}
+      RECORDING_API_URL: http://recording-api:6738
+      OTEL_SDK_DISABLED: "true"
+      PERSONHOG_ENABLED: "false"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis7:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      objectstorage:
+        condition: service_healthy
+      feature-flags:
+        condition: service_started
+
+  worker:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}-worker
+    restart: unless-stopped
+    logging: *default-logging
+    command: ./bin/docker-worker-celery --with-scheduler
+    env_file:
+      - .env
+    environment:
+      SECRET_KEY: ${POSTHOG_SECRET}
+      SITE_URL: ${SITE_URL}
+      DEPLOYMENT: hobby
+      FEATURE_FLAGS_SERVICE_URL: http://feature-flags:3001
+      OBJECT_STORAGE_ENABLED: "true"
+      INTERNAL_API_SECRET: ${POSTHOG_SECRET}
+      RECORDING_API_URL: http://recording-api:6738
+      POSTHOG_SKIP_MIGRATION_CHECKS: "1"
+      OTEL_SDK_DISABLED: "true"
+      PERSONHOG_ENABLED: "false"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis7:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      objectstorage:
+        condition: service_healthy
+      web:
+        condition: service_started
+
+  plugins:
+    image: posthog/posthog-node:${POSTHOG_NODE_TAG}
+    container_name: ${W9_ID}-plugins
+    restart: unless-stopped
+    logging: *default-logging
+    command: node nodejs/dist/index.js
+    env_file:
+      - .env
+    environment:
+      SECRET_KEY: ${POSTHOG_SECRET}
+      SITE_URL: ${SITE_URL}
+      PERSONS_DATABASE_URL: ${DATABASE_URL}
+      BEHAVIORAL_COHORTS_DATABASE_URL: ${DATABASE_URL}
+      CDP_REDIS_HOST: redis7
+      CDP_REDIS_PORT: "6379"
+      CDP_VALKEY_HOST: valkey
+      CDP_VALKEY_PORT: "6379"
+      LOGS_REDIS_HOST: redis7
+      LOGS_REDIS_PORT: "6379"
+      LOGS_REDIS_TLS: "false"
+      TRACES_REDIS_HOST: redis7
+      TRACES_REDIS_PORT: "6379"
+      TRACES_REDIS_TLS: "false"
+      ENCRYPTION_SALT_KEYS: ${ENCRYPTION_SALT_KEYS}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis7:
+        condition: service_healthy
+      valkey:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      objectstorage:
+        condition: service_healthy
+
+  ingestion-general:
+    image: posthog/posthog-node:${POSTHOG_NODE_TAG}
+    container_name: ${W9_ID}-ingestion
+    restart: unless-stopped
+    logging: *default-logging
+    command: node nodejs/dist/index.js
+    env_file:
+      - .env
+    environment:
+      PLUGIN_SERVER_MODE: ingestion-v2-combined
+      SECRET_KEY: ${POSTHOG_SECRET}
+      PERSONS_DATABASE_URL: ${DATABASE_URL}
+      BEHAVIORAL_COHORTS_DATABASE_URL: ${DATABASE_URL}
+      COOKIELESS_REDIS_HOST: redis7
+      COOKIELESS_REDIS_PORT: "6379"
+      CDP_REDIS_HOST: redis7
+      ENCRYPTION_SALT_KEYS: ${ENCRYPTION_SALT_KEYS}
+      AI_BLOB_S3_BUCKET: ai-blobs
+      AI_BLOB_S3_PREFIX: aio/
+      AI_BLOB_S3_ENDPOINT: ${OBJECT_STORAGE_ENDPOINT}
+      AI_BLOB_S3_REGION: us-east-1
+      AI_BLOB_S3_ACCESS_KEY_ID: ${OBJECT_STORAGE_ACCESS_KEY_ID}
+      AI_BLOB_S3_SECRET_ACCESS_KEY: ${OBJECT_STORAGE_SECRET_ACCESS_KEY}
+      AI_BLOB_OFFLOAD_TEAMS: "*"
+      PERSONHOG_ENABLED: "false"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis7:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      objectstorage:
+        condition: service_healthy
+
+  ingestion-sessionreplay:
+    image: posthog/posthog-node:${POSTHOG_NODE_TAG}
+    container_name: ${W9_ID}-sessionreplay
+    restart: unless-stopped
+    logging: *default-logging
+    command: node nodejs/dist/index.js
+    env_file:
+      - .env
+    environment:
+      PLUGIN_SERVER_MODE: recordings-blob-ingestion-v2
+      SESSION_RECORDING_V2_S3_TIMEOUT_MS: "120000"
+      ENCRYPTION_SALT_KEYS: ${ENCRYPTION_SALT_KEYS}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis7:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      objectstorage:
+        condition: service_healthy
+
+  recording-api:
+    image: posthog/posthog-node:${POSTHOG_NODE_TAG}
+    container_name: ${W9_ID}-recording-api
+    restart: unless-stopped
+    logging: *default-logging
+    command: node nodejs/dist/index.js
+    env_file:
+      - .env
+    environment:
+      PLUGIN_SERVER_MODE: recording-api
+      SESSION_RECORDING_API_REDIS_HOST: redis7
+      SESSION_RECORDING_API_REDIS_PORT: "6379"
+      ENCRYPTION_SALT_KEYS: ${ENCRYPTION_SALT_KEYS}
+      INTERNAL_API_SECRET: ${POSTHOG_SECRET}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis7:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+      objectstorage:
+        condition: service_healthy
+
+  capture:
+    image: ghcr.io/posthog/posthog/capture:master
+    container_name: ${W9_ID}-capture
+    restart: unless-stopped
+    logging: *default-logging
+    env_file:
+      - .env
+    environment:
+      ADDRESS: 0.0.0.0:3000
+      KAFKA_TOPIC: events_plugin_ingestion
+      CAPTURE_OUTPUT_ANALYTICS_MAIN_TOPIC: events_plugin_ingestion
+      KAFKA_ERROR_TRACKING_TOPIC: ingestion-errortracking-main
+      CAPTURE_OUTPUT_ERROR_TRACKING_TOPIC: ingestion-errortracking-main
+      KAFKA_INGESTION_PRODUCER_METADATA_BROKER_LIST: kafka:9092
+      CAPTURE_MODE: events
+      RUST_LOG: info,rdkafka=warn
+      CAPTURE_V1_SINKS: msk
+      CAPTURE_V1_SINK_MSK_KAFKA_HOSTS: kafka:9092
+      CAPTURE_V1_SINK_MSK_KAFKA_TOPIC_MAIN: events_plugin_ingestion
+      CAPTURE_V1_SINK_MSK_KAFKA_TOPIC_HISTORICAL: events_plugin_ingestion_historical
+      CAPTURE_V1_SINK_MSK_KAFKA_TOPIC_OVERFLOW: events_plugin_ingestion_overflow
+      CAPTURE_V1_SINK_MSK_KAFKA_TOPIC_DLQ: events_plugin_ingestion_dlq
+      CAPTURE_V1_SINK_MSK_KAFKA_TOPIC_EXCEPTION: ingestion-errortracking-main
+      CAPTURE_V1_SINK_MSK_KAFKA_TOPIC_HEATMAP: heatmaps_ingestion
+      CAPTURE_V1_SINK_MSK_KAFKA_TOPIC_CLIENT_INGESTION_WARNING: ingestion-clientwarnings-main-1
+    depends_on:
+      kafka:
+        condition: service_healthy
+      redis7:
+        condition: service_healthy
+
+  replay-capture:
+    image: ghcr.io/posthog/posthog/capture:master
+    container_name: ${W9_ID}-replay-capture
+    restart: unless-stopped
+    logging: *default-logging
+    env_file:
+      - .env
+    environment:
+      ADDRESS: 0.0.0.0:3000
+      KAFKA_TOPIC: session_recording_snapshot_item_events
+      CAPTURE_OUTPUT_SESSION_REPLAY_MAIN_TOPIC: session_recording_snapshot_item_events
+      KAFKA_INGESTION_PRODUCER_METADATA_BROKER_LIST: kafka:9092
+      CAPTURE_MODE: recordings
+    depends_on:
+      kafka:
+        condition: service_healthy
+      redis7:
+        condition: service_healthy
+
+  feature-flags:
+    image: ghcr.io/posthog/posthog/feature-flags:master
+    container_name: ${W9_ID}-feature-flags
+    restart: unless-stopped
+    logging: *default-logging
+    env_file:
+      - .env
+    volumes:
+      - share-data:/share
+    environment:
+      WRITE_DATABASE_URL: ${DATABASE_URL}
+      READ_DATABASE_URL: ${DATABASE_URL}
+      PERSONS_WRITE_DATABASE_URL: ${DATABASE_URL}
+      PERSONS_READ_DATABASE_URL: ${DATABASE_URL}
+      ADDRESS: 0.0.0.0:3001
+      COOKIELESS_REDIS_HOST: redis7
+      COOKIELESS_REDIS_PORT: "6379"
+      RUST_LOG: info
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/_readiness"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    depends_on:
+      db:
+        condition: service_healthy
+      redis7:
+        condition: service_healthy
+      geoip:
+        condition: service_completed_successfully
 
 volumes:
-  wordpress:
-  mysql_data:
-    
+  postgres-data:
+  redis-data:
+  clickhouse-data:
+  kafka-data:
+  objectstorage-data:
+  share-data:
+
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

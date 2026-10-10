@@ -6,7 +6,7 @@
     {
       "dist": "community",
       "version": [
-        "9.8",
+        "9.18",
         "latest"
       ]
     }
@@ -24,6 +24,26 @@
     "disk": "2"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/dpage/pgadmin4"
+    "image": "https://hub.docker.com/r/dpage/pgadmin4",
+    "docs": [
+      "https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html",
+      "https://www.pgadmin.org/docs/pgadmin4/9.18/release_notes.html"
+    ]
+  },
+  "credentials": {
+    "username": {
+      "source": "inline",
+      "value": "user@domain.com"
+    },
+    "password": {
+      "source": "container-env",
+      "name": "W9_LOGIN_PASSWORD"
+    }
+  },
+  "env": {
+    "first_startup_only": [
+      "PGADMIN_DEFAULT_EMAIL",
+      "PGADMIN_DEFAULT_PASSWORD"
+    ]
   }
 }

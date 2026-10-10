@@ -1,0 +1,8 @@
+skip:
+  - id: web-access
+
+optional:
+  - id: installer
+    type: web-access
+    path: /install
+    expect_status: 200

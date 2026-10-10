@@ -1,22 +1,18 @@
-# image and docs: https://hub.docker.com/r/ollama/ollama
-# docs: https://github.com/ollama/ollama/blob/main/docs/docker.md
-
 services:
-
   app-nogpu:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - $W9_HTTP_PORT_SET:11434
-    env_file: 
+      - "${W9_HTTP_PORT_SET}:11434" # API
+    env_file:
       - .env
     volumes:
       - ollama:/root/.ollama
 
   app-nvidia:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
     deploy:
       resources:
@@ -27,8 +23,8 @@ services:
               capabilities: [gpu]
     runtime: nvidia
     ports:
-      - $W9_HTTP_PORT_SET:11434
-    env_file: 
+      - "${W9_HTTP_PORT_SET}:11434" # API
+    env_file:
       - .env
     volumes:
       - ollama:/root/.ollama
@@ -40,5 +36,5 @@ volumes:
     
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true
