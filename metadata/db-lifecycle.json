@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-08-20",
+  "updated_at": "2026-09-30",
   "engines": {
     "clickhouse": {
       "source": "https://endoflife.date/api/clickhouse.json",
@@ -169,6 +169,26 @@
           "version": "6.2",
           "track": "stable",
           "eol": "2027-04-01"
+        }
+      ]
+    },
+    "mongodb": {
+      "source": "https://endoflife.date/api/mongodb.json",
+      "tracks": [
+        {
+          "version": "8.3",
+          "track": "stable",
+          "eol": "2029-10-31"
+        },
+        {
+          "version": "8.0",
+          "track": "stable",
+          "eol": "2029-10-31"
+        },
+        {
+          "version": "7.0",
+          "track": "stable",
+          "eol": "2027-08-31"
         }
       ]
     }

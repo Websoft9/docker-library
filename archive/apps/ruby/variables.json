@@ -1,0 +1,35 @@
+{
+  "name": "ruby",
+  "trademark": "Ruby",
+  "release": true,
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "3.4",
+        "3.3",
+        "3.2",
+        "3.1",
+        "3.0",
+        "2.7",
+        "2.6",
+        "2.5"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/_/ruby"
+  },
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8080,
+      "path": "/"
+    }
+  }
+}

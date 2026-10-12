@@ -18,5 +18,12 @@
   },
   "upstream": {
     "image": "https://hub.docker.com/r/linuxserver/mysql-workbench"
+  },
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 3000,
+      "path": "/"
+    }
   }
 }

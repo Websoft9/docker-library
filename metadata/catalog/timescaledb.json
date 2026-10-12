@@ -1,0 +1,16 @@
+{
+  "trademark": "Timescale",
+  "catalogBindings": [
+    {
+      "parentKey": "database",
+      "childKey": "timedbs"
+    }
+  ],
+  "summary": "Time-series PostgreSQL database.",
+  "overview": "TimescaleDB extends PostgreSQL for time-series ingest, retention, compression, and real-time analytics workloads.",
+  "description": "TimescaleDB is an open-source time-series database built as a PostgreSQL extension. It keeps full PostgreSQL compatibility while adding hypertables, compression, continuous aggregates, retention policies, and other features for high-ingest time-series workloads and real-time analytics.\n\nThis package deploys the official TimescaleDB HA image on PostgreSQL 18, publishes the PostgreSQL port, and persists database data in a named volume. The default `postgres` account is package-managed, and the bundled health and validation checks verify that the TimescaleDB extension is available after startup.\n\nTypical use cases include IoT telemetry, observability, financial events, industrial metrics, and any workload that needs SQL analytics on fast-growing time-series data.",
+  "websiteurl": "https://www.tigerdata.com/",
+  "screenshots": [
+    "https://docs.timescale.com/_next/image/?url=%2Fimages%2Fhero.webp&w=1920&q=75"
+  ]
+}

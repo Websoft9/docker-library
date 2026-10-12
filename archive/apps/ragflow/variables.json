@@ -1,0 +1,28 @@
+{
+  "name": "ragflow",
+  "trademark": "RAGFlow",
+  "release": true,
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "v0.21.1"
+      ]
+    }
+  ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 80,
+      "path": "/"
+    }
+  },
+  "requirements": {
+    "cpu": "4",
+    "memory": "16",
+    "disk": "50"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/infiniflow/ragflow"
+  }
+}

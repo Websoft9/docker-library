@@ -19,10 +19,6 @@
     "web": {
       "port": 9091,
       "path": "/"
-    },
-    "admin": {
-      "port": 9091,
-      "path": "/webui"
     }
   },
   "requirements": {

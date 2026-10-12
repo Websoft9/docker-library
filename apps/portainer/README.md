@@ -1,26 +1,82 @@
-# Portainer on Docker  
+# Portainer on Docker
 
-This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Portainer:
+## Quick Start
+
+### Deploy Verification
+
+1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Portainer**.
+2. In the **Access** tab, get the login URL and credentials.
+3. Open the login URL in a browser and sign in to confirm the app works.
+
+<!-- W9_GUIDE_START -->
+### Usage
+
+1. Make sure you are signed in to the Portainer admin console.
+2. Try a core feature.
+
+### Change Password
+
+1. In the [Websoft9](https://www.websoft9.com) console, open the app's **Compose** tab.
+2. Update the password in `.env` and save.
+3. Rebuild the app.
+<!-- W9_GUIDE_END -->
+
+## Configuration Reference
+
+Websoft9 packages this app from the official [Portainer Docker image](https://hub.docker.com/r/portainer/portainer-ce) and makes some improvements below.
+
+<!-- W9_NOTE_START -->
+
+<!-- W9_NOTE_END -->
+
+Apps run as containers; rebuild after any configuration change.
+
+### Version Support
+
+Supported versions: 2.45.1, latest.
+
+The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
 
- - community:  2.31.0, latest
+### Ports
+
+| Purpose | Port |
+| --- | --- |
+| Portainer web UI and REST API | 9000 |
 
 
-## System Requirements
+### Data Directory
 
-The following are the minimal [recommended requirements](https://documentation.portainer.io/v2.0-be/deploy/requirements/):
 
-* **RAM**: 1 GB or more
-* **CPU**: 1 cores or higher
-* **Disk**: at least 4 GB of free space
-* **bandwidth**: more fluent experience over 100M  
+- `portainer` → `/data`
+- `/var/run/docker.sock` → `/var/run/docker.sock`
 
-## Install
 
-You can install this Portainer by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use Portainer with **Websoft9 Business Support** free, you can [subscribe Portainer](https://www.websoft9.com/apps) on Cloud platform
+### Environment Variables
 
-## Documentation
+Environment variables are defined in the app's `.env` file; see the reference section at the end of `.env` for supported variables.
 
-[Portainer Administrator Guide](https://support.websoft9.com/docs/portainer) powered by Websoft9
+
+### Configuration Files
+
+
+Configuration files live inside the image; mount a single file read-only to override, and never replace the whole directory.
+
+
+## References
+
+- [Portainer Administrator Guide](https://support.websoft9.com/docs/portainer) by Websoft9
+
+- [Docker Hub image](https://hub.docker.com/r/portainer/portainer-ce)
+
+
+<!-- W9_TROUBLESHOOT_START -->
+## Troubleshooting
+
+**App fails to start?**
+- Check `docker compose logs`.
+
+**Port not reachable?**
+- Ensure the firewall / security group allows the port.
+<!-- W9_TROUBLESHOOT_END -->

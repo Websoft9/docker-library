@@ -1,0 +1,51 @@
+{
+  "name": "qdrant",
+  "trademark": "Qdrant",
+  "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/qdrant/qdrant",
+    "releases": "https://github.com/qdrant/qdrant/releases",
+    "docs": [
+      "https://github.com/qdrant/qdrant",
+      "https://qdrant.tech/documentation/quickstart/",
+      "https://api.qdrant.tech/api-reference/service/healthz"
+    ]
+  },
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "v1.19",
+        "latest"
+      ]
+    }
+  ],
+  "access": {
+    "defaultScheme": "http",
+    "api": {
+      "port": 6333,
+      "path": "/"
+    },
+    "web": {
+      "port": 6333,
+      "path": "/dashboard"
+    },
+    "grpc": {
+      "port": 6334,
+      "scheme": "grpc",
+      "path": "/"
+    }
+  },
+  "requirements": {
+    "cpu": "1",
+    "memory": "2",
+    "disk": "1"
+  },
+  "credentials": {},
+  "env": {
+    "first_startup_only": []
+  },
+  "help": {
+    "db": "Qdrant starts without authentication by default. Secure the instance before internet exposure by enabling API keys in the image environment variables section."
+  }
+}

@@ -14,10 +14,6 @@
     "web": {
       "port": 443,
       "path": "/"
-    },
-    "admin": {
-      "port": 443,
-      "path": "/login/"
     }
   },
   "requirements": {

@@ -1,20 +1,12 @@
-# refer to: https://github.com/docker-library/docs/blob/master/mongo/stack.yml
-# image: https://hub.docker.com/_/mongo
-
-version: '3.8'
-
 services:
   mongo:
     image: ${W9_REPO}:${W9_VERSION}
     restart: unless-stopped
     container_name: ${W9_ID}
     ports:
-      - ${W9_DB_PORT_SET}:${W9_DB_PORT}
+      - "${W9_DB_PORT_SET}:27017" # MongoDB
     env_file: .env
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${W9_LOGIN_USER}
-      MONGO_INITDB_ROOT_PASSWORD: ${W9_LOGIN_PASSWORD}
-    command: ${W9_COMMAND}
+    command: --wiredTigerCacheSizeGB 2 --config /etc/mongod.conf
     volumes:
       - mongo_data:/data/db
       - ./src/mongod.conf:/etc/mongod.conf
@@ -23,6 +15,6 @@ networks:
   default:
     name: ${W9_NETWORK}
     external: true
-    
+
 volumes:
   mongo_data:

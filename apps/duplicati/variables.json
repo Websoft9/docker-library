@@ -18,5 +18,12 @@
   },
   "upstream": {
     "image": "https://hub.docker.com/r/linuxserver/duplicati"
+  },
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8200,
+      "path": "/"
+    }
   }
 }

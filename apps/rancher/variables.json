@@ -3,12 +3,17 @@
   "trademark": "Rancher",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/r/rancher/rancher"
+    "image": "https://hub.docker.com/r/rancher/rancher",
+    "releases": "https://github.com/rancher/rancher/releases",
+    "docs": [
+      "https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker"
+    ]
   },
   "edition": [
     {
       "dist": "community",
       "version": [
+        "v2.15.2",
         "latest"
       ]
     }
@@ -25,12 +30,8 @@
     "memory": "2",
     "disk": "1"
   },
-  "credentials": {
-    "password": {
-      "source": "container-log",
-      "match": "regex",
-      "pattern": "Bootstrap Password:\\s*(.+)",
-      "group": 1
-    }
+  "credentials": {},
+  "help": {
+    "login": "Rancher prints the bootstrap password only after the container starts. Retrieve it manually with the official command `docker exec -it ${W9_ID} reset-password`, then use the printed password on the first login screen. The value is not available declaratively before runtime, so it is documented here instead of being modeled as machine-readable credentials."
   }
 }

@@ -17,5 +17,12 @@
   },
   "upstream": {
     "image": "https://hub.docker.com/r/athou/commafeed"
+  },
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8082,
+      "path": "/"
+    }
   }
 }

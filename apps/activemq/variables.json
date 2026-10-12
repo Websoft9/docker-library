@@ -25,10 +25,6 @@
     "web": {
       "port": 8161,
       "path": "/"
-    },
-    "admin": {
-      "port": 8161,
-      "path": "/admin"
     }
   },
   "requirements": {

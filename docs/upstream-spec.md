@@ -320,9 +320,21 @@ Rules:
 - Use `scheme: https` when the package default entry is HTTPS-only or when the documented
   default access expects HTTPS first.
 - Surface keys are a closed vocabulary:
-  `web` (end-user UI), `admin` (privileged console), `api` (programmatic API),
+  `web` (primary browser entry), `admin` (additional management entry), `api` (programmatic API),
   `ws` (WebSocket), `ssh` (shell), `metrics` (monitoring).
   Add a custom key only when none applies, and document its meaning.
+- `web` and `admin` describe the role of an entry, not the privilege level at the path.
+  - The primary browser entry is always `web`, even when its path is not `/`. A unique
+    entry such as `/admin`, `/console`, `/app`, or `/web/login` is still `web`.
+  - `admin` is only for an additional management entry that is distinct from `web` and
+    worth exposing on its own, for example `/wp-admin`, `/umbraco`, `/_utils`, `/dashboard/`.
+  - Do not declare `admin` merely because the entry requires login, is called `admin`, or
+    is the only entry.
+- Default binding rule: the primary URL binding is `web` by convention. Extra bindings
+  also default to `web` when they are browser entries. Non-browser surfaces such as
+  `api`, `ws`, `ssh`, and `metrics` must be declared explicitly and never default to `web`.
+  The default applies to the surface role only; `port`, `path`, and `scheme` still have to
+  be declared.
 - A surface may override `defaultScheme` with its own `scheme` (for example `wss` for a
   WebSocket surface, or `ssh` for a shell surface).
 - `path` and `port` keep their existing meaning per surface.

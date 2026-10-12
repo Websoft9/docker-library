@@ -1,0 +1,8 @@
+framework:
+  messenger:
+    transports:
+      pimcore_core: 'sync://'
+      pimcore_maintenance: 'sync://'
+      pimcore_scheduled_tasks: 'sync://'
+      pimcore_image_optimize: 'sync://'
+      pimcore_asset_update: 'sync://'

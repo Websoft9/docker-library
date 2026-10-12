@@ -1,0 +1,7 @@
+# MongoDB has no HTTP surface, so the adaptive web-access check does not apply.
+# Its core path is accepting authenticated client connections, so a custom
+# script runs an authenticated mongosh ping inside the container.
+custom:
+  - id: mongosh-ping
+    type: script
+    script: check.sh

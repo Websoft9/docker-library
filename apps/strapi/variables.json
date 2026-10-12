@@ -25,10 +25,6 @@
       "port": 1337,
       "path": "/"
     },
-    "admin": {
-      "port": 1337,
-      "path": "/admin"
-    },
     "api": {
       "port": 1337,
       "path": "/api"

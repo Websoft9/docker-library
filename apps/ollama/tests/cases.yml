@@ -1,0 +1,5 @@
+optional:
+  - id: api-tags
+    type: web-access
+    path: /api/tags
+    expect_status: 200

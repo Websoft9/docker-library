@@ -26,6 +26,7 @@ cadence:
   - owncloud
   - portainer
   - postgresql
+  - timescaledb
   - prestashop
   - rabbitmq
   - redmine

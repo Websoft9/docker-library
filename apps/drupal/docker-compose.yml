@@ -1,14 +1,9 @@
-# image: https://hub.docker.com/_/drupal
-# docs:https://github.com/docker-library/docs/blob/master/drupal/README.md
-
-version: '3.8'
-
 services:
   drupal:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     ports:
-      - $W9_HTTP_PORT_SET:80
+      - "${W9_HTTP_PORT_SET}:80" # Web Console
     volumes:
       - modules:/var/www/html/modules
       - profiles:/var/www/html/profiles
@@ -18,18 +13,19 @@ services:
     env_file: .env
 
   mysql:
-    image: mysql:$W9_DB_VERSION
-    container_name: $W9_ID-mysql
+    image: mysql:${W9_DB_VERSION}
+    container_name: ${W9_ID}-mysql
     restart: unless-stopped
+    env_file: .env
     environment:
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_DATABASE: drupal
-      MYSQL_USER: drupal
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-     
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

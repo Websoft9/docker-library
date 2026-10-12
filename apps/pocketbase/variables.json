@@ -3,13 +3,19 @@
   "trademark": "PocketBase",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/r/spectado/pocketbase"
+    "image": "https://github.com/pocketbase/pocketbase/releases",
+    "releases": "https://github.com/pocketbase/pocketbase/releases",
+    "docs": [
+      "https://pocketbase.io/docs/",
+      "https://github.com/pocketbase/pocketbase",
+      "https://github.com/pocketbase/pocketbase/blob/master/CHANGELOG.md"
+    ]
   },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "v0.29.1",
+        "v0.40.5",
         "latest"
       ]
     }
@@ -40,5 +46,14 @@
       "name": "W9_LOGIN_PASSWORD",
       "format": "text"
     }
+  },
+  "env": {
+    "first_startup_only": [
+      "W9_LOGIN_USER",
+      "W9_LOGIN_PASSWORD"
+    ]
+  },
+  "help": {
+    "login": "PocketBase is pre-1.0 and may require manual migration review on upgrades. The first startup creates the configured superuser inside the empty pb_data directory."
   }
 }

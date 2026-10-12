@@ -6,17 +6,29 @@
     {
       "dist": "community",
       "version": [
-        "4.90.2",
+        "4.90.8",
         "latest"
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 80,
+      "path": "/"
+    }
+  },
   "requirements": {
     "cpu": "1",
     "memory": "1",
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/nopcommerceteam/nopcommerce"
+    "image": "https://hub.docker.com/r/nopcommerceteam/nopcommerce",
+    "releases": "https://github.com/nopSolutions/nopCommerce/releases",
+    "docs": [
+      "https://github.com/nopSolutions/nopCommerce/releases/tag/release-4.90.8",
+      "https://www.nopcommerce.com/release-notes"
+    ]
   }
 }

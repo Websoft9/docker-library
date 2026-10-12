@@ -1,20 +1,22 @@
-# Owncloud
+# ownCloud
 
-OWNCLOUD_DOMAIN 和 OWNCLOUD_TRUSTED_DOMAINS 必须通过环境[变量设置](https://doc.owncloud.com/server/10.13/admin_manual/configuration/server/config_sample_php_parameters.html#define-list-of-trusted-domains-that-users-can-log-into)，config.php 设置它们是无效的。
+当前软件包已切换为 ownCloud Infinite Scale (`owncloud/ocis`)，不再使用旧版 `owncloud/server` + MySQL + Redis 拓扑。
 
 ## FAQ
 
-#### 初始化提示 You are accessing the server from an untrusted domain?
+#### 默认使用 HTTP 还是 HTTPS？
 
-- OWNCLOUD_DOMAIN=${W9_URL}
-- OWNCLOUD_TRUSTED_DOMAINS=${W9_URL}
+- 当前包按 oCIS 官方默认行为启用 HTTPS。
+- 因为启用了 `OCIS_INSECURE=true`，首次部署会使用自签名证书。
+- 浏览器首次访问时如果提示证书风险，继续访问即可。
 
-以上两个环境变量都需要设置。OWNCLOUD_TRUSTED_DOMAINS 可以设置多个（以,作为分隔符），OWNCLOUD_TRUSTED_DOMAINS 与 OWNCLOUD_DOMAIN 不一样也不影响访问。
+#### 管理员账号如何初始化？
 
-#### 域名发生变化后如何更换 URL ？
+- 用户名固定为 `admin`
+- 密码来自 `W9_LOGIN_PASSWORD`
+- `IDM_ADMIN_PASSWORD` 只会在首次启动、数据卷为空时生效
 
-原理是上是通过更换 OWNCLOUD_DOMAIN 和 OWNCLOUD_TRUSTED_DOMAINS 后重建应用生效。 当前已经通过 W9_URL_REPLACE=true 实现自动适应。  
+#### 域名变化后如何处理？
 
-#### W9_URL 需要带端口吗？
-
-带或不带都可以，故建议不带
+- `OCIS_URL=https://${W9_URL}:${W9_HTTPS_PORT_SET}` 由包内环境变量生成。
+- 修改 `W9_URL` 后需要重建应用，使新 URL 重新注入运行配置。

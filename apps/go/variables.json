@@ -22,5 +22,12 @@
   },
   "upstream": {
     "image": "https://hub.docker.com/_/golang"
+  },
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8080,
+      "path": "/"
+    }
   }
 }

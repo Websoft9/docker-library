@@ -1,0 +1,5 @@
+optional:
+  - id: setup-page
+    type: web-access
+    path: /setup
+    expect_status: 200

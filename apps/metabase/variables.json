@@ -2,11 +2,19 @@
   "name": "metabase",
   "trademark": "Metabase",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/metabase/metabase",
+    "releases": "https://github.com/metabase/metabase/releases",
+    "docs": [
+      "https://www.metabase.com/docs/latest/installation-and-operation/running-metabase-on-docker",
+      "https://www.metabase.com/docs/latest/operations-guide/upgrading-metabase"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "v0.57.5.3",
+        "v0.64.x",
         "latest"
       ]
     }
@@ -23,7 +31,7 @@
     "memory": "1",
     "disk": "1"
   },
-  "upstream": {
-    "image": "https://hub.docker.com/r/metabase/metabase"
+  "help": {
+    "login": "First run: open the site and create the administrator account in the Metabase setup wizard, then sign in with those credentials."
   }
 }

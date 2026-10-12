@@ -1,0 +1,28 @@
+{
+  "name": "plex",
+  "trademark": "Plex Media Server",
+  "release": true,
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 32400,
+      "path": "/"
+    }
+  },
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "8"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/plexinc/pms-docker"
+  }
+}

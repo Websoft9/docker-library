@@ -6,19 +6,9 @@
     {
       "dist": "community",
       "version": [
-        "8.2.2",
-        "8.0.3",
-        "7.0.4",
-        "6.0.12",
-        "5.0.23",
-        "4.4.26",
-        "4.2.24-rc2",
-        "4.2.24",
-        "4.0.28",
-        "3.6.23",
-        "3.4.24",
-        "3.2.21",
-        "3.0.15",
+        "8.3",
+        "8.0",
+        "7.0",
         "latest"
       ]
     }
@@ -29,6 +19,17 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/_/mongo"
+    "image": "https://hub.docker.com/_/mongo",
+    "docs": [
+      "https://github.com/docker-library/mongo",
+      "https://www.mongodb.com/docs/manual/installation/",
+      "https://www.mongodb.com/docs/manual/reference/versioning/"
+    ]
+  },
+  "env": {
+    "first_startup_only": [
+      "MONGO_INITDB_ROOT_USERNAME",
+      "MONGO_INITDB_ROOT_PASSWORD"
+    ]
   }
 }

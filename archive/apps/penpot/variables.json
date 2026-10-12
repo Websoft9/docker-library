@@ -1,0 +1,29 @@
+{
+  "name": "penpot",
+  "trademark": "Penpot",
+  "release": true,
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "2.11.1",
+        "latest"
+      ]
+    }
+  ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8080,
+      "path": "/"
+    }
+  },
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "4"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/penpotapp/frontend"
+  }
+}

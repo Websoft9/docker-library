@@ -1,18 +1,16 @@
-# image: https://hub.docker.com/_/redis
-
 version: '3.8'
 
 services:
   redis:
-    image: $W9_REPO:${W9_VERSION}
+    image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     restart: unless-stopped
-    ports: 
-      - ${W9_DB_PORT_SET}:6379
+    ports:
+      - "${W9_DB_PORT_SET}:6379" # Redis
     env_file: .env
     volumes:
       - redis_data:/data
-    command: redis-server --requirepass ${REDIS_PASSWORD} --bind 0.0.0.0 --loglevel verbose
+    command: redis-server --requirepass ${W9_LOGIN_PASSWORD} --bind 0.0.0.0 --loglevel verbose
 
 networks:
   default:

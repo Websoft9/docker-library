@@ -135,6 +135,10 @@
         "",
         ""
     ],
+    "W9_LOGIN_MYSQL_CONNECTION_STRING_PASSWORD": [
+        "",
+        ""
+    ],
     "W9_LOGIN_WORKSPACE": [
         "Login Workspace",
         "Workspace"
@@ -262,6 +266,10 @@
     "W9_ADMIN_GUI_PORT_SET": [
         "ADMIN GUI PORT",
         "管理页面端口"
+    ],
+    "W9_ADMIN_PORT_SET": [
+        "Admin Port",
+        "管理端口"
     ],
     "W9_URI_SET": [
         "URI",

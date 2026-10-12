@@ -16,6 +16,7 @@ ENGINE_TRACKS = {
     "postgresql": lambda lts: "stable",
     "clickhouse": lambda lts: "lts" if lts else "stable",
     "redis": lambda lts: "stable",
+    "mongodb": lambda lts: "lts" if lts else "stable",
 }
 
 

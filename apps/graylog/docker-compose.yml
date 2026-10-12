@@ -1,17 +1,14 @@
-# docker-compose: https://github.com/Graylog2/docker-compose/blob/main/open-core/docker-compose.yml
-# image: https://hub.docker.com/r/graylog/graylog/
-
 version: '3.8'
 services:
   mongodb:
-    image: mongo:${W9_MONGO_VERSION}
+    image: mongo:${W9_DB_VERSION}
     container_name: ${W9_ID}-mongodb
     restart: "on-failure"
     volumes:
       - mongodb_data:/data/db
 
   datanode:
-    image: graylog/graylog-datanode:${W9_DATANODE_VERSION}
+    image: graylog/graylog-datanode:${W9_VERSION}
     container_name: ${W9_ID}-datanode
     environment:
       GRAYLOG_DATANODE_NODE_ID_FILE: "/var/lib/graylog-datanode/node-id"
@@ -34,30 +31,32 @@ services:
     restart: "on-failure"
 
   graylog:
-    image: $W9_REPO:${W9_VERSION}
+    image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     env_file: .env
     entrypoint: "/usr/bin/tini --  /docker-entrypoint.sh"
     environment:
-      GRAYLOG_NODE_ID_FILE: "/usr/share/graylog/data/data/node-id"
+      GRAYLOG_NODE_ID_FILE: "/usr/share/graylog/data/config/node-id"
       GRAYLOG_PASSWORD_SECRET: ${GRAYLOG_PASSWORD_SECRET}
       GRAYLOG_ROOT_PASSWORD_SHA2: ${GRAYLOG_ROOT_PASSWORD_SHA2}
       GRAYLOG_HTTP_BIND_ADDRESS: "0.0.0.0:9000"
-      GRAYLOG_HTTP_EXTERNAL_URI: "http://localhost:9000/"
+      GRAYLOG_HTTP_EXTERNAL_URI: ${GRAYLOG_HTTP_EXTERNAL_URI}
       GRAYLOG_MONGODB_URI: ${GRAYLOG_MONGODB_URI}
     restart: unless-stopped
     depends_on:
       mongodb:
         condition: "service_started"
+      datanode:
+        condition: "service_started"
     ports:
       - "${W9_BEATS_TCP_PORT_SET}:5044/tcp" # Beats
-      - "${W9_SYSLOG_TCP_PORT_SET}:5140/udp" # Syslog
+      - "${W9_SYSLOG_UDP_PORT_SET}:5140/udp" # Syslog UDP
       - "${W9_SYSLOG_TCP_PORT_SET}:5140/tcp" # Syslog
       - "${W9_RAW_TCP_PORT_SET}:5555/tcp" # RAW TCP
-      - "${W9_RAW_TCP_PORT_SET}:5555/udp" # RAW UDP
-      - "${W9_HTTP_PORT_SET}:9000/tcp" # Server API
+      - "${W9_RAW_UDP_PORT_SET}:5555/udp" # RAW UDP
+      - "${W9_HTTP_PORT_SET}:9000/tcp" # Web Console and API
       - "${W9_GELF_TCP_PORT_SET}:12201/tcp" # GELF TCP
-      - "${W9_GELF_TCP_PORT_SET}:12201/udp" # GELF UDP
+      - "${W9_GELF_UDP_PORT_SET}:12201/udp" # GELF UDP
       #- "10000:10000/tcp" # Custom TCP port
       #- "10000:10000/udp" # Custom UDP port
       - "${W9_FORWARDER_DATA_TCP_PORT_SET}:13301/tcp" # Forwarder data

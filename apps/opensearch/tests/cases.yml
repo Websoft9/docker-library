@@ -1,0 +1,7 @@
+skip:
+  - id: web-access
+
+optional:
+  - id: dashboards-ui
+    type: script
+    script: check.sh

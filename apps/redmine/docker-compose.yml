@@ -1,49 +1,43 @@
-# image: https://hub.docker.com/_/redmine
-# docs: https://github.com/docker-library/redmine
-# /usr/src/redmine/plugins is not a volume of image, but you can mount it, and when update Redmine it need backup and delete first
-
 version: '3.8'
-services:
 
+services:
   redmine:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-     - $W9_HTTP_PORT_SET:3000
-    volumes: 
-     - redmine_files:/usr/src/redmine/files
-     - ./src/configuration.yml:/usr/src/redmine/config/configuration.yml
-     #- redmine_plugins:/usr/src/redmine/plugins
+      - "${W9_HTTP_PORT_SET}:3000" # Redmine web console
+    volumes:
+      - redmine_files:/usr/src/redmine/files
+      - ./src/configuration.yml:/usr/src/redmine/config/configuration.yml
     env_file: .env
     environment:
-      REDMINE_DB_MYSQL: $W9_ID-mysql
-      REDMINE_DB_USERNAME: $W9_ID
-      REDMINE_DB_DATABASE: $W9_ID
-      REDMINE_DB_PASSWORD: $W9_POWER_PASSWORD
-      REDMINE_PLUGINS_MIGRATE: 1
-      SECRET_KEY_BASE: supersecretkey
+      REDMINE_DB_MYSQL: ${REDMINE_DB_MYSQL}
+      REDMINE_DB_USERNAME: ${REDMINE_DB_USERNAME}
+      REDMINE_DB_DATABASE: ${REDMINE_DB_DATABASE}
+      REDMINE_DB_PASSWORD: ${REDMINE_DB_PASSWORD}
+      REDMINE_PLUGINS_MIGRATE: ${REDMINE_PLUGINS_MIGRATE}
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
     depends_on:
       - mysql
 
   mysql:
-    image: mysql:$W9_DB_VERSION
-    container_name: $W9_ID-mysql
+    image: mysql:${W9_DB_VERSION}
+    container_name: ${W9_ID}-mysql
     restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
-     - mysql:/var/lib/mysql
+      - mysql:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_DATABASE: $W9_ID
-      MYSQL_USER: $W9_ID
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      
+      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
+      MYSQL_DATABASE: ${W9_ID}
+      MYSQL_USER: ${W9_ID}
+      MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
+
 volumes:
   mysql:
   redmine_files:
-  redmine_plugins:
-  
+
 networks:
   default:
     name: ${W9_NETWORK}

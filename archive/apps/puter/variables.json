@@ -1,0 +1,28 @@
+{
+  "name": "puter",
+  "trademark": "Puter",
+  "release": false,
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 4100,
+      "path": "/"
+    }
+  },
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "ghcr.io/heyputer/puter:latest"
+  }
+}

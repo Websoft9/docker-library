@@ -1,26 +1,29 @@
-# PostHog on Docker  
+# PostHog on Docker
 
-This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for PostHog:
+This app package deploys the official self-hosted PostHog stack on Websoft9 with Docker Compose.
 
+- community: latest
 
- - community:  latest
+## Requirements
 
+PostHog recommends a VM roughly equivalent to:
 
-## System Requirements
+- 4 vCPU
+- 16 GB RAM
+- 30 GB available disk
 
-The following are the minimal [recommended requirements](https://posthog.com):
+## Notes
 
-* **RAM**: 4 GB or more
-* **CPU**: 2 cores or higher
-* **Disk**: at least 10 GB of free space
-* **bandwidth**: more fluent experience over 100M  
+- PostHog does not publish stable self-hosted releases in the usual `x.y.z` form.
+- The upstream project recommends running the latest Docker image for self-hosted deployments.
+- This package exposes the PostHog web entrypoint through the internal Caddy proxy on port `80`.
 
 ## Install
 
-You can install this PostHog by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+Use the standard `docker-library` workflow for apps under `apps/posthog`.
 
-If you want use PostHog with **Websoft9 Business Support** free, you can [subscribe PostHog](https://www.websoft9.com/apps) on Cloud platform
+## Upstream
 
-## Documentation
-
-[PostHog Administrator Guide](https://support.websoft9.com/docs/posthog) powered by Websoft9
+- Docs: https://posthog.com/docs/self-host
+- Source: https://github.com/PostHog/posthog
+- Image: https://hub.docker.com/r/posthog/posthog

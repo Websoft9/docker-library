@@ -28,10 +28,6 @@
     "web": {
       "port": 8069,
       "path": "/"
-    },
-    "admin": {
-      "port": 8069,
-      "path": "/web/login"
     }
   },
   "requirements": {

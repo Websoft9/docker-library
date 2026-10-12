@@ -1,0 +1,16 @@
+{
+  "trademark": "PostHog",
+  "catalogBindings": [
+    {
+      "parentKey": "analytics",
+      "childKey": "web-analytics"
+    }
+  ],
+  "summary": "Product analytics platform for web and apps.",
+  "overview": "Self-hosted product analytics platform with event capture, feature flags, session replay, and product usage insights.",
+  "description": "PostHog is an open-source product analytics platform for websites and applications. It combines event ingestion, dashboards, feature flags, session replay, experiments, and product usage analysis in one self-hosted stack.\n\nThis package deploys a Docker Compose based PostHog stack built around the official PostHog images, plus the required PostgreSQL, ClickHouse, Redis, Redpanda, and object storage services. It is suitable for teams that want control over data residency, infrastructure, and upgrade timing while keeping the PostHog self-hosted experience.\n\nTypical use cases include web and product analytics, feature flag rollouts, funnel and retention analysis, session replay, and self-hosted product observability for engineering and growth teams.",
+  "websiteurl": "https://posthog.com",
+  "screenshots": [
+    "https://posthog.com/images/docs/self-host/self-hosted-dashboard.png"
+  ]
+}

@@ -33,7 +33,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: latest.
+Supported versions: v2.15.2, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
@@ -42,7 +42,7 @@ The `latest` tag is not guaranteed to remain valid; pin a specific version for p
 
 | Purpose | Port |
 | --- | --- |
-| W9_HTTP_PORT_SET | 443 |
+| Rancher web console (HTTPS) | 443 |
 
 
 ### Data Directory
@@ -67,6 +67,10 @@ Configuration files live inside the image; mount a single file read-only to over
 - [Rancher Administrator Guide](https://support.websoft9.com/docs/rancher) by Websoft9
 
 - [Docker Hub image](https://hub.docker.com/r/rancher/rancher)
+
+- [Releases](https://github.com/rancher/rancher/releases)
+
+- [Official docs](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker)
 
 
 <!-- W9_TROUBLESHOOT_START -->

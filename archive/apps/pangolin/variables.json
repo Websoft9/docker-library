@@ -1,0 +1,28 @@
+{
+  "name": "pangolin",
+  "trademark": "Pangolin",
+  "release": false,
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "8"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/fosrl/pangolin"
+  },
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 80,
+      "path": "/"
+    }
+  }
+}

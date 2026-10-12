@@ -17,5 +17,12 @@
   },
   "upstream": {
     "image": "https://hub.docker.com/r/keyfactor/ejbca-ce"
+  },
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 80,
+      "path": "/"
+    }
   }
 }

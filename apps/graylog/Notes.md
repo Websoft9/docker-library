@@ -19,6 +19,17 @@ org.graylog2.bootstrap.preflight.PreflightCheckException: /proc/sys/vm/max_map_c
 
 
 
+## MongoDB 与内核兼容性
+MongoDB 8.0.x 在 Linux 内核 6.19 到 7.0.13 之间存在已知不兼容（tcmalloc/rseq 问题），启动时会直接退出，报错：
+
+```
+MongoDB cannot start: Linux kernel versions 6.19 and newer has a known incompatibility with this version of MongoDB. See https://jira.mongodb.org/browse/SERVER-121912 for more information.
+```
+
+受影响版本：8.0.0 - 8.0.29。8.0.30+ 仍会在内核 6.19 - 7.0.13 上退出。
+
+本包因此将 MongoDB 固定在 7.0（`W9_DB_VERSION=7.0`）。MongoDB 7.0 在所有内核版本上均受支持，且 Graylog 7.1 兼容 MongoDB 7.x - 8.0.x。若后续部署环境内核升级到 7.0.14+ 或 7.1.0+，可再评估升级到 MongoDB 8.0.30+。
+
 ## 初始化
 Graylog安装完成以后需要进行初始化：
 
@@ -41,3 +52,12 @@ Try clicking on http://admin:dGFfTTxFiN@0.0.0.0:9000
 3、在未完成初始化前，主容器的状态标识为：unhealthy，初始化完成后自动变成：health
 
 4、初始化完成以后，不要进行“重建”，这样会导致数据节点和Graylog之间的连接验证证书破坏，导致不能连接
+
+## 修改密码
+Graylog 的管理员密码由 `GRAYLOG_ROOT_PASSWORD_SHA2` 决定，而前端凭据展示读取的是 `W9_LOGIN_PASSWORD`。两者必须保持一致：
+
+1、生成新密码的 SHA-256：`echo -n '新密码' | sha256sum | awk '{ print $1 }'`
+
+2、同时更新 `.env` 中的 `GRAYLOG_ROOT_PASSWORD_SHA2`（哈希）和 `W9_LOGIN_PASSWORD`（明文）
+
+3、重建应用后生效

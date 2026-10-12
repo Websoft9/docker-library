@@ -1,0 +1,33 @@
+{
+  "name": "opencost",
+  "trademark": "OpenCost",
+  "release": true,
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "1.109.0",
+        "latest"
+      ]
+    }
+  ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 9090,
+      "path": "/"
+    },
+    "api": {
+      "port": 9003,
+      "path": "/"
+    }
+  },
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10"
+  },
+  "upstream": {
+    "image": "ghcr.io/opencost/opencost"
+  }
+}

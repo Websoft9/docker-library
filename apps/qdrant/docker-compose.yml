@@ -1,0 +1,25 @@
+services:
+  qdrant:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    ports:
+      - "${W9_HTTP_PORT_SET}:6333" # HTTP API and Web UI
+      - "${W9_GRPC_PORT_SET}:6334" # gRPC API
+    volumes:
+      - qdrant:/qdrant/storage
+    env_file: .env
+    healthcheck:
+      test: ["CMD-SHELL", "bash -lc 'exec 3<>/dev/tcp/127.0.0.1/6333 && printf \"GET /healthz HTTP/1.1\\r\\nHost: 127.0.0.1\\r\\nConnection: close\\r\\n\\r\\n\" >&3 && cat <&3 | grep -q \"healthz check passed\"'"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+
+volumes:
+  qdrant:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

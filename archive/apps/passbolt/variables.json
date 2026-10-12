@@ -1,0 +1,29 @@
+{
+  "name": "passbolt",
+  "trademark": "Passbolt",
+  "release": true,
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "5.3.2-1-ce",
+        "latest"
+      ]
+    }
+  ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 80,
+      "path": "/"
+    }
+  },
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "4"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/passbolt/passbolt"
+  }
+}

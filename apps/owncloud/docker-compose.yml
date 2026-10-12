@@ -1,64 +1,44 @@
-# docs: https://doc.owncloud.com/server/10.8/admin_manual/installation/docker/
-# image: https://hub.docker.com/r/owncloud/server
-
-version: '3.8'
-
 services:
-  owncloud:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
-    ports:
-      - $W9_HTTP_PORT_SET:8080
+  ocis-init:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}-init
+    restart: "no"
+    env_file: .env
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        if [ -f /etc/ocis/ocis.yaml ]; then
+          echo "[ocis-init] config already exists, skipping"
+        else
+          echo "[ocis-init] generating ocis.yaml"
+          ocis init --insecure true
+        fi
     volumes:
-      - owncloud:/mnt/data
+      - owncloud-config:/etc/ocis
+
+  owncloud:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    depends_on:
+      ocis-init:
+        condition: service_completed_successfully
+    ports:
+      - "${W9_HTTPS_PORT_SET}:9200" # HTTPS Web Console
+    volumes:
+      - owncloud-config:/etc/ocis
+      - owncloud-data:/var/lib/ocis
     env_file: .env
     healthcheck:
-      test: ["CMD", "/usr/bin/healthcheck"]
+      test: ["CMD-SHELL", "curl -skf https://127.0.0.1:9200/ >/dev/null || exit 1"]
       interval: 30s
       timeout: 10s
-      retries: 5
-    depends_on: 
-      - mysql
-      - redis
-    restart: unless-stopped
-
-  mysql:
-    image: mysql:$W9_DB_VERSION
-    container_name: $W9_ID-mysql
-    restart: unless-stopped
-    command: ["--max-allowed-packet=128M", "--innodb-log-file-size=64M", "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
-    volumes:
-      - mysql:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-u", "root", "--password=$W9_POWER_PASSWORD"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    environment:
-      MYSQL_DATABASE: $W9_ID
-      MYSQL_USER: $W9_ID
-      MYSQL_PASSWORD: $W9_POWER_PASSWORD
-      MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
-
-  redis:
-    image: redis:6
-    env_file: .env
-    container_name: $W9_ID-redis
-    restart: unless-stopped
-    command: ["--databases", "1"]
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    volumes:
-      - redis:/data
+      retries: 10
 
 volumes:
-  owncloud:
-  redis:
-  mysql:
- 
+  owncloud-config:
+  owncloud-data:
+
 networks:
   default:
     name: ${W9_NETWORK}

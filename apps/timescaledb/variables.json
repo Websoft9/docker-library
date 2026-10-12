@@ -1,0 +1,47 @@
+{
+  "name": "timescaledb",
+  "trademark": "Timescale",
+  "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/timescale/timescaledb-ha",
+    "releases": "https://github.com/timescale/timescaledb/releases",
+    "docs": [
+      "https://github.com/timescale/timescaledb",
+      "https://docs.tigerdata.com/self-hosted/latest/install/installation-docker/"
+    ]
+  },
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "pg18",
+        "latest"
+      ]
+    }
+  ],
+  "requirements": {
+    "cpu": "1",
+    "memory": "2",
+    "disk": "1"
+  },
+  "credentials": {
+    "username": {
+      "value": "postgres",
+      "source": "inline"
+    },
+    "password": {
+      "name": "W9_LOGIN_PASSWORD",
+      "source": "container-env"
+    }
+  },
+  "env": {
+    "first_startup_only": [
+      "POSTGRES_DB",
+      "POSTGRES_PASSWORD",
+      "POSTGRES_USER"
+    ]
+  },
+  "help": {
+    "db": "TimescaleDB HA is PostgreSQL with the TimescaleDB extension preloaded. Connect with the postgres account, then verify the extension with SELECT extname, extversion FROM pg_extension WHERE extname = 'timescaledb';"
+  }
+}

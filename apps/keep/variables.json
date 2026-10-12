@@ -17,5 +17,12 @@
   },
   "upstream": {
     "image": "us-central1-docker.pkg.dev/keephq/keep/keep-api"
+  },
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 80,
+      "path": "/"
+    }
   }
 }

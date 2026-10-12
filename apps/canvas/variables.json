@@ -26,10 +26,6 @@
     "web": {
       "port": 80,
       "path": "/"
-    },
-    "admin": {
-      "port": 80,
-      "path": "/login/canvas"
     }
   },
   "requirements": {

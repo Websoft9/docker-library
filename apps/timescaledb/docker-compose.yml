@@ -1,0 +1,24 @@
+services:
+  timescaledb:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    ports:
+      - "${W9_DB_PORT_SET}:5432" # PostgreSQL
+    volumes:
+      - timescaledb:/home/postgres/pgdata
+    env_file: .env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${W9_LOGIN_USER} -d ${W9_ID}"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 30s
+
+volumes:
+  timescaledb:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

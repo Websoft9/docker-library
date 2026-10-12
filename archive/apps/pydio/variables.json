@@ -1,0 +1,29 @@
+{
+  "name": "pydio",
+  "trademark": "Pydio Cells",
+  "release": true,
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "4.4",
+        "latest"
+      ]
+    }
+  ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8080,
+      "path": "/"
+    }
+  },
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/pydio/cells"
+  }
+}

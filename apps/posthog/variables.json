@@ -10,9 +10,23 @@
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 80,
+      "path": "/"
+    }
+  },
   "requirements": {
-    "cpu": "2",
-    "memory": "4",
-    "disk": "10"
+    "cpu": "4",
+    "memory": "16",
+    "disk": "30"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/posthog/posthog",
+    "docs": [
+      "https://posthog.com/docs/self-host",
+      "https://github.com/PostHog/posthog"
+    ]
   }
 }

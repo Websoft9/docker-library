@@ -18,5 +18,12 @@
   },
   "upstream": {
     "image": "https://hub.docker.com/r/cozedev/coze-studio-server"
+  },
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 80,
+      "path": "/"
+    }
   }
 }

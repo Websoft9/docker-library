@@ -14,5 +14,12 @@
     "cpu": "2",
     "memory": "4",
     "disk": "10"
+  },
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 80,
+      "path": "/"
+    }
   }
 }

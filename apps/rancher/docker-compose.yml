@@ -1,6 +1,3 @@
-# docs:https://ranchermanager.docs.rancher.com/v2.8/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker
-# image: https://hub.docker.com/r/rancher/rancher/tags
-
 version: '3.8'
 
 services:
@@ -8,10 +5,10 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     privileged: true
-    env_file: 
+    env_file:
       - .env
     ports:
-      - ${W9_HTTP_PORT_SET}:443
+      - "${W9_HTTPS_PORT_SET}:443" # Rancher web console (HTTPS)
     restart: unless-stopped
     volumes:
       - rancher:/var/lib/rancher

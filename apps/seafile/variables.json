@@ -14,10 +14,6 @@
     "web": {
       "port": 80,
       "path": "/"
-    },
-    "admin": {
-      "port": 80,
-      "path": "/accounts/login/"
     }
   },
   "requirements": {

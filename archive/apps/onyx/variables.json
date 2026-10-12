@@ -1,0 +1,29 @@
+{
+  "name": "onyx",
+  "trademark": "Onyx",
+  "release": false,
+  "upstream": {
+    "image": "https://hub.docker.com/r/onyxdotapp/onyx-backend"
+  },
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "v2.8.0",
+        "latest"
+      ]
+    }
+  ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 80,
+      "path": "/"
+    }
+  },
+  "requirements": {
+    "cpu": "4",
+    "memory": "10",
+    "disk": "50"
+  }
+}

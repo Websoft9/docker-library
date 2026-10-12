@@ -137,6 +137,26 @@ Rules:
 - do not keep dead helper variables in `.env`
 - if the upstream has no package-controlled credential flow, omit these keys
 
+### Declared Secrets
+
+When a package must ship several plain-text secrets that are injected before `docker compose up`
+(shared across services, or needed by the UI at login), list their `.env` key names in
+`variables.json`:
+
+```json
+{ "env": { "secrets": ["LOCAL_BACKEND_API_KEY", "OH_SECRET_KEY"] } }
+```
+
+Rules:
+
+- declare names only; there are no per-secret length/charset/pattern rules
+- each declared name must exist in `.env` with a non-empty plain-text default; that default is the
+  shape template, not a production secret
+- consumers may regenerate a same-shaped value and overwrite the instance `.env`; redeploy must never
+  auto-rotate it
+- `W9_POWER_PASSWORD` is the single-value special case of this mechanism
+- the canonical consumer contract lives in `docs/appstore-release-spec.md`
+
 ### Dependency Modeling
 
 | Variable | Meaning | Typical use |
@@ -309,6 +329,25 @@ Examples:
 - yes: apps that seed a known admin user/password from env
 - no: apps that create the first admin interactively in the browser
 - no: apps with no built-in auth
+
+### Complex Or Multi-Stage Login
+
+Some apps log in in two stages: a one-time bootstrap credential (often generated at first startup and
+shown only in the container logs) followed by a fixed account that the package controls. Treat this as a
+complex login:
+
+- keep the fixed final credential in `.env` as `W9_LOGIN_USER` and `W9_LOGIN_PASSWORD`; the current
+  front end renders these directly
+- also declare the same fixed credential in `variables.json.credentials` for machine-readable consumers
+  and future rendering; point `credentials.password` at `W9_LOGIN_PASSWORD` with `source=container-env`
+  instead of copying the literal value, so it follows `.env`
+- when the app requires structured pre-login steps (for example, read a setup token from logs and then
+  open a wizard), declare `variables.json.setup.steps`; the front end renders setup before the login area
+- keep `variables.json.help.login` as the final sign-in note shown with the rendered credentials
+- `help.login` is required for a complex login, not optional: the credential area only shows the final
+  account and password, so without it users do not know which account works after setup
+- for setup tokens or one-time bootstrap values printed in logs, prefer `setup.steps[].action.type=show-log`
+  over `credentials.container-log` with `pattern` / `group`; the former is simpler and more stable
 
 ## Translation Rule
 

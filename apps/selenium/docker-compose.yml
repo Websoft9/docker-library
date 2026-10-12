@@ -1,18 +1,15 @@
-# image,docs: https://hub.docker.com/r/selenium/standalone-chrome
-
 services:
   app:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
     shm_size: "2g"
     ports:
-      - $W9_HTTP_PORT_SET:4444 #WebDriver
-      - $W9_HTTP_VNC_SET:7900 #monitor
-    env_file: 
-      - .env
-    
+      - "${W9_HTTP_PORT_SET}:4444" # Selenium WebDriver API
+      - "${W9_ADMIN_PORT_SET}:7900" # noVNC admin console
+    env_file: .env
+
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

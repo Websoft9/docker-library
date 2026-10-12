@@ -1,8 +1,3 @@
-# docs: https://docs.mattermost.com/install/install-docker.html#deploy-mattermost-on-docker-for-production-use
-# image: https://hub.docker.com/r/mattermost/mattermost-team-edition
-
-version: '3.8'
-
 services:
   mattermost:
     image: ${W9_REPO}:${W9_VERSION}
@@ -11,9 +6,9 @@ services:
     security_opt:
       - no-new-privileges:true
     ports:
-      - ${W9_HTTP_PORT_SET}:8065
-      - ${W9_TCP_PORT_SET}:8443/tcp
-      - ${W9_UDP_PORT_SET}:8443/udp
+      - "${W9_HTTP_PORT_SET}:8065" # Mattermost web UI and REST API
+      - "${W9_TCP_PORT_SET}:8443/tcp" # Mattermost Calls (TCP)
+      - "${W9_UDP_PORT_SET}:8443/udp" # Mattermost Calls (UDP)
     volumes:
       - mattermost_config:/mattermost/config:rw
       - mattermost_data:/mattermost/data:rw

@@ -2,11 +2,19 @@
   "name": "opensearch",
   "trademark": "OpenSearch",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/opensearchproject/opensearch",
+    "docs": [
+      "https://docs.opensearch.org/latest/install-and-configure/install-opensearch/docker/",
+      "https://docs.opensearch.org/latest/install-and-configure/install-dashboards/docker/",
+      "https://opensearch.org/releases/"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "3",
+        "3.9.0",
         "latest"
       ]
     }
@@ -23,7 +31,13 @@
     "memory": "8",
     "disk": "8"
   },
-  "upstream": {
-    "image": "https://hub.docker.com/r/opensearchproject/opensearch"
+  "env": {
+    "first_startup_only": [
+      "OPENSEARCH_INITIAL_ADMIN_PASSWORD"
+    ]
+  },
+  "help": {
+    "login": "The initial `admin` password comes from `W9_POWER_PASSWORD` via `OPENSEARCH_INITIAL_ADMIN_PASSWORD` and is only applied when the data volume is empty.",
+    "db": "OpenSearch still requires the host kernel setting `vm.max_map_count=262144` before deployment."
   }
 }
