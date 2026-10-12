@@ -1,17 +1,13 @@
-# image: https://hub.docker.com/r/jc21/nginx-proxy-manager
-# docs: https://nginxproxymanager.com/guide/#quick-setup
-
-version: '3.8'
-
 services:
   app:
-    image: jc21/nginx-proxy-manager:${W9_VERSION}
+    image: ${W9_REPO}:${W9_VERSION}
     restart: unless-stopped
-    container_name: ${W9_NAME}
+    container_name: ${W9_ID}
+    env_file:
+      - .env
     ports:
-      - '80:80'
-      - '${W9_HTTP_PORT}:81'
-      - '443:443'
+      - "${W9_HTTP_PORT_SET}:81" # Web Console
+      - "${W9_HTTPS_PORT_SET}:443" # HTTPS Proxy
     volumes:
       - nginx_data:/data
       - nginx_letsencrypt:/etc/letsencrypt

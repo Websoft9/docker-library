@@ -2,6 +2,15 @@
   "name": "kong",
   "trademark": "Kong Gateway (OSS)",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/_/kong",
+    "releases": "https://github.com/Kong/kong/releases",
+    "docs": [
+      "https://docs.konghq.com/gateway/latest/install/docker/",
+      "https://docs.konghq.com/gateway/latest/production/environment-variables/",
+      "https://github.com/Kong/docker-kong/tree/master/compose"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
@@ -12,22 +21,23 @@
     }
   ],
   "access": {
+    "defaultScheme": "http",
     "web": {
-      "port": 8000
+      "port": 8002,
+      "path": "/admin"
     },
     "admin": {
-      "port": 8002
+      "port": 8000,
+      "path": "/"
     },
     "api": {
-      "port": 8001
+      "port": 8001,
+      "path": "/"
     }
   },
   "requirements": {
     "cpu": "1",
     "memory": "2",
     "disk": "1"
-  },
-  "upstream": {
-    "image": "https://hub.docker.com/_/kong"
   }
 }

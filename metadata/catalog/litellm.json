@@ -1,0 +1,17 @@
+{
+  "trademark": "LiteLLM",
+  "catalogBindings": [
+    {
+      "parentKey": "ai",
+      "childKey": "aiui"
+    },
+    {
+      "parentKey": "ai",
+      "childKey": "ai-agent-chat"
+    }
+  ],
+  "summary": "OpenAI-compatible LLM gateway and model proxy.",
+  "overview": "LiteLLM provides a self-hosted OpenAI-compatible gateway for routing requests to multiple model providers through one API and admin console.",
+  "description": "LiteLLM is an open-source LLM gateway and proxy server. It exposes an OpenAI-compatible API, centralizes provider credentials, and adds features such as model routing, unified auth, spend tracking, and an admin UI.\n\nThis package deploys the official LiteLLM proxy with a bundled PostgreSQL database, following the upstream DB-backed Docker quickstart topology so the `/ui` admin console and model/key management features are available.\n\nTypical use cases include unifying multiple LLM providers behind one endpoint, centralizing API access for internal tools, testing OpenAI-compatible clients against other model backends, and running a self-hosted AI gateway for teams.",
+  "websiteurl": "https://www.litellm.ai"
+}

@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-10-12
+
+- Updated the Laravel framework package version from `13.31.0` to `13.35.0`.
+- Refreshed the generated package README so the supported version matches the updated scaffold target.
+
 ## 2026-09-17
 
 - Added a thin runtime orchestrator in front of the base image entrypoint so the unified `DATABASE_URL` is mapped to Laravel's `DB_CONNECTION`/`DB_URL` (the base `/etc/entrypoint.d/` scripts run in subshells and cannot export to the main process).

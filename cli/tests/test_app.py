@@ -1,5 +1,11 @@
 from __future__ import annotations
 
+import concurrent.futures
+import os
+import subprocess
+import sys
+import textwrap
+
 import yaml
 
 from libs import app as app_module
@@ -104,3 +110,34 @@ def test_archive_app_dry_run_does_not_move_files(repo_fixture, app_factory):
     assert result["metadata_updated"] is True
     assert (repo_fixture / "apps" / "nextcloud").exists()
     assert not (repo_fixture / "archive" / "apps" / "nextcloud").exists()
+
+
+def test_archive_app_concurrent_processes_preserve_all_metadata(repo_fixture, app_factory):
+    for name in ("owncloud", "posthog", "python", "signoz"):
+        app_factory(name)
+
+    script = textwrap.dedent(
+        """
+        import os
+        from libs import app
+        app.archive_app(os.environ["APP_NAME"], reason="batch-archive", dry_run=False)
+        """
+    )
+    commands = [[sys.executable, "-c", script] for _ in ("owncloud", "posthog", "python", "signoz")]
+    names = ["owncloud", "posthog", "python", "signoz"]
+
+    def run(payload):
+        command, name = payload
+        env = {**os.environ, "APP_NAME": name}
+        return subprocess.run(command, cwd=repo_fixture, check=True, capture_output=True, text=True, env=env)
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+        results = list(executor.map(run, zip(commands, names, strict=True)))
+
+    updated_archive = yaml.safe_load((repo_fixture / "metadata" / "archive.yaml").read_text(encoding="utf-8"))
+    archived_apps = set(updated_archive["apps"])
+
+    assert all(result.returncode == 0 for result in results)
+    assert {"owncloud", "posthog", "python", "signoz"}.issubset(archived_apps)
+    for name in ("owncloud", "posthog", "python", "signoz"):
+        assert updated_archive["overrides"][name] == {"archive_reason": "batch-archive"}

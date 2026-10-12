@@ -1,23 +1,18 @@
-# image: https://hub.docker.com/_/nginx
-# docs: https://github.com/nginxinc/docker-nginx
-
-version: '3.8'
-
 services:
   nginx:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     env_file:
       - .env
     restart: unless-stopped
     working_dir: /usr/share/nginx/html
     ports:
-      - "$W9_HTTP_PORT_SET:80"
+      - "${W9_HTTP_PORT_SET}:80" # Web Console
     volumes:
       - site:/usr/share/nginx/html # Add your html site
       - ./src/default.conf:/etc/nginx/conf.d/default.conf
       - ./src/cmd.sh:/usr/local/bin/cmd.sh
-    command: /bin/bash -c "bash /usr/local/bin/cmd.sh && nginx -g 'daemon off;'"  
+    command: /bin/bash -c "bash /usr/local/bin/cmd.sh && nginx -g 'daemon off;'"
     
 networks:
   default:

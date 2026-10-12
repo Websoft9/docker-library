@@ -1,12 +1,6 @@
-# docs: https://docs.konghq.com/gateway/latest/install/docker/#main
-# image: https://hub.docker.com/_/kong
-# compose: https://github.com/Kong/docker-kong/blob/master/compose/docker-compose.yml
-
-version: '3.8'
-
 services:
   kong-migrations:
-    image: $W9_REPO:${W9_VERSION}
+    image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}-migrations
     command: kong migrations bootstrap
     depends_on:
@@ -15,26 +9,29 @@ services:
     restart: on-failure
 
   kong-migrations-up:
-    image: $W9_REPO:${W9_VERSION}
+    image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}-migrations-up
-    command: kong migrations up && kong migrations finish
+    command:
+      - /bin/sh
+      - -ec
+      - kong migrations up && kong migrations finish
     depends_on:
       - db
     env_file: .env
     restart: on-failure
 
   kong:
-    image: $W9_REPO:${W9_VERSION}
+    image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     depends_on:
-      kong-migrations-up: 
+      kong-migrations-up:
         condition: service_completed_successfully
     user: "${KONG_USER:-kong}"
     env_file: .env
     ports:
-      - ${W9_HTTP_PORT_SET}:8000 # apis
-      - ${W9_ADMIN_API_PORT_SET}:8001 # admin api
-      - ${W9_ADMIN_GUI_PORT_SET}:8002 # admin gui
+      - "${W9_HTTP_PORT_SET}:8000" # Proxy
+      - "${W9_ADMIN_API_PORT_SET}:8001" # Admin API
+      - "${W9_ADMIN_GUI_PORT_SET}:8002" # Kong Manager
     healthcheck:
       test: [ "CMD", "kong", "health" ]
       interval: 10s
@@ -43,14 +40,13 @@ services:
     restart: on-failure:5
     read_only: true
     volumes:
-      - kong_prefix_vol:${KONG_PREFIX}
       - kong_tmp_vol:/tmp
       - ./src/config:/opt/kong
     security_opt:
       - no-new-privileges
 
   db:
-    image: postgres:$W9_DB_VERSION
+    image: postgres:${W9_DB_VERSION}
     container_name: ${W9_ID}-postgresql
     environment:
       POSTGRES_DB: ${KONG_PG_DATABASE}
@@ -68,11 +64,7 @@ services:
       - "postgres:/var/lib/postgresql/data"
 
 volumes:
-  postgres: 
-  kong_prefix_vol:
-    driver_opts:
-      type: tmpfs
-      device: tmpfs
+  postgres:
   kong_tmp_vol:
     driver_opts:
       type: tmpfs

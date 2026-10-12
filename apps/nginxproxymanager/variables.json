@@ -1,12 +1,12 @@
 {
-  "name": "nginxmanager",
+  "name": "nginxproxymanager",
   "trademark": "Nginx Proxy Manager",
-  "release": false,
+  "release": true,
   "edition": [
     {
       "dist": "community",
       "version": [
-        "2.10.4",
+        "2.16.0",
         "latest"
       ]
     }
@@ -22,5 +22,23 @@
     "cpu": "1",
     "memory": "1",
     "disk": "1"
+  },
+  "upstream": {
+    "image": "https://hub.docker.com/r/jc21/nginx-proxy-manager",
+    "releases": "https://github.com/NginxProxyManager/nginx-proxy-manager/releases",
+    "docs": [
+      "https://nginxproxymanager.com/guide/#quick-setup",
+      "https://github.com/NginxProxyManager/nginx-proxy-manager/releases/tag/v2.16.0"
+    ]
+  },
+  "credentials": {
+    "username": {
+      "source": "inline",
+      "value": "admin@example.com"
+    },
+    "password": {
+      "source": "inline",
+      "value": "changeme"
+    }
   }
 }

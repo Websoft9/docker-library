@@ -1,13 +1,10 @@
-# image: https://hub.docker.com/r/keycloak/keycloak
-# docs:  https://www.keycloak.org/getting-started/getting-started-docker
-
 services:
-
   keycloak:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
     ports:
-      - $W9_HTTP_PORT_SET:8080
+      - "${W9_HTTP_PORT_SET}:8080" # Web Console
     env_file: .env
     command: start-dev
     volumes:
@@ -18,5 +15,5 @@ volumes:
 
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

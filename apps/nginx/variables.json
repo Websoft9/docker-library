@@ -6,7 +6,7 @@
     {
       "dist": "community",
       "version": [
-        "1.29",
+        "1.31",
         "latest"
       ]
     }
@@ -24,6 +24,10 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/_/nginx"
+    "image": "https://hub.docker.com/_/nginx",
+    "docs": [
+      "https://hub.docker.com/_/nginx",
+      "https://github.com/nginx/docker-nginx"
+    ]
   }
 }

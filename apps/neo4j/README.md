@@ -29,16 +29,16 @@ Note: the Connection URL is resolved from your browser directly to the Bolt port
 Websoft9 packages this app from the official [Neo4j Docker image](https://hub.docker.com/_/neo4j) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
-This package tracks the current Neo4j `2026.07` release line with the official Docker image and persists database state in `/data`, which matches the current upstream Docker guidance.
+This package tracks the current Neo4j `2026.09` release line with the official Docker image and persists database state in `/data`, which matches the current upstream Docker guidance.
 
-Upstream release notes explicitly warn against using `2026.07.0` because of a data-readability bug in `trim()`. This package therefore publishes the floating `2026.07` tag instead of pinning the bad `2026.07.0` patch.
+This package publishes the floating `2026.09` tag so upstream patch updates within the `2026.09` line can be adopted without changing the package shape.
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 2026.07, 2026.07-enterprise, 5.26, 5.26-enterprise.
+Supported versions: 2026.09, 2026.09-enterprise, 5.26, 5.26-enterprise.
 
 
 ### Ports
@@ -77,7 +77,7 @@ Configuration files live inside the image; mount a single file read-only to over
 
 - [Official docs](https://neo4j.com/docs/operations-manual/current/docker/introduction/)
 
-- [Official docs](https://neo4j.com/release-notes/database/neo4j-2026-07-1/)
+- [Official docs](https://neo4j.com/release-notes/database/neo4j-2026-09-0/)
 
 
 <!-- W9_TROUBLESHOOT_START -->

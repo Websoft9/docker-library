@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-10-12
+- Updated n8n to `2.43.4`.
+- Added app-local functional test metadata for deploy validation.
+
 ## 2026-09-08
 - Updated n8n to `2.38.4`.
 - Replaced deprecated `WEBHOOK_URL` with `N8N_WEBHOOK_URL` and added `N8N_PROXY_HOPS=1` for reverse-proxy deployments.

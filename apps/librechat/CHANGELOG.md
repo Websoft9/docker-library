@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-10-12
+
+- Hardened the packaged `v0.8.7` deployment with explicit generated secrets for the admin panel, Meilisearch, JWT, and credential storage.
+- Mounted the package `.env` into the API container and set `LIBRECHAT_TEMP_CREDENTIALS_PATH` so generated temp credentials persist under `/app/data`.
+- Aligned `src/librechat.yaml` back to the upstream `v0.8.7` config schema version and refreshed upstream metadata links.
+
 ## 2026-09-13
 
 - Pinned the main image from the floating `latest` to `librechat/librechat:v0.8.7`.

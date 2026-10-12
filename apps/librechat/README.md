@@ -33,9 +33,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: v0.8.7, latest.
-
-The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
+Supported versions: v0.8.7.
 
 
 ### Ports
@@ -49,6 +47,7 @@ The `latest` tag is not guaranteed to remain valid; pin a specific version for p
 ### Data Directory
 
 
+- `./.env` → `/app/.env`
 - `app-images` → `/app/client/public/images`
 - `app-uploads` → `/app/uploads`
 - `app-logs` → `/app/logs`
@@ -76,17 +75,17 @@ Configuration is overridden by mounting `./src/librechat.yaml` to `/app/librecha
 
 - [Docker Hub image](https://hub.docker.com/r/librechat/librechat)
 
-- [Releases](https://github.com/danny-avila/LibreChat/releases)
+- [Releases](https://github.com/LibreChat-AI/LibreChat/releases)
 
-- [Official compose](https://raw.githubusercontent.com/danny-avila/LibreChat/main/docker-compose.yml)
+- [Official compose](https://raw.githubusercontent.com/LibreChat-AI/LibreChat/main/docker-compose.yml)
 
-- [Official env example](https://raw.githubusercontent.com/danny-avila/LibreChat/main/.env.example)
+- [Official env example](https://raw.githubusercontent.com/LibreChat-AI/LibreChat/main/.env.example)
 
 - [Official docs](https://www.librechat.ai/docs/local/docker)
 
 - [Official docs](https://www.librechat.ai/docs/configuration/dotenv)
 
-- [GitHub docs](https://github.com/danny-avila/LibreChat)
+- [GitHub docs](https://github.com/LibreChat-AI/LibreChat)
 
 
 <!-- W9_TROUBLESHOOT_START -->

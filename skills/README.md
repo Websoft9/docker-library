@@ -26,6 +26,7 @@ Shared skills:
 - `catalog-seed`
 - `update-assessment`
 - `app-update`
+- `batch-app-update`
 - `new-app`
 - `archive-app`
 - `restore-app`

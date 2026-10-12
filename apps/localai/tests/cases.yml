@@ -1,0 +1,5 @@
+optional:
+  - id: auth-required
+    type: web-access
+    path: /v1/models
+    expect_status: 401

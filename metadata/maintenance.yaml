@@ -23,7 +23,6 @@ cadence:
   - neo4j
   - nextcloud
   - onlyofficedocs
-  - owncloud
   - portainer
   - postgresql
   - timescaledb
@@ -35,6 +34,8 @@ cadence:
   - wordpress
   - wordpresspro
   - dsh
-update_policy: {}
+  monthly: []
+update_policy:
+  patch-minor: []
 lifecycle:
   frozen: []

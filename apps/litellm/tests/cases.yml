@@ -1,0 +1,5 @@
+optional:
+  - id: ui-redirect
+    type: web-access
+    path: /ui
+    expect_status: 200

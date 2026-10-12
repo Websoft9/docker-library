@@ -1,7 +1,7 @@
 ### Default Demo which you can delete it
 
 echo "Add your CI code here, below is example"
-if [! -e /usr/share/nginx/html/index.html ]; then
+if [ ! -e /usr/share/nginx/html/index.html ]; then
     echo "Hello, Nginx!" > /usr/share/nginx/html/index.html
 fi
 

@@ -37,7 +37,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 2.38.4, latest.
+Supported versions: 2.43.4, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
@@ -72,7 +72,7 @@ Configuration files live inside the image; mount a single file read-only to over
 
 - [Docker Hub image](https://hub.docker.com/r/n8nio/n8n)
 
-- [Releases](https://github.com/n8n-io/n8n/releases/tag/n8n%402.38.4)
+- [Releases](https://github.com/n8n-io/n8n)
 
 - [Official docs](https://docs.n8n.io/deploy/host-n8n/install-options/install-with-docker.md)
 

@@ -6,8 +6,7 @@
     {
       "dist": "community",
       "version": [
-        "v3.9.0",
-        "latest"
+        "v4.6.2"
       ]
     }
   ],
@@ -24,6 +23,17 @@
     "disk": "8"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/localai/localai"
+    "image": "https://hub.docker.com/r/localai/localai",
+    "releases": "https://github.com/mudler/LocalAI/releases",
+    "docs": [
+      "https://localai.io/docs/getting-started/containers/",
+      "https://localai.io/docs/getting-started/models/",
+      "https://github.com/mudler/LocalAI"
+    ]
+  },
+  "env": {
+    "secrets": [
+      "LOCALAI_API_KEY"
+    ]
   }
 }

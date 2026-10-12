@@ -13,6 +13,7 @@ services:
       - MEILI_HOST=http://${W9_ID}-meilisearch:7700
       - RAG_PORT=8000
       - RAG_API_URL=http://${W9_ID}-rag:8000
+      - LIBRECHAT_TEMP_CREDENTIALS_PATH=/app/data/.env.temp
     depends_on:
       mongodb:
         condition: service_started
@@ -21,6 +22,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
+      - ./.env:/app/.env:ro
       - ./src/librechat.yaml:/app/librechat.yaml:ro
       - app-images:/app/client/public/images
       - app-uploads:/app/uploads
@@ -46,7 +48,7 @@ services:
       - PORT=3000
       - SESSION_SECRET=${ADMIN_PANEL_SESSION_SECRET}
       - API_SERVER_URL=http://${W9_ID}:3080
-      - VITE_API_BASE_URL=http://${W9_URL}
+      - VITE_API_BASE_URL=${DOMAIN_CLIENT}
       - SESSION_COOKIE_SECURE=${ADMIN_PANEL_SESSION_COOKIE_SECURE}
 
   mongodb:

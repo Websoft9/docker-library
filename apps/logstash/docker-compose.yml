@@ -3,8 +3,6 @@
 # docs: https://www.elastic.co/guide/en/logstash/current/docker.html#docker
 # docs: https://www.elastic.co/guide/en/logstash/current/docker-config.html
 
-version: '3.8' 
-
 services:
 
   logstash:

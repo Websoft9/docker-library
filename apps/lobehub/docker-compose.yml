@@ -70,7 +70,7 @@ services:
       - rustfs_data:/data
 
   rustfs-init:
-    image: quay.io/minio/mc:latest
+    image: rustfs/rc:latest
     container_name: ${W9_ID}-rustfs-init
     restart: "no"
     depends_on:
@@ -81,7 +81,7 @@ services:
     entrypoint: /bin/sh
     command:
       - -c
-      - 'set -eux; mc alias set rustfs "http://${W9_ID}-rustfs:9000" "${RUSTFS_ACCESS_KEY}" "${RUSTFS_SECRET_KEY}"; mc mb "rustfs/lobe" --ignore-existing; mc anonymous set-json "/bucket.config.json" "rustfs/lobe";'
+      - 'set -eux; rc alias set rustfs "http://${W9_ID}-rustfs:9000" "${RUSTFS_ACCESS_KEY}" "${RUSTFS_SECRET_KEY}"; rc mb "rustfs/lobe" --ignore-existing; rc anonymous set-json "/bucket.config.json" "rustfs/lobe";'
 
 volumes:
   postgresql_data:
