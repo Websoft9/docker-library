@@ -20,7 +20,10 @@ USER root
 RUN mkdir -p /etc/apt/keyrings \
     && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
     && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_18.x nodistro main" > /etc/apt/sources.list.d/nodesource.list \
-    && apt-get update \
+    && export DEBIAN_FRONTEND=noninteractive \
+    && sed -i 's|http://deb.debian.org/debian-security|http://archive.debian.org/debian-security|g' /etc/apt/sources.list \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get -o Acquire::Check-Valid-Until=false update \
     && apt-get install -y --no-install-recommends apache2 default-mysql-client gnupg nodejs \
     && npm install -g yarn@1.22.22 \
     && a2enmod rewrite proxy proxy_fcgi actions alias expires headers \

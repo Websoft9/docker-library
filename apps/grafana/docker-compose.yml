@@ -1,18 +1,11 @@
-# docs: https://grafana.com/docs/grafana/latest/installation/docker/
-# dockerfile: https://github.com/grafana/grafana/blob/main/Dockerfile
-# dockerhub: https://hub.docker.com/r/grafana/grafana
-# mysql db for grafana meta storage
-
-version: '3.8'
-
 services:
 
   grafana:
-    image: grafana/grafana-oss:${W9_VERSION}
+    image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}  
     restart: unless-stopped
     ports:
-      - ${W9_HTTP_PORT_SET}:3000
+      - ${W9_HTTP_PORT_SET}:3000 # Web console
     volumes:
       - data:/var/lib/grafana
       - config:/etc/grafana

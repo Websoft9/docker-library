@@ -71,6 +71,11 @@ switch ($Target) {
     Write-HelpEntry "opencode-clear" "list opencode sessions, confirm, then delete them (ARGS: --all/--dry-run)"
     Write-HelpEntry "cli" "open a PowerShell with the libs CLI activated"
     Write-HelpEntry "libs" "run one libs command, e.g. .\make.ps1 libs scan --app wordpress --json"
+    Write-HelpHeader "Server Ops"
+    Write-HelpEntry "dns-bind" "point the wildcard record (*.<domain>) at the remote host or localhost (ARGS: --domain/--ip/--json)"
+    Write-HelpEntry "dns-delete" "delete the single wildcard record (*.<domain>) for the domain (ARGS: --domain/--json)"
+    Write-HelpEntry "websoft9-upgrade" "upgrade the Websoft9 platform container: set image tag, pull, recreate (ARGS: --tag/--target)"
+    Write-HelpEntry "create-aliyun-ecs" "create a spot Aliyun ECS instance from ci/cloud/aliyun-ecs.json (ARGS: --disk-size/--release-in)"
     Write-HelpHeader "Testing & Quality"
     Write-HelpEntry "test" "run the full repo machine-system test suite"
     Write-HelpEntry "test-cli" "run cli unit and contract tests"
@@ -80,7 +85,7 @@ switch ($Target) {
     Write-HelpEntry "help" "show this help"
     Write-HelpEntry "install" "create .venv and install the libs CLI"
     Write-HelpEntry "remote" "interactively write .secrets/remote.env for remote-aware commands"
-    Write-HelpEntry "connector" "interactively write .secrets/<provider>.env for external API tokens"
+    Write-HelpEntry "connector" "interactively write .secrets/<provider>.env for API tokens, DNS and cloud credentials"
     Write-Host ""
   }
   "install" {
@@ -92,6 +97,22 @@ switch ($Target) {
   "libs" {
     Set-ProxyEnvironment
     & .\.venv\Scripts\libs.exe @Args
+  }
+  "dns-bind" {
+    Set-ProxyEnvironment
+    & .\.venv\Scripts\python.exe -m libs.ops dns-bind @Args
+  }
+  "dns-delete" {
+    Set-ProxyEnvironment
+    & .\.venv\Scripts\python.exe -m libs.ops dns-delete @Args
+  }
+  "websoft9-upgrade" {
+    Set-ProxyEnvironment
+    & .\.venv\Scripts\python.exe -m libs.ops websoft9-upgrade @Args
+  }
+  "create-aliyun-ecs" {
+    Set-ProxyEnvironment
+    & .\.venv\Scripts\python.exe -m libs.ops create-aliyun-ecs @Args
   }
   "cli" {
     $pwsh = if (Get-Command pwsh -ErrorAction SilentlyContinue) { "pwsh" } else { "powershell" }
@@ -150,18 +171,27 @@ switch ($Target) {
         "contentful" { $currentChoice = "1" }
         "cloudflare" { $currentChoice = "2" }
         "dockerhub" { $currentChoice = "3" }
-        "aliyun" { $currentChoice = "4" }
+        "dns" { $currentChoice = "4" }
+        "alibabacloud" { $currentChoice = "5" }
+        "aws" { $currentChoice = "6" }
+        "azure" { $currentChoice = "7" }
         "1" { $currentChoice = "1" }
         "2" { $currentChoice = "2" }
         "3" { $currentChoice = "3" }
         "4" { $currentChoice = "4" }
+        "5" { $currentChoice = "5" }
+        "6" { $currentChoice = "6" }
+        "7" { $currentChoice = "7" }
       }
     }
     Write-Host "Available providers:"
     Write-Host "  1) contentful"
     Write-Host "  2) cloudflare"
     Write-Host "  3) dockerhub"
-    Write-Host "  4) aliyun (DNS)"
+    Write-Host "  4) dns"
+    Write-Host "  5) alibabacloud"
+    Write-Host "  6) aws"
+    Write-Host "  7) azure"
     $provider = Read-Host "provider [$currentChoice]"
     if (-not $provider) {
       $provider = $currentChoice
@@ -171,7 +201,10 @@ switch ($Target) {
       "1" { $provider = "contentful" }
       "2" { $provider = "cloudflare" }
       "3" { $provider = "dockerhub" }
-      "4" { $provider = "aliyun" }
+      "4" { $provider = "dns" }
+      "5" { $provider = "alibabacloud" }
+      "6" { $provider = "aws" }
+      "7" { $provider = "azure" }
     }
 
     if ($provider -eq "contentful") {
@@ -183,9 +216,14 @@ switch ($Target) {
     } elseif ($provider -eq "dockerhub") {
       $file = ".secrets/dockerhub.env"
       $key = "DOCKERHUB_TOKEN"
-    } elseif ($provider -eq "aliyun") {
+    } elseif ($provider -eq "dns") {
+      $file = ".secrets/dns.env"
+    } elseif ($provider -eq "alibabacloud") {
       $file = ".secrets/aliyun.env"
-      $key = "ALIYUN_ACCESS_KEY_SECRET"
+    } elseif ($provider -eq "aws") {
+      $file = ".secrets/aws.env"
+    } elseif ($provider -eq "azure") {
+      $file = ".secrets/azure.env"
     } else {
       throw "Unsupported provider: $provider"
     }
@@ -229,19 +267,67 @@ switch ($Target) {
       $lines = @("DOCKERHUB_USERNAME=$inputUser", "DOCKERHUB_TOKEN=$inputToken")
       if ($inputOrg) { $lines += "DOCKERHUB_ORG=$inputOrg" }
       Set-Content -Encoding UTF8 -Path $file -Value $lines
-    } elseif ($provider -eq "aliyun") {
+    } elseif ($provider -eq "dns") {
+      $curDns = $existing["DNS_PROVIDER"]
+      if (-not $curDns) { $curDns = "aliyun" }
+      $curId = $existing["DNS_KEY_ID"]
+      $curSecret = $existing["DNS_KEY_SECRET"]
+      $curDomain = $existing["DNS_DOMAIN"]
+      $inputDns = Read-Host "DNS_PROVIDER (e.g. aliyun) [$curDns]"
+      if (-not $inputDns) { $inputDns = $curDns }
+      $inputId = Read-Host "DNS_KEY_ID [$curId]"
+      if (-not $inputId) { $inputId = $curId }
+      $inputSecret = Read-SecretValue "DNS_KEY_SECRET [keep existing]"
+      if (-not $inputSecret) { $inputSecret = $curSecret }
+      $inputDomain = Read-Host "DNS_DOMAIN (wildcard base, e.g. libs.websoft9.cn) [$curDomain]"
+      if (-not $inputDomain) { $inputDomain = $curDomain }
+      if (-not $inputDns -or -not $inputId -or -not $inputSecret) { throw "provider, key id and secret are required" }
+      $lines = @("DNS_PROVIDER=$inputDns", "DNS_KEY_ID=$inputId", "DNS_KEY_SECRET=$inputSecret")
+      if ($inputDomain) { $lines += "DNS_DOMAIN=$inputDomain" }
+      Set-Content -Encoding UTF8 -Path $file -Value $lines
+    } elseif ($provider -eq "alibabacloud") {
       $curId = $existing["ALIYUN_ACCESS_KEY_ID"]
       $curSecret = $existing["ALIYUN_ACCESS_KEY_SECRET"]
-      $curDomain = $existing["ALIYUN_DNS_DOMAIN"]
+      $curRegion = $existing["ALIYUN_REGION"]
       $inputId = Read-Host "ALIYUN_ACCESS_KEY_ID [$curId]"
       if (-not $inputId) { $inputId = $curId }
       $inputSecret = Read-SecretValue "ALIYUN_ACCESS_KEY_SECRET [keep existing]"
       if (-not $inputSecret) { $inputSecret = $curSecret }
-      $inputDomain = Read-Host "ALIYUN_DNS_DOMAIN (wildcard base, e.g. libs.websoft9.cn) [$curDomain]"
-      if (-not $inputDomain) { $inputDomain = $curDomain }
+      $inputRegion = Read-Host "ALIYUN_REGION (optional, e.g. cn-hongkong) [$curRegion]"
+      if (-not $inputRegion) { $inputRegion = $curRegion }
       if (-not $inputId -or -not $inputSecret) { throw "access key id and secret are required" }
       $lines = @("ALIYUN_ACCESS_KEY_ID=$inputId", "ALIYUN_ACCESS_KEY_SECRET=$inputSecret")
-      if ($inputDomain) { $lines += "ALIYUN_DNS_DOMAIN=$inputDomain" }
+      if ($inputRegion) { $lines += "ALIYUN_REGION=$inputRegion" }
+      Set-Content -Encoding UTF8 -Path $file -Value $lines
+    } elseif ($provider -eq "aws") {
+      $curId = $existing["AWS_ACCESS_KEY_ID"]
+      $curSecret = $existing["AWS_SECRET_ACCESS_KEY"]
+      $curRegion = $existing["AWS_REGION"]
+      $inputId = Read-Host "AWS_ACCESS_KEY_ID [$curId]"
+      if (-not $inputId) { $inputId = $curId }
+      $inputSecret = Read-SecretValue "AWS_SECRET_ACCESS_KEY [keep existing]"
+      if (-not $inputSecret) { $inputSecret = $curSecret }
+      $inputRegion = Read-Host "AWS_REGION (optional, e.g. us-east-1) [$curRegion]"
+      if (-not $inputRegion) { $inputRegion = $curRegion }
+      if (-not $inputId -or -not $inputSecret) { throw "access key id and secret are required" }
+      $lines = @("AWS_ACCESS_KEY_ID=$inputId", "AWS_SECRET_ACCESS_KEY=$inputSecret")
+      if ($inputRegion) { $lines += "AWS_REGION=$inputRegion" }
+      Set-Content -Encoding UTF8 -Path $file -Value $lines
+    } elseif ($provider -eq "azure") {
+      $curSub = $existing["AZURE_SUBSCRIPTION_ID"]
+      $curTenant = $existing["AZURE_TENANT_ID"]
+      $curClient = $existing["AZURE_CLIENT_ID"]
+      $curSecret = $existing["AZURE_CLIENT_SECRET"]
+      $inputSub = Read-Host "AZURE_SUBSCRIPTION_ID [$curSub]"
+      if (-not $inputSub) { $inputSub = $curSub }
+      $inputTenant = Read-Host "AZURE_TENANT_ID [$curTenant]"
+      if (-not $inputTenant) { $inputTenant = $curTenant }
+      $inputClient = Read-Host "AZURE_CLIENT_ID [$curClient]"
+      if (-not $inputClient) { $inputClient = $curClient }
+      $inputSecret = Read-SecretValue "AZURE_CLIENT_SECRET [keep existing]"
+      if (-not $inputSecret) { $inputSecret = $curSecret }
+      if (-not $inputSub -or -not $inputTenant -or -not $inputClient -or -not $inputSecret) { throw "subscription id, tenant id, client id and client secret are required" }
+      $lines = @("AZURE_SUBSCRIPTION_ID=$inputSub", "AZURE_TENANT_ID=$inputTenant", "AZURE_CLIENT_ID=$inputClient", "AZURE_CLIENT_SECRET=$inputSecret")
       Set-Content -Encoding UTF8 -Path $file -Value $lines
     } else {
       $token = Read-SecretValue $key

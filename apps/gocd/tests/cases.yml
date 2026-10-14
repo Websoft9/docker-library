@@ -1,0 +1,5 @@
+optional:
+  - id: server-health
+    type: web-access
+    path: /go/api/v1/health
+    expect_status: 200

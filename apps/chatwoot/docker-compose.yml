@@ -1,14 +1,7 @@
-# docs: https://www.chatwoot.com/docs/self-hosted/deployment/docker
-# compose: https://github.com/chatwoot/chatwoot/blob/develop/docker-compose.production.yaml
-# chatwoot base container is not need, it only for build
-
-version: '3.8'
-
 services:
-
   rails:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
     env_file: .env
     volumes:
@@ -17,32 +10,28 @@ services:
       - postgres
       - redis
     ports:
-      - $W9_HTTP_PORT_SET:3000
+      - "${W9_HTTP_PORT_SET}:3000" # Web Console
     environment:
       - NODE_ENV=production
       - RAILS_ENV=production
       - INSTALLATION_ENV=docker
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:3000/api || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 120s
     entrypoint: docker/entrypoints/rails.sh
-    command: ['bundle', 'exec', 'rails', 's', '-p', '3000', '-b', '0.0.0.0']
-
-  migrate:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID-migrate
-    env_file: .env
-    volumes:
-      - chatwoot:/app/storage
-    depends_on:
-      - rails
-    environment:
-      - NODE_ENV=production
-      - RAILS_ENV=production
-      - INSTALLATION_ENV=docker
-    entrypoint: docker/entrypoints/rails.sh
-    command: bundle exec rails db:chatwoot_prepare
+    command:
+      [
+        'sh',
+        '-lc',
+        'bundle exec rails db:chatwoot_prepare && exec bundle exec rails s -p 3000 -b 0.0.0.0'
+      ]
 
   sidekiq:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID-sidekiq
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}-sidekiq
     restart: unless-stopped
     env_file: .env
     volumes:
@@ -58,7 +47,7 @@ services:
 
   postgres:
     image: pgvector/pgvector:pg16
-    container_name: $W9_ID-postgresql
+    container_name: ${W9_ID}-postgresql
     restart: unless-stopped
     volumes:
       - postgres:/var/lib/postgresql/data
@@ -66,11 +55,11 @@ services:
       - POSTGRES_DB=chatwoot
       - POSTGRES_USER=postgres
       # Please provide your own password.
-      - POSTGRES_PASSWORD=$W9_POWER_PASSWORD
+      - POSTGRES_PASSWORD=${W9_POWER_PASSWORD}
 
   redis:
     image: redis:alpine
-    container_name: $W9_ID-redis
+    container_name: ${W9_ID}-redis
     restart: unless-stopped
     command: ["sh", "-c", "redis-server"]
     volumes:
@@ -83,5 +72,5 @@ volumes:
     
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

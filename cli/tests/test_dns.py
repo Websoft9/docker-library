@@ -5,7 +5,7 @@ import types
 import pytest
 from typer.testing import CliRunner
 
-from libs import dns, main
+from libs import dns, ops
 
 
 runner = CliRunner()
@@ -176,8 +176,22 @@ def test_delete_rejects_missing_and_multiple(monkeypatch):
 
 
 def test_call_rejects_missing_credentials():
-    with pytest.raises(dns.DnsError, match="missing Aliyun credentials"):
+    with pytest.raises(dns.DnsError, match="missing DNS credentials"):
         dns.call("DescribeDomains", {}, "", "")
+
+
+def test_resolve_provider_defaults_and_reads_env(monkeypatch):
+    monkeypatch.delenv("DNS_PROVIDER", raising=False)
+    assert dns.resolve_provider() == dns.DEFAULT_PROVIDER
+
+    monkeypatch.setenv("DNS_PROVIDER", "cloudflare")
+    assert dns.resolve_provider() == "cloudflare"
+
+
+def test_ensure_supported_provider_accepts_only_aliyun():
+    dns.ensure_supported_provider(dns.ALIYUN_PROVIDER)
+    with pytest.raises(dns.DnsError, match="unsupported DNS provider"):
+        dns.ensure_supported_provider("cloudflare")
 
 
 def test_call_raises_on_api_error(monkeypatch):
@@ -294,11 +308,11 @@ def test_dns_bind_command_contract(repo_fixture, monkeypatch):
         container["kwargs"] = kwargs
         return {"status": "updated", "container": "websoft9"}
 
-    monkeypatch.setattr(main.dns, "bind", fake_bind)
-    monkeypatch.setattr(main.dns, "configure_container", fake_configure)
+    monkeypatch.setattr(ops.dns, "bind", fake_bind)
+    monkeypatch.setattr(ops.dns, "configure_container", fake_configure)
 
     result = runner.invoke(
-        main.app,
+        ops.app,
         ["dns-bind", "--domain", "libs.websoft9.cn", "--ip", "1.2.3.4", "--json"],
     )
 
@@ -312,11 +326,11 @@ def test_dns_bind_command_contract(repo_fixture, monkeypatch):
 
 def test_dns_bind_command_skips_container_when_disabled(repo_fixture, monkeypatch):
     called = []
-    monkeypatch.setattr(main.dns, "bind", lambda **kwargs: {"action": "created"})
-    monkeypatch.setattr(main.dns, "configure_container", lambda *args, **kwargs: called.append(True) or {})
+    monkeypatch.setattr(ops.dns, "bind", lambda **kwargs: {"action": "created"})
+    monkeypatch.setattr(ops.dns, "configure_container", lambda *args, **kwargs: called.append(True) or {})
 
     result = runner.invoke(
-        main.app,
+        ops.app,
         ["dns-bind", "--domain", "libs.websoft9.cn", "--ip", "1.2.3.4", "--no-container", "--json"],
     )
 
@@ -326,7 +340,7 @@ def test_dns_bind_command_skips_container_when_disabled(repo_fixture, monkeypatc
 
 
 def test_dns_delete_command_requires_domain(repo_fixture):
-    result = runner.invoke(main.app, ["dns-delete", "--json"])
+    result = runner.invoke(ops.app, ["dns-delete", "--json"])
 
     assert result.exit_code == 2
     assert "domain is required" in (result.stdout + result.stderr)

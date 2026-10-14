@@ -408,7 +408,9 @@ def run_app_tests(
         def attempt() -> dict:
             return run_case(app_name, case, env, resolved_base_url, remote_ctx)
 
-        should_retry = case["type"] in {"container-up", "container-healthy", "web-access", "http-basic"}
+        should_retry = case["type"] in {"container-up", "container-healthy", "web-access", "http-basic"} or (
+            remote_ctx is not None and case["type"] == "compose-config"
+        )
         payload = _wait_for(
             wait_timeout,
             wait_interval,

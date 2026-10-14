@@ -34,8 +34,14 @@ cadence:
   - wordpress
   - wordpresspro
   - dsh
-  monthly: []
+  monthly:
+  - jfrog
+  - qwenpaw
+  - xinference
 update_policy:
-  patch-minor: []
+  patch-minor:
+  - jfrog
+  - qwenpaw
+  - xinference
 lifecycle:
   frozen: []

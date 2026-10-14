@@ -1,18 +1,14 @@
 from __future__ import annotations
 
-import base64
-import hashlib
-import hmac
 import shlex
-import uuid
-from datetime import datetime, timezone
 from pathlib import Path
-from urllib.parse import quote
 
-from libs import credentials, http, remote
+from libs import aliyun_rpc, credentials, http, remote
+from libs.aliyun_rpc import percent_encode, sign
 
 ALIYUN_VERSION = "2015-01-09"
-ALIYUN_PRODUCT = "aliyun"
+ALIYUN_PROVIDER = "aliyun"
+DEFAULT_PROVIDER = ALIYUN_PROVIDER
 DEFAULT_ENDPOINT = "https://alidns.aliyuncs.com/"
 DEFAULT_RECORD_TYPE = "A"
 DEFAULT_TTL = 600
@@ -25,49 +21,16 @@ WEBSOFT9_DOMAIN_KEY = "wildcard_domain"
 
 ContainerContext = tuple[str, str, Path]
 
-ACCESS_KEY_ID_ENV = "ALIYUN_ACCESS_KEY_ID"
-ACCESS_KEY_SECRET_ENV = "ALIYUN_ACCESS_KEY_SECRET"
-DOMAIN_ENV = "ALIYUN_DNS_DOMAIN"
-ENDPOINT_ENV = "ALIYUN_DNS_ENDPOINT"
+PROVIDER_KEY = "dns"
+PROVIDER_ENV = "DNS_PROVIDER"
+ACCESS_KEY_ID_ENV = "DNS_KEY_ID"
+ACCESS_KEY_SECRET_ENV = "DNS_KEY_SECRET"
+DOMAIN_ENV = "DNS_DOMAIN"
+ENDPOINT_ENV = "DNS_ENDPOINT"
 
 
 class DnsError(RuntimeError):
     pass
-
-
-def percent_encode(value: object) -> str:
-    return quote(str(value), safe="")
-
-
-def sign(params: dict[str, str], access_key_secret: str) -> str:
-    canonical = "&".join(
-        f"{percent_encode(key)}={percent_encode(value)}" for key, value in sorted(params.items())
-    )
-    string_to_sign = "GET&%2F&" + percent_encode(canonical)
-    digest = hmac.new(
-        (access_key_secret + "&").encode("utf-8"),
-        string_to_sign.encode("utf-8"),
-        hashlib.sha1,
-    ).digest()
-    return base64.b64encode(digest).decode("utf-8")
-
-
-def signed_params(action: str, params: dict[str, object], access_key_id: str, access_key_secret: str) -> dict[str, str]:
-    merged: dict[str, str] = {
-        "Format": "JSON",
-        "Version": ALIYUN_VERSION,
-        "AccessKeyId": access_key_id,
-        "SignatureMethod": "HMAC-SHA1",
-        "SignatureVersion": "1.0",
-        "SignatureNonce": str(uuid.uuid4()),
-        "Timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "Action": action,
-    }
-    for key, value in params.items():
-        if value is not None:
-            merged[key] = str(value)
-    merged["Signature"] = sign(merged, access_key_secret)
-    return merged
 
 
 def call(
@@ -79,10 +42,13 @@ def call(
 ) -> dict:
     if not access_key_id or not access_key_secret:
         raise DnsError(
-            f"missing Aliyun credentials; run `make connector` and choose aliyun, "
+            f"missing DNS credentials; run `make connector` and choose dns, "
             f"or set {ACCESS_KEY_ID_ENV} / {ACCESS_KEY_SECRET_ENV}"
         )
-    response = http.get(endpoint or DEFAULT_ENDPOINT, params=signed_params(action, params, access_key_id, access_key_secret))
+    response = http.get(
+        endpoint or DEFAULT_ENDPOINT,
+        params=aliyun_rpc.signed_params(action, params, access_key_id, access_key_secret, ALIYUN_VERSION),
+    )
     try:
         payload = response.json()
     except ValueError as error:
@@ -124,7 +90,7 @@ def normalize_domain(value: str) -> str:
 def wildcard_fqdn(domain: str) -> str:
     name = normalize_domain(domain)
     if not name:
-        raise ValueError("domain is required; pass --domain or set ALIYUN_DNS_DOMAIN")
+        raise ValueError(f"domain is required; pass --domain or set {DOMAIN_ENV}")
     if name.startswith("*."):
         return name
     return "*." + name
@@ -208,17 +174,26 @@ def resolve_credentials(
     env_file: str | None = None,
 ) -> tuple[str | None, str | None]:
     return (
-        credentials.resolve_secret(ACCESS_KEY_ID_ENV, ALIYUN_PRODUCT, access_key_id, env_file),
-        credentials.resolve_secret(ACCESS_KEY_SECRET_ENV, ALIYUN_PRODUCT, access_key_secret, env_file),
+        credentials.resolve_secret(ACCESS_KEY_ID_ENV, PROVIDER_KEY, access_key_id, env_file),
+        credentials.resolve_secret(ACCESS_KEY_SECRET_ENV, PROVIDER_KEY, access_key_secret, env_file),
     )
 
 
 def resolve_domain(explicit: str | None = None, env_file: str | None = None) -> str | None:
-    return credentials.resolve_secret(DOMAIN_ENV, ALIYUN_PRODUCT, explicit, env_file)
+    return credentials.resolve_secret(DOMAIN_ENV, PROVIDER_KEY, explicit, env_file)
+
+
+def resolve_provider(explicit: str | None = None, env_file: str | None = None) -> str:
+    return credentials.resolve_secret(PROVIDER_ENV, PROVIDER_KEY, explicit, env_file) or DEFAULT_PROVIDER
+
+
+def ensure_supported_provider(provider: str) -> None:
+    if provider != ALIYUN_PROVIDER:
+        raise DnsError(f"unsupported DNS provider {provider!r}; only {ALIYUN_PROVIDER} is implemented")
 
 
 def resolve_endpoint(explicit: str | None = None, env_file: str | None = None) -> str:
-    return credentials.resolve_secret(ENDPOINT_ENV, ALIYUN_PRODUCT, explicit, env_file) or DEFAULT_ENDPOINT
+    return credentials.resolve_secret(ENDPOINT_ENV, PROVIDER_KEY, explicit, env_file) or DEFAULT_ENDPOINT
 
 
 def resolve_target_ip(target: str | None = None, ip: str | None = None, ssh_host: str | None = None) -> str:
@@ -319,9 +294,10 @@ def _bind_payload(
     action: str,
     record_id: str | None,
     previous: str | None,
+    provider: str = ALIYUN_PROVIDER,
 ) -> dict:
     return {
-        "provider": ALIYUN_PRODUCT,
+        "provider": provider,
         "action": action,
         "domain": normalize_domain(domain or ""),
         "fqdn": fqdn,
@@ -348,10 +324,11 @@ def _bind_existing(
     key_id: str,
     key_secret: str,
     endpoint: str,
+    provider: str = ALIYUN_PROVIDER,
 ) -> dict:
     current = record.get("Value")
     if current is not None and str(current).strip() == str(value).strip():
-        return _bind_payload(domain, fqdn, zone, rr, record_type, ttl, value, "unchanged", record.get("RecordId"), current)
+        return _bind_payload(domain, fqdn, zone, rr, record_type, ttl, value, "unchanged", record.get("RecordId"), current, provider)
 
     try:
         result = call(
@@ -376,12 +353,12 @@ def _bind_existing(
         for item in find_records(zone, rr, record_type, key_id, key_secret, endpoint=endpoint):
             if str(item.get("Value", "")).strip() == str(value).strip():
                 return _bind_payload(
-                    domain, fqdn, zone, rr, record_type, ttl, value, "unchanged", item.get("RecordId"), item.get("Value")
+                    domain, fqdn, zone, rr, record_type, ttl, value, "unchanged", item.get("RecordId"), item.get("Value"), provider
                 )
         raise
 
     return _bind_payload(
-        domain, fqdn, zone, rr, record_type, ttl, value, "updated", record.get("RecordId") or result.get("RecordId"), current
+        domain, fqdn, zone, rr, record_type, ttl, value, "updated", record.get("RecordId") or result.get("RecordId"), current, provider
     )
 
 
@@ -396,6 +373,8 @@ def bind(
     env_file: str | None = None,
 ) -> dict:
     domain = resolve_domain(domain, env_file)
+    provider = resolve_provider(env_file=env_file)
+    ensure_supported_provider(provider)
     fqdn = wildcard_fqdn(domain or "")
     key_id, key_secret = resolve_credentials(access_key_id, access_key_secret, env_file)
     api_endpoint = resolve_endpoint(endpoint, env_file)
@@ -415,6 +394,7 @@ def bind(
         "key_id": key_id or "",
         "key_secret": key_secret or "",
         "endpoint": api_endpoint,
+        "provider": provider,
     }
 
     if records:
@@ -446,7 +426,7 @@ def bind(
         return _bind_existing(existing[0], **shared)
 
     return _bind_payload(
-        domain, fqdn, zone, rr, record_type, ttl, value, "created", result.get("RecordId"), None
+        domain, fqdn, zone, rr, record_type, ttl, value, "created", result.get("RecordId"), None, provider
     )
 
 
@@ -459,6 +439,8 @@ def delete(
     env_file: str | None = None,
 ) -> dict:
     domain = resolve_domain(domain, env_file)
+    provider = resolve_provider(env_file=env_file)
+    ensure_supported_provider(provider)
     fqdn = wildcard_fqdn(domain or "")
     key_id, key_secret = resolve_credentials(access_key_id, access_key_secret, env_file)
     api_endpoint = resolve_endpoint(endpoint, env_file)
@@ -478,7 +460,7 @@ def delete(
         endpoint=api_endpoint,
     )
     return {
-        "provider": ALIYUN_PRODUCT,
+        "provider": provider,
         "action": "deleted",
         "domain": normalize_domain(domain or ""),
         "fqdn": fqdn,

@@ -1,0 +1,10 @@
+optional:
+  - id: web-login
+    type: web-access
+    path: /geoserver/web/
+    expect_status: 200
+
+  - id: wms-capabilities
+    type: web-access
+    path: /geoserver/wms?service=WMS&request=GetCapabilities
+    expect_status: 200

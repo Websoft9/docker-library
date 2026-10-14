@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-10-13
+
+- Updated JiHu GitLab to `19.4.1`.
+- Minor in-place upgrades are supported; no packaging changes were required.
+
 ## 2026-09-15
 
 - Pinned JiHu GitLab from the floating `latest` tag to `19.3.2`.

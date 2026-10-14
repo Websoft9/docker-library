@@ -1,18 +1,15 @@
-# image: https://hub.docker.com/r/linuxserver/code-server
-
-version: "3.8"
 services:
   code-server:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     env_file: .env
     cpu_percent: 50
     mem_limit: 4g
     volumes:
       - "code:/config"
     ports:
-      - $W9_HTTP_PORT_SET:8443
-      #- 9003:3000 # for webserver when development test
+      - "${W9_HTTP_PORT_SET}:8443" # Web Console
+      #- "9003:3000" # App preview during development
     restart: unless-stopped
 
 networks:

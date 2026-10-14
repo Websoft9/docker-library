@@ -1,0 +1,46 @@
+{
+  "name": "qwenpaw",
+  "trademark": "QwenPaw",
+  "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/agentscope/qwenpaw",
+    "releases": "https://github.com/agentscope-ai/QwenPaw/releases",
+    "compose": {
+      "compose": "https://raw.githubusercontent.com/agentscope-ai/QwenPaw/main/docker-compose.yml",
+      "env": "https://qwenpaw.agentscope.io/docs/config"
+    },
+    "docs": [
+      "https://github.com/agentscope-ai/QwenPaw",
+      "https://qwenpaw.agentscope.io/docs/quickstart",
+      "https://qwenpaw.agentscope.io/docs/hub"
+    ]
+  },
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["latest"]
+    }
+  ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8000,
+      "path": "/"
+    }
+  },
+  "requirements": {
+    "cpu": "4",
+    "memory": "8",
+    "disk": "20"
+  },
+  "credentials": {},
+  "env": {
+    "first_startup_only": [
+      "QWENPAW_HUB_ADMIN_USER",
+      "QWENPAW_HUB_ADMIN_PASSWORD"
+    ]
+  },
+  "help": {
+    "db": "No bundled database. QwenPaw Hub runs as one control-plane container from the official agentscope/qwenpaw image and provisions one isolated QwenPaw runtime per user with the Local backend; the control database and every user workspace persist under /app/working in the qwenpaw_data volume. The first administrator is seeded from W9_LOGIN_USER / W9_LOGIN_PASSWORD on first startup. Set QWENPAW_HUB_REGISTRATION_MODE to open, invite, or closed to control self-registration."
+  }
+}

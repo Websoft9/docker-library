@@ -33,7 +33,9 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 11.4-apache, 11.2.2-apache, 10.3.2-apache.
+Supported versions: 11.4-apache, latest.
+
+The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
 
 ### Ports

@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-10-13
+- Updated Hermes Agent to v2026.9.24 (image `nousresearch/hermes-agent`).
+- Regenerated the README.
+
 ## 2026-09-17
 
 - Initial package for Hermes Agent v2026.9.14 (image `nousresearch/hermes-agent`).

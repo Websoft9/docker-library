@@ -1,0 +1,4 @@
+optional:
+  - id: homepage-smoke
+    type: script
+    script: check.sh

@@ -1,18 +1,13 @@
-# image: https://container-registry.oracle.com/ords/f?p=113:10::::::
-# docs: http://docs.oracle.com/en/database/
-
-version: '4.9.0'
-
 services:
   oracleex:
-    image: $W9_REPO:${W9_VERSION}
-    container_name: ${W9_ID}  
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     env_file: .env
     volumes:
       - data:/opt/oracle/oradata
     ports:
-      -  ${W9_DB_PORT_SET}:1521
-      -  ${W9_HTTPS_PORT_SET}:5500
+      - "${W9_DB_PORT_SET}:1521" # Oracle database listener (SQL*Net)
+      - "${W9_HTTPS_PORT_SET}:5500" # Oracle Enterprise Manager (EM) console
     restart: unless-stopped
 
 networks:

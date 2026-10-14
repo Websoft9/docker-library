@@ -1,0 +1,34 @@
+services:
+  semaphoreui:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    ports:
+      - "${W9_HTTP_PORT_SET}:3000" # Web Console
+    env_file: .env
+    volumes:
+      - semaphore:/var/lib/semaphore
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:${W9_DB_VERSION}
+    container_name: ${W9_ID}-mysql
+    restart: unless-stopped
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: semaphore
+      MYSQL_USER: semaphore
+      MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
+
+volumes:
+  semaphore:
+  mysql:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

@@ -6,6 +6,7 @@
     "image": "https://hub.docker.com/_/arangodb",
     "releases": "https://github.com/arangodb/arangodb",
     "docs": [
+      "https://docs.arangodb.com/stable/release-notes/",
       "https://hub.docker.com/_/arangodb"
     ]
   },
@@ -29,5 +30,20 @@
     "cpu": "1",
     "memory": "1",
     "disk": "1"
+  },
+  "credentials": {
+    "username": {
+      "source": "inline",
+      "value": "root"
+    },
+    "password": {
+      "source": "container-env",
+      "name": "W9_LOGIN_PASSWORD"
+    }
+  },
+  "env": {
+    "first_startup_only": [
+      "ARANGO_ROOT_PASSWORD"
+    ]
   }
 }

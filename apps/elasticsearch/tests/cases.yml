@@ -1,0 +1,7 @@
+# The Elasticsearch API is served over plain HTTP on W9_HTTP_PORT_SET; the
+# platform terminates TLS in front of it. Besides the adaptive web-access check,
+# verify the cluster is actually healthy with an authenticated HTTP call.
+custom:
+  - id: cluster-health
+    type: script
+    script: check.sh

@@ -1,9 +1,3 @@
-# docs: https://docs.couchdb.org/en/latest/install/docker.html
-# source: https://github.com/apache/couchdb-docker
-# image: https://hub.docker.com/_/couchdb
-
-version: '3.8'
-
 services:
 
   couchdb:
@@ -11,12 +5,12 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-     - ${W9_HTTP_PORT_SET}:5984
+      - "${W9_HTTP_PORT_SET}:5984" # Web Console and API
     volumes:
-     - couchdb_data:/opt/couchdb/data
-     - couchdb_config:/opt/couchdb/etc/local.d
-     - ./src/my.ini:/opt/couchdb/etc/local.d/my.ini
-     - couchdb_log:/opt/couchdb/var/log
+      - couchdb_data:/opt/couchdb/data
+      - couchdb_config:/opt/couchdb/etc/local.d
+      - ./src/my.ini:/opt/couchdb/etc/local.d/my.ini
+      - couchdb_log:/opt/couchdb/var/log
     env_file: .env
     environment:
       COUCHDB_USER: ${W9_LOGIN_USER}

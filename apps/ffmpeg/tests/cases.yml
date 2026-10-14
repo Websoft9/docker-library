@@ -1,0 +1,4 @@
+# FFmpeg is a toolbox container with no network service exposed.
+# The adaptive checks cover its functional path (compose-config, container-up).
+# Add cases here only if a future package exposes an HTTP endpoint or a
+# remote-runnable script path.

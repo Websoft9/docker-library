@@ -1,0 +1,4 @@
+custom:
+  - id: setup-screen
+    type: script
+    script: verify-setup-screen.sh

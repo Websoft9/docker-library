@@ -1,0 +1,28 @@
+{
+  "trademark": "Semaphore UI",
+  "catalogBindings": [
+    {
+      "parentKey": "itdeveloper",
+      "childKey": "orchestration"
+    },
+    {
+      "parentKey": "itdeveloper",
+      "childKey": "pipeline"
+    },
+    {
+      "parentKey": "automation",
+      "childKey": "opsauto"
+    },
+    {
+      "parentKey": "itdevops",
+      "childKey": "opsauto"
+    }
+  ],
+  "summary": "Modern web UI for DevOps automation.",
+  "overview": "Self-hosted web interface for running Ansible playbooks, Terraform/OpenTofu code, and Bash or PowerShell scripts with projects, schedules, inventories, and access control.",
+  "description": "Semaphore UI is an open-source, self-hosted web interface for managing DevOps automation. It runs Ansible playbooks and Terraform, OpenTofu, and Terragrunt code, executes Bash and PowerShell scripts, and organizes work into projects, task templates, tasks, schedules, inventories, and variable groups. Failed tasks can trigger notifications, and access to the automation system is controlled with users, teams, and roles.\n\nThis Websoft9 package deploys the official semaphoreui/semaphore image together with a bundled MySQL 8.0 database. The web console is published on port 3000, an initial administrator account is created from the package environment on first start, and an access-key encryption key is generated so secrets stored in the database survive restarts. Application data is persisted in the semaphore volume and database data in the mysql volume.\n\nTypical use cases include running and scheduling Ansible automation, managing Terraform and OpenTofu infrastructure changes, centralizing DevOps scripts behind a web UI, and giving teams controlled access to deployment workflows from a browser.",
+  "websiteurl": "https://semaphoreui.com",
+  "screenshots": [
+    "https://libs.websoft9.com/Websoft9/DocsPicture/zh/semaphore/semaphore-gui-websoft9.png"
+  ]
+}

@@ -1,27 +1,19 @@
-# image: https://github.com/mlflow/mlflow/pkgs/container/mlflow
-# compose: https://github.com/mlflow/mlflow/blob/master/.devcontainer/docker-compose.yml
-
-version: '3.8'
-
 services:
   mlflow:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     working_dir: /workspaces/mlflow
     command: ["sh", "-c", "mlflow server --host 0.0.0.0 --port 5000"]
     env_file: .env
     ports:
-      - $W9_HTTP_PORT_SET:5000    
+      - "${W9_HTTP_PORT_SET}:5000" # MLflow Web UI and REST API
     volumes:
       - mlflow_data:/workspaces/mlflow
-      - build:/workspaces/mlflow/mlflow/server/js/build
 
 volumes:
-  build:
   mlflow_data:
 
 networks:
   default:
     name: ${W9_NETWORK}
     external: true
-

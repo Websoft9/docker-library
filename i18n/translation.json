@@ -347,10 +347,6 @@
         "KAFKA BROKERS",
         "KAFKA BROKERS"
     ],
-    "W9_LOGIN_GET_Kibaba_TOKEN": [
-        "ES GET KIBANA TOKEN METHOD",
-        "ES 获取 KIBANA TOKEN 方法"
-    ],
     "W9_WS_PORT_SET": [
         "WEB SOCKET PORT",
         "WEB SOCKET 端口"

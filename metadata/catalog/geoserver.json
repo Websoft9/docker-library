@@ -1,0 +1,13 @@
+{
+  "trademark": "GeoServer",
+  "catalogBindings": [
+    {
+      "parentKey": "architecture",
+      "childKey": "gis"
+    }
+  ],
+  "summary": "Open-source geospatial data server.",
+  "overview": "Publishes maps and geospatial data through standard OGC services, with a browser-based admin console for configuration and data sharing.",
+  "description": "GeoServer is an open-source server for sharing geospatial data. It publishes data from major spatial sources through open standards such as WMS, WFS, WCS, and WMTS, making it a common choice for GIS portals, mapping services, and interoperable spatial data infrastructure.\n\nThis package deploys the official OSGeo GeoServer image as a single service with persistent data stored in the `geoserver_data` volume mounted at `/opt/geoserver_data`. The web console is exposed under `/geoserver/web`, and the package keeps the bundled demo data enabled so the UI and OGC endpoints are usable immediately after deployment.\n\nTypical use cases include publishing map layers, exposing geospatial APIs, serving raster and vector datasets, and building self-hosted GIS platforms that need standards-based interoperability.",
+  "websiteurl": "https://geoserver.org"
+}

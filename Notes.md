@@ -26,11 +26,8 @@ Docker Model Runner
 1. 把 README/Notes 再补成“如何取默认登录邮箱、如何登录”的最终文案
 2. 继续排查 workload-launcher 的重启原因，争取把日志风险也压到最低
 
-InfluxDB 开源时序数据库
-OpenClaw 
-Canvas LMS
-Semaphore 
 
+Canvas LMS
 
 cloudreve，compreface，commafeed， coze，dashy，ejbca, frigate, falcon
 
@@ -43,3 +40,8 @@ elizaOS
 Nuclear
 
 port define?
+
+canvas 令牌无效
+jfrog 的默认账号密码
+nginxproxymanager 没有显示
+elasticsearch 域名访问报错。大概原因是 es 默认有 https 和 http 两种机制。

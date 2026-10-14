@@ -1,25 +1,16 @@
-# image: https://hub.docker.com/r/couchbase/server
-# docs: https://docs.couchbase.com/server/current/getting-started/do-a-quick-install.html
-
 version: '3.8'
 
 services:
 
   couchbase-server:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - $W9_HTTP_PORT_SET:8091
-      # - 8091-8097:8091-8097
-      # - 9123:9123
-      # - 11207:11207
-      # - 11210:11210
-      # - 11280:11280
-      # - 18091-18097:18091-18097
+      - "${W9_HTTP_PORT_SET}:8091" # Web Console
     env_file: .env
 
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

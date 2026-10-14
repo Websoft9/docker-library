@@ -1,0 +1,5 @@
+optional:
+  - id: web-manifest
+    type: web-access
+    path: /manifest.json
+    expect_status: 200

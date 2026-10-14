@@ -1,0 +1,13 @@
+# The default adaptive checks already cover compose-config, container-up,
+# container-healthy (the packaged /api/version healthcheck), and the Hub root
+# path. Add app-specific checks for the public control-plane API so the
+# multi-user entry path is exercised explicitly.
+optional:
+  - id: hub-api-version
+    type: web-access
+    path: /api/version
+    expect_status: 200
+  - id: hub-auth-status
+    type: web-access
+    path: /api/auth/status
+    expect_status: 200

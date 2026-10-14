@@ -24,7 +24,7 @@
 
 ## Configuration Reference
 
-Websoft9 packages this app from the official [Dolibarr Docker image](https://hub.docker.com/r/tuxgasy/dolibarr) and makes some improvements below.
+Websoft9 packages this app from the official [Dolibarr Docker image](https://hub.docker.com/r/dolibarr/dolibarr) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
 The package bundles MariaDB and passes the database connection plus the initial administrator credentials through `.env` (`DOLI_*`). The image installs Dolibarr automatically on first start.
@@ -34,7 +34,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 19.0.2, latest.
+Supported versions: 24.0.1, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
@@ -60,7 +60,7 @@ The `latest` tag is not guaranteed to remain valid; pin a specific version for p
 Environment variables are defined in the app's `.env` file; see the reference section at the end of `.env` for supported variables.
 
 
-Note: `W9_LOGIN_PASSWORD` take effect on first startup only; changing them after deployment may not take effect until the app is re-initialized.
+Note: `W9_LOGIN_USER`, `W9_LOGIN_PASSWORD` take effect on first startup only; changing them after deployment may not take effect until the app is re-initialized.
 
 
 ### Configuration Files
@@ -73,9 +73,11 @@ Configuration files live inside the image; mount a single file read-only to over
 
 - [Dolibarr Administrator Guide](https://support.websoft9.com/docs/dolibarr) by Websoft9
 
-- [Docker Hub image](https://hub.docker.com/r/tuxgasy/dolibarr)
+- [Docker Hub image](https://hub.docker.com/r/dolibarr/dolibarr)
 
-- [GitHub docs](https://github.com/tuxgasy/docker-dolibarr)
+- [Releases](https://github.com/Dolibarr/dolibarr/releases)
+
+- [GitHub docs](https://github.com/Dolibarr/dolibarr-docker)
 
 - [GitHub docs](https://github.com/Dolibarr/dolibarr)
 

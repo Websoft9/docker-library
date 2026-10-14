@@ -1,0 +1,5 @@
+optional:
+  - id: stats-page
+    type: web-access
+    path: /stats
+    expect_status: 200

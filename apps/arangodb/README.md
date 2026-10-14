@@ -23,7 +23,7 @@
 
 ## Configuration Reference
 
-Websoft9 packages this app from the official [ArangoDB Docker image](https://hub.docker.com/r/arangodb/arangodb) and makes some improvements below.
+Websoft9 packages this app from the official [ArangoDB Docker image](https://hub.docker.com/_/arangodb) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
 
@@ -55,6 +55,9 @@ Data is kept inside the container; a named volume is recommended for persistence
 Environment variables are defined in the app's `.env` file; see the reference section at the end of `.env` for supported variables.
 
 
+Note: `ARANGO_ROOT_PASSWORD` take effect on first startup only; changing them after deployment may not take effect until the app is re-initialized.
+
+
 ### Configuration Files
 
 
@@ -65,11 +68,13 @@ Configuration files live inside the image; mount a single file read-only to over
 
 - [ArangoDB Administrator Guide](https://support.websoft9.com/docs/arangodb) by Websoft9
 
-- [Docker Hub image](https://hub.docker.com/r/arangodb/arangodb)
+- [Docker Hub image](https://hub.docker.com/_/arangodb)
 
 - [Releases](https://github.com/arangodb/arangodb)
 
-- [Official docs](https://hub.docker.com/r/arangodb/arangodb)
+- [Official docs](https://docs.arangodb.com/stable/release-notes/)
+
+- [Official docs](https://hub.docker.com/_/arangodb)
 
 
 <!-- W9_TROUBLESHOOT_START -->

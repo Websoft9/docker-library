@@ -1,0 +1,8 @@
+# The adaptive checks cover compose config, container state, the packaged
+# healthcheck, and the web root. Chatwoot's API endpoint is exercised
+# explicitly because the upstream docs use it as the basic post-install check.
+optional:
+  - id: api-reachability
+    type: web-access
+    path: /api
+    expect_status: 200

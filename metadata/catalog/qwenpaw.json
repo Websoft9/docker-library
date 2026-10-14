@@ -1,0 +1,17 @@
+{
+  "trademark": "QwenPaw",
+  "catalogBindings": [
+    {
+      "parentKey": "ai",
+      "childKey": "ai-agent-chat"
+    }
+  ],
+  "summary": "Self-hosted multi-user AI assistant hub",
+  "overview": "Run a shared QwenPaw Hub with per-user runtimes, isolated workspaces, skills, channels, and local or cloud models.",
+  "description": "QwenPaw (Qwen Personal Agent Workstation) is an open-source personal AI assistant from the AgentScope team. QwenPaw Hub is its multi-user control plane: team members sign in at one address, and each person gets a separate QwenPaw with its own workspace, settings, credentials, and conversations.\n\nThis package deploys QwenPaw Hub as a single control-plane container with the Local runtime backend. The Hub console is published on port 8088 and is seeded with a package-managed administrator account. The control database and every user runtime persist in the qwenpaw_data volume, and administrators can create accounts, manage runtimes, and control registration mode.\n\nQwenPaw supports cloud model providers (DashScope/Qwen, OpenAI, Anthropic, Gemini, DeepSeek, and more) as well as local models through the built-in QwenPaw Local runtime, Ollama, or LM Studio. Extend it with Skills, Plugins, and MCP tools, and automate recurring work with built-in cron scheduling.",
+  "websiteurl": "https://qwenpaw.agentscope.io",
+  "screenshots": [
+    "https://img.alicdn.com/imgextra/i2/O1CN01hhIGAbMm89B6lBsc_!!6000000006867-2-tps-3330-1772.png",
+    "https://img.alicdn.com/imgextra/i2/O1CN01EP1ra01iOAcBvF0TC_!!6000000004402-2-tps-3822-2070.png"
+  ]
+}

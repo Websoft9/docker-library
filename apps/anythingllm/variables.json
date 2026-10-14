@@ -6,8 +6,8 @@
     "image": "https://hub.docker.com/r/mintplexlabs/anythingllm",
     "releases": "https://github.com/Mintplex-Labs/anything-llm",
     "compose": {
-      "compose": "https://github.com/Mintplex-Labs/anything-llm/blob/master/docker/docker-compose.yml",
-      "env": "https://github.com/Mintplex-Labs/anything-llm/blob/master/docker/.env.example"
+      "compose": "https://raw.githubusercontent.com/Mintplex-Labs/anything-llm/master/docker/docker-compose.yml",
+      "env": "https://raw.githubusercontent.com/Mintplex-Labs/anything-llm/master/docker/.env.example"
     },
     "docs": [
       "https://github.com/Mintplex-Labs/anything-llm",
@@ -19,7 +19,7 @@
     {
       "dist": "community",
       "version": [
-        "1.16",
+        "1.17",
         "latest"
       ]
     }

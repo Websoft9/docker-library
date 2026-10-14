@@ -2,11 +2,20 @@
   "name": "directus",
   "trademark": "Directus",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/directus/directus",
+    "releases": "https://github.com/directus/directus/releases",
+    "docs": [
+      "https://directus.io/docs/self-hosting/quickstart",
+      "https://directus.io/docs/configuration/general",
+      "https://github.com/directus/directus/releases/tag/v12.5.0"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "11.13",
+        "12.5.0",
         "latest"
       ]
     }
@@ -23,7 +32,10 @@
     "memory": "2",
     "disk": "4"
   },
-  "upstream": {
-    "image": "https://hub.docker.com/r/directus/directus"
+  "env": {
+    "first_startup_only": [
+      "ADMIN_EMAIL",
+      "ADMIN_PASSWORD"
+    ]
   }
 }

@@ -3,13 +3,20 @@
   "trademark": "CouchDB",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/_/couchdb"
+    "image": "https://hub.docker.com/_/couchdb",
+    "releases": "https://github.com/apache/couchdb",
+    "docs": [
+      "https://docs.couchdb.org/en/stable/install/docker.html",
+      "https://github.com/apache/couchdb-docker"
+    ]
   },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "3.5.0",
+        "3.5",
+        "3.4",
+        "3.3",
         "latest"
       ]
     }

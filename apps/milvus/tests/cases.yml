@@ -1,0 +1,14 @@
+# Milvus serves the WebUI under /webui and returns 404 on the bare root path,
+# so the adaptive root web-access check does not apply.
+skip:
+  - id: web-access
+
+optional:
+  - id: healthz
+    type: web-access
+    path: /healthz
+    expect_status: 200
+  - id: webui
+    type: web-access
+    path: /webui/
+    expect_status: 200

@@ -1,0 +1,4 @@
+custom:
+  - id: login-page
+    type: script
+    script: check.sh

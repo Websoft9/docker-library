@@ -47,17 +47,33 @@ def test_load_provider_env_supports_dockerhub(repo_fixture):
     assert data["DOCKERHUB_TOKEN"] == "token"
 
 
-def test_load_provider_env_supports_aliyun(repo_fixture):
+def test_load_provider_env_supports_dns(repo_fixture):
     (repo_fixture / ".secrets").mkdir(exist_ok=True)
-    (repo_fixture / ".secrets" / "aliyun.env").write_text(
-        "ALIYUN_ACCESS_KEY_ID=id\nALIYUN_ACCESS_KEY_SECRET=secret\nALIYUN_DNS_DOMAIN=libs.websoft9.cn\n",
+    (repo_fixture / ".secrets" / "dns.env").write_text(
+        "DNS_PROVIDER=aliyun\nDNS_KEY_ID=id\nDNS_KEY_SECRET=secret\nDNS_DOMAIN=libs.websoft9.cn\n",
         encoding="utf-8",
     )
 
-    data = credentials.load_provider_env("aliyun")
+    data = credentials.load_provider_env("dns")
 
-    assert data["ALIYUN_DNS_DOMAIN"] == "libs.websoft9.cn"
+    assert data["DNS_DOMAIN"] == "libs.websoft9.cn"
+    assert data["DNS_PROVIDER"] == "aliyun"
+    assert credentials.provider_env_path("dns").name == "dns.env"
+
+
+def test_load_provider_env_supports_cloud_providers(repo_fixture):
+    (repo_fixture / ".secrets").mkdir(exist_ok=True)
+    (repo_fixture / ".secrets" / "aws.env").write_text(
+        "AWS_ACCESS_KEY_ID=id\nAWS_SECRET_ACCESS_KEY=secret\nAWS_REGION=us-east-1\n",
+        encoding="utf-8",
+    )
+
+    data = credentials.load_provider_env("aws")
+
+    assert data["AWS_REGION"] == "us-east-1"
+    assert credentials.provider_env_path("aws").name == "aws.env"
     assert credentials.provider_env_path("aliyun").name == "aliyun.env"
+    assert credentials.provider_env_path("azure").name == "azure.env"
 
 
 def test_resolve_secret_precedence(repo_fixture, monkeypatch):

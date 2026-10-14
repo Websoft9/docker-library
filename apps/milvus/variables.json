@@ -3,13 +3,21 @@
   "trademark": "Milvus",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/r/milvusdb/milvus"
+    "image": "https://hub.docker.com/r/milvusdb/milvus",
+    "releases": "https://github.com/milvus-io/milvus/releases",
+    "compose": {
+      "compose": "https://raw.githubusercontent.com/milvus-io/milvus/v3.0.3/deployments/docker/standalone/docker-compose.yml"
+    },
+    "docs": [
+      "https://milvus.io/docs/install_standalone-docker-compose.md",
+      "https://milvus.io/docs/milvus-webui.md"
+    ]
   },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "v2.6.3",
+        "v3.0.3",
         "latest"
       ]
     }
@@ -18,7 +26,7 @@
     "defaultScheme": "http",
     "web": {
       "port": 9091,
-      "path": "/"
+      "path": "/webui"
     }
   },
   "requirements": {

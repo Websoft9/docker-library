@@ -8,7 +8,7 @@ from rich.console import Console
 from rich.table import Table
 
 from libs import app as app_ops
-from libs import app_build, app_deploy, app_tests, appstore_sync, catalog, contentful, dblifecycle, dns, drift, http, imagestats, maintenance, newapp, readme, remote, validate, versions, websoft9_upgrade
+from libs import app_build, app_deploy, app_tests, appstore_sync, catalog, contentful, dblifecycle, drift, http, imagestats, maintenance, newapp, readme, remote, validate, versions
 from libs.metadata import app_dir
 from libs.output import print_output
 
@@ -47,7 +47,7 @@ def proxy_command(
 def help_command(ctx: typer.Context) -> None:
     """Show help for libs. Same as libs --help."""
     typer.echo(ctx.parent.get_help())
-    typer.echo("\nLocal by default; remote-aware commands read defaults from .secrets/remote.env (TARGET, SSH_HOST, SSH_USER, SSH_SECRET_PATH, DEPLOY_ROOT, CONTAINER). Current remote-aware commands: app-deploy, app-build, app-down, app-tests, appstore-sync, appstore-deploy, websoft9-upgrade, dns-bind.")
+    typer.echo("\nLocal by default; remote-aware commands read defaults from .secrets/remote.env (TARGET, SSH_HOST, SSH_USER, SSH_SECRET_PATH, DEPLOY_ROOT, CONTAINER). Current remote-aware commands: app-deploy, app-build, app-down, app-tests, appstore-sync, appstore-deploy.")
 
 
 @app.command("list")
@@ -759,135 +759,6 @@ def appstore_deploy_command(
         err=True,
     )
     raise typer.Exit(code=1)
-
-
-@app.command("websoft9-upgrade")
-def websoft9_upgrade_command(
-    container: str | None = typer.Option(None, "--container", help="Websoft9 container name (default: CONTAINER in .secrets/remote.env, else websoft9)"),
-    tag: str = typer.Option(websoft9_upgrade.DEFAULT_TAG, "--tag", help="Image tag to set (default: dev)"),
-    tag_var: str = typer.Option(websoft9_upgrade.DEFAULT_TAG_VAR, "--tag-var", help="Env variable holding the image tag"),
-    compose_dir: str | None = typer.Option(None, "--compose-dir", help="Compose project directory; discovered from container labels when omitted"),
-    target: str | None = typer.Option(None, "--target", help="local | remote"),
-    ssh_host: str | None = typer.Option(None, "--ssh-host", help="Remote host IP or name"),
-    ssh_user: str | None = typer.Option(None, "--ssh-user", help="Remote SSH user (default root)"),
-    ssh_secret_path: str | None = typer.Option(None, "--ssh-secret-path", help="SSH secret path (key or password file)"),
-    progress: bool = typer.Option(False, "--progress", help="Show step progress on stderr"),
-    verbose: bool = typer.Option(False, "--verbose", help="Show step progress and raw subprocess output on stderr"),
-    as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
-) -> None:
-    """Upgrade the Websoft9 platform container: set its image tag, pull, and recreate it."""
-    try:
-        progress_writer = (lambda message: typer.echo(message, err=True)) if (progress or verbose) else None
-        payload = websoft9_upgrade.upgrade(
-            container=container,
-            tag=tag,
-            tag_var=tag_var,
-            compose_dir=compose_dir,
-            target=target,
-            ssh_host=ssh_host,
-            ssh_user=ssh_user,
-            ssh_secret_path=ssh_secret_path,
-            progress=progress_writer,
-            verbose=verbose,
-        )
-    except FileNotFoundError as error:
-        typer.echo(str(error), err=True)
-        raise typer.Exit(code=4)
-    except ValueError as error:
-        typer.echo(str(error), err=True)
-        raise typer.Exit(code=2)
-    except Exception as error:
-        typer.echo(str(error), err=True)
-        raise typer.Exit(code=1)
-    print_output(payload, as_json)
-
-
-@app.command("dns-bind")
-def dns_bind_command(
-    domain: str | None = typer.Option(None, "--domain", help="Wildcard base domain, e.g. libs.websoft9.cn; defaults to ALIYUN_DNS_DOMAIN"),
-    target: str | None = typer.Option(None, "--target", help="local | remote; defaults to TARGET in .secrets/remote.env"),
-    ip: str | None = typer.Option(None, "--ip", help="Explicit IPv4 value; overrides target resolution"),
-    ssh_host: str | None = typer.Option(None, "--ssh-host", help="Remote host; overrides SSH_HOST in .secrets/remote.env"),
-    ssh_user: str | None = typer.Option(None, "--ssh-user", help="Remote SSH user (default root)"),
-    ssh_secret_path: str | None = typer.Option(None, "--ssh-secret-path", help="SSH secret path (key or password file)"),
-    container: str | None = typer.Option(None, "--container", help="Websoft9 container name (default: CONTAINER in .secrets/remote.env, else websoft9)"),
-    no_container: bool = typer.Option(False, "--no-container", help="Skip the optional Websoft9 container domain binding"),
-    record_type: str = typer.Option(dns.DEFAULT_RECORD_TYPE, "--type", help="DNS record type"),
-    ttl: int = typer.Option(dns.DEFAULT_TTL, "--ttl", help="Record TTL in seconds"),
-    access_key_id: str | None = typer.Option(None, "--access-key-id", help="Aliyun AccessKey ID; overrides connector/env value"),
-    access_key_secret: str | None = typer.Option(None, "--access-key-secret", help="Aliyun AccessKey Secret; overrides connector/env value"),
-    endpoint: str | None = typer.Option(None, "--endpoint", help="Aliyun DNS API endpoint; overrides ALIYUN_DNS_ENDPOINT"),
-    env_file: str | None = typer.Option(None, "--env-file", help="Aliyun env file; overrides default .secrets/aliyun.env"),
-    as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
-) -> None:
-    """Point the wildcard record (*.<domain>) at the remote host or localhost, updating it when present.
-
-    When the Websoft9 container is reachable it also sets its wildcard_domain config; otherwise it skips silently.
-    """
-    try:
-        resolved_domain = dns.resolve_domain(domain, env_file)
-        payload = dns.bind(
-            domain=resolved_domain,
-            value=dns.resolve_target_ip(target=target, ip=ip, ssh_host=ssh_host),
-            access_key_id=access_key_id,
-            access_key_secret=access_key_secret,
-            record_type=record_type,
-            ttl=ttl,
-            endpoint=endpoint,
-            env_file=env_file,
-        )
-    except FileNotFoundError as error:
-        typer.echo(str(error), err=True)
-        raise typer.Exit(code=4)
-    except (ValueError, dns.DnsError) as error:
-        typer.echo(str(error), err=True)
-        raise typer.Exit(code=2)
-    except Exception as error:
-        typer.echo(str(error), err=True)
-        raise typer.Exit(code=1)
-
-    if not no_container:
-        payload["container_config"] = dns.configure_container(
-            resolved_domain,
-            target=target,
-            container=container,
-            ssh_host=ssh_host,
-            ssh_user=ssh_user,
-            ssh_secret_path=ssh_secret_path,
-        )
-    print_output(payload, as_json)
-
-
-@app.command("dns-delete")
-def dns_delete_command(
-    domain: str | None = typer.Option(None, "--domain", help="Wildcard base domain, e.g. libs.websoft9.cn; defaults to ALIYUN_DNS_DOMAIN"),
-    record_type: str = typer.Option(dns.DEFAULT_RECORD_TYPE, "--type", help="DNS record type"),
-    access_key_id: str | None = typer.Option(None, "--access-key-id", help="Aliyun AccessKey ID; overrides connector/env value"),
-    access_key_secret: str | None = typer.Option(None, "--access-key-secret", help="Aliyun AccessKey Secret; overrides connector/env value"),
-    endpoint: str | None = typer.Option(None, "--endpoint", help="Aliyun DNS API endpoint; overrides ALIYUN_DNS_ENDPOINT"),
-    env_file: str | None = typer.Option(None, "--env-file", help="Aliyun env file; overrides default .secrets/aliyun.env"),
-    as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
-) -> None:
-    """Delete the single wildcard record (*.<domain>) managed for the domain."""
-    try:
-        payload = dns.delete(
-            domain=dns.resolve_domain(domain, env_file),
-            access_key_id=access_key_id,
-            access_key_secret=access_key_secret,
-            record_type=record_type,
-            endpoint=endpoint,
-            env_file=env_file,
-        )
-    except FileNotFoundError as error:
-        typer.echo(str(error), err=True)
-        raise typer.Exit(code=4)
-    except (ValueError, dns.DnsError) as error:
-        typer.echo(str(error), err=True)
-        raise typer.Exit(code=2)
-    except Exception as error:
-        typer.echo(str(error), err=True)
-        raise typer.Exit(code=1)
-    print_output(payload, as_json)
 
 
 @app.command("app-tests")

@@ -6,7 +6,7 @@
     {
       "dist": "community",
       "version": [
-        "11.4",
+        "11.4-apache",
         "latest"
       ]
     }

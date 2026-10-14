@@ -2,11 +2,21 @@
   "name": "budibase",
   "trademark": "Budibase",
   "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/budibase/proxy",
+    "releases": "https://github.com/Budibase/budibase/releases",
+    "compose": {
+      "compose": "https://raw.githubusercontent.com/Budibase/budibase/master/hosting/docker-compose.yaml",
+      "env": "https://raw.githubusercontent.com/Budibase/budibase/master/hosting/.env"
+    },
+    "docs": [
+      "https://docs.budibase.com/docs/docker-compose"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "3.13.28",
         "latest"
       ]
     }
@@ -23,7 +33,10 @@
     "memory": "8",
     "disk": "1"
   },
-  "upstream": {
-    "image": "https://hub.docker.com/r/budibase/proxy"
+  "env": {
+    "first_startup_only": [
+      "BB_ADMIN_USER_EMAIL",
+      "BB_ADMIN_USER_PASSWORD"
+    ]
   }
 }

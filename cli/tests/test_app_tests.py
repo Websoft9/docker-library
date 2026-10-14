@@ -242,6 +242,41 @@ def test_run_app_tests_retries_until_web_check_succeeds(repo_fixture, app_factor
     assert payload["results"][2]["id"] == "web-access"
 
 
+def test_run_app_tests_retries_remote_compose_config(repo_fixture, app_factory, monkeypatch):
+    app_factory("demo", env="W9_HTTP_PORT_SET=8080\nW9_ID=demo\n")
+    secret_path = repo_fixture / ".secrets" / "ssh" / "default.pem"
+    secret_path.parent.mkdir(parents=True, exist_ok=True)
+    secret_path.write_text("-----BEGIN OPENSSH PRIVATE KEY-----\n", encoding="utf-8")
+    attempts = {"compose-config": 0}
+
+    monkeypatch.setattr(app_tests.remote, "default_target", lambda: "remote")
+    monkeypatch.setattr(app_tests.remote, "ssh_host", lambda value=None: value or "1.2.3.4")
+    monkeypatch.setattr(app_tests.remote, "ssh_user", lambda value=None: value or "root")
+    monkeypatch.setattr(app_tests.remote, "resolve_secret_path", lambda value=None: secret_path)
+    monkeypatch.setattr(app_tests.remote, "deploy_root", lambda value=None: value or "/websoft9/library/apps")
+    monkeypatch.setattr(
+        app_tests.remote,
+        "preflight_ssh",
+        lambda host, user, secret_path: types.SimpleNamespace(returncode=0, stdout="", stderr=""),
+    )
+
+    def fake_run_case(app_name, case, env, base_url, remote_ctx):
+        if case["type"] == "compose-config":
+            attempts["compose-config"] += 1
+            return {"id": case.get("id") or case["type"], "ok": attempts["compose-config"] >= 2, "stdout": "", "stderr": ""}
+        return {"id": case.get("id") or case["type"], "ok": False, "stdout": "", "stderr": ""}
+
+    monkeypatch.setattr(app_tests, "run_case", fake_run_case)
+    monkeypatch.setattr(app_tests.time, "sleep", lambda seconds: None)
+
+    payload = app_tests.run_app_tests("demo", wait_timeout=10, wait_interval=1)
+
+    assert payload["ok"] is False
+    assert attempts["compose-config"] == 2
+    assert payload["results"][0]["id"] == "compose-config"
+    assert payload["results"][0]["ok"] is True
+
+
 def test_run_app_tests_container_healthy_reads_inspect_state(repo_fixture, app_factory, monkeypatch):
     app_factory(
         "demo",

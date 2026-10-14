@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-10-13
+- Updated Jenkins from `2.581` to `2.586`.
+- Regenerated the README.
+
 ## 2026-09-12
 - Updated Jenkins from `2.540` to `2.581`.
 - Normalized `.env` and `docker-compose.yml` to current repository policy rules (braced `${VAR}` references, port purpose comment, removal of the obsolete `version` and source comments).
