@@ -1,0 +1,30 @@
+services:
+
+  qwenpaw:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    # The Hub Local runtime backend isolates each user runtime with bubblewrap,
+    # which needs user namespaces inside the container.
+    privileged: true
+    env_file: .env
+    command: ["sh", "/opt/qwenpaw/hub-entrypoint.sh"]
+    ports:
+      - "${W9_HTTP_PORT_SET}:8000" # QwenPaw Hub console
+    volumes:
+      - qwenpaw_data:/app/working
+      - ./src/hub-entrypoint.sh:/opt/qwenpaw/hub-entrypoint.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8000/api/version || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 180s
+
+volumes:
+  qwenpaw_data:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

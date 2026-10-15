@@ -1,4 +1,8 @@
 optional:
+  - id: play-ui
+    type: web-access
+    path: /play
+    expect_status: 200
   - id: ping
     type: web-access
     path: /ping

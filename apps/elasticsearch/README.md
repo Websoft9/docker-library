@@ -33,7 +33,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 9.1.0.
+Supported versions: 9.5.5.
 
 
 ### Ports

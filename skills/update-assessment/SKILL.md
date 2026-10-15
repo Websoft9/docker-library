@@ -65,6 +65,8 @@ A short assessment report:
 - `review-first` means stop after assessment and wait for owner approval.
 - `defer` means record the candidate and check again in the next cadence.
 - `skip` means no update work should start for this candidate.
+- A major version jump by itself is not a reason to choose `review-first`. This repository updates packaging and validation artifacts, not a user's live-instance migration.
+- Use `review-first` for major updates only when the app's maintenance policy is `manual-major`, or when the package-side facts are ambiguous or materially risky.
 - Prefer `x.x` image tags. Use `x.x.x` only when upstream has no usable `x.x` tag or exact patch pinning is required (see `docs/devops-spec.md`).
 - Report in the same language the user used.
 - Use `report-template.md` when the user asks for a formal assessment report, or when the adapter layer explicitly requests formal output.

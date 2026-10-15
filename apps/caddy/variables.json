@@ -6,7 +6,7 @@
     {
       "dist": "community",
       "version": [
-        "2.10",
+        "2.11",
         "latest"
       ]
     }
@@ -17,7 +17,12 @@
     "disk": "2"
   },
   "upstream": {
-    "image": "https://hub.docker.com/_/caddy"
+    "image": "https://hub.docker.com/_/caddy",
+    "releases": "https://github.com/caddyserver/caddy/releases",
+    "docs": [
+      "https://github.com/caddyserver/caddy/releases/tag/v2.11.7",
+      "https://hub.docker.com/_/caddy"
+    ]
   },
   "access": {
     "defaultScheme": "http",

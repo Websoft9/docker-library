@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-10-12
+
+- Pin Mattermost Team Edition from the floating `11.11` line to the current stable patch `11.11.1` for deterministic deployments.
+- Add upstream Docker and release-note references to the package metadata.
+
 ## 2026-09-30
 
 - Update Mattermost team edition from `11.1` to `11.11` (latest stable upstream release; no major-version jump).

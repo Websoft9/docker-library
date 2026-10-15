@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-10-12
+
+- Updated the main image from `lobehub/lobehub:2.2.17` to `lobehub/lobehub:2.2.19`.
+- Restored the RustFS init helper to the pullable upstream `rustfs/rc:latest` image after `quay.io/minio/mc:latest` stopped resolving anonymously.
+- Refreshed the generated package README so the supported version matches the validated image tag.
+
 ## 2026-09-12
 
 - Renamed the app from `lobechat` to `lobehub` to follow the upstream rebrand, including the directory, trademark, `W9_ID`, and container names.

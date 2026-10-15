@@ -1,45 +1,85 @@
-# FFmpeg on Docker  
+# FFmpeg on Docker
 
-This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for FFmpeg:
+## Quick Start
 
- - community:  9.0, latest
+### Deploy Verification
 
-## About
+1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **FFmpeg**.
+2. In the **Access** tab, get the login URL and credentials.
+3. Open the login URL in a browser and sign in to confirm the app works.
 
-FFmpeg is a CPU-friendly media toolkit for offline batch jobs on a Linux server:
+<!-- W9_GUIDE_START -->
+### Usage
 
-- Suits: remux/container conversion, audio processing, probing, thumbnails, subtitles, short/low-res transcoding, media library normalization
-- Not for: real-time multi-stream transcoding or 4K re-encoding without a GPU
+1. Make sure you are signed in to the FFmpeg admin console.
+2. Try a core feature.
 
-The container stays alive as a toolbox; run one-shot jobs with `exec` or `run`.
+### Change Password
 
-## System Requirements
+1. In the [Websoft9](https://www.websoft9.com) console, open the app's **Compose** tab.
+2. Update the password in `.env` and save.
+3. Rebuild the app.
+<!-- W9_GUIDE_END -->
 
-The following are the minimal [recommended requirements](https://ffmpeg.org/documentation.html):
+## Configuration Reference
 
-* **RAM**: 1 GB or more
-* **CPU**: 1 cores or higher
-* **Disk**: at least 1 GB of free space
-* **bandwidth**: more fluent experience over 100M  
+Websoft9 packages this app from the official [FFmpeg Docker image](https://hub.docker.com/r/linuxserver/ffmpeg) and makes some improvements below.
 
-## Install
+<!-- W9_NOTE_START -->
 
-You can install this FFmpeg by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+<!-- W9_NOTE_END -->
 
-If you want use FFmpeg with **Websoft9 Business Support** free, you can [subscribe FFmpeg](https://www.websoft9.com/apps) on Cloud platform
+Apps run as containers; rebuild after any configuration change.
 
-## Usage
+### Version Support
 
-```bash
-docker compose up -d                                  # start the live toolbox
-docker compose exec ffmpeg "ffmpeg -version"          # check version
-docker compose exec ffmpeg "ffmpeg -i /media/in.mov /media/out.mp4"   # remux
-docker compose exec ffmpeg "ffmpeg -i /media/in.mp4 -vf fps=1/10 /media/thumb%03d.jpg"  # thumbnails
-docker compose run --rm ffmpeg "ffprobe -v error -show_format /media/in.mp4"  # one-shot probe
-```
+Supported versions: 9.0-cli-ls84, latest.
 
-Put source files under the `media` volume or mount your own path.
+The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
-## Documentation
 
-[FFmpeg Administrator Guide](https://support.websoft9.com/docs/ffmpeg) powered by Websoft9
+### Ports
+
+| Purpose | Port |
+| --- | --- |
+
+
+### Data Directory
+
+
+Data is persisted in the `media` volume, mounted at `/media`.
+
+
+### Environment Variables
+
+Environment variables are defined in the app's `.env` file; see the reference section at the end of `.env` for supported variables.
+
+
+### Configuration Files
+
+
+Configuration files live inside the image; mount a single file read-only to override, and never replace the whole directory.
+
+
+## References
+
+- [FFmpeg Administrator Guide](https://support.websoft9.com/docs/ffmpeg) by Websoft9
+
+- [Docker Hub image](https://hub.docker.com/r/linuxserver/ffmpeg)
+
+- [Releases](https://github.com/FFmpeg/FFmpeg)
+
+- [Official docs](https://ffmpeg.org/documentation.html)
+
+- [Official docs](https://ffmpeg.org/download.html#releases)
+
+
+<!-- W9_TROUBLESHOOT_START -->
+## Troubleshooting
+
+**App fails to start?**
+- Check `docker compose logs`.
+
+**Port not reachable?**
+- Ensure the firewall / security group allows the port.
+<!-- W9_TROUBLESHOOT_END -->

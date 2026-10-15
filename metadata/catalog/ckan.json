@@ -1,0 +1,20 @@
+{
+  "trademark": "CKAN",
+  "summary": "A tool for making open data websites",
+  "overview": "CKAN is an open-source DMS (data management system) for powering data hubs and data portals. CKAN makes it easy to publish, share and use data. It powers hundreds of data portals worldwide.",
+  "description": "CKAN is a tool for making open data websites. (Think of a content management system like WordPress - but for data, instead of pages and blog posts.) It helps you manage and publish collections of data. It is used by national and local governments, research institutions, and other organizations who collect a lot of data.\n\nOnce your data is published, users can use its faceted search features to browse and find the data they need, and preview it using maps, graphs and tables - whether they are developers, journalists, researchers, NGOs, citizens, or even your own staff.",
+  "websiteurl": "https://ckan.org/",
+  "screenshots": [
+    "https://libs.websoft9.com/Websoft9/DocsPicture/zh/ckan/ckan-gui-websoft9.png"
+  ],
+  "catalogBindings": [
+    {
+      "parentKey": "analytics",
+      "childKey": "dinsights"
+    },
+    {
+      "parentKey": "analytics",
+      "childKey": "data-catalog"
+    }
+  ]
+}

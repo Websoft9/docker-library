@@ -14,7 +14,7 @@
     {
       "dist": "community",
       "version": [
-        "34.0",
+        "35.0",
         "latest"
       ]
     }
@@ -38,6 +38,6 @@
     ]
   },
   "help": {
-    "db": "Nextcloud 34 supports MySQL 8.4 / 9.7 and MariaDB 10.11+. This package bundles MySQL 8.4 for a single-node deployment."
+    "db": "Nextcloud 35 supports MySQL 8.4 / 9.7 and MariaDB 10.11+. This package bundles MySQL 8.4 for a single-node deployment."
   }
 }

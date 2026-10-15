@@ -1,21 +1,60 @@
 {
   "name": "litellm",
   "trademark": "LiteLLM",
-  "release": false,
+  "release": true,
+  "upstream": {
+    "image": "ghcr.io/berriai/litellm",
+    "releases": "https://github.com/BerriAI/litellm/releases",
+    "docs": [
+      "https://docs.litellm.ai/docs/proxy/docker_quick_start",
+      "https://docs.litellm.ai/docs/proxy/quick_start",
+      "https://github.com/BerriAI/litellm"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "latest"
+        "v1.105.0"
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 4000,
+      "path": "/ui"
+    },
+    "admin": {
+      "port": 4000,
+      "path": "/ui"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "4",
     "disk": "10"
   },
-  "upstream": {
-    "image": "ghcr.io/berriai/litellm"
+  "env": {
+    "secrets": [
+      "W9_POWER_PASSWORD",
+      "LITELLM_MASTER_KEY",
+      "LITELLM_SALT_KEY",
+      "UI_PASSWORD"
+    ]
+  },
+  "database": {
+    "type": "postgresql",
+    "supported_modes": [
+      "bundled"
+    ],
+    "default_mode": "bundled",
+    "bundled": {
+      "service": "postgresql",
+      "internal_host": "${W9_ID}-postgresql",
+      "database_env": "POSTGRES_DB",
+      "username_env": "POSTGRES_USER",
+      "password_env": "POSTGRES_PASSWORD"
+    }
   }
 }

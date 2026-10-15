@@ -6,12 +6,12 @@
     {
       "dist": "community",
       "version": [
-        "9.1.0"
+        "9.5.5"
       ]
     }
   ],
   "access": {
-    "defaultScheme": "https",
+    "defaultScheme": "http",
     "api": {
       "port": 9200,
       "path": "/"

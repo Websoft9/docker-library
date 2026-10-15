@@ -6,7 +6,7 @@
     {
       "dist": "community",
       "version": [
-        "v3.1.4",
+        "v3.17.1",
         "latest"
       ]
     }
@@ -24,6 +24,15 @@
     "disk": "2"
   },
   "upstream": {
-    "image": "https://github.com/mlflow/mlflow/pkgs/container/mlflow"
+    "image": "https://github.com/mlflow/mlflow/pkgs/container/mlflow",
+    "releases": "https://github.com/mlflow/mlflow/releases",
+    "compose": {
+      "compose": "https://raw.githubusercontent.com/mlflow/mlflow/v3.17.1/docker-compose/docker-compose.yml",
+      "env": "https://raw.githubusercontent.com/mlflow/mlflow/v3.17.1/docker-compose/.env.dev.example"
+    },
+    "docs": [
+      "https://mlflow.org/docs/latest/self-hosting/index.html",
+      "https://mlflow.org/docs/latest/cli.html#mlflow-server"
+    ]
   }
 }

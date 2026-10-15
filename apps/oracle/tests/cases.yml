@@ -1,0 +1,7 @@
+# Oracle XE has no HTTP surface on W9_HTTP_PORT_SET, so the adaptive web-access
+# check does not apply. Its core path is the database accepting connections, so
+# a custom script polls the SQL*Net listener inside the container.
+custom:
+  - id: db-listener
+    type: script
+    script: check.sh

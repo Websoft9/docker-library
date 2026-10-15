@@ -1,21 +1,38 @@
 {
   "name": "nifi",
   "trademark": "Apache NiFi",
-  "release": false,
+  "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/apache/nifi",
+    "releases": "https://github.com/apache/nifi/releases",
+    "docs": [
+      "https://github.com/apache/nifi/tree/main/nifi-docker/dockerhub",
+      "https://nifi.apache.org/documentation/nifi-latest/html/administration-guide.html",
+      "https://github.com/apache/nifi/releases/tag/rel/nifi-2.12.0"
+    ]
+  },
   "edition": [
     {
       "dist": "community",
       "version": [
+        "2.12.0",
         "latest"
       ]
     }
   ],
+  "access": {
+    "defaultScheme": "https",
+    "web": {
+      "port": 8443,
+      "path": "/nifi"
+    }
+  },
   "requirements": {
     "cpu": "2",
     "memory": "4",
     "disk": "10"
   },
-  "upstream": {
-    "image": "https://hub.docker.com/r/apache/nifi"
+  "help": {
+    "login": "Apache NiFi starts with HTTPS and single-user authentication. The browser will show a certificate warning on first access because the container generates a self-signed certificate by default."
   }
 }

@@ -6,7 +6,7 @@
     {
       "dist": "community",
       "version": [
-        "4.1",
+        "5.0",
         "latest"
       ]
     }
@@ -24,6 +24,11 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/nodered/node-red"
+    "image": "https://hub.docker.com/r/nodered/node-red",
+    "releases": "https://github.com/node-red/node-red/releases",
+    "docs": [
+      "https://nodered.org/docs/getting-started/docker",
+      "https://github.com/node-red/node-red/releases/tag/5.0.0"
+    ]
   }
 }

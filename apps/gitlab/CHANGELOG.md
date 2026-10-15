@@ -1,3 +1,9 @@
+## 2026-10-13
+
+- Updated GitLab Community Edition from `19.3.2-ce.0` to `19.4.2-ce.0`.
+- The `19.3.2` to `19.4.2` path crosses no required upgrade stop; the next GitLab required stop is `19.5`.
+- Kept the Omnibus config, published ports, and optional `runner` profile unchanged.
+
 ## 2026-09-10
 
 - Updated GitLab Community Edition from `18.1.3-ce.0` to `19.3.2-ce.0` by owner request.

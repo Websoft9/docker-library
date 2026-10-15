@@ -8,13 +8,16 @@ and versions prior to 0.8.0 do not strictly follow this format.
 ## [0.8.0] - Unreleased
 
 ### Added
-- `libs dns-bind` / `libs dns-delete` for Aliyun DNS wildcard records, plus the `aliyun` provider in `make connector`
+- `make dns-bind` / `make dns-delete` for Aliyun DNS wildcard records
+- Generic DNS credentials in `make connector` (`dns` → `.secrets/dns.env` with `DNS_PROVIDER`/`DNS_KEY_ID`/`DNS_KEY_SECRET`/`DNS_DOMAIN`), plus cloud-provider options `alibabacloud` (`.secrets/aliyun.env`), `aws` (`.secrets/aws.env`), and `azure` (`.secrets/azure.env`)
+- `make create-aliyun-ecs` to launch a spot Aliyun ECS instance from the fixed `ci/cloud/aliyun-ecs.json` config, with interactive disk size (bounded by the config range) and auto-release time; the marketplace `ImageId` is resolved from the product code via ECS `DescribeImages`, the instance is named `libs-test-<random>`, and the public IP is printed after creation
 - Appstore Publish workflow with v2/catalog/library/manifest output model
 - Channel-aware distribution merge for dev channel
 - `workflow_dispatch` support for manual dev/rc/release publishing
 - Contentful GraphQL catalog fetching (`build/fetch_catalog.py`)
 
 ### Changed
+- Moved `dns-bind`, `dns-delete`, and `websoft9-upgrade` from `libs` commands to `make` targets (`make dns-bind`, `make dns-delete`, `make websoft9-upgrade`)
 - Simplified `library.json` to only retain `Version` field
 - GitHub Release tag now uses `library.json` Version instead of run_number
 - Removed legacy `release.yml` and `release-dev.yml` workflows

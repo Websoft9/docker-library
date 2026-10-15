@@ -1,0 +1,38 @@
+services:
+
+  xinference:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    env_file: .env
+    command: xinference-local -H 0.0.0.0 --port 9997
+    shm_size: 8gb
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    ports:
+      - "${W9_HTTP_PORT_SET}:9997" # Web UI / API
+    volumes:
+      - xinference_home:/root/.xinference
+      - huggingface_cache:/root/.cache/huggingface
+      - modelscope_cache:/root/.cache/modelscope
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:9997/status')"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  xinference_home:
+  huggingface_cache:
+  modelscope_cache:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

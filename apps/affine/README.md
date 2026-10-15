@@ -33,9 +33,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 0.27.4, latest.
-
-The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
+Supported versions: 0.27.4.
 
 
 ### Ports
@@ -56,6 +54,9 @@ The `latest` tag is not guaranteed to remain valid; pin a specific version for p
 ### Environment Variables
 
 Environment variables are defined in the app's `.env` file; see the reference section at the end of `.env` for supported variables.
+
+
+Note: `W9_POWER_PASSWORD` take effect on first startup only; changing them after deployment may not take effect until the app is re-initialized.
 
 
 ### Configuration Files

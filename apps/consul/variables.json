@@ -3,13 +3,18 @@
   "trademark": "Consul",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/r/hashicorp/consul"
+    "image": "https://hub.docker.com/r/hashicorp/consul",
+    "releases": "https://github.com/hashicorp/consul/releases",
+    "docs": [
+      "https://developer.hashicorp.com/consul/docs/release-notes",
+      "https://developer.hashicorp.com/consul/docs/install/docker"
+    ]
   },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "1.22",
+        "2.0.4",
         "latest"
       ]
     }

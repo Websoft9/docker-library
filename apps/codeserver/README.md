@@ -3,12 +3,12 @@
 This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for CodeServer:
 
 
- - community:  4.98.2, latest
+ - community:  4.141.0, latest
 
 
 ## System Requirements
 
-The following are the minimal [recommended requirements](https://github.com/cdr/code-server/blob/main/docs/guide.md#requirements):
+The following are the minimal [recommended requirements](https://github.com/coder/code-server/blob/main/docs/guide.md#requirements):
 
 * **RAM**: 1 GB or more
 * **CPU**: 1 cores or higher

@@ -1,0 +1,7 @@
+skip:
+  - id: web-access
+
+custom:
+  - id: https-login-page
+    type: script
+    script: check-https-login.sh

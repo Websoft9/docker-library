@@ -7,7 +7,7 @@ description: Use when the user wants to implement an approved app update after a
 
 Implement one approved app update with minimal app-local changes.
 
-When the caller provides only an app name, first detect the best candidate stable target version and gather upstream references. Continue implementation automatically when the candidate is clear and fits the maintenance policy. Stop and obtain owner confirmation only when the candidate is ambiguous, risky, `review-first`, or multiple reasonable targets exist.
+When the caller provides only an app name, first detect the best candidate stable target version and gather upstream references. Continue implementation automatically when the candidate is clear and fits the maintenance policy. A major version jump by itself does not require owner confirmation in this workflow, because the task is to update repository packaging rather than migrate a user's live instance. Stop and obtain owner confirmation only when the candidate is ambiguous, risky for the package itself, `review-first`, or multiple reasonable targets exist.
 
 This skill follows `docs/ai-sdlc/03-update-pipeline.md`, `docs/ai-sdlc/05-quality-gates.md`, and `docs/ai-sdlc/06-test-report-format.md`.
 
@@ -26,7 +26,7 @@ Supporting files in this skill:
 ## Steps
 
 1. Read repository facts from `apps/<app>/`, `metadata/maintenance.yaml`, and the app notes when relevant.
-2. If the caller did not provide a target version, detect the best candidate stable target version first by checking the current package version, the upstream image tags, and the upstream release notes or changelog. Prefer the newest stable version that matches the app's maintenance policy and image-tag policy. If one candidate is clearly correct, proceed with implementation and report the chosen target version. Stop and obtain owner confirmation only when the candidate is ambiguous, risky, `review-first`, or not clearly better than alternatives.
+2. If the caller did not provide a target version, detect the best candidate stable target version first by checking the current package version, the upstream image tags, and the upstream release notes or changelog. Prefer the newest stable version that matches the app's maintenance policy and image-tag policy. If one candidate is clearly correct, proceed with implementation and report the chosen target version. A major version jump alone is not a reason to stop. Stop and obtain owner confirmation only when the candidate is ambiguous, risky for the package itself, `review-first`, or not clearly better than alternatives.
 3. Read `docs/w9-env-spec.md` before touching `.env` or `docker-compose.yml`; use it as the canonical `W9_*` reference, then mirror `metadata/templates/new-app/.env.tmpl` for layout.
 4. Read the approved assessment result, if one exists.
 5. Read upstream release notes, upgrade notes, image tags, and requirements.
@@ -59,7 +59,8 @@ Supporting files in this skill:
 ## Rules
 
 - Do not start implementation for a `review-first` candidate unless the owner has approved continuation.
-- When only an app name is provided, the workflow should normally detect the best stable target version and continue automatically. Ask the owner before editing only when the detected target is ambiguous, risky, `review-first`, or otherwise needs judgment beyond the documented maintenance policy.
+- When only an app name is provided, the workflow should normally detect the best stable target version and continue automatically. Ask the owner before editing only when the detected target is ambiguous, risky for the package itself, `review-first`, or otherwise needs judgment beyond the documented maintenance policy.
+- A major version jump such as `3.x -> 4.x` is not by itself a reason to pause for owner confirmation. This workflow updates repository packaging and validation artifacts, not a live-instance migration.
 - Keep the smallest correct change.
 - The update is not a blind version bump. The changed app must still pass the current quality gates after the work is complete.
 - Do not perform broad cosmetic template re-alignment. Fix only the app-local conformance items that are blocking, directly relevant to the update, or required by current gates and generators.

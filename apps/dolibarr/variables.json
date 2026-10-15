@@ -3,9 +3,10 @@
   "trademark": "Dolibarr",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/r/tuxgasy/dolibarr",
+    "image": "https://hub.docker.com/r/dolibarr/dolibarr",
+    "releases": "https://github.com/Dolibarr/dolibarr/releases",
     "docs": [
-      "https://github.com/tuxgasy/docker-dolibarr",
+      "https://github.com/Dolibarr/dolibarr-docker",
       "https://github.com/Dolibarr/dolibarr"
     ]
   },
@@ -13,7 +14,7 @@
     {
       "dist": "community",
       "version": [
-        "19.0.2",
+        "24.0.1",
         "latest"
       ]
     }
@@ -35,6 +36,7 @@
   },
   "env": {
     "first_startup_only": [
+      "W9_LOGIN_USER",
       "W9_LOGIN_PASSWORD"
     ]
   },

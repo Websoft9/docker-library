@@ -1,0 +1,16 @@
+{
+  "trademark": "JFrog Artifactory",
+  "catalogBindings": [
+    {
+      "parentKey": "itdeveloper",
+      "childKey": "artifact-repository"
+    }
+  ],
+  "summary": "Universal artifact repository manager",
+  "overview": "Store, secure, and manage binary artifacts and container images for every package type from a single repository manager.",
+  "description": "JFrog Artifactory is a universal binary repository manager. It stores and manages build artifacts for all major package types — Maven, Gradle, npm, PyPI, NuGet, Go, Helm, Docker/OCI, and more — and serves as the single source of truth for binaries across the software supply chain.\n\nThis package runs the official JFrog Artifactory Pro image with the bundled embedded database, so no external database service is required to get started. The JFrog Platform web console is published on port 8082 and persists all configuration, metadata, and stored artifacts in the jfrog_data volume. The first sign-in uses the built-in admin account and Artifactory then requires a new administrator password; a license is needed to unlock the full product.\n\nTypical use cases include a private Docker/OCI registry, a caching proxy for public repositories, and a central artifact store for CI/CD pipelines. Repositories, users, permissions, and remote/virtual repository layouts are all configured from the platform administration UI.",
+  "websiteurl": "https://jfrog.com/artifactory/",
+  "screenshots": [
+    "https://www.jfrogchina.com/wp-content/uploads/2024/09/4-1.jpg"
+  ]
+}

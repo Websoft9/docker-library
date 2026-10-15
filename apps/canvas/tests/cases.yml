@@ -1,0 +1,9 @@
+skip:
+  - id: web-access
+    reason: validate the Canvas login entry path instead of the redirecting root path.
+
+optional:
+  - id: login-page
+    type: web-access
+    path: /login/canvas
+    expect_status: 200

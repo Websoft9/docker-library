@@ -1,3 +1,8 @@
+## 2026-10-12
+
+- Updated Neo4j from the floating `2026.07` line to the floating `2026.09` line.
+- Refreshed the published release-note reference and added app-local functional test metadata for deploy validation.
+
 ## 2026-09-08
 
 - Updated Neo4j from `5.26.5` to the floating `2026.07` line and reduced the published version set to `2026.07`, `2026.07-enterprise`, `5.26`, and `5.26-enterprise`.

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-10-13
+
+- Verified upstream stable remains 0.27.4; removed the unsupported `latest` version claim from package metadata.
+- Marked `W9_POWER_PASSWORD` as first-startup-only because bundled PostgreSQL applies its initialization auth settings only on a fresh data directory.
+- Added app-specific AFFiNE smoke coverage under `tests/cases.yml` to validate the first-run landing page beyond the default adaptive checks.
+
 ## 2026-08-29
 
 - Rebuilt the package on upstream 0.27.4 compose: main app + one-time `affine-migration` job, `pgvector/pgvector:pg16` Postgres, and Redis.

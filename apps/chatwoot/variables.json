@@ -3,13 +3,18 @@
   "trademark": "Chatwoot",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/r/chatwoot/chatwoot"
+    "image": "https://hub.docker.com/r/chatwoot/chatwoot",
+    "releases": "https://github.com/chatwoot/chatwoot/releases",
+    "docs": [
+      "https://www.chatwoot.com/docs/self-hosted/deployment/docker",
+      "https://www.chatwoot.com/docs/self-hosted/configuration/environment-variables"
+    ]
   },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "v4.8.0",
+        "v4.18.0",
         "latest"
       ]
     }
@@ -25,5 +30,10 @@
     "cpu": "2",
     "memory": "4",
     "disk": "1"
+  },
+  "credentials": {},
+  "help": {
+    "login": "First run: open the site and create the administrator account in the Chatwoot setup flow, then sign in with those credentials.",
+    "db": "After each image upgrade, run `docker compose run --rm rails bundle exec rails db:chatwoot_prepare` before or immediately after restarting the stack so Chatwoot applies the required database migrations."
   }
 }

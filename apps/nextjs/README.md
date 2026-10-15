@@ -6,7 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Next.js**.
 2. In the **Access** tab, get the login URL and credentials.
-3. Open the login URL in a browser and confirm the app works.
+3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
 ### Usage
@@ -41,9 +41,10 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 16.3.5, latest.
+Supported versions: 16.4.0, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
+
 
 ### Ports
 
@@ -51,29 +52,46 @@ The `latest` tag is not guaranteed to remain valid; pin a specific version for p
 | --- | --- |
 | Web Console | 3000 |
 
+
 ### Data Directory
 
+
 Data is persisted in the `nextjs_app` volume, mounted at `/usr/src/app`.
+
 
 ### Environment Variables
 
 Environment variables are defined in the app's `.env` file; see the reference section at the end of `.env` for supported variables.
 
+
 Note: `NEXTJS_CREATE_FLAGS`, `NEXTJS_PACKAGE_MANAGER` take effect on first startup only; changing them after deployment may not take effect until the app is re-initialized.
+
 
 ### Configuration Files
 
-Configuration is overridden by mounting `./src/entrypoint.sh` to `/usr/local/bin/entrypoint.sh`.
+
+- `./src/entrypoint.sh` → `/opt/websoft9/entrypoint.sh`
+- `./src/entrypoint.d` → `/opt/websoft9/entrypoint.d`
+- `./src/start.sh` → `/opt/websoft9/start.sh`
+
+
 
 ## References
 
 - [Next.js Administrator Guide](https://support.websoft9.com/docs/nextjs) by Websoft9
+
 - [Docker Hub image](https://github.com/vercel/next.js)
+
 - [Releases](https://github.com/vercel/next.js/releases)
+
 - [Official docs](https://nextjs.org/docs/app/getting-started/installation)
+
 - [Official docs](https://nextjs.org/docs/app/getting-started/deploying)
+
 - [Official docs](https://nextjs.org/docs/app/guides/self-hosting)
+
 - [Official docs](https://hub.docker.com/_/node)
+
 
 <!-- W9_TROUBLESHOOT_START -->
 ## Troubleshooting

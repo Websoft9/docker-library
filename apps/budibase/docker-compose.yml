@@ -1,18 +1,12 @@
-
-# docs: https://docs.budibase.com/docs/docker-compose
-# compose: https://github.com/Budibase/budibase/blob/master/hosting/docker-compose.yaml
-
-# Websoft9 modifications: add container_name, add plugins volume, add network, add env_file: .env for proxy-service
-
-version: "3.8"
 services:
   app-service:
     restart: unless-stopped
-    image: budibase.docker.scarf.sh/budibase/apps
-    container_name: $W9_ID-bbapps
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}-bbapps
+    env_file: .env
     environment:
       SELF_HOSTED: 1
-      COUCH_DB_URL: http://${COUCH_DB_USER}:${COUCH_DB_PASSWORD}@couchdb-service:5984
+      COUCH_DB_URL: http://${COUCH_DB_USER}:${COUCH_DB_PASSWORD}@${W9_ID}-couchdb:5984
       WORKER_URL: http://worker-service:4003
       MINIO_URL: http://minio-service:9000
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
@@ -26,20 +20,27 @@ services:
       ENABLE_ANALYTICS: "true"
       REDIS_URL: redis-service:6379
       REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_USERNAME: ${REDIS_USERNAME}
+      LITELLM_URL: http://litellm-service:4000
+      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY}
       BB_ADMIN_USER_EMAIL: ${BB_ADMIN_USER_EMAIL}
       BB_ADMIN_USER_PASSWORD: ${BB_ADMIN_USER_PASSWORD}
+      PASSWORD_MIN_LENGTH: ${PASSWORD_MIN_LENGTH}
+      PASSWORD_MAX_LENGTH: ${PASSWORD_MAX_LENGTH}
       PLUGINS_DIR: ${PLUGINS_DIR}
       OFFLINE_MODE: ${OFFLINE_MODE}
     depends_on:
       - worker-service
       - redis-service
+      - litellm-service
     volumes:
       - plugins:/plugins
 
   worker-service:
     restart: unless-stopped
-    image: budibase.docker.scarf.sh/budibase/worker
-    container_name: $W9_ID-bbworker
+    image: budibase/worker:${W9_VERSION}
+    container_name: ${W9_ID}-bbworker
+    env_file: .env
     environment:
       SELF_HOSTED: 1
       PORT: 4003
@@ -56,15 +57,21 @@ services:
       INTERNAL_API_KEY: ${INTERNAL_API_KEY}
       REDIS_URL: redis-service:6379
       REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_USERNAME: ${REDIS_USERNAME}
+      LITELLM_URL: http://litellm-service:4000
+      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY}
       OFFLINE_MODE: ${OFFLINE_MODE}
+      PASSWORD_MIN_LENGTH: ${PASSWORD_MIN_LENGTH}
+      PASSWORD_MAX_LENGTH: ${PASSWORD_MAX_LENGTH}
     depends_on:
       - redis-service
       - minio-service
+      - litellm-service
 
   minio-service:
     restart: unless-stopped
-    container_name: $W9_ID-minio
-    image: minio/minio
+    container_name: ${W9_ID}-minio
+    image: budibase/minio:final
     volumes:
       - minio_data:/data
     environment:
@@ -81,18 +88,17 @@ services:
   proxy-service:
     restart: unless-stopped
     ports:
-      - "${MAIN_PORT}:10000"
-    container_name: $W9_ID
-    image: budibase/proxy
+      - "${MAIN_PORT}:10000" # Web Console
+    container_name: ${W9_ID}
+    image: budibase/proxy:${W9_VERSION}
     env_file: .env
     environment:
       - PROXY_RATE_LIMIT_WEBHOOKS_PER_SECOND=10
-      - PROXY_RATE_LIMIT_API_PER_SECOND=20
+      - PROXY_RATE_LIMIT_API_PER_SECOND=50
       - APPS_UPSTREAM_URL=http://app-service:4002
       - WORKER_UPSTREAM_URL=http://worker-service:4003
       - MINIO_UPSTREAM_URL=http://minio-service:9000
       - COUCHDB_UPSTREAM_URL=http://couchdb-service:5984
-      - WATCHTOWER_UPSTREAM_URL=http://watchtower-service:8080
       - RESOLVER=127.0.0.11
     depends_on:
       - minio-service
@@ -102,37 +108,64 @@ services:
 
   couchdb-service:
     restart: unless-stopped
-    container_name: $W9_ID-couchdb
-    image: budibase/couchdb
-    pull_policy: always
+    container_name: ${W9_ID}-couchdb
+    image: budibase/database:2.1.0
+    env_file: .env
     environment:
       - COUCHDB_PASSWORD=${COUCH_DB_PASSWORD}
       - COUCHDB_USER=${COUCH_DB_USER}
       - TARGETBUILD=docker-compose
+      - DATA_DIR=/data
     volumes:
-      - couchdb3_data:/opt/couchdb/data
+      - couchdb3_data:/data
 
   redis-service:
     restart: unless-stopped
     image: redis
-    container_name: $W9_ID-redis
+    container_name: ${W9_ID}-redis
     command: redis-server --requirepass ${REDIS_PASSWORD}
     volumes:
       - redis_data:/data
 
-  watchtower-service:
-    restart: always
-    container_name: $W9_ID-watchtower
-    image: containrrr/watchtower
+  litellm-service:
+    restart: unless-stopped
+    image: docker.io/litellm/litellm:main-v1.83.10-stable.patch.3
+    container_name: ${W9_ID}-litellm
+    env_file: .env
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: --debug --http-api-update bbapps bbworker bbproxy
+      - ./src/litellm_config.yaml:/app/config.yaml
     environment:
-      - WATCHTOWER_HTTP_API=true
-      - WATCHTOWER_HTTP_API_TOKEN=budibase
-      - WATCHTOWER_CLEANUP=true
-    labels:
-      - "com.centurylinklabs.watchtower.enable=false"
+      DATABASE_URL: postgresql://${LITELLM_DB_USER}:${LITELLM_DB_PASSWORD}@litellm-db:5432/${LITELLM_DB_NAME}
+      STORE_MODEL_IN_DB: "True"
+      LITELLM_REASONING_AUTO_SUMMARY: "true"
+      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY}
+      LITELLM_SALT_KEY: ${LITELLM_SALT_KEY}
+    command: ["--config", "/app/config.yaml"]
+    depends_on:
+      - litellm-db
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:4000/health/liveliness')\" || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  litellm-db:
+    restart: unless-stopped
+    image: postgres:${W9_DB_VERSION}
+    container_name: ${W9_ID}-litellm-db
+    env_file: .env
+    environment:
+      POSTGRES_DB: ${LITELLM_DB_NAME}
+      POSTGRES_USER: ${LITELLM_DB_USER}
+      POSTGRES_PASSWORD: ${LITELLM_DB_PASSWORD}
+    volumes:
+      - litellm_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ${LITELLM_DB_NAME} -U ${LITELLM_DB_USER}"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
 
 volumes:
   couchdb3_data:
@@ -142,6 +175,8 @@ volumes:
   redis_data:
     driver: local
   plugins:
+    driver: local
+  litellm_data:
     driver: local
 
 networks:

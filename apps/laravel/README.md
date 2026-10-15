@@ -44,7 +44,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 13.31.0, latest.
+Supported versions: 13.35.0, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
@@ -59,9 +59,7 @@ The `latest` tag is not guaranteed to remain valid; pin a specific version for p
 ### Data Directory
 
 
-- `laravel_app` → `/var/www/html`
-- `mysql_data` → `/var/lib/mysql`
-
+Data is persisted in the `laravel_app` volume, mounted at `/var/www/html`.
 
 
 ### Environment Variables
@@ -72,8 +70,8 @@ Environment variables are defined in the app's `.env` file; see the reference se
 ### Configuration Files
 
 
-- `./src/entrypoint.d/10-scaffold.sh` → `/etc/entrypoint.d/10-scaffold.sh`
-- `./src/entrypoint.d/20-composer-install.sh` → `/etc/entrypoint.d/20-composer-install.sh`
+- `./src/entrypoint.sh` → `/opt/websoft9/entrypoint.sh`
+- `./src/entrypoint.d` → `/opt/websoft9/entrypoint.d`
 
 
 

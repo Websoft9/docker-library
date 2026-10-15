@@ -51,13 +51,15 @@ Rules:
 - `review-first` means stop after assessment and wait for owner approval
 - `defer` means record the candidate and check again in the next cadence
 - `skip` means no update work should start for this candidate
+- a major version jump by itself is not a reason to choose `review-first`, because this repository updates packaging and validation artifacts rather than migrating a live instance
+- use `review-first` for major updates only when the app policy is `manual-major`, or when package-side facts are ambiguous or materially risky
 - when recommending a target image tag, prefer `x.x` over `x.x.x` unless upstream does not provide the `x.x` tag or exact patch pinning is required
 - if `libs app-drift` returns `not-declared` or `source-error`, AI may research missing upstream sources, but should not repeat local dependency inventory already produced by CLI
 
 Decision hints:
 - patch: prefer `auto-update`
 - minor: `auto-update` if compatible, otherwise `review-first`
-- major: default `review-first`
+- major: prefer `auto-update` when the package-side change is clear; use `review-first` for `manual-major` or materially unclear/risky package changes
 - prerelease, beta, rc: default `skip`
 - security update: may bypass normal cadence
 

@@ -1,0 +1,13 @@
+{
+  "trademark": "Xinference",
+  "catalogBindings": [
+    {
+      "parentKey": "ai",
+      "childKey": "open-llm"
+    }
+  ],
+  "summary": "Open-source AI model inference platform.",
+  "overview": "Xinference runs, manages, and serves open-source LLMs, speech, and vision models behind a unified OpenAI-compatible API.",
+  "description": "Xinference is an open-source platform for running and serving large language, speech, and multimodal models. It exposes an OpenAI-compatible RESTful API and a web UI, so applications can switch models and inference backends without changing code.\n\nThis package deploys the official xprobe/xinference image. The Web UI and API are published on port 9997, and model data is persisted in named volumes for the Xinference home, Hugging Face, and ModelScope caches. Authentication is enabled by default since v3.0, so the first visit creates the administrator account. The GPU image variant needs an NVIDIA GPU with CUDA 13.0 and driver 580+; a CPU image variant is available for CPU-only hosts.\n\nTypical use cases include self-hosted LLM inference, embeddings, reranking, speech recognition, and multimodal generation behind one endpoint.",
+  "websiteurl": "https://github.com/xorbitsai/inference"
+}

@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-13
+
+- Upgraded Activepieces from `0.88.4-hotfix.1` to `0.92.3`.
+- Fixed `AP_FRONTEND_URL` to use `http://${W9_URL}` so the packaged public URL matches upstream self-host requirements and repository URL wiring rules.
+
 ## 2026-08-27
 
 - Upgraded Activepieces from `0.70.4` to `0.88.4`.

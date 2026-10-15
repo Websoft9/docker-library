@@ -1,0 +1,15 @@
+aliyun ecs RunInstances \
+  --region cn-hongkong \
+  --InstanceName root-cdl-test-buy1 \
+  --ImageId 'm-j6caxlj97mf3l51d0wcz' \
+  --SystemDisk.Category cloud_essd \
+  --SystemDisk.Size 200 \
+  --InstanceType ecs.g7.large \
+  --SecurityGroupId 'sg-j6c7epgwcech14ofdt5l' \
+  --VSwitchId 'vsw-j6cpor7vbblzas6ui2pkf' \
+  --InternetMaxBandwidthOut 100 \
+  --KeyPairName 'websoft9_auto' \
+  --SpotStrategy SpotAsPriceGo \
+  --SpotDuration 0 \
+  --AutoReleaseTime '2026-10-13T11:19:00Z' \
+  --output cols=InstanceIdSets.InstanceIdSet[0] | sed -n '3p'

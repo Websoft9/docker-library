@@ -1,0 +1,5 @@
+optional:
+  - id: login-page
+    type: web-access
+    path: /users/sign_in
+    expect_status: 200

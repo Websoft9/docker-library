@@ -1,26 +1,86 @@
-# Node-RED on Docker  
+# Node-RED on Docker
 
-This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Node-RED:
+## Quick Start
+
+### Deploy Verification
+
+1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Node-RED**.
+2. In the **Access** tab, get the login URL and credentials.
+3. Open the login URL in a browser and sign in to confirm the app works.
+
+<!-- W9_GUIDE_START -->
+### Usage
+
+1. Make sure you are signed in to the Node-RED admin console.
+2. Try a core feature.
+
+### Change Password
+
+1. In the [Websoft9](https://www.websoft9.com) console, open the app's **Compose** tab.
+2. Update the password in `.env` and save.
+3. Rebuild the app.
+<!-- W9_GUIDE_END -->
+
+## Configuration Reference
+
+Websoft9 packages this app from the official [Node-RED Docker image](https://hub.docker.com/r/nodered/node-red) and makes some improvements below.
+
+<!-- W9_NOTE_START -->
+
+<!-- W9_NOTE_END -->
+
+Apps run as containers; rebuild after any configuration change.
+
+### Version Support
+
+Supported versions: 5.0, latest.
+
+The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
 
- - community:  4.0, latest
+### Ports
+
+| Purpose | Port |
+| --- | --- |
+| Web Console | 1880 |
 
 
-## System Requirements
+### Data Directory
 
-The following are the minimal [recommended requirements](https://nodered.org/docs/getting-started/docker):
 
-* **RAM**: 2 GB or more
-* **CPU**: 1 cores or higher
-* **Disk**: at least 1 GB of free space
-* **bandwidth**: more fluent experience over 100M  
+Data is persisted in the `nodered_data` volume, mounted at `/data`.
 
-## Install
 
-You can install this Node-RED by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+### Environment Variables
 
-If you want use Node-RED with **Websoft9 Business Support** free, you can [subscribe Node-RED](https://www.websoft9.com/apps) on Cloud platform
+Environment variables are defined in the app's `.env` file; see the reference section at the end of `.env` for supported variables.
 
-## Documentation
 
-[Node-RED Administrator Guide](https://support.websoft9.com/docs/nodered) powered by Websoft9
+### Configuration Files
+
+
+Configuration files live inside the image; mount a single file read-only to override, and never replace the whole directory.
+
+
+## References
+
+- [Node-RED Administrator Guide](https://support.websoft9.com/docs/nodered) by Websoft9
+
+- [Docker Hub image](https://hub.docker.com/r/nodered/node-red)
+
+- [Releases](https://github.com/node-red/node-red/releases)
+
+- [Official docs](https://nodered.org/docs/getting-started/docker)
+
+- [GitHub docs](https://github.com/node-red/node-red/releases/tag/5.0.0)
+
+
+<!-- W9_TROUBLESHOOT_START -->
+## Troubleshooting
+
+**App fails to start?**
+- Check `docker compose logs`.
+
+**Port not reachable?**
+- Ensure the firewall / security group allows the port.
+<!-- W9_TROUBLESHOOT_END -->

@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
 echo "Add your CI code here, below is example"
 
 cat > app.js <<EOF
@@ -15,7 +18,7 @@ server.listen(port, () => {
 });
 EOF
 
-node app.js
+exec node app.js
 
 ## Sample One: Express
 

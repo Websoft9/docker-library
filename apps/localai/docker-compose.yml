@@ -1,17 +1,30 @@
-# docs: https://localai.io/basics/getting_started/
-# image: https://hub.docker.com/r/localai/localai/tags
-
 services:
-
   localai:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - $W9_HTTP_PORT_SET:8080
+      - "${W9_HTTP_PORT_SET}:8080" # Web Console
     env_file: .env
+    volumes:
+      - models:/models
+      - backends:/backends
+      - configuration:/configuration
+      - data:/data
+    healthcheck:
+      test: ["CMD", "sh", "-c", "wget --header='Authorization: Bearer ${LOCALAI_API_KEY}' -qO- http://127.0.0.1:8080/v1/models >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  models:
+  backends:
+  configuration:
+  data:
 
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

@@ -14,7 +14,7 @@
     {
       "dist": "community",
       "version": [
-        "26.8",
+        "26.9",
         "latest"
       ]
     }
@@ -30,9 +30,23 @@
     "memory": "1",
     "disk": "2"
   },
-  "credentials": {},
+  "credentials": {
+    "username": {
+      "source": "container-env",
+      "name": "W9_LOGIN_USER"
+    },
+    "password": {
+      "source": "container-env",
+      "name": "W9_LOGIN_PASSWORD"
+    }
+  },
   "env": {
-    "first_startup_only": []
+    "first_startup_only": [
+      "CLICKHOUSE_DB",
+      "CLICKHOUSE_USER",
+      "CLICKHOUSE_PASSWORD",
+      "CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT"
+    ]
   },
   "help": {}
 }

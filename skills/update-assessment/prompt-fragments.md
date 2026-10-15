@@ -24,6 +24,8 @@ Choose one result only:
 - `defer`: track and revisit in the next cadence
 - `skip`: no update work should start for this candidate
 
+A major version jump alone is not enough to choose `review-first`. For this repository, prefer `auto-update` when the package-side changes are clear. Reserve `review-first` for `manual-major` policy, ambiguous upstream packaging facts, or materially risky package changes.
+
 ## DB Decision Rule
 
 Candidates = alive tracks from `metadata/db-lifecycle.json` with version >= the app's `externalDB` min. LTS/stable tracks outrank innovation/short-term tracks. A DB major above the vendor-tested upper bound is not eligible.

@@ -1,26 +1,95 @@
-# Apache NiFi on Docker  
+# Apache NiFi on Docker
 
-This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Apache NiFi:
+## Quick Start
+
+### Deploy Verification
+
+1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Apache NiFi**.
+2. In the **Access** tab, get the login URL and credentials.
+3. Open the login URL in a browser and sign in to confirm the app works.
+
+<!-- W9_GUIDE_START -->
+### Usage
+
+1. Make sure you are signed in to the Apache NiFi admin console.
+2. Try a core feature.
+
+### Change Password
+
+1. In the [Websoft9](https://www.websoft9.com) console, open the app's **Compose** tab.
+2. Update the password in `.env` and save.
+3. Rebuild the app.
+<!-- W9_GUIDE_END -->
+
+## Configuration Reference
+
+Websoft9 packages this app from the official [Apache NiFi Docker image](https://hub.docker.com/r/apache/nifi) and makes some improvements below.
+
+<!-- W9_NOTE_START -->
+
+<!-- W9_NOTE_END -->
+
+Apps run as containers; rebuild after any configuration change.
+
+### Version Support
+
+Supported versions: 2.12.0, latest.
+
+The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
 
- - community:  latest
+### Ports
+
+| Purpose | Port |
+| --- | --- |
+| Web Console (HTTPS) | 8443 |
 
 
-## System Requirements
+### Data Directory
 
-The following are the minimal [recommended requirements](https://nifi.apache.org):
 
-* **RAM**: 4 GB or more
-* **CPU**: 2 cores or higher
-* **Disk**: at least 10 GB of free space
-* **bandwidth**: more fluent experience over 100M  
+- `nifi_conf` → `/opt/nifi/nifi-current/conf`
+- `nifi_state` → `/opt/nifi/nifi-current/state`
+- `nifi_logs` → `/opt/nifi/nifi-current/logs`
+- `nifi_database` → `/opt/nifi/nifi-current/database_repository`
+- `nifi_flowfile` → `/opt/nifi/nifi-current/flowfile_repository`
+- `nifi_content` → `/opt/nifi/nifi-current/content_repository`
+- `nifi_provenance` → `/opt/nifi/nifi-current/provenance_repository`
 
-## Install
 
-You can install this Apache NiFi by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use Apache NiFi with **Websoft9 Business Support** free, you can [subscribe Apache NiFi](https://www.websoft9.com/apps) on Cloud platform
+### Environment Variables
 
-## Documentation
+Environment variables are defined in the app's `.env` file; see the reference section at the end of `.env` for supported variables.
 
-[Apache NiFi Administrator Guide](https://support.websoft9.com/docs/nifi) powered by Websoft9
+
+### Configuration Files
+
+
+Configuration files live inside the image; mount a single file read-only to override, and never replace the whole directory.
+
+
+## References
+
+- [Apache NiFi Administrator Guide](https://support.websoft9.com/docs/nifi) by Websoft9
+
+- [Docker Hub image](https://hub.docker.com/r/apache/nifi)
+
+- [Releases](https://github.com/apache/nifi/releases)
+
+- [GitHub docs](https://github.com/apache/nifi/tree/main/nifi-docker/dockerhub)
+
+- [Official docs](https://nifi.apache.org/documentation/nifi-latest/html/administration-guide.html)
+
+- [GitHub docs](https://github.com/apache/nifi/releases/tag/rel/nifi-2.12.0)
+
+
+<!-- W9_TROUBLESHOOT_START -->
+## Troubleshooting
+
+**App fails to start?**
+- Check `docker compose logs`.
+
+**Port not reachable?**
+- Ensure the firewall / security group allows the port.
+<!-- W9_TROUBLESHOOT_END -->

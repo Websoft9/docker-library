@@ -1,0 +1,46 @@
+{
+  "name": "jfrog",
+  "trademark": "JFrog Artifactory",
+  "release": false,
+  "upstream": {
+    "image": "releases-docker.jfrog.io/jfrog/artifactory-pro",
+    "docs": [
+      "https://www.jfrogchina.com/docs/docker-install-artifactory-1",
+      "https://github.com/jfrog/artifactory-docker-examples"
+    ]
+  },
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["7.161.26"]
+    }
+  ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8082,
+      "path": "/"
+    }
+  },
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "20"
+  },
+  "credentials": {
+    "username": {
+      "source": "inline",
+      "value": "admin"
+    },
+    "password": {
+      "source": "inline",
+      "value": "password"
+    }
+  },
+  "env": {
+    "first_startup_only": []
+  },
+  "help": {
+    "login": "First login uses the built-in admin / password. JFrog Artifactory forces a new administrator password on first sign-in, after which the initial password no longer works. A valid Artifactory license is required to use the product."
+  }
+}

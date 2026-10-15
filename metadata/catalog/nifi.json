@@ -1,0 +1,13 @@
+{
+  "trademark": "Apache NiFi",
+  "catalogBindings": [
+    {
+      "parentKey": "analytics",
+      "childKey": "dintegration"
+    }
+  ],
+  "summary": "Dataflow automation and integration platform.",
+  "overview": "Designs, runs, and monitors secure dataflows for ingest, routing, transformation, and distribution through a browser-based interface.",
+  "description": "Apache NiFi is an open-source dataflow automation platform. It provides a browser-based interface for designing, controlling, and monitoring flows that move, route, transform, and track data between systems, with built-in provenance, back pressure, and secure communication support.\n\nThis package deploys the official Apache NiFi container with HTTPS enabled and the upstream single-user authentication model. Persistent volumes are provided for configuration, logs, state, and the main repositories so flows and operational data survive container recreation.\n\nTypical use cases include ETL and ELT pipelines, system-to-system data integration, event and log routing, API and file ingestion, and managed data distribution across internal or external services.",
+  "websiteurl": "https://nifi.apache.org"
+}

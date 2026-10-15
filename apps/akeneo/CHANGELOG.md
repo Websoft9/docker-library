@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-10-13
+- Added `tests/cases.yml` coverage for the Akeneo login page so deploy validation exercises the real web entry path instead of only default checks.
+- Hardened the Docker image package-install step with an apt index refresh retry to avoid transient Debian mirror 404 failures during build.
+
 ## 2026-09-03
 - Rebuilt the Akeneo package around a custom Dockerfile based on `akeneo/pim-php-dev:8.3`.
 - Updated Akeneo to `v2026.4` with a build-time `composer create-project` flow instead of runtime source installation.

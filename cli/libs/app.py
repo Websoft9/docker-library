@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import fcntl
 import json
 import shutil
+from contextlib import contextmanager
 from pathlib import Path
 
 import typer
@@ -113,127 +115,141 @@ def _write_yaml(path: Path, data: dict) -> None:
         yaml.safe_dump(data, file, sort_keys=False, allow_unicode=True)
 
 
+@contextmanager
+def _metadata_lock():
+    lock_path = repo_path("metadata", ".app-metadata.lock")
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    with lock_path.open("w", encoding="utf-8") as lock_file:
+        fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+
+
 def archive_app(app_name: str, reason: str = "owner-retired", dry_run: bool = False) -> dict:
-    source = app_dir(app_name)
-    if not source:
-        raise FileNotFoundError(app_name)
+    with _metadata_lock():
+        source = app_dir(app_name)
+        if not source:
+            raise FileNotFoundError(app_name)
 
-    archive_target = repo_path("archive", "apps", app_name)
-    already_archived = source == archive_target
-    actions = {
-        "app": app_name,
-        "source": relative_repo_path(source),
-        "target": relative_repo_path(archive_target),
-        "reason": reason,
-        "already_archived": already_archived,
-        "dry_run": dry_run,
-    }
-    if already_archived:
-        return actions
+        archive_target = repo_path("archive", "apps", app_name)
+        already_archived = source == archive_target
+        actions = {
+            "app": app_name,
+            "source": relative_repo_path(source),
+            "target": relative_repo_path(archive_target),
+            "reason": reason,
+            "already_archived": already_archived,
+            "dry_run": dry_run,
+        }
+        if already_archived:
+            return actions
 
-    maintenance_path = repo_path("metadata", "maintenance.yaml")
-    archive_path = repo_path("metadata", "archive.yaml")
-    maintenance = _read_yaml(maintenance_path)
-    archive = _read_yaml(archive_path)
+        maintenance_path = repo_path("metadata", "maintenance.yaml")
+        archive_path = repo_path("metadata", "archive.yaml")
+        maintenance = _read_yaml(maintenance_path)
+        archive = _read_yaml(archive_path)
 
-    for apps in (maintenance.get("cadence") or {}).values():
-        if app_name in (apps or []):
-            apps.remove(app_name)
-    for apps in (maintenance.get("update_policy") or {}).values():
-        if app_name in (apps or []):
-            apps.remove(app_name)
-    frozen = (maintenance.get("lifecycle") or {}).get("frozen") or []
-    if app_name in frozen:
-        frozen.remove(app_name)
+        for apps in (maintenance.get("cadence") or {}).values():
+            if app_name in (apps or []):
+                apps.remove(app_name)
+        for apps in (maintenance.get("update_policy") or {}).values():
+            if app_name in (apps or []):
+                apps.remove(app_name)
+        frozen = (maintenance.get("lifecycle") or {}).get("frozen") or []
+        if app_name in frozen:
+            frozen.remove(app_name)
 
-    defaults = archive.setdefault("defaults", {
-        "archive_reason": "owner-retired",
-        "contentful": {"action": "archive", "production": False},
-    })
-    archive_apps = archive.setdefault("apps", [])
-    if app_name not in archive_apps:
-        archive_apps.append(app_name)
-        archive_apps.sort()
-    overrides = archive.setdefault("overrides", {})
-    if reason != defaults.get("archive_reason"):
-        overrides[app_name] = {"archive_reason": reason}
+        defaults = archive.setdefault("defaults", {
+            "archive_reason": "owner-retired",
+            "contentful": {"action": "archive", "production": False},
+        })
+        archive_apps = archive.setdefault("apps", [])
+        if app_name not in archive_apps:
+            archive_apps.append(app_name)
+            archive_apps.sort()
+        overrides = archive.setdefault("overrides", {})
+        if reason != defaults.get("archive_reason"):
+            overrides[app_name] = {"archive_reason": reason}
 
-    if dry_run:
+        if dry_run:
+            actions["metadata_updated"] = True
+            return actions
+
+        archive_target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.move(str(source), str(archive_target))
+        _write_yaml(maintenance_path, maintenance)
+        _write_yaml(archive_path, archive)
         actions["metadata_updated"] = True
         return actions
-
-    archive_target.parent.mkdir(parents=True, exist_ok=True)
-    shutil.move(str(source), str(archive_target))
-    _write_yaml(maintenance_path, maintenance)
-    _write_yaml(archive_path, archive)
-    actions["metadata_updated"] = True
-    return actions
 
 
 def restore_app(app_name: str, cadence: str = "monthly", update_policy: str = "patch-minor", dry_run: bool = False) -> dict:
-    source = repo_path("archive", "apps", app_name)
-    if not source.exists():
-        raise FileNotFoundError(app_name)
-    target = repo_path("apps", app_name)
-    if target.exists():
-        raise FileExistsError(app_name)
+    with _metadata_lock():
+        source = repo_path("archive", "apps", app_name)
+        if not source.exists():
+            raise FileNotFoundError(app_name)
+        target = repo_path("apps", app_name)
+        if target.exists():
+            raise FileExistsError(app_name)
 
-    maintenance_path = repo_path("metadata", "maintenance.yaml")
-    archive_path = repo_path("metadata", "archive.yaml")
-    maintenance = _read_yaml(maintenance_path)
-    archive = _read_yaml(archive_path)
+        maintenance_path = repo_path("metadata", "maintenance.yaml")
+        archive_path = repo_path("metadata", "archive.yaml")
+        maintenance = _read_yaml(maintenance_path)
+        archive = _read_yaml(archive_path)
 
-    actions = {
-        "app": app_name,
-        "source": relative_repo_path(source),
-        "target": relative_repo_path(target),
-        "cadence": cadence,
-        "update_policy": update_policy,
-        "dry_run": dry_run,
-    }
+        actions = {
+            "app": app_name,
+            "source": relative_repo_path(source),
+            "target": relative_repo_path(target),
+            "cadence": cadence,
+            "update_policy": update_policy,
+            "dry_run": dry_run,
+        }
 
-    archived_apps = archive.get("apps") or []
-    overrides = archive.get("overrides") or {}
-    registered = app_name in archived_apps or app_name in overrides
-    if not registered:
-        actions["warning"] = f"{app_name} is not registered in metadata/archive.yaml; directory move only"
-    else:
-        archive["apps"] = sorted(a for a in archived_apps if a != app_name)
-        overrides.pop(app_name, None)
-        archive["overrides"] = overrides
+        archived_apps = archive.get("apps") or []
+        overrides = archive.get("overrides") or {}
+        registered = app_name in archived_apps or app_name in overrides
+        if not registered:
+            actions["warning"] = f"{app_name} is not registered in metadata/archive.yaml; directory move only"
+        else:
+            archive["apps"] = sorted(a for a in archived_apps if a != app_name)
+            overrides.pop(app_name, None)
+            archive["overrides"] = overrides
 
-    cadence_buckets = maintenance.setdefault("cadence", {})
-    policy_buckets = maintenance.setdefault("update_policy", {})
-    for bucket, apps in cadence_buckets.items():
-        if app_name in (apps or []):
-            apps.remove(app_name)
-    for bucket, apps in policy_buckets.items():
-        if app_name in (apps or []):
-            apps.remove(app_name)
-    cadence_buckets.setdefault(cadence, [])
-    if app_name not in cadence_buckets[cadence]:
-        cadence_buckets[cadence].append(app_name)
-        cadence_buckets[cadence].sort()
-    policy_buckets.setdefault(update_policy, [])
-    if app_name not in policy_buckets[update_policy]:
-        policy_buckets[update_policy].append(app_name)
-        policy_buckets[update_policy].sort()
+        cadence_buckets = maintenance.setdefault("cadence", {})
+        policy_buckets = maintenance.setdefault("update_policy", {})
+        for bucket, apps in cadence_buckets.items():
+            if app_name in (apps or []):
+                apps.remove(app_name)
+        for bucket, apps in policy_buckets.items():
+            if app_name in (apps or []):
+                apps.remove(app_name)
+        cadence_buckets.setdefault(cadence, [])
+        if app_name not in cadence_buckets[cadence]:
+            cadence_buckets[cadence].append(app_name)
+            cadence_buckets[cadence].sort()
+        policy_buckets.setdefault(update_policy, [])
+        if app_name not in policy_buckets[update_policy]:
+            policy_buckets[update_policy].append(app_name)
+            policy_buckets[update_policy].sort()
 
-    lifecycle = maintenance.setdefault("lifecycle", {})
-    frozen = lifecycle.get("frozen") or []
-    if app_name in frozen:
-        frozen.remove(app_name)
-    lifecycle["frozen"] = frozen
+        lifecycle = maintenance.setdefault("lifecycle", {})
+        frozen = lifecycle.get("frozen") or []
+        if app_name in frozen:
+            frozen.remove(app_name)
+        lifecycle["frozen"] = frozen
 
-    if dry_run:
+        if dry_run:
+            actions["metadata_updated"] = True
+            return actions
+
+        shutil.move(str(source), str(target))
+        _write_yaml(maintenance_path, maintenance)
+        _write_yaml(archive_path, archive)
         actions["metadata_updated"] = True
         return actions
-
-    shutil.move(str(source), str(target))
-    _write_yaml(maintenance_path, maintenance)
-    _write_yaml(archive_path, archive)
-    actions["metadata_updated"] = True
-    return actions
 
 
 @app.command("list")

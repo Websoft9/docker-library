@@ -1,0 +1,5 @@
+# The adaptive checks cover Jenkins' functional path: compose-config, container-up,
+# and web-access on "/" (which accepts the 403 returned before the initial admin
+# password is set). The initial admin password is resolved from the container file
+# declared in variables.json.credentials, not from an HTTP check.
+# Add cases here only if a future package exposes a stable unauthenticated endpoint.

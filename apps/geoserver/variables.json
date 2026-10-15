@@ -1,25 +1,51 @@
 {
   "name": "geoserver",
   "trademark": "GeoServer",
-  "release": false,
+  "release": true,
   "edition": [
     {
       "dist": "community",
       "version": [
+        "3.0.x",
         "latest"
       ]
     }
   ],
-  "requirements": {
-    "cpu": "1",
-    "memory": "2",
-    "disk": "1"
-  },
   "access": {
     "defaultScheme": "http",
     "web": {
-      "port": 80,
-      "path": "/"
+      "port": 8080,
+      "path": "/geoserver/web"
+    },
+    "admin": {
+      "port": 8080,
+      "path": "/geoserver/web"
     }
+  },
+  "requirements": {
+    "cpu": "1",
+    "memory": "2",
+    "disk": "2"
+  },
+  "upstream": {
+    "image": "docker.osgeo.org/geoserver",
+    "releases": "https://geoserver.org/download/",
+    "docs": [
+      "https://docs.geoserver.org/latest/en/user/installation/docker.html",
+      "https://github.com/geoserver/docker"
+    ]
+  },
+  "credentials": {
+    "username": {
+      "source": "inline",
+      "value": "admin"
+    },
+    "password": {
+      "source": "container-env",
+      "name": "W9_LOGIN_PASSWORD"
+    }
+  },
+  "help": {
+    "login": "Log in at /geoserver/web with the built-in administrator account shown below. Change the default password from the GeoServer security settings after first login."
   }
 }

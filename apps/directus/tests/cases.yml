@@ -1,0 +1,5 @@
+optional:
+  - id: directus-server-ping
+    type: web-access
+    path: /server/ping
+    expect_status: 200

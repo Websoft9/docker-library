@@ -1,0 +1,44 @@
+{
+  "name": "semaphoreui",
+  "trademark": "Semaphore UI",
+  "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/semaphoreui/semaphore",
+    "releases": "https://github.com/semaphoreui/semaphore/releases",
+    "docs": [
+      "https://docs.semaphoreui.com/"
+    ]
+  },
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "v2.19.16",
+        "latest"
+      ]
+    }
+  ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 3000,
+      "path": "/"
+    }
+  },
+  "requirements": {
+    "cpu": "1",
+    "memory": "2",
+    "disk": "4"
+  },
+  "env": {
+    "first_startup_only": [
+      "SEMAPHORE_ADMIN",
+      "SEMAPHORE_ADMIN_NAME",
+      "SEMAPHORE_ADMIN_EMAIL",
+      "SEMAPHORE_ADMIN_PASSWORD"
+    ],
+    "secrets": [
+      "SEMAPHORE_ACCESS_KEY_ENCRYPTION"
+    ]
+  }
+}

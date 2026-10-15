@@ -4,23 +4,22 @@
   "release": true,
   "upstream": {
     "image": "https://hub.docker.com/r/librechat/librechat",
-    "releases": "https://github.com/danny-avila/LibreChat/releases",
+    "releases": "https://github.com/LibreChat-AI/LibreChat/releases",
     "compose": {
-      "compose": "https://raw.githubusercontent.com/danny-avila/LibreChat/main/docker-compose.yml",
-      "env": "https://raw.githubusercontent.com/danny-avila/LibreChat/main/.env.example"
+      "compose": "https://raw.githubusercontent.com/LibreChat-AI/LibreChat/main/docker-compose.yml",
+      "env": "https://raw.githubusercontent.com/LibreChat-AI/LibreChat/main/.env.example"
     },
     "docs": [
       "https://www.librechat.ai/docs/local/docker",
       "https://www.librechat.ai/docs/configuration/dotenv",
-      "https://github.com/danny-avila/LibreChat"
+      "https://github.com/LibreChat-AI/LibreChat"
     ]
   },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "v0.8.7",
-        "latest"
+        "v0.8.7"
       ]
     }
   ],
@@ -36,5 +35,15 @@
     "cpu": "2",
     "memory": "4",
     "disk": "10"
+  },
+  "env": {
+    "secrets": [
+      "ADMIN_PANEL_SESSION_SECRET",
+      "MEILI_MASTER_KEY",
+      "JWT_SECRET",
+      "JWT_REFRESH_SECRET",
+      "CREDS_KEY",
+      "CREDS_IV"
+    ]
   }
 }

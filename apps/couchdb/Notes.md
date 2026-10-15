@@ -1,3 +1,3 @@
 # CouchDB
 
-GUI: http://Internet IP:5984/_utils/#login
+GUI: http://${W9_URL}:${W9_HTTP_PORT_SET}/_utils/#login

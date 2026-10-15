@@ -26,7 +26,7 @@ Worth update decisions:
 Default rules:
 - patch: prefer `auto-update`
 - minor: `auto-update` if compatible, otherwise `review-first`
-- major: default `review-first`
+- major: prefer `auto-update` when the package-side change is clear; use `review-first` for `manual-major` or materially unclear/risky package changes
 - prerelease, beta, rc: default `skip`
 - security fix: may bypass cadence
 

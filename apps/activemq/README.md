@@ -24,7 +24,7 @@
 
 ## Configuration Reference
 
-Websoft9 packages this app from the official [ActiveMQ Docker image](https://hub.docker.com/r/apache/activemq/tags) and makes some improvements below.
+Websoft9 packages this app from the official [ActiveMQ Docker image](https://hub.docker.com/r/apache/activemq) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
 - To make the Web Console reachable through the published port, the package adds `src/entrypoint.sh`, which opens the console IP allow-list and fixes 5.19 auth/CSP quirks across versions.
@@ -34,7 +34,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 6.3.0, 6.2.8, 5.19.9, latest.
+Supported versions: 6.3.2, 6.2.10, 5.19.11, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
@@ -70,7 +70,7 @@ Configuration is overridden by mounting `./src/entrypoint.sh` to `/opt/websoft9/
 
 - [ActiveMQ Administrator Guide](https://support.websoft9.com/docs/activemq) by Websoft9
 
-- [Docker Hub image](https://hub.docker.com/r/apache/activemq/tags)
+- [Docker Hub image](https://hub.docker.com/r/apache/activemq)
 
 - [Releases](https://github.com/apache/activemq/releases)
 
@@ -90,4 +90,3 @@ Configuration is overridden by mounting `./src/entrypoint.sh` to `/opt/websoft9/
 **Port not reachable?**
 - Ensure the cloud security group / firewall allows the port.
 <!-- W9_TROUBLESHOOT_END -->
-

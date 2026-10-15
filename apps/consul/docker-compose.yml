@@ -1,22 +1,20 @@
 services:
   consul-server:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     env_file: .env
     ports:
-      - $W9_HTTP_PORT_SET:8500
-      - $W9_DNS_TCP_PORT_SET:8600/tcp
-      - $W9_DNS_UDP_PORT_SET:8600/udp
+      - "${W9_HTTP_PORT_SET}:8500" # Web UI and HTTP API
     volumes:
-      - ./src/consul-config:/consul/config  
-      - consul-data:/consul/data        
+      - ./src/consul-config:/consul/config
+      - consul-data:/consul/data
     restart: unless-stopped
-    command: agent
+    command: agent -server -bootstrap-expect=1 -ui -client=0.0.0.0
 
 volumes:
   consul-data:
-    
+
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

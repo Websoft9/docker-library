@@ -26,5 +26,5 @@ Assessment focus:
 
 - whether the repo already floats on `x.x`
 - whether a patch release requires any repo change at all
-- whether a major update should stop at `review-first`
+- whether a major update is package-clear enough for `auto-update`, or needs `review-first` because of `manual-major` policy or package-side ambiguity
 - whether the current DB version is EOL'd or below the best LTS candidate

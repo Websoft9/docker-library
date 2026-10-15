@@ -10,7 +10,10 @@ PROVIDER_FILES = {
     "contentful": ".secrets/contentful.env",
     "cloudflare": ".secrets/cloudflare.env",
     "dockerhub": ".secrets/dockerhub.env",
+    "dns": ".secrets/dns.env",
     "aliyun": ".secrets/aliyun.env",
+    "aws": ".secrets/aws.env",
+    "azure": ".secrets/azure.env",
 }
 
 

@@ -1,19 +1,13 @@
-# image https://www.docker.elastic.co/r/kibana
-# docs: https://www.elastic.co/guide/en/kibana/current/docker.html
-
-version: '3.8'
-
 services:
-
   kibana:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - ${W9_HTTP_PORT_SET}:5601
+      - "${W9_HTTP_PORT_SET}:5601" # Web Console
     env_file: .env
 
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

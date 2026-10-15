@@ -1,0 +1,5 @@
+optional:
+  - id: version-api
+    type: web-access
+    path: /api/v2/version
+    expect_status: 200

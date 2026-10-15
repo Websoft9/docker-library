@@ -1,26 +1,78 @@
-# logstash on Docker  
+# logstash on Docker
 
-This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for logstash:
+## Quick Start
+
+### Deploy Verification
+
+1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **logstash**.
+2. In the **Access** tab, get the login URL and credentials.
+3. Open the login URL in a browser and sign in to confirm the app works.
+
+<!-- W9_GUIDE_START -->
+### Usage
+
+1. Make sure you are signed in to the logstash admin console.
+2. Try a core feature.
+
+### Change Password
+
+1. In the [Websoft9](https://www.websoft9.com) console, open the app's **Compose** tab.
+2. Update the password in `.env` and save.
+3. Rebuild the app.
+<!-- W9_GUIDE_END -->
+
+## Configuration Reference
+
+Websoft9 packages this app from the official [logstash Docker image](https://hub.docker.com/_/logstash) and makes some improvements below.
+
+<!-- W9_NOTE_START -->
+
+<!-- W9_NOTE_END -->
+
+Apps run as containers; rebuild after any configuration change.
+
+### Version Support
+
+Supported versions: 9.5.5.
 
 
- - community:  9.0.2
+### Ports
+
+| Purpose | Port |
+| --- | --- |
+| for API | 9600 |
 
 
-## System Requirements
+### Data Directory
 
-The following are the minimal [recommended requirements](https://www.elastic.co/guide/en/logstash/current/docker-config.html):
 
-* **RAM**: 4 GB or more
-* **CPU**: 2 cores or higher
-* **Disk**: at least 1 GB of free space
-* **bandwidth**: more fluent experience over 100M  
+Data is kept inside the container; a named volume is recommended for persistence.
 
-## Install
 
-You can install this logstash by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+### Environment Variables
 
-If you want use logstash with **Websoft9 Business Support** free, you can [subscribe logstash](https://www.websoft9.com/apps) on Cloud platform
+Environment variables are defined in the app's `.env` file; see the reference section at the end of `.env` for supported variables.
 
-## Documentation
 
-[logstash Administrator Guide](https://support.websoft9.com/docs/logstash) powered by Websoft9
+### Configuration Files
+
+
+Configuration is overridden by mounting `./src/pipeline` to `/usr/share/logstash/pipeline`.
+
+
+## References
+
+- [logstash Administrator Guide](https://support.websoft9.com/docs/logstash) by Websoft9
+
+- [Docker Hub image](https://hub.docker.com/_/logstash)
+
+
+<!-- W9_TROUBLESHOOT_START -->
+## Troubleshooting
+
+**App fails to start?**
+- Check `docker compose logs`.
+
+**Port not reachable?**
+- Ensure the firewall / security group allows the port.
+<!-- W9_TROUBLESHOOT_END -->

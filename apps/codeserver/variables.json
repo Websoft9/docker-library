@@ -9,7 +9,7 @@
     {
       "dist": "community",
       "version": [
-        "4.106.3",
+        "4.141.0",
         "latest"
       ]
     }
@@ -19,6 +19,12 @@
     "web": {
       "port": 8443,
       "path": "/"
+    }
+  },
+  "credentials": {
+    "password": {
+      "source": "container-env",
+      "name": "W9_POWER_PASSWORD"
     }
   },
   "requirements": {

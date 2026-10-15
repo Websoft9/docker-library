@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-10-12
+
+- Updated the default Next.js scaffold version to `16.4.0`.
+- Kept the runtime package shape unchanged so existing user projects still build and start the same way.
+
 ## 2026-09-15
 
 - Added the initial Next.js runtime package, based on the official Node image.

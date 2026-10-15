@@ -78,6 +78,8 @@ RUN mkdir -p /home/docker/.gem/ruby/${RUBY}.0 \
     && chown -R docker:docker /home/docker ${APP_HOME}
 
 USER docker
+RUN git config --global maintenance.auto false \
+    && git config --global gc.auto 0
 RUN unset RUBY \
     && bundle config --global build.nokogiri --use-system-libraries \
     && bundle config --global build.ffi --enable-system-libffi \

@@ -1,17 +1,11 @@
-# image: https://hub.docker.com/r/milvusdb/milvus
-# compose: https://github.com/milvus-io/milvus/blob/master/deployments/docker/standalone/docker-compose.yml
-# docs: https://milvus.io/docs/zh/install_standalone-docker-compose.md
-
-version: '3.8'
-
 services:
   standalone:
-    container_name: $W9_ID
-    image: $W9_REPO:$W9_VERSION
+    container_name: ${W9_ID}
+    image: ${W9_REPO}:${W9_VERSION}
     command: ["milvus", "run", "standalone"]
     security_opt:
-      - seccomp:unconfined  
-    env_file: .env       
+      - seccomp:unconfined
+    env_file: .env
     volumes:
       - milvus_data:/var/lib/milvus
     healthcheck:
@@ -21,15 +15,42 @@ services:
       timeout: 20s
       retries: 3
     ports:
-      - "${W9_HTTP_PORT_SET}:9091" # webui port
-      - "${W9_DB_PORT_SET}:19530" # server port
+      - "${W9_HTTP_PORT_SET}:9091" # Milvus WebUI
+      - "${W9_DB_PORT_SET}:19530" # Milvus SDK/gRPC endpoint
     depends_on:
-      - etcd
-      - minio
+      milvus-volume-init:
+        condition: service_completed_successfully
+      etcd:
+        condition: service_started
+      minio:
+        condition: service_started
+
+  milvus-volume-init:
+    container_name: ${W9_ID}-volume-init
+    image: ${W9_REPO}:${W9_VERSION}
+    user: "0:0"
+    network_mode: none
+    read_only: true
+    restart: "no"
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        set -eu
+        uid="$$(id -u milvus)"
+        gid="$$(id -g milvus)"
+        marker="/var/lib/milvus/.milvus-volume-owner-$${uid}-$${gid}"
+        if [ ! -e "$${marker}" ]; then
+          echo "Preparing /var/lib/milvus for $${uid}:$${gid}"
+          chown -R "$${uid}:$${gid}" /var/lib/milvus
+          touch "$${marker}"
+          chown "$${uid}:$${gid}" "$${marker}"
+        fi
+    volumes:
+      - milvus_data:/var/lib/milvus
 
   etcd:
-    container_name: $W9_ID-etcd
-    image: quay.io/coreos/etcd:v3.5.18
+    container_name: ${W9_ID}-etcd
+    image: quay.io/coreos/etcd:v3.5.25
     hostname: ${W9_RCODE}etcd
     environment:
       - ETCD_AUTO_COMPACTION_MODE=revision
@@ -46,20 +67,17 @@ services:
       retries: 3
 
   minio:
-    container_name: $W9_ID-minio
+    container_name: ${W9_ID}-minio
     hostname: ${W9_RCODE}minio
-    image: minio/minio:RELEASE.2023-03-20T20-16-18Z
+    image: milvusdb/minio:RELEASE.2024-12-18T13-15-44Z
     volumes:
       - minio_data:/minio_data
     command: minio server /minio_data --console-address ":9001"
-    # ports:
-    #   - "9001:9001"
-    #   - "9000:9000"
     environment:
       MINIO_ACCESS_KEY: minioadmin
       MINIO_SECRET_KEY: minioadmin
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: ["CMD", "mc", "ready", "local"]
       interval: 30s
       timeout: 20s
       retries: 3
@@ -73,8 +91,3 @@ volumes:
   etcd_data:
   minio_data:
   milvus_data:
-
-   
-
-
-

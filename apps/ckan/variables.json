@@ -1,12 +1,12 @@
 {
   "name": "ckan",
   "trademark": "Ckan",
-  "release": false,
+  "release": true,
   "edition": [
     {
       "dist": "community",
       "version": [
-        "2.11.0"
+        "2.12.0"
       ]
     }
   ],
@@ -23,6 +23,22 @@
     "disk": "1"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/ckan/ckan-base"
+    "image": "https://hub.docker.com/r/ckan/ckan-base",
+    "releases": "https://github.com/ckan/ckan/releases",
+    "compose": {
+      "compose": "https://raw.githubusercontent.com/ckan/ckan-docker/master/docker-compose.yml",
+      "env": "https://raw.githubusercontent.com/ckan/ckan-docker/master/.env.example"
+    },
+    "docs": [
+      "https://github.com/ckan/ckan-docker",
+      "https://docs.ckan.org/en/2.12/changelog.html#v-2-12-0-2026-08-26"
+    ]
+  },
+  "env": {
+    "secrets": [
+      "CKAN___BEAKER__SESSION__SECRET",
+      "CKAN___API_TOKEN__JWT__ENCODE__SECRET",
+      "CKAN___API_TOKEN__JWT__DECODE__SECRET"
+    ]
   }
 }

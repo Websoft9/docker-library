@@ -1,0 +1,5 @@
+optional:
+  - id: root-page
+    type: web-access
+    path: /
+    expect_status: 200

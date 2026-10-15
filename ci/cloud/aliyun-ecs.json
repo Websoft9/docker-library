@@ -1,0 +1,32 @@
+{
+  "provider": "aliyun",
+  "region": "cn-hongkong",
+  "instance": {
+    "name_prefix": "libs-test",
+    "type": "ecs.g7.large",
+    "spot_strategy": "SpotAsPriceGo",
+    "spot_duration": 0,
+    "internet_max_bandwidth_out": 100,
+    "key_pair_name": "websoft9_auto"
+  },
+  "system_disk": {
+    "category": "cloud_essd",
+    "min_size_gib": 20,
+    "max_size_gib": 500,
+    "default_size_gib": 200
+  },
+  "release": {
+    "default_hours": 10,
+    "min_hours": 1,
+    "max_hours": 168
+  },
+  "network": {
+    "security_group_id": "sg-j6c7epgwcech14ofdt5l",
+    "vswitch_id": "vsw-j6cpor7vbblzas6ui2pkf"
+  },
+  "image": {
+    "owner_alias": "marketplace",
+    "product_code": "cmjj010728",
+    "select": "latest"
+  }
+}

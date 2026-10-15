@@ -11,46 +11,149 @@ apps:
 - alfresco
 - ansible
 - answer
+- apache
 - apex
+- apisix
+- appsmith
 - appwrite
 - aria2
 - automatisch
 - awx
 - azimutt
 - bigagi
+- bigbluebutton
+- bitwarden
+- bookstack
+- browserless
+- bunkerweb
+- bytebase
 - cadvisor
 - calcom
 - chat2db
+- checkmate
 - chronograf
+- clamav
+- cloudreve
+- cmak
+- collabora
 - comentario
+- commafeed
+- compreface
+- coredns
+- countly
+- coze
+- crowdsec
+- dashy
+- databasus
+- datahub
+- ddnsgo
+- debezium
+- dgraph
+- discourse
 - discuz
+- docker
+- dockermailserver
+- docusaurus
+- docuseal
+- doris
+- dotnet
+- drawio
+- duplicati
+- ejbca
+- emqx
+- excalidraw
+- falcon
+- filepizza
+- filerun
+- firecrawl
+- flowise
+- fluentbit
+- fluentd
+- focalboard
+- formbricks
+- frappe
+- freshrss
+- frigate
+- frp
 - g4f
 - gitness
 - gladys
 - glance
+- go
 - gogs
 - gopeed
 - gotify
 - graphite
 - guacamole
+- headscale
 - heyform
 - huggingchat
 - huginn
 - humhub
 - hyperswitch
+- immich
 - inngest
 - istio
 - jetty
 - joomla
 - jumpserver
+- k0s
+- kasmweb
 - kaspersky
+- kavita
+- keep
+- keila
+- kener
+- keploy
+- kestra
+- khoj
+- killbill
+- knowage
+- kodbox
+- koishi
+- komga
+- kopia
 - krakend
+- lago
+- langflow
+- langfuse
+- lemmy
+- linkwarden
+- listmonk
+- mage
 - magento
 - mailpit
+- mailu
+- manageiq
 - mastodon
+- mathesar
+- matlab
+- maven
 - mediawiki
+- memadmin
+- memcached
 - mingdao
+- miniflux
+- minio
+- mixpost
+- modsecurity
+- mongocompass
+- mongoexpress
+- monkeycode
+- mosquitto
+- mqttx
+- mysqlworkbench
+- navidrome
+- neko
+- netdata
+- nextchat
+- nexterm
+- nextterminal
+- nexus
+- nocobase
+- nocodb
 - nodebb
+- nomad
 - oneapi
 - onlyoffice
 - onyx
@@ -61,6 +164,7 @@ apps:
 - openproject
 - opentelemetry
 - outline
+- owncloud
 - palworld
 - pangolin
 - paperlessngx
@@ -68,9 +172,10 @@ apps:
 - passbolt
 - penpot
 - photoprism
+- php
 - phpfpmapache
 - phpfpmnginx
-- pydio
+- pimcore
 - plane
 - plausible
 - plex
@@ -78,7 +183,10 @@ apps:
 - portkey
 - posteio
 - postgrest
+- posthog
 - puter
+- pydio
+- python
 - ragflow
 - rainbond
 - rclone
@@ -97,6 +205,7 @@ apps:
 - scmmanager
 - scratch
 - screego
+- signoz
 - snipeit
 - squid
 - srs
@@ -125,7 +234,6 @@ apps:
 - wikijs
 - windmill
 - wireguard
-- xinference
 - zabbix
 - zerotier
 - zitadel
@@ -149,6 +257,10 @@ overrides:
     archive_reason: Low user demand
   bigagi:
     archive_reason: Low user demand
+  bigbluebutton:
+    archive_reason: 下架，并更新 contentful
+  bitwarden:
+    archive_reason: 下架，并更新 contentful
   cadvisor:
     archive_reason: Low user demand
   chat2db:
@@ -165,6 +277,12 @@ overrides:
     archive_reason: Low user demand
   chronograf:
     archive_reason: Low user demand
+  datahub:
+    archive_reason: 下架，并更新 contentful
+  discourse:
+    archive_reason: 下架，并更新 contentful
+  docusaurus:
+    archive_reason: 下架，并更新 contentful
   huginn:
     archive_reason: Low user demand
   calcom:
@@ -174,8 +292,6 @@ overrides:
   jumpserver:
     archive_reason: Low user demand
   gitness:
-    archive_reason: Low user demand
-  xinference:
     archive_reason: Low user demand
   rainbond:
     archive_reason: Low user demand
@@ -335,3 +451,13 @@ overrides:
     archive_reason: Low user demand
   posteio:
     archive_reason: Low user demand
+  signoz:
+    archive_reason: 下架，并更新 contentful
+  python:
+    archive_reason: 下架，并更新 contentful
+  owncloud:
+    archive_reason: 下架，并更新 contentful
+  posthog:
+    archive_reason: 暂缓讨论，后续再做
+  pimcore:
+    archive_reason: 下架，并更新 contentful

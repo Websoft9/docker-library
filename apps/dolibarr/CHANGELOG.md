@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-10-13
+
+- Switched Dolibarr from the archived `tuxgasy/dolibarr` image to the maintained official `dolibarr/dolibarr` image.
+- Updated the packaged Dolibarr target from `19.0.2` to `24.0.1`, matching the latest stable upstream release and the official Docker packaging.
+- Wired `DOLI_URL_ROOT` to `${W9_URL}` with `W9_URL_REPLACE=true`, corrected the optional DB port variable name to `DOLI_DB_HOST_PORT`, and recorded both login seed variables as first-startup-only metadata for README generation.
+
 ## 2026-09-17
 
 - Fixed the version drift: pinned `W9_VERSION` from `18` to `19.0.2`, matching `variables.json.edition` and the current upstream release.

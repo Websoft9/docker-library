@@ -6,8 +6,7 @@
     {
       "dist": "community",
       "version": [
-        "community-7.6.2",
-        "community"
+        "8.0.3"
       ]
     }
   ],
@@ -18,12 +17,21 @@
       "path": "/"
     }
   },
+  "credentials": {},
+  "env": {
+    "first_startup_only": []
+  },
   "requirements": {
     "cpu": "2",
     "memory": "4",
     "disk": "8"
   },
   "upstream": {
-    "image": "https://hub.docker.com/r/couchbase/server"
+    "image": "https://hub.docker.com/r/couchbase/server",
+    "docs": [
+      "https://docs.couchbase.com/server/current/release-notes/relnotes.html",
+      "https://docs.couchbase.com/server/current/install/getting-started-docker.html",
+      "https://docs.couchbase.com/server/current/install/pre-install.html"
+    ]
   }
 }

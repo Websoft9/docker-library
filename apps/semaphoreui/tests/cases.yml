@@ -1,0 +1,7 @@
+# The adaptive web-access check covers the Semaphore UI root entry path.
+# This exercises the authenticated API with the built-in admin account that
+# Semaphore UI creates on first start.
+custom:
+  - id: admin-login
+    type: script
+    script: check.sh

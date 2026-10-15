@@ -25,7 +25,6 @@
 Websoft9 packages this app from the official [ClickHouse Docker image](https://hub.docker.com/r/clickhouse/clickhouse-server) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
-
 ### ClickHouse SQL
 
 ```
@@ -40,7 +39,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 26.8, latest.
+Supported versions: 26.9, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
@@ -65,6 +64,9 @@ The `latest` tag is not guaranteed to remain valid; pin a specific version for p
 ### Environment Variables
 
 Environment variables are defined in the app's `.env` file; see the reference section at the end of `.env` for supported variables.
+
+
+Note: `CLICKHOUSE_DB`, `CLICKHOUSE_USER`, `CLICKHOUSE_PASSWORD`, `CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT` take effect on first startup only; changing them after deployment may not take effect until the app is re-initialized.
 
 
 ### Configuration Files

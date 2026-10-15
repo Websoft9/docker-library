@@ -33,7 +33,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 0.88.4-hotfix.1, latest.
+Supported versions: 0.92.3, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
@@ -42,7 +42,7 @@ The `latest` tag is not guaranteed to remain valid; pin a specific version for p
 
 | Purpose | Port |
 | --- | --- |
-| W9_HTTP_PORT_SET | 80 |
+| Web Console | 80 |
 
 
 ### Data Directory
@@ -71,7 +71,7 @@ Configuration files live inside the image; mount a single file read-only to over
 
 - [GHCR image](https://ghcr.io/activepieces/activepieces)
 
-- [Releases](https://github.com/activepieces/activepieces/tags)
+- [Releases](https://github.com/activepieces/activepieces)
 
 - [Official compose](https://raw.githubusercontent.com/activepieces/activepieces/main/docker-compose.yml)
 

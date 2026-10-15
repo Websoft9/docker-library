@@ -3,7 +3,12 @@
   "trademark": "Mattermost",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/r/mattermost/mattermost-team-edition"
+    "image": "https://hub.docker.com/r/mattermost/mattermost-team-edition",
+    "docs": [
+      "https://docs.mattermost.com/install/install-docker.html",
+      "https://docs.mattermost.com/deployment-guide/server/docker-troubleshooting.html",
+      "https://docs.mattermost.com/product-overview/mattermost-v11-changelog.html"
+    ]
   },
   "edition": [
     {

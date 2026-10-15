@@ -1,17 +1,13 @@
-# image: https://hub.docker.com/r/ckan/ckan-base
-# compose refer to: https://github.com/ckan/ckan-docker/blob/master/docker-compose.yml
-# docs:  https://docs.ckan.org/en/2.11/maintaining/installing/index.html
-
 version: "3.8"
 
 services:
   ckan-base:
-    container_name: $W9_ID
-    image: $W9_REPO:$W9_VERSION
+    container_name: ${W9_ID}
+    image: ${W9_REPO}:${W9_VERSION}
     env_file:
       - .env
     ports:
-      - $W9_HTTP_PORT_SET:5000
+      - "${W9_HTTP_PORT_SET}:5000" # Web Console
     volumes:
       - ckan_storage:/var/lib/ckan
       - pip_cache:/root/.cache/pip
@@ -19,14 +15,14 @@ services:
       - vscode_server:/root/.vscode-server
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:5000"]
+      test: ["CMD-SHELL", "curl -fsS http://localhost:5000/ >/dev/null || exit 1"]
       interval: 60s
       timeout: 10s
       retries: 3
 
   datapusher:
-    container_name: $W9_ID-datapusher
-    image: $W9_REPO-datapusher:${DATAPUSHER_VERSION}
+    container_name: ${W9_ID}-datapusher
+    image: ${W9_REPO}-datapusher:${DATAPUSHER_VERSION}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:8800"]
@@ -35,29 +31,31 @@ services:
       retries: 3
 
   db:
-    container_name: $W9_ID-postgres
-    image: ckan/ckan-postgres-dev:2.11
+    container_name: ${W9_ID}-postgres
+    image: postgres:${W9_DB_VERSION}
     environment:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
       - POSTGRES_DB
-      - CKAN_DB_USER
-      - CKAN_DB_PASSWORD
-      - CKAN_DB
-      - DATASTORE_READONLY_USER
-      - DATASTORE_READONLY_PASSWORD
-      - DATASTORE_DB
+      - CKAN_POSTGRES_DB
+      - CKAN_POSTGRES_USER
+      - CKAN_POSTGRES_USER_PWD
+      - CKAN_DATASTORE_POSTGRES_DB
+      - CKAN_DATASTORE_POSTGRES_READ_USER
+      - CKAN_DATASTORE_POSTGRES_READ_PWD
+      - CKAN_DATASTORE_POSTGRES_WRITE_USER
+      - CKAN_DATASTORE_POSTGRES_WRITE_PWD
     volumes:
       - ./src/postgresql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - pg_data:/var/lib/postgresql/data
     restart: unless-stopped
-    env_file: 
+    env_file:
       - .env
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
-     
+
   solr:
-    container_name: $W9_ID-solr
+    container_name: ${W9_ID}-solr
     image: ckan/ckan-solr:${SOLR_IMAGE_VERSION}
     volumes:
       - solr_data:/var/solr
@@ -66,7 +64,7 @@ services:
       test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:8983/solr/"]
 
   redis:
-    container_name: $W9_ID-redis
+    container_name: ${W9_ID}-redis
     image: redis:${REDIS_VERSION}
     restart: unless-stopped
     healthcheck:
@@ -82,5 +80,5 @@ volumes:
 
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true

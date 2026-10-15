@@ -6,7 +6,7 @@ from pathlib import Path
 
 import typer
 
-from libs import main, websoft9_upgrade
+from libs import ops, websoft9_upgrade
 
 
 def _ok(stdout: str = "ok"):
@@ -26,7 +26,7 @@ def test_websoft9_upgrade_cli_contract_progress_to_stderr(monkeypatch):
     monkeypatch.setattr(websoft9_upgrade, "upgrade", fake_upgrade)
     monkeypatch.setattr(typer, "echo", lambda message, err=False: output.append((message, err)))
 
-    main.websoft9_upgrade_command(
+    ops.websoft9_upgrade_command(
         container=None,
         tag="dev",
         tag_var="IMAGE_TAG",

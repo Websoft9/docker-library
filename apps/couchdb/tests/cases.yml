@@ -1,0 +1,7 @@
+# CouchDB's core path is accepting authenticated HTTP API requests after init.
+# The default web-access check only proves the port is reachable, so a custom
+# script verifies authenticated access to the root endpoint.
+custom:
+  - id: couchdb-authenticated-api
+    type: script
+    script: check.sh

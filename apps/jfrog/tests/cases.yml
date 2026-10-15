@@ -1,0 +1,8 @@
+# The default adaptive checks already cover compose-config, container-up,
+# container-healthy (the packaged router healthcheck), and the web root path.
+# Add an app-specific check for the public Artifactory ping endpoint.
+optional:
+  - id: artifactory-ping
+    type: web-access
+    path: /artifactory/api/system/ping
+    expect_status: 200

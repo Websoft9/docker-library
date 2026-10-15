@@ -39,7 +39,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 7.1.
+Supported versions: 7.2.
 
 
 ### Ports
