@@ -333,21 +333,23 @@ Examples:
 ### Complex Or Multi-Stage Login
 
 Some apps log in in two stages: a one-time bootstrap credential (often generated at first startup and
-shown only in the container logs) followed by a fixed account that the package controls. Treat this as a
-complex login:
+shown in the container logs or a bootstrap file) followed by a fixed account that the package controls.
+Treat this as a complex login:
 
 - keep the fixed final credential in `.env` as `W9_LOGIN_USER` and `W9_LOGIN_PASSWORD`; the current
   front end renders these directly
-- also declare the same fixed credential in `variables.json.credentials` for machine-readable consumers
-  and future rendering; point `credentials.password` at `W9_LOGIN_PASSWORD` with `source=container-env`
-  instead of copying the literal value, so it follows `.env`
-- when the app requires structured pre-login steps (for example, read a setup token from logs and then
-  open a wizard), declare `variables.json.setup.steps`; the front end renders setup before the login area
-- keep `variables.json.help.login` as the final sign-in note shown with the rendered credentials
-- `help.login` is required for a complex login, not optional: the credential area only shows the final
-  account and password, so without it users do not know which account works after setup
-- for setup tokens or one-time bootstrap values printed in logs, prefer `setup.steps[].action.type=show-log`
-  over `credentials.container-log` with `pattern` / `group`; the former is simpler and more stable
+- group `variables.json.credentials` by stage using `credentials.initial` (for the one-time bootstrap
+  credential, e.g. `source=container-log` or `source=container-file`) and `credentials.login` (for the
+  steady-state login credential, pointing `password` at `W9_LOGIN_PASSWORD` with `source=container-env`
+  instead of copying the literal value, so it follows `.env`)
+- top-level `credentials.<slot>` remains valid as the shorthand when an app only needs a single credential
+  set
+- keep `variables.json.help.login` as the sign-in note shown with the rendered credentials
+- `help.login` is required for a complex login, not optional: when a front end only renders the final
+  account and password from `.env`, users still need `help.login` to know how the initial bootstrap step
+  works
+- when the app also requires non-credential pre-login workflow steps (for example, viewing raw logs without
+  a stable extraction pattern and opening a wizard), you may optionally declare `variables.json.setup.steps`
 
 ## Translation Rule
 

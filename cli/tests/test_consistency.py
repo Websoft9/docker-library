@@ -204,6 +204,34 @@ def test_variables_schema_rejects_setup_pattern_group_model():
         jsonschema.Draft202012Validator(schema).validate(sample)
 
 
+def test_variables_schema_accepts_staged_credentials():
+    schema = json.loads((REPO_ROOT / "metadata" / "variables.schema.json").read_text(encoding="utf-8"))
+    sample = {
+        "name": "demo",
+        "trademark": "Demo",
+        "release": True,
+        "edition": [{"dist": "community", "version": ["1.0"]}],
+        "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
+        "credentials": {
+            "initial": {
+                "username": {"source": "inline", "value": "admin"},
+                "password": {
+                    "source": "container-log",
+                    "match": "regex",
+                    "pattern": "password '([^']+)'",
+                    "group": 1,
+                },
+            },
+            "login": {
+                "username": {"source": "inline", "value": "admin"},
+                "password": {"source": "container-env", "name": "W9_LOGIN_PASSWORD"},
+            },
+        },
+    }
+
+    jsonschema.Draft202012Validator(schema).validate(sample)
+
+
 def test_repository_variables_json_match_schema():
     schema = json.loads((REPO_ROOT / "metadata" / "variables.schema.json").read_text(encoding="utf-8"))
     validator = jsonschema.Draft202012Validator(schema)

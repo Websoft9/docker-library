@@ -248,10 +248,11 @@ Do not ask AI to perform routine deterministic scanning when a stable source typ
 
 ## Runtime Credential Metadata
 
-Some apps generate an initial username, password, or token at first startup instead of taking it from `.env`.
+Some apps generate an initial username, password, or token at first startup instead of taking it from `.env`,
+or use separate credentials for first-time initialization (`initial`) and steady-state sign-in (`login`).
 For these cases, app packages may declare machine-readable credential sources in `variables.json`.
 
-Current shape:
+Single-stage shorthand shape:
 
 ```json
 {
@@ -268,9 +269,43 @@ Current shape:
 }
 ```
 
+Two-stage shape (`initial` + `login`):
+
+```json
+{
+  "credentials": {
+    "initial": {
+      "username": {
+        "source": "inline",
+        "value": "admin"
+      },
+      "password": {
+        "source": "container-log",
+        "match": "regex",
+        "pattern": "username 'admin' and password '([^']+)'",
+        "group": 1
+      }
+    },
+    "login": {
+      "username": {
+        "source": "inline",
+        "value": "admin"
+      },
+      "password": {
+        "source": "container-env",
+        "name": "W9_LOGIN_PASSWORD"
+      }
+    }
+  }
+}
+```
+
 Rules:
 
 - fixed slots are `username`, `password`, and `token`
+- slots may be declared directly under `credentials.<slot>` (single-stage shorthand) or grouped by stage
+  under `credentials.initial.<slot>` (one-time bootstrap/setup credentials) and `credentials.login.<slot>`
+  (steady-state login credentials)
 - `inline` means the credential value is stored directly in `variables.json`; use it mainly for fixed,
   non-sensitive values such as `username`
 - `container-env` means the credential value is read from the target container runtime environment by `name`
@@ -282,8 +317,8 @@ Rules:
   without shell wrapping; use this only when the app exposes an official credential-printing command
 - `format=json` with `jsonPath` and `format=env` with `key` may be used for structured outputs
 - keep this metadata declarative; do not store full shell commands in `variables.json`
-- prefer `credentials.<slot>` over the legacy `W9_LOGIN_GET_PASSWORD` or `W9_LOGIN_GET_TOKEN` when a touched
-  app needs this behavior
+- prefer `credentials.<slot>` (or `credentials.initial.<slot>` / `credentials.login.<slot>`) over the
+  legacy `W9_LOGIN_GET_PASSWORD` or `W9_LOGIN_GET_TOKEN` when a touched app needs this behavior
 
 ## Access Metadata
 

@@ -40,22 +40,54 @@
 
 - `credentials` 不是人类文案；它是消费端执行固定逻辑时读取的结构化声明
 - `credentials` 不替代 `.env` 中已有的字面值凭据；若 `W9_LOGIN_PASSWORD` 本身就是固定值，仍直接使用 `.env`
-- 复杂登录（一次性初始化 + 固定终态账号）：`.env` 的 `W9_LOGIN_USER` / `W9_LOGIN_PASSWORD` 供当前前端渲染，同时用 `variables.json.credentials`（如 `container-env` 指向 `W9_LOGIN_PASSWORD`）供 machine-readable 消费端与未来渲染；并配置 `help.login` 说明初始化步骤，不要用 `container-log` + 易变 `pattern` 去解析一次性密码
+- `credentials` 支持按阶段分组声明（`initial` 初始化凭证 + `login` 登录凭证），也兼容直接在顶层声明单阶段槽位（`username` / `password` / `token`，默认等价于 `login`）
+- 复杂登录（一次性初始化 + 固定终态账号）：在 `credentials.initial` 中声明首次初始化凭证（如从 `container-log` 提取一次性临时密码或从 `container-file` 读取解锁密码），在 `credentials.login` 中声明终态固定凭证（如 `container-env` 指向 `W9_LOGIN_PASSWORD`），同时保留 `.env` 的 `W9_LOGIN_USER` / `W9_LOGIN_PASSWORD` 供当前前端渲染，并配置 `help.login` 说明初始化与正式登录的关系
 - `credentials` 仅描述“凭据从哪里取”，不允许在仓库中写任意宿主级 shell
 
-当前约定支持 3 个固定槽位：`username`、`password`、`token`。每个槽位都声明“值从哪里来”的 source。
+当前约定支持 3 个固定槽位：`username`、`password`、`token`。每个槽位都声明“值从哪里来”的 source。既可直接挂在 `credentials.<slot>` 下（单阶段简写），也可挂在 `credentials.initial.<slot>` 或 `credentials.login.<slot>` 下（分阶段声明）。
+
+单阶段简写结构：
 
 ```json
 {
   "credentials": {
+    "username": {
+      "source": "inline",
+      "value": "admin"
+    },
     "password": {
+      "source": "container-file",
+      "path": "/var/jenkins_home/secrets/initialAdminPassword"
+    }
+  }
+}
+```
+
+分阶段结构（区分初始化凭证 `initial` 与日常登录凭证 `login`）：
+
+```json
+{
+  "credentials": {
+    "initial": {
       "username": {
         "source": "inline",
         "value": "admin"
       },
       "password": {
-        "source": "container-file",
-        "path": "/var/jenkins_home/secrets/initialAdminPassword"
+        "source": "container-log",
+        "match": "regex",
+        "pattern": "username 'admin' and password '([^']+)'",
+        "group": 1
+      }
+    },
+    "login": {
+      "username": {
+        "source": "inline",
+        "value": "admin"
+      },
+      "password": {
+        "source": "container-env",
+        "name": "W9_LOGIN_PASSWORD"
       }
     }
   }
@@ -72,12 +104,14 @@
 
 字段规则：
 
-- `credentials.<slot>.source=inline` 时必须声明 `value`
-- `credentials.<slot>.source=container-env` 时必须声明 `name`
-- `credentials.<slot>.source=container-file` 时必须声明 `path`
-- `credentials.<slot>.source=container-log` 时必须声明 `pattern`
-- `credentials.<slot>.source=container-cli` 时必须声明 `argv`
+- 每个槽位对象（位于 `credentials.<slot>`、`credentials.initial.<slot>` 或 `credentials.login.<slot>`）均遵循相同的 `credentialSource` 契约：
+  - `source=inline` 时必须声明 `value`
+  - `source=container-env` 时必须声明 `name`
+  - `source=container-file` 时必须声明 `path`
+  - `source=container-log` 时必须声明 `pattern`
+  - `source=container-cli` 时必须声明 `argv`
 - `slot` 当前只允许 `username`、`password`、`token`
+- 阶段分组键当前支持 `initial`（首次初始化/预检向导凭证）和 `login`（常规/终态登录凭证）；仅在应用**同时存在两套不同阶段的已知凭据**（如先用初始化凭据通过安装向导、再用应用包预设的固定账号登录）时才使用 `initial` + `login` 分组；如果应用只有一套由包提供或提取的凭据（无论后续是否引导用户自行改密），直接使用顶层 `credentials.<slot>` 即可
 - `format` 可选，当前支持 `text`、`json`、`env`
 - `format=json` 时必须声明 `jsonPath`
 - `format=env` 时必须声明 `key`
@@ -263,14 +297,14 @@ OH_SECRET_KEY=Pv5Rt8Wy2Nk7Mc4Xb1Lz6Df0Gh3Jq9Ue
 
 与 `credentials` 的职责分工：
 
-- `setup`：登录前需要看到或完成的临时/初始化信息
-- `credentials`：最终登录时要使用的 username / password / token
+- `setup`：登录前需要看到或完成的非凭据类步骤说明或页面入口引导（如打开向导页面）
+- `credentials`：凭据提取声明，可通过 `credentials.initial`（初始化阶段凭证）与 `credentials.login`（日常登录阶段凭证）直接区分两阶段凭证，也可在单阶段下直接使用顶层 `username` / `password` / `token`
 
 迁移建议：
 
-- 现有 `credentials.container-log` + `pattern` / `group` 保留兼容
-- 新 app 或被触达的 app，如果日志中的值只是 setup token / bootstrap 信息，优先改用 `setup.steps[].action.type=show-log`
-- `help.login` 继续保留，用来描述 setup 完成后的最终登录方式
+- 当应用同时存在“一次性初始化凭证”和“终态固定登录凭证”（如 `graylog`）时，优先使用 `credentials.initial` + `credentials.login` 在 `credentials` 内部直接区分
+- 若日志内容不适合用正则提取具体凭据、仅需向用户展示整段日志并配合向导步骤，可使用 `setup.steps[].action.type=show-log`
+- `help.login` 继续保留，用来描述初始化与最终登录方式的说明
 
 ### 职责边界
 
