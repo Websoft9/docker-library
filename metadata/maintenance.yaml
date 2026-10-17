@@ -35,12 +35,20 @@ cadence:
   - wordpresspro
   - dsh
   monthly:
+  - grav
+  - inngest
   - jfrog
+  - langfuse
+  - opendesign
   - qwenpaw
   - xinference
 update_policy:
   patch-minor:
+  - grav
+  - inngest
   - jfrog
+  - langfuse
+  - opendesign
   - qwenpaw
   - xinference
 lifecycle:

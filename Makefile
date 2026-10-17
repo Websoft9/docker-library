@@ -22,7 +22,7 @@ help:
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'dns-bind' 'point the wildcard record (*.<domain>) at the remote host or localhost (ARGS: --domain/--ip/--json)'
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'dns-delete' 'delete the single wildcard record (*.<domain>) for the domain (ARGS: --domain/--json)'
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'websoft9-upgrade' 'upgrade the Websoft9 platform container: set image tag, pull, recreate (ARGS: --tag/--target)'
-	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'create-aliyun-ecs' 'create a spot Aliyun ECS instance from ci/cloud/aliyun-ecs.json (ARGS: --disk-size/--release-in)'
+	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'create-aliyun-ecs' 'create a spot Aliyun ECS instance from ci/cloud/aliyun-ecs.json (interactive instance type/disk/release; ARGS: --instance-type/--disk-size/--release-in)'
 	@printf '\n  \033[1;35m▸ Testing & Quality\033[0m\n'
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'test' 'run the full repo machine-system test suite'
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'test-cli' 'run cli unit and contract tests'

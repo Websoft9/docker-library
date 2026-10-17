@@ -34,14 +34,10 @@ cloudreve，compreface，commafeed， coze，dashy，ejbca, frigate, falcon
 Qdrant
 e2e test for: vaultwarden, varnish
 varnish not have config file
-pangolin.net
-RustDesk 
 elizaOS
 Nuclear
 
 port define?
 
 canvas 令牌无效
-jfrog 的默认账号密码
-nginxproxymanager 没有显示
 elasticsearch 域名访问报错。大概原因是 es 默认有 https 和 http 两种机制。

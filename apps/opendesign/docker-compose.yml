@@ -1,0 +1,45 @@
+services:
+  opendesign:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    ports:
+      - "${W9_HTTP_PORT_SET}:7456" # Web Console and API
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      NODE_OPTIONS: ${NODE_OPTIONS}
+      OD_BIND_HOST: ${OD_BIND_HOST}
+      OD_ALLOWED_ORIGINS: ${OD_ALLOWED_ORIGINS}
+      OD_PORT: ${W9_HTTP_PORT}
+      OD_WEB_PORT: ${W9_HTTP_PORT}
+      OD_API_TOKEN: ${W9_LOGIN_PASSWORD}
+      OD_DISABLE_API_AUTH: ${OD_DISABLE_API_AUTH}
+      OD_CODEX_SANDBOX: ${OD_CODEX_SANDBOX}
+    volumes:
+      - opendesign_data:/app/.od
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:7456/api/health').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+volumes:
+  opendesign_data:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

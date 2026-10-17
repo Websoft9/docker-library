@@ -92,7 +92,6 @@ apps:
 - humhub
 - hyperswitch
 - immich
-- inngest
 - istio
 - jetty
 - joomla
@@ -116,7 +115,6 @@ apps:
 - krakend
 - lago
 - langflow
-- langfuse
 - lemmy
 - linkwarden
 - listmonk
@@ -150,9 +148,12 @@ apps:
 - nexterm
 - nextterminal
 - nexus
+- nginx
+- nginxproxymanager
 - nocobase
 - nocodb
 - nodebb
+- nodejs
 - nomad
 - oneapi
 - onlyoffice
@@ -304,8 +305,6 @@ overrides:
   humhub:
     archive_reason: Low user demand
   hyperswitch:
-    archive_reason: Low user demand
-  inngest:
     archive_reason: Low user demand
   istio:
     archive_reason: Low user demand
@@ -460,4 +459,10 @@ overrides:
   posthog:
     archive_reason: 暂缓讨论，后续再做
   pimcore:
+    archive_reason: 下架，并更新 contentful
+  nginx:
+    archive_reason: 下架，并更新 contentful
+  nginxproxymanager:
+    archive_reason: 下架，并更新 contentful
+  nodejs:
     archive_reason: 下架，并更新 contentful

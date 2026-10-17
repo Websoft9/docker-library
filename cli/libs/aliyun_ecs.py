@@ -200,6 +200,28 @@ def generate_instance_name(prefix: str | None = None) -> str:
     return f"{prefix or DEFAULT_NAME_PREFIX}-{random.randint(0, 999999):06d}"
 
 
+def instance_types(config: dict) -> list[str]:
+    """Return the configured instance types as an ordered list.
+
+    ``instance.type`` accepts either a single string (legacy) or a list of
+    strings; the order is preserved and is expected to be ascending by
+    performance so the first entry is the cheapest/smallest option.
+    """
+    raw = (config.get("instance") or {}).get("type")
+    if raw is None:
+        return []
+    if isinstance(raw, str):
+        return [raw] if raw.strip() else []
+    if isinstance(raw, (list, tuple)):
+        return [str(item) for item in raw if str(item).strip()]
+    raise EcsError(f"instance.type must be a string or a list of strings: {raw!r}")
+
+
+def default_instance_type(config: dict) -> str | None:
+    types = instance_types(config)
+    return types[0] if types else None
+
+
 def build_run_instances_params(
     config: dict,
     image: dict,
@@ -207,6 +229,7 @@ def build_run_instances_params(
     disk_size_gib: int,
     auto_release_time: str | None = None,
     name: str | None = None,
+    instance_type: str | None = None,
 ) -> dict:
     instance = config.get("instance") or {}
     disk = config.get("system_disk") or {}
@@ -216,7 +239,7 @@ def build_run_instances_params(
         "RegionId": config["region"],
         "InstanceName": name or generate_instance_name(instance.get("name_prefix")),
         "ImageId": image["image_id"],
-        "InstanceType": instance.get("type"),
+        "InstanceType": instance_type or default_instance_type(config),
         "SecurityGroupId": network.get("security_group_id"),
         "VSwitchId": network.get("vswitch_id"),
         "InternetMaxBandwidthOut": instance.get("internet_max_bandwidth_out", 0),

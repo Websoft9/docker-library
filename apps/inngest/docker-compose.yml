@@ -1,0 +1,60 @@
+services:
+
+  inngest:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    command: ["inngest", "start"]
+    env_file: .env
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "${W9_HTTP_PORT_SET}:8288" # Dashboard and API
+      - "${W9_WS_PORT_SET}:8289" # Connect WebSocket gateway
+    healthcheck:
+      test: ["CMD", "inngest", "alpha", "doctor", "healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  postgresql:
+    image: postgres:${W9_DB_VERSION}
+    container_name: ${W9_ID}-postgresql
+    restart: unless-stopped
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: inngest
+      POSTGRES_USER: inngest
+      POSTGRES_PASSWORD: ${W9_POWER_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready --host=localhost --username=inngest"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    image: redis:7-alpine
+    container_name: ${W9_ID}-redis
+    restart: unless-stopped
+    volumes:
+      - redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  postgres:
+  redis:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

@@ -75,7 +75,7 @@ switch ($Target) {
     Write-HelpEntry "dns-bind" "point the wildcard record (*.<domain>) at the remote host or localhost (ARGS: --domain/--ip/--json)"
     Write-HelpEntry "dns-delete" "delete the single wildcard record (*.<domain>) for the domain (ARGS: --domain/--json)"
     Write-HelpEntry "websoft9-upgrade" "upgrade the Websoft9 platform container: set image tag, pull, recreate (ARGS: --tag/--target)"
-    Write-HelpEntry "create-aliyun-ecs" "create a spot Aliyun ECS instance from ci/cloud/aliyun-ecs.json (ARGS: --disk-size/--release-in)"
+    Write-HelpEntry "create-aliyun-ecs" "create a spot Aliyun ECS instance from ci/cloud/aliyun-ecs.json (interactive instance type/disk/release; ARGS: --instance-type/--disk-size/--release-in)"
     Write-HelpHeader "Testing & Quality"
     Write-HelpEntry "test" "run the full repo machine-system test suite"
     Write-HelpEntry "test-cli" "run cli unit and contract tests"

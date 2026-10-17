@@ -163,8 +163,22 @@ def _prompt_int_range(prompt: str, *, default: int | None, minimum: int, maximum
         return value
 
 
+def _prompt_instance_type(types: list[str]) -> str:
+    typer.echo("Instance types (performance ascending):")
+    for index, item in enumerate(types, start=1):
+        typer.echo(f"  {index}) {item}")
+    choice = _prompt_int_range(
+        "Select instance type",
+        default=1,
+        minimum=1,
+        maximum=len(types),
+    )
+    return types[choice - 1]
+
+
 @app.command("create-aliyun-ecs")
 def create_aliyun_ecs_command(
+    instance_type: str | None = typer.Option(None, "--instance-type", "--type", help="Instance type; prompted from the config list when omitted"),
     disk_size: int | None = typer.Option(None, "--disk-size", help="System disk size in GiB; prompted when omitted"),
     release_in: str | None = typer.Option(None, "--release-in", help="Auto-release after this duration (e.g. 10h, 90m, 2d)"),
     release_at: str | None = typer.Option(None, "--release-at", help="Absolute auto-release time in UTC (e.g. 2026-10-13T11:19:00Z)"),
@@ -177,9 +191,17 @@ def create_aliyun_ecs_command(
     dry_run: bool = typer.Option(False, "--dry-run", help="Resolve the plan and print it without creating the instance"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
 ) -> None:
-    """Create a pay-as-you-go (spot) Aliyun ECS instance using the fixed config plus interactive disk size and release time."""
+    """Create a pay-as-you-go (spot) Aliyun ECS instance using the fixed config plus interactive instance type, disk size, and release time."""
     try:
         cfg = aliyun_ecs.load_config(config)
+
+        types = aliyun_ecs.instance_types(cfg)
+        if instance_type is None:
+            if types and not assume_yes and not dry_run:
+                instance_type = _prompt_instance_type(types)
+            else:
+                instance_type = aliyun_ecs.default_instance_type(cfg)
+
         low, high = aliyun_ecs.disk_bounds(cfg)
         if disk_size is None:
             disk_size = _prompt_int_range(
@@ -208,7 +230,12 @@ def create_aliyun_ecs_command(
         key_id, key_secret = aliyun_ecs.resolve_credentials(env_file=env_file)
         image = aliyun_ecs.resolve_image(cfg, image_id=image_id, key_id=key_id, key_secret=key_secret)
         params = aliyun_ecs.build_run_instances_params(
-            cfg, image, disk_size_gib=disk_size, auto_release_time=auto_release, name=name
+            cfg,
+            image,
+            disk_size_gib=disk_size,
+            auto_release_time=auto_release,
+            name=name,
+            instance_type=instance_type,
         )
 
         plan = {

@@ -1,0 +1,25 @@
+{
+  "trademark": "OpenDesign",
+  "catalogBindings": [
+    {
+      "parentKey": "ai",
+      "childKey": "ai-agent-chat"
+    },
+    {
+      "parentKey": "create",
+      "childKey": "dcreativity"
+    },
+    {
+      "parentKey": "collaboration",
+      "childKey": "cloud-workspaces"
+    }
+  ],
+  "summary": "Collaborative AI design workspace.",
+  "overview": "Self-hosted workspace for designing prototypes, assets, and agent-driven creative projects with your team.",
+  "description": "OpenDesign is an open-source collaborative AI design workspace for creating prototypes, websites, apps, dashboards, presentations, images, and videos with a team and coding agents. It combines a browser-based workspace with reusable design systems, templates, plugins, and agent integrations.\n\nThis Websoft9 package deploys the official `ghcr.io/nexu-io/od` image as a single container, following the upstream Docker deployment pattern. The package preserves persistent state in the `opendesign_data` volume mounted at `/app/.od` and enables the upstream health endpoint at `/api/health` for readiness checks.\n\nTypical use cases include self-hosted AI design studios, collaborative prototyping teams, internal creative workspaces, and organizations that want to run OpenDesign with their own infrastructure and model credentials.",
+  "websiteurl": "https://open-design.ai",
+  "screenshots": [
+    "https://raw.githubusercontent.com/nexu-io/open-design/main/docs/screenshots/product-tour/home-workspace-2026-09-30-220844.png",
+    "https://raw.githubusercontent.com/nexu-io/open-design/main/docs/screenshots/product-tour/studio-prototype-2026.webp"
+  ]
+}

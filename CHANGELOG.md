@@ -10,7 +10,7 @@ and versions prior to 0.8.0 do not strictly follow this format.
 ### Added
 - `make dns-bind` / `make dns-delete` for Aliyun DNS wildcard records
 - Generic DNS credentials in `make connector` (`dns` → `.secrets/dns.env` with `DNS_PROVIDER`/`DNS_KEY_ID`/`DNS_KEY_SECRET`/`DNS_DOMAIN`), plus cloud-provider options `alibabacloud` (`.secrets/aliyun.env`), `aws` (`.secrets/aws.env`), and `azure` (`.secrets/azure.env`)
-- `make create-aliyun-ecs` to launch a spot Aliyun ECS instance from the fixed `ci/cloud/aliyun-ecs.json` config, with interactive disk size (bounded by the config range) and auto-release time; the marketplace `ImageId` is resolved from the product code via ECS `DescribeImages`, the instance is named `libs-test-<random>`, and the public IP is printed after creation
+- `make create-aliyun-ecs` to launch a spot Aliyun ECS instance from the fixed `ci/cloud/aliyun-ecs.json` config, with interactive selection of the instance type (chosen from the config `instance.type` list, shown performance-ascending, default 1), disk size (bounded by the config range), and auto-release time; the marketplace `ImageId` is resolved from the product code via ECS `DescribeImages`, the instance is named `libs-test-<random>`, and the public IP is printed after creation
 - Appstore Publish workflow with v2/catalog/library/manifest output model
 - Channel-aware distribution merge for dev channel
 - `workflow_dispatch` support for manual dev/rc/release publishing

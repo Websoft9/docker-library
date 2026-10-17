@@ -1,7 +1,7 @@
 {
   "name": "dsh",
   "trademark": "DeepSeek Harness",
-  "release": false,
+  "release": true,
   "upstream": {
     "image": "https://www.npmjs.com/package/@deepseek-ai/dsh",
     "releases": "https://github.com/deepseek-ai/deepseek-harness/releases",
