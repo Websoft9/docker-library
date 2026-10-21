@@ -1,30 +1,61 @@
 # Issue Contracts
 
-Issue is the story.
+Issue is the story. Opening an issue starts the matching AI workflow.
 
-Update issue must include:
+Templates carry a hidden marker such as `<!-- libs:workflow=update-app -->`. The AI workflow reads it and uses the matching skill.
+
+## Update
+
 - app name
-- current version
-- target version
+- target version when known
 - upstream source
-- candidate class: patch | minor | major | security
-- decision target: auto-update | review-first
+- risk hints or owner E2E focus
 
-New app issue must include:
+AI determines the candidate class (`patch | minor | major | security`) and decision (`auto-update | review-first | defer | skip`).
+
+## New app
+
 - app name
-- official repository or docs
-- official image or compose reference
-- auth model
-- storage needs
-- network or port needs
+- trademark
+- at least one official repository, image, or deployment reference
+- known constraints
 
-Rules:
+AI researches the auth model, storage needs, network and port needs.
+
+## Batch update
+
+- app names or initials
+- target version policy when known
+- confirmation that all apps share the same operation
+
+## Bug
+
+- app name and version
+- expected and actual behavior
+- reproduction steps and evidence
+
+## Change request
+
+- problem
+- desired outcome
+- acceptance notes or constraints
+
+## Archive
+
+- app name or list
+- archive reason
+
+The archive skill handles the Contentful retirement handoff.
+
+## Restore
+
+- app name
+- optional cadence and update policy
+
+## Rules
+
 - one app per issue by default
-- batch issues are allowed only for the same operation and the same decision, such as archiving a small set of apps together
+- batch issues require the same operation and decision
 - one issue per change topic
 - owner decides whether an issue is worth doing
-
-Archive issue must include:
-- app name or app list
-- archive reason
-- whether Contentful metadata must be retired
+- AI reports missing information instead of guessing

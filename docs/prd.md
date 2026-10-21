@@ -168,7 +168,7 @@ mkdir apps/newapp
 # 3. Create src/ configuration files
 # 4. Test deployment
 # 5. Generate documentation
-python3 build/update_readme.py "newapp"
+.venv/bin/libs app-gen-readme --app newapp
 # 6. Submit pull request
 ```
 

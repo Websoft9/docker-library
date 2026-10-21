@@ -98,6 +98,10 @@ switch ($Target) {
     Set-ProxyEnvironment
     & .\.venv\Scripts\libs.exe @Args
   }
+  "opencode-clear" {
+    $python = Get-PythonCommand
+    & $python ci/scripts/opencode_delete.py @Args
+  }
   "dns-bind" {
     Set-ProxyEnvironment
     & .\.venv\Scripts\python.exe -m libs.ops dns-bind @Args

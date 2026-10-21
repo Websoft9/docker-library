@@ -1,30 +1,21 @@
 ---
 name: Bug report
-about: Report one app or process bug
-title: 'Bug for [appname]'
-labels: bug
+about: Report an app or process problem
+title: 'Bug: [app]'
 ---
+
+<!-- libs:workflow=bug-report -->
 
 ## App
 
-- app name:
-- version:
-- environment:
+- name and version:
 
 ## Problem
 
 - expected:
 - actual:
-- reproduce steps:
+- reproduce:
 
 ## Evidence
 
-- logs:
-- screenshots:
-- service status:
-
-## Owner Intent
-
-- [ ] fix current app
-- [ ] investigate only
-- [ ] consider archive
+- logs or screenshots:

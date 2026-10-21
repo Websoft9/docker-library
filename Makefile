@@ -41,7 +41,7 @@ opencode:
 	no_proxy="*" NO_PROXY="*" opencode
 
 opencode-clear:
-	@$(PYTHON) build/opencode_delete.py $(ARGS)
+	@$(PYTHON) ci/scripts/opencode_delete.py $(ARGS)
 
 install:
 	$(PYTHON) -m venv .venv

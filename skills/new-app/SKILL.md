@@ -60,7 +60,7 @@ If any required input is missing, stop and ask the user for it before researchin
 - Existence is decided by `.venv/bin/libs list --include-archived`, never by checking `apps/<app>/` alone; an archived or internal app also counts as existing.
 - If `<app>` exists, stop at step 1, report its status/scope, and ask the user; never fall through to creation.
 - The CLI input contract is `metadata/new-app.schema.json`; the issue itself is prose, AI converts it to flags.
-- The CLI scaffold reads `metadata/templates/new-app/`; `template/` stays as a human reference and must not be treated as the machine template source.
+- The CLI scaffold reads `metadata/templates/new-app/`.
 - Prefer official images or trusted upstream images.
 - Keep the app aligned to repository conventions.
 - `variables.json` should declare the `upstream` structure explicitly when sources are known. `releases`, `compose.compose`, and `compose.env` should be considered during research and scaffold completion, but should be omitted when they are not applicable or not yet verified.

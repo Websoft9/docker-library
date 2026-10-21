@@ -10,7 +10,7 @@ The issue is prose. AI reads it, extracts name, trademark, and official referenc
 
 ## Template Rule
 
-The machine scaffold source is `metadata/templates/new-app/`. `template/` stays as a human reference only. Start from repository conventions and only add the minimum app-specific fields required by upstream.
+The machine scaffold source is `metadata/templates/new-app/`. Start from repository conventions and only add the minimum app-specific fields required by upstream.
 
 ## TODO Placeholder Rule
 

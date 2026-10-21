@@ -1,111 +1,58 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+Project-level changes only: architecture, delivery model, tooling, CI, and release machinery. App version updates and package fixes are recorded in `apps/<app>/CHANGELOG.md`.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and versions prior to 0.8.0 do not strictly follow this format.
-
-## [0.8.0] - Unreleased
+## 2026-10 — Unreleased
 
 ### Added
-- `make dns-bind` / `make dns-delete` for Aliyun DNS wildcard records
-- Generic DNS credentials in `make connector` (`dns` → `.secrets/dns.env` with `DNS_PROVIDER`/`DNS_KEY_ID`/`DNS_KEY_SECRET`/`DNS_DOMAIN`), plus cloud-provider options `alibabacloud` (`.secrets/aliyun.env`), `aws` (`.secrets/aws.env`), and `azure` (`.secrets/azure.env`)
-- `make create-aliyun-ecs` to launch a spot Aliyun ECS instance from the fixed `ci/cloud/aliyun-ecs.json` config, with interactive selection of the instance type (chosen from the config `instance.type` list, shown performance-ascending, default 1), disk size (bounded by the config range), and auto-release time; the marketplace `ImageId` is resolved from the product code via ECS `DescribeImages`, the instance is named `libs-test-<random>`, and the public IP is printed after creation
-- Appstore Publish workflow with v2/catalog/library/manifest output model
-- Channel-aware distribution merge for dev channel
-- `workflow_dispatch` support for manual dev/rc/release publishing
-- Contentful GraphQL catalog fetching (`build/fetch_catalog.py`)
+- Staged initial/login credential metadata in `variables.json`.
 
 ### Changed
-- Moved `dns-bind`, `dns-delete`, and `websoft9-upgrade` from `libs` commands to `make` targets (`make dns-bind`, `make dns-delete`, `make websoft9-upgrade`)
-- Simplified `library.json` to only retain `Version` field
-- GitHub Release tag now uses `library.json` Version instead of run_number
-- Removed legacy `release.yml` and `release-dev.yml` workflows
+- Moved the opencode session cleanup script from `build/` to `ci/scripts/` and updated `make opencode-clear` to use it.
+
+### Removed
+- Removed the legacy `template/` directory; scaffolds and generated docs now use `metadata/templates/`.
+- Removed unused `build/update_readme.py`, `build/update_variables.py`, `build/test_apps.py`, and `build/get_apps_latest_version.py`.
+- Removed obsolete workflows: `build_files`, `pull_quest_test`, `pre_merge`, `release`, `release-dev`, `sync_php_files`, and `get_apps_latest_version`.
+- Removed `add_apps.json` and its template-scaffold workflow.
+
+## 2026-09
+
+### Added
+- Appstore catalog dataset versioning: per-app `updatedAt`, content-hash-based `datasetVersion`, and locale-aware default logos.
+- App archive/restore workflow with metadata handoff.
 
 ### Fixed
-- PostgreSQL volume mount path: `/var/lib/postgresql` → `/var/lib/postgresql/data`
-- Safeline `W9_HTTP_PORT=1443` for correct healthcheck probing
+- Catalog pagination stability and production field handling.
 
-### Removed
-- `production` return field from fetch_catalog GraphQL query
-- `library.json` unused WordPress-plugin-style metadata fields
+## 2026-07 / 2026-08 — 0.8.0 / 0.8.1
 
-## [0.7.13] - 2026-06
+### Added
+- AI-first delivery model: `AGENTS.md`, `docs/ai-sdlc/`, shared `skills/`, and opencode `/libs-*` commands.
+- `libs` CLI as the automation interface for app scaffolding, validation, deployment, scanning, catalog, and appstore sync.
+- Appstore publish v2 output model (catalog/library/manifest) with dev/rc/release channels.
+- External database support for WordPress and Odoo.
+- `make dns-bind`, `make dns-delete`, and `make create-aliyun-ecs`.
+- Contentful GraphQL catalog fetching (`build/fetch_catalog.py`).
 
 ### Changed
-- Refactor appstore publish workflows
+- `library.json` reduced to `Version`; release tags derive from it.
+- `websoft9-upgrade` moved to a `make` target.
 
-## [0.7.0] - 2025
-
-### Added
-- 102 new applications: AI/ML, DevOps, Security, Media, E-commerce, Infrastructure
-- AI/ML stack: anythingllm, dify, langflow, librechat, lobechat, localai, ollama, openwebui, ragflow
-- DevOps tools: activepieces, airflow, automatisch, awx, calcom, keycloak, kestra, windmill
-- Database tools: azimutt, mathesar, milvus, opengauss, postgrest
-- Monitoring: crowdsec, glance, kener, opencost, signoz
-- Communication: freshrss, lemmy, listmonk, zulip
-- Security: adguardhome, bunkerweb, ddnsgo, zerotier, zitadel
-- Media: drawio, immich, kavita, komga, paperlessngx, photoprism
-- E-commerce: akeneo, saleor, suitecrm
-- Infrastructure: frp, gocd, gotify, krakend, rustdesk, sonarqube, wikijs, and more
+## 2026-05 — 0.7.13
 
 ### Changed
-- Unified application template structure and configuration standards
-- 1,700+ version updates and bug fixes for existing applications
+- Appstore publish workflows refactored.
 
-## [0.6.0] - 2024
-
-### Added
-- Application edition and distribution model
-
-## [0.5.20] - 2023
-
-### Changed
-- Application version updates
-
-## [0.5.7] - 2023-09-27
+## 2024 — 0.6.0 / 0.7.0
 
 ### Added
-- Edition support (`edition` field in variables.json)
-- Migration from `w9_name` to `w9_id`
+- Edition and distribution model (`edition` in `variables.json`).
+- Unified app template and configuration conventions.
+- Library expanded to 100+ applications.
 
-## [0.5.4] - 2023-08-23
-
-### Added
-- New applications online
-
-## [0.5.3] - 2023-08-03
+## 2023 — 0.1.0–0.5.x
 
 ### Added
-- Library artifacts directory: `websoft9/plugin/library`
-- New apps: nocobase, affine
-
-## [0.2.3] - 2023-06-26
-
-### Added
-- New apps: appsmith, focalboard, affine
-
-### Changed
-- Appstore page images: onlyoffice, mingdao
-
-## [0.2.2] - 2023-06-17
-
-### Added
-- WordPress listing
-- DiscuzQ and Zabbix upgrade
-
-### Removed
-- Moodle listing
-
-### Fixed
-- Redmine configuration
-
-## [0.2.1] - 2023-06-16
-
-### Removed
-- WordPress listing
-
-## [0.1.0] - 2023-06-08
-
-### Added
-- Initial release with application templates
+- Initial template library.
+- Edition support and migration from `w9_name` to `W9_ID`.

@@ -14,7 +14,7 @@ Model:
 - issues are the work queue
 
 Flow:
-1. Issue defines the work.
+1. Issue defines the work; opening it starts the AI workflow.
 2. AI researches and edits the app.
 3. CI and AI run automated checks.
 4. AI submits a test report.

@@ -37,7 +37,7 @@ varnish not have config file
 elizaOS
 Nuclear
 
-port define?
+
 
 canvas 令牌无效
 elasticsearch 域名访问报错。大概原因是 es 默认有 https 和 http 两种机制。
