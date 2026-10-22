@@ -22,7 +22,8 @@ jobs:
     if: |
       github.event.issue.user.type != 'Bot' &&
       (
-        contains(fromJson('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
+        (github.event.action != 'labeled' &&
+          contains(fromJson('["OWNER","MEMBER","COLLABORATOR","CONTRIBUTOR"]'), github.event.issue.author_association)) ||
         (github.event.action == 'labeled' && github.event.label.name == 'ai')
       )
     runs-on: ubuntu-latest
