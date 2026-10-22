@@ -536,8 +536,8 @@ artifact/appstore/<channel>/
 
 | 事件 | channel |
 |------|---------|
-| push 到 `dev` 分支 | `dev` |
-| push 到 `main` 分支 | `release` |
+| push 到 `main` 分支 | `dev` |
+| push 到 semver tag（如 `0.9.0`） | `release` |
 | `workflow_dispatch` | 手动选择 `dev` / `rc` / `release` |
 
 ### 6.2 CI 流水线（`appstore-publish.yml`）

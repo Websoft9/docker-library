@@ -2,9 +2,8 @@ name: Appstore Publish
 
 on:
   push:
-    branches:
-      - dev
-      - main
+    branches: [main]
+    tags: ['[0-9]*']
   workflow_dispatch:
     inputs:
       channel:
@@ -24,6 +23,8 @@ jobs:
   publish:
     name: Build and publish appstore artifacts
     runs-on: ubuntu-latest
+    outputs:
+      channel: ${{ steps.resolve_channel.outputs.channel }}
 
     steps:
       - name: Check out code
@@ -35,12 +36,12 @@ jobs:
         id: resolve_channel
         run: |
           if [[ "${{ github.event_name }}" == "push" ]]; then
-            if [[ "${{ github.ref_name }}" == "dev" ]]; then
-              channel="dev"
-            elif [[ "${{ github.ref_name }}" == "main" ]]; then
+            if [[ "${{ github.ref_type }}" == "tag" ]]; then
               channel="release"
+            elif [[ "${{ github.ref_name }}" == "main" ]]; then
+              channel="dev"
             else
-              echo "Unsupported push branch: ${{ github.ref_name }}" >&2
+              echo "Unsupported push ref: ${{ github.ref_type }} ${{ github.ref_name }}" >&2
               exit 1
             fi
           else
@@ -48,6 +49,15 @@ jobs:
           fi
 
           echo "channel=$channel" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve release base
+        id: release_base
+        if: github.event_name == 'push' && github.ref_type == 'tag'
+        run: |
+          previous=$(git describe --tags --abbrev=0 "${GITHUB_REF_NAME}^" 2>/dev/null || true)
+          if [ -n "$previous" ]; then
+            echo "from_ref=$previous" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Set up Python
         uses: actions/setup-python@v7
@@ -127,6 +137,8 @@ jobs:
           fi
           if [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "${{ inputs.from_ref }}" ]]; then
             args+=(--from-ref "${{ inputs.from_ref }}")
+          elif [[ -n "${{ steps.release_base.outputs.from_ref }}" ]]; then
+            args+=(--from-ref "${{ steps.release_base.outputs.from_ref }}")
           fi
           python build/library_publish.py "${args[@]}"
 
@@ -251,7 +263,7 @@ jobs:
 
   pages:
     name: Build Github Pages (release only)
-    if: github.ref_name == 'main'
+    if: needs.publish.outputs.channel == 'release'
     needs: publish
     permissions:
       contents: read

@@ -2,12 +2,12 @@
 #
 # Version source of truth: docs/image-tag-spec.md.
 #
-# Tag namespaces (same repository, tag differs by branch/event):
-#   dev push          -> dev-<git-sha> (primary) + dev-latest (rolling alias)
-#                        amd64 is required; arm64 is best-effort and warns on failure
-#                        final tags are assembled from digests; no temporary arch tags are published
-#   PR merged to main -> promote the PR head's dev-<sha> to stable tags (no rebuild)
-#   main push         -> not wired; main promotion happens only on a merged PR
+# Tag namespaces (same repository, tag differs by event):
+#   main push  -> dev-<git-sha> (primary) + dev-latest (rolling alias)
+#                 amd64 is required; arm64 is best-effort and warns on failure
+#                 final tags are assembled from digests; no temporary arch tags are published
+#   semver tag -> promote each app's latest dev-<sha> image to stable tags (no rebuild)
+#   main push  -> never promotes; releases happen on tags
 #
 # Build contract: the Dockerfile MUST declare a version ARG whose name is
 # ${APP^^}_VERSION (e.g. apps/akeneo -> AKENEO_VERSION). CI reads W9_VERSION
@@ -15,70 +15,74 @@
 # Apps that do not declare this ARG are not built by CI; migrate them when touched.
 #
 # Manual runs (workflow_dispatch) target one app:
-#   run on dev  -> build dev-<sha> + dev-latest for the chosen app
-#   run on main -> promote the chosen app; source_sha (the validated dev-<sha>) is required
+#   channel=dev     -> build dev-<sha> + dev-latest for the chosen app
+#   channel=promote -> promote the chosen app to stable tags; source_sha defaults to the selected ref
 #
-# If you add more paths for trigger, please update app_list= at set-matrix for it also.
+# There is intentionally no paths filter: tag promotion must still run when the tag
+# only changes release metadata. App detection happens in the setup job.
 
 name: Build image to DockerHub
 
 on:
   push:
-    branches: [dev]
-    paths:
-      - "apps/*/Dockerfile"
-      - "apps/*/.env"
-      - "apps/*/src/**"
-      - "apps/*/cmd.sh"
-      - "apps/*/entrypoint.sh"
-  pull_request:
-    types: [closed]
     branches: [main]
-    paths:
-      - "apps/*/Dockerfile"
-      - "apps/*/.env"
-      - "apps/*/src/**"
-      - "apps/*/cmd.sh"
-      - "apps/*/entrypoint.sh"
+    tags: ['[0-9]*']
   workflow_dispatch:
     inputs:
       app:
         description: "App name to build or promote (e.g. strapi)"
         required: true
         type: string
+      channel:
+        description: "Build a dev candidate or promote an existing dev image"
+        required: true
+        type: choice
+        options:
+          - dev
+          - promote
+        default: dev
       source_sha:
-        description: "Validated dev commit SHA to promote (required for manual promote on main)"
+        description: "Source commit SHA for promote (defaults to the selected ref)"
         required: false
         type: string
 
 jobs:
   setup:
-    if: ${{ github.event_name != 'pull_request' || (github.event.pull_request.merged && github.event.pull_request.base.ref == 'main') }}
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+      has_apps: ${{ steps.set-matrix.outputs.has_apps }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v7
       with:
-        # Pin the PR head (dev commit) because the pull_request merge ref can be
-        # gone by the time a merged PR's `closed` event runs.
-        ref: ${{ github.event.pull_request.head.sha || github.sha }}
         fetch-depth: 0
 
     - id: set-matrix
       env:
         EVENT_NAME: ${{ github.event_name }}
         INPUT_APP: ${{ inputs.app }}
-        PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
-        PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        REF_TYPE: ${{ github.ref_type }}
+        REF_NAME: ${{ github.ref_name }}
+        BEFORE_SHA: ${{ github.event.before }}
+        CURRENT_SHA: ${{ github.sha }}
       run: |
         if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
           app_list="$INPUT_APP"
-        elif [ "$EVENT_NAME" = "pull_request" ]; then
-          app_list=$(git diff --name-only "$PR_BASE_SHA" "$PR_HEAD_SHA" | grep -E 'apps/.*/(Dockerfile|.env|cmd.sh|entrypoint.sh|src/.*)$' | awk -F'/' '{print $2}' | sort | uniq)
+        elif [ "$EVENT_NAME" = "push" ] && [ "$REF_TYPE" = "tag" ]; then
+          previous=$(git describe --tags --abbrev=0 "${REF_NAME}^" 2>/dev/null || true)
+          if [ -n "$previous" ]; then
+            changed_files=$(git diff --name-only "$previous" "$CURRENT_SHA")
+          else
+            changed_files=$(git diff-tree --no-commit-id --name-only -r "$CURRENT_SHA")
+          fi
+          app_list=$(echo "$changed_files" | grep -E 'apps/.*/(Dockerfile|.env|cmd.sh|entrypoint.sh|src/.*)$' | awk -F'/' '{print $2}' | sort | uniq)
         else
-          changed_files=$(git diff --name-only HEAD^ HEAD)
+          if [ -n "$BEFORE_SHA" ] && [ "$BEFORE_SHA" != "0000000000000000000000000000000000000000" ]; then
+            changed_files=$(git diff --name-only "$BEFORE_SHA" "$CURRENT_SHA")
+          else
+            changed_files=$(git diff --name-only HEAD^ HEAD)
+          fi
           app_list=$(echo "$changed_files" | grep -E 'apps/.*/(Dockerfile|.env|cmd.sh|entrypoint.sh|src/.*)$' | awk -F'/' '{print $2}' | sort | uniq)
         fi
         valid_list=()
@@ -104,10 +108,15 @@ jobs:
         fi
         app_list_json=$(jq -cn '$ARGS.positional' --args "${valid_list[@]}")
         echo "matrix={\"app\": $app_list_json}" >> "$GITHUB_OUTPUT"
+        if [ "${#valid_list[@]}" -gt 0 ]; then
+          echo "has_apps=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "has_apps=false" >> "$GITHUB_OUTPUT"
+        fi
 
   build:
     needs: setup
-    if: ${{ github.event_name != 'pull_request' || (github.event.pull_request.merged && github.event.pull_request.base.ref == 'main') }}
+    if: needs.setup.outputs.has_apps == 'true'
     runs-on: ubuntu-latest
     strategy:
       matrix: ${{fromJson(needs.setup.outputs.matrix)}}
@@ -115,7 +124,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v7
       with:
-        ref: ${{ github.event.pull_request.head.sha || github.sha }}
+        fetch-depth: 0
 
     - name: Set up Python
       uses: actions/setup-python@v7
@@ -130,36 +139,39 @@ jobs:
     - name: Resolve channel
       env:
         EVENT_NAME: ${{ github.event_name }}
-        REF_NAME: ${{ github.ref_name }}
-        PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        REF_TYPE: ${{ github.ref_type }}
+        INPUT_CHANNEL: ${{ inputs.channel }}
         INPUT_SOURCE_SHA: ${{ inputs.source_sha }}
+        CURRENT_SHA: ${{ github.sha }}
       run: |
         echo "APP=${{ matrix.app }}" >> $GITHUB_ENV
-        if [ "$EVENT_NAME" = "pull_request" ]; then
-          # main promotion: promote the exact dev commit that was merged and built.
-          echo "CHANNEL=promote" >> $GITHUB_ENV
-          echo "SOURCE_SHA=$PR_HEAD_SHA" >> $GITHUB_ENV
-        elif [ "$EVENT_NAME" = "workflow_dispatch" ]; then
-          case "$REF_NAME" in
+        if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+          case "$INPUT_CHANNEL" in
             dev)
               echo "CHANNEL=dev" >> $GITHUB_ENV
               echo "SOURCE_SHA=" >> $GITHUB_ENV
               ;;
-            main)
-              if [ -z "$INPUT_SOURCE_SHA" ]; then
-                echo "error: manual promote on main requires source_sha (the validated dev-<sha>)" >&2
-                exit 1
-              fi
+            promote)
+              source_sha="${INPUT_SOURCE_SHA:-$CURRENT_SHA}"
               echo "CHANNEL=promote" >> $GITHUB_ENV
-              echo "SOURCE_SHA=$INPUT_SOURCE_SHA" >> $GITHUB_ENV
+              echo "SOURCE_SHA=$source_sha" >> $GITHUB_ENV
               ;;
             *)
-              echo "error: manual runs must target the dev or main branch (got '$REF_NAME')" >&2
+              echo "error: unsupported manual channel '$INPUT_CHANNEL'" >&2
               exit 1
               ;;
           esac
+        elif [ "$EVENT_NAME" = "push" ] && [ "$REF_TYPE" = "tag" ]; then
+          # release promotion: reuse the dev image built from the app's last main change.
+          source_sha=$(git log -1 --format=%H "$CURRENT_SHA" -- "apps/${{ matrix.app }}")
+          if [ -z "$source_sha" ]; then
+            echo "error: no commit found for app ${{ matrix.app }} at $CURRENT_SHA" >&2
+            exit 1
+          fi
+          echo "CHANNEL=promote" >> $GITHUB_ENV
+          echo "SOURCE_SHA=$source_sha" >> $GITHUB_ENV
         else
-          # push to dev: build candidate images.
+          # main push: build candidate images for the next release.
           echo "CHANNEL=dev" >> $GITHUB_ENV
           echo "SOURCE_SHA=" >> $GITHUB_ENV
         fi
@@ -255,12 +267,12 @@ jobs:
           fi
         done
 
-    - name: Promote dev image to stable tags (main)
+    - name: Promote dev image to stable tags (release)
       if: env.CHANNEL == 'promote'
       run: |
         if ! SOURCE_DIGEST=$(docker buildx imagetools inspect "${{ env.SOURCE_IMAGE }}" --format '{{.Manifest.Digest}}' 2>/dev/null); then
           echo "ERROR: source dev image missing: ${{ env.SOURCE_IMAGE }}" >&2
-          echo "Expected this image to be built and pushed by the dev branch workflow before main promotion." >&2
+          echo "Expected this image to be built and pushed by a main push before release promotion." >&2
           exit 1
         fi
         TAG_ARGS=""
@@ -280,4 +292,4 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: websoft9dev/${{env.APP}}
         readme-filepath: ${{env.README}}
-      if: needs.setup.outputs.matrix != ''
+      if: needs.setup.outputs.has_apps == 'true'

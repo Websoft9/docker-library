@@ -70,9 +70,9 @@ When the requested platform differs from the build host (local or remote), `libs
 ## 5. Maintenance
 
 - This spec is repository-wide. Migration applies to the app being worked on; remaining apps migrate when touched.
-- Branch promotion policy (dev builds, main promotes) is defined in `docs/git-workflow-spec.md`.
-- CI tag channels (same repository, tag differs by branch/event):
-  - PR merged into `main` → promote `dev-<pull_request.head.sha>` to stable tags from `W9_VERSION` (see Tag Rules); no rebuild.
-  - `dev` push → build and push `dev-<git-sha>` (immutable) plus `dev-latest` (rolling alias).
-  - manual `workflow_dispatch` → target one app: on `dev` build candidate tags; on `main` promote a required `source_sha` (`dev-<sha>`) to stable tags.
+- Branch/artifact policy is defined in `docs/git-workflow-spec.md`.
+- CI tag channels (same repository, tag differs by event):
+  - push to `main` → build and push `dev-<git-sha>` (immutable) plus `dev-latest` (rolling alias).
+  - semver tag → promote each changed app's latest `dev-<last-change-sha>` image to stable tags from `W9_VERSION` (see Tag Rules); no rebuild.
+  - manual `workflow_dispatch` → target one app: `channel=dev` builds candidate tags; `channel=promote` promotes a required `source_sha` (`dev-<sha>`) to stable tags.
 - CI only builds apps whose Dockerfile declares `ARG <APP>_VERSION`; apps without it are not built by CI. Migrate them when touched.
