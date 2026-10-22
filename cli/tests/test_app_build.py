@@ -492,7 +492,9 @@ def test_build_app_platform_rejects_unknown_value(repo_fixture, app_factory):
         raise AssertionError("expected ValueError")
 
 
-def test_build_app_push_requires_confirm_stable_outside_ci(repo_fixture, app_factory):
+def test_build_app_push_requires_confirm_stable_outside_ci(repo_fixture, app_factory, monkeypatch):
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    monkeypatch.delenv("CI", raising=False)
     app_path = app_factory(
         "demo",
         compose="services:\n  web:\n    image: demo-repo:${W9_VERSION}\n",
