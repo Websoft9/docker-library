@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-10-22
+- Checked the WordPress `7.1.3` maintenance and security release. `W9_VERSION=7.1` is already on the same multi-arch digest as `7.1.3`, so no package version change is required.
+- Added a `tests/cases.yml` install page check to cover the `/wp-admin/install.php` path.
+
 ## 2026-09-15
 - Added `src/nginx-proxy.conf` so the Websoft9 Gateway (Nginx Proxy Manager) applies the package upload limit and the platform client rate/concurrency limits for this app.
 - The gateway advanced config is consumed platform-side from `src/nginx-proxy.conf`; it is not mounted into any container.

@@ -1,0 +1,5 @@
+optional:
+  - id: install-page
+    type: web-access
+    path: /wp-admin/install.php
+    expect_status: 200
