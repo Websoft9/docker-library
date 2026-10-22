@@ -7,6 +7,7 @@ import subprocess
 import time
 from collections.abc import Callable
 from pathlib import Path
+from urllib.parse import urlsplit
 
 import requests
 import yaml
@@ -234,9 +235,15 @@ def _remote_script_command(remote_ctx: dict, app_name: str, script_name: str, en
     """
     app_target = remote_ctx["app_target"]
     remote_base_url = base_url or ""
-    port = env.get("W9_HTTP_PORT_SET")
-    if port:
+    env_port = env.get("W9_HTTP_PORT_SET")
+    if base_url and env_port:
+        try:
+            port = urlsplit(base_url).port or env_port
+        except ValueError:
+            port = env_port
         remote_base_url = f"http://localhost:{port}"
+    elif not base_url and env_port:
+        remote_base_url = f"http://localhost:{env_port}"
     script_rel = f"tests/{script_name}"
     return (
         f"cd {shlex.quote(app_target)} && "

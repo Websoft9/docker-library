@@ -6,6 +6,9 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **{{ trademark }}**.
 2. In the **Access** tab, get the login URL and credentials.
+{% if credentials and credentials.none %}
+   No preset administrator credentials are shipped; create the admin account in the setup wizard.
+{% endif %}
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->

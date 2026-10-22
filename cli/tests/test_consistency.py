@@ -325,3 +325,17 @@ def test_i18n_translation_covers_all_app_translatable_env_keys():
             missing[env_path.parent.name] = keys
 
     assert missing == {}, f"apps with translatable env keys missing from i18n: {missing}"
+
+
+def test_variables_schema_accepts_explicit_no_credentials():
+    schema = json.loads((REPO_ROOT / "metadata" / "variables.schema.json").read_text(encoding="utf-8"))
+    sample = {
+        "name": "demo",
+        "trademark": "Demo",
+        "release": True,
+        "edition": [{"dist": "community", "version": ["1.0"]}],
+        "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
+        "credentials": {"none": True},
+    }
+
+    jsonschema.Draft202012Validator(schema).validate(sample)

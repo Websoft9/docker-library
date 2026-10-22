@@ -20,6 +20,11 @@ ProgressWriter = Callable[[str], None]
 
 W9_VERSION_RE = re.compile(r"^W9_VERSION=.*$", re.MULTILINE)
 IMAGE_TAG_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
+PORT_REF_RE = re.compile(r"^\$\{?([A-Z0-9_]+)\}?$")
+DOCKER_PORT_RE = re.compile(r"(?:0\.0\.0\.0|127\.0\.0\.1|\[::\]|::):(\d+)->")
+SS_PORT_RE = re.compile(r":(\d+)\s+\S+\s*$")
+FREE_PORT_LOW = 9000
+FREE_PORT_HIGH = 9999
 
 
 def _run(command: list[str], *, progress: ProgressWriter | None = None, verbose: bool = False) -> subprocess.CompletedProcess:
@@ -120,18 +125,198 @@ def _validate_tag(version: str) -> str:
     return version
 
 
-def _patched_env_file(app_name: str, version: str) -> Path:
-    _validate_tag(version)
+def _env_map(env_path: Path) -> dict[str, str]:
+    values: dict[str, str] = {}
+    if not env_path.exists():
+        return values
+    for raw_line in env_path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        values[key.strip()] = value.strip().strip("'").strip('"')
+    return values
+
+
+def _compose_published_ports(target: Path, env_map: dict[str, str]) -> list[dict]:
+    """Return published host ports declared by the app's compose file."""
+    compose_path = target / "docker-compose.yml"
+    if not compose_path.exists():
+        return []
+    compose = yaml.safe_load(compose_path.read_text(encoding="utf-8")) or {}
+    rows: list[dict] = []
+    for service_name, service in (compose.get("services") or {}).items():
+        if not isinstance(service, dict):
+            continue
+        for entry in service.get("ports", []) or []:
+            service_name_value = str(service_name)
+            if isinstance(entry, dict):
+                published = entry.get("published")
+                target_port = entry.get("target")
+                if published is None or target_port is None:
+                    continue
+                raw = str(published)
+                env_name = _port_env_name(raw)
+                value = _resolve_env_value(raw, env_map)
+                if value is None:
+                    continue
+                rows.append({
+                    "service": service_name_value,
+                    "env": env_name,
+                    "published": int(value),
+                    "target": target_port,
+                })
+                continue
+            if not isinstance(entry, str):
+                continue
+            text = entry.strip().strip("'\"")
+            parts = text.split(":")
+            if len(parts) < 2:
+                continue
+            host_part = parts[-2]
+            target_part = parts[-1].split("/", 1)[0]
+            env_name = _port_env_name(host_part)
+            value = _resolve_env_value(host_part, env_map)
+            if value is None:
+                continue
+            try:
+                rows.append({
+                    "service": service_name_value,
+                    "env": env_name,
+                    "published": int(value),
+                    "target": int(target_part),
+                })
+            except ValueError:
+                continue
+    return rows
+
+
+def _port_env_name(value: str) -> str | None:
+    match = PORT_REF_RE.match(value.strip())
+    return match.group(1) if match else None
+
+
+def _resolve_env_value(value: str, env_map: dict[str, str]) -> str | None:
+    value = value.strip()
+    match = PORT_REF_RE.match(value)
+    if match:
+        resolved = env_map.get(match.group(1))
+        return resolved if resolved and resolved.isdigit() else None
+    return value if value.isdigit() else None
+
+
+def _name_is_own(name: str, prefixes: list[str]) -> bool:
+    return any(name == prefix or name.startswith(f"{prefix}-") for prefix in prefixes)
+
+
+def _parse_occupied_ports(text: str, exclude_prefixes: list[str] | None = None) -> set[int]:
+    prefixes = exclude_prefixes or []
+    ports: set[int] = set()
+    excluded: set[int] = set()
+    for line in text.splitlines():
+        if "|" in line:
+            name, raw_ports = line.split("|", 1)
+            found = {int(match.group(1)) for match in DOCKER_PORT_RE.finditer(raw_ports)}
+            if _name_is_own(name.strip(), prefixes):
+                excluded |= found
+            else:
+                ports |= found
+            continue
+        match = SS_PORT_RE.search(line)
+        if match:
+            ports.add(int(match.group(1)))
+    return ports - excluded
+
+
+def _occupied_ports_local(exclude_prefixes: list[str] | None = None) -> set[int]:
+    text = ""
+    docker_ps = _run(["docker", "ps", "--format", "{{.Names}}|{{.Ports}}"])
+    if docker_ps.returncode == 0:
+        text += docker_ps.stdout
+    ss = _run(["ss", "-ltnH"])
+    if ss.returncode == 0:
+        text += "\n" + ss.stdout
+    return _parse_occupied_ports(text, exclude_prefixes)
+
+
+def _occupied_ports_remote(host: str, user: str, secret_path: Path, exclude_prefixes: list[str] | None = None) -> set[int]:
+    result = _run_remote(host, user, secret_path, "docker ps --format '{{.Names}}|{{.Ports}}'; ss -ltnH 2>/dev/null || true")
+    if result.returncode != 0:
+        return set()
+    return _parse_occupied_ports(result.stdout, exclude_prefixes)
+
+
+def _pick_free_port(occupied: set[int], preferred: int | None = None) -> int:
+    start = preferred if preferred and FREE_PORT_LOW <= preferred <= FREE_PORT_HIGH else FREE_PORT_LOW
+    for port in range(start, FREE_PORT_HIGH + 1):
+        if port not in occupied:
+            return port
+    for port in range(FREE_PORT_LOW, start):
+        if port not in occupied:
+            return port
+    raise RuntimeError(f"no free port in {FREE_PORT_LOW}-{FREE_PORT_HIGH}")
+
+
+def _port_overrides(target: Path, env_map: dict[str, str], occupied: set[int]) -> dict[str, int]:
+    overrides: dict[str, int] = {}
+    for row in _compose_published_ports(target, env_map):
+        env_name = row.get("env")
+        published = row["published"]
+        if not env_name or env_name in overrides:
+            continue
+        if published in occupied:
+            selected = _pick_free_port(occupied | set(overrides.values()), published)
+            overrides[env_name] = selected
+    return overrides
+
+
+def _effective_env_map(env_map: dict[str, str], overrides: dict[str, int]) -> dict[str, str]:
+    effective = dict(env_map)
+    for key, value in overrides.items():
+        effective[key] = str(value)
+    return effective
+
+
+def _base_url(target: Path, env_map: dict[str, str], overrides: dict[str, int], host: str | None) -> str | None:
+    effective = _effective_env_map(env_map, overrides)
+    ports = _compose_published_ports(target, effective)
+    if not ports:
+        return None
+    for row in ports:
+        if row.get("env") == "W9_HTTP_PORT_SET" or row.get("target") == 80:
+            scheme = "https" if row.get("env") == "W9_HTTPS_PORT_SET" else "http"
+            address = host or "localhost"
+            return f"{scheme}://{address}:{row['published']}"
+    first = ports[0]
+    scheme = "https" if first.get("env") == "W9_HTTPS_PORT_SET" else "http"
+    address = host or "localhost"
+    return f"{scheme}://{address}:{first['published']}"
+
+
+def _patched_env_text(text: str, version: str | None, overrides: dict[str, int]) -> str:
+    if version:
+        _validate_tag(version)
+        text = W9_VERSION_RE.sub(f"W9_VERSION='{version}'", text)
+    for key, value in overrides.items():
+        pattern = re.compile(rf"^{re.escape(key)}=.*$", re.MULTILINE)
+        if pattern.search(text):
+            text = pattern.sub(f"{key}={value}", text)
+        else:
+            text = text.rstrip("\n") + f"\n{key}={value}\n"
+    return text
+
+
+def _patched_env_file(app_name: str, version: str | None, overrides: dict[str, int] | None = None) -> Path | None:
+    overrides = overrides or {}
+    if not version and not overrides:
+        return None
     source = app_dir(app_name)
     if not source:
         raise FileNotFoundError(app_name)
     env_path = source / ".env"
     if not env_path.exists():
         raise FileNotFoundError(env_path)
-    text = env_path.read_text(encoding="utf-8")
-    if not W9_VERSION_RE.search(text):
-        raise ValueError(f".env has no W9_VERSION to override: {env_path}")
-    text = W9_VERSION_RE.sub(f"W9_VERSION='{version}'", text)
+    text = _patched_env_text(env_path.read_text(encoding="utf-8"), version, overrides)
     fd, name = tempfile.mkstemp(prefix=f"libs-deploy-{app_name}-", suffix=".env")
     with os.fdopen(fd, "w", encoding="utf-8") as handle:
         handle.write(text)
@@ -143,16 +328,23 @@ def _patch_remote_env(
     user: str,
     secret_path: Path,
     app_target: str,
-    version: str,
+    version: str | None,
+    overrides: dict[str, int] | None = None,
     *,
     progress: ProgressWriter | None = None,
     verbose: bool = False,
 ) -> None:
-    _validate_tag(version)
-    script = f"sed -i \"s/^W9_VERSION=.*/W9_VERSION='{version}'/\" {app_target}/.env"
-    result = _run_remote(host, user, secret_path, script, progress=progress, verbose=verbose)
+    commands: list[str] = []
+    if version:
+        _validate_tag(version)
+        commands.append(f"sed -i \"s/^W9_VERSION=.*/W9_VERSION='{version}'/\" {app_target}/.env")
+    for key, value in (overrides or {}).items():
+        commands.append(f"sed -i \"s/^{re.escape(key)}=.*/{key}={value}/\" {app_target}/.env")
+    if not commands:
+        return
+    result = _run_remote(host, user, secret_path, " && ".join(commands), progress=progress, verbose=verbose)
     if result.returncode != 0:
-        raise RuntimeError(result.stderr.strip() or result.stdout.strip() or "remote version patch failed")
+        raise RuntimeError(result.stderr.strip() or result.stdout.strip() or "remote env patch failed")
 
 
 def _announce(progress: ProgressWriter | None, index: int, total: int, message: str) -> None:
@@ -195,6 +387,7 @@ def deploy(
     deploy_root: str | None = None,
     version: str | None = None,
     down: bool = False,
+    auto_port: bool = True,
     progress: ProgressWriter | None = None,
     verbose: bool = False,
 ) -> dict:
@@ -206,10 +399,17 @@ def deploy(
     action = "down -v" if down else "up -d"
     needs_build = app_build.can_build(app_name)
     pull_services = _pull_services(app_name, source)
+    env_map = _env_map(source / ".env")
+    published_ports = _compose_published_ports(source, env_map)
+    own_prefixes = [env_map.get("W9_ID", app_name)]
 
     if mode == "local":
         target_path = repo_path("apps", app_name)
-        env_file = _patched_env_file(app_name, version) if version else None
+        overrides: dict[str, int] = {}
+        if auto_port and not down and published_ports:
+            overrides = _port_overrides(target_path, env_map, _occupied_ports_local(own_prefixes))
+        env_file = _patched_env_file(app_name, version, overrides)
+        base_url = _base_url(target_path, env_map, overrides, None)
         try:
             step = 1
             total = 3 if down else (6 if needs_build else 5)
@@ -261,6 +461,8 @@ def deploy(
                 "deploy_root": str(repo_path("apps")),
                 "app_target": str(target_path),
                 "action": action,
+                "port_overrides": {key: str(value) for key, value in overrides.items()},
+                "base_url": base_url,
                 "ps": ps.stdout.strip(),
             }
         finally:
@@ -277,6 +479,11 @@ def deploy(
     deploy_root_value = remote.deploy_root(deploy_root)
     app_target = f"{deploy_root_value}/{app_name}"
 
+    overrides: dict[str, int] = {}
+    if auto_port and not down and published_ports:
+        overrides = _port_overrides(source, env_map, _occupied_ports_remote(host, user, secret_path, own_prefixes))
+    base_url = _base_url(source, env_map, overrides, host)
+
     step = 1
     total = 4 if down else (7 if needs_build else 6)
 
@@ -284,8 +491,8 @@ def deploy(
     _sync_app_dir(app_name, host, user, secret_path, deploy_root_value, progress=progress, verbose=verbose)
     step += 1
 
-    if version:
-        _patch_remote_env(host, user, secret_path, app_target, version, progress=progress, verbose=verbose)
+    if version or overrides:
+        _patch_remote_env(host, user, secret_path, app_target, version, overrides, progress=progress, verbose=verbose)
 
     if not down:
         _announce(progress, step, total, "ensuring shared network")
@@ -340,5 +547,7 @@ def deploy(
         "app_target": app_target,
         "version": version,
         "action": action,
+        "port_overrides": {key: str(value) for key, value in overrides.items()},
+        "base_url": base_url,
         "ps": ps.stdout.strip(),
     }

@@ -23,22 +23,23 @@ Supporting files in this skill:
 
 ## Steps
 
-1. Run `.venv/bin/libs scan --app <app> --json` and use its output as the primary version fact source.
-2. Run `.venv/bin/libs app-drift --app <app> --json` and use its output as the primary dependency and drift fact source.
-3. Read repository facts only when scan or drift outputs are missing required facts.
-4. Classify the candidate as `patch`, `minor`, `major`, or `security`.
-5. Read upstream release notes, changelog, or upgrade guide.
-6. Check whether the candidate fits the app's update policy and cadence.
-7. Assess breaking risk for compose, env keys, volumes, init flow, login flow, and data path.
-8. Perform a read-only repository conformance screening for the current app package against current quality gates and generation rules. Record only issues that materially affect update cost, safety, or readiness; do not expand into a full implementation review.
-9. Assess the database dependency when `.venv/bin/libs app-drift` lists a DB engine image:
+1. Run `.venv/bin/libs app-info --app <app> --json`; it returns version, DB lifecycle, ports, images, credentials, and tests in one call.
+2. Run `.venv/bin/libs scan --app <app> --json` and use its output as the primary version fact source.
+3. Run `.venv/bin/libs app-drift --app <app> --json` and use its output as the primary dependency and drift fact source.
+4. Read repository files only when the command outputs above are missing required facts.
+5. Classify the candidate as `patch`, `minor`, `major`, or `security`.
+6. Read upstream release notes, changelog, or upgrade guide.
+7. Check whether the candidate fits the app's update policy and cadence.
+8. Assess breaking risk for compose, env keys, volumes, init flow, login flow, and data path.
+9. Perform a read-only repository conformance screening for the current app package against current quality gates and generation rules. Record only issues that materially affect update cost, safety, or readiness; do not expand into a full implementation review.
+10. Assess the database dependency when `.venv/bin/libs app-drift` lists a DB engine image:
    - Read `W9_DB_VERSION` from `apps/<app>/.env` as the authoritative current DB version.
    - Read `metadata/db-lifecycle.json`; if the engine is missing or the snapshot is stale (older than 45 days), run `.venv/bin/libs db-refresh` first.
    - Read the vendor-tested minimum from official release notes or docs, not from `externalDB`.
    - Compute candidates: alive tracks with version >= vendor minimum; LTS/stable preferred over innovation/short-term.
    - Judge the vendor-tested upper bound from release notes or docs; untested majors are not eligible.
    - If the current `W9_DB_VERSION` is EOL'd or a better LTS candidate exists, report a DB finding with recommendation and reason. It does not block the main version decision.
-10. Decide one result: `auto-update`, `review-first`, `defer`, or `skip`.
+11. Decide one result: `auto-update`, `review-first`, `defer`, or `skip`.
 
 ## Output
 

@@ -328,3 +328,54 @@ def test_check_app_returns_gate_specific_payload(repo_fixture, app_factory):
     assert structure["gate"] == "structure"
     assert policy["gate"] == "policy"
     assert all_result["ok"] is True
+
+
+def test_database_result_flags_eol_bundled_database(repo_fixture, app_factory):
+    (repo_fixture / "metadata" / "db-lifecycle.json").write_text(
+        json.dumps({
+            "version": 1,
+            "engines": {
+                "mysql": {
+                    "tracks": [
+                        {"version": "8.4", "track": "lts", "eol": "2032-04-30"},
+                        {"version": "8.0", "track": "lts", "eol": "2026-04-30"},
+                    ]
+                }
+            },
+        }),
+        encoding="utf-8",
+    )
+    app_path = app_factory(
+        "demo",
+        env="W9_DB_VERSION=8.0\n",
+        compose="services:\n  db:\n    image: mysql:${W9_DB_VERSION}\n",
+    )
+
+    result = validate._database_result(app_path)
+
+    assert result["ok"] is False
+    assert result["status"] == "eol"
+    assert result["databases"][0]["engine"] == "mysql"
+    assert result["databases"][0]["current"] == "8.0"
+
+
+def test_database_gate_accepts_alive_lts(repo_fixture, app_factory):
+    (repo_fixture / "metadata" / "db-lifecycle.json").write_text(
+        json.dumps({
+            "version": 1,
+            "engines": {
+                "mysql": {"tracks": [{"version": "8.4", "track": "lts", "eol": "2032-04-30"}]}
+            },
+        }),
+        encoding="utf-8",
+    )
+    app_factory(
+        "demo",
+        env="W9_DB_VERSION=8.4\n",
+        compose="services:\n  db:\n    image: mysql:${W9_DB_VERSION}\n",
+    )
+
+    payload = validate.check_app("demo", gate="database")
+
+    assert payload["ok"] is True
+    assert payload["result"]["status"] == "ok"

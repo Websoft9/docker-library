@@ -198,3 +198,49 @@ def test_app_deploy_skips_build_when_compose_has_no_build(monkeypatch, repo_fixt
         "[5/5] showing container status",
     ]
     assert not any(command[:4] == ["docker", "compose", "--progress", "plain"] for command in calls)
+
+
+def test_compose_published_ports_resolves_env_reference(repo_fixture, app_factory):
+    app = app_factory(
+        "demo",
+        env="W9_HTTP_PORT_SET=9011\n",
+        compose="services:\n  demo:\n    image: demo:1\n    ports:\n      - \"${W9_HTTP_PORT_SET}:80\"\n",
+    )
+
+    rows = app_deploy._compose_published_ports(app, app_deploy._env_map(app / ".env"))
+
+    assert rows == [{"service": "demo", "env": "W9_HTTP_PORT_SET", "published": 9011, "target": 80}]
+
+
+def test_parse_occupied_ports_excludes_own_containers():
+    text = "drupal|0.0.0.0:9001->80/tcp\nwordpress|0.0.0.0:9002->80/tcp\n"
+
+    assert app_deploy._parse_occupied_ports(text, ["drupal"]) == {9002}
+
+
+def test_pick_free_port_skips_occupied_ports():
+    assert app_deploy._pick_free_port({9001, 9002}, 9001) == 9003
+
+
+def test_app_deploy_local_auto_port_overrides_temp_env(monkeypatch, repo_fixture, app_factory):
+    app_factory(
+        "demo",
+        env="W9_ID=demo\nW9_VERSION='1.0'\nW9_HTTP_PORT_SET=9001\n",
+        compose="services:\n  demo:\n    image: demo:1\n    ports:\n      - \"${W9_HTTP_PORT_SET}:80\"\n",
+    )
+    captured = {}
+
+    def fake_run(command, *, progress=None, verbose=False):
+        if "--env-file" in command:
+            path = Path(command[command.index("--env-file") + 1])
+            captured["text"] = path.read_text(encoding="utf-8")
+        return types.SimpleNamespace(returncode=0, stdout="", stderr="")
+
+    monkeypatch.setattr(app_deploy, "_run", fake_run)
+    monkeypatch.setattr(app_deploy, "_occupied_ports_local", lambda prefixes=None: {9001})
+
+    payload = app_deploy.deploy("demo", target="local")
+
+    assert payload["port_overrides"] == {"W9_HTTP_PORT_SET": "9002"}
+    assert payload["base_url"] == "http://localhost:9002"
+    assert "W9_HTTP_PORT_SET=9002" in captured["text"]

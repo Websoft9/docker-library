@@ -27,11 +27,12 @@ Supporting files in this skill:
 ## Steps
 
 1. Run the gates locally: `make --no-print-directory libs ARGS="app-check --app <app> --json"`. On failure, stop and report the first blocking error.
-2. Run `make --no-print-directory libs ARGS="app-deploy --app <app> [--target <local|remote>] [--ssh-host <ip> --ssh-user <name> --ssh-secret-path <path> --deploy-root <dir>] --json"` to perform the compose deployment primitive. It handles local vs remote resolution, sync, network creation, `config`, `up -d`, and `ps` evidence.
-3. Run `make --no-print-directory libs ARGS="app-tests --app <app> [--base-url <url>] [--ssh-host <ip> --ssh-user <name> --ssh-secret-path <path> --deploy-root <dir>] --json"` to perform functional checks. When `tests/cases.yml` is absent, the command still runs the default required checks; report the absence as an app-local test gap when the app's core path needs an app-specific check.
-4. Check container logs for blocking errors.
-5. Cleanup in all outcomes with `make --no-print-directory libs ARGS="app-deploy --app <app> [--target <local|remote>] [--ssh-host <ip> --ssh-user <name> --ssh-secret-path <path> --deploy-root <dir>] --down --json"`. For remote, the server itself stays running; deletion stays manual.
-6. Return validation evidence: gates, deploy, functional checks, logs, cleanup, and the server identity when remote.
+2. Preflight quickly: probe registry/docs URLs with a 2s per-attempt budget and at most 2 retries; if local egress fails, fetch through the remote host. `libs app-deploy` checks published ports and auto-selects a free 9000-9999 port on conflict, returning `port_overrides` and `base_url`.
+3. Run `make --no-print-directory libs ARGS="app-deploy --app <app> [--target <local|remote>] [--ssh-host <ip> --ssh-user <name> --ssh-secret-path <path> --deploy-root <dir>] --json"` to perform the compose deployment primitive. It handles local vs remote resolution, sync, network creation, `config`, `up -d`, and `ps` evidence.
+4. Run `make --no-print-directory libs ARGS="app-tests --app <app> [--base-url <url>] [--ssh-host <ip> --ssh-user <name> --ssh-secret-path <path> --deploy-root <dir>] --json"` to perform functional checks. Pass the `base_url` returned by `app-deploy` when it auto-selected an alternate port. When `tests/cases.yml` is absent, the command still runs the default required checks; report the absence as an app-local test gap when the app's core path needs an app-specific check.
+5. Check container logs for blocking errors.
+6. Cleanup in all outcomes with `make --no-print-directory libs ARGS="app-deploy --app <app> [--target <local|remote>] [--ssh-host <ip> --ssh-user <name> --ssh-secret-path <path> --deploy-root <dir>] --down --json"`. For remote, the server itself stays running; deletion stays manual.
+7. Return validation evidence: gates, deploy, functional checks, logs, cleanup, and the server identity when remote.
 
 ## Output
 

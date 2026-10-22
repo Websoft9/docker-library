@@ -80,6 +80,60 @@ def _app_scope(app_name: str) -> str:
     return variables.get("scope", "public")
 
 
+def _env_values(path: Path) -> dict[str, str]:
+    values: dict[str, str] = {}
+    if not path.exists():
+        return values
+    for raw_line in path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        values[key.strip()] = value.strip().strip("'").strip('"')
+    return values
+
+
+def _compose_summary(path: Path) -> dict:
+    if not path.exists():
+        return {"services": [], "images": [], "ports": []}
+    compose = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    services = compose.get("services") or {}
+    images = []
+    ports = []
+    for service_name, service in services.items():
+        if not isinstance(service, dict):
+            continue
+        image = service.get("image")
+        if isinstance(image, str):
+            images.append({"service": str(service_name), "image": image})
+        for entry in service.get("ports", []) or []:
+            if isinstance(entry, dict):
+                ports.append({
+                    "service": str(service_name),
+                    "published": entry.get("published"),
+                    "target": entry.get("target"),
+                })
+            elif isinstance(entry, str):
+                ports.append({"service": str(service_name), "published": entry, "target": None})
+    return {"services": sorted(str(name) for name in services), "images": images, "ports": ports}
+
+
+def _test_summary(path: Path) -> dict:
+    if not path.exists():
+        return {"declared": False, "cases": []}
+    payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    cases = []
+    for group in ("skip", "optional", "custom"):
+        for case in payload.get(group) or []:
+            if isinstance(case, dict):
+                cases.append({
+                    "group": group,
+                    "id": case.get("id"),
+                    "type": case.get("type"),
+                })
+    return {"declared": True, "cases": cases}
+
+
 def collect_app_info(app_name: str) -> dict:
     target = app_dir(app_name)
     if not target:
@@ -88,6 +142,12 @@ def collect_app_info(app_name: str) -> dict:
     variables_path = target / "variables.json"
     variables = json.loads(variables_path.read_text(encoding="utf-8")) if variables_path.exists() else {}
     metadata = resolve_app_metadata(app_name)
+    env_values = _env_values(target / ".env")
+    compose_summary = _compose_summary(target / "docker-compose.yml")
+
+    from libs.app_deploy import _compose_published_ports
+    from libs.validate import _database_result
+
     return {
         "name": app_name,
         "path": relative_repo_path(target),
@@ -98,8 +158,26 @@ def collect_app_info(app_name: str) -> dict:
         "trademark": variables.get("trademark"),
         "release": variables.get("release"),
         "upstream_image": (variables.get("upstream") or {}).get("image"),
+        "upstream": variables.get("upstream"),
         "requirements": variables.get("requirements"),
         "external_db": variables.get("externalDB"),
+        "version": {
+            "w9_version": env_values.get("W9_VERSION"),
+            "declared": [
+                str(value)
+                for edition in variables.get("edition", [])
+                if edition.get("dist") == "community"
+                for value in edition.get("version", [])
+            ],
+        },
+        "ports": compose_summary["ports"],
+        "published_ports": _compose_published_ports(target, env_values),
+        "services": compose_summary["services"],
+        "images": compose_summary["images"],
+        "credentials": variables.get("credentials"),
+        "database": _database_result(target),
+        "tests": _test_summary(target / "tests" / "cases.yml"),
+        "env_keys": sorted(env_values),
     }
 
 

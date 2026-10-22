@@ -185,7 +185,7 @@ def scan_command(
 @app.command("app-check")
 def check_command(
     app_name: str = typer.Option(..., "--app", help="App name"),
-    gate: str = typer.Option("all", "--gate", help="all | structure | policy | version"),
+    gate: str = typer.Option("all", "--gate", help="all | structure | policy | version | database"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
 ) -> None:
     """Run quality gate checks for one app."""
@@ -209,7 +209,11 @@ def report_command(
             "structure": check["structure"],
             "policy": check["policy"],
             "version": check["version"],
+            "database": check["database"],
         },
+        "advisories": [
+            item for item in check["database"].get("databases", []) if item.get("status") == "eol"
+        ],
         "owner_e2e_focus": [],
     }
     print_output(payload, as_json)
@@ -594,6 +598,7 @@ def app_deploy_command(
     deploy_root: str | None = typer.Option(None, "--deploy-root", help="Remote deploy root"),
     version: str | None = typer.Option(None, "--version", help="Deploy a specific image tag by overriding W9_VERSION; repo .env is not modified"),
     down: bool = typer.Option(False, "--down", help="Tear the app down with docker compose down -v instead of up -d"),
+    auto_port: bool = typer.Option(True, "--auto-port/--no-auto-port", help="Automatically use a free 9000-9999 host port when a published port is occupied"),
     progress: bool = typer.Option(False, "--progress", help="Show step progress on stderr"),
     verbose: bool = typer.Option(False, "--verbose", help="Show step progress and raw subprocess output on stderr"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
@@ -610,6 +615,7 @@ def app_deploy_command(
             deploy_root=deploy_root,
             version=version,
             down=down,
+            auto_port=auto_port,
             progress=progress_writer,
             verbose=verbose,
         )

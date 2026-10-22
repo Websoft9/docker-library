@@ -30,5 +30,17 @@
       "https://www.drupal.org/project/drupal/releases",
       "https://github.com/docker-library/docs/blob/master/drupal/README.md"
     ]
+  },
+  "credentials": {
+    "none": true
+  },
+  "externalDB": {
+    "11.4": {
+      "mysql": {
+        "min": "8.0",
+        "recommended": "8.4",
+        "reason": "Drupal 11 supports MySQL 8.0+; MySQL 8.4 is the current supported LTS track."
+      }
+    }
   }
 }

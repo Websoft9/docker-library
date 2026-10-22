@@ -83,7 +83,7 @@ def secret_mode(secret_path: Path) -> str:
     return "password"
 
 
-def ssh_connect_options() -> list[str]:
+def ssh_connect_options(connect_timeout: int = 15) -> list[str]:
     # Dedicated ephemeral test servers: their public IP may be reimaged, so a
     # stale entry in the global ~/.ssh/known_hosts must never block automation.
     # Disable host-key checking and use /dev/null so no shared known_hosts is
@@ -94,11 +94,11 @@ def ssh_connect_options() -> list[str]:
         "-o",
         "UserKnownHostsFile=/dev/null",
         "-o",
-        "ConnectTimeout=15",
+        f"ConnectTimeout={connect_timeout}",
     ]
 
 
-def ssh_base(host: str, user: str, secret_path: Path) -> list[str]:
+def ssh_base(host: str, user: str, secret_path: Path, connect_timeout: int = 15) -> list[str]:
     base: list[str] = []
     if secret_mode(secret_path) == "key":
         base.extend(["ssh", "-i", str(secret_path)])
@@ -106,7 +106,7 @@ def ssh_base(host: str, user: str, secret_path: Path) -> list[str]:
         if not shutil.which("sshpass"):
             raise FileNotFoundError("sshpass is required for password-based SSH; provide a key file or install sshpass")
         base.extend(["sshpass", "-f", str(secret_path), "ssh"])
-    return base + ssh_connect_options() + [f"{user}@{host}"]
+    return base + ssh_connect_options(connect_timeout) + [f"{user}@{host}"]
 
 
 def scp_base(host: str, user: str, secret_path: Path) -> list[str]:
@@ -143,8 +143,8 @@ def run_command(command: list[str]) -> subprocess.CompletedProcess:
     return scrub_completed_process(result)
 
 
-def run_ssh(host: str, user: str, secret_path: Path, script: str) -> subprocess.CompletedProcess:
-    return run_command(ssh_base(host, user, secret_path) + [script])
+def run_ssh(host: str, user: str, secret_path: Path, script: str, connect_timeout: int = 15) -> subprocess.CompletedProcess:
+    return run_command(ssh_base(host, user, secret_path, connect_timeout) + [script])
 
 
 def stream_command(command: list[str], on_line=None) -> subprocess.CompletedProcess:

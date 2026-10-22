@@ -129,3 +129,25 @@ services:
 
     assert data_dirs == []
     assert config_overrides == [{"source": "./src/websoft9-url.php", "target": "/usr/local/share/websoft9-url.php"}]
+
+
+def test_readme_renders_no_preset_credentials_note(repo_fixture, app_factory, monkeypatch):
+    app_factory("demo", variables={
+        "name": "demo",
+        "trademark": "Demo App",
+        "release": True,
+        "upstream": {"image": "https://hub.docker.com/_/demo/tags"},
+        "edition": [{"dist": "community", "version": ["1.0"]}],
+        "credentials": {"none": True},
+    })
+    template_root = repo_fixture / "metadata" / "templates"
+    template_root.mkdir(parents=True, exist_ok=True)
+    (template_root / "readme.jinja2").write_text(
+        "{% if credentials and credentials.none %}NO_PRESET{% endif %}\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(readme, "TEMPLATE_ROOT", template_root)
+
+    readme.render_readme("demo")
+
+    assert (repo_fixture / "apps" / "demo" / "README.md").read_text(encoding="utf-8") == "NO_PRESET\n"

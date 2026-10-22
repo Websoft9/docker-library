@@ -80,3 +80,27 @@ def test_find_latest_version_uses_patch_candidates_when_no_minor_candidate_exist
         "version": "2.4.1",
         "last_updated": "2026-01-04",
     }
+
+
+def test_normalize_tag_strips_image_variants_but_preserves_prereleases():
+    from packaging import version as packaging_version
+
+    assert normalize_tag("11.4-apache") == "11.4"
+    assert normalize_tag("11.4.11-php8.3-apache") == "11.4.11"
+    assert normalize_tag("7.1-fpm") == "7.1"
+    assert normalize_tag("6-apache") == "6"
+    assert normalize_tag("11-alpine") == "11"
+    assert normalize_tag("12.0-rc") == "12.0-rc"
+    assert normalize_tag("12.0-rc-php8.5-fpm-trixie") == "12.0-rc"
+    assert normalize_tag("11.5.0-beta1-apache") == "11.5.0-beta1"
+    assert normalize_tag("1.2rc1") == "1.2rc1"
+    assert packaging_version.parse(normalize_tag("11.4-apache")) == packaging_version.parse("11.4")
+
+
+def test_get_current_versions_accepts_image_variant_tags():
+    valid, all_versions = get_current_versions(
+        [{"dist": "community", "version": ["11.4-apache", "latest"]}]
+    )
+
+    assert all_versions == ["11.4-apache", "latest"]
+    assert valid == [version.parse("11.4"), "latest"]

@@ -234,6 +234,7 @@ Decision rule:
 - LTS/stabled tracks rank above innovation/short-term
 - untested majors above the vendor's documented/tested upper bound are not eligible (AI judgment from prose docs)
 - the chosen version is recorded back into `externalDB.recommended` with a reason
+- implementation rule: when the current bundled track is EOL and the vendor supports a newer alive LTS, update `W9_DB_VERSION` in the same app update; run `libs app-check --app <app> --gate database` and record the change in `CHANGELOG.md`
 
 Division of labor:
 

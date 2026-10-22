@@ -7,6 +7,14 @@
 - concurrency used:
 - overall decision: ready-for-e2e | partially-blocked | blocked
 
+## Automated Checks
+
+- structure:
+- policy:
+- deploy:
+- reachability:
+- logs:
+
 ## Per-App Results
 
 - app:

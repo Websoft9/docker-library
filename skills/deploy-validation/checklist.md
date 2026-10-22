@@ -1,6 +1,7 @@
 # Deploy Validation Checklist
 
 - [ ] Run `.venv/bin/libs app-check --app <app> --json` locally; stop on the first blocking error
+- [ ] Preflight registry/docs reachability and published `_SET` port availability with short timeouts
 - [ ] Run `.venv/bin/libs app-deploy --app <app> ... --json`; it resolves local/remote, syncs when needed, creates the network, runs `config`, `up -d`, and collects `ps`
 - [ ] Run `.venv/bin/libs app-tests --app <app> ... --json`; it derives localhost vs remote base URL and runs default/custom checks
 - [ ] Check logs for blocking errors

@@ -22,12 +22,15 @@ Read in this order:
 ## Core Rules
 
 - Treat each `apps/<app>` directory as one deployable unit.
+- Start app work with `libs app-info --app <app> --json`. It returns version, database lifecycle, ports, images, credentials, and tests in one call; open app files only for details it does not cover.
 - Keep changes minimal and app-local unless the task is explicitly cross-cutting.
 - Prefer official images or trusted upstream images.
 - If `docker-compose.yml` references `./src/...`, the file must exist.
 - Follow env conventions. The canonical `W9_*` reference is `docs/w9-env-spec.md` (semantics + decision rules); use `metadata/templates/new-app/.env.tmpl` for layout. Read both before editing `.env` or `docker-compose.yml`.
 - Runtime/scaffold apps follow `docs/runtime-app-spec.md` (entrypoint hooks + optional `DATABASE_URL`).
-- Validate by deployment when the task changes runnable behavior.
+- Validate by deployment when the task changes runnable behavior. `libs app-deploy` auto-selects a free 9000-9999 host port on conflict and returns `base_url`; pass that URL to `libs app-tests --base-url`.
+- Quick network checks use a 2s per-attempt budget with at most 2 retries. If a target URL is unreachable locally, switch to the remote host's egress instead of extending local timeouts.
+- After a successful app update or new app with substantive changes, run `libs appstore-sync --app <app>` to push it to the test server's websoft9 store. Preflight the `websoft9` container with a <= 10s check and skip the sync when it is absent.
 - When `.secrets/remote.env` exists, prefer remote-first for all runtime, deployment, debugging, and validation work; do not default to local container execution unless the user explicitly asks for local reproduction.
 
 ## i18n

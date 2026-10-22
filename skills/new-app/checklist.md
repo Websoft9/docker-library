@@ -13,7 +13,9 @@
 - [ ] Fill `.env` "image environment variables" section: single Docs URL, used vars, up to 5 unused vars commented out
 - [ ] Write `CHANGELOG.md` with the pure-date heading `## YYYY-MM-DD` for the initial change batch
 - [ ] Author `apps/<app>/tests/cases.yml` per `docs/app-tests.md` (built-in checks plus the minimum app-specific cases)
+- [ ] Preflight registry/docs reachability and target port availability with short timeouts
 - [ ] Run `.venv/bin/libs app-check --app <app>` and deploy/reachability validation
+- [ ] Run `.venv/bin/libs appstore-sync --app <app>` after validation when `websoft9` is reachable (preflight <= 10s; skip when absent)
 - [ ] Produce a short test report
 - [ ] Assign cadence/update policy by writing the app into `metadata/maintenance.yaml` buckets, and state it in the report
 - [ ] Write repo catalog fields: copy `metadata/templates/catalog.json` to `metadata/catalog/<app>.json`; fill `catalogBindings` from `metadata/catalog-taxonomy.json` when applicable; owner reviews before `.venv/bin/libs catalog-push --app <app> --apply`

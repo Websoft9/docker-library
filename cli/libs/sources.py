@@ -5,7 +5,7 @@ import re
 
 from packaging import version
 
-from libs.http import get
+from libs.http import get, get_json_with_fallback, probe_url, remote_get_json
 from libs.versioning import find_latest_version, normalize_tag
 
 
@@ -54,16 +54,13 @@ def _major_prefix(version_str: str) -> str | None:
     return f"{match.group(1)}."
 
 
-def _get_json(url: str, params: dict | None = None) -> tuple[dict | list | None, str | None]:
-    try:
-        response = get(url, params)
-        if response.status_code == 429:
-            time.sleep(1)
-            response = get(url, params)
-        response.raise_for_status()
-        return response.json(), None
-    except Exception as error:
-        return None, str(error)
+def _get_json(
+    url: str,
+    params: dict | None = None,
+    headers: dict | None = None,
+) -> tuple[dict | list | None, str | None]:
+    data, _headers, error = get_json_with_fallback(url, params, headers)
+    return data, error
 
 
 def _dockerhub_api_url(url: str) -> str | None:
@@ -159,24 +156,24 @@ def _ghcr_tags_page(namespace: str, image: str, token: str, page_size: int, last
     params = {"n": min(page_size, 1000)}
     if last:
         params["last"] = last
-    try:
-        response = get(
-            f"https://ghcr.io/v2/{namespace}/{image}/tags/list",
-            params,
-            headers={"Authorization": f"Bearer {token}"},
-        )
-        if response.status_code == 429:
-            time.sleep(1)
-            response = get(
-                f"https://ghcr.io/v2/{namespace}/{image}/tags/list",
-                params,
-                headers={"Authorization": f"Bearer {token}"},
-            )
-        response.raise_for_status()
-        data = response.json()
-        return (data or {}).get("tags") or [], response.headers.get("Link"), None
-    except Exception as error:
-        return [], None, str(error)
+    url = f"https://ghcr.io/v2/{namespace}/{image}/tags/list"
+    headers = {"Authorization": f"Bearer {token}"}
+    probe = probe_url(url)
+    if probe.ok:
+        try:
+            response = get(url, params, headers=headers)
+            if response.status_code == 429:
+                time.sleep(1)
+                response = get(url, params, headers=headers)
+            response.raise_for_status()
+            data = response.json()
+            return (data or {}).get("tags") or [], response.headers.get("Link"), None
+        except Exception as error:
+            return [], None, str(error)
+    data, _headers, error = remote_get_json(url, params, headers)
+    if error:
+        return [], None, error
+    return (data or {}).get("tags") or [], None, None
 
 
 def _fetch_ghcr(url: str, current_version: str, major_ahead: int, page_size: int) -> tuple[dict | None, str | None]:

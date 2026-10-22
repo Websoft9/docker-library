@@ -10,9 +10,11 @@
 - [ ] Scan edited files for remaining bare `$VAR` references and fix all hits before handoff
 - [ ] Fix minimum app-local conformance drift required by current gates or generation rules
 - [ ] Author or refresh `apps/<app>/tests/cases.yml` per `docs/app-tests.md` (built-in checks plus the minimum app-specific cases)
+- [ ] Preflight registry/docs reachability and target port availability with short timeouts; act before pulling images
 - [ ] Keep changes app-local
 - [ ] Update `apps/<app>/CHANGELOG.md` with a pure-date heading `## YYYY-MM-DD` for this change batch
 - [ ] Register new translatable env keys in `i18n/translation.json` if needed
 - [ ] When an interactive app exposes an initial username, password, or token after deployment, prefer declarative `variables.json.credentials.<slot>` (or stage-grouped `credentials.initial.<slot>` / `credentials.login.<slot>`) metadata (`inline`, `container-env`, `container-file`, `container-log`, `container-cli`) over legacy `W9_LOGIN_GET_PASSWORD` / `W9_LOGIN_GET_TOKEN`
 - [ ] Run structure, policy, deploy, and reachability checks when applicable
+- [ ] Run `.venv/bin/libs appstore-sync --app <app>` after substantive changes when `websoft9` is reachable (preflight <= 10s; skip when absent)
 - [ ] Produce a short test report
