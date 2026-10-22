@@ -7,13 +7,29 @@ on:
     paths: 
       - "apps/*/.env"
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   create:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     steps:
-    - uses: actions/checkout@master
-      name: Check out code  
+    - uses: actions/checkout@v7
+      name: Check out code
+      with:
+        ref: main
+        fetch-depth: 0
+
+    - name: Check automation token
+      env:
+        TOKEN: ${{ secrets.OPENCODE_GITHUB_TOKEN }}
+      run: |
+        if [ -z "$TOKEN" ]; then
+          echo "::error::Set OPENCODE_GITHUB_TOKEN so i18n PRs trigger the required PR checks."
+          exit 1
+        fi
 
     - name: Update translation.json
       run: |
@@ -21,12 +37,18 @@ jobs:
         cd i18n
         pip3 install python-dotenv
         python3 create.py
-        
-    - name: push i18n  
-      uses: stefanzweifel/git-auto-commit-action@v4
+
+    - name: Create translation PR
+      uses: peter-evans/create-pull-request@v5
       with:
-        commit_message: push i18n
-        push_options: --force
+        # A PAT is required so the generated PR triggers the required PR checks.
+        token: ${{ secrets.OPENCODE_GITHUB_TOKEN }}
+        branch: update-i18n
+        base: main
+        delete-branch: true
+        commit-message: "chore: update i18n translation keys"
+        title: "chore: update i18n translation keys"
+        body: "Automated update from the i18n workflow."
 
   pr:
     runs-on: ubuntu-latest
