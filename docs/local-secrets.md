@@ -18,6 +18,18 @@ This repository keeps local secrets and remote execution defaults outside git.
 | `.secrets/aws.env` | AWS credentials written by `make connector` → `aws` (`AWS_ACCESS_KEY_ID=...`, `AWS_SECRET_ACCESS_KEY=...`, optional `AWS_REGION=...`) |
 | `.secrets/azure.env` | Azure credentials written by `make connector` → `azure` (`AZURE_SUBSCRIPTION_ID=...`, `AZURE_TENANT_ID=...`, `AZURE_CLIENT_ID=...`, `AZURE_CLIENT_SECRET=...`) |
 
+## OpenCode GitHub MCP
+
+The GitHub MCP server is configured in opencode, not in `.secrets/`.
+
+Run `make github-token` (Windows: `.\make.ps1 github-token`) to:
+
+- store a PAT at `~/.config/opencode/github.token` with mode `600`
+- point the GitHub MCP `Authorization` header at that file
+- verify the token against the GitHub MCP endpoint
+
+Required PAT scopes: `repo`, `read:org`, and `read:packages`, or the fine-grained equivalents. Restart opencode after running the target. Do not put the PAT in `.secrets/` or commit it.
+
 ## Manual vs CI
 
 - **Manual / local runs** read from `.secrets/` by default.
