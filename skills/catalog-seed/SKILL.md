@@ -47,9 +47,22 @@ Count the words before writing. Aim for the preferred length; use the maximum on
 - preview result
 - owner review focus
 
+## Contentful visibility after merge
+
+CI syncs changed `metadata/catalog/*.json` files to Contentful after merge with `libs catalog-push --apply`. The same step also refreshes machine fields.
+
+| App state | `appStore` | `production` |
+|---|---|---|
+| Active public app, ready for release | `true` | `true` |
+| Active public app, dev only (`release=false`) | `true` | `false` |
+| Internal (`scope=internal`) | `false` | `false` |
+| Archived | `false` | `false` |
+
+`production` follows `variables.json.release`. `appStore` is derived from the app being active and public; do not add it to `metadata/catalog/<app>.json`.
+
 ## Rules
 
-- This skill edits repo catalog data only; it does not apply writes to Contentful.
+- This skill edits repo catalog data only; it does not apply writes to Contentful directly. CI applies the sync after merge.
 - Prefer concise, factual commercial writing over marketing fluff.
 - Enforce the Field Length Limits: `summary` ≤ 8 words (prefer ≤ 5), `overview` ≤ 30 words (prefer ≤ 20).
 - Unless the user explicitly asks otherwise, write the repo catalog fields in English because the current Contentful write path targets `en-US`.

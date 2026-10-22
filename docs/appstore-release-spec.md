@@ -393,6 +393,21 @@ else:
 
 因此，`dev` 通道天然是"更宽、更富"的数据集，而 `release` 通道是"更收敛、更生产化"的数据集；两者的 `distribution` 数据结构保持一致。
 
+### 3.2 Contentful 可见性标记
+
+`appStore` 和 `production` 是两个独立的可见性开关：
+
+| App 状态 | `appStore` | `production` | 结果 |
+|---|---|---|---|
+| Active public，准备发布 | `true` | `true` | dev + release 可见 |
+| Active public，仅开发（`variables.json.release=false`） | `true` | `false` | 仅 dev 可见 |
+| Internal（`scope=internal`） | `false` | `false` | appstore 不可见 |
+| Archived | `false` | `false` | appstore 不可见 |
+
+`production` 由 `apps/<app>/variables.json` 的 `release` 推导；`appStore` 由 app 是否 active 且 scope 为 public 推导。`catalog-push --apply` 会在新增或更新 Contentful entry 时同时写入这两个字段，因此不需要在 `metadata/catalog/<app>.json` 中重复声明。
+
+`metadata/catalog/*.json` 变化在 PR 阶段只做 dry-run 校验，合并到 `main` 后由 `Sync data to Contentful` workflow 执行 `catalog-push --apply`。
+
 ---
 
 ## 4. 输出物模型

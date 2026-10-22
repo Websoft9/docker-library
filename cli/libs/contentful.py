@@ -26,8 +26,9 @@ def load_draft(app_name: str, drafts_dir: str) -> dict:
     return catalog.load_catalog(app_name, drafts_dir)
 
 
-def build_machine_fields(variables: dict) -> dict:
+def build_machine_fields(variables: dict, active: bool = True) -> dict:
     requirements = variables.get("requirements") or {}
+    visible = active and variables.get("scope", "public") != "internal"
     return {
         "key": variables.get("name"),
         "title": variables.get("trademark") or variables.get("name"),
@@ -39,7 +40,8 @@ def build_machine_fields(variables: dict) -> dict:
         "vcpu": int(requirements.get("cpu", 1)),
         "memory": int(requirements.get("memory", 1)),
         "storage": int(requirements.get("disk", 1)),
-        "production": bool(variables.get("release", False)),
+        "appStore": visible,
+        "production": bool(variables.get("release", False)) and visible,
     }
 
 
@@ -140,7 +142,7 @@ def sync_app(
 ) -> dict:
     variables = load_variables(app_name)
     draft = load_draft(app_name, drafts_dir)
-    machine_fields = build_machine_fields(variables)
+    machine_fields = build_machine_fields(variables, active=repo_path("apps", app_name).exists())
     draft_fields = build_draft_fields(draft)
     catalog_bindings = catalog.validate_catalog_bindings(draft, catalog.load_taxonomy()) if draft.get("catalogBindings") else []
 
