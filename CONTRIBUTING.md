@@ -19,7 +19,7 @@ This repository uses an AI-first delivery model: owners decide demand and the fi
 
 ## Issue automation
 
-Opening an issue starts the AI workflow for owners, members, and collaborators. A maintainer can add the `ai` label to run it on another issue.
+Opening an issue starts the AI workflow for owners, members, collaborators, and contributors. A maintainer can create the `ai` label once in repository settings and add it to run the workflow on any other issue; adding other labels does not start a new run.
 
 Configure the repository variable `OPENCODE_MODEL` and the matching provider secret (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, or `DEEPSEEK_API_KEY`). Set `OPENCODE_GITHUB_TOKEN` if AI pull requests must trigger CI.
 

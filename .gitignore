@@ -20,3 +20,4 @@ cli/proxy.conf
 *.pem
 *.key
 id_*
+.playwright-mcp/
