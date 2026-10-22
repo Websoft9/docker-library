@@ -1,0 +1,42 @@
+{
+  "name": "langfuse",
+  "trademark": "Langfuse",
+  "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/langfuse/langfuse",
+    "releases": "https://github.com/langfuse/langfuse/releases",
+    "compose": {
+      "compose": "https://github.com/langfuse/langfuse/blob/main/docker-compose.yml"
+    },
+    "docs": [
+      "https://langfuse.com/self-hosting/deployment/docker-compose",
+      "https://langfuse.com/self-hosting/configuration"
+    ]
+  },
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["4.59", "latest"]
+    }
+  ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 3000,
+      "path": "/"
+    }
+  },
+  "requirements": {
+    "cpu": "4",
+    "memory": "16",
+    "disk": "20"
+  },
+  "credentials": {},
+  "env": {
+    "first_startup_only": [],
+    "secrets": ["NEXTAUTH_SECRET", "SALT", "ENCRYPTION_KEY"]
+  },
+  "help": {
+    "login": "Langfuse ships with no default account. Open the site, click Sign up to create the first user, then create your organization and project in the UI."
+  }
+}

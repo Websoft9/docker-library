@@ -1,0 +1,26 @@
+services:
+
+  grav:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "${W9_HTTP_PORT_SET}:80" # Web Console
+    volumes:
+      - grav:/config
+      - ./src/nginx/default.conf:/config/nginx/site-confs/default.conf:ro
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:80/"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true
+
+volumes:
+  grav:

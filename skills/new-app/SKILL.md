@@ -36,7 +36,7 @@ If any required input is missing, stop and ask the user for it before researchin
 9. Register any new translatable env key in `i18n/translation.json`.
 10. Healthchecks should default to the main app container only. Add healthchecks to sidecar or dependency containers only when the official upstream compose explicitly defines them or the task explicitly requires them.
 11. If a credential or config env var only takes effect on first container startup (the image entrypoint uses a marker file, e.g. `webconsole.security.enabled`), record it in `variables.json` as `env.first_startup_only` (list of env names) so the README auto-renders the warning.
-12. If the app creates its initial username, password, or token interactively and the consumer can resolve it after deployment, declare `variables.json.credentials.<slot>` metadata where `<slot>` is `username`, `password`, or `token`. Supported sources are `inline`, `container-env`, `container-file`, `container-log`, and `container-cli`. Prefer this declarative metadata over legacy `W9_LOGIN_GET_PASSWORD` / `W9_LOGIN_GET_TOKEN` command strings.
+12. If the app creates its initial username, password, or token interactively and the consumer can resolve it after deployment, declare `variables.json.credentials.<slot>` metadata (or stage-grouped `credentials.initial.<slot>` / `credentials.login.<slot>` when initial bootstrap credentials differ from steady-state login credentials) where `<slot>` is `username`, `password`, or `token`. Supported sources are `inline`, `container-env`, `container-file`, `container-log`, and `container-cli`. Prefer this declarative metadata over legacy `W9_LOGIN_GET_PASSWORD` / `W9_LOGIN_GET_TOKEN` command strings.
 13. Keep `apps/<app>/CHANGELOG.md` as the single source of app change history. Use a pure-date heading `## YYYY-MM-DD` as the first-level heading for the initial change batch (the template already injects today's date); list the initial package changes below it. Do not duplicate changelog content into `README.md`.
 14. Run `.venv/bin/libs app-gen-readme --app <app> --json` after metadata or README marker content changes so generated sections stay current.
 15. For dependency images such as PostgreSQL, MySQL, MariaDB, Redis, or pgvector, prefer `x.x` tags even when upstream examples show `x.x.x`, unless exact patch pinning is demonstrably required. Hard-coded dependency `x.x.x` tags in `docker-compose.yml` are policy drift and should be normalized before handoff.
@@ -60,7 +60,7 @@ If any required input is missing, stop and ask the user for it before researchin
 - Existence is decided by `.venv/bin/libs list --include-archived`, never by checking `apps/<app>/` alone; an archived or internal app also counts as existing.
 - If `<app>` exists, stop at step 1, report its status/scope, and ask the user; never fall through to creation.
 - The CLI input contract is `metadata/new-app.schema.json`; the issue itself is prose, AI converts it to flags.
-- The CLI scaffold reads `metadata/templates/new-app/`; `template/` stays as a human reference and must not be treated as the machine template source.
+- The CLI scaffold reads `metadata/templates/new-app/`.
 - Prefer official images or trusted upstream images.
 - Keep the app aligned to repository conventions.
 - `variables.json` should declare the `upstream` structure explicitly when sources are known. `releases`, `compose.compose`, and `compose.env` should be considered during research and scaffold completion, but should be omitted when they are not applicable or not yet verified.

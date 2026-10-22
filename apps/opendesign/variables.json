@@ -1,0 +1,56 @@
+{
+  "name": "opendesign",
+  "trademark": "OpenDesign",
+  "release": true,
+  "upstream": {
+    "image": "ghcr.io/nexu-io/od",
+    "releases": "https://github.com/nexu-io/open-design/releases",
+    "compose": {
+      "compose": "https://github.com/nexu-io/open-design/blob/main/deploy/docker-compose.yml"
+    },
+    "docs": [
+      "https://github.com/nexu-io/open-design",
+      "https://github.com/nexu-io/open-design/blob/main/deploy/docker-compose.yml",
+      "https://open-design.ai"
+    ]
+  },
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "0.24.1",
+        "latest"
+      ]
+    }
+  ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 7456,
+      "path": "/"
+    }
+  },
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10"
+  },
+  "credentials": {
+    "username": {
+      "source": "inline",
+      "value": "open-design"
+    },
+    "password": {
+      "source": "container-env",
+      "name": "W9_LOGIN_PASSWORD",
+      "format": "text"
+    }
+  },
+  "env": {
+    "first_startup_only": []
+  },
+  "help": {
+    "login": "OpenDesign uses HTTP Basic Auth by default. Sign in with username `open-design` and the password shown as `W9_LOGIN_PASSWORD` in the Access tab.",
+    "db": "No bundled database is required. OpenDesign stores local state, sessions, and workspace metadata in the `opendesign_data` volume mounted at `/app/.od`."
+  }
+}

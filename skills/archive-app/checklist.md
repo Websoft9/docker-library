@@ -1,5 +1,7 @@
 # Archive App Checklist
 
+- [ ] Confirm whether this is archive or permanent delete
+- [ ] For permanent delete, follow the Permanent delete section and skip the move/Contentful archive steps
 - [ ] Confirm archive scope and reason
 - [ ] Move app from `apps/` to `archive/apps/`
 - [ ] Update `metadata/maintenance.yaml` when active maintenance rules change

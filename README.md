@@ -1,118 +1,106 @@
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
+[![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 [![GitHub last commit](https://img.shields.io/github/last-commit/Websoft9/docker-library)](https://github.com/Websoft9/docker-library)
 [![GitHub Release Date](https://img.shields.io/github/release-date/Websoft9/docker-library)](https://github.com/Websoft9/docker-library)
-[![GitHub Repo stars](https://img.shields.io/github/stars/Websoft9/docker-library?style=social)](https://github.com/Websoft9/docker-library)
 
-# Awesome Docker Compose Examples
+# Websoft9 Docker Library
 
-This repository include [300+ Examples](https://github.com/Websoft9/docker-library/tree/main/apps) based on [Docker compose](https://docs.docker.com/compose/), e.g WordPress, MySQL, Odoo, MongoDB, GitLab, Elastic, Ghost, Grafana, Graylog, Kafka, n8n, Moodle, Nextcloud, ONLYOFFICE, phpMyAdmin...
+This repository is the template library behind the [Websoft9 App Store](https://www.websoft9.com/apps). It contains [100+ application packages](apps/) built on [Docker Compose](https://docs.docker.com/compose/), such as WordPress, MySQL, Odoo, MongoDB, GitLab, Grafana, n8n, Nextcloud, and ONLYOFFICE.
 
-You can use them for bussiness management, content management, data analysis, development, DevOps and any things you want to do.  
+Each directory under `apps/` is one independent deployment unit: a complete, versioned package that can be started with `docker compose up`, or deployed through the Websoft9 console.
 
-## Where image from?
+Core design goals:
 
-All Docker image come from the Official of the software or an authoritative third party (such as: Bitnami), and Websoft9 does not maintain the image.  
+- one app directory = one deployable unit
+- every app runs with `docker compose up`
+- consistent environment, network, and file conventions
+- machine-readable metadata for the Websoft9 platform and AI agents
+- repeatable, auditable maintenance
 
-Websoft9 only verify and test the image or docker compose provided by the official to ensure that they can be run directly with **docker compose up** without any configuration.
+## AI-driven maintenance
 
-## How to use it?
+This repository is maintained by AI agents under owner review. The owner decides demand and the final end-to-end result; AI handles upstream research, implementation, routine validation, and reporting.
 
-The easiest way is install [ Websoft9](https://github.com/Websoft9/websoft9) which can help you running these applications on web-based console.  
+Entry points for contributors and agents:
 
-Of course, you can also use Docker compose to running these application: 
+- `AGENTS.md` - repository rules and fastest entry point
+- `docs/ai-sdlc/` - AI delivery pipeline, quality gates, and report format
+- `skills/` - shared agent workflows for new apps, updates, deployment validation, and archive/restore
+- `metadata/maintenance.yaml` and `metadata/archive.yaml` - maintenance and lifecycle state
+- `cli/` - the `libs` automation interface
 
-1. Make sure you have install the Docker latest or you can install Docker by below script
+## Quick start
 
+1. Install Docker.
+
+   ```bash
+   curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh
+   sudo systemctl enable --now docker
    ```
-   curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh && sudo systemctl enable docker && sudo systemctl start docker
-   ```
 
-2. Download this repository to your Linux and list all applications
+2. Clone this repository and list the available apps.
 
-   ```
-   git clone --depth=1 https://github.com/Websoft9/docker-library
+   ```bash
+   git clone --depth=1 https://github.com/Websoft9/docker-library.git
    cd docker-library && ls apps
    ```
 
-3. Go to the target app directory, check or modify the [.env](https://github.com/Websoft9/docker-library/blob/main/docs/code_owner.md#environment-variables), then run it
+3. Enter an app directory, review `.env` (at minimum set `W9_POWER_PASSWORD`), and start it.
 
-   ```
-   # e.g install wordpress
+   ```bash
+   docker network create websoft9
    cd apps/wordpress
-   sudo docker network create websoft9 &&  sudo docker compose up -d
+   sudo docker compose up -d
    ```
 
-## How to contribute it?
+The Websoft9 console is the easiest way to run these packages with a web UI, domains, HTTPS, backups, and lifecycle management.
 
-We greatly welcome community contributions to provide suggestions and improvements to our project:
+## AI agent commands (opencode)
 
-1. Find a bug, request features and provide better methods, you can promote your ideas through [issue](https://github.com/Websoft9/docker-library/issues).
+| Command | Purpose |
+|---|---|
+| `/libs-new-app <app> <trademark> <reference URL>` | Create a new app package |
+| `/libs-update-assessment <app>` | Check upstream versions and decide whether an update is worth doing |
+| `/libs-update-app <app> [version]` | Implement an approved update and produce a report |
+| `/libs-batch-update-app <selector>` | Update a batch of apps by name list or initials |
+| `/libs-deploy-validation <app> [local]` | Prove an app deploys and passes structure, policy, reachability, and log checks |
+| `/libs-release-readiness <app>` | Check whether a task is ready for owner E2E or release |
+| `/libs-test-report <app> <evidence source>` | Generate a report in the repository test-report format |
+| `/libs-catalog-seed <app>` | Create or update commercial catalog metadata and preview the Contentful push |
+| `/libs-archive-app <app> <reason>` | Archive one app or a small batch |
+| `/libs-restore-app <app>` | Restore an archived app to active maintenance |
 
-2. Contributing to this repository, please follow our [contribution guidelines](CONTRIBUTING.md).
+## Where images come from
+
+All images come from the official project or an authoritative third party (for example, Bitnami). Websoft9 does not maintain these images. Websoft9 verifies the upstream image and Compose configuration so that each package can run directly with `docker compose up` using the provided defaults.
 
 ## Documentation
 
-[Websoft9 Administrator Guide](https://support.websoft9.com/docs/apps)
+- [Vision](docs/vision.md)
+- [Architecture](docs/architecture.md)
+- [AI-SDLC Guide](docs/ai-sdlc/README.md)
+- [App owner contract](docs/code_owner.md)
+- [Maintenance metadata](metadata/maintenance.yaml)
+- [Archive metadata](metadata/archive.yaml)
+- [Shared skills](skills/README.md)
+- [CLI](cli/README.md)
+- [Websoft9 Administrator Guide](https://support.websoft9.com/docs/apps)
 
-[Vision](docs/vision.md)
+## Contributing
 
-[Architecture](docs/architecture.md)
+Community contributions are welcome:
 
-[AI-SDLC Guide](docs/ai-sdlc/README.md)
-
-[Maintenance Metadata](metadata/maintenance.yaml)
-
-[Archive Metadata](metadata/archive.yaml)
-
-[Shared Skills](skills/README.md)
-
-[CLI](cli/README.md)
+1. Report bugs and propose features through [issues](https://github.com/Websoft9/docker-library/issues).
+2. Read [CONTRIBUTING.md](CONTRIBUTING.md) and follow the AI-first delivery flow.
+3. Submit pull requests to the `dev` branch and include the latest test report.
 
 ## Support
 
-You can subscribe [Websoft9 Enterprise Support](https://www.websoft9.com/apps) to ensure high availability of applications and more:
-
-- Knowledge: Answers and guidance from product experts
-- Support: Everything you need for technical support, e.g Enable HTTPS, Upgrade guide
-- Security: Security services and tools to protect your software
-
-## Sponsor
-
-The following corporate organizations have provided us with sponsorship, which has greatly helped this repository.
-
-![image](https://libs.websoft9.com/Websoft9/logo/sponser/50sponser-huawei-logo.png) ![image](https://libs.websoft9.com/Websoft9/logo/sponser/50sponser-mingdaoyun-logo.png) ![image](https://libs.websoft9.com/Websoft9/logo/sponser/50sponser-apitable-logo.png)
+[Websoft9 Enterprise Support](https://www.websoft9.com/apps) covers knowledge, technical support (HTTPS, upgrades), and security services for production deployments.
 
 ## License
 
-[LGPL-3.0](LICENSE.md), Additional Terms: It is not allowed to publish free or paid image based on this repository in any Cloud platform's Marketplace without authorization.
+[LGPL-3.0](LICENSE.md). Additional terms: without authorization, it is not allowed to publish free or paid images based on this repository in any cloud platform's marketplace.
 
 ## Disclaimer
 
-We can't guarantee the open source software does not have vulnerability or the security risks which is the responsibility of user according to the open source licenses.
-
-## App Wishlist
-
-Propose and vote for [apps](wishlist.md) to be packaged
-
-## FAQ
-
-#### Do I need to change the password before docker-compose up?
-
-Yes, you should modify **W9_POWER_PASSWORD** at .env file for production
-
-#### Docker runing failed for the reason that port conflict?
-
-You should modify **APP\_\*\_PORT** at .env file
-
-#### What the credentials for application?
-
-W9_LOGIN_USER, W9_LOGIN_PASSWORD
-
-#### Is there any infrastructure limit?
-
-No, you can use lots of infrastructure, e.g.
-
-- **OS**: Red Hat, CentOS, Debian, Ubuntu or other's Linux OS ...
-- **Public Cloud**: More than 20+ major Cloud such as AWS, Azure, Google Cloud, Alibaba Cloud, HUAWEIClOUD, Oracle Cloud ...
-- **Private Cloud**: KVM, VMware, VirtualBox, OpenStack ...
-- **ARCH**: Linux x86-64, ARM 32/64, x86/i686 ...
+We cannot guarantee that third-party open-source software is free of vulnerabilities or security risks. Assessing and accepting those risks is the responsibility of the user under the applicable open-source licenses.

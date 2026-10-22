@@ -3,7 +3,11 @@
   "region": "cn-hongkong",
   "instance": {
     "name_prefix": "libs-test",
-    "type": "ecs.g7.large",
+    "type": [
+      "ecs.g7.large",
+      "ecs.g9ae.large",
+      "ecs.g9ae.xlarge"
+    ],
     "spot_strategy": "SpotAsPriceGo",
     "spot_duration": 0,
     "internet_max_bandwidth_out": 100,

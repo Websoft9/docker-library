@@ -1,0 +1,20 @@
+{
+  "trademark": "Langfuse",
+  "catalogBindings": [
+    {
+      "parentKey": "ai",
+      "childKey": "ai-devops"
+    },
+    {
+      "parentKey": "itdevops",
+      "childKey": "apm"
+    }
+  ],
+  "summary": "Open-source LLM observability and tracing",
+  "overview": "Langfuse is an open-source LLM engineering platform for tracing, evaluation, prompt management, and metrics. This package self-hosts Langfuse v4 with PostgreSQL, ClickHouse, Redis, and MinIO.",
+  "description": "Langfuse is an open-source observability and analytics platform for LLM applications and AI agents. It captures traces of prompts, completions, tool calls and agent steps, supports datasets and evaluation runs, manages prompts and versions, and exposes usage, cost and latency metrics for production monitoring.\n\nThis package self-hosts the official Langfuse v4 docker-compose topology: the langfuse-web and langfuse-worker services together with PostgreSQL 17 for transactional data, ClickHouse for analytics, Redis 7 for the queue and cache, and MinIO for blob storage. Only the web console is published; the supporting stores stay on the internal app network.\n\nTypical use cases include debugging and tracing LLM and agent applications, running evaluations and prompt experiments, monitoring token usage and cost, and giving teams a self-hosted alternative to hosted observability platforms.",
+  "websiteurl": "https://langfuse.com",
+  "screenshots": [
+    "https://langfuse.com/api/og?title=Langfuse"
+  ]
+}

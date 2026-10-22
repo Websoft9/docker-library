@@ -18,7 +18,7 @@ CONFIG = {
     "region": "cn-hongkong",
     "instance": {
         "name_prefix": "libs-test",
-        "type": "ecs.g7.large",
+        "type": ["ecs.g7.large", "ecs.g9ae.large"],
         "spot_strategy": "SpotAsPriceGo",
         "spot_duration": 0,
         "internet_max_bandwidth_out": 100,
@@ -112,12 +112,27 @@ def test_build_run_instances_params_includes_dynamic_fields():
     assert params["SystemDisk.Size"] == 300
     assert params["AutoReleaseTime"] == "2026-10-13T11:19:00Z"
     assert params["ImageId"] == "m-j6caxlj97mf3l51d0wcz"
+    assert params["InstanceType"] == "ecs.g7.large"
     assert params["SpotStrategy"] == "SpotAsPriceGo"
     assert params["SecurityGroupId"] == "sg-j6c7epgwcech14ofdt5l"
     assert re.match(r"^libs-test-\d{6}$", params["InstanceName"])
 
     named = aliyun_ecs.build_run_instances_params(CONFIG, image, disk_size_gib=300, name="custom-name")
     assert named["InstanceName"] == "custom-name"
+
+    picked = aliyun_ecs.build_run_instances_params(
+        CONFIG, image, disk_size_gib=300, instance_type="ecs.g9ae.large"
+    )
+    assert picked["InstanceType"] == "ecs.g9ae.large"
+
+
+def test_instance_types_accepts_string_and_list():
+    assert aliyun_ecs.instance_types({"instance": {"type": "ecs.g7.large"}}) == ["ecs.g7.large"]
+    assert aliyun_ecs.instance_types(CONFIG) == ["ecs.g7.large", "ecs.g9ae.large"]
+    assert aliyun_ecs.instance_types({"instance": {}}) == []
+    assert aliyun_ecs.default_instance_type(CONFIG) == "ecs.g7.large"
+    with pytest.raises(aliyun_ecs.EcsError, match="string or a list"):
+        aliyun_ecs.instance_types({"instance": {"type": {"name": "ecs.g7.large"}}})
 
 
 def test_generate_instance_name_uses_prefix():
@@ -206,11 +221,59 @@ def test_create_command_interactive_abort(repo_fixture, monkeypatch):
     called = []
     monkeypatch.setattr(ops.aliyun_ecs, "run_instances", lambda *args, **kwargs: called.append(True))
 
-    result = runner.invoke(ops.app, ["create-aliyun-ecs"], input="300\n10\nn\n")
+    result = runner.invoke(ops.app, ["create-aliyun-ecs"], input="1\n300\n10\nn\n")
 
     assert result.exit_code == 0, result.output
+    assert "Instance types (performance ascending):" in result.output
     assert "Aborted" in result.output
     assert called == []
+
+
+def test_create_command_interactive_selects_instance_type(repo_fixture, monkeypatch):
+    _write_config(repo_fixture)
+    monkeypatch.setattr(
+        ops.aliyun_ecs,
+        "resolve_image",
+        lambda *args, **kwargs: {"image_id": "m-x", "image_name": "img", "source": "marketplace"},
+    )
+    monkeypatch.setattr(
+        ops.aliyun_ecs,
+        "run_instances",
+        lambda *args, **kwargs: {"request_id": "req-1", "instance_ids": ["i-1"]},
+    )
+    monkeypatch.setattr(
+        ops.aliyun_ecs,
+        "wait_for_public_ip",
+        lambda *args, **kwargs: {"instance_id": "i-1", "public_ip": "47.9.9.9", "public_ips": ["47.9.9.9"], "status": "Running", "pending": False},
+    )
+
+    result = runner.invoke(ops.app, ["create-aliyun-ecs"], input="2\n300\n10\ny\n")
+
+    assert result.exit_code == 0, result.output
+    assert "  instance_type: ecs.g9ae.large" in result.output
+
+
+def test_create_command_instance_type_flag(repo_fixture, monkeypatch):
+    _write_config(repo_fixture)
+    monkeypatch.setattr(
+        ops.aliyun_ecs,
+        "run_instances",
+        lambda *args, **kwargs: {"request_id": "req-1", "instance_ids": ["i-1"]},
+    )
+    monkeypatch.setattr(
+        ops.aliyun_ecs,
+        "wait_for_public_ip",
+        lambda *args, **kwargs: {"instance_id": "i-1", "public_ip": "47.9.9.9", "public_ips": ["47.9.9.9"], "status": "Running", "pending": False},
+    )
+
+    result = runner.invoke(
+        ops.app,
+        ["create-aliyun-ecs", "--image-id", "m-x", "--disk-size", "100", "--release-in", "1h", "--instance-type", "ecs.g9ae.large", "--yes", "--json"],
+    )
+
+    assert result.exit_code == 0, result.output
+    payload = json.loads(result.output)
+    assert payload["instance_type"] == "ecs.g9ae.large"
 
 
 def test_create_command_outputs_public_ip(repo_fixture, monkeypatch):

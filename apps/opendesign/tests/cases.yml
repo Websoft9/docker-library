@@ -1,0 +1,5 @@
+optional:
+  - id: console-login
+    type: http-basic
+    path: /
+    expect_status: 200

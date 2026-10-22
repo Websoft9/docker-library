@@ -30,13 +30,27 @@
     "disk": "1"
   },
   "credentials": {
-    "username": {
-      "source": "inline",
-      "value": "admin"
+    "initial": {
+      "username": {
+        "source": "inline",
+        "value": "admin"
+      },
+      "password": {
+        "source": "container-log",
+        "match": "regex",
+        "pattern": "username 'admin' and password '([^']+)'",
+        "group": 1
+      }
     },
-    "password": {
-      "source": "container-env",
-      "name": "W9_LOGIN_PASSWORD"
+    "login": {
+      "username": {
+        "source": "inline",
+        "value": "admin"
+      },
+      "password": {
+        "source": "container-env",
+        "name": "W9_LOGIN_PASSWORD"
+      }
     }
   },
   "help": {

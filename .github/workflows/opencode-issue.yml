@@ -1,0 +1,75 @@
+# Configure the repository variable OPENCODE_MODEL and the matching provider
+# secret (ANTHROPIC_API_KEY, OPENAI_API_KEY, or DEEPSEEK_API_KEY).
+# Set OPENCODE_GITHUB_TOKEN (PAT) if AI pull requests must trigger CI.
+
+name: AI issue agent
+
+on:
+  issues:
+    types: [opened, reopened, labeled]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: ai-issue-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  opencode:
+    if: |
+      github.event.issue.user.type != 'Bot' &&
+      (
+        contains(fromJson('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
+        (github.event.action == 'labeled' && github.event.label.name == 'ai')
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Check AI configuration
+        env:
+          MODEL: ${{ vars.OPENCODE_MODEL }}
+        run: |
+          if [ -z "$MODEL" ]; then
+            echo "::error::Set repository variable OPENCODE_MODEL and the matching provider secret."
+            exit 1
+          fi
+
+      - name: Run OpenCode
+        uses: anomalyco/opencode/github@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.OPENCODE_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        with:
+          model: ${{ vars.OPENCODE_MODEL }}
+          use_github_token: true
+          prompt: |
+            Work on this issue in the Websoft9 docker-library repository.
+
+            Read AGENTS.md first, then the matching workflow document and skill under skills/.
+            The first hidden marker in the issue body selects the workflow:
+            - new-app: use the new-app skill
+            - update-app: use the update-assessment skill, then app-update when the decision is auto-update
+            - batch-update: use the batch-app-update skill
+            - bug-report: investigate the problem and fix it when the cause and fix are clear
+            - change-request: research and implement the smallest correct change; for research-only requests, comment findings without changing code
+            - archive-app: use the archive-app skill
+            - restore-app: use the restore-app skill
+            - delete-app: use the archive-app skill for metadata handling, then apply the permanent-delete scope stated in the issue
+
+            Operate autonomously: research upstream facts, make the required edits, and run the repository quality gates.
+            Treat the issue body as intent plus an optional prompt. Research what you can, state assumptions, and ask only blocking questions.
+            Use branch ai/issue-<number>. If a branch or pull request for this issue already exists, continue it instead of creating a duplicate.
+            Open or update a pull request that links this issue. Do not merge.
+            When finished, post one issue comment using the `AI Result` format in docs/ai-sdlc/07-issue-contracts.md.
+            If required information is missing or an owner decision is needed, comment exactly what is needed and stop.

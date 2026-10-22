@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-10-16
+
+- Split `variables.json.credentials` into `credentials.initial` (preflight setup password from container logs) and `credentials.login` (steady-state password from `W9_LOGIN_PASSWORD`).
+
 ## 2026-10-13
 
 - Upgrade Graylog community from 7.1 to 7.2.

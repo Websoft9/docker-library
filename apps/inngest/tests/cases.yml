@@ -1,0 +1,8 @@
+# The adaptive checks cover compose config, container state, the packaged
+# healthcheck, and the web root. Inngest exposes a dedicated health endpoint
+# that the upstream docs use as the basic readiness check.
+optional:
+  - id: health-endpoint
+    type: web-access
+    path: /health
+    expect_status: 200

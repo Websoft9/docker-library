@@ -1,29 +1,17 @@
 ---
 name: Archive app
-about: Retire one app or a small set of apps from active maintenance
-title: 'Archive [appname-or-group]'
-labels: 'update'
-assignees: ''
+about: Retire one app or a small batch
+title: 'Archive: [app]'
 ---
 
-## Scope
+<!-- libs:workflow=archive-app -->
 
-- [ ] single app
-- [ ] small batch with the same archive reason
+## Problem / Goal
 
-## Apps
+<!-- Which app(s) to archive and why. -->
 
-- app name or app list:
+## AI prompt (optional)
 
-## Reason
+<!-- Batch confirmation, Contentful handoff, or other constraints. -->
 
-- archive reason:
-- runtime or maintenance evidence:
-
-## Required Handoffs
-
-- [ ] move app from `apps/` to `archive/apps/`
-- [ ] update `metadata/maintenance.yaml`
-- [ ] update `metadata/archive.yaml`
-- [ ] retire Contentful metadata
-- [ ] remove from active maintenance scope
+<!-- AI: post the result as a comment using the AI Result format in docs/ai-sdlc/07-issue-contracts.md. -->

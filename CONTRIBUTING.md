@@ -1,32 +1,26 @@
 # Contributing
 
-This repository uses an AI-first delivery model.
+This repository uses an AI-first delivery model: owners decide demand and the final E2E result; AI handles research, implementation, validation, and reporting.
 
-Start here:
-1. `AGENTS.md`
-2. `docs/vision.md`
-3. `docs/architecture.md`
-4. `docs/ai-sdlc/README.md`
-5. `docs/code_owner.md`
+## Start here
 
-Core rules:
-- issue is the work unit
-- one app or one coherent task per issue
-- owner decides demand and final E2E result
-- AI does research, implementation, automated validation, and reporting
+- `AGENTS.md`
+- `docs/vision.md`
+- `docs/architecture.md`
+- `docs/ai-sdlc/README.md`
+- `skills/README.md`
 
-Contribution flows:
-- app update: `docs/ai-sdlc/03-update-pipeline.md`
-- new app: `docs/ai-sdlc/04-new-app-pipeline.md`
-- quality gates: `docs/ai-sdlc/05-quality-gates.md`
-- test report: `docs/ai-sdlc/06-test-report-format.md`
+## Workflow
 
-Branch rule:
-- contributors submit PRs to `dev`
-- `main` is release-ready only
+1. Open an issue for one app or one coherent task.
+2. The AI workflow starts automatically and uses the matching skill.
+3. Review the AI pull request to `dev`; it links the issue and includes the latest test report.
+4. The owner performs final E2E; `main` stays release-ready.
 
-PR rule:
-- link the issue
-- keep the PR focused
-- include the latest AI test report
-- owner performs final E2E before release
+## Issue automation
+
+Opening an issue starts the AI workflow for owners, members, and collaborators. A maintainer can add the `ai` label to run it on another issue.
+
+Configure the repository variable `OPENCODE_MODEL` and the matching provider secret (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, or `DEEPSEEK_API_KEY`). Set `OPENCODE_GITHUB_TOKEN` if AI pull requests must trigger CI.
+
+Keep changes minimal and app-local, validate runnable behavior by deployment, and never commit secrets.

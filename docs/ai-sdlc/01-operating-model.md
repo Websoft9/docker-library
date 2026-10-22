@@ -11,10 +11,9 @@ Boundary:
 - Human only does demand judgment and final E2E judgment.
 
 Required inputs:
-- Issue
-- app name
-- target version or target app
-- upstream reference
+- Issue with a problem or goal
+- app name or target app
+- target version or upstream reference when known (AI researches otherwise)
 
 Required outputs:
 - code change

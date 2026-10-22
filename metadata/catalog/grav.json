@@ -1,0 +1,13 @@
+{
+  "trademark": "Grav CMS",
+  "catalogBindings": [
+    {
+      "parentKey": "cms",
+      "childKey": "website"
+    }
+  ],
+  "summary": "Fast, flexible flat-file CMS.",
+  "overview": "Grav is a fast, flexible flat-file CMS with no database. This package runs the official Grav admin image.",
+  "description": "Grav is an open-source, modern flat-file CMS built on PHP. It stores content, configuration, and media as files instead of a database, which keeps the site portable and easy to back up and version.\n\nGrav ships with a powerful Twig templating engine, Markdown-based content, and the Admin plugin for managing pages, themes, and plugins from the browser. This package deploys the LinuxServer.io Grav image with the Admin plugin included; the whole site, including user content and configuration, is persisted in a named volume mounted at /config.\n\nTypical use cases include documentation sites, blogs, marketing sites, and small content-driven websites that want fast page loads and a simple, self-hosted setup without running a database.",
+  "websiteurl": "https://getgrav.org"
+}

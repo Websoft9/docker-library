@@ -1,7 +1,6 @@
 # Archived Apps
 
 Archived apps moved out of active maintenance:
-- `discuz`
 - `joomla`
 - `magento`
 - `mediawiki`

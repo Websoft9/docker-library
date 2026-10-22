@@ -4,7 +4,7 @@ Use this file as the fast entry point for AI agents working in this repository.
 
 ## Repo Summary
 
-`docker-library` is a library of 300+ Docker Compose application packages under `apps/`.
+`docker-library` is a library of 100+ Docker Compose application packages under `apps/`.
 Each app is independent and should be runnable with `docker compose up`.
 
 ## Start Here
@@ -49,8 +49,8 @@ Read in this order:
 - Apps: `apps/`
 - App metadata: `metadata/maintenance.yaml`, `metadata/archive.yaml`
 - Shared skills: `skills/`
-- Template: `template/`
-- Scripts: `build/`
+- Template: `metadata/templates/`
+- Scripts: `ci/scripts/`, `build/`
 - Process docs: `docs/ai-sdlc/`
 - CI: `.github/workflows/`
 

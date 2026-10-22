@@ -1,0 +1,42 @@
+{
+  "name": "inngest",
+  "trademark": "Inngest",
+  "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/r/inngest/inngest",
+    "releases": "https://github.com/inngest/inngest/releases",
+    "compose": {
+      "compose": "https://www.inngest.com/docs/self-hosting"
+    },
+    "docs": [
+      "https://www.inngest.com/docs/self-hosting",
+      "https://github.com/inngest/inngest"
+    ]
+  },
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["v1.46.0", "latest"]
+    }
+  ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8288,
+      "path": "/"
+    }
+  },
+  "requirements": {
+    "cpu": "2",
+    "memory": "4",
+    "disk": "10"
+  },
+  "credentials": {},
+  "env": {
+    "first_startup_only": [],
+    "secrets": ["INNGEST_EVENT_KEY", "INNGEST_SIGNING_KEY"]
+  },
+  "help": {
+    "db": ""
+  }
+}

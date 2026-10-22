@@ -1,30 +1,17 @@
 ---
 name: Bug report
-about: Report one app or process bug
-title: 'Bug for [appname]'
-labels: bug
+about: Report a problem; AI investigates and reports back
+title: 'Bug: [app]'
 ---
 
-## App
+<!-- libs:workflow=bug-report -->
 
-- app name:
-- version:
-- environment:
+## Problem / Goal
 
-## Problem
+<!-- What is wrong, expected behavior, and how to reproduce if known. -->
 
-- expected:
-- actual:
-- reproduce steps:
+## AI prompt (optional)
 
-## Evidence
+<!-- Environment, logs, suspected cause, or whether to diagnose only. -->
 
-- logs:
-- screenshots:
-- service status:
-
-## Owner Intent
-
-- [ ] fix current app
-- [ ] investigate only
-- [ ] consider archive
+<!-- AI: post the result as a comment using the AI Result format in docs/ai-sdlc/07-issue-contracts.md. -->

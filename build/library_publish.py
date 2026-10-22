@@ -175,7 +175,7 @@ def create_zip_from_directory(source_dir: Path, destination_zip: Path) -> None:
 
 
 def copy_package_contents(package_dir: Path, packaged_library_json: dict) -> None:
-    for name in ("apps", "docs", "template"):
+    for name in ("apps", "docs"):
         source = ROOT / name
         if source.exists():
             shutil.copytree(source, package_dir / name)

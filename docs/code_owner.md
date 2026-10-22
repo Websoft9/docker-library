@@ -12,7 +12,7 @@ The architecture of the library is relatively simple, which is a collection of a
 
 ## Docker compose
 
-You can understand the basic composition and specifications through the [Docker Compose template file](../template/docker-compose.yml), The following points will help you quickly integrate into library project.
+You can understand the basic composition and specifications through the [Docker Compose template](../metadata/templates/new-app/docker-compose.yml.tmpl), The following points will help you quickly integrate into library project.
 
 ### Use official docker image
 
@@ -78,7 +78,7 @@ Suggest use the unified bind mount *src* which include config or script files fo
 
 ## Environments
 
-The environment variables of the container is the interface between the container and external interactions, the library all of the apps's environment variables are imported through **.env** file and cannot be directly defined in the docker-compose.yml, you can understand the basic composition and specifications through the [.env template file](../template/.env).
+The environment variables of the container is the interface between the container and external interactions, the library all of the apps's environment variables are imported through **.env** file and cannot be directly defined in the docker-compose.yml, you can understand the basic composition and specifications through the [.env template](../metadata/templates/new-app/.env.tmpl).
 
 The environments begin with **APP\_** is core environment variables. Generally speaking, developers only define and use them.
 
@@ -172,7 +172,7 @@ Change logs. Use a pure-date heading `## YYYY-MM-DD` as the first-level heading 
 
 #### How to create new application?
 
-Create new application must use [template](../template/), then set your file:  
+Create a new application with `libs app-new` from `metadata/templates/new-app/`, then set your files:
 
 1. docker-compose.yml
 

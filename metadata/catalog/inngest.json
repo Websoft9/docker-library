@@ -1,0 +1,20 @@
+{
+  "trademark": "Inngest",
+  "catalogBindings": [
+    {
+      "parentKey": "architecture",
+      "childKey": "workflow"
+    },
+    {
+      "parentKey": "automation",
+      "childKey": "opsauto"
+    }
+  ],
+  "summary": "Self-hosted event-driven workflow platform",
+  "overview": "Inngest is an event-driven durable functions platform. This package self-hosts the Inngest server with bundled PostgreSQL 17 and Redis 7 for reliable background jobs and workflows.",
+  "description": "Inngest is a durable execution platform for event-driven background jobs and workflows. It receives events through an Event API, schedules and queues function runs, and executes steps with automatic retries, fan-out, batching, throttling, and cancellations. A built-in dashboard lets you inspect apps, functions, events, and run history.\n\nThis package self-hosts the single-node Inngest server with bundled PostgreSQL 17 for system data and run history and Redis 7 for the queue and run state. The main container runs `inngest start`; the dashboard and API are published on port 8288 and the Connect WebSocket gateway on port 8289. Event ingestion and app sync are secured with the packaged `INNGEST_EVENT_KEY` and `INNGEST_SIGNING_KEY`.\n\nTypical use cases include durable background jobs, event-driven automation, reliable step workflows, scheduled tasks, and self-hosted workflow orchestration for applications built with the Inngest SDKs.",
+  "websiteurl": "https://www.inngest.com",
+  "screenshots": [
+    "https://www.inngest.com/assets/docs/self-hosting/system-architecture-2024-09-23.png"
+  ]
+}
