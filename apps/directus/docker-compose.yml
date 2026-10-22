@@ -30,11 +30,11 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: ${W9_ID}
-      POSTGRES_USER: ${W9_ID}
+      POSTGRES_DB: directus
+      POSTGRES_USER: directus
       POSTGRES_PASSWORD: ${W9_POWER_PASSWORD}
     healthcheck:
-      test: ["CMD", "pg_isready", "--host=localhost", "--username=${W9_ID}"]
+      test: ["CMD", "pg_isready", "--host=localhost", "--username=directus"]
       interval: 10s
       timeout: 5s
       retries: 5

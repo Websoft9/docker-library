@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-10-22
+
+- Kept `W9_VERSION=13.2`; the upstream stable `13.2` tag currently resolves to Grafana `13.2.4`.
+- Removed `grafana-simple-json-datasource` from `GF_PLUGINS_PREINSTALL` because Grafana 13 refuses Angular plugins; only `grafana-clock-panel` is preinstalled now.
+- Aligned the `.env` image environment section with the current template banner and Docs URL.
+
 ## 2026-10-13
 
 - Upgraded Grafana to `13.2`.

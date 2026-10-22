@@ -1,4 +1,4 @@
-# Shared Skills
+# AI Shared Skills
 
 `skills/` is the canonical source for project skills shared across agents.
 
@@ -22,7 +22,19 @@ Naming guidance:
 Current adapters:
 - opencode: `.opencode/opencode.json` via `skills.paths`
 
+Command adapter maintenance:
+- command index: `skills/commands.manifest.json`
+- generator: `ci/scripts/build_ai_commands.py`
+- build command: `make build-ai-commands` (use `ARGS="--check"` in validation, `ARGS="--clean"` to remove stale generated files)
+- local guardrail: `make install-git-hooks` (enables `.githooks/pre-commit` and `.githooks/pre-push`)
+- generated outputs:
+  - `.opencode/command/*.md`
+  - `.github/prompts/*.prompt.md`
+  - `.codex/prompts/*.prompt.md`
+- do not hand-edit generated adapter files; update `skills/commands.manifest.json` and rebuild
+
 Shared skills:
+- `commands.manifest.json` (shared command index for generated adapters)
 - `catalog-seed`
 - `update-assessment`
 - `app-update`
@@ -33,3 +45,4 @@ Shared skills:
 - `deploy-validation`
 - `test-report-generation`
 - `release-readiness-check`
+- `install-app`

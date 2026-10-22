@@ -9,7 +9,7 @@ services:
       - timescaledb:/home/postgres/pgdata
     env_file: .env
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${W9_LOGIN_USER} -d ${W9_ID}"]
+      test: ["CMD-SHELL", "pg_isready -U ${W9_LOGIN_USER} -d timescaledb"]
       interval: 10s
       timeout: 5s
       retries: 6

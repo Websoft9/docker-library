@@ -26,7 +26,7 @@ services:
         until PGPASSWORD=${W9_POWER_PASSWORD} pg_isready -h ${W9_ID} -p 5432; do
           echo "Waiting for PostgreSQL to become available..." && sleep 1;
         done;
-        PGPASSWORD=${W9_POWER_PASSWORD} pg_dump --host=${W9_ID} --port=5432 --username=${W9_LOGIN_USER} --dbname=${W9_ID} -f "/backup/dump_$(date +'%Y%m%d%H%M%S').sql" &&
+        PGPASSWORD=${W9_POWER_PASSWORD} pg_dump --host=${W9_ID} --port=5432 --username=${W9_LOGIN_USER} --dbname=postgresql -f "/backup/dump_$(date +'%Y%m%d%H%M%S').sql" &&
         find /backup -type f -mtime +30 -delete &&
         echo "Dump taken successfully." &&
         exit 0;

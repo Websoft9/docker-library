@@ -32,6 +32,7 @@ Read in this order:
 - Quick network checks use a 2s per-attempt budget with at most 2 retries. If a target URL is unreachable locally, switch to the remote host's egress instead of extending local timeouts.
 - After a successful app update or new app with substantive changes, run `libs appstore-sync --app <app>` to push it to the test server's websoft9 store. Preflight the `websoft9` container with a <= 10s check and skip the sync when it is absent.
 - When `.secrets/remote.env` exists, prefer remote-first for all runtime, deployment, debugging, and validation work; do not default to local container execution unless the user explicitly asks for local reproduction.
+- When changing `skills/commands.manifest.json`, command adapter templates, or skill-command mappings, run `make build-ai-commands` and include generated updates under `.opencode/command/`, `.github/prompts/`, and `.codex/prompts/` in the same change.
 
 ## i18n
 

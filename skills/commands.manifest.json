@@ -1,0 +1,81 @@
+{
+  "commands": [
+    {
+      "id": "libs-install-app",
+      "description": "Install one app package with target selection, port pre-check, and health validation.",
+      "skill": "install-app",
+      "argument_hint": "<app> [local|remote] [plan-only]",
+      "usage": "/libs-install-app <app> [local|remote] [plan-only]"
+    },
+    {
+      "id": "libs-new-app",
+      "description": "Create one new app package and produce a short report.",
+      "skill": "new-app",
+      "argument_hint": "<app name> <trademark> <official reference URL>",
+      "usage": "/libs-new-app <app name> <trademark> <official reference URL>"
+    },
+    {
+      "id": "libs-update-assessment",
+      "description": "Assess whether one app is worth updating before implementation.",
+      "skill": "update-assessment",
+      "argument_hint": "<app name>",
+      "usage": "/libs-update-assessment <app name>"
+    },
+    {
+      "id": "libs-update-app",
+      "description": "Implement an approved update for one app and produce a short report.",
+      "skill": "app-update",
+      "argument_hint": "<app name> [target version]",
+      "usage": "/libs-update-app <app name> [target version]"
+    },
+    {
+      "id": "libs-batch-update-app",
+      "description": "Implement approved updates for a batch of apps selected by app names or initials.",
+      "skill": "batch-app-update",
+      "argument_hint": "<app list | initials> [options]",
+      "usage": "/libs-batch-update-app <selector>"
+    },
+    {
+      "id": "libs-deploy-validation",
+      "description": "Validate one app deployment locally or on a prepared remote server.",
+      "skill": "deploy-validation",
+      "argument_hint": "<app name> [--ssh-host ip --ssh-user name --ssh-secret-path path --deploy-root dir] [local]",
+      "usage": "/libs-deploy-validation <app name> [--ssh-host ip --ssh-user name] [--ssh-secret-path path] [--deploy-root dir] [local]"
+    },
+    {
+      "id": "libs-release-readiness",
+      "description": "Check whether an app task is ready for owner E2E or release.",
+      "skill": "release-readiness-check",
+      "argument_hint": "<app name | task scope>",
+      "usage": "/libs-release-readiness <app name | task scope>"
+    },
+    {
+      "id": "libs-test-report",
+      "description": "Generate a repository-format test report from validation evidence.",
+      "skill": "test-report-generation",
+      "argument_hint": "<app name> <evidence source>",
+      "usage": "/libs-test-report <app name> <evidence source>"
+    },
+    {
+      "id": "libs-catalog-seed",
+      "description": "Create or update one app catalog file and preview Contentful push.",
+      "skill": "catalog-seed",
+      "argument_hint": "<app name>",
+      "usage": "/libs-catalog-seed <app name>"
+    },
+    {
+      "id": "libs-archive-app",
+      "description": "Archive one app or a small batch of apps with metadata handoff.",
+      "skill": "archive-app",
+      "argument_hint": "<app name> <archive reason>",
+      "usage": "/libs-archive-app <app name> <archive reason>"
+    },
+    {
+      "id": "libs-restore-app",
+      "description": "Restore one archived app back to active maintenance.",
+      "skill": "restore-app",
+      "argument_hint": "<app name> [--cadence monthly] [--update-policy patch-minor]",
+      "usage": "/libs-restore-app <app name> [--cadence monthly] [--update-policy patch-minor]"
+    }
+  ]
+}

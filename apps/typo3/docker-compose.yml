@@ -31,8 +31,8 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: ${W9_ID}
-      MYSQL_USER: ${W9_ID}
+      MYSQL_DATABASE: typo3
+      MYSQL_USER: typo3
       MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
 

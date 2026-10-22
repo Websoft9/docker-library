@@ -65,3 +65,6 @@ jobs:
             echo "Validating catalog for $app"
             python -m libs catalog-push --app "$app" --json
           done
+
+      - name: Verify AI command adapters are up to date
+        run: make build-ai-commands ARGS="--check"

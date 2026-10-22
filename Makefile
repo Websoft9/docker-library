@@ -1,4 +1,4 @@
-.PHONY: help opencode opencode-clear install libs cli remote connector github-token dns-bind dns-delete websoft9-upgrade create-aliyun-ecs test test-cli test-build test-skills
+.PHONY: help opencode opencode-clear install libs cli remote connector github-token install-git-hooks dns-bind dns-delete websoft9-upgrade create-aliyun-ecs build-ai-commands test test-cli test-build test-skills
 
 ifeq ($(OS),Windows_NT)
 PYTHON ?= py
@@ -28,12 +28,14 @@ help:
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'test-cli' 'run cli unit and contract tests'
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'test-build' 'run build pipeline smoke tests'
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'test-skills' 'run skills asset and workflow tests'
+	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'build-ai-commands' 'generate opencode/copilot/codex command adapters from manifest'
 	@printf '\n  \033[1;35m▸ Config & Setup\033[0m\n'
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'help' 'show this help'
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'install' 'create .venv and install the libs CLI'
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'remote' 'interactively write .secrets/remote.env for remote-aware commands'
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'connector' 'interactively write .secrets/<provider>.env for API tokens, DNS and cloud credentials'
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'github-token' 'configure the GitHub MCP token for opencode'
+	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'install-git-hooks' 'set core.hooksPath=.githooks and enable local quality hooks'
 	@printf '\n'
 
 opencode:
@@ -116,6 +118,14 @@ remote:
 
 github-token:
 	@$(PYTHON) ci/scripts/configure_github_mcp.py $(ARGS)
+
+install-git-hooks:
+	@git config core.hooksPath .githooks
+	@chmod +x .githooks/pre-commit .githooks/pre-push
+	@echo "configured git hooks path: .githooks"
+
+build-ai-commands:
+	@$(PYTHON) ci/scripts/build_ai_commands.py $(ARGS)
 
 connector:
 	@mkdir -p .secrets
