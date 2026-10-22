@@ -86,6 +86,7 @@ switch ($Target) {
     Write-HelpEntry "install" "create .venv and install the libs CLI"
     Write-HelpEntry "remote" "interactively write .secrets/remote.env for remote-aware commands"
     Write-HelpEntry "connector" "interactively write .secrets/<provider>.env for API tokens, DNS and cloud credentials"
+    Write-HelpEntry "github-token" "configure the GitHub MCP token for opencode"
     Write-Host ""
   }
   "install" {
@@ -166,6 +167,10 @@ switch ($Target) {
       "DEPLOY_ROOT=$inputPath"
     )
     Write-Host "wrote .secrets/remote.env"
+  }
+  "github-token" {
+    $python = Get-PythonCommand
+    & $python ci/scripts/configure_github_mcp.py @Args
   }
   "connector" {
     New-Item -ItemType Directory -Force ".secrets" | Out-Null

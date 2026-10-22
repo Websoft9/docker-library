@@ -1,0 +1,43 @@
+name: PR checks
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-checks-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  pr-checks:
+    name: PR checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      - name: Install libs CLI
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e 'cli/[test]'
+
+      - name: Check maintenance metadata
+        run: python -m libs maintenance-check
+
+      - name: Run CLI tests
+        run: python -m pytest cli/tests -q
+
+      - name: Run build tests
+        run: python -m pytest tests/build -q

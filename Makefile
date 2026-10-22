@@ -1,4 +1,4 @@
-.PHONY: help opencode opencode-clear install libs cli remote connector dns-bind dns-delete websoft9-upgrade create-aliyun-ecs test test-cli test-build test-skills
+.PHONY: help opencode opencode-clear install libs cli remote connector github-token dns-bind dns-delete websoft9-upgrade create-aliyun-ecs test test-cli test-build test-skills
 
 ifeq ($(OS),Windows_NT)
 PYTHON ?= py
@@ -33,6 +33,7 @@ help:
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'install' 'create .venv and install the libs CLI'
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'remote' 'interactively write .secrets/remote.env for remote-aware commands'
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'connector' 'interactively write .secrets/<provider>.env for API tokens, DNS and cloud credentials'
+	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'github-token' 'configure the GitHub MCP token for opencode'
 	@printf '\n'
 
 opencode:
@@ -112,6 +113,9 @@ remote:
 	    "$$input_target" "$$input_host" "$$input_user" "$$input_secret" "$$input_path" > .secrets/remote.env; \
 	  chmod 600 .secrets/remote.env; \
 	  echo "wrote .secrets/remote.env"'
+
+github-token:
+	@$(PYTHON) ci/scripts/configure_github_mcp.py $(ARGS)
 
 connector:
 	@mkdir -p .secrets
