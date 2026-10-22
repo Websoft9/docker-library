@@ -10,6 +10,9 @@ Every PR should contain five short sections:
 
 Rules:
 - one app or one coherent task per PR
+- use a Conventional Commits title such as `feat: add app`, `fix: repair login`, or `ci: update release workflow`
 - no long narrative
 - link the source issue
 - link or paste the latest AI test report
+
+PR titles are required because `main` uses squash merges: the PR title becomes the commit subject and the release changelog input.

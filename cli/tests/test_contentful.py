@@ -49,6 +49,7 @@ def test_build_machine_fields_from_variables():
         "vcpu": 2,
         "memory": 4,
         "storage": 20,
+        "appStore": True,
         "production": True,
     }
 
@@ -57,6 +58,25 @@ def test_build_machine_fields_title_falls_back_to_name():
     fields = contentful.build_machine_fields({"name": "demo"})
 
     assert fields["title"] == "demo"
+
+
+def test_build_machine_fields_hides_archived_and_internal_apps():
+    variables = {"name": "demo", "release": True}
+
+    archived = contentful.build_machine_fields(variables, active=False)
+    internal = contentful.build_machine_fields({**variables, "scope": "internal"})
+
+    assert archived["appStore"] is False
+    assert archived["production"] is False
+    assert internal["appStore"] is False
+    assert internal["production"] is False
+
+
+def test_build_machine_fields_allows_dev_only_public_app():
+    fields = contentful.build_machine_fields({"name": "demo", "release": False})
+
+    assert fields["appStore"] is True
+    assert fields["production"] is False
 
 
 def test_build_draft_fields_filters_empty_values():
@@ -402,7 +422,28 @@ def test_sync_app_apply_creates_entry_when_absent(repo_fixture, app_factory, mon
     assert entries.created[1]["content_type_id"] == "product"
     assert entries.created[1]["fields"]["key"]["en-US"] == "demo"
     assert entries.created[1]["fields"]["title"]["en-US"] == "Demo"
+    assert entries.created[1]["fields"]["appStore"]["en-US"] is True
     assert entries.created[1]["fields"]["production"]["en-US"] is False
+
+
+def test_sync_app_apply_creates_archived_entry_hidden(repo_fixture, app_factory, monkeypatch):
+    app_factory("demo", archived=True, variables={
+        "name": "demo",
+        "trademark": "Demo",
+        "release": True,
+        "upstream": {"image": "https://hub.docker.com/_/demo/tags"},
+        "edition": [{"dist": "community", "version": ["1.0", "latest"]}],
+        "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
+    })
+    monkeypatch.setenv("CONTENTFUL_ACCESS_TOKEN", "token")
+    fake_client = FakeClient()
+    monkeypatch.setitem(sys.modules, "contentful_management", types.SimpleNamespace(Client=lambda token: fake_client))
+
+    contentful.sync_app("demo", "master", "metadata/catalog", apply=True, update_machine=False)
+
+    fields = fake_client.entries_map["master"].created[1]["fields"]
+    assert fields["appStore"]["en-US"] is False
+    assert fields["production"]["en-US"] is False
 
 
 def test_sync_app_apply_creates_entry_with_catalog_links(repo_fixture, app_factory, monkeypatch):

@@ -3,7 +3,7 @@ name: PR checks
 on:
   pull_request:
     branches: [main]
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [opened, synchronize, reopened, edited, ready_for_review]
 
 permissions:
   contents: read
@@ -18,6 +18,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
+      - name: Validate PR title
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          if ! [[ "$TITLE" =~ ^(feat|fix|docs|ci|chore|refactor|perf|test|build|revert)(\([^)]+\))?!?:[[:space:]]+.+ ]]; then
+            echo "::error::PR title must look like 'type: summary', e.g. 'fix: handle empty config'"
+            exit 1
+          fi
+
       - name: Checkout repository
         uses: actions/checkout@v7
         with:
@@ -41,3 +50,17 @@ jobs:
 
       - name: Run build tests
         run: python -m pytest tests/build -q
+
+      - name: Validate changed catalog files
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          files=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- 'metadata/catalog/*.json')
+          apps=$(printf '%s\n' "$files" | while IFS= read -r file; do
+            [ -n "$file" ] && basename "$file" .json
+          done | sort -u)
+          for app in $apps; do
+            echo "Validating catalog for $app"
+            python -m libs catalog-push --app "$app" --json
+          done
