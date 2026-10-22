@@ -6,11 +6,12 @@ title: 'Batch update: [selector]'
 
 <!-- libs:workflow=batch-update -->
 
-## Selector
+## Problem / Goal
 
-- app names or initials:
-- target version (optional):
+<!-- Explicit app list or unambiguous selector, e.g. apps starting with n,m, plus target version policy if known. -->
 
-## Notes
+## AI prompt (optional)
 
-- version policy or owner E2E focus:
+<!-- Per-app exceptions, stop/continue on failure, or E2E sampling. -->
+
+<!-- AI: post the result as a comment using the AI Result format in docs/ai-sdlc/07-issue-contracts.md. -->

@@ -1,15 +1,17 @@
 ---
 name: Restore app
-about: Return one archived app to active maintenance
+about: Return an archived app to active maintenance
 title: 'Restore: [app]'
 ---
 
 <!-- libs:workflow=restore-app -->
 
-## App
+## Problem / Goal
 
-- name:
+<!-- Which app to restore and why. -->
 
-## Notes
+## AI prompt (optional)
 
-- cadence or update policy (optional):
+<!-- Restore latest vs archived version, cadence/policy, or Contentful re-enable. -->
+
+<!-- AI: post the result as a comment using the AI Result format in docs/ai-sdlc/07-issue-contracts.md. -->

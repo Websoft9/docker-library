@@ -1,4 +1,0 @@
-NodeOfCodeConfig:
-    SupportThirdPartModules:
-        - httpx
-        - numpy

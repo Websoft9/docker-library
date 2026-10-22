@@ -6,11 +6,12 @@ title: 'Archive: [app]'
 
 <!-- libs:workflow=archive-app -->
 
-## Scope
+## Problem / Goal
 
-- app name or list:
-- reason:
+<!-- Which app(s) to archive and why. -->
 
-## Notes
+## AI prompt (optional)
 
-- handoff notes:
+<!-- Batch confirmation, Contentful handoff, or other constraints. -->
+
+<!-- AI: post the result as a comment using the AI Result format in docs/ai-sdlc/07-issue-contracts.md. -->

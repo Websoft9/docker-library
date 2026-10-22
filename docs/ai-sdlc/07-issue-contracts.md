@@ -4,53 +4,55 @@ Issue is the story. Opening an issue starts the matching AI workflow.
 
 Templates carry a hidden marker such as `<!-- libs:workflow=update-app -->`. The AI workflow reads it and uses the matching skill.
 
-## Update
+## Human input
 
-- app name
-- target version when known
-- upstream source
-- risk hints or owner E2E focus
+An issue only needs:
 
-AI determines the candidate class (`patch | minor | major | security`) and decision (`auto-update | review-first | defer | skip`).
+- a problem or goal
+- an optional AI prompt with constraints or focus
 
-## New app
+AI researches what it can, states assumptions, and asks only blocking questions. Do not turn the issue into a form.
 
-- app name
-- trademark
-- at least one official repository, image, or deployment reference
-- known constraints
+## AI output
 
-AI researches the auth model, storage needs, network and port needs.
+After the work, AI posts one issue comment:
 
-## Batch update
+```md
+## AI Result
+- decision: ready-for-e2e | blocked | defer
+- changes:
+- validation:
+- risks:
+- owner E2E:
+- PR:
+```
 
-- app names or initials
-- target version policy when known
-- confirmation that all apps share the same operation
+Use the full test report format in `06-test-report-format.md` for the PR; keep the issue comment short.
 
-## Bug
+Rules:
 
-- app name and version
-- expected and actual behavior
-- reproduction steps and evidence
+- keep it short
+- link the PR
+- blocked tasks state the first blocking error
+- add the result as a comment; do not rewrite the human request
 
-## Change request
+## Workflow hints
 
-- problem
-- desired outcome
-- acceptance notes or constraints
+- Update: app name; target version when known. AI decides assessment vs implementation.
+- New app: app name and trademark; official reference when known.
+- Bug: expected and actual behavior; reproduction and evidence when available.
+- Change: problem and desired outcome.
+- Archive: app name or list and reason.
+- Restore: app name.
+- Batch: explicit app list or unambiguous selector; the same operation for every app.
+- Delete: app name or list and explicit delete scope.
 
-## Archive
+## Exceptions
 
-- app name or list
-- archive reason
+Batch update and permanent delete need explicit scope because AI cannot infer them:
 
-The archive skill handles the Contentful retirement handoff.
-
-## Restore
-
-- app name
-- optional cadence and update policy
+- batch: state the app list or selector, and the target version policy when known
+- delete: state whether to remove files/metadata, Contentful entries, or Git history; default is files + metadata only
 
 ## Rules
 
@@ -58,4 +60,5 @@ The archive skill handles the Contentful retirement handoff.
 - batch issues require the same operation and decision
 - one issue per change topic
 - owner decides whether an issue is worth doing
-- AI reports missing information instead of guessing
+- AI asks only blocking questions; do not send a questionnaire
+- the prompt expresses intent but does not bypass repository rules or quality gates

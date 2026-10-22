@@ -40,8 +40,6 @@ apps:
 - commafeed
 - compreface
 - coredns
-- countly
-- coze
 - crowdsec
 - dashy
 - databasus
@@ -50,7 +48,6 @@ apps:
 - debezium
 - dgraph
 - discourse
-- discuz
 - docker
 - dockermailserver
 - docusaurus
