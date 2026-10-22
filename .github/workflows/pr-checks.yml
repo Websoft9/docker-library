@@ -21,8 +21,9 @@ jobs:
       - name: Validate PR title
         env:
           TITLE: ${{ github.event.pull_request.title }}
+          PATTERN: '^(feat|fix|docs|ci|chore|refactor|perf|test|build|revert)(\([^)]+\))?!?:[[:space:]]+.+'
         run: |
-          if ! [[ "$TITLE" =~ ^(feat|fix|docs|ci|chore|refactor|perf|test|build|revert)(\([^)]+\))?!?:[[:space:]]+.+ ]]; then
+          if ! [[ "$TITLE" =~ $PATTERN ]]; then
             echo "::error::PR title must look like 'type: summary', e.g. 'fix: handle empty config'"
             exit 1
           fi
