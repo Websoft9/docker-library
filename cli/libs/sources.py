@@ -283,25 +283,28 @@ def _stable_candidates(tags: list[dict], current_version: str, limit: int = 5) -
 
 def _dockerhub_verify(api_url: str, candidate: str, page_size: int) -> dict | None:
     candidate_ver = version.parse(normalize_tag(candidate))
-    params = {"page_size": page_size, "name": candidate.lstrip("v")}
-    data, error = _get_json(api_url, params)
-    if error or not data:
-        return None
+    queries = [candidate]
+    stripped = candidate.lstrip("v")
+    if stripped != candidate:
+        queries.append(stripped)
 
-    best = None
-    for tag in (data or {}).get("results") or []:
-        tag_name = tag["name"]
-        try:
-            if version.parse(normalize_tag(tag_name)) == candidate_ver:
-                best = {
-                    "version": candidate,
-                    "last_updated": tag["last_updated"],
-                }
-                break
-        except version.InvalidVersion:
+    for query in queries:
+        params = {"page_size": page_size, "name": query}
+        data, error = _get_json(api_url, params)
+        if error or not data:
             continue
 
-    return best
+        for tag in (data or {}).get("results") or []:
+            tag_name = tag["name"]
+            try:
+                if version.parse(normalize_tag(tag_name)) == candidate_ver:
+                    return {
+                        "version": tag_name,
+                        "last_updated": tag["last_updated"],
+                    }
+            except version.InvalidVersion:
+                continue
+    return None
 
 
 def fetch_verified_candidates(
@@ -331,7 +334,7 @@ def fetch_verified_candidates(
 
     candidates = _stable_candidates(index_tags, current_version)
     minors = sorted(
-        {version.parse(name).release[:2] for name in candidates},
+        {version.parse(normalize_tag(name)).release[:2] for name in candidates},
         reverse=True,
     )
     wanted = [".".join(str(p) for p in minor) for minor in minors] + candidates

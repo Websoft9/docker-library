@@ -1,4 +1,4 @@
-.PHONY: help opencode opencode-clear install libs cli remote connector github-token install-git-hooks dns-bind dns-delete websoft9-upgrade create-aliyun-ecs build-ai-commands test test-cli test-build test-skills
+.PHONY: help opencode opencode-clear install libs cli remote connector github-token install-git-hooks dns-bind dns-delete websoft9-upgrade create-aliyun-ecs build-ai-commands i18n-check i18n-update test test-cli test-build test-skills
 
 ifeq ($(OS),Windows_NT)
 PYTHON ?= py
@@ -29,6 +29,8 @@ help:
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'test-build' 'run build pipeline smoke tests'
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'test-skills' 'run skills asset and workflow tests'
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'build-ai-commands' 'generate opencode/copilot/codex command adapters from manifest'
+	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'i18n-check' 'check translation.json for missing keys (ARGS: --strict, --app <app>)'
+	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'i18n-update' 'add missing translation keys as ["", ""]'
 	@printf '\n  \033[1;35m▸ Config & Setup\033[0m\n'
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'help' 'show this help'
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'install' 'create .venv and install the libs CLI'
@@ -238,6 +240,12 @@ connector:
 	  fi; \
 	  chmod 600 "$$file"; \
 	  echo "wrote $$file"'
+
+i18n-check:
+	$(PYTHON) i18n/manage.py --check $(ARGS)
+
+i18n-update:
+	$(PYTHON) i18n/manage.py --update $(ARGS)
 
 test-cli:
 	$(VENV_BIN)/python -m pytest cli/tests -q

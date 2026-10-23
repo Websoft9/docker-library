@@ -39,7 +39,7 @@ Read in this order:
 - Translatable env keys are `W9_*_SET` and `W9_LOGIN*`.
 - When a task adds or changes such keys, ensure `i18n/translation.json` gets the key.
 - New keys may stay `["", ""]`; translations are filled by humans, not AI.
-- Do not edit downstream repos; the `i18n.yml` workflow syncs them by PR.
+- Do not edit downstream repos. i18n checks cover only this repo's `translation.json`; downstream sync workflows were removed.
 
 ## Delivery Model
 

@@ -168,6 +168,7 @@ def scan_command(
     page_size: int = typer.Option(100, help="Number of tags per Docker Hub page"),
     major_ahead: int = typer.Option(3, help="How many future majors to probe"),
     app_name: str | None = typer.Option(None, "--app", help="Scan only this app"),
+    network_timeout: float = typer.Option(15.0, "--network-timeout", min=1.0, max=120.0, help="Total seconds for upstream network checks"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
 ) -> None:
     """Scan upstream versions for selected apps."""
@@ -178,6 +179,7 @@ def scan_command(
         page_size=page_size,
         major_ahead=major_ahead,
         app_filter=app_name,
+        network_timeout=network_timeout,
     )
     print_output(payload, as_json)
 
@@ -599,6 +601,7 @@ def app_deploy_command(
     version: str | None = typer.Option(None, "--version", help="Deploy a specific image tag by overriding W9_VERSION; repo .env is not modified"),
     down: bool = typer.Option(False, "--down", help="Tear the app down with docker compose down -v instead of up -d"),
     auto_port: bool = typer.Option(True, "--auto-port/--no-auto-port", help="Automatically use a free 9000-9999 host port when a published port is occupied"),
+    pull_policy: str = typer.Option("always", "--pull-policy", help="always | missing | never"),
     progress: bool = typer.Option(False, "--progress", help="Show step progress on stderr"),
     verbose: bool = typer.Option(False, "--verbose", help="Show step progress and raw subprocess output on stderr"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
@@ -616,6 +619,7 @@ def app_deploy_command(
             version=version,
             down=down,
             auto_port=auto_port,
+            pull_policy=pull_policy,
             progress=progress_writer,
             verbose=verbose,
         )

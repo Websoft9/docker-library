@@ -1,14 +1,16 @@
 from __future__ import annotations
 
 import json
+import time
 from datetime import date, datetime
 
 import typer
 
+from libs import http
 from libs.metadata import active_app_dirs, resolve_app_metadata
 from libs.output import print_output
 from libs.sources import detect_source_type, fetch_candidates, fetch_verified_candidates
-from libs.versioning import get_current_versions
+from libs.versioning import get_current_versions, update_status
 
 
 app = typer.Typer(help="Scan upstream versions", context_settings={"help_option_names": ["-h", "--help"]})
@@ -56,7 +58,10 @@ def scan_apps(
     page_size: int = 100,
     major_ahead: int = 3,
     app_filter: str | None = None,
+    network_timeout: float = 15.0,
 ) -> list[dict]:
+    started = time.monotonic()
+    http.reset_network_state(network_timeout)
     target = _parse_target_date(target_date)
     output = []
 
@@ -97,12 +102,16 @@ def scan_apps(
         if not variables.get("release", False) and not app_filter:
             payload["error"] = "App release=false"
             payload["latest_version"] = None
+            payload["network"] = http.network_snapshot()
+            payload["scan_elapsed_ms"] = int((time.monotonic() - started) * 1000)
             output.append(payload)
             continue
 
         if not current_versions or ("latest" in current_version_strs and len(current_version_strs) == 1):
             payload["error"] = "No valid current versions found"
             payload["latest_version"] = None
+            payload["network"] = http.network_snapshot()
+            payload["scan_elapsed_ms"] = int((time.monotonic() - started) * 1000)
             output.append(payload)
             continue
 
@@ -129,9 +138,13 @@ def scan_apps(
         if error:
             payload["error"] = f"Failed to fetch tags: {error}"
             payload["latest_version"] = None
+            payload["version_status"] = "unavailable"
         else:
             payload["latest_version"] = latest_version
+            payload["version_status"] = update_status(str(highest_version), latest_version)
 
+        payload["network"] = http.network_snapshot()
+        payload["scan_elapsed_ms"] = int((time.monotonic() - started) * 1000)
         output.append(payload)
 
     return output
@@ -144,8 +157,9 @@ def scan(
     plan_only: bool = typer.Option(False, help="Only list selected apps without remote version checks"),
     max_pages: int = typer.Option(1, help="Deprecated; ignored"),
     page_size: int = typer.Option(100, help="Number of tags per Docker Hub page"),
+    network_timeout: float = typer.Option(15.0, "--network-timeout", min=1.0, max=120.0, help="Total seconds for upstream network checks"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
 ) -> None:
     _ = max_pages
-    output = scan_apps(selection=selection, target_date=target_date, plan_only=plan_only, page_size=page_size)
+    output = scan_apps(selection=selection, target_date=target_date, plan_only=plan_only, page_size=page_size, network_timeout=network_timeout)
     print_output(output, as_json)

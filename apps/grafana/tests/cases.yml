@@ -3,3 +3,6 @@ optional:
     type: web-access
     path: /api/health
     expect_status: 200
+  - id: grafana-plugin-validation
+    type: script
+    script: check-plugin-validation.sh
