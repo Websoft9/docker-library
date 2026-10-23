@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-10-23
+
+- Added a startup log regression check for unsupported Grafana plugins.
+- Version scans now identify patch releases already covered by the current floating minor tag.
+
 ## 2026-10-22
 
 - Kept `W9_VERSION=13.2`; the upstream stable `13.2` tag currently resolves to Grafana `13.2.4`.

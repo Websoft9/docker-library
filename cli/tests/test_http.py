@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -9,9 +10,9 @@ from libs import http
 
 @pytest.fixture(autouse=True)
 def _reset_remote_only():
-    http._REMOTE_ONLY = False
+    http.reset_network_state()
     yield
-    http._REMOTE_ONLY = False
+    http.reset_network_state()
 
 
 def test_default_timeout_uses_env_and_falls_back_on_invalid(monkeypatch):
@@ -103,3 +104,67 @@ def test_get_json_with_fallback_uses_remote_after_probe_failure(monkeypatch):
     assert data == {"ok": True}
     assert headers == {}
     assert error is None
+
+
+def test_get_json_with_fallback_reuses_remote_failure_without_retrying(monkeypatch):
+    calls = {"remote": 0}
+
+    monkeypatch.setattr(http, "probe_url", lambda url, **kwargs: http.Reachability(False, url, 3, 5, error="timeout"))
+
+    def fail_remote(*args, **kwargs):
+        calls["remote"] += 1
+        return None, None, "ssh timeout"
+
+    monkeypatch.setattr(http, "remote_get_json", fail_remote)
+
+    first = http.get_json_with_fallback("https://hub.docker.com/tags")
+    second = http.get_json_with_fallback("https://hub.docker.com/tags")
+
+    assert first[2] == "ssh timeout"
+    assert second[2] == "ssh timeout"
+    assert calls["remote"] == 1
+    assert http.network_snapshot()["path"] == "unavailable"
+
+
+def test_remote_json_fallback_uses_short_curl_timeouts(monkeypatch):
+    from libs import remote
+
+    captured = {}
+
+    def fake_run_ssh(host, user, secret_path, script, connect_timeout=15):
+        captured["script"] = script
+        return subprocess.CompletedProcess(["ssh"], 0, '{"ok": true}', "")
+
+    monkeypatch.setattr(remote, "ssh_host", lambda: "remote.example")
+    monkeypatch.setattr(remote, "resolve_secret_path", lambda: Path("/tmp/key"))
+    monkeypatch.setattr(Path, "exists", lambda self: True)
+    monkeypatch.setattr(remote, "run_ssh", fake_run_ssh)
+
+    data, _, error = http.remote_get_json("https://example.com/api", {"page": 1}, None)
+
+    assert data == {"ok": True}
+    assert error is None
+    assert "--connect-timeout 2" in captured["script"]
+    assert "--max-time 4" in captured["script"]
+
+
+def test_remote_json_fallback_retries_ssh_once(monkeypatch):
+    from libs import remote
+
+    calls = []
+
+    def fake_run_ssh(host, user, secret_path, script, connect_timeout=15):
+        calls.append(connect_timeout)
+        return subprocess.CompletedProcess(["ssh"], 1, "", "connection timeout")
+
+    monkeypatch.setattr(remote, "ssh_host", lambda: "remote.example")
+    monkeypatch.setattr(remote, "resolve_secret_path", lambda: Path("/tmp/key"))
+    monkeypatch.setattr(Path, "exists", lambda self: True)
+    monkeypatch.setattr(remote, "run_ssh", fake_run_ssh)
+
+    data, _, error = http.remote_get_json("https://example.com/api", None, None)
+
+    assert data is None
+    assert error == "connection timeout"
+    assert calls == [3, 3]
+    assert http.network_snapshot()["remote_retries"] == 1

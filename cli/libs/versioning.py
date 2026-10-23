@@ -21,6 +21,9 @@ def normalize_tag(name: str) -> str:
     so prerelease filtering still works.
     """
     normalized = re.sub(r"-ls\d+$", "", name)
+    # Metabase publishes release trains with an ``.x`` patch placeholder,
+    # such as ``v0.64.1.x``. Treat it as the numeric release for comparison.
+    normalized = re.sub(r"\.x$", "", normalized, flags=re.IGNORECASE)
     if normalized.endswith("-cli"):
         normalized = normalized[:-4]
     try:
@@ -117,3 +120,22 @@ def find_latest_version(tags: list[dict], current_version: str) -> dict | None:
         "version": best[1],
         "last_updated": best[2],
     }
+
+
+def update_status(current_version: str, candidate: dict | None) -> str:
+    """Classify a candidate while respecting floating minor image tags.
+
+    A current ``x.x`` tag already receives upstream ``x.x.y`` patch updates,
+    so a patch candidate in the same minor is informational rather than a
+    package update.
+    """
+    if not candidate:
+        return "up-to-date"
+
+    current = version.parse(normalize_tag(current_version))
+    latest = version.parse(normalize_tag(str(candidate.get("version", ""))))
+    if latest <= current:
+        return "up-to-date"
+    if len(current.release) == 2 and latest.release[:2] == current.release[:2]:
+        return "covered-by-current-minor-tag"
+    return "update-available"

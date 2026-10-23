@@ -90,3 +90,22 @@ def test_scan_apps_uses_fetch_candidates_when_release_enabled(repo_fixture, app_
     result = versions.scan_apps(app_filter="demo")
 
     assert result[0]["latest_version"] == {"version": "1.1", "last_updated": "2026-01-01"}
+    assert result[0]["version_status"] == "update-available"
+
+
+def test_scan_apps_reports_same_minor_patch_as_covered(repo_fixture, app_factory, monkeypatch):
+    app_factory("grafana", variables={
+        "name": "grafana",
+        "release": True,
+        "upstream": {"image": "https://hub.docker.com/r/grafana/grafana"},
+        "edition": [{"dist": "community", "version": ["13.2", "latest"]}],
+    })
+    monkeypatch.setattr(
+        versions,
+        "fetch_candidates",
+        lambda *args, **kwargs: ({"version": "13.2.4", "last_updated": "2026-10-13"}, None),
+    )
+
+    result = versions.scan_apps(app_filter="grafana")
+
+    assert result[0]["version_status"] == "covered-by-current-minor-tag"

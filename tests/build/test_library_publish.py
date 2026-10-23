@@ -8,7 +8,7 @@ import pytest
 
 from _helpers import REPO_ROOT, load_build_module
 
-library_publish = load_build_module("library_publish_test", REPO_ROOT / "build" / "library_publish.py")
+library_publish = load_build_module("library_publish_test", REPO_ROOT / "ci" / "scripts" / "library_publish.py")
 
 
 def test_hash_content_is_deterministic_and_input_sensitive():

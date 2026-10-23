@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from packaging import version
 
-from libs.versioning import find_latest_version, get_current_versions, normalize_tag
+from libs.versioning import find_latest_version, get_current_versions, normalize_tag, update_status
 
 
 def test_normalize_tag_strips_ls_build_and_cli_suffixes():
@@ -10,6 +10,11 @@ def test_normalize_tag_strips_ls_build_and_cli_suffixes():
     assert normalize_tag("8.1.2-cli-ls76") == "8.1.2"
     assert normalize_tag("8.1.2") == "8.1.2"
     assert normalize_tag("version-9.0-cli") == "version-9.0"
+
+
+def test_normalize_tag_strips_metabase_patch_placeholder():
+    assert normalize_tag("v0.64.1.x") == "v0.64.1"
+    assert normalize_tag("v0.64.x") == "v0.64"
 
 
 def test_get_current_versions_accepts_ls_suffixed_tags():
@@ -80,6 +85,12 @@ def test_find_latest_version_uses_patch_candidates_when_no_minor_candidate_exist
         "version": "2.4.1",
         "last_updated": "2026-01-04",
     }
+
+
+def test_update_status_treats_same_minor_patch_as_covered_by_floating_tag():
+    assert update_status("13.2", {"version": "13.2.4"}) == "covered-by-current-minor-tag"
+    assert update_status("13.2", {"version": "13.3"}) == "update-available"
+    assert update_status("13.2", None) == "up-to-date"
 
 
 def test_normalize_tag_strips_image_variants_but_preserves_prereleases():

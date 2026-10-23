@@ -25,6 +25,7 @@ DOCKER_PORT_RE = re.compile(r"(?:0\.0\.0\.0|127\.0\.0\.1|\[::\]|::):(\d+)->")
 SS_PORT_RE = re.compile(r":(\d+)\s+\S+\s*$")
 FREE_PORT_LOW = 9000
 FREE_PORT_HIGH = 9999
+PULL_POLICIES = {"always", "missing", "never"}
 
 
 def _run(command: list[str], *, progress: ProgressWriter | None = None, verbose: bool = False) -> subprocess.CompletedProcess:
@@ -85,6 +86,10 @@ def _local_compose_args(target: Path, env_file: Path | None = None) -> list[str]
 
 def _remote_compose_script(target: str, action: str) -> str:
     return f"docker compose -f {target}/docker-compose.yml --env-file {target}/.env {action}"
+
+
+def _compose_up_action(pull_policy: str) -> str:
+    return "up -d --pull never" if pull_policy == "never" else "up -d"
 
 
 def _compose_services(target: Path) -> dict:
@@ -388,12 +393,15 @@ def deploy(
     version: str | None = None,
     down: bool = False,
     auto_port: bool = True,
+    pull_policy: str = "always",
     progress: ProgressWriter | None = None,
     verbose: bool = False,
 ) -> dict:
     source = app_dir(app_name)
     if not source:
         raise FileNotFoundError(app_name)
+    if pull_policy not in PULL_POLICIES:
+        raise ValueError(f"invalid pull policy: {pull_policy}; expected one of {sorted(PULL_POLICIES)}")
 
     mode = _target_mode(target, ssh_host)
     action = "down -v" if down else "up -d"
@@ -425,9 +433,9 @@ def deploy(
                 raise RuntimeError(config.stderr.strip() or config.stdout.strip() or "compose config failed")
 
             if not down:
-                _announce(progress, step + 1, total, "pulling images")
-                if pull_services:
-                    pull = _run(_local_compose_args(target_path, env_file) + ["pull", *pull_services], progress=progress, verbose=verbose)
+                _announce(progress, step + 1, total, "pulling images" if pull_policy != "never" else "using existing images")
+                if pull_services and pull_policy != "never":
+                    pull = _run(_local_compose_args(target_path, env_file) + ["pull", "--policy", pull_policy, *pull_services], progress=progress, verbose=verbose)
                     if pull.returncode != 0:
                         raise RuntimeError(pull.stderr.strip() or pull.stdout.strip() or "compose pull failed")
                 if needs_build:
@@ -439,11 +447,11 @@ def deploy(
                         progress=progress,
                     )
                     _announce(progress, step + 3, total, "starting application")
-                    result = _run(_local_compose_args(target_path, env_file) + ["up", "-d"], progress=progress, verbose=verbose)
+                    result = _run(_local_compose_args(target_path, env_file) + _compose_up_action(pull_policy).split(), progress=progress, verbose=verbose)
                     ps_step = step + 4
                 else:
                     _announce(progress, step + 2, total, "starting application")
-                    result = _run(_local_compose_args(target_path, env_file) + ["up", "-d"], progress=progress, verbose=verbose)
+                    result = _run(_local_compose_args(target_path, env_file) + _compose_up_action(pull_policy).split(), progress=progress, verbose=verbose)
                     ps_step = step + 3
             else:
                 _announce(progress, step + 1, total, "stopping application")
@@ -461,6 +469,7 @@ def deploy(
                 "deploy_root": str(repo_path("apps")),
                 "app_target": str(target_path),
                 "action": action,
+                "pull_policy": pull_policy,
                 "port_overrides": {key: str(value) for key, value in overrides.items()},
                 "base_url": base_url,
                 "ps": ps.stdout.strip(),
@@ -505,9 +514,9 @@ def deploy(
         raise RuntimeError(config.stderr.strip() or config.stdout.strip() or "remote compose config failed")
 
     if not down:
-        _announce(progress, step + 1, total, "pulling images")
-        if pull_services:
-            pull = _run_remote(host, user, secret_path, _remote_compose_script(app_target, f"pull {' '.join(pull_services)}"), progress=progress, verbose=verbose)
+        _announce(progress, step + 1, total, "pulling images" if pull_policy != "never" else "using existing images")
+        if pull_services and pull_policy != "never":
+            pull = _run_remote(host, user, secret_path, _remote_compose_script(app_target, f"pull --policy {pull_policy} {' '.join(pull_services)}"), progress=progress, verbose=verbose)
             if pull.returncode != 0:
                 raise RuntimeError(pull.stderr.strip() or pull.stdout.strip() or "remote compose pull failed")
         if needs_build:
@@ -522,7 +531,7 @@ def deploy(
                 progress=progress,
             )
             _announce(progress, step + 3, total, "starting application")
-            result = _run_remote(host, user, secret_path, _remote_compose_script(app_target, "up -d"), progress=progress, verbose=verbose)
+            result = _run_remote(host, user, secret_path, _remote_compose_script(app_target, _compose_up_action(pull_policy)), progress=progress, verbose=verbose)
             ps_step = step + 4
         else:
             _announce(progress, step + 2, total, "starting application")
@@ -547,6 +556,7 @@ def deploy(
         "app_target": app_target,
         "version": version,
         "action": action,
+        "pull_policy": pull_policy,
         "port_overrides": {key: str(value) for key, value in overrides.items()},
         "base_url": base_url,
         "ps": ps.stdout.strip(),

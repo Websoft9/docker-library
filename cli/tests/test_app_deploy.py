@@ -171,7 +171,7 @@ def test_app_deploy_remote_version_patches_remote_env(monkeypatch, repo_fixture,
 
     assert payload["version"] == "7.0"
     assert any("W9_VERSION='7.0'" in call for call in calls)
-    assert any("pull db" in call for call in calls)
+    assert any("pull --policy always db" in call for call in calls)
     assert not any("pull jobs" in call for call in calls)
     assert build_calls == [("demo", "remote", {"ssh_host": "1.2.3.4", "ssh_user": "root", "ssh_secret_path": str(repo_fixture / ".secrets" / "ssh" / "default.pem"), "deploy_root": "/websoft9/library/apps", "progress": None})]
 
@@ -198,6 +198,23 @@ def test_app_deploy_skips_build_when_compose_has_no_build(monkeypatch, repo_fixt
         "[5/5] showing container status",
     ]
     assert not any(command[:4] == ["docker", "compose", "--progress", "plain"] for command in calls)
+
+
+def test_app_deploy_never_pull_uses_existing_images(monkeypatch, repo_fixture, app_factory):
+    app_factory("demo", compose="services:\n  demo:\n    image: nginx:latest\n")
+    calls = []
+
+    def fake_run(command, *, progress=None, verbose=False):
+        calls.append(command)
+        return types.SimpleNamespace(returncode=0, stdout="ok", stderr="")
+
+    monkeypatch.setattr(app_deploy, "_run", fake_run)
+
+    payload = app_deploy.deploy("demo", target="local", pull_policy="never")
+
+    assert payload["pull_policy"] == "never"
+    assert not any("pull" in command[-3:] and "--pull" not in command[-3:] for command in calls)
+    assert any(command[-4:] == ["up", "-d", "--pull", "never"] for command in calls)
 
 
 def test_compose_published_ports_resolves_env_reference(repo_fixture, app_factory):

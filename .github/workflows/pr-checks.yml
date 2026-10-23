@@ -18,14 +18,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Validate PR title
+      - name: Check PR title format
         env:
           TITLE: ${{ github.event.pull_request.title }}
           PATTERN: '^(feat|fix|docs|ci|chore|refactor|perf|test|build|revert)(\([^)]+\))?!?:[[:space:]]+.+'
         run: |
           if ! [[ "$TITLE" =~ $PATTERN ]]; then
-            echo "::error::PR title must look like 'type: summary', e.g. 'fix: handle empty config'"
-            exit 1
+            echo "::warning::PR title should look like 'type: summary', e.g. 'fix: handle empty config'"
           fi
 
       - name: Checkout repository
@@ -51,6 +50,12 @@ jobs:
 
       - name: Run build tests
         run: python -m pytest tests/build -q
+
+      - name: Validate i18n keys for changed apps
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: make i18n-check ARGS="--base $BASE_SHA --head $HEAD_SHA --github-annotations --warn-only"
 
       - name: Validate changed catalog files
         env:

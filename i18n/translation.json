@@ -8,16 +8,16 @@
         "应用 HTTP 端口"
     ],
     "W9_GRPC_PORT_SET": [
-        "",
-        ""
+        "GRPC PORT",
+        "应用 GRPC 端口"
     ],
     "W9_AGENT_PORT_SET": [
         "App Agent Port",
         "应用代理端口"
     ],
     "W9_ENROLLMENT_PORT_SET": [
-        "",
-        ""
+        "Enrollment Port",
+        "注册端口"
     ],
     "W9_SSH_PORT_SET": [
         "App SSH Port",
@@ -132,12 +132,12 @@
         "管理员密码"
     ],
     "W9_LOGIN_MYSQL_CONNECTION_STRING": [
-        "",
-        ""
+        "MySQL Connection String",
+        "MySQL 连接字符串"
     ],
     "W9_LOGIN_MYSQL_CONNECTION_STRING_PASSWORD": [
-        "",
-        ""
+        "MySQL Connection String Password",
+        "MySQL 连接字符串密码"
     ],
     "W9_LOGIN_WORKSPACE": [
         "Login Workspace",
