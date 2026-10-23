@@ -5,7 +5,9 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     env_file: .env
-    # TODO: add ports, volumes, healthcheck, and dependency services after upstream research
+    ports:
+      - "${W9_HTTP_PORT_SET}:80" # Web Console
+    # TODO: add volumes, healthcheck, and dependency services after upstream research
 
 networks:
   default:

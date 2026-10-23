@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+from datetime import date
 from pathlib import Path
 
 import typer
@@ -29,6 +30,16 @@ URL_AWARE_KEY_RE = re.compile(
 DEPENDENCY_IMAGE_RE = re.compile(r"^(?P<repo>[^:@]+(?:/[^:@]+)*):(?P<tag>[^@\s]+)(?:@(?P<digest>sha256:[a-f0-9]+))?$")
 PATCH_TAG_RE = re.compile(r"^\d+\.\d+\.\d+(?:[-_][A-Za-z0-9._-]+)?$")
 DEPENDENCY_TAG_HINT_RE = re.compile(r"(redis|postgres|postgresql|mysql|mariadb|pgvector)", re.IGNORECASE)
+ENV_REF_RE = re.compile(r"\$\{?([A-Z0-9_]+)\}?")
+IMAGE_ENGINE_HINTS = (
+    ("mariadb", "mariadb"),
+    ("mysql", "mysql"),
+    ("pgvector", "postgresql"),
+    ("postgres", "postgresql"),
+    ("redis", "redis"),
+    ("mongo", "mongodb"),
+    ("clickhouse", "clickhouse"),
+)
 
 
 def _read_compose(path: Path) -> dict:
@@ -274,6 +285,98 @@ def _version_result(target: Path) -> dict:
     }
 
 
+def _resolve_env_refs(value: str, env_map: dict[str, str]) -> str:
+    def replace(match: re.Match) -> str:
+        return env_map.get(match.group(1), match.group(0))
+
+    return ENV_REF_RE.sub(replace, value)
+
+
+def _db_engine(repository: str) -> str | None:
+    lowered = repository.lower()
+    for hint, engine in IMAGE_ENGINE_HINTS:
+        if hint in lowered:
+            return engine
+    return None
+
+
+def _db_track(engine: str, tag: str, tracks: list[dict]) -> dict | None:
+    cleaned = tag.strip().lstrip("v")
+    if engine == "postgresql" and cleaned.startswith("pg"):
+        cleaned = cleaned[2:]
+    for track in tracks:
+        candidate = str(track.get("version") or "")
+        if cleaned == candidate or cleaned.startswith(candidate + "."):
+            return track
+    return None
+
+
+def _database_result(target: Path) -> dict:
+    """Check bundled database images against metadata/db-lifecycle.json."""
+    compose_path = target / "docker-compose.yml"
+    env_path = target / ".env"
+    compose = _read_compose(compose_path) if compose_path.exists() else {}
+    env_map: dict[str, str] = {}
+    if env_path.exists():
+        for raw_line in env_path.read_text(encoding="utf-8").splitlines():
+            line = raw_line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, value = line.split("=", 1)
+            env_map[key.strip()] = value.strip().strip("'").strip('"')
+
+    lifecycle_path = repo_path("metadata", "db-lifecycle.json")
+    lifecycle = json.loads(lifecycle_path.read_text(encoding="utf-8")) if lifecycle_path.exists() else {}
+    engines = lifecycle.get("engines") or {}
+    today = date.today()
+    findings = []
+    for service_name, service in (compose.get("services") or {}).items():
+        if not isinstance(service, dict):
+            continue
+        image = service.get("image")
+        if not isinstance(image, str):
+            continue
+        resolved = _resolve_env_refs(image.strip(), env_map)
+        resolved = resolved.split("@", 1)[0]
+        if ":" not in resolved:
+            continue
+        repository, tag = resolved.rsplit(":", 1)
+        engine = _db_engine(repository)
+        if not engine or engine not in engines:
+            continue
+        tracks = engines[engine].get("tracks") or []
+        track = _db_track(engine, tag, tracks)
+        finding = {
+            "service": str(service_name),
+            "engine": engine,
+            "image": resolved,
+            "current": tag,
+        }
+        if not track:
+            finding.update({"status": "unknown", "eol": None, "track": None})
+            findings.append(finding)
+            continue
+        eol = track.get("eol")
+        status = "ok"
+        if eol:
+            try:
+                if date.fromisoformat(str(eol)[:10]) < today:
+                    status = "eol"
+            except ValueError:
+                status = "unknown"
+        finding.update({"status": status, "eol": eol, "track": track.get("track")})
+        findings.append(finding)
+
+    if not findings:
+        return {"ok": True, "status": "not_applicable", "databases": []}
+    eol_findings = [item for item in findings if item["status"] == "eol"]
+    return {
+        "ok": not eol_findings,
+        "status": "eol" if eol_findings else "ok",
+        "databases": findings,
+    }
+
+
 def _resolve_app_or_exit(app_name: str) -> Path:
     target = app_dir(app_name)
     if not target:
@@ -286,6 +389,7 @@ def check_app(app_name: str, gate: str = "all") -> dict:
     structure = _structure_result(target)
     policy = _policy_result(target)
     version = _version_result(target)
+    database = _database_result(target)
 
     if gate == "structure":
         return {"app": app_name, "gate": gate, "result": structure, "ok": structure["ok"]}
@@ -293,12 +397,15 @@ def check_app(app_name: str, gate: str = "all") -> dict:
         return {"app": app_name, "gate": gate, "result": policy, "ok": policy["ok"]}
     if gate == "version":
         return {"app": app_name, "gate": gate, "result": version, "ok": version["ok"]}
+    if gate in ("database", "db"):
+        return {"app": app_name, "gate": "database", "result": database, "ok": database["ok"]}
 
     return {
         "app": app_name,
         "structure": structure,
         "policy": policy,
         "version": version,
+        "database": database,
         "ok": structure["ok"] and policy["ok"],
     }
 

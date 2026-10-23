@@ -23,7 +23,7 @@ services:
       # You can use any environment from grafana.ini. format: GF_[group]_item
       - GF_SECURITY_ADMIN_USER=${W9_LOGIN_USER}
       - GF_SECURITY_ADMIN_PASSWORD=${W9_POWER_PASSWORD}
-      - GF_DATABASE_URL=mysql://$W9_ID:$W9_POWER_PASSWORD@${W9_ID}-mysql:3306/$W9_ID
+      - GF_DATABASE_URL=mysql://$W9_ID:$W9_POWER_PASSWORD@${W9_ID}-mysql:3306/grafana
 
   mysql:
     image: mysql:5.7
@@ -33,8 +33,8 @@ services:
     volumes:
       - mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: $W9_ID
-      MYSQL_USER: $W9_ID
+      MYSQL_DATABASE: grafana
+      MYSQL_USER: grafana
       MYSQL_PASSWORD: $W9_POWER_PASSWORD
       MYSQL_ROOT_PASSWORD: $W9_POWER_PASSWORD
     env_file: .env

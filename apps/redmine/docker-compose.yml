@@ -30,8 +30,8 @@ services:
       - mysql:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
-      MYSQL_DATABASE: ${W9_ID}
-      MYSQL_USER: ${W9_ID}
+      MYSQL_DATABASE: redmine
+      MYSQL_USER: redmine
       MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
 
 volumes:

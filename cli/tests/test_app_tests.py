@@ -182,7 +182,8 @@ def test_run_app_tests_stops_after_required_failure(repo_fixture, app_factory, m
         lambda *args, **kwargs: (_ for _ in ()).throw(requests.ConnectionError("connection refused")),
     )
 
-    payload = app_tests.run_app_tests("demo")
+    monkeypatch.setattr(app_tests.time, "sleep", lambda seconds: None)
+    payload = app_tests.run_app_tests("demo", wait_timeout=1, wait_interval=1)
 
     assert payload["ok"] is False
     assert [item["id"] for item in payload["results"]] == ["compose-config", "container-up"]
@@ -206,7 +207,8 @@ def test_run_app_tests_http_failure_is_structured(repo_fixture, app_factory, mon
         lambda *args, **kwargs: (_ for _ in ()).throw(requests.ConnectionError("connection refused")),
     )
 
-    payload = app_tests.run_app_tests("demo")
+    monkeypatch.setattr(app_tests.time, "sleep", lambda seconds: None)
+    payload = app_tests.run_app_tests("demo", wait_timeout=1, wait_interval=1)
 
     assert payload["ok"] is False
     assert [item["id"] for item in payload["results"]] == ["compose-config", "container-up", "web-access"]
@@ -235,7 +237,7 @@ def test_run_app_tests_retries_until_web_check_succeeds(repo_fixture, app_factor
     monkeypatch.setattr(app_tests.requests, "get", fake_get)
     monkeypatch.setattr(app_tests.time, "sleep", lambda seconds: None)
 
-    payload = app_tests.run_app_tests("demo", wait_timeout=10, wait_interval=1)
+    payload = app_tests.run_app_tests("demo", wait_timeout=1, wait_interval=1)
 
     assert payload["ok"] is True
     assert attempts["count"] == 3
@@ -269,7 +271,7 @@ def test_run_app_tests_retries_remote_compose_config(repo_fixture, app_factory, 
     monkeypatch.setattr(app_tests, "run_case", fake_run_case)
     monkeypatch.setattr(app_tests.time, "sleep", lambda seconds: None)
 
-    payload = app_tests.run_app_tests("demo", wait_timeout=10, wait_interval=1)
+    payload = app_tests.run_app_tests("demo", wait_timeout=1, wait_interval=1)
 
     assert payload["ok"] is False
     assert attempts["compose-config"] == 2
@@ -428,7 +430,8 @@ def test_run_app_tests_remote_progress_starts_with_connectivity_check(repo_fixtu
         lambda *args, **kwargs: {"id": args[1].get("id") or args[1]["type"], "ok": False, "stdout": "", "stderr": ""},
     )
 
-    payload = app_tests.run_app_tests("demo", progress=progress.append, verbose=False)
+    monkeypatch.setattr(app_tests.time, "sleep", lambda seconds: None)
+    payload = app_tests.run_app_tests("demo", wait_timeout=1, wait_interval=1, progress=progress.append, verbose=False)
 
     assert payload["ok"] is False
     assert progress == [

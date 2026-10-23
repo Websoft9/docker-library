@@ -141,3 +141,49 @@ def test_archive_app_concurrent_processes_preserve_all_metadata(repo_fixture, ap
     assert {"owncloud", "posthog", "python", "signoz"}.issubset(archived_apps)
     for name in ("owncloud", "posthog", "python", "signoz"):
         assert updated_archive["overrides"][name] == {"archive_reason": "batch-archive"}
+
+
+def test_collect_app_info_includes_operational_facts(repo_fixture, app_factory):
+    import json
+
+    (repo_fixture / "metadata" / "db-lifecycle.json").write_text(
+        json.dumps({
+            "version": 1,
+            "engines": {"mysql": {"tracks": [{"version": "8.4", "track": "lts", "eol": "2032-04-30"}]}},
+        }),
+        encoding="utf-8",
+    )
+    app = app_factory(
+        "demo",
+        env="W9_ID=demo\nW9_VERSION=1.0\nW9_HTTP_PORT_SET=9001\nW9_DB_VERSION=8.4\n",
+        compose=(
+            "services:\n"
+            "  demo:\n"
+            "    image: demo:1\n"
+            "    ports:\n"
+            "      - \"${W9_HTTP_PORT_SET}:80\" # Web Console\n"
+            "  mysql:\n"
+            "    image: mysql:${W9_DB_VERSION}\n"
+        ),
+        variables={
+            "name": "demo",
+            "trademark": "Demo",
+            "release": True,
+            "upstream": {"image": "https://hub.docker.com/_/demo/tags"},
+            "edition": [{"dist": "community", "version": ["1.0"]}],
+            "credentials": {"none": True},
+        },
+    )
+    tests_dir = app / "tests"
+    tests_dir.mkdir()
+    (tests_dir / "cases.yml").write_text("custom:\n  - id: smoke\n    type: script\n    script: smoke.sh\n", encoding="utf-8")
+
+    result = app_module.collect_app_info("demo")
+
+    assert result["version"] == {"w9_version": "1.0", "declared": ["1.0"]}
+    assert result["ports"][0]["published"] == "${W9_HTTP_PORT_SET}:80"
+    assert result["published_ports"] == [{"service": "demo", "env": "W9_HTTP_PORT_SET", "published": 9001, "target": 80}]
+    assert result["services"] == ["demo", "mysql"]
+    assert result["credentials"] == {"none": True}
+    assert result["database"]["status"] == "ok"
+    assert result["tests"]["cases"] == [{"group": "custom", "id": "smoke", "type": "script"}]

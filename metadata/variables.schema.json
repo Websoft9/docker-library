@@ -121,6 +121,10 @@
         }
       }
     },
+    "externalDB": {
+      "type": "object",
+      "description": "User-facing verified database requirement cache, keyed by app version and engine. Do not use it as a computation source."
+    },
     "requirements": {
       "type": "object",
       "additionalProperties": false,
@@ -229,6 +233,10 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "none": {
+          "type": "boolean",
+          "description": "Set true when the image ships no preset admin credentials and the account is created interactively during setup."
+        },
         "initial": {
           "$ref": "#/$defs/credentialSlots",
           "description": "One-time bootstrap or setup credentials used only during initial setup."

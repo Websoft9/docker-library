@@ -43,6 +43,7 @@
 - `credentials` 支持按阶段分组声明（`initial` 初始化凭证 + `login` 登录凭证），也兼容直接在顶层声明单阶段槽位（`username` / `password` / `token`，默认等价于 `login`）
 - 复杂登录（一次性初始化 + 固定终态账号）：在 `credentials.initial` 中声明首次初始化凭证（如从 `container-log` 提取一次性临时密码或从 `container-file` 读取解锁密码），在 `credentials.login` 中声明终态固定凭证（如 `container-env` 指向 `W9_LOGIN_PASSWORD`），同时保留 `.env` 的 `W9_LOGIN_USER` / `W9_LOGIN_PASSWORD` 供当前前端渲染，并配置 `help.login` 说明初始化与正式登录的关系
 - `credentials` 仅描述“凭据从哪里取”，不允许在仓库中写任意宿主级 shell
+- 镜像不预置管理员账号、由安装向导创建时，声明 `credentials.none: true`，且不要填写 `W9_LOGIN_USER` / `W9_LOGIN_PASSWORD`
 
 当前约定支持 3 个固定槽位：`username`、`password`、`token`。每个槽位都声明“值从哪里来”的 source。既可直接挂在 `credentials.<slot>` 下（单阶段简写），也可挂在 `credentials.initial.<slot>` 或 `credentials.login.<slot>` 下（分阶段声明）。
 

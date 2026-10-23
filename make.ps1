@@ -81,12 +81,14 @@ switch ($Target) {
     Write-HelpEntry "test-cli" "run cli unit and contract tests"
     Write-HelpEntry "test-build" "run build pipeline smoke tests"
     Write-HelpEntry "test-skills" "run skills asset and workflow tests"
+    Write-HelpEntry "build-ai-commands" "generate opencode/copilot/codex command adapters from manifest"
     Write-HelpHeader "Config & Setup"
     Write-HelpEntry "help" "show this help"
     Write-HelpEntry "install" "create .venv and install the libs CLI"
     Write-HelpEntry "remote" "interactively write .secrets/remote.env for remote-aware commands"
     Write-HelpEntry "connector" "interactively write .secrets/<provider>.env for API tokens, DNS and cloud credentials"
     Write-HelpEntry "github-token" "configure the GitHub MCP token for opencode"
+    Write-HelpEntry "install-git-hooks" "set core.hooksPath=.githooks and enable local quality hooks"
     Write-Host ""
   }
   "install" {
@@ -171,6 +173,14 @@ switch ($Target) {
   "github-token" {
     $python = Get-PythonCommand
     & $python ci/scripts/configure_github_mcp.py @Args
+  }
+  "install-git-hooks" {
+    git config core.hooksPath .githooks
+    Write-Host "configured git hooks path: .githooks"
+  }
+  "build-ai-commands" {
+    $python = Get-PythonCommand
+    & $python ci/scripts/build_ai_commands.py @Args
   }
   "connector" {
     New-Item -ItemType Directory -Force ".secrets" | Out-Null

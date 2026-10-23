@@ -16,19 +16,20 @@ Core design goals:
 - machine-readable metadata for the Websoft9 platform and AI agents
 - repeatable, auditable maintenance
 
-## AI-driven maintenance
-
-This repository is maintained by AI agents under owner review. The owner decides demand and the final end-to-end result; AI handles upstream research, implementation, routine validation, and reporting.
-
-Entry points for contributors and agents:
-
-- `AGENTS.md` - repository rules and fastest entry point
-- `docs/ai-sdlc/` - AI delivery pipeline, quality gates, and report format
-- `skills/` - shared agent workflows for new apps, updates, deployment validation, and archive/restore
-- `metadata/maintenance.yaml` and `metadata/archive.yaml` - maintenance and lifecycle state
-- `cli/` - the `libs` automation interface
 
 ## Quick start
+
+### AI agent deployment
+
+Use the following prompt with your AI agent:
+
+```text
+git colone https://github.com/Websoft9/docker-library.git, then deploy one app for me using the `install-app` skill.
+Start by listing `apps/`, ask me which app to deploy if I did not specify one,
+and return the final access URL plus a short validation summary.
+```
+
+### Manual deployment
 
 1. Install Docker.
 
@@ -54,10 +55,25 @@ Entry points for contributors and agents:
 
 The Websoft9 console is the easiest way to run these packages with a web UI, domains, HTTPS, backups, and lifecycle management.
 
+## AI-driven maintenance
+
+This repository is maintained by AI agents under owner review. The owner decides demand and the final end-to-end result; AI handles upstream research, implementation, routine validation, and reporting.
+
+Entry points for contributors and agents:
+
+- `AGENTS.md` - repository rules and fastest entry point
+- `docs/ai-sdlc/` - AI delivery pipeline, quality gates, and report format
+- `skills/` - shared agent workflows for new apps, updates, deployment validation, and archive/restore
+- `metadata/maintenance.yaml` and `metadata/archive.yaml` - maintenance and lifecycle state
+- `cli/` - the `libs` automation interface
+
 ## AI agent commands (opencode)
+
+Command adapters are generated from `skills/commands.manifest.json` by `make build-ai-commands`.
 
 | Command | Purpose |
 |---|---|
+| `/libs-install-app <app> [local\|remote]` | Install one app package with target selection, port pre-check, and health validation |
 | `/libs-new-app <app> <trademark> <reference URL>` | Create a new app package |
 | `/libs-update-assessment <app>` | Check upstream versions and decide whether an update is worth doing |
 | `/libs-update-app <app> [version]` | Implement an approved update and produce a report |
@@ -82,6 +98,7 @@ All images come from the official project or an authoritative third party (for e
 - [Maintenance metadata](metadata/maintenance.yaml)
 - [Archive metadata](metadata/archive.yaml)
 - [Shared skills](skills/README.md)
+- [AI command manifest](skills/commands.manifest.json)
 - [CLI](cli/README.md)
 - [Websoft9 Administrator Guide](https://support.websoft9.com/docs/apps)
 

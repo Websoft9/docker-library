@@ -8,13 +8,14 @@ Steps:
 2. Compare current version and target version.
 3. Classify the candidate as `auto-update`, `review-first`, `defer`, or `skip`.
 4. Create or update one issue per app.
-5. AI researches upstream release notes and docs.
-6. AI edits `.env`, `docker-compose.yml`, `variables.json`, `README.md`, and `src/` when needed for the target version and for any app-local conformance fixes required by current repository rules.
+5. AI researches upstream release notes and docs. Network probes use a 2s per-attempt budget with at most 2 retries; on local failure, fetch through the remote host's egress instead of extending timeouts.
+6. AI edits `.env`, `docker-compose.yml`, `variables.json`, `README.md`, and `src/` when needed for the target version and for any app-local conformance fixes required by current repository rules. When `libs app-check --gate database` reports a bundled DB track as EOL, update it to a vendor-supported alive LTS track in the same update.
 7. AI registers any new translatable env key in `i18n/translation.json`.
 8. AI runs automated validation.
-9. AI publishes the test report.
-10. Owner runs final E2E.
-11. Owner decides merge, release, defer, or reject.
+9. AI syncs the changed app to the test server's websoft9 store with `libs appstore-sync` when the container is reachable; skip within 10s when it is absent.
+10. AI publishes the test report.
+11. Owner runs final E2E.
+12. Owner decides merge, release, defer, or reject.
 
 Archive path:
 - if owner decides to retire an app, move it to `archive/apps/`
