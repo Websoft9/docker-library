@@ -136,6 +136,7 @@ def test_remote_json_fallback_uses_short_curl_timeouts(monkeypatch):
         return subprocess.CompletedProcess(["ssh"], 0, '{"ok": true}', "")
 
     monkeypatch.setattr(remote, "ssh_host", lambda: "remote.example")
+    monkeypatch.setattr(remote, "ssh_user", lambda: "root")
     monkeypatch.setattr(remote, "resolve_secret_path", lambda: Path("/tmp/key"))
     monkeypatch.setattr(Path, "exists", lambda self: True)
     monkeypatch.setattr(remote, "run_ssh", fake_run_ssh)
@@ -158,6 +159,7 @@ def test_remote_json_fallback_retries_ssh_once(monkeypatch):
         return subprocess.CompletedProcess(["ssh"], 1, "", "connection timeout")
 
     monkeypatch.setattr(remote, "ssh_host", lambda: "remote.example")
+    monkeypatch.setattr(remote, "ssh_user", lambda: "root")
     monkeypatch.setattr(remote, "resolve_secret_path", lambda: Path("/tmp/key"))
     monkeypatch.setattr(Path, "exists", lambda self: True)
     monkeypatch.setattr(remote, "run_ssh", fake_run_ssh)
