@@ -118,4 +118,4 @@ Credentials:
 - resolution order: command flag > explicit `--env-file` > environment variable > default provider file
 - CI keeps passing secrets as environment variables from GitHub Actions secrets; it does not use `.secrets/`
 
-Run from the repository root or a subdirectory inside it. The CLI now refuses to run outside the repository so it cannot read or write the wrong `apps/` or `metadata/` tree by accident. CLI does not depend on `build/`.
+Run from the repository root or a subdirectory inside it. The CLI now refuses to run outside the repository so it cannot read or write the wrong `apps/` or `metadata/` tree by accident. CLI does not depend on the publishing scripts under `ci/scripts/`.

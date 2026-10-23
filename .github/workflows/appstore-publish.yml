@@ -73,7 +73,7 @@ jobs:
         env:
           CONTENTFUL_GRAPHQL_TOKEN: ${{ secrets.CONTENTFUL_GRAPHQLTOKEN }}
         run: |
-          python build/fetch_catalog.py \
+          python ci/scripts/fetch_catalog.py \
             --channel "${{ steps.resolve_channel.outputs.channel }}" \
             --output-dir dist/catalog-source
 
@@ -140,7 +140,7 @@ jobs:
           elif [[ -n "${{ steps.release_base.outputs.from_ref }}" ]]; then
             args+=(--from-ref "${{ steps.release_base.outputs.from_ref }}")
           fi
-          python build/library_publish.py "${args[@]}"
+          python ci/scripts/library_publish.py "${args[@]}"
 
       - name: Generate changelog
         if: steps.resolve_channel.outputs.channel == 'release'

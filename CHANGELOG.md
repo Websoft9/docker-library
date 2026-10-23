@@ -9,12 +9,14 @@ Project-level changes only: architecture, delivery model, tooling, CI, and relea
 
 ### Changed
 - Moved the opencode session cleanup script from `build/` to `ci/scripts/` and updated `make opencode-clear` to use it.
+- Moved `fetch_catalog.py` and `library_publish.py` from `build/` to `ci/scripts/`; the `build/` directory is now removed.
 
 ### Removed
 - Removed the legacy `template/` directory; scaffolds and generated docs now use `metadata/templates/`.
 - Removed unused `build/update_readme.py`, `build/update_variables.py`, `build/test_apps.py`, and `build/get_apps_latest_version.py`.
 - Removed obsolete workflows: `build_files`, `pull_quest_test`, `pre_merge`, `release`, `release-dev`, `sync_php_files`, and `get_apps_latest_version`.
 - Removed `add_apps.json` and its template-scaffold workflow.
+- Removed the unused `build/sync_contentful.py`; Contentful sync now uses `libs catalog-push`.
 
 ## 2026-09
 

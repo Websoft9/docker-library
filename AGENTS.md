@@ -54,7 +54,7 @@ Read in this order:
 - App metadata: `metadata/maintenance.yaml`, `metadata/archive.yaml`
 - Shared skills: `skills/`
 - Template: `metadata/templates/`
-- Scripts: `ci/scripts/`, `build/`
+- Scripts: `ci/scripts/`
 - Process docs: `docs/ai-sdlc/`
 - CI: `.github/workflows/`
 

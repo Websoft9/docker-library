@@ -4,7 +4,7 @@ import json
 
 from _helpers import REPO_ROOT, load_build_module
 
-fetch_catalog = load_build_module("fetch_catalog_test", REPO_ROOT / "build" / "fetch_catalog.py")
+fetch_catalog = load_build_module("fetch_catalog_test", REPO_ROOT / "ci" / "scripts" / "fetch_catalog.py")
 
 
 def test_fetch_catalog_entries_returns_collection_items(monkeypatch):
