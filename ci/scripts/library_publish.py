@@ -14,7 +14,7 @@ from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
 
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parents[2]
 APPS_DIR = ROOT / "apps"
 PACKAGE_ROOT_NAME = "library"
 CHANNEL_PACKAGE_NAMES = {

@@ -9,8 +9,7 @@ Core layout:
 - `metadata/archive.yaml`: archived app metadata and external handoff flags
 - `skills/`: canonical shared skills for multiple agents
 - `metadata/templates/`: app scaffold, README, and catalog templates
-- `ci/scripts/`: local and CI helper scripts
-- `build/`: generation and publishing scripts
+- `ci/scripts/`: local, CI, and publishing scripts
 - `docs/`: product, process, and maintainer docs
 - `.github/workflows/`: CI, release, and maintenance automation
 

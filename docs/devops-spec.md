@@ -315,7 +315,7 @@ Those concerns belong to platform workflows or human process.
 
 Recommended order:
 
-1. Normalize existing `build/*.py` inputs and outputs.
+1. Normalize existing `ci/scripts/*.py` inputs and outputs.
 2. Introduce a thin unified CLI.
 3. Update workflows to call the CLI.
 4. Add `make` only if maintainers need local shortcuts.

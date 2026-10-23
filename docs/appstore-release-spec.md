@@ -563,7 +563,7 @@ artifact/appstore/<channel>/
 2. 解析 channel
 3. 检查 R2 apps/ 是否为空 → 空则标记首次发布（--all-apps）
 4. 从 Contentful 拉取 catalog 源数据
-5. 运行 library_publish.py 构建所有制品（v2 + legacy），并以仓库 variables.json 统一 product distribution 数据结构
+5. 运行 `ci/scripts/library_publish.py` 构建所有制品（v2 + legacy），并以仓库 variables.json 统一 product distribution 数据结构
 6. 上传 v2 制品到新 R2 路径（`channel` 只由目录表达，full 固定入口统一为 `latest.zip`）
 7. 上传 legacy 制品到旧 R2 路径（兼容旧消费者）
 8. 清除 Cloudflare 缓存
