@@ -3,7 +3,7 @@ name: PR checks
 on:
   pull_request:
     branches: [main]
-    types: [opened, synchronize, reopened, edited, ready_for_review]
+    types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
   contents: read
@@ -15,6 +15,9 @@ concurrency:
 jobs:
   pr-checks:
     name: PR checks
+    # Draft PRs are checked when they become ready for review; later commits
+    # on a ready PR still run the checks through the synchronize event.
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:

@@ -1,23 +1,45 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-library
-library-*.zip
-artifacts
-mk.sh
+## OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
 
-.venv
-*.egg-info
-.pytest_cache
+## Python caches / test output
 __pycache__/
 *.py[cod]
-tests/__pycache__
-cli/.pytest_cache
-.opencode/node_modules
-## secret
+.venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+## Build & publish artifacts
+dist/
+artifacts/
+library/
+library-*.zip
+mk.sh
+
+## Node / local tooling
+node_modules/
+*.log
+
+## Local config
 cli/proxy.conf
-## secrets (private keys never enter the repository)
+
+## Secrets (never commit)
 .secrets/
 *.pem
 *.key
-id_*
+id_rsa*
+id_dsa*
+id_ecdsa*
+id_ed25519*
+
+## Playwright MCP
 .playwright-mcp/
