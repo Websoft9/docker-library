@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 2026-10-24
+- Updated PrestaShop from `9.1` to `9.2`.
+
 ## 2026-09-11
 - Updated PrestaShop from `8.2` to `9.1`.
 - Updated the bundled MySQL image from `5.7` (EOL) to `8.4` LTS.

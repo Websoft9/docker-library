@@ -33,7 +33,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 9.1, latest.
+Supported versions: 9.2, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
