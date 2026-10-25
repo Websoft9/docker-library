@@ -1,0 +1,171 @@
+# Daily scan selector.
+#
+# Scans only the apps whose cadence interval has elapsed since their last
+# successful check. State lives in the MAINTENANCE_SCAN_STATE repository
+# variable as JSON, so scanning never creates repository commits.
+#
+# The state is updated through the variables REST API, which the automatic
+# GITHUB_TOKEN cannot call. Use one PAT secret with repo scope (or Variables
+# read/write). Reading through the `vars` context would not need a token, but
+# the API is used so a read failure is distinguishable from "no state yet".
+#
+# Due rules:
+# - interval comes from metadata/maintenance.yaml: weekly=7d, monthly=30d, quarterly=90d
+# - never checked: deterministic hash slot spreads the first run across the cycle
+# - failed checks retry on the next run; after 3 failures the app is parked
+# - --limit caps the per-run scan volume
+
+name: Maintenance scan
+
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: Maximum apps to scan in this run
+        required: false
+        default: '15'
+        type: string
+      plan_only:
+        description: List due apps without scanning upstream
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: maintenance-scan
+  cancel-in-progress: false
+
+env:
+  STATE_VAR: MAINTENANCE_SCAN_STATE
+  STATE_LIMIT_BYTES: '45000'
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      - name: Install libs CLI
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e 'cli/'
+
+      - name: Read scan state
+        id: state
+        env:
+          GH_TOKEN: ${{ secrets.MAINTENANCE_STATE_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::error::Set MAINTENANCE_STATE_TOKEN to a PAT with repo scope (the automatic GITHUB_TOKEN cannot write variables)."
+            exit 1
+          fi
+          if gh api "repos/$REPO/actions/variables/$STATE_VAR" --jq .value > state.json 2> gh.err; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "loaded existing state ($(wc -c < state.json) bytes)"
+          elif grep -q 'HTTP 404' gh.err; then
+            printf '%s' '{"version":1,"apps":{}}' > state.json
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "no state variable yet; starting empty"
+          else
+            cat gh.err >&2
+            echo "::error::Failed to read $STATE_VAR"
+            exit 1
+          fi
+          python -c 'import json; json.load(open("state.json"))' || {
+            echo "::error::$STATE_VAR is not valid JSON; refusing to scan"
+            exit 1
+          }
+
+      - name: Select and scan due apps
+        id: scan
+        env:
+          LIMIT: ${{ inputs.limit || '15' }}
+          PLAN_ONLY: ${{ inputs.plan_only || 'false' }}
+        run: |
+          set -euo pipefail
+          args=(scan --selection due --state-file state.json --limit "$LIMIT" --json)
+          if [ "$PLAN_ONLY" = "true" ]; then
+            args+=(--plan-only)
+          else
+            args+=(--state-out next.json)
+          fi
+          python -m libs "${args[@]}" > scan.json
+
+      - name: Write job summary
+        if: steps.scan.outcome == 'success'
+        run: |
+          set -euo pipefail
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          from pathlib import Path
+
+          from libs.scan_state import MAX_FAILS
+
+          items = json.load(open("scan.json"))
+          state_path = Path("next.json") if Path("next.json").exists() else Path("state.json")
+          state = json.load(open(state_path)) if state_path.exists() else {"apps": {}}
+          parked = sorted(name for name, entry in state.get("apps", {}).items() if int(entry.get("fails") or 0) >= MAX_FAILS)
+
+          print("## Maintenance scan")
+          print()
+          print(f"- scanned: {len(items)}")
+          print(f"- state entries: {len(state.get('apps', {}))}")
+          print(f"- needs attention: {', '.join(parked) if parked else 'none'}")
+          print()
+          if items:
+              print("| app | current | latest | status |")
+              print("| --- | --- | --- | --- |")
+              for item in items:
+                  latest = item.get("latest_version")
+                  latest_version = latest.get("version") if isinstance(latest, dict) else "n/a"
+                  current = ", ".join(item.get("current_version") or [])
+                  status = item.get("version_status") or item.get("error") or "planned"
+                  print(f"| {item['name']} | {current} | {latest_version} | {status} |")
+          else:
+              print("No apps are due in this run.")
+          PY
+
+      - name: Write updated scan state
+        if: inputs.plan_only != true
+        env:
+          GH_TOKEN: ${{ secrets.MAINTENANCE_STATE_TOKEN }}
+          REPO: ${{ github.repository }}
+          EXISTS: ${{ steps.state.outputs.exists }}
+        run: |
+          set -euo pipefail
+          if python - <<'PY'
+          import json
+          a = json.load(open("state.json"))
+          b = json.load(open("next.json"))
+          raise SystemExit(0 if a == b else 1)
+          PY
+          then
+            echo "state unchanged; skipping write"
+            exit 0
+          fi
+          bytes=$(wc -c < next.json | tr -d '[:space:]')
+          if [ "$bytes" -gt "$STATE_LIMIT_BYTES" ]; then
+            echo "::error::state is ${bytes} bytes, above ${STATE_LIMIT_BYTES}; shard or migrate before the next run"
+            exit 1
+          fi
+          body=$(jq -n --arg name "$STATE_VAR" --arg value "$(cat next.json)" '{name: $name, value: $value}')
+          if [ "$EXISTS" = "true" ]; then
+            printf '%s' "$body" | gh api --method PATCH "repos/$REPO/actions/variables/$STATE_VAR" --input - >/dev/null
+          else
+            printf '%s' "$body" | gh api --method POST "repos/$REPO/actions/variables" --input - >/dev/null
+          fi
+          echo "wrote $STATE_VAR (${bytes} bytes)"

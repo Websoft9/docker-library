@@ -6,7 +6,7 @@ from datetime import date, datetime
 
 import typer
 
-from libs import http
+from libs import http, scan_state
 from libs.metadata import active_app_dirs, resolve_app_metadata
 from libs.output import print_output
 from libs.sources import detect_source_type, fetch_candidates, fetch_verified_candidates
@@ -22,24 +22,16 @@ def _parse_target_date(raw_date: str | None) -> date:
     return datetime.strptime(raw_date, "%Y-%m-%d").date()
 
 
-def _cadence_matches(cadence: str, target_date: date) -> bool:
-    if cadence == "weekly":
-        return target_date.weekday() == 0
-    if cadence == "monthly":
-        return target_date.day == 1
-    if cadence == "quarterly":
-        return target_date.day == 1 and target_date.month in (1, 4, 7, 10)
-    return False
-
-
-def _selected(app_name: str, selection: str, target_date: date) -> tuple[bool, str]:
+def _selected(app_name: str, selection: str, target_date: date, entry: dict | None) -> tuple[bool, str]:
     metadata = resolve_app_metadata(app_name)
     if metadata.status == "archived":
         return False, "archived"
     if selection == "all-active":
         return True, "all-active"
     if selection == "due":
-        return _cadence_matches(metadata.cadence, target_date), metadata.cadence
+        if entry is None:
+            raise ValueError("state is required when selection is due")
+        return scan_state.app_due(entry, metadata.cadence, app_name, target_date)
     return metadata.cadence == selection, metadata.cadence
 
 
@@ -59,17 +51,24 @@ def scan_apps(
     major_ahead: int = 3,
     app_filter: str | None = None,
     network_timeout: float = 15.0,
+    state: dict | None = None,
+    limit: int | None = None,
 ) -> list[dict]:
     started = time.monotonic()
     http.reset_network_state(network_timeout)
     target = _parse_target_date(target_date)
-    output = []
+    if selection == "due" and state is None:
+        raise ValueError("state is required when selection is due")
+
+    state_apps = (state or {}).get("apps")
+    if state_apps is None:
+        state_apps = {}
+    if not isinstance(state_apps, dict):
+        raise scan_state.ScanStateError("state.apps must be an object")
+    candidates = []
 
     for app_dir in active_app_dirs():
         if app_filter and app_dir.name != app_filter:
-            continue
-        included, selected_by = _selected(app_dir.name, selection, target)
-        if not included:
             continue
 
         variables_path = app_dir / "variables.json"
@@ -77,7 +76,44 @@ def scan_apps(
             continue
 
         metadata = resolve_app_metadata(app_dir.name)
+        entry = state_apps.get(app_dir.name)
+        if entry is None:
+            entry = {}
+        if not isinstance(entry, dict):
+            raise scan_state.ScanStateError(f"state entry for {app_dir.name} must be an object")
+        included, selected_by = _selected(
+            app_dir.name,
+            selection,
+            target,
+            entry if state is not None else None,
+        )
+        if not included:
+            continue
+
         variables = json.loads(variables_path.read_text(encoding="utf-8"))
+        if selection == "due" and not variables.get("release", False):
+            continue
+
+        candidates.append({
+            "app_dir": app_dir,
+            "metadata": metadata,
+            "selected_by": selected_by,
+            "variables": variables,
+            "attempt_at": entry.get("attempt_at") or "",
+        })
+
+    if selection == "due":
+        candidates.sort(key=lambda item: (item["attempt_at"], item["app_dir"].name))
+    if limit and limit > 0:
+        candidates = candidates[:limit]
+
+    output = []
+
+    for candidate in candidates:
+        app_dir = candidate["app_dir"]
+        metadata = candidate["metadata"]
+        selected_by = candidate["selected_by"]
+        variables = candidate["variables"]
         current_versions, all_versions = get_current_versions(variables.get("edition", []))
         current_version_strs = [str(current) for current in current_versions]
         upstream = variables.get("upstream") or {}

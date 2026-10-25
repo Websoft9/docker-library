@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 import typer
 from rich import box
@@ -8,7 +9,7 @@ from rich.console import Console
 from rich.table import Table
 
 from libs import app as app_ops
-from libs import app_build, app_deploy, app_tests, appstore_sync, catalog, contentful, dblifecycle, drift, http, imagestats, maintenance, newapp, readme, remote, validate, versions
+from libs import app_build, app_deploy, app_tests, appstore_sync, catalog, contentful, dblifecycle, drift, http, imagestats, maintenance, newapp, readme, remote, scan_state, validate, versions
 from libs.metadata import app_dir
 from libs.output import print_output
 
@@ -156,31 +157,68 @@ def image_stats_command(
     "scan",
     epilog=(
         "Examples:\n"
-        "  libs scan --selection due --plan-only\n"
+        "  libs scan --selection due --state-file state.json --limit 10\n"
+        "  libs scan --selection due --state-file state.json --state-out next.json --json\n"
         "  libs scan --app wordpress\n"
         "  libs scan --app wordpress --major-ahead 5 --json"
     ),
 )
 def scan_command(
     selection: str = typer.Option("all-active", help="all-active | due | weekly | monthly | quarterly"),
-    target_date: str | None = typer.Option(None, "--date", help="Date used for cadence selection in YYYY-MM-DD format"),
-    plan_only: bool = typer.Option(False, help="Only list selected apps without remote version checks"),
+    target_date: str | None = typer.Option(None, "--date", help="Date used for due selection in YYYY-MM-DD format"),
+    plan_only: bool = typer.Option(False, "--plan-only", help="Only list selected apps without remote version checks"),
     page_size: int = typer.Option(100, help="Number of tags per Docker Hub page"),
     major_ahead: int = typer.Option(3, help="How many future majors to probe"),
     app_name: str | None = typer.Option(None, "--app", help="Scan only this app"),
     network_timeout: float = typer.Option(15.0, "--network-timeout", min=1.0, max=120.0, help="Total seconds for upstream network checks"),
+    state_file: str | None = typer.Option(None, "--state-file", help="Scan state JSON required by --selection due"),
+    state_out: str | None = typer.Option(None, "--state-out", help="Write the updated scan state to this path"),
+    limit: int | None = typer.Option(None, "--limit", min=1, help="Maximum number of apps to scan in this run"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
 ) -> None:
     """Scan upstream versions for selected apps."""
-    payload = versions.scan_apps(
-        selection=selection,
-        target_date=target_date,
-        plan_only=plan_only,
-        page_size=page_size,
-        major_ahead=major_ahead,
-        app_filter=app_name,
-        network_timeout=network_timeout,
-    )
+    state = None
+    if state_file:
+        try:
+            state = scan_state.load_state(Path(state_file))
+        except scan_state.ScanStateError as error:
+            typer.echo(f"scan state error: {error}", err=True)
+            raise typer.Exit(code=2)
+
+    try:
+        payload = versions.scan_apps(
+            selection=selection,
+            target_date=target_date,
+            plan_only=plan_only,
+            page_size=page_size,
+            major_ahead=major_ahead,
+            app_filter=app_name,
+            network_timeout=network_timeout,
+            state=state,
+            limit=limit,
+        )
+    except ValueError as error:
+        typer.echo(f"scan error: {error}", err=True)
+        raise typer.Exit(code=2)
+
+    if state_out:
+        if state is None:
+            typer.echo("scan error: --state-out requires --state-file", err=True)
+            raise typer.Exit(code=2)
+        if plan_only:
+            typer.echo("scan error: --state-out is not written in --plan-only mode", err=True)
+            raise typer.Exit(code=2)
+        results = []
+        for item in payload:
+            latest = item.get("latest_version")
+            results.append({
+                "app": item["name"],
+                "ok": "error" not in item,
+                "latest": latest.get("version") if isinstance(latest, dict) else None,
+            })
+        scan_state.apply_results(state, results, scan_state.utc_now_iso())
+        scan_state.save_state(Path(state_out), state)
+
     print_output(payload, as_json)
 
 

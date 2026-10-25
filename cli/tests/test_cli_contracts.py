@@ -150,3 +150,54 @@ def test_check_maintenance_contract(repo_fixture):
 
     assert result.exit_code == 0
     assert "maintenance metadata valid" in result.stdout
+
+
+def test_scan_due_writes_state_contract(repo_fixture, app_factory, monkeypatch, tmp_path):
+    app_factory("wordpress")
+    monkeypatch.setattr(
+        main.versions,
+        "fetch_candidates",
+        lambda *args, **kwargs: ({"version": "1.1", "last_updated": "2026-10-01"}, None),
+    )
+    state = tmp_path / "state.json"
+    state.write_text(
+        json.dumps({"version": 1, "apps": {"wordpress": {"ok_at": "2026-01-01T00:00:00Z"}}}),
+        encoding="utf-8",
+    )
+    state_out = tmp_path / "next.json"
+
+    result = runner.invoke(
+        main.app,
+        [
+            "scan",
+            "--selection",
+            "due",
+            "--state-file",
+            str(state),
+            "--state-out",
+            str(state_out),
+            "--date",
+            "2026-10-25",
+            "--json",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert _json_output(result)[0]["version_status"] == "update-available"
+    next_state = json.loads(state_out.read_text(encoding="utf-8"))
+    assert next_state["apps"]["wordpress"]["fails"] == 0
+    assert next_state["apps"]["wordpress"]["ok_at"]
+
+
+def test_scan_due_rejects_invalid_state(repo_fixture, app_factory, tmp_path):
+    app_factory("wordpress")
+    state = tmp_path / "state.json"
+    state.write_text("{bad", encoding="utf-8")
+
+    result = runner.invoke(
+        main.app,
+        ["scan", "--selection", "due", "--state-file", str(state), "--json"],
+    )
+
+    assert result.exit_code == 2
+    assert "scan state error" in (result.stdout + getattr(result, "stderr", ""))

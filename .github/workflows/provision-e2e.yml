@@ -1,0 +1,186 @@
+name: Provision Websoft9 E2E
+
+on:
+  workflow_call:
+    inputs:
+      issue_number:
+        required: true
+        type: number
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: provision-e2e-${{ inputs.issue_number }}
+  cancel-in-progress: false
+
+jobs:
+  provision:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Find generated pull request
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ inputs.issue_number }}
+        run: |
+          pr=$(gh pr list --repo "$REPOSITORY" --state open --limit 50 --json number,body,headRefOid,baseRefOid \
+            | jq -c --arg issue "#$ISSUE_NUMBER" '[.[] | select(.body | contains($issue))] | first // empty')
+          if [ -z "$pr" ]; then
+            echo "No open pull request found for issue #$ISSUE_NUMBER; nothing to provision."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "found=true" >> "$GITHUB_OUTPUT"
+          echo "number=$(jq -r '.number' <<< "$pr")" >> "$GITHUB_OUTPUT"
+          echo "head=$(jq -r '.headRefOid' <<< "$pr")" >> "$GITHUB_OUTPUT"
+          echo "base=$(jq -r '.baseRefOid' <<< "$pr")" >> "$GITHUB_OUTPUT"
+          echo "url=https://github.com/$REPOSITORY/pull/$(jq -r '.number' <<< "$pr")" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout pull request
+        if: steps.pr.outputs.found == 'true'
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ref: ${{ steps.pr.outputs.head }}
+
+      - name: Detect changed applications
+        if: steps.pr.outputs.found == 'true'
+        id: apps
+        env:
+          BASE_SHA: ${{ steps.pr.outputs.base }}
+          HEAD_SHA: ${{ steps.pr.outputs.head }}
+        run: |
+          apps=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" \
+            | awk -F/ '$1 == "apps" && $2 != "" {print $2}' \
+            | sort -u \
+            | paste -sd, -)
+          if [ -z "$apps" ]; then
+            echo "No application changes found; nothing to provision."
+            echo "list=" >> "$GITHUB_OUTPUT"
+          else
+            echo "list=$apps" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install CLI
+        if: steps.pr.outputs.found == 'true' && steps.apps.outputs.list != ''
+        run: make install
+
+      - name: Write SSH key
+        if: steps.pr.outputs.found == 'true' && steps.apps.outputs.list != ''
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.ALIYUN_SSH_PRIVATE_KEY }}
+        run: |
+          test -n "$SSH_PRIVATE_KEY"
+          mkdir -p .secrets/ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > .secrets/ssh/e2e.pem
+          chmod 600 .secrets/ssh/e2e.pem
+
+      - name: Create temporary Websoft9 server
+        if: steps.pr.outputs.found == 'true' && steps.apps.outputs.list != ''
+        id: server
+        env:
+          ALIYUN_ACCESS_KEY_ID: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
+          ALIYUN_ACCESS_KEY_SECRET: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+        run: |
+          result=$(make create-aliyun-ecs ARGS="--name libs-pr-$PR_NUMBER --release-in 2h --yes --wait-timeout 180 --json")
+          printf '%s\n' "$result" > server.json
+          ip=$(jq -r '.public_ip // empty' server.json)
+          test -n "$ip"
+          echo "ip=$ip" >> "$GITHUB_OUTPUT"
+          echo "expires=$(jq -r '.auto_release_time' server.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for SSH and Websoft9
+        if: steps.pr.outputs.found == 'true' && steps.apps.outputs.list != ''
+        env:
+          HOST: ${{ steps.server.outputs.ip }}
+        run: |
+          for attempt in $(seq 1 60); do
+            if ssh -i .secrets/ssh/e2e.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5 root@"$HOST" 'docker inspect websoft9 >/dev/null 2>&1'; then
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Websoft9 did not become reachable in time" >&2
+          exit 1
+
+      - name: Sync applications to Websoft9
+        if: steps.pr.outputs.found == 'true' && steps.apps.outputs.list != ''
+        env:
+          HOST: ${{ steps.server.outputs.ip }}
+          APPS: ${{ steps.apps.outputs.list }}
+        run: |
+          IFS=',' read -r -a app_list <<< "$APPS"
+          for app in "${app_list[@]}"; do
+            make libs ARGS="appstore-sync --app $app --ssh-host $HOST --ssh-secret-path .secrets/ssh/e2e.pem --progress --json"
+          done
+
+      - name: Report test environment
+        if: steps.pr.outputs.found == 'true' && steps.apps.outputs.list != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          HEAD_SHA: ${{ steps.pr.outputs.head }}
+          HOST: ${{ steps.server.outputs.ip }}
+          EXPIRES: ${{ steps.server.outputs.expires }}
+          APPS: ${{ steps.apps.outputs.list }}
+        run: |
+          cat > e2e-comment.md <<EOF
+          ## Owner E2E Environment
+
+          - status: ready
+          - apps: $APPS
+          - commit: $HEAD_SHA
+          - server IP: $HOST
+          - expires: $EXPIRES
+          - synced: PR application packages and catalog data
+
+          The environment is temporary and will be released automatically. Complete the Websoft9 installation, login, and core workflow checks, then record the result in this PR.
+          EOF
+          gh pr comment "$PR_NUMBER" --repo "$REPOSITORY" --body-file e2e-comment.md
+
+      - name: Notify WeCom that environment is ready
+        if: success() && steps.pr.outputs.found == 'true' && steps.apps.outputs.list != ''
+        env:
+          WECOM_WEBHOOK: ${{ secrets.WECOM_WEBHOOK }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          PR_URL: ${{ steps.pr.outputs.url }}
+          HEAD_SHA: ${{ steps.pr.outputs.head }}
+          HOST: ${{ steps.server.outputs.ip }}
+          EXPIRES: ${{ steps.server.outputs.expires }}
+          APPS: ${{ steps.apps.outputs.list }}
+        run: |
+          test -n "$WECOM_WEBHOOK"
+          content=$(printf '# Websoft9 E2E environment ready\n> Repository: %s\n> PR: [%s](%s)\n> App: %s\n> Commit: `%s`\n> Server IP: `%s`\n> Expires: %s\n\nPlease complete the Websoft9 installation, login, and core workflow checks.' \
+            "$REPOSITORY" "#$PR_NUMBER" "$PR_URL" "$APPS" "${HEAD_SHA:0:12}" "$HOST" "$EXPIRES")
+          payload=$(jq -n --arg content "$content" '{msgtype:"markdown",markdown:{content:$content}}')
+          curl --fail-with-body --silent --show-error --max-time 15 \
+            -H 'Content-Type: application/json' \
+            --data "$payload" "$WECOM_WEBHOOK" || echo '::warning::WeCom notification failed'
+
+      - name: Notify WeCom that environment provisioning failed
+        if: failure()
+        env:
+          WECOM_WEBHOOK: ${{ secrets.WECOM_WEBHOOK }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          PR_URL: ${{ steps.pr.outputs.url }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          APPS: ${{ steps.apps.outputs.list }}
+        run: |
+          if [ -z "$WECOM_WEBHOOK" ] || [ -z "$PR_NUMBER" ]; then
+            echo '::warning::WeCom webhook or pull request is unavailable'
+            exit 0
+          fi
+          content=$(printf '# Websoft9 E2E environment provisioning failed\n> Repository: %s\n> PR: [%s](%s)\n> App: %s\n> [View workflow](%s)\n\nPlease check the Actions logs.' \
+            "$REPOSITORY" "#$PR_NUMBER" "$PR_URL" "$APPS" "$RUN_URL")
+          payload=$(jq -n --arg content "$content" '{msgtype:"markdown",markdown:{content:$content}}')
+          curl --fail-with-body --silent --show-error --max-time 15 \
+            -H 'Content-Type: application/json' \
+            --data "$payload" "$WECOM_WEBHOOK" || echo '::warning::WeCom notification failed'

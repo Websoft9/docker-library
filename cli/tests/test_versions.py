@@ -1,16 +1,15 @@
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, timedelta
 
-from libs import versions
+import pytest
+
+from libs import scan_state, versions
 
 
-def test_parse_target_date_and_cadence_matches():
+def test_parse_target_date():
     assert versions._parse_target_date("2026-08-20") == date(2026, 8, 20)
-    assert versions._cadence_matches("weekly", date(2026, 8, 17)) is True
-    assert versions._cadence_matches("weekly", date(2026, 8, 20)) is False
-    assert versions._cadence_matches("monthly", date(2026, 8, 1)) is True
-    assert versions._cadence_matches("quarterly", date(2026, 10, 1)) is True
+    assert versions._parse_target_date(None) == date.today()
 
 
 def test_resolve_source_type_uses_upstream_image():
@@ -109,3 +108,90 @@ def test_scan_apps_reports_same_minor_patch_as_covered(repo_fixture, app_factory
     result = versions.scan_apps(app_filter="grafana")
 
     assert result[0]["version_status"] == "covered-by-current-minor-tag"
+
+
+def _variables(name: str, version: str = "1.0") -> dict:
+    return {
+        "name": name,
+        "release": True,
+        "upstream": {"image": "https://hub.docker.com/_/demo/tags"},
+        "edition": [{"dist": "community", "version": [version]}],
+    }
+
+
+def test_scan_apps_due_requires_state(repo_fixture, app_factory):
+    app_factory("demo", variables=_variables("demo"))
+
+    with pytest.raises(ValueError):
+        versions.scan_apps(selection="due", target_date="2026-10-25")
+
+
+def test_scan_apps_due_selection_uses_state_and_limit(repo_fixture, app_factory, monkeypatch):
+    app_factory("alpha", variables=_variables("alpha"))
+    app_factory("beta", variables=_variables("beta"))
+    calls = []
+    monkeypatch.setattr(
+        versions,
+        "fetch_candidates",
+        lambda *args, **kwargs: calls.append(args) or (None, "boom"),
+    )
+    state = {
+        "apps": {
+            "alpha": {"ok_at": "2026-01-01T00:00:00Z", "attempt_at": "2026-01-01T00:00:00Z"},
+            "beta": {"ok_at": "2026-01-01T00:00:00Z", "attempt_at": "2026-01-02T00:00:00Z"},
+        }
+    }
+
+    result = versions.scan_apps(
+        selection="due",
+        state=state,
+        target_date="2026-10-25",
+        limit=1,
+    )
+
+    assert [item["name"] for item in result] == ["alpha"]
+    assert len(calls) == 1
+
+
+def test_scan_apps_due_skips_never_checked_app_outside_slot_window(repo_fixture, app_factory):
+    app_factory("demo", variables=_variables("demo"))
+    interval = scan_state.INTERVAL_DAYS["monthly"]
+    slot = scan_state.stable_slot("demo", interval)
+    day = date.fromordinal((date(2026, 1, 1).toordinal() // interval) * interval + slot + 2)
+
+    result = versions.scan_apps(
+        selection="due",
+        state={"apps": {}},
+        target_date=day.isoformat(),
+    )
+
+    assert result == []
+
+
+def test_scan_apps_rejects_corrupt_state_entry(repo_fixture, app_factory):
+    app_factory("demo", variables=_variables("demo"))
+
+    with pytest.raises(scan_state.ScanStateError):
+        versions.scan_apps(
+            selection="due",
+            state={"apps": {"demo": "bad"}},
+            target_date="2026-10-25",
+        )
+
+
+def test_due_selection_skips_release_false_apps(repo_fixture, app_factory):
+    variables = _variables("draft-app")
+    variables["release"] = False
+    app_factory("draft-app", variables=variables)
+    state = {"apps": {"draft-app": {"ok_at": "2026-01-01T00:00:00Z"}}}
+
+    result = versions.scan_apps(selection="due", state=state, target_date="2026-10-25")
+
+    assert result == []
+
+
+def test_scan_apps_rejects_non_object_state_apps(repo_fixture, app_factory):
+    app_factory("demo", variables=_variables("demo"))
+
+    with pytest.raises(scan_state.ScanStateError):
+        versions.scan_apps(selection="due", state={"apps": []}, target_date="2026-10-25")
