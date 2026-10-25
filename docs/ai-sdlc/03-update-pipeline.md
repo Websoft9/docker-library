@@ -1,7 +1,8 @@
 # Update Pipeline
 
 Trigger:
-- daily schedule selects all apps whose cadence is due
+- daily scheduled scan selects apps whose cadence interval has elapsed since their last successful upstream check
+- scan progress is stored in the `MAINTENANCE_SCAN_STATE` repository variable, so scanning never creates repository commits
 
 Steps:
 1. Detect upstream version candidates.
@@ -25,6 +26,13 @@ Archive path:
 
 Notes:
 - Version detection does not change code by itself.
+- Cadence intervals are fixed: `weekly` = 7 days, `monthly` = 30 days, `quarterly` = 90 days.
+- Apps that were never checked are spread across the cycle with a deterministic hash slot, so the first run does not scan the whole library at once.
+- Failed checks retry on the next run; an app is parked after 3 consecutive failures and stops consuming scan budget.
+- `--limit` caps how many apps one run scans. Raised or missed runs are not replayed as extra scans.
+- A missing or unreadable state value is a hard error, never "everything is due".
+- The scan selector lives in `.github/workflows/maintenance-scan.yml`. Reading a variable needs no token, but updating it needs a PAT with repo scope (classic) or Variables read/write (fine-grained); the automatic `GITHUB_TOKEN` cannot write Actions variables. The workflow uses one PAT secret: `MAINTENANCE_STATE_TOKEN`.
+- The current scheduled workflow performs detection only. Creating or updating one issue per app is a separate follow-up.
 - `review-first` stops before implementation unless owner approves.
 - Update work is not limited to version bumping; the changed app must satisfy the current quality gates before handoff.
 - Update work should not trigger broad repository-wide template churn; only the minimum relevant app-local conformance fixes should be included.

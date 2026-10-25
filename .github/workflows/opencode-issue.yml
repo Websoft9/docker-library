@@ -73,3 +73,11 @@ jobs:
             Do not run git commands or create branches or pull requests yourself. Only edit files and run tests; the action handles branch creation, commit, push, and pull request creation. You may post the AI Result comment on the issue.
             When finished, post one issue comment using the `AI Result` format in docs/ai-sdlc/07-issue-contracts.md.
             If required information is missing or an owner decision is needed, comment exactly what is needed and stop.
+
+  provision-e2e:
+    needs: opencode
+    if: needs.opencode.result == 'success'
+    uses: ./.github/workflows/provision-e2e.yml
+    with:
+      issue_number: ${{ github.event.issue.number }}
+    secrets: inherit
