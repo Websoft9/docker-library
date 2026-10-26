@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-10-26
+
+- Update AnythingLLM from 1.17 to 1.18 using the stable upstream image tag.
+
 ## 2026-10-13
 
 - Update AnythingLLM from 1.16 to 1.17 using the stable upstream image tag.
