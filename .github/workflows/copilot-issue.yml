@@ -2,30 +2,48 @@ name: Assign Copilot to AI issue
 
 on:
   issues:
-    types: [opened]
+    types: [opened, labeled]
 
 permissions:
   issues: write
 
 concurrency:
   group: copilot-issue-${{ github.event.issue.number }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   assign:
-    if: contains(github.event.issue.labels.*.name, 'ai')
+    if: |
+      (
+        github.event.action == 'opened' &&
+        contains(github.event.issue.labels.*.name, 'ai') &&
+        contains(
+          fromJson('["OWNER","MEMBER","COLLABORATOR"]'),
+          github.event.issue.author_association
+        )
+      ) || (
+        github.event.action == 'labeled' &&
+        github.event.label.name == 'ai'
+      )
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Assign Copilot cloud agent
         env:
-          GH_TOKEN: ${{ secrets.MAINTENANCE_STATE_TOKEN }}
+          GH_TOKEN: ${{ secrets.COPILOT_ASSIGN_TOKEN || secrets.MAINTENANCE_STATE_TOKEN }}
           REPOSITORY: ${{ github.repository }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
           if [ -z "${GH_TOKEN:-}" ]; then
-            echo "::error::Set MAINTENANCE_STATE_TOKEN to a user PAT that can assign Copilot."
+            echo "::error::Set COPILOT_ASSIGN_TOKEN (preferred) or MAINTENANCE_STATE_TOKEN to a user PAT that can assign Copilot."
             exit 1
+          fi
+
+          assigned=$(gh issue view "$ISSUE_NUMBER" --repo "$REPOSITORY" --json assignees \
+            --jq '[.assignees[].login] | any(. == "Copilot" or . == "copilot-swe-agent[bot]")')
+          if [ "$assigned" = "true" ]; then
+            echo "Copilot is already assigned to #$ISSUE_NUMBER; skipping."
+            exit 0
           fi
 
           instructions='Read AGENTS.md first. Use .github/skills/libs/SKILL.md and follow the first hidden workflow marker in the issue body. The canonical workflow documents and skills are under skills/. Work autonomously, run the repository quality gates, and let Copilot create the branch and pull request. Open the pull request as ready for review, not as a draft.'

@@ -2,6 +2,7 @@
 name: Batch update
 about: Update multiple apps with the same operation
 title: 'Batch update: [selector]'
+labels: ai
 ---
 
 <!-- libs:workflow=batch-update -->

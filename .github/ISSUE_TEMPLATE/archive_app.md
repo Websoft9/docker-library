@@ -2,6 +2,7 @@
 name: Archive app
 about: Retire one app or a small batch
 title: 'Archive: [app]'
+labels: ai
 ---
 
 <!-- libs:workflow=archive-app -->

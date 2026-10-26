@@ -2,6 +2,7 @@
 name: Restore app
 about: Return an archived app to active maintenance
 title: 'Restore: [app]'
+labels: ai
 ---
 
 <!-- libs:workflow=restore-app -->

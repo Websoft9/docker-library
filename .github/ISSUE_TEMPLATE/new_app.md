@@ -2,6 +2,7 @@
 name: New app
 about: Add one application package; AI researches and reports back
 title: 'New app: [app]'
+labels: ai
 ---
 
 <!-- libs:workflow=new-app -->

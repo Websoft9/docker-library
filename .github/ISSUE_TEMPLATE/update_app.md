@@ -2,6 +2,7 @@
 name: Update app
 about: Update or assess one app; AI researches, works, and reports back
 title: 'Update: [app]'
+labels: ai
 ---
 
 <!-- libs:workflow=update-app -->
