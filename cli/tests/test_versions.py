@@ -15,6 +15,7 @@ def test_parse_target_date():
 def test_resolve_source_type_uses_upstream_image():
     assert versions.resolve_source_type({"upstream": {"image": "ghcr.io/org/app"}}) == "ghcr-tags"
     assert versions.resolve_source_type({"upstream": {"image": "https://hub.docker.com/_/x/tags"}}) == "dockerhub-tags"
+    assert versions.resolve_source_type({"upstream": {"image": "https://gallery.ecr.aws/gravitational/teleport-distroless"}}) == "ecr-public"
     assert versions.resolve_source_type({}) == "unknown"
 
 

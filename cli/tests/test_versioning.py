@@ -143,3 +143,10 @@ def test_stable_candidates_ignore_canary_tags():
     ]
 
     assert _stable_candidates(tags, "0.27.4") == ["0.28.0"]
+
+
+def test_normalize_tag_treats_named_dev_and_release_channels_as_prereleases():
+    assert version.parse(normalize_tag("v19.0.1-dev.gzdunek-updater.3")).is_prerelease
+    assert version.parse(normalize_tag("v19.0.1-dev")).is_prerelease
+    assert version.parse(normalize_tag("2.0.0-preview.3")).is_prerelease
+    assert normalize_tag("11.4.11-php8.3-apache") == "11.4.11"

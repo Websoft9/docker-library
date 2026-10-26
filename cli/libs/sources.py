@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import os
 import time
 import re
+from urllib.parse import urljoin
 
 from packaging import version
 
@@ -14,6 +16,12 @@ VERSION_START_RE = re.compile(r"^v?(\d+)")
 DOCKERHUB_URLS = ("hub.docker.com",)
 GITHUB_RELEASES_URLS = ("github.com",)
 GHCR_URLS = ("ghcr.io",)
+ECR_PUBLIC_URLS = ("gallery.ecr.aws", "public.ecr.aws")
+MANIFEST_ACCEPT = (
+    "application/vnd.oci.image.index.v1+json, "
+    "application/vnd.docker.distribution.manifest.list.v2+json, "
+    "application/vnd.docker.distribution.manifest.v2+json"
+)
 
 
 def detect_source_type(url: str) -> str | None:
@@ -22,6 +30,8 @@ def detect_source_type(url: str) -> str | None:
         return "dockerhub-tags"
     if any(marker in lowered for marker in GHCR_URLS):
         return "ghcr-tags"
+    if any(marker in lowered for marker in ECR_PUBLIC_URLS):
+        return "ecr-public"
     if any(marker in lowered for marker in GITHUB_RELEASES_URLS):
         if "releases" in lowered:
             return "github-releases"
@@ -40,6 +50,8 @@ def fetch_candidates(
         return _fetch_dockerhub(url, current_version, major_ahead, page_size)
     if source_type == "ghcr-tags":
         return _fetch_ghcr(url, current_version, major_ahead, page_size)
+    if source_type == "ecr-public":
+        return _fetch_ecr_public(url, current_version, major_ahead, page_size)
     if source_type == "github-releases":
         return _fetch_github_releases(url, current_version, page_size)
     if source_type == "github-tags":
@@ -59,7 +71,12 @@ def _get_json(
     params: dict | None = None,
     headers: dict | None = None,
 ) -> tuple[dict | list | None, str | None]:
-    data, _headers, error = get_json_with_fallback(url, params, headers)
+    request_headers = dict(headers or {})
+    if "api.github.com" in url and "Authorization" not in request_headers:
+        token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
+        if token:
+            request_headers["Authorization"] = f"Bearer {token}"
+    data, _headers, error = get_json_with_fallback(url, params, request_headers or None)
     return data, error
 
 
@@ -199,6 +216,131 @@ def _fetch_ghcr(url: str, current_version: str, major_ahead: int, page_size: int
     return find_latest_version(candidates, current_version), None
 
 
+def _ecr_public_repository(url: str) -> tuple[str, str] | None:
+    try:
+        parts = [part for part in url.split("/") if part]
+        host_index = next(i for i, part in enumerate(parts) if "ecr.aws" in part)
+        rest = parts[host_index + 1:]
+        if len(rest) < 2:
+            return None
+        namespace = rest[0]
+        image = rest[1].split(":")[0]
+        return namespace, image
+    except Exception:
+        return None
+
+
+def _ecr_public_token(namespace: str, image: str) -> tuple[str | None, str | None]:
+    data, error = _get_json(
+        "https://public.ecr.aws/token/",
+        {"service": "ecr-public", "scope": f"repository:{namespace}/{image}:pull"},
+    )
+    if error:
+        return None, error
+    token = (data or {}).get("token")
+    if not token:
+        return None, "ECR Public token endpoint returned no token"
+    return token, None
+
+
+def _ecr_public_next_url(link: str | None) -> str | None:
+    if not link:
+        return None
+    match = re.search(r"<([^>]+)>", link)
+    if not match:
+        return None
+    return urljoin("https://public.ecr.aws", match.group(1))
+
+
+def _ecr_public_tags_page(
+    namespace: str,
+    image: str,
+    token: str,
+    page_size: int,
+    next_url: str | None = None,
+) -> tuple[list[str], str | None, str | None]:
+    url = next_url or f"https://public.ecr.aws/v2/{namespace}/{image}/tags/list"
+    params = None if next_url else {"n": min(page_size, 1000)}
+    headers = {"Authorization": f"Bearer {token}"}
+    probe = probe_url(url)
+    if probe.ok:
+        try:
+            response = get(url, params, headers=headers)
+            if response.status_code == 429:
+                time.sleep(1)
+                response = get(url, params, headers=headers)
+            response.raise_for_status()
+            data = response.json()
+            return (data or {}).get("tags") or [], _ecr_public_next_url(response.headers.get("Link")), None
+        except Exception as error:
+            return [], None, str(error)
+    data, _headers, error = remote_get_json(url, params, headers)
+    if error:
+        return [], None, error
+    return (data or {}).get("tags") or [], None, None
+
+
+def _fetch_ecr_public(
+    url: str,
+    current_version: str,
+    major_ahead: int,
+    page_size: int,
+) -> tuple[dict | None, str | None]:
+    repository = _ecr_public_repository(url)
+    if not repository:
+        return None, "invalid ECR Public URL"
+    namespace, image = repository
+
+    token, error = _ecr_public_token(namespace, image)
+    if error:
+        return None, error
+
+    tags: list[str] = []
+    next_url = None
+    for _ in range(20):
+        page_tags, next_url, error = _ecr_public_tags_page(namespace, image, token, page_size, next_url)
+        if error:
+            return None, error
+        tags.extend(page_tags)
+        if not next_url:
+            break
+
+    prefix = _major_prefix(current_version)
+    allowed_majors = None
+    if prefix is not None:
+        major = int(prefix[:-1])
+        allowed_majors = set(range(major, major + major_ahead + 1))
+
+    filtered = []
+    for tag in tags:
+        try:
+            tag_ver = version.parse(normalize_tag(tag))
+        except version.InvalidVersion:
+            continue
+        if allowed_majors is not None and not (tag_ver.release and tag_ver.release[0] in allowed_majors):
+            continue
+        filtered.append({"name": tag, "last_updated": ""})
+
+    return find_latest_version(filtered, current_version), None
+
+
+def _ecr_public_manifest_exists(namespace: str, image: str, tag: str, token: str) -> tuple[bool, str | None]:
+    url = f"https://public.ecr.aws/v2/{namespace}/{image}/manifests/{tag}"
+    headers = {"Authorization": f"Bearer {token}", "Accept": MANIFEST_ACCEPT}
+    probe = probe_url(url)
+    if not probe.ok:
+        return False, "ECR Public unreachable"
+    try:
+        response = get(url, headers=headers)
+        if response.status_code == 200:
+            return True, None
+        if response.status_code == 404:
+            return False, None
+        return False, f"ECR manifest check returned {response.status_code}"
+    except Exception as error:
+        return False, str(error)
+
+
 def _github_api_url(version_from_url: str) -> str | None:
     try:
         parts = [part for part in version_from_url.split("/") if part]
@@ -242,19 +384,54 @@ def _fetch_github_tags(url: str, current_version: str, page_size: int) -> tuple[
     return find_latest_version(tags, current_version), None
 
 
-def _github_tags_raw(url: str, page_size: int) -> tuple[list[dict], str | None]:
+def _github_tags_raw(url: str, page_size: int, max_pages: int = 10) -> tuple[list[dict], str | None]:
     api_url = _github_api_url(url)
     if not api_url:
         return [], "invalid GitHub URL"
 
-    data, error = _get_json(f"{api_url}/tags", {"per_page": min(page_size, 100)})
-    if error:
-        return [], error
+    tags: list[dict] = []
+    per_page = min(page_size, 100)
+    for page in range(1, max_pages + 1):
+        data, error = _get_json(f"{api_url}/tags", {"per_page": per_page, "page": page})
+        if error:
+            return [], error
+        items = data or []
+        tags.extend(
+            {"name": item.get("name") or "", "last_updated": ""}
+            for item in items
+        )
+        if len(items) < per_page:
+            break
 
-    return [
-        {"name": item.get("name") or "", "last_updated": ""}
-        for item in (data or [])
-    ], None
+    return tags, None
+
+
+def _github_releases_raw(url: str, page_size: int, max_pages: int = 5) -> tuple[list[dict], str | None]:
+    api_url = _github_api_url(url)
+    if not api_url:
+        return [], "invalid GitHub URL"
+
+    releases: list[dict] = []
+    per_page = min(page_size, 100)
+    for page in range(1, max_pages + 1):
+        data, error = _get_json(f"{api_url}/releases", {"per_page": per_page, "page": page})
+        if error:
+            return [], error
+        items = data or []
+        releases.extend(
+            {"name": item.get("tag_name") or "", "last_updated": item.get("published_at") or ""}
+            for item in items
+            if not item.get("draft")
+        )
+        if len(items) < per_page:
+            break
+
+    return releases, None
+
+
+def _looks_like_branch_tag(name: str) -> bool:
+    match = re.match(r"^v?\d+(?:\.\d+)*[-_](.+)$", name)
+    return bool(match and "." in match.group(1))
 
 
 def _stable_candidates(tags: list[dict], current_version: str, limit: int = 5) -> list[str]:
@@ -263,6 +440,8 @@ def _stable_candidates(tags: list[dict], current_version: str, limit: int = 5) -
 
     for tag in tags:
         tag_name = tag["name"]
+        if _looks_like_branch_tag(tag_name):
+            continue
         try:
             tag_ver = version.parse(normalize_tag(tag_name))
         except version.InvalidVersion:
@@ -325,14 +504,23 @@ def fetch_verified_candidates(
             page_size=page_size,
         )
 
-    if index_type not in ("github-releases", "github-tags"):
-        return fallback()
-
-    index_tags, error = _github_tags_raw(index_url, page_size)
-    if error:
+    if index_type == "github-releases":
+        index_tags, error = _github_releases_raw(index_url, page_size)
+        if error or not index_tags:
+            index_tags, error = _github_tags_raw(index_url, page_size)
+            if error:
+                return fallback()
+    elif index_type == "github-tags":
+        index_tags, error = _github_tags_raw(index_url, page_size)
+        if error:
+            return fallback()
+    else:
         return fallback()
 
     candidates = _stable_candidates(index_tags, current_version)
+    if not candidates:
+        return None, None
+
     minors = sorted(
         {version.parse(normalize_tag(name)).release[:2] for name in candidates},
         reverse=True,
@@ -383,6 +571,24 @@ def fetch_verified_candidates(
         for candidate in wanted:
             if candidate in tag_set or candidate.lstrip("v") in tag_set:
                 return {"version": candidate, "last_updated": ""}, None
+        return fallback()
+
+    if verify_type == "ecr-public":
+        repository = _ecr_public_repository(verify_url)
+        if not repository:
+            return None, "invalid ECR Public URL"
+        namespace, image = repository
+        token, error = _ecr_public_token(namespace, image)
+        if error:
+            return fallback()
+
+        for candidate in wanted:
+            for tag in (candidate, candidate.lstrip("v")):
+                exists, error = _ecr_public_manifest_exists(namespace, image, tag, token)
+                if error:
+                    return fallback()
+                if exists:
+                    return {"version": tag, "last_updated": ""}, None
         return fallback()
 
     return None, f"unsupported verify source type: {verify_type}"

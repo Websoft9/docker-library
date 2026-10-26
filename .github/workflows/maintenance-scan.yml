@@ -16,6 +16,7 @@
 # - never checked: deterministic hash slot spreads the first run across the cycle
 # - failed checks retry on the next run; after 3 failures the app is parked
 # - --limit caps the per-run scan volume
+# - manual runs may shift the due date forward with due_within_days (0-90)
 
 name: Maintenance scan
 
@@ -34,6 +35,11 @@ on:
         required: false
         default: false
         type: boolean
+      due_within_days:
+        description: Include apps due within N days (manual catch-up only; 0 = only currently due)
+        required: false
+        default: 0
+        type: number
 
 permissions:
   contents: read
@@ -98,13 +104,21 @@ jobs:
         env:
           LIMIT: ${{ inputs.limit || '15' }}
           PLAN_ONLY: ${{ inputs.plan_only || 'false' }}
+          DUE_WITHIN_DAYS: ${{ inputs.due_within_days || 0 }}
+          GH_TOKEN: ${{ secrets.MAINTENANCE_STATE_TOKEN }}
         run: |
           set -euo pipefail
+          if ! [[ "$DUE_WITHIN_DAYS" =~ ^[0-9]+$ ]] || [ "$DUE_WITHIN_DAYS" -gt 90 ]; then
+            echo "::error::due_within_days must be an integer between 0 and 90"
+            exit 1
+          fi
+          target_date=$(TZ=Asia/Shanghai date -d "+${DUE_WITHIN_DAYS} days" +%F)
+          echo "target_date=$target_date" >> "$GITHUB_OUTPUT"
           # The CLI budget is total, not per app, so scale it with the batch.
           budget=$(( LIMIT * 20 ))
           if [ "$budget" -lt 120 ]; then budget=120; fi
           if [ "$budget" -gt 1500 ]; then budget=1500; fi
-          args=(scan --selection due --state-file state.json --limit "$LIMIT" --network-timeout "$budget" --json)
+          args=(scan --selection due --state-file state.json --date "$target_date" --limit "$LIMIT" --network-timeout "$budget" --json)
           if [ "$PLAN_ONLY" = "true" ]; then
             args+=(--plan-only)
           else
@@ -114,10 +128,14 @@ jobs:
 
       - name: Write job summary
         if: steps.scan.outcome == 'success'
+        env:
+          TARGET_DATE: ${{ steps.scan.outputs.target_date }}
+          DUE_WITHIN_DAYS: ${{ inputs.due_within_days || 0 }}
         run: |
           set -euo pipefail
           python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
           import json
+          import os
           from pathlib import Path
 
           from libs.scan_state import MAX_FAILS
@@ -129,6 +147,7 @@ jobs:
 
           print("## Maintenance scan")
           print()
+          print(f"- target date: {os.environ.get('TARGET_DATE') or 'n/a'} (due within {os.environ.get('DUE_WITHIN_DAYS') or 0} days)")
           print(f"- scanned: {len(items)}")
           print(f"- state entries: {len(state.get('apps', {}))}")
           print(f"- needs attention: {', '.join(parked) if parked else 'none'}")

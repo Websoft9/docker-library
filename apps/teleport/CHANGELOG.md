@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-10-26
+
+- Track upstream versions from GitHub tags instead of releases so Teleport patch and minor tags are visible to the maintenance scan.
+
 ## 2026-09-21
 
 - Bump Teleport from `14.0` to `18.10` and switch the image to the production `public.ecr.aws/gravitational/teleport-distroless`; the old `public.ecr.aws/gravitational/teleport` image stops at `14.4.x`.

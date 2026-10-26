@@ -4,7 +4,7 @@
   "release": true,
   "upstream": {
     "image": "https://gallery.ecr.aws/gravitational/teleport-distroless",
-    "releases": "https://github.com/gravitational/teleport/releases",
+    "releases": "https://github.com/gravitational/teleport",
     "docs": [
       "https://goteleport.com/docs/installation/single-machine/docker/"
     ]
