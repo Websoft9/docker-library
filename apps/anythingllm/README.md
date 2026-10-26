@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **AnythingLLM**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -30,7 +31,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 1.16, latest.
+Supported versions: 1.18, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
@@ -67,9 +68,9 @@ Configuration files live inside the image; mount a single file read-only to over
 
 - [Releases](https://github.com/Mintplex-Labs/anything-llm)
 
-- [Official compose](https://github.com/Mintplex-Labs/anything-llm/blob/master/docker/docker-compose.yml)
+- [Official compose](https://raw.githubusercontent.com/Mintplex-Labs/anything-llm/master/docker/docker-compose.yml)
 
-- [Official env example](https://github.com/Mintplex-Labs/anything-llm/blob/master/docker/.env.example)
+- [Official env example](https://raw.githubusercontent.com/Mintplex-Labs/anything-llm/master/docker/.env.example)
 
 - [GitHub docs](https://github.com/Mintplex-Labs/anything-llm)
 
