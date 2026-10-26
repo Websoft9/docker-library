@@ -21,10 +21,8 @@ This repository uses an AI-first delivery model: owners decide demand and the fi
 
 ## Issue automation
 
-Opening an issue starts the AI workflow for owners, members, collaborators, and contributors. A maintainer can create the `ai` label once in repository settings and add it to run the workflow on any other issue; adding other labels does not start a new run.
+An issue starts the AI workflow only when it is opened and already has the `ai` label; both conditions are required. Adding `ai` later does not start Copilot. The assignment workflow uses `MAINTENANCE_STATE_TOKEN`; it must be a user PAT with `repo` scope that can assign Copilot.
 
-Configure the repository variable `OPENCODE_MODEL` and the matching provider secret (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, or `DEEPSEEK_API_KEY`). Set `OPENCODE_GITHUB_TOKEN` so AI and i18n pull requests trigger CI.
-
-For the GitHub MCP in opencode, run `make github-token` once to store a PAT outside the repository and point the MCP config at it.
+For maintenance scan review, review the table and comment `/approve-updates app1, app2` with the exact apps to process. The workflow creates linked child issues deterministically and assigns Copilot to each approved child, so Copilot starts working immediately.
 
 Keep changes minimal and app-local, validate runnable behavior by deployment, and never commit secrets.

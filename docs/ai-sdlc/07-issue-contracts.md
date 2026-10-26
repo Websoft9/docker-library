@@ -47,6 +47,26 @@ Rules:
 - Batch: explicit app list or unambiguous selector; the same operation for every app.
 - Delete: app name or list and explicit delete scope.
 
+## Maintenance scan review
+
+Each regular scan creates one parent issue containing the scan snapshot, even if the scan found no candidate or had unresolved results. The parent issue is a human review queue, not an instruction to update every listed app.
+
+To approve apps, an authorized owner/member checks them in the issue's approval checklist, optionally edits each target version, then comments (the comment triggers the scan-review workflow):
+
+```text
+/approve-updates
+```
+
+Explicit app lists remain supported:
+
+```text
+/approve-updates wordpress, mysql
+```
+
+The scan-review workflow creates one child issue per checked app (or per explicitly listed app when that form is used), links each child to the scan-review parent, and assigns Copilot to the child. It must not create children for apps that were not checked or explicitly listed. The `/approve-updates` comment is the owner approval that starts Copilot's update workflow.
+
+Child issues include `<!-- libs:workflow=update-app -->` and `<!-- libs:scan-review-child -->`. The second marker identifies them as scan-review children.
+
 ## Exceptions
 
 Batch update and permanent delete need explicit scope because AI cannot infer them:

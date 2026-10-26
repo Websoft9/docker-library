@@ -6,9 +6,11 @@ from packaging import version
 
 
 VARIANT_SUFFIX_RE = re.compile(
-    r"^v?(\d+(?:\.\d+)*)(?:[-_]?(rc|alpha|beta|dev|pre)[.-]?(\d+)?)?(?:[-_].*)?$",
+    r"^v?(\d+(?:\.\d+)*)(?:[-_]?(rc|alpha|beta|dev|pre|preview|canary|nightly|snapshot|insider)[.-]?(\d+)?)?(?:[-_].*)?$",
     re.IGNORECASE,
 )
+
+NON_STABLE_CHANNELS = {"canary", "nightly", "snapshot", "preview", "insider"}
 
 
 def normalize_tag(name: str) -> str:
@@ -37,6 +39,8 @@ def normalize_tag(name: str) -> str:
         prerelease = match.group(2)
         number = match.group(3)
         if prerelease:
+            if prerelease.lower() in NON_STABLE_CHANNELS:
+                return f"{base}.dev{number or '0'}"
             return f"{base}-{prerelease}{number or ''}"
         return base
 

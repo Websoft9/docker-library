@@ -115,3 +115,31 @@ def test_get_current_versions_accepts_image_variant_tags():
 
     assert all_versions == ["11.4-apache", "latest"]
     assert valid == [version.parse("11.4"), "latest"]
+
+
+def test_normalize_tag_maps_unstable_channels_to_prereleases():
+    assert version.parse(normalize_tag("2025.9.6-canary.903")).is_prerelease
+    assert version.parse(normalize_tag("7.1.2-nightly")).is_prerelease
+    assert version.parse(normalize_tag("1.4.0-snapshot")).is_prerelease
+    assert version.parse(normalize_tag("2.0.0-preview.3")).is_prerelease
+
+
+def test_find_latest_version_ignores_canary_tags():
+    tags = [
+        {"name": "0.27.4", "last_updated": "2026-09-01"},
+        {"name": "2025.9.6-canary.903", "last_updated": "2026-10-20"},
+    ]
+
+    assert find_latest_version(tags, "0.27.4") is None
+
+
+def test_stable_candidates_ignore_canary_tags():
+    from libs.sources import _stable_candidates
+
+    tags = [
+        {"name": "0.27.4"},
+        {"name": "2025.9.6-canary.903"},
+        {"name": "0.28.0"},
+    ]
+
+    assert _stable_candidates(tags, "0.27.4") == ["0.28.0"]

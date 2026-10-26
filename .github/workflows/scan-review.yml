@@ -1,0 +1,148 @@
+name: Maintenance scan review
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: maintenance-scan-review-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  decompose:
+    if: |
+      github.event.issue.pull_request == null &&
+      github.event.comment.user.type != 'Bot' &&
+      contains(fromJson('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association) &&
+      contains(github.event.comment.body, '/approve-updates') &&
+      contains(github.event.issue.body, '<!-- libs:workflow=scan-review -->')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Validate owner approval
+        env:
+          PARENT_BODY: ${{ github.event.issue.body }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+
+          Path("parent-body.md").write_text(os.environ["PARENT_BODY"], encoding="utf-8")
+          Path("comment-body.md").write_text(os.environ["COMMENT_BODY"], encoding="utf-8")
+          PY
+          python3 ci/scripts/maintenance_scan_review.py validate \
+            --parent-body-file parent-body.md \
+            --comment-file comment-body.md > approval.json
+
+      - name: Create linked child issues
+        env:
+          GH_TOKEN: ${{ secrets.MAINTENANCE_STATE_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          PARENT: ${{ github.event.issue.number }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::error::Set MAINTENANCE_STATE_TOKEN to a user PAT that can assign Copilot."
+            exit 1
+          fi
+
+          python3 - <<'PY' > children.ndjson
+          import json
+          import os
+
+          approval = json.load(open("approval.json", encoding="utf-8"))
+          parent = os.environ["PARENT"]
+          for item in approval["items"]:
+              app = item["app"]
+              current = ", ".join(item.get("current") or []) or "unknown"
+              candidate = item.get("latest") or "unknown"
+              target = item.get("target") or candidate
+              status = item.get("status") or "planned"
+              error = item.get("error")
+              body = "\n".join([
+                  "<!-- libs:workflow=update-app -->",
+                  "<!-- libs:scan-review-child -->",
+                  f"<!-- libs:scan-review-child-key:{parent}:{app} -->",
+                  "",
+                  f"Parent: #{parent}",
+                  f"App: `{app}`",
+                  f"Current version: {current}",
+                  f"Candidate version: {candidate}",
+                  f"Target version: {target}",
+                  f"Scan result: {status}",
+                  f"Scan error: {error}" if error else "",
+              ])
+              print(json.dumps({
+                  "app": app,
+                  "title": f"Update: {app}",
+                  "body": body,
+              }, ensure_ascii=False))
+          PY
+
+          links=()
+          while IFS= read -r child; do
+            app=$(jq -r '.app' <<< "$child")
+            title=$(jq -r '.title' <<< "$child")
+            body=$(jq -r '.body' <<< "$child")
+            key="<!-- libs:scan-review-child-key:$PARENT:$app -->"
+
+            existing=$(gh issue list --repo "$REPOSITORY" --state all --limit 1000 \
+              --json number,body,assignees \
+              | jq -c --arg key "$key" '[.[] | select(.body | contains($key))] | first // empty')
+
+            if [ -n "$existing" ]; then
+              number=$(jq -r '.number' <<< "$existing")
+              id=$(gh api "repos/$REPOSITORY/issues/$number" --jq .id)
+              url="https://github.com/$REPOSITORY/issues/$number"
+              already_assigned=$(jq -r '[.assignees[].login] | any(. == "Copilot" or . == "copilot-swe-agent" or . == "copilot-swe-agent[bot]")' <<< "$existing")
+            else
+              created=$(jq -n --arg title "$title" --arg body "$body" '{title: $title, body: $body}' \
+                | gh api --method POST "repos/$REPOSITORY/issues" --input -)
+              number=$(jq -r '.number' <<< "$created")
+              id=$(jq -r '.id' <<< "$created")
+              url=$(jq -r '.html_url' <<< "$created")
+              already_assigned=false
+            fi
+
+            if ! gh api --method POST "repos/$REPOSITORY/issues/$PARENT/sub_issues" \
+              --input - >/dev/null 2>&1 <<< "{\"sub_issue_id\": $id}"; then
+              echo "Child #$number is already linked to parent #$PARENT or could not be linked."
+            fi
+
+            if [ "$already_assigned" != "true" ]; then
+              instructions='Read AGENTS.md first. Use .github/skills/libs/SKILL.md and follow the update-app hidden marker in this issue. The canonical workflow documents and skills are under skills/. Work autonomously, run the repository quality gates, and let Copilot create the branch and pull request.'
+              payload=$(jq -n \
+                --arg repo "$REPOSITORY" \
+                --arg instructions "$instructions" \
+                '{assignees: ["copilot-swe-agent[bot]"], agent_assignment: {target_repo: $repo, base_branch: "main", custom_instructions: $instructions, custom_agent: "", model: ""}}')
+              if ! gh api \
+                --method POST \
+                -H "Accept: application/vnd.github+json" \
+                -H "X-GitHub-Api-Version: 2022-11-28" \
+                "repos/$REPOSITORY/issues/$number/assignees" \
+                --input - >/dev/null <<< "$payload"; then
+                echo "::error::Failed to assign Copilot to child issue #$number"
+                exit 1
+              fi
+            fi
+
+            links+=("- [#$number $app]($url)")
+          done < children.ndjson
+
+          {
+            echo "Created or reused linked child issues:"
+            echo
+            printf '%s\n' "${links[@]}"
+          } > parent-comment.md
+
+          gh issue comment "$PARENT" --repo "$REPOSITORY" --body-file parent-comment.md
