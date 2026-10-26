@@ -120,7 +120,7 @@ jobs:
             fi
 
             if [ "$already_assigned" != "true" ]; then
-              instructions='Read AGENTS.md first. Use .github/skills/libs/SKILL.md and follow the update-app hidden marker in this issue. The canonical workflow documents and skills are under skills/. Work autonomously, run the repository quality gates, and let Copilot create the branch and pull request.'
+              instructions='Read AGENTS.md first. Use .github/skills/libs/SKILL.md and follow the update-app hidden marker in this issue. The canonical workflow documents and skills are under skills/. Work autonomously, run the repository quality gates, and let Copilot create the branch and pull request. Open the pull request as ready for review, not as a draft.'
               payload=$(jq -n \
                 --arg repo "$REPOSITORY" \
                 --arg instructions "$instructions" \

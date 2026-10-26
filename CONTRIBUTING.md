@@ -23,6 +23,8 @@ This repository uses an AI-first delivery model: owners decide demand and the fi
 
 An issue starts the AI workflow only when it is opened and already has the `ai` label; both conditions are required. Adding `ai` later does not start Copilot. The assignment workflow uses `MAINTENANCE_STATE_TOKEN`; it must be a user PAT with `repo` scope that can assign Copilot.
 
-For maintenance scan review, review the table and comment `/approve-updates app1, app2` with the exact apps to process. The workflow creates linked child issues deterministically and assigns Copilot to each approved child, so Copilot starts working immediately.
+For maintenance scan review, check the apps in the issue checklist and comment `/approve-updates`, or comment `/approve-updates app1, app2` to name apps explicitly. The workflow creates linked child issues deterministically and assigns Copilot to each approved child, so Copilot starts working immediately.
+
+Copilot pull requests are marked ready automatically when the agent finishes, and their PR checks are auto-approved for `copilot/*` branches. Once PR checks pass, the E2E environment is provisioned and the WeCom notification is sent. The owner confirms E2E and merges the PR manually.
 
 Keep changes minimal and app-local, validate runnable behavior by deployment, and never commit secrets.

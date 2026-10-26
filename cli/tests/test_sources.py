@@ -87,6 +87,37 @@ def test_get_json_authenticates_github_api_when_token_is_present(monkeypatch):
     assert calls[1][1] is None
 
 
+def test_ghcr_tags_page_uses_the_shared_json_fallback(monkeypatch):
+    captured = {}
+
+    def fake_get_json(url, params=None, headers=None):
+        captured.update({"url": url, "params": params, "headers": headers})
+        return {"tags": ["1.0", "1.1"]}, {"Link": '<https://ghcr.io/next>; rel="next"'}, None
+
+    monkeypatch.setattr(sources, "get_json_with_fallback", fake_get_json)
+
+    tags, link, error = sources._ghcr_tags_page("owner", "image", "token", 50, last="0.9")
+
+    assert tags == ["1.0", "1.1"]
+    assert link == '<https://ghcr.io/next>; rel="next"'
+    assert error is None
+    assert captured["headers"] == {"Authorization": "Bearer token"}
+    assert captured["params"] == {"n": 50, "last": "0.9"}
+
+
+def test_ecr_public_tags_page_uses_the_shared_json_fallback(monkeypatch):
+    def fake_get_json(url, params=None, headers=None):
+        return {"tags": ["1.0", "1.1"]}, {"Link": "<https://public.ecr.aws/next>; rel=\"next\""}, None
+
+    monkeypatch.setattr(sources, "get_json_with_fallback", fake_get_json)
+
+    tags, link, error = sources._ecr_public_tags_page("owner", "image", "token", 50)
+
+    assert tags == ["1.0", "1.1"]
+    assert link == "https://public.ecr.aws/next"
+    assert error is None
+
+
 def test_stable_candidates_ignores_branch_named_tags():
     tags = [
         {"name": "v18.11.0", "last_updated": ""},

@@ -96,6 +96,7 @@ def test_probe_url_accepts_any_http_status(monkeypatch):
 
 
 def test_get_json_with_fallback_uses_remote_after_probe_failure(monkeypatch):
+    monkeypatch.setattr(http, "_remote_configured", lambda: True)
     monkeypatch.setattr(http, "probe_url", lambda url, **kwargs: http.Reachability(False, url, 3, 5, error="timeout"))
     monkeypatch.setattr(http, "remote_get_json", lambda url, params, headers: ({"ok": True}, {}, None))
 
@@ -106,9 +107,87 @@ def test_get_json_with_fallback_uses_remote_after_probe_failure(monkeypatch):
     assert error is None
 
 
+class _JsonResponse:
+    status_code = 200
+    reason = "OK"
+    headers = {}
+
+    def json(self):
+        return {"ok": True}
+
+
+class _HttpErrorResponse:
+    status_code = 429
+    reason = "Too Many Requests"
+    headers = {"Retry-After": "0"}
+
+    def json(self):
+        return {}
+
+
+def test_probe_retries_use_the_remaining_deadline_budget(monkeypatch):
+    captured = {}
+
+    def fake_probe(url, **kwargs):
+        captured.update(kwargs)
+        return http.Reachability(True, url, 1, 1, status=200)
+
+    monkeypatch.setattr(http, "probe_url", fake_probe)
+    monkeypatch.setattr(http, "get", lambda *args, **kwargs: _JsonResponse())
+    http.reset_network_state(300)
+
+    data, _, error = http.get_json_with_fallback("https://example.com/api")
+
+    assert data == {"ok": True}
+    assert error is None
+    assert captured["retries"] == 2
+
+
+def test_http_429_is_returned_and_does_not_poison_the_local_path(monkeypatch):
+    calls = {"probe": 0}
+
+    def fake_probe(url, **kwargs):
+        calls["probe"] += 1
+        return http.Reachability(True, url, 1, 1, status=429)
+
+    monkeypatch.setattr(http, "probe_url", fake_probe)
+    monkeypatch.setattr(http, "get", lambda *args, **kwargs: _HttpErrorResponse())
+    monkeypatch.setattr(http.time, "sleep", lambda *args, **kwargs: None)
+
+    first = http.get_json_with_fallback("https://hub.docker.com/tags")
+    second = http.get_json_with_fallback("https://hub.docker.com/tags")
+
+    assert first[2] == "HTTP 429 Too Many Requests"
+    assert second[2] == "HTTP 429 Too Many Requests"
+    assert calls["probe"] == 2
+    assert http.network_snapshot()["local_unavailable"] is False
+
+
+def test_local_failure_without_remote_returns_the_real_local_error(monkeypatch):
+    calls = {"probe": 0}
+
+    def fake_probe(url, **kwargs):
+        calls["probe"] += 1
+        return http.Reachability(False, url, 1, 5, error="timeout")
+
+    monkeypatch.setattr(http, "_remote_configured", lambda: False)
+    monkeypatch.setattr(http, "probe_url", fake_probe)
+
+    first = http.get_json_with_fallback("https://hub.docker.com/tags")
+    second = http.get_json_with_fallback("https://hub.docker.com/tags")
+
+    assert "local network probe failed: timeout" in first[2]
+    assert "no remote SSH" not in first[2]
+    assert second[2] == first[2]
+    assert calls["probe"] == 2
+    assert http.network_snapshot()["local_failures"] == 2
+    assert http.network_snapshot()["remote_unavailable"] is False
+
+
 def test_get_json_with_fallback_reuses_remote_failure_without_retrying(monkeypatch):
     calls = {"remote": 0}
 
+    monkeypatch.setattr(http, "_remote_configured", lambda: True)
     monkeypatch.setattr(http, "probe_url", lambda url, **kwargs: http.Reachability(False, url, 3, 5, error="timeout"))
 
     def fail_remote(*args, **kwargs):

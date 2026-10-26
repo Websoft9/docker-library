@@ -16,11 +16,14 @@ REPO_CONFIG_PATH = Path(__file__).resolve().parent.parent / "proxy.conf"
 _REMOTE_ONLY = False
 _LOCAL_UNAVAILABLE = False
 _REMOTE_UNAVAILABLE = False
+_LOCAL_FAILURES = 0
+_LOCAL_LAST_ERROR = ""
 _NETWORK_DEADLINE: float | None = None
 _NETWORK_LAST_ERROR = ""
 _NETWORK_STATS = {
     "local_probe_attempts": 0,
     "local_requests": 0,
+    "local_failures": 0,
     "remote_attempts": 0,
     "remote_retries": 0,
     "local_unavailable": False,
@@ -30,15 +33,19 @@ _NETWORK_STATS = {
 
 def reset_network_state(deadline_seconds: float | None = None) -> None:
     """Reset per-command network state and optionally set a hard deadline."""
-    global _LOCAL_UNAVAILABLE, _REMOTE_ONLY, _REMOTE_UNAVAILABLE, _NETWORK_DEADLINE, _NETWORK_STATS, _NETWORK_LAST_ERROR
+    global _LOCAL_UNAVAILABLE, _REMOTE_ONLY, _REMOTE_UNAVAILABLE, _LOCAL_FAILURES, _LOCAL_LAST_ERROR
+    global _NETWORK_DEADLINE, _NETWORK_STATS, _NETWORK_LAST_ERROR
     _REMOTE_ONLY = False
     _LOCAL_UNAVAILABLE = False
     _REMOTE_UNAVAILABLE = False
+    _LOCAL_FAILURES = 0
+    _LOCAL_LAST_ERROR = ""
     _NETWORK_DEADLINE = time.monotonic() + deadline_seconds if deadline_seconds is not None else None
     _NETWORK_LAST_ERROR = ""
     _NETWORK_STATS = {
         "local_probe_attempts": 0,
         "local_requests": 0,
+        "local_failures": 0,
         "remote_attempts": 0,
         "remote_retries": 0,
         "local_unavailable": False,
@@ -56,7 +63,13 @@ def network_snapshot() -> dict:
         path = "local-failed"
     else:
         path = "local"
-    return {**_NETWORK_STATS, "path": path, "deadline_remaining_seconds": remaining}
+    return {
+        **_NETWORK_STATS,
+        "path": path,
+        "local_error": _LOCAL_LAST_ERROR or None,
+        "remote_error": _NETWORK_LAST_ERROR or None,
+        "deadline_remaining_seconds": remaining,
+    }
 
 
 def _remaining_budget() -> float | None:
@@ -72,10 +85,85 @@ def _bounded_timeout(timeout: tuple[float, float] | None) -> tuple[float, float]
     if remaining <= 0:
         return (0.1, 0.1)
     base = timeout or default_timeout()
-    # Version discovery uses a separate bounded remote fallback. Keep one
-    # stalled local request from consuming the entire command budget.
-    base = (min(base[0], 2.0), min(base[1], 2.0))
+    # Keep one stalled local request from consuming the entire command budget,
+    # but leave enough room for normal API latency and response bodies.
+    base = (min(base[0], 5.0), min(base[1], 5.0))
     return (min(base[0], remaining), min(base[1], remaining))
+
+
+NETWORK_ERRORS = (
+    requests.exceptions.ConnectionError,
+    requests.exceptions.Timeout,
+    requests.exceptions.SSLError,
+    requests.exceptions.ProxyError,
+    requests.exceptions.ChunkedEncodingError,
+    requests.exceptions.ContentDecodingError,
+)
+
+
+def _remote_configured() -> bool:
+    from libs import remote
+
+    return bool(remote.ssh_host())
+
+
+def _probe_retries(remaining: float | None) -> int:
+    if remaining is None:
+        return 2
+    if remaining > 6:
+        return 2
+    if remaining >= 4:
+        return 1
+    return 0
+
+
+def _mark_local_failure(message: str) -> None:
+    global _LOCAL_FAILURES, _LOCAL_LAST_ERROR, _LOCAL_UNAVAILABLE, _NETWORK_STATS
+
+    _LOCAL_FAILURES += 1
+    _LOCAL_LAST_ERROR = message
+    _NETWORK_STATS["local_failures"] = _LOCAL_FAILURES
+    if _LOCAL_FAILURES >= 3 and _remote_configured():
+        _LOCAL_UNAVAILABLE = True
+        _NETWORK_STATS["local_unavailable"] = True
+
+
+def _retry_delay(response, attempt: int) -> float:
+    raw = response.headers.get("Retry-After") if getattr(response, "headers", None) else None
+    if raw:
+        try:
+            return max(0.0, min(5.0, float(raw)))
+        except (TypeError, ValueError):
+            pass
+    return min(5.0, float(attempt + 1))
+
+
+def _http_error_message(response) -> str:
+    reason = getattr(response, "reason", "") or ""
+    return f"HTTP {response.status_code} {reason}".strip()
+
+
+def _get_with_retries(
+    url: str,
+    params: dict | None,
+    headers: dict | None,
+    timeout: tuple[float, float] | None,
+):
+    response = None
+    for attempt in range(3):
+        response = get(url, params, timeout=timeout, headers=headers)
+        if response.status_code not in {429, 500, 502, 503, 504}:
+            return response
+        if attempt == 2:
+            return response
+        delay = _retry_delay(response, attempt)
+        remaining = _remaining_budget()
+        if remaining is not None:
+            if remaining <= 0.2:
+                return response
+            delay = min(delay, max(0.0, remaining - 0.1))
+        time.sleep(delay)
+    return response
 
 
 def default_timeout() -> tuple[float, float]:
@@ -215,14 +303,10 @@ def remote_get_json(url: str, params: dict | None, headers: dict | None) -> tupl
 
     host = remote.ssh_host()
     if not host:
-        _REMOTE_UNAVAILABLE = True
-        _NETWORK_STATS["remote_unavailable"] = True
-        return None, None, "local network unreachable and no remote SSH host configured"
+        return None, None, "no remote SSH host configured"
     secret_path = remote.resolve_secret_path()
     if not secret_path.exists():
-        _REMOTE_UNAVAILABLE = True
-        _NETWORK_STATS["remote_unavailable"] = True
-        return None, None, f"local network unreachable and SSH secret not found: {secret_path}"
+        return None, None, f"remote SSH secret not found: {secret_path}"
 
     target = url
     if params:
@@ -267,15 +351,16 @@ def get_json_with_fallback(
     *,
     timeout: tuple[float, float] | None = None,
 ) -> tuple[object | None, dict | None, str | None]:
-    """Fetch JSON locally, falling back to the configured remote host's egress.
+    """Fetch JSON locally, falling back to a configured remote host only on network failure.
 
-    The local path gets one fast probe (2s x at most 3 attempts). Only network
-    failures trigger the remote fallback; HTTP 4xx/5xx responses are returned to
-    the caller as normal responses so it can apply endpoint-specific handling.
-    After one successful remote fallback, later calls in the same process skip
-    the local probe and go straight to the remote path.
+    HTTP errors and invalid JSON are returned directly: they prove the local
+    network path works and should not poison later requests. A local network
+    failure becomes sticky only after repeated failures and only when a remote
+    host is actually configured. In CI without a remote host, each app gets its
+    own local attempt and sees the real local error.
     """
-    global _LOCAL_UNAVAILABLE, _REMOTE_ONLY, _REMOTE_UNAVAILABLE, _NETWORK_STATS, _NETWORK_LAST_ERROR
+    global _LOCAL_UNAVAILABLE, _LOCAL_FAILURES, _LOCAL_LAST_ERROR
+    global _REMOTE_ONLY, _REMOTE_UNAVAILABLE, _NETWORK_STATS, _NETWORK_LAST_ERROR
 
     remaining = _remaining_budget()
     if remaining is not None and remaining <= 0:
@@ -285,37 +370,52 @@ def get_json_with_fallback(
         _NETWORK_STATS["remote_unavailable"] = True
         return None, None, "network scan deadline exceeded"
 
+    # A remote host may have been removed after a previous sticky decision.
+    if _LOCAL_UNAVAILABLE and not _remote_configured():
+        _LOCAL_UNAVAILABLE = False
+        _NETWORK_STATS["local_unavailable"] = False
+    if _REMOTE_ONLY and not _remote_configured():
+        _REMOTE_ONLY = False
+
     if not _REMOTE_ONLY and not _LOCAL_UNAVAILABLE and not _REMOTE_UNAVAILABLE:
         probe_timeout = min(2.0, remaining) if remaining is not None else 2.0
-        probe_retries = 0 if _NETWORK_DEADLINE is not None else 2
-        probe = probe_url(url, timeout=max(0.1, probe_timeout), retries=probe_retries)
+        probe = probe_url(url, timeout=max(0.1, probe_timeout), retries=_probe_retries(remaining))
         _NETWORK_STATS["local_probe_attempts"] += probe.attempts
         if probe.ok:
             try:
                 _NETWORK_STATS["local_requests"] += 1
-                response = get(url, params, timeout=_bounded_timeout(timeout), headers=headers)
-                if response.status_code == 429:
-                    remaining = _remaining_budget()
-                    if remaining is not None:
-                        time.sleep(min(1, remaining))
-                    else:
-                        time.sleep(1)
-                    response = get(url, params, timeout=_bounded_timeout(timeout), headers=headers)
-                response.raise_for_status()
-                return response.json(), dict(response.headers), None
+                response = _get_with_retries(url, params, headers, _bounded_timeout(timeout))
+                if response.status_code >= 400:
+                    return None, dict(response.headers), _http_error_message(response)
+                data = response.json()
+                _LOCAL_FAILURES = 0
+                _LOCAL_LAST_ERROR = ""
+                _NETWORK_LAST_ERROR = ""
+                _NETWORK_STATS["local_failures"] = 0
+                _REMOTE_UNAVAILABLE = False
+                _NETWORK_STATS["remote_unavailable"] = False
+                return data, dict(response.headers), None
+            except ValueError as error:
+                return None, None, f"invalid JSON response: {error}"
+            except requests.exceptions.RequestException as error:
+                if isinstance(error, NETWORK_ERRORS):
+                    _mark_local_failure(f"local request failed: {error}")
+                else:
+                    return None, None, f"local request failed: {error}"
+                local_error = f"local request failed: {error}"
             except Exception as error:
-                _LOCAL_UNAVAILABLE = True
-                _NETWORK_STATS["local_unavailable"] = True
-                local_error = str(error)
+                return None, None, f"local request failed: {error}"
         else:
-            _LOCAL_UNAVAILABLE = True
-            _NETWORK_STATS["local_unavailable"] = True
-            local_error = probe.error or "local network probe failed"
+            _mark_local_failure(f"local network probe failed: {probe.error or 'unknown'}")
+            local_error = f"local network probe failed: {probe.error or 'unknown'}"
     else:
-        local_error = "local network path unavailable"
+        local_error = f"local network unavailable: {_LOCAL_LAST_ERROR or 'unknown'}"
 
     if _REMOTE_UNAVAILABLE:
         return None, None, _NETWORK_LAST_ERROR or "remote egress unavailable after retry budget was exhausted"
+
+    if not _remote_configured():
+        return None, None, local_error
 
     data, response_headers, error = remote_get_json(url, params, headers)
     if not error:

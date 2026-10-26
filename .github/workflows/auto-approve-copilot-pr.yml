@@ -1,0 +1,49 @@
+name: Auto-approve Copilot PR checks
+
+on:
+  workflow_run:
+    workflows: [PR checks]
+    types: [completed]
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: auto-approve-copilot-pr
+  cancel-in-progress: false
+
+jobs:
+  approve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Approve pending Copilot PR checks
+        env:
+          GH_TOKEN: ${{ secrets.MAINTENANCE_STATE_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::warning::MAINTENANCE_STATE_TOKEN is not set; skipping auto-approval"
+            exit 0
+          fi
+
+          gh api --paginate "repos/$REPOSITORY/actions/runs?status=action_required&per_page=100" \
+            --jq '.workflow_runs[] | select(.path == ".github/workflows/pr-checks.yml" and .event == "pull_request" and ((.head_branch // "") | startswith("copilot/"))) | .id' \
+            > pending-runs.txt
+
+          if [ ! -s pending-runs.txt ]; then
+            echo "No pending Copilot PR checks"
+            exit 0
+          fi
+
+          while IFS= read -r run_id; do
+            [ -n "$run_id" ] || continue
+            echo "Approving PR checks run $run_id"
+            gh api --method POST "repos/$REPOSITORY/actions/runs/$run_id/approve" \
+              || echo "::warning::Could not approve run $run_id"
+          done < pending-runs.txt
