@@ -2,6 +2,7 @@
 name: Change request
 about: Request a repository, process, or tooling change
 title: 'Change: [scope]'
+labels: ai
 ---
 
 <!-- libs:workflow=change-request -->

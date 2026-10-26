@@ -2,6 +2,7 @@
 name: Bug report
 about: Report a problem; AI investigates and reports back
 title: 'Bug: [app]'
+labels: ai
 ---
 
 <!-- libs:workflow=bug-report -->

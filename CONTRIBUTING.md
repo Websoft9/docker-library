@@ -21,7 +21,7 @@ This repository uses an AI-first delivery model: owners decide demand and the fi
 
 ## Issue automation
 
-An issue starts the AI workflow only when it is opened and already has the `ai` label; both conditions are required. Adding `ai` later does not start Copilot. The assignment workflow uses `MAINTENANCE_STATE_TOKEN`; it must be a user PAT with `repo` scope that can assign Copilot.
+An issue starts Copilot when it is opened with the `ai` label by an `OWNER`, `MEMBER`, or `COLLABORATOR`, or when the `ai` label is added later by a user with label permission. The issue templates apply `labels: ai` by default, but external issue authors do not trigger assignment on open. Duplicate assignment is skipped when Copilot is already assigned. The assignment workflow uses `COPILOT_ASSIGN_TOKEN` when set, otherwise `MAINTENANCE_STATE_TOKEN`; the token must be a user PAT with `repo` scope that can assign Copilot.
 
 For maintenance scan review, check the apps in the issue checklist and comment `/approve-updates`, or comment `/approve-updates app1, app2` to name apps explicitly. The workflow creates linked child issues deterministically and assigns Copilot to each approved child, so Copilot starts working immediately.
 

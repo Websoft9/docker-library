@@ -2,6 +2,7 @@
 name: Delete app
 about: Permanently remove an archived app (destructive)
 title: 'Delete: [app]'
+labels: ai
 ---
 
 <!-- libs:workflow=delete-app -->
