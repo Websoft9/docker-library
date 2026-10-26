@@ -172,3 +172,100 @@ def test_fetch_verified_candidates_skips_minor_tag_equal_to_current(monkeypatch)
     assert error is None
     assert latest == {"version": "3.12.1", "last_updated": "2026-10-01"}
     assert "3.12" not in seen
+
+
+def test_fetch_ecr_public_uses_paginated_tags(monkeypatch):
+    monkeypatch.setattr(sources, "_ecr_public_repository", lambda url: ("gravitational", "teleport-distroless"))
+    monkeypatch.setattr(sources, "_ecr_public_token", lambda namespace, image: ("token", None))
+    pages = [
+        (["18.10.4", "18.10.6", "sha256-abc.sig"], "https://public.ecr.aws/next"),
+        (["18.11", "18.11.7"], None),
+    ]
+    calls = []
+
+    def fake_page(namespace, image, token, page_size, next_url=None):
+        calls.append(next_url)
+        return pages[len(calls) - 1][0], pages[len(calls) - 1][1], None
+
+    monkeypatch.setattr(sources, "_ecr_public_tags_page", fake_page)
+
+    latest, error = sources.fetch_candidates(
+        "ecr-public",
+        "https://gallery.ecr.aws/gravitational/teleport-distroless",
+        "18.10",
+        page_size=1000,
+    )
+
+    assert error is None
+    assert latest == {"version": "18.11", "last_updated": ""}
+    assert calls == [None, "https://public.ecr.aws/next"]
+
+
+def test_fetch_verified_candidates_verifies_ecr_public_tag(monkeypatch):
+    monkeypatch.setattr(
+        sources,
+        "_github_releases_raw",
+        lambda url, page_size: ([{"name": "v18.10.0"}, {"name": "v18.11.0"}], None),
+    )
+    monkeypatch.setattr(sources, "_ecr_public_repository", lambda url: ("gravitational", "teleport-distroless"))
+    monkeypatch.setattr(sources, "_ecr_public_token", lambda namespace, image: ("token", None))
+    monkeypatch.setattr(
+        sources,
+        "_ecr_public_manifest_exists",
+        lambda namespace, image, tag, token: (tag == "18.11", None),
+    )
+
+    latest, error = sources.fetch_verified_candidates(
+        verify_type="ecr-public",
+        verify_url="https://gallery.ecr.aws/gravitational/teleport-distroless",
+        index_type="github-releases",
+        index_url="https://github.com/gravitational/teleport/releases",
+        current_version="18.10",
+    )
+
+    assert error is None
+    assert latest == {"version": "18.11", "last_updated": ""}
+
+
+def test_github_releases_raw_uses_releases_endpoint_and_skips_drafts(monkeypatch):
+    called = []
+
+    def fake_get_json(url, params=None, headers=None):
+        called.append((url, params, headers))
+        return (
+            [
+                {"tag_name": "v1.2.0", "published_at": "2026-01-01", "draft": False},
+                {"tag_name": "v1.3.0-rc.1", "published_at": "2026-02-01", "draft": True},
+            ],
+            None,
+        )
+
+    monkeypatch.setattr(sources, "_get_json", fake_get_json)
+
+    tags, error = sources._github_releases_raw("https://github.com/owner/repo/releases", 100)
+
+    assert error is None
+    assert called[0][0] == "https://api.github.com/repos/owner/repo/releases"
+    assert tags == [{"name": "v1.2.0", "last_updated": "2026-01-01"}]
+
+
+def test_fetch_verified_candidates_returns_no_update_when_release_index_has_nothing_newer(monkeypatch):
+    monkeypatch.setattr(
+        sources,
+        "_github_releases_raw",
+        lambda url, page_size: ([{"name": "v18.10.0", "last_updated": ""}], None),
+    )
+    called = []
+    monkeypatch.setattr(sources, "_github_tags_raw", lambda *args, **kwargs: called.append("tags") or ([], None))
+
+    latest, error = sources.fetch_verified_candidates(
+        verify_type="ecr-public",
+        verify_url="https://gallery.ecr.aws/gravitational/teleport-distroless",
+        index_type="github-releases",
+        index_url="https://github.com/gravitational/teleport/releases",
+        current_version="18.10",
+    )
+
+    assert error is None
+    assert latest is None
+    assert called == []

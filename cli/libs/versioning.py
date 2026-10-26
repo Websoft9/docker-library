@@ -11,6 +11,7 @@ VARIANT_SUFFIX_RE = re.compile(
 )
 
 NON_STABLE_CHANNELS = {"canary", "nightly", "snapshot", "preview", "insider"}
+UNSTABLE_TOKENS = ("rc", "alpha", "beta", "dev", "pre", "preview", "canary", "nightly", "snapshot", "insider")
 
 
 def normalize_tag(name: str) -> str:
@@ -42,6 +43,12 @@ def normalize_tag(name: str) -> str:
             if prerelease.lower() in NON_STABLE_CHANNELS:
                 return f"{base}.dev{number or '0'}"
             return f"{base}-{prerelease}{number or ''}"
+        lowered = normalized.lower()
+        if any(
+            re.search(rf"(?:^|[._-]){re.escape(token)}(?:[._-]|$)", lowered)
+            for token in UNSTABLE_TOKENS
+        ):
+            return f"{base}.dev0"
         return base
 
 

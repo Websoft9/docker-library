@@ -47,6 +47,7 @@ New app flow reuses layers 3-5 and starts from the repository template.
 CLI-first source types (inferred from URL patterns, no manual `type` field):
 - `dockerhub-tags` - `hub.docker.com/...`
 - `ghcr-tags` - `ghcr.io/...`
+- `ecr-public` - `gallery.ecr.aws/...` or `public.ecr.aws/...`
 - `github-releases` - `github.com/.../releases`
 - `github-tags` - `github.com/org/repo` (tags are the default GitHub source; no `/tags` suffix needed)
 - `raw-compose` - compose files referenced by `upstream.compose.compose`

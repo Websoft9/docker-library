@@ -31,6 +31,7 @@ Notes:
 - Apps that were never checked are spread across the cycle with a deterministic hash slot, so the first run does not scan the whole library at once.
 - Failed checks retry on the next run; an app is parked after 3 consecutive failures and stops consuming scan budget.
 - `--limit` caps how many apps one run scans. Raised or missed runs are not replayed as extra scans.
+- Manual runs can set `due_within_days` (0-90) to include apps due within the next N days. The target date is computed in Asia/Shanghai; scanning early updates `ok_at` to the actual scan time, so the next due date moves with the early scan.
 - A missing or unreadable state value is a hard error, never "everything is due".
 - The scan selector lives in `.github/workflows/maintenance-scan.yml`. Reading a variable needs no token, but updating it needs a PAT with repo scope (classic) or Variables read/write (fine-grained); the automatic `GITHUB_TOKEN` cannot write Actions variables. The workflow uses one PAT secret: `MAINTENANCE_STATE_TOKEN`.
 - Each regular scan creates or reuses one parent issue identified by the workflow run ID. The parent stores the scan snapshot and a checklist; owner approval is a `/approve-updates` comment after checking the desired apps. Explicit `/approve-updates app1, app2` remains supported.
