@@ -1,0 +1,84 @@
+name: Mark Copilot PR ready
+
+on:
+  workflow_run:
+    workflows: ["Running Copilot cloud agent"]
+    types: [completed]
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Copilot branch to mark ready
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: mark-copilot-pr-ready-${{ github.event.workflow_run.head_branch || inputs.branch }}
+  cancel-in-progress: false
+
+jobs:
+  ready:
+    if: |
+      github.event_name == 'schedule' ||
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event.workflow_run.conclusion == 'success' &&
+        startsWith(github.event.workflow_run.head_branch, 'copilot/')
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Mark the Copilot pull request ready for review
+        env:
+          GH_TOKEN: ${{ secrets.MAINTENANCE_STATE_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch || inputs.branch }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::warning::MAINTENANCE_STATE_TOKEN is not set; skipping ready transition"
+            exit 0
+          fi
+
+          mark_ready() {
+            branch="$1"
+            pr=$(gh pr list --repo "$REPOSITORY" --head "$branch" --state open \
+              --json number,isDraft --jq '.[0] // empty')
+            if [ -z "$pr" ]; then
+              echo "No open pull request for $branch"
+              return 0
+            fi
+            number=$(jq -r '.number' <<< "$pr")
+            draft=$(jq -r '.isDraft' <<< "$pr")
+            if [ "$draft" = "true" ]; then
+              gh pr ready "$number" --repo "$REPOSITORY"
+              echo "Marked PR #$number ready for review"
+            else
+              echo "PR #$number is already ready for review"
+            fi
+          }
+
+          if [ -n "${HEAD_BRANCH:-}" ]; then
+            mark_ready "$HEAD_BRANCH"
+            exit 0
+          fi
+
+          gh pr list --repo "$REPOSITORY" --state open \
+            --json number,headRefName,isDraft \
+            --jq '.[] | select(.isDraft and (.headRefName | startswith("copilot/"))) | .headRefName' \
+            > copilot-branches.txt
+
+          while IFS= read -r branch; do
+            [ -n "$branch" ] || continue
+            encoded=$(jq -rn --arg b "$branch" '$b|@uri')
+            status=$(gh api "repos/$REPOSITORY/actions/runs?branch=$encoded&per_page=20" \
+              --jq '[.workflow_runs[] | select(.name == "Running Copilot cloud agent")] | first | .status // empty')
+            if [ "$status" = "completed" ]; then
+              mark_ready "$branch"
+            fi
+          done < copilot-branches.txt

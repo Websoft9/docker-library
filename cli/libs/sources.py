@@ -1,13 +1,12 @@
 from __future__ import annotations
 
 import os
-import time
 import re
 from urllib.parse import urljoin
 
 from packaging import version
 
-from libs.http import get, get_json_with_fallback, probe_url, remote_get_json
+from libs.http import get, get_json_with_fallback, probe_url
 from libs.versioning import find_latest_version, normalize_tag
 
 
@@ -175,22 +174,10 @@ def _ghcr_tags_page(namespace: str, image: str, token: str, page_size: int, last
         params["last"] = last
     url = f"https://ghcr.io/v2/{namespace}/{image}/tags/list"
     headers = {"Authorization": f"Bearer {token}"}
-    probe = probe_url(url)
-    if probe.ok:
-        try:
-            response = get(url, params, headers=headers)
-            if response.status_code == 429:
-                time.sleep(1)
-                response = get(url, params, headers=headers)
-            response.raise_for_status()
-            data = response.json()
-            return (data or {}).get("tags") or [], response.headers.get("Link"), None
-        except Exception as error:
-            return [], None, str(error)
-    data, _headers, error = remote_get_json(url, params, headers)
+    data, response_headers, error = get_json_with_fallback(url, params, headers)
     if error:
         return [], None, error
-    return (data or {}).get("tags") or [], None, None
+    return (data or {}).get("tags") or [], (response_headers or {}).get("Link"), None
 
 
 def _fetch_ghcr(url: str, current_version: str, major_ahead: int, page_size: int) -> tuple[dict | None, str | None]:
@@ -262,22 +249,14 @@ def _ecr_public_tags_page(
     url = next_url or f"https://public.ecr.aws/v2/{namespace}/{image}/tags/list"
     params = None if next_url else {"n": min(page_size, 1000)}
     headers = {"Authorization": f"Bearer {token}"}
-    probe = probe_url(url)
-    if probe.ok:
-        try:
-            response = get(url, params, headers=headers)
-            if response.status_code == 429:
-                time.sleep(1)
-                response = get(url, params, headers=headers)
-            response.raise_for_status()
-            data = response.json()
-            return (data or {}).get("tags") or [], _ecr_public_next_url(response.headers.get("Link")), None
-        except Exception as error:
-            return [], None, str(error)
-    data, _headers, error = remote_get_json(url, params, headers)
+    data, response_headers, error = get_json_with_fallback(url, params, headers)
     if error:
         return [], None, error
-    return (data or {}).get("tags") or [], None, None
+    return (
+        (data or {}).get("tags") or [],
+        _ecr_public_next_url((response_headers or {}).get("Link")),
+        None,
+    )
 
 
 def _fetch_ecr_public(

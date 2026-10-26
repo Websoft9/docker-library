@@ -91,12 +91,40 @@ jobs:
           ALIYUN_ACCESS_KEY_SECRET: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
           PR_NUMBER: ${{ steps.pr.outputs.number }}
         run: |
-          result=$(make create-aliyun-ecs ARGS="--name libs-pr-$PR_NUMBER --release-in 2h --yes --wait-timeout 180 --json")
-          printf '%s\n' "$result" > server.json
-          ip=$(jq -r '.public_ip // empty' server.json)
-          test -n "$ip"
-          echo "ip=$ip" >> "$GITHUB_OUTPUT"
-          echo "expires=$(jq -r '.auto_release_time' server.json)" >> "$GITHUB_OUTPUT"
+          set -euo pipefail
+          mapfile -t types < <(jq -r '(.instance.type | if type == "array" then .[] else . end)' ci/cloud/aliyun-ecs.json)
+          disk_size=$(jq -r '.system_disk.default_size_gib // 200' ci/cloud/aliyun-ecs.json)
+          last_error=""
+
+          for instance_type in "${types[@]}"; do
+            echo "Trying instance type: $instance_type"
+            stdout=$(mktemp)
+            stderr=$(mktemp)
+
+            if make create-aliyun-ecs ARGS="--name libs-pr-$PR_NUMBER --instance-type $instance_type --disk-size $disk_size --release-in 2h --yes --wait-timeout 180 --json" >"$stdout" 2>"$stderr"; then
+              cat "$stdout" > server.json
+              cat "$stderr" >&2 || true
+              ip=$(jq -r '.public_ip // empty' server.json)
+              if [ -n "$ip" ]; then
+                echo "ip=$ip" >> "$GITHUB_OUTPUT"
+                echo "expires=$(jq -r '.auto_release_time' server.json)" >> "$GITHUB_OUTPUT"
+                rm -f "$stdout" "$stderr"
+                exit 0
+              fi
+              cat "$stdout" >&2
+              echo "::error::Instance was created but no public IP was assigned for $instance_type"
+              rm -f "$stdout" "$stderr"
+              exit 1
+            fi
+
+            cat "$stdout" "$stderr" >&2 || true
+            last_error=$(cat "$stderr")
+            echo "::warning::Instance type $instance_type failed"
+            rm -f "$stdout" "$stderr"
+          done
+
+          echo "::error::Could not create a Websoft9 E2E server: ${last_error:-all instance types failed}"
+          exit 1
 
       - name: Wait for SSH and Websoft9
         if: steps.pr.outputs.found == 'true' && steps.apps.outputs.list != ''
