@@ -1,4 +1,6 @@
-# Daily scan selector.
+# Twice-weekly scan selector.
+#
+# Cron uses UTC. Monday and Thursday 02:00 UTC is 10:00 China Standard Time.
 #
 # Scans only the apps whose cadence interval has elapsed since their last
 # successful check. State lives in the MAINTENANCE_SCAN_STATE repository
@@ -19,7 +21,7 @@ name: Maintenance scan
 
 on:
   schedule:
-    - cron: '17 3 * * *'
+    - cron: '0 2 * * 1,4'
   workflow_dispatch:
     inputs:
       limit:
@@ -35,6 +37,7 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 concurrency:
   group: maintenance-scan
@@ -97,7 +100,11 @@ jobs:
           PLAN_ONLY: ${{ inputs.plan_only || 'false' }}
         run: |
           set -euo pipefail
-          args=(scan --selection due --state-file state.json --limit "$LIMIT" --json)
+          # The CLI budget is total, not per app, so scale it with the batch.
+          budget=$(( LIMIT * 20 ))
+          if [ "$budget" -lt 120 ]; then budget=120; fi
+          if [ "$budget" -gt 1500 ]; then budget=1500; fi
+          args=(scan --selection due --state-file state.json --limit "$LIMIT" --network-timeout "$budget" --json)
           if [ "$PLAN_ONLY" = "true" ]; then
             args+=(--plan-only)
           else
@@ -132,15 +139,63 @@ jobs:
               for item in items:
                   latest = item.get("latest_version")
                   latest_version = latest.get("version") if isinstance(latest, dict) else "n/a"
-                  current = ", ".join(item.get("current_version") or [])
+                  current = ", ".join(
+                      value for value in (item.get("current_version") or [])
+                      if str(value).lower() != "latest"
+                  )
                   status = item.get("version_status") or item.get("error") or "planned"
                   print(f"| {item['name']} | {current} | {latest_version} | {status} |")
           else:
               print("No apps are due in this run.")
           PY
 
+      - name: Create scan review issue
+        if: steps.scan.outcome == 'success' && inputs.plan_only != true
+        id: review
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          scan_date=$(date -u +%F)
+          python ci/scripts/maintenance_scan_review.py render \
+            --scan-file scan.json \
+            --run-id "$RUN_ID" \
+            --run-url "$RUN_URL" \
+            --scan-date "$scan_date" > review-issue.json
+
+          python - <<'PY' > review-title.txt
+          import json
+          print(json.load(open("review-issue.json"))["title"])
+          PY
+          title=$(cat review-title.txt)
+
+          gh api --paginate --slurp "repos/$REPO/issues?state=open&per_page=100&sort=created&direction=desc" > recent-issues.json
+          existing=$(python - <<'PY'
+          import json
+          title = open("review-title.txt").read().strip()
+          pages = json.load(open("recent-issues.json"))
+          issues = [item for page in pages for item in (page if isinstance(page, list) else [page])]
+          match = next((item for item in issues if "pull_request" not in item and item.get("title") == title), None)
+          print(match["number"] if match else "")
+          PY
+          )
+          if [ -n "$existing" ]; then
+            issue_number="$existing"
+            gh api --method PATCH "repos/$REPO/issues/$issue_number" --input review-issue.json >/dev/null
+            echo "Reusing scan review issue #$issue_number"
+          else
+            gh api --method POST "repos/$REPO/issues" --input review-issue.json > created-issue.json
+            issue_number=$(python -c 'import json; print(json.load(open("created-issue.json"))["number"])')
+            echo "Created scan review issue #$issue_number"
+          fi
+          echo "- Owner review: https://github.com/$REPO/issues/$issue_number" >> "$GITHUB_STEP_SUMMARY"
+          echo "number=$issue_number" >> "$GITHUB_OUTPUT"
+
       - name: Write updated scan state
-        if: inputs.plan_only != true
+        if: always() && steps.scan.outcome == 'success' && inputs.plan_only != true && hashFiles('next.json') != ''
         env:
           GH_TOKEN: ${{ secrets.MAINTENANCE_STATE_TOKEN }}
           REPO: ${{ github.repository }}
@@ -169,3 +224,79 @@ jobs:
             printf '%s' "$body" | gh api --method POST "repos/$REPO/actions/variables" --input - >/dev/null
           fi
           echo "wrote $STATE_VAR (${bytes} bytes)"
+
+      - name: Notify WeCom about scan results
+        if: always() && steps.scan.outcome == 'success' && inputs.plan_only != true
+        env:
+          WECOM_WEBHOOK: ${{ secrets.WECOM_WEBHOOK }}
+          REPOSITORY: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          REVIEW_ISSUE: ${{ steps.review.outputs.number }}
+        run: |
+          set -euo pipefail
+          if [ -z "${WECOM_WEBHOOK:-}" ]; then
+            echo "::warning::WECOM_WEBHOOK is not set; skipping scan notification"
+            exit 0
+          fi
+
+          scan_date=$(date -u +%F)
+          export SCAN_DATE="$scan_date"
+          python - <<'PY' > wecom-scan.md
+          import json
+          import os
+
+          items = json.load(open("scan.json", encoding="utf-8"))
+
+          def names(predicate):
+              return [item["name"] for item in items if predicate(item)]
+
+          updates = names(lambda item: item.get("version_status") == "update-available")
+          covered = names(lambda item: item.get("version_status") == "covered-by-current-minor-tag")
+          undetermined = sorted(set(
+              names(lambda item: item.get("version_status") == "unavailable")
+              + names(lambda item: not item.get("version_status") and bool(item.get("error")))
+          ))
+          up_to_date = names(lambda item: item.get("version_status") == "up-to-date")
+
+          def line(label, values, empty="none"):
+              return f"> {label}: {', '.join(values) if values else empty}"
+
+          lines = [
+              f"# Maintenance scan {os.environ['SCAN_DATE']}",
+              f"> Run: [{os.environ['RUN_ID']}]({os.environ['RUN_URL']})",
+              f"> Scanned: {len(items)}",
+              line("Updates", updates),
+              line("Covered", covered),
+              line("Undetermined", undetermined),
+              f"> Up to date: {len(up_to_date)}",
+          ]
+          review_issue = os.environ.get("REVIEW_ISSUE", "").strip()
+          if review_issue:
+              lines.append(f"> Review: [#{review_issue}](https://github.com/{os.environ['REPOSITORY']}/issues/{review_issue})")
+          print("\n".join(lines))
+          PY
+
+          payload=$(jq -n --arg content "$(cat wecom-scan.md)" '{msgtype:"markdown",markdown:{content:$content}}')
+          curl --fail-with-body --silent --show-error --max-time 15 \
+            -H 'Content-Type: application/json' \
+            --data "$payload" "$WECOM_WEBHOOK" || echo '::warning::WeCom notification failed'
+
+      - name: Notify WeCom that scan failed
+        if: failure()
+        env:
+          WECOM_WEBHOOK: ${{ secrets.WECOM_WEBHOOK }}
+          REPOSITORY: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ -z "${WECOM_WEBHOOK:-}" ]; then
+            echo "::warning::WECOM_WEBHOOK is not set; skipping failure notification"
+            exit 0
+          fi
+          content=$(printf '# Maintenance scan failed\n> Repository: %s\n> Run: [%s](%s)\n\nPlease check the Actions logs.' \
+            "$REPOSITORY" "$RUN_ID" "$RUN_URL")
+          payload=$(jq -n --arg content "$content" '{msgtype:"markdown",markdown:{content:$content}}')
+          curl --fail-with-body --silent --show-error --max-time 15 \
+            -H 'Content-Type: application/json' \
+            --data "$payload" "$WECOM_WEBHOOK" || echo '::warning::WeCom notification failed'

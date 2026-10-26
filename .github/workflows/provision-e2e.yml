@@ -1,44 +1,48 @@
 name: Provision Websoft9 E2E
 
 on:
-  workflow_call:
-    inputs:
-      issue_number:
-        required: true
-        type: number
+  workflow_run:
+    workflows: [PR checks]
+    types: [completed]
 
 permissions:
   contents: read
   pull-requests: write
 
 concurrency:
-  group: provision-e2e-${{ inputs.issue_number }}
+  group: provision-e2e-${{ github.event.workflow_run.head_sha }}
   cancel-in-progress: false
 
 jobs:
   provision:
+    if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Find generated pull request
+      - name: Find Copilot pull request
         id: pr
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPOSITORY: ${{ github.repository }}
-          ISSUE_NUMBER: ${{ inputs.issue_number }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
-          pr=$(gh pr list --repo "$REPOSITORY" --state open --limit 50 --json number,body,headRefOid,baseRefOid \
-            | jq -c --arg issue "#$ISSUE_NUMBER" '[.[] | select(.body | contains($issue))] | first // empty')
+          pr=$(gh api "repos/$REPOSITORY/commits/$HEAD_SHA/pulls" \
+            | jq -c '[.[] | select(.state == "open" and ((.head.ref // "") | startswith("copilot/")))] | first // empty')
           if [ -z "$pr" ]; then
-            echo "No open pull request found for issue #$ISSUE_NUMBER; nothing to provision."
+            echo "No open Copilot pull request found for $HEAD_SHA; nothing to provision."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "$(jq -r '.head.sha' <<< "$pr")" != "$HEAD_SHA" ]; then
+            echo "Pull request head moved past the checked commit; nothing to provision."
             echo "found=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           echo "found=true" >> "$GITHUB_OUTPUT"
           echo "number=$(jq -r '.number' <<< "$pr")" >> "$GITHUB_OUTPUT"
-          echo "head=$(jq -r '.headRefOid' <<< "$pr")" >> "$GITHUB_OUTPUT"
-          echo "base=$(jq -r '.baseRefOid' <<< "$pr")" >> "$GITHUB_OUTPUT"
-          echo "url=https://github.com/$REPOSITORY/pull/$(jq -r '.number' <<< "$pr")" >> "$GITHUB_OUTPUT"
+          echo "head=$(jq -r '.head.sha' <<< "$pr")" >> "$GITHUB_OUTPUT"
+          echo "base=$(jq -r '.base.sha' <<< "$pr")" >> "$GITHUB_OUTPUT"
+          echo "url=$(jq -r '.html_url' <<< "$pr")" >> "$GITHUB_OUTPUT"
 
       - name: Checkout pull request
         if: steps.pr.outputs.found == 'true'
@@ -156,7 +160,10 @@ jobs:
           EXPIRES: ${{ steps.server.outputs.expires }}
           APPS: ${{ steps.apps.outputs.list }}
         run: |
-          test -n "$WECOM_WEBHOOK"
+          if [ -z "${WECOM_WEBHOOK:-}" ]; then
+            echo '::warning::WECOM_WEBHOOK is not set; skipping ready notification'
+            exit 0
+          fi
           content=$(printf '# Websoft9 E2E environment ready\n> Repository: %s\n> PR: [%s](%s)\n> App: %s\n> Commit: `%s`\n> Server IP: `%s`\n> Expires: %s\n\nPlease complete the Websoft9 installation, login, and core workflow checks.' \
             "$REPOSITORY" "#$PR_NUMBER" "$PR_URL" "$APPS" "${HEAD_SHA:0:12}" "$HOST" "$EXPIRES")
           payload=$(jq -n --arg content "$content" '{msgtype:"markdown",markdown:{content:$content}}')
@@ -174,12 +181,17 @@ jobs:
           RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           APPS: ${{ steps.apps.outputs.list }}
         run: |
-          if [ -z "$WECOM_WEBHOOK" ] || [ -z "$PR_NUMBER" ]; then
-            echo '::warning::WeCom webhook or pull request is unavailable'
+          if [ -z "${WECOM_WEBHOOK:-}" ]; then
+            echo '::warning::WECOM_WEBHOOK is not set; skipping failure notification'
             exit 0
           fi
-          content=$(printf '# Websoft9 E2E environment provisioning failed\n> Repository: %s\n> PR: [%s](%s)\n> App: %s\n> [View workflow](%s)\n\nPlease check the Actions logs.' \
-            "$REPOSITORY" "#$PR_NUMBER" "$PR_URL" "$APPS" "$RUN_URL")
+          if [ -n "${PR_NUMBER:-}" ]; then
+            content=$(printf '# Websoft9 E2E environment provisioning failed\n> Repository: %s\n> PR: [%s](%s)\n> App: %s\n> [View workflow](%s)\n\nPlease check the Actions logs.' \
+              "$REPOSITORY" "#$PR_NUMBER" "$PR_URL" "$APPS" "$RUN_URL")
+          else
+            content=$(printf '# Websoft9 E2E environment provisioning failed\n> Repository: %s\n> Pull request could not be identified.\n> [View workflow](%s)\n\nPlease check the Actions logs.' \
+              "$REPOSITORY" "$RUN_URL")
+          fi
           payload=$(jq -n --arg content "$content" '{msgtype:"markdown",markdown:{content:$content}}')
           curl --fail-with-body --silent --show-error --max-time 15 \
             -H 'Content-Type: application/json' \

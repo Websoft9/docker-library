@@ -193,7 +193,7 @@ def scan(
     plan_only: bool = typer.Option(False, help="Only list selected apps without remote version checks"),
     max_pages: int = typer.Option(1, help="Deprecated; ignored"),
     page_size: int = typer.Option(100, help="Number of tags per Docker Hub page"),
-    network_timeout: float = typer.Option(15.0, "--network-timeout", min=1.0, max=120.0, help="Total seconds for upstream network checks"),
+    network_timeout: float = typer.Option(15.0, "--network-timeout", min=1.0, max=3600.0, help="Total seconds for upstream network checks"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
 ) -> None:
     _ = max_pages

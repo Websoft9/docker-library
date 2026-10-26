@@ -339,6 +339,18 @@ def fetch_verified_candidates(
     )
     wanted = [".".join(str(p) for p in minor) for minor in minors] + candidates
 
+    # A minor tag equal to the current version must never be reported as a
+    # candidate: verifying it would echo the current version back.
+    current_ver = version.parse(normalize_tag(current_version))
+    filtered = []
+    for candidate in wanted:
+        try:
+            if version.parse(normalize_tag(candidate)) > current_ver:
+                filtered.append(candidate)
+        except version.InvalidVersion:
+            continue
+    wanted = filtered
+
     if verify_type == "dockerhub-tags":
         api_url = _dockerhub_api_url(verify_url)
         if not api_url:

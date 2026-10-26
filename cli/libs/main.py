@@ -170,7 +170,7 @@ def scan_command(
     page_size: int = typer.Option(100, help="Number of tags per Docker Hub page"),
     major_ahead: int = typer.Option(3, help="How many future majors to probe"),
     app_name: str | None = typer.Option(None, "--app", help="Scan only this app"),
-    network_timeout: float = typer.Option(15.0, "--network-timeout", min=1.0, max=120.0, help="Total seconds for upstream network checks"),
+    network_timeout: float = typer.Option(15.0, "--network-timeout", min=1.0, max=3600.0, help="Total seconds for upstream network checks"),
     state_file: str | None = typer.Option(None, "--state-file", help="Scan state JSON required by --selection due"),
     state_out: str | None = typer.Option(None, "--state-out", help="Write the updated scan state to this path"),
     limit: int | None = typer.Option(None, "--limit", min=1, help="Maximum number of apps to scan in this run"),
