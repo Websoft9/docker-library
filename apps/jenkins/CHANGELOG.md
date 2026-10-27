@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-10-27
+- Updated Jenkins from `2.586` to `2.587`.
+- Regenerated the README.
+
 ## 2026-10-13
 - Updated Jenkins from `2.581` to `2.586`.
 - Regenerated the README.
