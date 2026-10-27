@@ -36,7 +36,7 @@ Notes:
 - The scan selector lives in `.github/workflows/maintenance-scan.yml`. Reading a variable needs no token, but updating it needs a PAT with repo scope (classic) or Variables read/write (fine-grained); the automatic `GITHUB_TOKEN` cannot write Actions variables. The workflow uses one PAT secret: `MAINTENANCE_STATE_TOKEN`.
 - Each regular scan creates or reuses one parent issue identified by the workflow run ID. The parent stores the scan snapshot and a checklist; owner approval is a `/approve-updates` comment after checking the desired apps. Explicit `/approve-updates app1, app2` remains supported.
 - `issue_comment` on a scan-review parent creates the approved child issues and assigns Copilot; it does not edit app files directly.
-- When the Copilot session completes, the `PR checks` workflow marks its draft PR ready, runs checks, then provisions E2E after checks succeed. Repository administrators must disable **Require approval for workflow runs** in Copilot cloud agent settings for this flow to run unattended. The owner still confirms E2E and merges manually.
+- When the Copilot session completes, `Prepare Copilot PR for checks` marks its draft PR ready. This triggers `PR checks`; E2E is provisioned only after checks pass. Disable Copilot cloud agent's **Require approval for workflow runs** setting to run unattended. The owner confirms E2E and manually merges the PR.
 - Scan-review parent issues are created with `GITHUB_TOKEN`, so they do not start the AI workflow on open. The owner comment is the explicit AI trigger.
 - `review-first` stops before implementation unless owner approves.
 - Update work is not limited to version bumping; the changed app must satisfy the current quality gates before handoff.
