@@ -1,3 +1,8 @@
+## 2026-10-27
+
+- Updated GitLab Community Edition from `19.4.2-ce.0` to `19.5.1-ce.0`, including upstream security fixes.
+- Kept the Omnibus configuration, published ports, and optional `runner` profile unchanged.
+
 ## 2026-10-13
 
 - Updated GitLab Community Edition from `19.3.2-ce.0` to `19.4.2-ce.0`.
