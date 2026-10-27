@@ -8,18 +8,18 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: pr-checks-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
-
 jobs:
   pr-checks:
     name: PR checks
-    # Draft PRs are checked when they become ready for review; later commits
-    # on a ready PR still run the checks through the synchronize event.
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    permissions:
+      contents: read
+      pull-requests: read
+    concurrency:
+      group: pr-checks-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
     steps:
       - name: Check PR title format
         env:
@@ -30,10 +30,12 @@ jobs:
             echo "::warning::PR title should look like 'type: summary', e.g. 'fix: handle empty config'"
           fi
 
-      - name: Checkout repository
+      - name: Checkout PR files for validation
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v7
@@ -76,3 +78,246 @@ jobs:
 
       - name: Verify AI command adapters are up to date
         run: make build-ai-commands ARGS="--check"
+
+  provision-e2e:
+    name: Provision owner E2E environment
+    needs: pr-checks
+    if: >-
+      needs.pr-checks.result == 'success' &&
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.draft == false &&
+      github.event.pull_request.user.login == 'Copilot' &&
+      startsWith(github.event.pull_request.head.ref, 'copilot/')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    continue-on-error: true
+    permissions:
+      contents: read
+      pull-requests: write
+    concurrency:
+      group: provision-e2e-pr-${{ github.event.pull_request.number }}
+      cancel-in-progress: false
+    steps:
+      - name: Checkout trusted base tooling
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+
+      - name: Download PR source archive
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          gh api "repos/$REPOSITORY/zipball/$HEAD_SHA" > pr-source.zip
+          mkdir -p pr-source
+          python - <<'PY'
+          import stat
+          import zipfile
+          from pathlib import Path, PurePosixPath
+
+          destination = Path("pr-source")
+          with zipfile.ZipFile("pr-source.zip") as archive:
+              for item in archive.infolist():
+                  path = PurePosixPath(item.filename)
+                  mode = item.external_attr >> 16
+                  if path.is_absolute() or ".." in path.parts or stat.S_ISLNK(mode):
+                      raise SystemExit(f"Unsafe PR archive entry: {item.filename}")
+              archive.extractall(destination)
+
+          roots = [path for path in destination.iterdir() if path.is_dir()]
+          if len(roots) != 1:
+              raise SystemExit("Expected one root directory in the PR source archive")
+          source_root = roots[0]
+          for relative in (Path("apps"), Path("metadata/catalog")):
+              root = source_root / relative
+              if root.exists():
+                  for path in root.rglob("*"):
+                      if path.is_symlink():
+                          raise SystemExit(f"Symlinks are not allowed in PR package data: {path}")
+          Path("pr-source-root.txt").write_text(str(source_root), encoding="utf-8")
+          PY
+          source_root=$(<pr-source-root.txt)
+          mkdir -p apps
+          cp -a "$source_root/apps/." ./apps/
+          if [ -d "$source_root/metadata/catalog" ]; then
+            mkdir -p metadata/catalog
+            cp -a "$source_root/metadata/catalog/." metadata/catalog/
+          fi
+
+      - name: Detect changed applications
+        id: apps
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          apps=$(gh api --paginate "repos/$REPOSITORY/pulls/$PR_NUMBER/files?per_page=100" \
+            --jq '.[].filename' \
+            | awk -F/ '$1 == "apps" && $2 != "" {print $2}' \
+            | sort -u \
+            | paste -sd, -)
+          IFS=',' read -r -a app_list <<< "$apps"
+          for app in "${app_list[@]}"; do
+            [ -n "$app" ] || continue
+            if ! [[ "$app" =~ ^[a-z0-9][a-z0-9_-]*$ ]]; then
+              echo "::error::Invalid app directory in PR: $app"
+              exit 1
+            fi
+          done
+          if [ -z "$apps" ]; then
+            echo "No application changes found; no E2E environment is needed."
+            echo "list=" >> "$GITHUB_OUTPUT"
+          else
+            echo "list=$apps" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install CLI
+        if: steps.apps.outputs.list != ''
+        run: make install
+
+      - name: Write SSH key
+        if: steps.apps.outputs.list != ''
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.ALIYUN_SSH_PRIVATE_KEY }}
+        run: |
+          test -n "$SSH_PRIVATE_KEY"
+          mkdir -p .secrets/ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > .secrets/ssh/e2e.pem
+          chmod 600 .secrets/ssh/e2e.pem
+
+      - name: Create temporary Websoft9 server
+        if: steps.apps.outputs.list != ''
+        id: server
+        env:
+          ALIYUN_ACCESS_KEY_ID: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
+          ALIYUN_ACCESS_KEY_SECRET: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          mapfile -t types < <(jq -r '(.instance.type | if type == "array" then .[] else . end)' ci/cloud/aliyun-ecs.json)
+          disk_size=$(jq -r '.system_disk.default_size_gib // 200' ci/cloud/aliyun-ecs.json)
+          last_error=""
+          for instance_type in "${types[@]}"; do
+            echo "Trying instance type: $instance_type"
+            stdout=$(mktemp)
+            stderr=$(mktemp)
+            if make create-aliyun-ecs ARGS="--name libs-pr-$PR_NUMBER-${HEAD_SHA:0:7} --instance-type $instance_type --disk-size $disk_size --release-in 2h --yes --wait-timeout 180 --json" >"$stdout" 2>"$stderr"; then
+              cat "$stdout" > server.json
+              cat "$stderr" >&2 || true
+              ip=$(jq -r '.public_ip // empty' server.json)
+              if [ -n "$ip" ]; then
+                echo "ip=$ip" >> "$GITHUB_OUTPUT"
+                echo "expires=$(jq -r '.auto_release_time' server.json)" >> "$GITHUB_OUTPUT"
+                rm -f "$stdout" "$stderr"
+                exit 0
+              fi
+              cat "$stdout" >&2
+              echo "::error::Instance was created but no public IP was assigned for $instance_type"
+              rm -f "$stdout" "$stderr"
+              exit 1
+            fi
+            cat "$stdout" "$stderr" >&2 || true
+            last_error=$(cat "$stderr")
+            echo "::warning::Instance type $instance_type failed"
+            rm -f "$stdout" "$stderr"
+          done
+          echo "::error::Could not create a Websoft9 E2E server: ${last_error:-all instance types failed}"
+          exit 1
+
+      - name: Wait for SSH and Websoft9
+        if: steps.apps.outputs.list != ''
+        env:
+          HOST: ${{ steps.server.outputs.ip }}
+        run: |
+          for attempt in $(seq 1 60); do
+            if ssh -i .secrets/ssh/e2e.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5 root@"$HOST" 'docker inspect websoft9 >/dev/null 2>&1'; then
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Websoft9 did not become reachable in time" >&2
+          exit 1
+
+      - name: Sync applications to Websoft9
+        if: steps.apps.outputs.list != ''
+        env:
+          HOST: ${{ steps.server.outputs.ip }}
+          APPS: ${{ steps.apps.outputs.list }}
+        run: |
+          IFS=',' read -r -a app_list <<< "$APPS"
+          for app in "${app_list[@]}"; do
+            make libs ARGS="appstore-sync --app $app --ssh-host $HOST --ssh-secret-path .secrets/ssh/e2e.pem --progress --json"
+          done
+
+      - name: Report test environment
+        if: success() && steps.apps.outputs.list != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HOST: ${{ steps.server.outputs.ip }}
+          EXPIRES: ${{ steps.server.outputs.expires }}
+          APPS: ${{ steps.apps.outputs.list }}
+        run: |
+          cat > e2e-comment.md <<EOF
+          ## Owner E2E Environment
+
+          - status: ready
+          - apps: $APPS
+          - commit: $HEAD_SHA
+          - server IP: $HOST
+          - expires: $EXPIRES
+          - synced: PR application packages and catalog data
+
+          The environment is temporary and will be released automatically. Complete the Websoft9 installation, login, and core workflow checks, then record the result in this PR.
+          EOF
+          gh pr comment "$PR_NUMBER" --repo "$REPOSITORY" --body-file e2e-comment.md
+
+      - name: Notify WeCom that environment is ready
+        if: success() && steps.apps.outputs.list != ''
+        env:
+          WECOM_WEBHOOK: ${{ secrets.WECOM_WEBHOOK }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HOST: ${{ steps.server.outputs.ip }}
+          EXPIRES: ${{ steps.server.outputs.expires }}
+          APPS: ${{ steps.apps.outputs.list }}
+        run: |
+          if [ -z "${WECOM_WEBHOOK:-}" ]; then
+            echo '::warning::WECOM_WEBHOOK is not set; skipping ready notification'
+            exit 0
+          fi
+          content=$(printf '# Websoft9 E2E environment ready\n> Repository: %s\n> PR: [%s](%s)\n> App: %s\n> Commit: `%s`\n> Server IP: `%s`\n> Expires: %s\n\nPlease complete the Websoft9 installation, login, and core workflow checks.' \
+            "$REPOSITORY" "#$PR_NUMBER" "$PR_URL" "$APPS" "${HEAD_SHA:0:12}" "$HOST" "$EXPIRES")
+          payload=$(jq -n --arg content "$content" '{msgtype:"markdown",markdown:{content:$content}}')
+          curl --fail-with-body --silent --show-error --max-time 15 \
+            -H 'Content-Type: application/json' \
+            --data "$payload" "$WECOM_WEBHOOK" || echo '::warning::WeCom notification failed'
+
+      - name: Notify WeCom that environment provisioning failed
+        if: failure()
+        env:
+          WECOM_WEBHOOK: ${{ secrets.WECOM_WEBHOOK }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          APPS: ${{ steps.apps.outputs.list }}
+        run: |
+          if [ -z "${WECOM_WEBHOOK:-}" ]; then
+            echo '::warning::WECOM_WEBHOOK is not set; skipping failure notification'
+            exit 0
+          fi
+          content=$(printf '# Websoft9 E2E environment provisioning failed\n> Repository: %s\n> PR: [%s](%s)\n> App: %s\n> [View workflow](%s)\n\nPlease check the Actions logs.' \
+            "$REPOSITORY" "#$PR_NUMBER" "$PR_URL" "$APPS" "$RUN_URL")
+          payload=$(jq -n --arg content "$content" '{msgtype:"markdown",markdown:{content:$content}}')
+          curl --fail-with-body --silent --show-error --max-time 15 \
+            -H 'Content-Type: application/json' \
+            --data "$payload" "$WECOM_WEBHOOK" || echo '::warning::WeCom notification failed'

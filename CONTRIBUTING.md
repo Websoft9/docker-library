@@ -25,6 +25,8 @@ An issue starts Copilot when it is opened with the `ai` label by an `OWNER`, `ME
 
 For maintenance scan review, check the apps in the issue checklist and comment `/approve-updates`, or comment `/approve-updates app1, app2` to name apps explicitly. The workflow creates linked child issues deterministically and assigns Copilot to each approved child, so Copilot starts working immediately.
 
-Copilot pull requests are marked ready automatically when the agent finishes, and their PR checks are auto-approved for `copilot/*` branches. Once PR checks pass, the E2E environment is provisioned and the WeCom notification is sent. The owner confirms E2E and merges the PR manually.
+After the Copilot session completes, the `PR checks` workflow marks its draft PR ready, runs repository checks, and provisions the E2E environment only after checks pass. It then posts the environment details and sends the WeCom notification. The owner confirms E2E and merges the PR manually.
+
+To let Copilot PR workflows run without a separate approval step, repository administrators must disable **Require approval for workflow runs** in the repository's **Settings → Copilot → cloud agent → Actions workflow approval** settings. Without this setting, GitHub may hold Copilot-triggered workflow runs for manual approval.
 
 Keep changes minimal and app-local, validate runnable behavior by deployment, and never commit secrets.
