@@ -25,7 +25,9 @@ An issue starts Copilot when it is opened with the `ai` label by an `OWNER`, `ME
 
 For maintenance scan review, check the apps in the issue checklist and comment `/approve-updates`, or comment `/approve-updates app1, app2` to name apps explicitly. The workflow creates linked child issues deterministically and assigns Copilot to each approved child, so Copilot starts working immediately.
 
-After the Copilot session completes, `Prepare Copilot PR for checks` marks its draft PR ready. That transition triggers `PR checks`; after they pass, the workflow provisions the E2E environment, posts its details, and sends the WeCom notification. The owner performs E2E and manually clicks Merge.
+When Copilot requests review after finishing its session, `Prepare Copilot PR for checks` handles the `pull_request_target: review_requested` event and marks its draft PR ready after confirming the latest agent session succeeded. It only reads GitHub metadata and never checks out PR code. Session-completion events and a ten-minute reconciliation schedule provide fallback triggers; `workflow_dispatch` allows an administrator to reconcile immediately. The workflow identifies agent runs by their stable `dynamic/copilot-swe-agent/copilot` path rather than their display name.
+
+The Ready transition uses a user PAT so it emits `ready_for_review` and triggers `PR checks`. After checks pass, the same workflow provisions the E2E environment, posts its details, and sends the WeCom notification. The owner performs E2E and manually clicks Merge. No PR approval or manual Ready transition is required.
 
 E2E waits for SSH first, then shares a five-minute deadline across Websoft9 startup and all application sync retries. Each sync attempt is capped at 60 seconds. Obsolete PR runs are skipped before provisioning, and environments for superseded commits are not announced as ready. Only `PR checks` is a required merge status; an E2E provisioning failure is reported separately.
 

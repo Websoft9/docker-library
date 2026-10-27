@@ -1,25 +1,37 @@
 name: Prepare Copilot PR for checks
 
 on:
+  pull_request_target:
+    branches: [main]
+    types: [review_requested]
   workflow_run:
-    workflows: [Running Copilot cloud agent]
+    workflows: [Copilot cloud agent, Running Copilot cloud agent]
     types: [completed]
   schedule:
     - cron: '*/10 * * * *'
+  workflow_dispatch:
 
 permissions:
   actions: read
   pull-requests: write
 
 concurrency:
-  group: copilot-pr-ready-${{ github.event.workflow_run.head_branch }}
+  group: copilot-pr-ready-${{ github.event.pull_request.head.ref || github.event.workflow_run.head_branch || 'reconcile' }}
   cancel-in-progress: false
 
 jobs:
   prepare:
     if: >-
       github.event_name == 'schedule' ||
-      (github.event.workflow_run.conclusion == 'success' &&
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request_target' &&
+       github.actor == 'Copilot' &&
+       github.event.pull_request.user.login == 'Copilot' &&
+       github.event.pull_request.head.repo.full_name == github.repository &&
+       github.event.pull_request.draft == true &&
+       startsWith(github.event.pull_request.head.ref, 'copilot/')) ||
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.conclusion == 'success' &&
        startsWith(github.event.workflow_run.head_branch, 'copilot/'))
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -28,7 +40,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.COPILOT_ASSIGN_TOKEN || secrets.MAINTENANCE_STATE_TOKEN }}
           REPOSITORY: ${{ github.repository }}
-          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          HEAD_BRANCH: ${{ github.event.pull_request.head.ref || github.event.workflow_run.head_branch }}
           RUN_ID: ${{ github.event.workflow_run.id }}
           EVENT_NAME: ${{ github.event_name }}
         run: |
@@ -38,10 +50,10 @@ jobs:
             exit 1
           fi
 
-          if [ "$EVENT_NAME" = 'schedule' ]; then
-            candidates=$(gh pr list --repo "$REPOSITORY" --state open --limit 100 \
-              --json headRefName,isDraft,author \
-              --jq '.[] | select(.isDraft and .author.login == "Copilot" and (.headRefName | startswith("copilot/"))) | .headRefName')
+          # Metadata only: never check out or execute PR code in this privileged workflow.
+          if [ "$EVENT_NAME" = 'schedule' ] || [ "$EVENT_NAME" = 'workflow_dispatch' ]; then
+            candidates=$(gh api --paginate "repos/$REPOSITORY/pulls?state=open&base=main&per_page=100" \
+              --jq '.[] | select(.draft and .user.login == "Copilot" and (.head.ref | startswith("copilot/"))) | .head.ref')
             mapfile -t branches <<< "$candidates"
           else
             branches=("$HEAD_BRANCH")
@@ -51,7 +63,7 @@ jobs:
             [ -n "$branch" ] || continue
             encoded_branch=$(jq -rn --arg branch "$branch" '$branch | @uri')
             latest_run=$(gh api "repos/$REPOSITORY/actions/runs?branch=$encoded_branch&event=dynamic&per_page=100" \
-              --jq '[.workflow_runs[] | select(.name == "Running Copilot cloud agent")] | sort_by(.created_at) | last // empty')
+              --jq '[.workflow_runs[] | select(.path == "dynamic/copilot-swe-agent/copilot")] | sort_by(.created_at) | last // empty')
             if [ -z "$latest_run" ] || [ "$(jq -r '.status' <<< "$latest_run")" != "completed" ] || \
               [ "$(jq -r '.conclusion' <<< "$latest_run")" != "success" ]; then
               echo "Latest Copilot session for $branch is not successfully completed; skipping."
