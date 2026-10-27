@@ -87,6 +87,7 @@ jobs:
       github.event_name == 'pull_request' &&
       github.event.pull_request.draft == false &&
       github.event.pull_request.user.login == 'Copilot' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
       startsWith(github.event.pull_request.head.ref, 'copilot/')
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -101,7 +102,7 @@ jobs:
       - name: Checkout trusted base tooling
         uses: actions/checkout@v7
         with:
-          ref: ${{ github.event.repository.default_branch }}
+          ref: ${{ github.event.pull_request.base.sha }}
 
       - name: Download PR source archive
         env:
@@ -152,13 +153,30 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPOSITORY: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           set -euo pipefail
+          is_current() {
+            gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" \
+              --jq '[.state == "open", .draft == false, .head.sha] | @tsv'
+          }
+          expected=$(printf 'true\ttrue\t%s' "$HEAD_SHA")
+          if [ "$(is_current)" != "$expected" ]; then
+            echo "PR is closed, draft, or has newer commits; skipping this E2E environment."
+            echo "list=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
           apps=$(gh api --paginate "repos/$REPOSITORY/pulls/$PR_NUMBER/files?per_page=100" \
-            --jq '.[].filename' \
+            --jq '.[] | select(.status != "removed") | .filename' \
             | awk -F/ '$1 == "apps" && $2 != "" {print $2}' \
             | sort -u \
             | paste -sd, -)
+          if [ "$(is_current)" != "$expected" ]; then
+            echo "PR changed while reading its files; skipping this E2E environment."
+            echo "list=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           IFS=',' read -r -a app_list <<< "$apps"
           for app in "${app_list[@]}"; do
             [ -n "$app" ] || continue
@@ -228,32 +246,78 @@ jobs:
           echo "::error::Could not create a Websoft9 E2E server: ${last_error:-all instance types failed}"
           exit 1
 
-      - name: Wait for SSH and Websoft9
+      - name: Wait for SSH
+        id: ssh
         if: steps.apps.outputs.list != ''
         env:
           HOST: ${{ steps.server.outputs.ip }}
         run: |
           for attempt in $(seq 1 60); do
-            if ssh -i .secrets/ssh/e2e.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5 root@"$HOST" 'docker inspect websoft9 >/dev/null 2>&1'; then
+            if timeout --signal=KILL 10s ssh -i .secrets/ssh/e2e.pem -o BatchMode=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5 root@"$HOST" 'true'; then
+              echo "deadline=$(($(date +%s) + 300))" >> "$GITHUB_OUTPUT"
               exit 0
             fi
             sleep 10
           done
-          echo "Websoft9 did not become reachable in time" >&2
+          echo "SSH did not become reachable in time" >&2
           exit 1
 
-      - name: Sync applications to Websoft9
+      - name: Wait for appstore readiness and sync applications
         if: steps.apps.outputs.list != ''
         env:
           HOST: ${{ steps.server.outputs.ip }}
           APPS: ${{ steps.apps.outputs.list }}
+          DEADLINE: ${{ steps.ssh.outputs.deadline }}
         run: |
+          set -euo pipefail
+          while true; do
+            remaining=$((DEADLINE - $(date +%s)))
+            if [ "$remaining" -le 0 ]; then
+              echo "Websoft9 appstore directories were not ready within the 5-minute post-SSH budget" >&2
+              exit 1
+            fi
+            if timeout --signal=KILL "$((remaining < 10 ? remaining : 10))s" \
+              ssh -i .secrets/ssh/e2e.pem \
+              -o BatchMode=yes -o StrictHostKeyChecking=no \
+              -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5 \
+              root@"$HOST" \
+              'docker exec websoft9 sh -c '\''test -d /websoft9/library/apps'\'''; then
+              break
+            fi
+            remaining=$((DEADLINE - $(date +%s)))
+            if [ "$remaining" -gt 0 ]; then
+              echo "Websoft9 appstore is still initializing; retrying."
+              sleep "$((remaining < 10 ? remaining : 10))"
+            fi
+          done
+
           IFS=',' read -r -a app_list <<< "$APPS"
           for app in "${app_list[@]}"; do
-            make libs ARGS="appstore-sync --app $app --ssh-host $HOST --ssh-secret-path .secrets/ssh/e2e.pem --progress --json"
+            attempt=0
+            while true; do
+              remaining=$((DEADLINE - $(date +%s)))
+              if [ "$remaining" -le 0 ]; then
+                echo "Appstore sync exceeded the 5-minute post-SSH budget" >&2
+                exit 1
+              fi
+              if timeout --signal=KILL "$((remaining < 60 ? remaining : 60))s" \
+                .venv/bin/libs appstore-sync --app "$app" --ssh-host "$HOST" \
+                --ssh-user root --ssh-secret-path .secrets/ssh/e2e.pem --progress --json; then
+                break
+              fi
+              attempt=$((attempt + 1))
+              remaining=$((DEADLINE - $(date +%s)))
+              if [ "$remaining" -le 0 ]; then
+                echo "Appstore sync failed for $app within the 5-minute post-SSH budget" >&2
+                exit 1
+              fi
+              echo "Appstore sync attempt $attempt failed for $app; retrying within the 5-minute post-SSH budget"
+              sleep "$((remaining < 10 ? remaining : 10))"
+            done
           done
 
       - name: Report test environment
+        id: report
         if: success() && steps.apps.outputs.list != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -264,6 +328,12 @@ jobs:
           EXPIRES: ${{ steps.server.outputs.expires }}
           APPS: ${{ steps.apps.outputs.list }}
         run: |
+          set -euo pipefail
+          current_head=$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq '.head.sha')
+          if [ "$current_head" != "$HEAD_SHA" ]; then
+            echo "PR has newer commits; this environment is obsolete and will expire automatically."
+            exit 0
+          fi
           cat > e2e-comment.md <<EOF
           ## Owner E2E Environment
 
@@ -277,9 +347,10 @@ jobs:
           The environment is temporary and will be released automatically. Complete the Websoft9 installation, login, and core workflow checks, then record the result in this PR.
           EOF
           gh pr comment "$PR_NUMBER" --repo "$REPOSITORY" --body-file e2e-comment.md
+          echo "ready=true" >> "$GITHUB_OUTPUT"
 
       - name: Notify WeCom that environment is ready
-        if: success() && steps.apps.outputs.list != ''
+        if: success() && steps.report.outputs.ready == 'true'
         env:
           WECOM_WEBHOOK: ${{ secrets.WECOM_WEBHOOK }}
           REPOSITORY: ${{ github.repository }}

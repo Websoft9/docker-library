@@ -1,0 +1,79 @@
+name: Prepare Copilot PR for checks
+
+on:
+  workflow_run:
+    workflows: [Running Copilot cloud agent]
+    types: [completed]
+  schedule:
+    - cron: '*/10 * * * *'
+
+permissions:
+  actions: read
+  pull-requests: write
+
+concurrency:
+  group: copilot-pr-ready-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    if: >-
+      github.event_name == 'schedule' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       startsWith(github.event.workflow_run.head_branch, 'copilot/'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Mark completed Copilot PRs ready
+        env:
+          GH_TOKEN: ${{ secrets.COPILOT_ASSIGN_TOKEN || secrets.MAINTENANCE_STATE_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::error::Set COPILOT_ASSIGN_TOKEN or MAINTENANCE_STATE_TOKEN so PR checks can be triggered after marking the PR ready."
+            exit 1
+          fi
+
+          if [ "$EVENT_NAME" = 'schedule' ]; then
+            candidates=$(gh pr list --repo "$REPOSITORY" --state open --limit 100 \
+              --json headRefName,isDraft,author \
+              --jq '.[] | select(.isDraft and .author.login == "Copilot" and (.headRefName | startswith("copilot/"))) | .headRefName')
+            mapfile -t branches <<< "$candidates"
+          else
+            branches=("$HEAD_BRANCH")
+          fi
+
+          for branch in "${branches[@]}"; do
+            [ -n "$branch" ] || continue
+            encoded_branch=$(jq -rn --arg branch "$branch" '$branch | @uri')
+            latest_run=$(gh api "repos/$REPOSITORY/actions/runs?branch=$encoded_branch&event=dynamic&per_page=100" \
+              --jq '[.workflow_runs[] | select(.name == "Running Copilot cloud agent")] | sort_by(.created_at) | last // empty')
+            if [ -z "$latest_run" ] || [ "$(jq -r '.status' <<< "$latest_run")" != "completed" ] || \
+              [ "$(jq -r '.conclusion' <<< "$latest_run")" != "success" ]; then
+              echo "Latest Copilot session for $branch is not successfully completed; skipping."
+              continue
+            fi
+            if [ "$EVENT_NAME" = 'workflow_run' ] && [ "$(jq -r '.id' <<< "$latest_run")" != "$RUN_ID" ]; then
+              echo "A newer Copilot session exists for $branch; skipping stale completion."
+              continue
+            fi
+
+            pr=$(gh api "repos/$REPOSITORY/pulls?state=open&base=main&head=${REPOSITORY%%/*}:$encoded_branch" \
+              --jq '[.[] | select(.user.login == "Copilot")] | first // empty')
+            if [ -z "$pr" ] || [ "$(jq -r '.head.repo.full_name' <<< "$pr")" != "$REPOSITORY" ] || \
+              [ "$(jq -r '.head.ref' <<< "$pr")" != "$branch" ]; then
+              echo "No open Copilot pull request found for $branch in $REPOSITORY"
+              continue
+            fi
+
+            number=$(jq -r '.number' <<< "$pr")
+            draft=$(jq -r '.draft' <<< "$pr")
+            if [ "$draft" = "true" ]; then
+              gh pr ready "$number" --repo "$REPOSITORY"
+              echo "Marked PR #$number ready for automated checks"
+            fi
+          done

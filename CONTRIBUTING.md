@@ -25,8 +25,10 @@ An issue starts Copilot when it is opened with the `ai` label by an `OWNER`, `ME
 
 For maintenance scan review, check the apps in the issue checklist and comment `/approve-updates`, or comment `/approve-updates app1, app2` to name apps explicitly. The workflow creates linked child issues deterministically and assigns Copilot to each approved child, so Copilot starts working immediately.
 
-After the Copilot session completes, the `PR checks` workflow marks its draft PR ready, runs repository checks, and provisions the E2E environment only after checks pass. It then posts the environment details and sends the WeCom notification. The owner confirms E2E and merges the PR manually.
+After the Copilot session completes, `Prepare Copilot PR for checks` marks its draft PR ready. That transition triggers `PR checks`; after they pass, the workflow provisions the E2E environment, posts its details, and sends the WeCom notification. The owner performs E2E and manually clicks Merge.
 
-To let Copilot PR workflows run without a separate approval step, repository administrators must disable **Require approval for workflow runs** in the repository's **Settings → Copilot → cloud agent → Actions workflow approval** settings. Without this setting, GitHub may hold Copilot-triggered workflow runs for manual approval.
+E2E waits for SSH first, then shares a five-minute deadline across Websoft9 startup and all application sync retries. Each sync attempt is capped at 60 seconds. Obsolete PR runs are skipped before provisioning, and environments for superseded commits are not announced as ready. Only `PR checks` is a required merge status; an E2E provisioning failure is reported separately.
+
+The issue-assignment and PR-ready workflows use `COPILOT_ASSIGN_TOKEN` (preferred) or `MAINTENANCE_STATE_TOKEN`, a user PAT with permission to assign Copilot and update pull requests. In **Settings → Copilot → cloud agent → Actions workflow approval**, disable **Require approval for workflow runs** so Copilot-triggered checks can start without manual approval. The `main-protection` ruleset should require `PR checks` and zero approving reviews. A review request from Copilot is informational; the owner still merges manually after E2E.
 
 Keep changes minimal and app-local, validate runnable behavior by deployment, and never commit secrets.
