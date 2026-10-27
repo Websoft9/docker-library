@@ -6,6 +6,7 @@ import subprocess
 from pathlib import Path
 
 import yaml
+import pytest
 
 from _helpers import REPO_ROOT
 
@@ -21,12 +22,14 @@ def executable(path: Path, text: str) -> None:
     path.chmod(0o755)
 
 
-def test_ready_marks_only_latest_successful_copilot_session(tmp_path):
+@pytest.mark.parametrize("event_name", ["workflow_run", "pull_request_target", "schedule", "workflow_dispatch"])
+def test_ready_marks_only_latest_successful_copilot_session(tmp_path, event_name):
     mock_bin = tmp_path / "bin"
     executable(
         mock_bin / "gh",
         'printf "%s\\n" "$*" >> "$CALLS"\n'
         'case "$*" in\n'
+        '  *"pulls?state=open&base=main&per_page="*) printf "copilot/update-example\\n" ;;\n'
         '  *"actions/runs?"*) printf "%s\\n" "$LATEST_RUN" ;;\n'
         '  *"pulls?"*) printf "%s\\n" "$PR" ;;\n'
         '  "pr ready "*) ;;\n'
@@ -38,7 +41,7 @@ def test_ready_marks_only_latest_successful_copilot_session(tmp_path):
         "GH_TOKEN": "test",
         "REPOSITORY": "Websoft9/docker-library",
         "HEAD_BRANCH": "copilot/update-example",
-        "EVENT_NAME": "workflow_run",
+        "EVENT_NAME": event_name,
         "RUN_ID": "42",
         "CALLS": str(tmp_path / "calls"),
         "LATEST_RUN": json.dumps({"id": 42, "status": "completed", "conclusion": "success"}),
@@ -55,6 +58,20 @@ def test_ready_marks_only_latest_successful_copilot_session(tmp_path):
     result = subprocess.run(["bash", "-c", script], cwd=tmp_path, env=env, text=True, capture_output=True)
     assert result.returncode == 0, result.stderr
     assert "pr ready" not in (tmp_path / "calls").read_text()
+
+
+def test_ready_trigger_chain_uses_metadata_only_and_personal_token():
+    # BaseLoader keeps the YAML `on` key instead of interpreting it as a boolean.
+    workflow = yaml.load(
+        (REPO_ROOT / ".github/workflows/copilot-pr-ready.yml").read_text(), Loader=yaml.BaseLoader
+    )
+    assert workflow["on"]["pull_request_target"]["types"] == ["review_requested"]
+    assert "workflow_dispatch" in workflow["on"]
+    job = workflow["jobs"]["prepare"]
+    assert "github.actor == 'Copilot'" in job["if"]
+    assert "head.repo.full_name == github.repository" in job["if"]
+    assert all("uses" not in step for step in job["steps"])
+    assert "secrets.COPILOT_ASSIGN_TOKEN" in job["steps"][0]["env"]["GH_TOKEN"]
 
 
 def test_e2e_readiness_and_sync_retry_after_startup_failure(tmp_path):
