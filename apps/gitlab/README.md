@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Gitlab**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -29,7 +30,7 @@ Websoft9 packages this app from the official [Gitlab Docker image](https://hub.d
 <!-- W9_NOTE_START -->
 This package uses the official single-container GitLab Docker deployment and keeps PostgreSQL inside the GitLab Omnibus container.
 
-GitLab official upgrade guidance requires stepped upgrade stops across `18.2`, `18.5`, `18.8`, `18.11`, and `19.2` before later `19.x` versions. This package update to `19.4.2-ce.0` was applied by explicit owner direction and should be treated as a high-risk data upgrade for existing installations.
+GitLab official upgrade guidance requires stepped upgrade stops across `18.2`, `18.5`, `18.8`, `18.11`, and `19.2` before later `19.x` versions; `19.5` is the next required stop. This package tracks `19.5.1-ce.0`, the latest patch for that stop.
 
 For browser access and generated clone URLs to stay correct, set `W9_URL` to the real externally used host or host:port before the first container startup.
 
@@ -40,7 +41,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 19.4.2-ce.0, latest.
+Supported versions: 19.5.1-ce.0, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
