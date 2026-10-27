@@ -1,7 +1,7 @@
 name: PR checks
 
 on:
-  pull_request_target:
+  pull_request:
     branches: [main]
     types: [opened, synchronize, reopened, ready_for_review]
 
@@ -11,7 +11,7 @@ permissions:
 jobs:
   pr-checks:
     name: PR checks
-    if: github.event_name == 'pull_request_target' && github.event.pull_request.draft == false
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
@@ -84,7 +84,7 @@ jobs:
     needs: pr-checks
     if: >-
       needs.pr-checks.result == 'success' &&
-      github.event_name == 'pull_request_target' &&
+      github.event_name == 'pull_request' &&
       github.event.pull_request.draft == false &&
       github.event.pull_request.user.login == 'Copilot' &&
       startsWith(github.event.pull_request.head.ref, 'copilot/')
