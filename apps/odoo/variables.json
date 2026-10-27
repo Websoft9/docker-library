@@ -9,13 +9,15 @@
       "https://github.com/odoo/docker",
       "https://www.odoo.com/documentation/master/administration/on_premise/deploy.html",
       "https://www.odoo.com/documentation/master/administration/install.html",
-      "https://www.odoo.com/odoo-19-release-notes"
+      "https://www.odoo.com/documentation/20.0/administration/on_premise/source.html",
+      "https://www.odoo.com/odoo-20-release-notes"
     ]
   },
   "edition": [
     {
       "dist": "community",
       "version": [
+        "20.0",
         "19.0",
         "18.0",
         "17.0",
@@ -35,7 +37,16 @@
     "memory": "2",
     "disk": "1"
   },
+  "externalDB": {
+    "20.0": {
+      "postgresql": {
+        "min": "16",
+        "recommended": "16",
+        "reason": "Odoo 20 supports PostgreSQL 16.0 or above; PostgreSQL 16 is the bundled database version."
+      }
+    }
+  },
   "help": {
-    "db": "Odoo 17-19 requires PostgreSQL. This package bundles PostgreSQL 15 for single-node deployments and keeps the external-db installation override for an external PostgreSQL service."
+    "db": "Odoo 17-20 requires PostgreSQL. Odoo 20 needs PostgreSQL 16.0 or above; this package bundles PostgreSQL 16 and keeps the external-db installation override for an external PostgreSQL service."
   }
 }
