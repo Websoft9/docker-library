@@ -4,7 +4,7 @@ from functools import lru_cache
 from pathlib import Path
 
 
-REPO_MARKERS = ("apps", "metadata", "i18n", "library.json")
+REPO_MARKERS = ("apps", "metadata/maintenance.yaml", "i18n")
 
 
 @lru_cache(maxsize=1)

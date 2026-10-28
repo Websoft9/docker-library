@@ -50,6 +50,5 @@ def build_fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
         ),
         encoding="utf-8",
     )
-    (tmp_path / "library.json").write_text('{"Version": "1.0.0"}\n', encoding="utf-8")
     monkeypatch.chdir(tmp_path)
     return tmp_path
