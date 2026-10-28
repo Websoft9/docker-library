@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-10-28
+
+- Updated Grafana to 13.3, which includes upstream security fixes.
+
 ## 2026-10-23
 
 - Added a startup log regression check for unsupported Grafana plugins.
