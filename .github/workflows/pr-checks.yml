@@ -1,17 +1,74 @@
 name: PR checks
 
 on:
+  # Trigger migrations must validate themselves before the new base-branch
+  # pull_request_target configuration is merged. App-only PRs do not use this.
   pull_request:
     branches: [main]
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [opened, synchronize, reopened]
+    paths: [.github/workflows/pr-checks.yml]
+  pull_request_target:
+    branches: [main]
+    types: [review_requested]
 
 permissions:
   contents: read
 
 jobs:
+  handoff:
+    name: Resolve PR handoff
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      actions: read
+      contents: read
+      checks: write
+    outputs:
+      check_id: ${{ steps.handoff.outputs.check_id }}
+    steps:
+      - name: Confirm completed agent and start commit check
+        id: handoff
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          if [ "$HEAD_REPO" != "$REPOSITORY" ]; then
+            echo 'PR checks currently support same-repository handoffs only.' >&2
+            exit 1
+          fi
+          if [ "$AUTHOR" = Copilot ]; then
+            encoded=$(jq -rn --arg branch "$HEAD_BRANCH" '$branch | @uri')
+            for attempt in $(seq 1 12); do
+              run=$(gh api "repos/$REPOSITORY/actions/runs?branch=$encoded&event=dynamic&per_page=100" \
+                --jq '[.workflow_runs[] | select(.path == "dynamic/copilot-swe-agent/copilot")] | sort_by(.created_at) | last // empty')
+              if [ -n "$run" ] && [ "$(jq -r '.status' <<< "$run")" = completed ]; then
+                test "$(jq -r '.conclusion' <<< "$run")" = success
+                break
+              fi
+              if [ "$attempt" = 12 ]; then
+                echo 'Latest Copilot session has not completed successfully.' >&2
+                exit 1
+              fi
+              sleep 5
+            done
+          fi
+          current=$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq '.head.sha')
+          test "$current" = "$HEAD_SHA"
+          payload=$(jq -n --arg sha "$HEAD_SHA" --arg url "$RUN_URL" \
+            '{name:"PR checks",head_sha:$sha,status:"in_progress",details_url:$url}')
+          id=$(gh api --method POST "repos/$REPOSITORY/check-runs" --input - --jq '.id' <<< "$payload")
+          echo "check_id=$id" >> "$GITHUB_OUTPUT"
+
   pr-checks:
-    name: PR checks
-    if: github.event.pull_request.draft == false
+    name: Validate PR package
+    needs: handoff
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
@@ -79,13 +136,49 @@ jobs:
       - name: Verify AI command adapters are up to date
         run: make build-ai-commands ARGS="--check"
 
+  report-check:
+    name: Report PR checks and mark ready
+    needs: [handoff, pr-checks]
+    if: always() && needs.handoff.outputs.check_id != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      checks: write
+      pull-requests: write
+    steps:
+      - name: Publish commit check and mark successful PR ready
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          CHECK_ID: ${{ needs.handoff.outputs.check_id }}
+          RESULT: ${{ needs.pr-checks.result }}
+        run: |
+          set -euo pipefail
+          current=$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq '.head.sha')
+          conclusion=failure
+          if [ "$RESULT" = success ] && [ "$current" = "$HEAD_SHA" ]; then
+            conclusion=success
+          fi
+          gh api --method PATCH "repos/$REPOSITORY/check-runs/$CHECK_ID" \
+            -f status=completed -f conclusion="$conclusion"
+          if [ "$conclusion" = success ]; then
+            draft=$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq '.draft')
+            if [ "$draft" = true ]; then
+              gh pr ready "$PR_NUMBER" --repo "$REPOSITORY"
+            fi
+          else
+            exit 1
+          fi
+
   provision-e2e:
     name: Provision owner E2E environment
-    needs: pr-checks
+    needs: [pr-checks, report-check]
     if: >-
       needs.pr-checks.result == 'success' &&
-      github.event_name == 'pull_request' &&
-      github.event.pull_request.draft == false &&
+      needs.report-check.result == 'success' &&
+      github.event_name == 'pull_request_target' &&
       github.event.pull_request.user.login == 'Copilot' &&
       github.event.pull_request.head.repo.full_name == github.repository &&
       startsWith(github.event.pull_request.head.ref, 'copilot/')

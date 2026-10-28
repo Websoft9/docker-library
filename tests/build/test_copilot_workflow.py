@@ -22,17 +22,15 @@ def executable(path: Path, text: str) -> None:
     path.chmod(0o755)
 
 
-@pytest.mark.parametrize("event_name", ["workflow_run", "pull_request_target", "schedule", "workflow_dispatch"])
-def test_ready_marks_only_latest_successful_copilot_session(tmp_path, event_name):
+def test_handoff_starts_check_for_completed_agent(tmp_path):
     mock_bin = tmp_path / "bin"
     executable(
         mock_bin / "gh",
         'printf "%s\\n" "$*" >> "$CALLS"\n'
         'case "$*" in\n'
-        '  *"pulls?state=open&base=main&per_page="*) printf "copilot/update-example\\n" ;;\n'
         '  *"actions/runs?"*) printf "%s\\n" "$LATEST_RUN" ;;\n'
-        '  *"pulls?"*) printf "%s\\n" "$PR" ;;\n'
-        '  "pr ready "*) ;;\n'
+        '  *"pulls/12"*) printf "abc123\\n" ;;\n'
+        '  *"check-runs"*) printf "99\\n" ;;\n'
         '  *) exit 1 ;;\n'
         'esac',
     )
@@ -41,37 +39,71 @@ def test_ready_marks_only_latest_successful_copilot_session(tmp_path, event_name
         "GH_TOKEN": "test",
         "REPOSITORY": "Websoft9/docker-library",
         "HEAD_BRANCH": "copilot/update-example",
-        "EVENT_NAME": event_name,
-        "RUN_ID": "42",
+        "AUTHOR": "Copilot",
+        "HEAD_REPO": "Websoft9/docker-library",
+        "HEAD_SHA": "abc123",
+        "PR_NUMBER": "12",
+        "RUN_URL": "https://example.com/run",
+        "GITHUB_OUTPUT": str(tmp_path / "output"),
         "CALLS": str(tmp_path / "calls"),
         "LATEST_RUN": json.dumps({"id": 42, "status": "completed", "conclusion": "success"}),
         "PR": json.dumps({"number": 12, "draft": True, "head": {"ref": "copilot/update-example", "repo": {"full_name": "Websoft9/docker-library"}}}),
     }
-    script = workflow_step(".github/workflows/copilot-pr-ready.yml", "prepare", "Mark completed Copilot PRs ready")
+    script = workflow_step(".github/workflows/pr-checks.yml", "handoff", "Confirm completed agent and start commit check")
 
     result = subprocess.run(["bash", "-c", script], cwd=tmp_path, env=env, text=True, capture_output=True)
     assert result.returncode == 0, result.stderr
-    assert "pr ready 12 --repo Websoft9/docker-library" in (tmp_path / "calls").read_text()
+    assert (tmp_path / "output").read_text() == "check_id=99\n"
 
     (tmp_path / "calls").unlink()
-    env["LATEST_RUN"] = json.dumps({"id": 43, "status": "in_progress", "conclusion": None})
+    env["LATEST_RUN"] = json.dumps({"id": 43, "status": "completed", "conclusion": "failure"})
     result = subprocess.run(["bash", "-c", script], cwd=tmp_path, env=env, text=True, capture_output=True)
-    assert result.returncode == 0, result.stderr
-    assert "pr ready" not in (tmp_path / "calls").read_text()
+    assert result.returncode != 0
+    assert "check-runs" not in (tmp_path / "calls").read_text()
 
 
-def test_ready_trigger_chain_uses_metadata_only_and_personal_token():
+def test_trigger_chain_has_no_draft_or_scheduled_runs():
     # BaseLoader keeps the YAML `on` key instead of interpreting it as a boolean.
     workflow = yaml.load(
-        (REPO_ROOT / ".github/workflows/copilot-pr-ready.yml").read_text(), Loader=yaml.BaseLoader
+        (REPO_ROOT / ".github/workflows/pr-checks.yml").read_text(), Loader=yaml.BaseLoader
     )
     assert workflow["on"]["pull_request_target"]["types"] == ["review_requested"]
-    assert "workflow_dispatch" in workflow["on"]
-    job = workflow["jobs"]["prepare"]
-    assert "github.actor == 'Copilot'" in job["if"]
-    assert "head.repo.full_name == github.repository" in job["if"]
-    assert all("uses" not in step for step in job["steps"])
-    assert "secrets.COPILOT_ASSIGN_TOKEN" in job["steps"][0]["env"]["GH_TOKEN"]
+    assert set(workflow["on"]) == {"pull_request_target", "pull_request"}
+    assert workflow["on"]["pull_request"]["paths"] == [".github/workflows/pr-checks.yml"]
+    assert not (REPO_ROOT / ".github/workflows/copilot-pr-ready.yml").exists()
+    assignment = yaml.load((REPO_ROOT / ".github/workflows/copilot-issue.yml").read_text(), Loader=yaml.BaseLoader)
+    assert assignment["on"]["issues"]["types"] == ["labeled"]
+    assert workflow["jobs"]["pr-checks"]["permissions"] == {"contents": "read", "pull-requests": "read"}
+    assert all("secrets." not in str(step) for step in workflow["jobs"]["pr-checks"]["steps"])
+
+
+@pytest.mark.parametrize("result,head,ready", [("success", "abc123", True), ("failure", "abc123", False), ("success", "new-head", False)])
+def test_commit_check_only_unlocks_tested_head(tmp_path, result, head, ready):
+    mock_bin = tmp_path / "bin"
+    executable(
+        mock_bin / "gh",
+        'printf "%s\\n" "$*" >> "$CALLS"\n'
+        'case "$*" in\n'
+        '  *"--jq .head.sha"*) printf "%s\\n" "$CURRENT_HEAD" ;;\n'
+        '  *"--jq .draft"*) printf "true\\n" ;;\n'
+        'esac',
+    )
+    env = os.environ | {
+        "PATH": f"{mock_bin}:{os.environ['PATH']}",
+        "REPOSITORY": "Websoft9/docker-library",
+        "PR_NUMBER": "12",
+        "HEAD_SHA": "abc123",
+        "CURRENT_HEAD": head,
+        "CHECK_ID": "99",
+        "RESULT": result,
+        "CALLS": str(tmp_path / "calls"),
+    }
+    script = workflow_step(".github/workflows/pr-checks.yml", "report-check", "Publish commit check and mark successful PR ready")
+    response = subprocess.run(["bash", "-c", script], cwd=tmp_path, env=env, text=True, capture_output=True)
+    calls = (tmp_path / "calls").read_text()
+    assert (response.returncode == 0) == ready
+    assert ("pr ready" in calls) == ready
+    assert f"conclusion={'success' if ready else 'failure'}" in calls
 
 
 def test_e2e_readiness_and_sync_retry_after_startup_failure(tmp_path):

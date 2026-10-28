@@ -2,7 +2,7 @@ name: Assign Copilot to AI issue
 
 on:
   issues:
-    types: [opened, labeled]
+    types: [labeled]
 
 permissions:
   issues: write
@@ -14,17 +14,7 @@ concurrency:
 jobs:
   assign:
     if: |
-      (
-        github.event.action == 'opened' &&
-        contains(github.event.issue.labels.*.name, 'ai') &&
-        contains(
-          fromJson('["OWNER","MEMBER","COLLABORATOR"]'),
-          github.event.issue.author_association
-        )
-      ) || (
-        github.event.action == 'labeled' &&
-        github.event.label.name == 'ai'
-      )
+      github.event.label.name == 'ai'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
