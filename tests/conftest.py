@@ -25,7 +25,6 @@ def skill_repo_fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     for marker in ("apps", "archive/apps", "metadata", "i18n"):
         (tmp_path / marker).mkdir(parents=True, exist_ok=True)
 
-    (tmp_path / "library.json").write_text("{}\n", encoding="utf-8")
     (tmp_path / "metadata" / "maintenance.yaml").write_text(
         yaml.safe_dump(
             {

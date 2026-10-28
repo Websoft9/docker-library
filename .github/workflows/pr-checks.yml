@@ -146,7 +146,7 @@ jobs:
       checks: write
       pull-requests: write
     steps:
-      - name: Publish commit check and mark successful PR ready
+      - name: Publish commit check
         env:
           GH_TOKEN: ${{ github.token }}
           REPOSITORY: ${{ github.repository }}
@@ -163,14 +163,29 @@ jobs:
           fi
           gh api --method PATCH "repos/$REPOSITORY/check-runs/$CHECK_ID" \
             -f status=completed -f conclusion="$conclusion"
-          if [ "$conclusion" = success ]; then
-            draft=$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq '.draft')
-            if [ "$draft" = true ]; then
-              gh pr ready "$PR_NUMBER" --repo "$REPOSITORY"
-            fi
-          else
+          if [ "$conclusion" != success ]; then
             exit 1
           fi
+
+      - name: Mark successful PR ready
+        env:
+          GH_TOKEN: ${{ secrets.COPILOT_ASSIGN_TOKEN || secrets.MAINTENANCE_STATE_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          draft=$(GH_TOKEN="${GH_TOKEN:-${{ github.token }}}" gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq '.draft')
+          if [ "$draft" != true ]; then
+            exit 0
+          fi
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo '::error::Set COPILOT_ASSIGN_TOKEN or MAINTENANCE_STATE_TOKEN with pull-request write access to mark the Copilot PR ready.'
+            exit 1
+          fi
+          current=$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq '.head.sha')
+          test "$current" = "$HEAD_SHA"
+          gh pr ready "$PR_NUMBER" --repo "$REPOSITORY"
 
   provision-e2e:
     name: Provision owner E2E environment
