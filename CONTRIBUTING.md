@@ -29,6 +29,8 @@ When Copilot requests review after finishing its session, `PR checks` handles `p
 
 Draft creation, intermediate pushes, and the automatic Ready transition do not create workflow runs. The normal pre-merge flow has three runs: issue assignment, Copilot agent, and PR checks (including E2E). For a manually authored same-repository PR, request a reviewer to start checks. After further commits, request review again; a new head commit needs its own successful check before merging. Multiple reviewer requests can each trigger a run, so request one reviewer per handoff.
 
+PRs modifying `.github/workflows/pr-checks.yml` also run checks on opening or pushing through a path-filtered `pull_request` trigger. This lets trigger changes validate themselves before the new `pull_request_target` configuration exists on `main`; app-only PRs do not use this compatibility trigger.
+
 PR validation runs in a separate read-only job without secrets or persisted checkout credentials. Commit-status publishing and Ready transitions use `GITHUB_TOKEN` in metadata-only jobs; cloud credentials are only used by the E2E job with base-branch tooling.
 
 E2E waits for SSH first, then shares a five-minute deadline across Websoft9 startup and all application sync retries. Each sync attempt is capped at 60 seconds. Obsolete PR runs are skipped before provisioning, and environments for superseded commits are not announced as ready. Only `PR checks` is a required merge status; an E2E provisioning failure is reported separately.

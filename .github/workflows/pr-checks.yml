@@ -1,6 +1,12 @@
 name: PR checks
 
 on:
+  # Trigger migrations must validate themselves before the new base-branch
+  # pull_request_target configuration is merged. App-only PRs do not use this.
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+    paths: [.github/workflows/pr-checks.yml]
   pull_request_target:
     branches: [main]
     types: [review_requested]

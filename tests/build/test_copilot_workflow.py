@@ -68,7 +68,8 @@ def test_trigger_chain_has_no_draft_or_scheduled_runs():
         (REPO_ROOT / ".github/workflows/pr-checks.yml").read_text(), Loader=yaml.BaseLoader
     )
     assert workflow["on"]["pull_request_target"]["types"] == ["review_requested"]
-    assert list(workflow["on"]) == ["pull_request_target"]
+    assert set(workflow["on"]) == {"pull_request_target", "pull_request"}
+    assert workflow["on"]["pull_request"]["paths"] == [".github/workflows/pr-checks.yml"]
     assert not (REPO_ROOT / ".github/workflows/copilot-pr-ready.yml").exists()
     assignment = yaml.load((REPO_ROOT / ".github/workflows/copilot-issue.yml").read_text(), Loader=yaml.BaseLoader)
     assert assignment["on"]["issues"]["types"] == ["labeled"]
