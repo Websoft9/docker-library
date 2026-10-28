@@ -215,13 +215,38 @@ def test_validate_catalog_artifacts_rejects_missing_files(tmp_path: Path):
         library_publish.validate_catalog_artifacts(output_dir, manifest)
 
 
-def test_load_library_json_defaults_version_when_missing(build_fixture, monkeypatch):
+def test_release_metadata_uses_tag_without_source_version_file(build_fixture, monkeypatch):
     monkeypatch.setattr(library_publish, "ROOT", build_fixture)
-    (build_fixture / "library.json").write_text("{}\n", encoding="utf-8")
+    assert not (build_fixture / "library.json").exists()
+    assert library_publish.build_library_metadata("release", "2.0.0") == {"Version": "2.0.0"}
 
-    payload = library_publish.load_library_json("2.0.0")
 
-    assert payload == {"Version": "2.0.0"}
+@pytest.mark.parametrize("value", [None, "", "v2.0.0", "2.0", "2.0.0-rc.1", "02.0.0", "../2.0.0"])
+def test_release_metadata_rejects_missing_or_nonstable_versions(value):
+    with pytest.raises(SystemExit, match="stable X.Y.Z tag"):
+        library_publish.build_library_metadata("release", value)
+
+
+@pytest.mark.parametrize("channel", ["dev", "rc"])
+def test_nonrelease_metadata_defaults_to_commit_version(channel, monkeypatch):
+    monkeypatch.setattr(library_publish, "run_git", lambda *args: "abcdef123456")
+    assert library_publish.build_library_metadata(channel, None) == {"Version": f"{channel}-abcdef123456"}
+
+
+def test_release_packages_embed_generated_metadata_without_source_file(build_fixture, monkeypatch):
+    from zipfile import ZipFile
+
+    monkeypatch.setattr(library_publish, "ROOT", build_fixture)
+    metadata = library_publish.build_library_metadata("release", "2.0.0")
+    output = build_fixture / "output"
+    result = library_publish.build_legacy_library_artifacts(output, "library-latest.zip", metadata)
+
+    assert not (build_fixture / "library.json").exists()
+    assert result["version"] == "2.0.0"
+    assert json.loads((output / "library.json").read_text()) == metadata
+    assert (output / "library-2.0.0.zip").read_bytes() == (output / "library-latest.zip").read_bytes()
+    with ZipFile(output / "library-latest.zip") as archive:
+        assert json.loads(archive.read("library/library.json")) == metadata
 
 
 def test_main_orchestrates_publish_steps(monkeypatch, tmp_path, capsys):
@@ -237,7 +262,6 @@ def test_main_orchestrates_publish_steps(monkeypatch, tmp_path, capsys):
     monkeypatch.setattr(library_publish, "detect_from_ref", lambda from_ref: None)
     monkeypatch.setattr(library_publish, "resolve_from_version", lambda from_ref: "initial")
     monkeypatch.setattr(library_publish, "format_dataset_version", lambda dt: "2026.01.01.000000")
-    monkeypatch.setattr(library_publish, "load_library_json", lambda version: {"Version": version})
     monkeypatch.setattr(library_publish, "build_output_paths", lambda output_root, channel: (tmp_path / "legacy", tmp_path / "v2"))
     monkeypatch.setattr(library_publish, "build_legacy_library_artifacts", lambda *args, **kwargs: {"kind": "legacy-library"})
     monkeypatch.setattr(library_publish, "build_legacy_media_artifacts", lambda *args, **kwargs: {"kind": "legacy-media"})
@@ -249,3 +273,31 @@ def test_main_orchestrates_publish_steps(monkeypatch, tmp_path, capsys):
     assert payload["fromRef"] is None
     assert payload["legacy"] == {"library": {"kind": "legacy-library"}, "media": {"kind": "legacy-media"}}
     assert payload["v2"] == {"kind": "v2"}
+
+
+@pytest.mark.parametrize("channel", ["dev", "rc", "release"])
+def test_full_publish_without_source_library_json(build_fixture, monkeypatch, capsys, channel):
+    from zipfile import ZipFile
+
+    catalog = build_fixture / "catalog-source"
+    catalog.mkdir()
+    for filename in library_publish.CATALOG_FILE_NAMES:
+        (catalog / filename).write_text("[]\n")
+    output = build_fixture / "output"
+    monkeypatch.setattr(library_publish, "ROOT", build_fixture)
+    monkeypatch.setattr(library_publish, "APPS_DIR", build_fixture / "apps")
+    monkeypatch.setattr(library_publish, "detect_from_ref", lambda ref: None)
+    monkeypatch.setattr(library_publish, "run_git", lambda *args: "abcdef123456" if args[0] == "rev-parse" else "")
+    monkeypatch.setattr(library_publish, "parse_args", lambda: SimpleNamespace(
+        channel=channel, output_dir=str(output), catalog_source_dir=str(catalog),
+        from_ref=None, library_version="2.0.0" if channel == "release" else None, all_apps=False,
+    ))
+
+    assert library_publish.main() == 0
+    capsys.readouterr()
+    expected = {"Version": "2.0.0" if channel == "release" else f"{channel}-abcdef123456"}
+    assert not (build_fixture / "library.json").exists()
+    assert json.loads((output / "legacy" / channel / "library" / "library.json").read_text()) == expected
+    with ZipFile(output / "appstore" / channel / "library" / "full" / "latest.zip") as archive:
+        assert json.loads(archive.read("library/library.json")) == expected
+    assert (output / "appstore" / channel / "library" / "apps" / "demo" / "latest.zip").exists()

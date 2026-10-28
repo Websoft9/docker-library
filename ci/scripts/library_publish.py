@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -38,7 +39,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", required=True)
     parser.add_argument("--catalog-source-dir", required=True)
     parser.add_argument("--from-ref", default=None)
-    parser.add_argument("--library-version", default=None)
+    parser.add_argument("--library-version", default=None, help="Release tag version; dev/rc default to <channel>-<commit SHA>")
     parser.add_argument("--all-apps", action="store_true", help="Build per-app packages for all apps (first-publish seed)")
     return parser.parse_args()
 
@@ -84,14 +85,14 @@ def resolve_from_version(from_ref: str | None) -> str:
     return run_git("rev-parse", "--short=16", from_ref)
 
 
-def load_library_json(library_version: str | None) -> dict:
-    with (ROOT / "library.json").open("r", encoding="utf-8") as handle:
-        payload = json.load(handle)
-    if library_version:
-        payload["Version"] = library_version
-    elif not payload.get("Version"):
-        payload["Version"] = format_dataset_version(datetime.now(timezone.utc))
-    return payload
+def build_library_metadata(channel: str, library_version: str | None) -> dict:
+    """Generate legacy metadata without a source-controlled version file."""
+    if channel == "release":
+        if not library_version or not re.fullmatch(r"(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)", library_version):
+            raise SystemExit("release requires --library-version with a stable X.Y.Z tag")
+    elif library_version is None:
+        library_version = f"{channel}-{run_git('rev-parse', '--short=12', 'HEAD')}"
+    return {"Version": library_version}
 
 
 def write_json(path: Path, payload: object) -> None:
@@ -767,6 +768,7 @@ def build_v2_appstore_artifacts(
 def main() -> int:
     args = parse_args()
     channel = args.channel
+    packaged_library_json = build_library_metadata(channel, args.library_version)
     output_root = Path(args.output_dir).resolve()
     catalog_source_dir = Path(args.catalog_source_dir).resolve()
 
@@ -776,7 +778,6 @@ def main() -> int:
     from_ref = detect_from_ref(args.from_ref)
     from_version = resolve_from_version(from_ref)
     package_name = CHANNEL_PACKAGE_NAMES[channel]
-    packaged_library_json = load_library_json(args.library_version or dataset_version)
 
     legacy_library_output_dir, v2_appstore_output_dir = build_output_paths(output_root, channel)
     legacy_media_output_dir = output_root / "legacy" / channel / "media"

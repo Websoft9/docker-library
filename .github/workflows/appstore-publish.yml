@@ -7,13 +7,12 @@ on:
   workflow_dispatch:
     inputs:
       channel:
-        description: Publish channel; rc is reserved for manual pre-release use
+        description: Publish dev or rc; official releases require an X.Y.Z tag on main
         required: true
         type: choice
         options:
           - dev
           - rc
-          - release
       from_ref:
         description: Optional git ref used to calculate apps-delta
         required: false
@@ -23,6 +22,8 @@ jobs:
   publish:
     name: Build and publish appstore artifacts
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     outputs:
       channel: ${{ steps.resolve_channel.outputs.channel }}
 
@@ -34,29 +35,61 @@ jobs:
 
       - name: Resolve publish channel
         id: resolve_channel
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+          INPUT_CHANNEL: ${{ inputs.channel }}
         run: |
-          if [[ "${{ github.event_name }}" == "push" ]]; then
-            if [[ "${{ github.ref_type }}" == "tag" ]]; then
+          set -euo pipefail
+          if [[ "$EVENT_NAME" == "push" ]]; then
+            if [[ "$REF_TYPE" == "tag" ]]; then
+              if ! [[ "$REF_NAME" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
+                echo "::error::Official release tags must use stable X.Y.Z format (for example 0.9.0)."
+                exit 1
+              fi
+              git fetch origin main
+              if ! git merge-base --is-ancestor HEAD origin/main; then
+                echo "::error::Release tags must point to a commit on main."
+                exit 1
+              fi
               channel="release"
-            elif [[ "${{ github.ref_name }}" == "main" ]]; then
+              version="$REF_NAME"
+            elif [[ "$REF_NAME" == "main" ]]; then
               channel="dev"
             else
-              echo "Unsupported push ref: ${{ github.ref_type }} ${{ github.ref_name }}" >&2
+              echo "Unsupported push ref: $REF_TYPE $REF_NAME" >&2
               exit 1
             fi
           else
-            channel="${{ inputs.channel }}"
+            channel="$INPUT_CHANNEL"
+            if [[ "$channel" != "dev" && "$channel" != "rc" ]]; then
+              echo "::error::Manual publishing supports dev and rc only; push an X.Y.Z tag for release."
+              exit 1
+            fi
+          fi
+          if [[ "$channel" != "release" ]]; then
+            version="$channel-$(git rev-parse --short=12 HEAD)"
           fi
 
           echo "channel=$channel" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Resolve release base
         id: release_base
         if: github.event_name == 'push' && github.ref_type == 'tag'
         run: |
-          previous=$(git describe --tags --abbrev=0 "${GITHUB_REF_NAME}^" 2>/dev/null || true)
+          previous=""
+          while IFS= read -r tag; do
+            if [[ "$tag" != "$GITHUB_REF_NAME" && "$tag" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
+              previous="$tag"
+              break
+            fi
+          done < <(git tag --merged HEAD --sort=-version:refname)
           if [ -n "$previous" ]; then
             echo "from_ref=$previous" >> "$GITHUB_OUTPUT"
+          else
+            echo "all_apps=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Set up Python
@@ -119,26 +152,25 @@ jobs:
             echo "seed=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Read library version
-        id: version
-        run: |
-          VERSION=$(jq -r '.Version' library.json)
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-
       - name: Build publish artifacts
+        env:
+          LIBRARY_VERSION: ${{ steps.resolve_channel.outputs.version }}
+          INPUT_FROM_REF: ${{ inputs.from_ref }}
+          RELEASE_FROM_REF: ${{ steps.release_base.outputs.from_ref }}
         run: |
           args=(
             --channel "${{ steps.resolve_channel.outputs.channel }}"
             --output-dir dist/appstore-publish
             --catalog-source-dir dist/catalog-source
+            --library-version "$LIBRARY_VERSION"
           )
-          if [[ "${{ steps.check_seed.outputs.seed }}" == "true" ]]; then
+          if [[ "${{ steps.check_seed.outputs.seed }}" == "true" || "${{ steps.release_base.outputs.all_apps }}" == "true" ]]; then
             args+=(--all-apps)
           fi
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "${{ inputs.from_ref }}" ]]; then
-            args+=(--from-ref "${{ inputs.from_ref }}")
-          elif [[ -n "${{ steps.release_base.outputs.from_ref }}" ]]; then
-            args+=(--from-ref "${{ steps.release_base.outputs.from_ref }}")
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "$INPUT_FROM_REF" ]]; then
+            args+=(--from-ref "$INPUT_FROM_REF")
+          elif [[ -n "$RELEASE_FROM_REF" ]]; then
+            args+=(--from-ref "$RELEASE_FROM_REF")
           fi
           python ci/scripts/library_publish.py "${args[@]}"
 
@@ -234,12 +266,16 @@ jobs:
 
       - name: Resolve legacy purge URLs
         id: purge_urls
+        env:
+          CHANNEL: ${{ steps.resolve_channel.outputs.channel }}
         run: |
-          if [[ "${{ steps.resolve_channel.outputs.channel }}" == "dev" ]]; then
-            echo "urls=https://artifact.websoft9.com/dev/websoft9/plugin/library/library-dev.zip https://artifact.websoft9.com/dev/websoft9/plugin/media/media-dev.zip" >> "$GITHUB_OUTPUT"
-          else
-            echo "urls=https://artifact.websoft9.com/release/websoft9/plugin/library/library-latest.zip https://artifact.websoft9.com/release/websoft9/plugin/media/media-latest.zip" >> "$GITHUB_OUTPUT"
-          fi
+          case "$CHANNEL" in
+            dev) library=library-dev.zip; media=media-dev.zip ;;
+            rc) library=library-rc.zip; media=media-latest.zip ;;
+            release) library=library-latest.zip; media=media-latest.zip ;;
+            *) exit 1 ;;
+          esac
+          echo "urls=https://artifact.websoft9.com/$CHANNEL/websoft9/plugin/library/$library https://artifact.websoft9.com/$CHANNEL/websoft9/plugin/media/$media" >> "$GITHUB_OUTPUT"
 
       - name: Purge legacy Cloudflare Cache
         uses: NathanVaughn/actions-cloudflare-purge@v4.0.0
@@ -254,8 +290,8 @@ jobs:
         with:
           files: |
             dist/appstore-publish/legacy/release/library/library.json
-          tag_name: ${{ steps.version.outputs.version }}
-          name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ steps.resolve_channel.outputs.version }}
+          name: ${{ steps.resolve_channel.outputs.version }}
           body_path: dist/CHANGELOG_RELEASE.md
           draft: false
           prerelease: false

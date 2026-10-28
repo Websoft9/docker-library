@@ -553,14 +553,24 @@ artifact/appstore/<channel>/
 | 事件 | channel |
 |------|---------|
 | push 到 `main` 分支 | `dev` |
-| push 到 semver tag（如 `0.9.0`） | `release` |
-| `workflow_dispatch` | 手动选择 `dev` / `rc` / `release` |
+| push 到稳定版本 tag（如 `0.9.0`，且提交属于 `main`） | `release` |
+| `workflow_dispatch` | 手动选择 `dev` / `rc` |
+
+正式发布只需在 GitHub 上为 `main` 中已验证的提交创建 `X.Y.Z` tag，例如 `0.9.0`。推送 tag 会自动发布 release 制品并创建/更新同名 GitHub Release，不需要先提交版本号修改。不要使用 `v` 前缀或预发布后缀；正式 tag 不移动、不覆盖，修复后发布新 tag。
+
+版本来源统一如下：
+
+- 正式发布：tag 名就是唯一版本源，用于 GitHub Release、legacy `library.json.Version` 和 `library-<version>.zip`。
+- dev/rc：版本为 `<channel>-<commit SHA>`，例如 `dev-abcdef123456`。
+- 源码不维护根目录 `library.json`；发布时生成兼容旧客户端的 `library.json`，全量制品中继续包含它。
+- v2 三层 `datasetVersion` 继续基于内容计算，与正式 tag 版本独立。
+- release 增量基线取当前提交历史中已有的稳定版本 tag；没有稳定基线时构建全部 app 包。
 
 ### 6.2 CI 流水线（`appstore-publish.yml`）
 
 ```
 1. 检出代码（fetch-depth: 0）
-2. 解析 channel
+2. 解析 channel 和版本；release 校验稳定 tag 格式及提交属于 main
 3. 检查 R2 apps/ 是否为空 → 空则标记首次发布（--all-apps）
 4. 从 Contentful 拉取 catalog 源数据
 5. 运行 `ci/scripts/library_publish.py` 构建所有制品（v2 + legacy），并以仓库 variables.json 统一 product distribution 数据结构

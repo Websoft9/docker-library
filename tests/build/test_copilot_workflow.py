@@ -98,12 +98,34 @@ def test_commit_check_only_unlocks_tested_head(tmp_path, result, head, ready):
         "RESULT": result,
         "CALLS": str(tmp_path / "calls"),
     }
-    script = workflow_step(".github/workflows/pr-checks.yml", "report-check", "Publish commit check and mark successful PR ready")
+    script = workflow_step(".github/workflows/pr-checks.yml", "report-check", "Publish commit check")
     response = subprocess.run(["bash", "-c", script], cwd=tmp_path, env=env, text=True, capture_output=True)
     calls = (tmp_path / "calls").read_text()
     assert (response.returncode == 0) == ready
-    assert ("pr ready" in calls) == ready
+    assert "pr ready" not in calls
     assert f"conclusion={'success' if ready else 'failure'}" in calls
+
+
+def test_ready_uses_user_token_in_separate_step(tmp_path):
+    mock_bin = tmp_path / "bin"
+    executable(
+        mock_bin / "gh",
+        'case "$*" in\n'
+        '  *"--jq .draft"*) printf "true\\n" ;;\n'
+        '  *"--jq .head.sha"*) printf "abc123\\n" ;;\n'
+        '  "pr ready "*) printf "%s" "$GH_TOKEN" > "$TOKEN_USED" ;;\n'
+        'esac',
+    )
+    env = os.environ | {
+        "PATH": f"{mock_bin}:{os.environ['PATH']}",
+        "GH_TOKEN": "user-test-token", "REPOSITORY": "Websoft9/docker-library",
+        "PR_NUMBER": "12", "HEAD_SHA": "abc123", "TOKEN_USED": str(tmp_path / "token"),
+    }
+    script = workflow_step(".github/workflows/pr-checks.yml", "report-check", "Mark successful PR ready")
+    script = script.replace('${{ github.token }}', 'workflow-test-token')
+    result = subprocess.run(["bash", "-c", script], cwd=tmp_path, env=env, text=True, capture_output=True)
+    assert result.returncode == 0, result.stderr
+    assert (tmp_path / "token").read_text() == "user-test-token"
 
 
 def test_e2e_readiness_and_sync_retry_after_startup_failure(tmp_path):
