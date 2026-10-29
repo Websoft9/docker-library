@@ -77,8 +77,16 @@ def test_trigger_chain_has_no_draft_or_scheduled_runs():
     assert all("secrets." not in str(step) for step in workflow["jobs"]["pr-checks"]["steps"])
 
 
-@pytest.mark.parametrize("result,head,ready", [("success", "abc123", True), ("failure", "abc123", False), ("success", "new-head", False)])
-def test_commit_check_only_unlocks_tested_head(tmp_path, result, head, ready):
+@pytest.mark.parametrize("result,head,detect,has_images,build,ready", [
+    ("success", "abc123", "success", "false", "skipped", True),
+    ("success", "abc123", "success", "true", "success", True),
+    ("failure", "abc123", "success", "false", "skipped", False),
+    ("success", "new-head", "success", "false", "skipped", False),
+    ("success", "abc123", "failure", "", "skipped", False),
+    ("success", "abc123", "success", "true", "skipped", False),
+    ("success", "abc123", "success", "true", "failure", False),
+])
+def test_commit_check_only_unlocks_tested_head(tmp_path, result, head, detect, has_images, build, ready):
     mock_bin = tmp_path / "bin"
     executable(
         mock_bin / "gh",
@@ -96,6 +104,10 @@ def test_commit_check_only_unlocks_tested_head(tmp_path, result, head, ready):
         "CURRENT_HEAD": head,
         "CHECK_ID": "99",
         "RESULT": result,
+        "BUILD_RESULT": build,
+        "DETECT_RESULT": detect,
+        "HAS_IMAGES": has_images,
+        "EVENT_NAME": "pull_request_target",
         "CALLS": str(tmp_path / "calls"),
     }
     script = workflow_step(".github/workflows/pr-checks.yml", "report-check", "Publish commit check")

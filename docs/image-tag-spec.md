@@ -34,8 +34,29 @@ CI builds the image with `--build-arg <APP>_VERSION=${W9_VERSION}` so image cont
 
 Dev / PR candidate images use a separate namespace so they never overwrite stable tags:
 
-- primary: `W9_REPO:dev-<git-sha>`
-- convenience alias: `W9_REPO:dev-latest`
+- `pr` channel (pull request candidate): `dev-<git-sha>` plus the build-input tag; never `dev-latest`.
+- `dev` channel (push to `main`): `dev-<git-sha>`, `dev-latest`, plus the build-input tag.
+- build-input tag: `dev-src-<16 hex>`.
+
+Before building, CI inspects the build-input tag. A match is pinned by digest and
+re-tagged to the current commit aliases without rebuilding; `main` also updates
+`dev-latest`. Only a confirmed missing manifest starts a build. Registry access,
+network, and invalid-digest errors fail visibly. Reuse preserves the existing
+platform set: an amd64-only PR candidate stays amd64-only after merge.
+
+### Build-input identity
+
+The candidate identity is the set of files that actually feed the build, not the whole app directory:
+
+- the root `Dockerfile`;
+- context files referenced by local `COPY` / `ADD` sources (`--from=` stage copies are ignored);
+- `.dockerignore` when present;
+- the injected `<APP>_VERSION` value from `W9_VERSION`;
+- `W9_REPO` and the `FROM` image references.
+
+Unresolvable sources (variables, `--exclude`, missing paths) fall back to the whole app directory. A README, `Notes.md`, `tests/`, `variables.json` or catalog edit therefore reuses the existing image. `libs.docker_inputs` is the single implementation; PR detection, `libs app-build-plan`, and release promotion all use it.
+
+Upstream base-image content changes are not detected by path identity; they need an explicit rebuild.
 
 ## 4. Build And Push Ownership
 
@@ -72,7 +93,10 @@ When the requested platform differs from the build host (local or remote), `libs
 - This spec is repository-wide. Migration applies to the app being worked on; remaining apps migrate when touched.
 - Branch/artifact policy is defined in `docs/git-workflow-spec.md`.
 - CI tag channels (same repository, tag differs by event):
-  - push to `main` → build and push `dev-<git-sha>` (immutable) plus `dev-latest` (rolling alias).
-  - semver tag → promote each changed app's latest `dev-<last-change-sha>` image to stable tags from `W9_VERSION` (see Tag Rules); no rebuild.
-  - manual `workflow_dispatch` → target one app: `channel=dev` builds candidate tags; `channel=promote` promotes a required `source_sha` (`dev-<sha>`) to stable tags.
+  - pull request → PR checks build each app whose build inputs changed and push `dev-<pr-sha>` plus the build-input tag, amd64 only. E2E synchronises the package with `W9_VERSION=dev-<pr-sha>` so the test server pulls the PR candidate image. The required PR check fails if the build fails; `dev-latest` is never moved.
+  - push to `main` → build and push `dev-<git-sha>` (immutable), `dev-latest` (rolling alias), and the build-input tag.
+  - published stable GitHub Release → appstore-publish calls docker.yml to validate/promote every custom-image app before uploading official appstore artifacts. Use the build-input tag or a successful main build's `dev-<sha>` only when its build-input hash exactly matches the released context; pin the source manifest digest before promotion. No rebuild or floating `dev-latest` fallback.
+  - manual `workflow_dispatch` → target one app: `channel=dev` builds candidate/context tags; `channel=promote` resolves the selected context's candidate or an explicit `source_sha` (`dev-<sha>`) and promotes its digest to stable tags.
 - CI only builds apps whose Dockerfile declares `ARG <APP>_VERSION`; apps without it are not built by CI. Migrate them when touched.
+- `main` selection scans changed app directories, then reuses candidates by build-input hash before considering a build. PR builds select apps by comparing the build-input hash at the base and head commits. Detection errors fail the required check; only a confirmed deleted Dockerfile is ignored. Historical candidates without a matching build-input tag need a manual dev build at the release ref; registry authentication/network errors remain visible and are not classified as missing images.
+- CI does not delete candidate tags. Public-registry retention is out of scope for this spec.

@@ -41,4 +41,5 @@ Notes:
 - `review-first` stops before implementation unless owner approves.
 - Update work is not limited to version bumping; the changed app must satisfy the current quality gates before handoff.
 - Update work should not trigger broad repository-wide template churn; only the minimum relevant app-local conformance fixes should be included.
+- For custom-image apps, PR checks build only apps whose Dockerfile build inputs changed, push an amd64 candidate as `dev-<pr-sha>`, and hand that tag to the E2E sync. A build failure fails the required `PR checks` status; `dev-latest` is never moved by a PR.
 - Failed automated validation keeps the issue open and blocks owner E2E.

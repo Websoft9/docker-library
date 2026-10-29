@@ -3,11 +3,12 @@ name: Appstore Publish
 on:
   push:
     branches: [main]
-    tags: ['[0-9]*']
+  release:
+    types: [published]
   workflow_dispatch:
     inputs:
       channel:
-        description: Publish dev or rc; official releases require an X.Y.Z tag on main
+        description: Publish dev or rc; publish a GitHub Release for official artifacts
         required: true
         type: choice
         options:
@@ -18,9 +19,30 @@ on:
         required: false
         type: string
 
+concurrency:
+  group: appstore-${{ github.event_name == 'release' && 'release' || inputs.channel || 'dev' }}
+  cancel-in-progress: false
+
 jobs:
+  release-images:
+    if: github.event_name == 'release' && github.event.release.prerelease == false
+    uses: ./.github/workflows/docker.yml
+    permissions:
+      contents: read
+      actions: read
+    with:
+      release_tag: ${{ github.event.release.tag_name }}
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
   publish:
     name: Build and publish appstore artifacts
+    needs: release-images
+    if: >-
+      always() && !cancelled() &&
+      (github.event_name != 'release' ||
+       (github.event.release.prerelease == false && needs.release-images.result == 'success'))
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -32,6 +54,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
+          ref: ${{ github.event.release.tag_name || github.ref }}
 
       - name: Resolve publish channel
         id: resolve_channel
@@ -40,22 +63,23 @@ jobs:
           REF_TYPE: ${{ github.ref_type }}
           REF_NAME: ${{ github.ref_name }}
           INPUT_CHANNEL: ${{ inputs.channel }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: |
           set -euo pipefail
-          if [[ "$EVENT_NAME" == "push" ]]; then
-            if [[ "$REF_TYPE" == "tag" ]]; then
-              if ! [[ "$REF_NAME" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
-                echo "::error::Official release tags must use stable X.Y.Z format (for example 0.9.0)."
-                exit 1
-              fi
-              git fetch origin main
-              if ! git merge-base --is-ancestor HEAD origin/main; then
-                echo "::error::Release tags must point to a commit on main."
-                exit 1
-              fi
-              channel="release"
-              version="$REF_NAME"
-            elif [[ "$REF_NAME" == "main" ]]; then
+          if [[ "$EVENT_NAME" == "release" ]]; then
+            if ! [[ "$RELEASE_TAG" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
+              echo "::error::Official release tags must use stable X.Y.Z format (for example 0.9.0)."
+              exit 1
+            fi
+            git fetch origin main
+            if ! git merge-base --is-ancestor HEAD origin/main; then
+              echo "::error::Release tags must point to a commit on main."
+              exit 1
+            fi
+            channel="release"
+            version="$RELEASE_TAG"
+          elif [[ "$EVENT_NAME" == "push" ]]; then
+            if [[ "$REF_TYPE" == "branch" && "$REF_NAME" == "main" ]]; then
               channel="dev"
             else
               echo "Unsupported push ref: $REF_TYPE $REF_NAME" >&2
@@ -64,7 +88,7 @@ jobs:
           else
             channel="$INPUT_CHANNEL"
             if [[ "$channel" != "dev" && "$channel" != "rc" ]]; then
-              echo "::error::Manual publishing supports dev and rc only; push an X.Y.Z tag for release."
+              echo "::error::Manual publishing supports dev and rc only; publish a GitHub Release for official artifacts."
               exit 1
             fi
           fi
@@ -77,11 +101,13 @@ jobs:
 
       - name: Resolve release base
         id: release_base
-        if: github.event_name == 'push' && github.ref_type == 'tag'
+        if: github.event_name == 'release'
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: |
           previous=""
           while IFS= read -r tag; do
-            if [[ "$tag" != "$GITHUB_REF_NAME" && "$tag" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
+            if [[ "$tag" != "$RELEASE_TAG" && "$tag" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
               previous="$tag"
               break
             fi
@@ -91,6 +117,7 @@ jobs:
           else
             echo "all_apps=true" >> "$GITHUB_OUTPUT"
           fi
+          echo "range=${previous:+$previous..}$RELEASE_TAG" >> "$GITHUB_OUTPUT"
 
       - name: Set up Python
         uses: actions/setup-python@v7
@@ -179,7 +206,7 @@ jobs:
         uses: orhun/git-cliff-action@v4
         with:
           config: .github/cliff.toml
-          args: --latest --strip header
+          args: ${{ steps.release_base.outputs.range }} --strip header
         env:
           OUTPUT: dist/CHANGELOG_RELEASE.md
 
@@ -284,42 +311,20 @@ jobs:
           cf_auth: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           files: ${{ steps.purge_urls.outputs.urls }}
 
-      - name: Create GitHub Release (release channel only)
+      - name: Update published GitHub Release
         if: steps.resolve_channel.outputs.channel == 'release'
-        uses: softprops/action-gh-release@v3
-        with:
-          files: |
-            dist/appstore-publish/legacy/release/library/library.json
-          tag_name: ${{ steps.resolve_channel.outputs.version }}
-          name: ${{ steps.resolve_channel.outputs.version }}
-          body_path: dist/CHANGELOG_RELEASE.md
-          draft: false
-          prerelease: false
-
-  pages:
-    name: Build Github Pages (release only)
-    if: needs.publish.outputs.channel == 'release'
-    needs: publish
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v6
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v5
-        with:
-          path: '.'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          RELEASE_ID: ${{ github.event.release.id }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          gh api "repos/$REPOSITORY/releases/$RELEASE_ID" --jq '.body // ""' > release-body.md
+          python ci/scripts/release_notes.py --body release-body.md --changelog dist/CHANGELOG_RELEASE.md > release-notes.md
+          jq -n --rawfile body release-notes.md '{body: $body}' \
+            | gh api --method PATCH "repos/$REPOSITORY/releases/$RELEASE_ID" --input -
+          gh release upload "$RELEASE_TAG" --repo "$REPOSITORY" --clobber \
+            dist/appstore-publish/legacy/release/library/library.json \
+            dist/appstore-publish/legacy/release/library/library.json.sha256 \
+            dist/CHANGELOG_RELEASE.md

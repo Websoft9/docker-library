@@ -6,8 +6,9 @@
 #   main push  -> dev-<git-sha> (primary) + dev-latest (rolling alias)
 #                 amd64 is required; arm64 is best-effort and warns on failure
 #                 final tags are assembled from digests; no temporary arch tags are published
-#   semver tag -> promote each app's latest dev-<sha> image to stable tags (no rebuild)
-#   main push  -> never promotes; releases happen on tags
+#   published Release -> called by appstore-publish to promote exact-context candidates
+#   PR candidate (workflow_call) -> dev-<pr-sha> + dev-src-<input-hash>; amd64 only; never dev-latest
+#   main push -> also records dev-src-<Dockerfile-input-hash> for immutable context matching
 #
 # Build contract: the Dockerfile MUST declare a version ARG whose name is
 # ${APP^^}_VERSION (e.g. apps/akeneo -> AKENEO_VERSION). CI reads W9_VERSION
@@ -16,17 +17,43 @@
 #
 # Manual runs (workflow_dispatch) target one app:
 #   channel=dev     -> build dev-<sha> + dev-latest for the chosen app
-#   channel=promote -> promote the chosen app to stable tags; source_sha defaults to the selected ref
+#   channel=promote -> promote an exact-context candidate, or an explicit source_sha
 #
-# There is intentionally no paths filter: tag promotion must still run when the tag
-# only changes release metadata. App detection happens in the setup job.
+# All app context changes trigger candidates, including root package/config files.
+# Official promotion is invoked by appstore-publish only after Release publication.
 
 name: Build image to DockerHub
+
+permissions:
+  contents: read
+  actions: read
 
 on:
   push:
     branches: [main]
-    tags: ['[0-9]*']
+  workflow_call:
+    inputs:
+      release_tag:
+        description: Published stable Release tag to promote (release promotion only)
+        required: false
+        type: string
+      app:
+        description: Build a single app (required for PR candidate builds)
+        required: false
+        type: string
+      pr_sha:
+        description: PR head SHA to build a candidate image for
+        required: false
+        type: string
+      tooling_sha:
+        description: Trusted base commit containing the build tools for a PR
+        required: false
+        type: string
+    secrets:
+      DOCKER_USERNAME:
+        required: false
+      DOCKER_PASSWORD:
+        required: false
   workflow_dispatch:
     inputs:
       app:
@@ -42,7 +69,7 @@ on:
           - promote
         default: dev
       source_sha:
-        description: "Source commit SHA for promote (defaults to the selected ref)"
+        description: "Optional source commit SHA for promote; otherwise resolve an exact-context candidate"
         required: false
         type: string
 
@@ -57,38 +84,47 @@ jobs:
       uses: actions/checkout@v7
       with:
         fetch-depth: 0
+        ref: ${{ inputs.pr_sha || inputs.release_tag || github.ref }}
 
     - id: set-matrix
       env:
         EVENT_NAME: ${{ github.event_name }}
         INPUT_APP: ${{ inputs.app }}
-        REF_TYPE: ${{ github.ref_type }}
-        REF_NAME: ${{ github.ref_name }}
+        RELEASE_TAG: ${{ inputs.release_tag }}
+        PR_SHA: ${{ inputs.pr_sha }}
         BEFORE_SHA: ${{ github.event.before }}
         CURRENT_SHA: ${{ github.sha }}
       run: |
-        if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+        set -euo pipefail
+        CURRENT_SHA=$(git rev-parse HEAD)
+        if [ "$EVENT_NAME" = "workflow_dispatch" ] || [ -n "${PR_SHA:-}" ]; then
           app_list="$INPUT_APP"
-        elif [ "$EVENT_NAME" = "push" ] && [ "$REF_TYPE" = "tag" ]; then
-          previous=$(git describe --tags --abbrev=0 "${REF_NAME}^" 2>/dev/null || true)
-          if [ -n "$previous" ]; then
-            changed_files=$(git diff --name-only "$previous" "$CURRENT_SHA")
-          else
-            changed_files=$(git diff-tree --no-commit-id --name-only -r "$CURRENT_SHA")
+        elif [ -n "$RELEASE_TAG" ]; then
+          if ! [[ "$RELEASE_TAG" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
+            echo "::error::Release tags must use stable X.Y.Z format"
+            exit 1
           fi
-          app_list=$(echo "$changed_files" | grep -E 'apps/.*/(Dockerfile|.env|cmd.sh|entrypoint.sh|src/.*)$' | awk -F'/' '{print $2}' | sort | uniq)
+          git fetch origin main
+          git merge-base --is-ancestor HEAD origin/main
+          # Validate every custom image, including apps missed by an earlier partial release.
+          changed_files=$(git ls-tree -r --name-only "$CURRENT_SHA" -- apps)
+          app_list=$(printf '%s\n' "$changed_files" | awk -F/ '$1 == "apps" && NF >= 3 {print $2}' | sort -u)
         else
           if [ -n "$BEFORE_SHA" ] && [ "$BEFORE_SHA" != "0000000000000000000000000000000000000000" ]; then
             changed_files=$(git diff --name-only "$BEFORE_SHA" "$CURRENT_SHA")
           else
             changed_files=$(git diff --name-only HEAD^ HEAD)
           fi
-          app_list=$(echo "$changed_files" | grep -E 'apps/.*/(Dockerfile|.env|cmd.sh|entrypoint.sh|src/.*)$' | awk -F'/' '{print $2}' | sort | uniq)
+          app_list=$(printf '%s\n' "$changed_files" | awk -F/ '$1 == "apps" && NF >= 3 {print $2}' | sort -u)
         fi
         valid_list=()
         for app in $app_list; do
           if [ -z "$app" ]; then
             continue
+          fi
+          if ! [[ "$app" =~ ^[a-z0-9][a-z0-9_-]*$ ]]; then
+            echo 'Invalid application directory' >&2
+            exit 1
           fi
           if [ ! -f "apps/$app/Dockerfile" ]; then
             echo "skip (no Dockerfile): $app"
@@ -102,7 +138,7 @@ jobs:
           fi
           valid_list+=("$app")
         done
-        if [ "$EVENT_NAME" = "workflow_dispatch" ] && [ "${#valid_list[@]}" -eq 0 ]; then
+        if { [ "$EVENT_NAME" = "workflow_dispatch" ] || [ -n "${PR_SHA:-}" ]; } && [ "${#valid_list[@]}" -eq 0 ]; then
           echo "error: app '$INPUT_APP' is not buildable (missing Dockerfile or <APP>_VERSION ARG)" >&2
           exit 1
         fi
@@ -118,13 +154,30 @@ jobs:
     needs: setup
     if: needs.setup.outputs.has_apps == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: source
+    env:
+      TOOLING_ROOT: ${{ github.workspace }}/tooling
     strategy:
+      fail-fast: false
       matrix: ${{fromJson(needs.setup.outputs.matrix)}}
     steps:
     - name: Checkout code
       uses: actions/checkout@v7
       with:
         fetch-depth: 0
+        ref: ${{ inputs.pr_sha || inputs.release_tag || github.ref }}
+        path: source
+        persist-credentials: false
+
+    - name: Checkout trusted build tooling
+      uses: actions/checkout@v7
+      with:
+        ref: ${{ inputs.tooling_sha || inputs.release_tag || github.sha }}
+        path: tooling
+        persist-credentials: false
 
     - name: Set up Python
       uses: actions/setup-python@v7
@@ -139,11 +192,15 @@ jobs:
     - name: Resolve channel
       env:
         EVENT_NAME: ${{ github.event_name }}
-        REF_TYPE: ${{ github.ref_type }}
+        RELEASE_TAG: ${{ inputs.release_tag }}
+        PR_SHA: ${{ inputs.pr_sha }}
         INPUT_CHANNEL: ${{ inputs.channel }}
         INPUT_SOURCE_SHA: ${{ inputs.source_sha }}
         CURRENT_SHA: ${{ github.sha }}
       run: |
+        set -euo pipefail
+        CURRENT_SHA=$(git rev-parse HEAD)
+        echo "BUILD_SHA=$CURRENT_SHA" >> "$GITHUB_ENV"
         echo "APP=${{ matrix.app }}" >> $GITHUB_ENV
         if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
           case "$INPUT_CHANNEL" in
@@ -161,15 +218,13 @@ jobs:
               exit 1
               ;;
           esac
-        elif [ "$EVENT_NAME" = "push" ] && [ "$REF_TYPE" = "tag" ]; then
-          # release promotion: reuse the dev image built from the app's last main change.
-          source_sha=$(git log -1 --format=%H "$CURRENT_SHA" -- "apps/${{ matrix.app }}")
-          if [ -z "$source_sha" ]; then
-            echo "error: no commit found for app ${{ matrix.app }} at $CURRENT_SHA" >&2
-            exit 1
-          fi
+        elif [ -n "${PR_SHA:-}" ]; then
+          # PR candidate: never moves dev-latest.
+          echo "CHANNEL=pr" >> $GITHUB_ENV
+          echo "SOURCE_SHA=" >> $GITHUB_ENV
+        elif [ -n "$RELEASE_TAG" ]; then
           echo "CHANNEL=promote" >> $GITHUB_ENV
-          echo "SOURCE_SHA=$source_sha" >> $GITHUB_ENV
+          echo "SOURCE_SHA=" >> $GITHUB_ENV
         else
           # main push: build candidate images for the next release.
           echo "CHANNEL=dev" >> $GITHUB_ENV
@@ -178,7 +233,7 @@ jobs:
 
     - name: Generate build/promote plan
       run: |
-        PYTHONPATH=cli python -c "import json,os,sys; from libs.app_build import build_plan; print(json.dumps(build_plan(app_name=sys.argv[1], channel=sys.argv[2], git_sha=sys.argv[3], source_sha=(os.environ.get('SOURCE_SHA') or None)), indent=2, ensure_ascii=False))" "${{ env.APP }}" "${{ env.CHANNEL }}" "${{ github.sha }}" > plan.json
+        python -I -c "import json,os,sys; sys.path.insert(0, os.environ['TOOLING_ROOT'] + '/cli'); from libs.app_build import build_plan; print(json.dumps(build_plan(app_name=sys.argv[1], channel=sys.argv[2], git_sha=sys.argv[3], source_sha=(os.environ.get('SOURCE_SHA') or None)), indent=2, ensure_ascii=False))" "${{ env.APP }}" "${{ env.CHANNEL }}" "${{ env.BUILD_SHA }}" > plan.json
         cat plan.json
         echo "CHANNEL=$(jq -r '.channel' plan.json)" >> $GITHUB_ENV
         echo "DIRECTORY=$(jq -r '.context' plan.json)" >> $GITHUB_ENV
@@ -198,7 +253,7 @@ jobs:
         echo "dockerfile:   ${{ env.DOCKERFILE }}"
         echo "build-arg:    ${{ env.VERSION_ARG }}=${{ env.W9_VERSION }}"
         if [ "${{ env.CHANNEL }}" = "promote" ]; then
-          echo "promote from: ${{ env.SOURCE_IMAGE }}"
+          echo "promote source: resolved and digest-pinned in the promotion step"
         fi
         echo "tags:"
         echo "${{ env.TAGS }}" | tr ',' '\n' | sed 's/^/  /'
@@ -213,10 +268,17 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build and push Docker image (dev)
-      if: env.CHANNEL == 'dev'
+    - name: Reuse matching candidate by digest
+      id: reuse
+      if: env.CHANNEL == 'dev' || env.CHANNEL == 'pr'
+      run: |
+        python -I "$TOOLING_ROOT/ci/scripts/image_candidate.py" --plan plan.json --output "$GITHUB_OUTPUT"
+
+    - name: Build and push candidate image
+      if: (env.CHANNEL == 'dev' || env.CHANNEL == 'pr') && steps.reuse.outputs.reused != 'true'
       shell: bash
       run: |
+        set -euo pipefail
         IFS=',' read -r -a TAG_ARRAY <<< "${{ env.TAGS }}"
 
         IMAGE_REPO="${TAG_ARRAY[0]%:*}"
@@ -238,16 +300,19 @@ jobs:
           exit 1
         fi
 
-        ARM64_OK=true
-        if ! docker buildx build \
-          --platform linux/arm64 \
-          -f "${{ env.DOCKERFILE }}" \
-          --build-arg "${{ env.VERSION_ARG }}=${{ env.W9_VERSION }}" \
-          --metadata-file "$ARM64_META" \
-          --output "type=image,name=${IMAGE_REPO},push-by-digest=true,name-canonical=true,push=true" \
-          "${{ env.DIRECTORY }}"; then
-          ARM64_OK=false
-          echo "::warning::arm64 image build failed for ${{ matrix.app }}; published amd64-only tags"
+        ARM64_OK=false
+        if [ "${{ env.CHANNEL }}" = "dev" ]; then
+          if docker buildx build \
+            --platform linux/arm64 \
+            -f "${{ env.DOCKERFILE }}" \
+            --build-arg "${{ env.VERSION_ARG }}=${{ env.W9_VERSION }}" \
+            --metadata-file "$ARM64_META" \
+            --output "type=image,name=${IMAGE_REPO},push-by-digest=true,name-canonical=true,push=true" \
+            "${{ env.DIRECTORY }}"; then
+            ARM64_OK=true
+          else
+            echo "::warning::arm64 image build failed for ${{ matrix.app }}; published amd64-only tags"
+          fi
         fi
 
         ARM64_DIGEST=""
@@ -267,23 +332,50 @@ jobs:
           fi
         done
 
+    - name: Record published PR candidate
+      if: env.CHANNEL == 'pr'
+      run: |
+        primary=$(jq -r '.primary_image' plan.json)
+        manifest_digest=$(docker buildx imagetools inspect "$primary" --format '{{.Manifest.Digest}}')
+        jq --arg digest "$manifest_digest" \
+          '{app:.app,image:.w9_repo,tag:(.primary_image | split(":") | last),digest:$digest,context_tag:.context_tag}' \
+          plan.json > candidate.json
+        cat candidate.json
+
+    - name: Upload PR candidate digest
+      if: env.CHANNEL == 'pr'
+      uses: actions/upload-artifact@v4
+      with:
+        name: image-${{ matrix.app }}
+        path: source/candidate.json
+        if-no-files-found: error
+
     - name: Promote dev image to stable tags (release)
       if: env.CHANNEL == 'promote'
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        REPOSITORY: ${{ github.repository }}
+        EXPLICIT_SOURCE: ${{ inputs.source_sha }}
       run: |
-        if ! SOURCE_DIGEST=$(docker buildx imagetools inspect "${{ env.SOURCE_IMAGE }}" --format '{{.Manifest.Digest}}' 2>/dev/null); then
-          echo "ERROR: source dev image missing: ${{ env.SOURCE_IMAGE }}" >&2
-          echo "Expected this image to be built and pushed by a main push before release promotion." >&2
-          exit 1
+        set -euo pipefail
+        if [ -n "$EXPLICIT_SOURCE" ]; then
+          python -I "$TOOLING_ROOT/ci/scripts/image_publish.py" --app "${{ env.APP }}" --plan plan.json --explicit > promotion.json
+        else
+          gh api --paginate --slurp "repos/$REPOSITORY/actions/workflows/docker.yml/runs?event=push&status=success&branch=main&per_page=100" > image-runs.json
+          python -I "$TOOLING_ROOT/ci/scripts/image_publish.py" --app "${{ env.APP }}" --plan plan.json --runs-file image-runs.json > promotion.json
         fi
-        TAG_ARGS=""
+        SOURCE_IMAGE=$(jq -r '.source_image' promotion.json)
+        SOURCE_DIGEST=${SOURCE_IMAGE##*@}
+        echo "Promoting $(jq -r '.source_tag' promotion.json) pinned to $SOURCE_DIGEST"
+        TAG_ARGS=()
         for tag in $(echo "${{ env.TAGS }}" | tr ',' ' '); do
           existing=$(docker buildx imagetools inspect "$tag" --format '{{.Manifest.Digest}}' 2>/dev/null || true)
           if [ -n "$existing" ] && [ "$existing" != "$SOURCE_DIGEST" ]; then
-            echo "::warning::overwriting existing $tag ($existing) with ${{ env.SOURCE_IMAGE }} ($SOURCE_DIGEST)"
+            echo "::warning::overwriting existing $tag ($existing) with $SOURCE_IMAGE"
           fi
-          TAG_ARGS="$TAG_ARGS --tag $tag"
+          TAG_ARGS+=(--tag "$tag")
         done
-        docker buildx imagetools create $TAG_ARGS "${{ env.SOURCE_IMAGE }}"
+        docker buildx imagetools create "${TAG_ARGS[@]}" "$SOURCE_IMAGE"
 
     - name: Docker Hub Description
       uses: peter-evans/dockerhub-description@v5
@@ -291,5 +383,5 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: websoft9dev/${{env.APP}}
-        readme-filepath: ${{env.README}}
-      if: needs.setup.outputs.has_apps == 'true'
+        readme-filepath: source/${{env.README}}
+      if: needs.setup.outputs.has_apps == 'true' && env.CHANNEL != 'pr'

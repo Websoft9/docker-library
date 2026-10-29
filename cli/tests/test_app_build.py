@@ -572,3 +572,36 @@ def test_app_build_plan_cli_contract(monkeypatch):
     assert output == [
         (json.dumps({"app": "demo", "channel": "dev", "tags": ["demo:dev-1234567"]}, indent=2, ensure_ascii=False), False),
     ]
+
+
+def test_build_plan_pr_channel_never_moves_dev_latest(repo_fixture, app_factory):
+    app_path = app_factory(
+        "demo",
+        compose="services:\n  web:\n    image: demo-repo:${W9_VERSION}\n",
+        env="W9_REPO=demo-repo\nW9_VERSION=v1.2.3\n",
+    )
+    (app_path / "Dockerfile").write_text("ARG DEMO_VERSION=v1.2.3\nFROM alpine\n", encoding="utf-8")
+
+    payload = app_build.build_plan("demo", channel="pr", git_sha="9f3c1a2b4d5e6f708192a3b4c5d6e7f8091a2b3c")
+
+    assert payload["tags"][0] == "demo-repo:dev-9f3c1a2"
+    assert "demo-repo:dev-latest" not in payload["tags"]
+    assert payload["context_tag"].startswith("dev-src-")
+    assert f"demo-repo:{payload['context_tag']}" in payload["tags"]
+
+
+def test_build_plan_dev_channel_keeps_dev_latest_and_context_tag(repo_fixture, app_factory):
+    app_path = app_factory(
+        "demo",
+        compose="services:\n  web:\n    image: demo-repo:${W9_VERSION}\n",
+        env="W9_REPO=demo-repo\nW9_VERSION=v1.2.3\n",
+    )
+    (app_path / "Dockerfile").write_text("ARG DEMO_VERSION=v1.2.3\nFROM alpine\n", encoding="utf-8")
+
+    payload = app_build.build_plan("demo", channel="dev", git_sha="9f3c1a2b4d5e6f708192a3b4c5d6e7f8091a2b3c")
+
+    assert payload["tags"] == [
+        "demo-repo:dev-9f3c1a2",
+        "demo-repo:dev-latest",
+        f"demo-repo:{payload['context_tag']}",
+    ]

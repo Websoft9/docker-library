@@ -553,10 +553,10 @@ artifact/appstore/<channel>/
 | 事件 | channel |
 |------|---------|
 | push 到 `main` 分支 | `dev` |
-| push 到稳定版本 tag（如 `0.9.0`，且提交属于 `main`） | `release` |
+| GitHub Release 发布（`release.published`，稳定 tag 且提交属于 `main`） | `release` |
 | `workflow_dispatch` | 手动选择 `dev` / `rc` |
 
-正式发布只需在 GitHub 上为 `main` 中已验证的提交创建 `X.Y.Z` tag，例如 `0.9.0`。推送 tag 会自动发布 release 制品并创建/更新同名 GitHub Release，不需要先提交版本号修改。不要使用 `v` 前缀或预发布后缀；正式 tag 不移动、不覆盖，修复后发布新 tag。
+正式发布在 GitHub 网页 **Releases → Draft a new release** 中选择或创建 `X.Y.Z` tag（例如 `0.9.0`，Target 为 main），然后点击 **Publish release**。仅推送 tag 或保存 draft 不会正式发布；prerelease 不进入正式通道。Action checkout 已发布 Release 的 tag，而非运行时最新的 main。无需提交版本号修改；不要使用 `v` 前缀或预发布后缀，正式 tag 不移动、不覆盖。
 
 版本来源统一如下：
 
@@ -569,16 +569,22 @@ artifact/appstore/<channel>/
 ### 6.2 CI 流水线（`appstore-publish.yml`）
 
 ```
-1. 检出代码（fetch-depth: 0）
-2. 解析 channel 和版本；release 校验稳定 tag 格式及提交属于 main
+1. release 调用现有 docker.yml，验证并晋升所有自定义镜像；任一失败则不发布 Appstore 制品
+2. 检出发布 tag（fetch-depth: 0），解析 channel 和版本；release 校验稳定 tag 格式及提交属于 main
 3. 检查 R2 apps/ 是否为空 → 空则标记首次发布（--all-apps）
 4. 从 Contentful 拉取 catalog 源数据
 5. 运行 `ci/scripts/library_publish.py` 构建所有制品（v2 + legacy），并以仓库 variables.json 统一 product distribution 数据结构
 6. 上传 v2 制品到新 R2 路径（`channel` 只由目录表达，full 固定入口统一为 `latest.zip`）
 7. 上传 legacy 制品到旧 R2 路径（兼容旧消费者）
 8. 清除 Cloudflare 缓存
-9. release 通道额外创建 GitHub Release
+9. 更新已存在的 GitHub Release 的自动 changelog 区域并上传附件，保留人工说明
 ```
+
+Release body 中由 `<!-- generated-changelog:start -->` / `<!-- generated-changelog:end -->` 包围的内容由 Action 管理；重跑替换该区域，不覆盖其外的人工内容。changelog 使用上一稳定 tag 到当前 tag 的显式提交范围。只监听 `published`，更新 Release 描述不会再次启动发布。
+
+镜像候选以 Dockerfile 构建输入哈希标识，优先使用 `dev-src-<hash>`；历史候选必须来自成功的 main 构建且构建输入与本次发布完全一致。禁止按任意 app 最后提交猜 SHA 或回退 `dev-latest`。候选缺失时，手动运行 docker.yml（channel=dev、app、ref=release tag）补建，再重跑正式发布。matrix 中单个 app 失败不取消其它 app，但会阻止后续 Appstore 上传。
+
+正式制品只发布到 R2，并同步更新 GitHub Release；Release 在人工点击 Publish 后就已可见，不代表所有下游制品发布完成，需查看 Action 结果。
 
 ### 6.3 上传策略
 

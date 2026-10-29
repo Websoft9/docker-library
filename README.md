@@ -55,6 +55,29 @@ and return the final access URL plus a short validation summary.
 
 The Websoft9 console is the easiest way to run these packages with a web UI, domains, HTTPS, backups, and lifecycle management.
 
+## Artifacts
+
+Published appstore artifacts are available at:
+
+```text
+https://artifact.websoft9.com/appstore/release/manifests/appstore-manifest.json
+https://artifact.websoft9.com/appstore/dev/manifests/appstore-manifest.json
+https://artifact.websoft9.com/appstore/rc/manifests/appstore-manifest.json
+```
+
+Each channel uses the same layout:
+
+```text
+appstore/<channel>/
+├── catalog/                 # catalog JSON files and manifest
+├── library/
+│   ├── apps/<app>/latest.zip
+│   └── manifest.json
+└── manifests/appstore-manifest.json
+```
+
+Start from `appstore-manifest.json`; it points to the catalog and library manifests. Legacy clients can continue to use `https://artifact.websoft9.com/<channel>/websoft9/plugin/library/`.
+
 ## AI-driven maintenance
 
 This repository is maintained by AI agents under owner review. The owner decides demand and the final end-to-end result; AI handles upstream research, implementation, routine validation, and reporting.

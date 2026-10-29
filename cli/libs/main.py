@@ -602,6 +602,7 @@ def appstore_sync_command(
     ssh_secret_path: str | None = typer.Option(None, "--ssh-secret-path", help="SSH secret path (key or password file)"),
     container: str | None = typer.Option(None, "--container", help="Remote websoft9 container name (default: CONTAINER in .secrets/remote.env, else websoft9)"),
     catalog_dir: str = typer.Option(appstore_sync.DEFAULT_CATALOG_DIR, "--catalog-dir", help="Catalog metadata directory inside the container"),
+    version: str | None = typer.Option(None, "--version", help="Override W9_VERSION in the synced copy only (e.g. dev-abc1234); the repo .env is untouched"),
     progress: bool = typer.Option(False, "--progress", help="Show step progress on stderr"),
     verbose: bool = typer.Option(False, "--verbose", help="Show step progress and raw subprocess output on stderr"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
@@ -616,6 +617,7 @@ def appstore_sync_command(
             secret_path=ssh_secret_path,
             container=container,
             catalog_dir=catalog_dir,
+            version=version,
             progress=progress_writer,
             verbose=verbose,
         )
@@ -727,7 +729,7 @@ def app_build_command(
 @app.command("app-build-plan")
 def app_build_plan_command(
     app_name: str = typer.Option(..., "--app", help="App name"),
-    channel: str = typer.Option("stable", "--channel", help="stable | dev | promote"),
+    channel: str = typer.Option("stable", "--channel", help="stable | dev | pr | promote"),
     git_sha: str | None = typer.Option(None, "--git-sha", help="Git SHA used for dev image tags"),
     source_sha: str | None = typer.Option(None, "--source-sha", help="Validated dev SHA to promote from (channel=promote)"),
     org: str | None = typer.Option(None, "--org", help="Docker Hub org namespace for bare W9_REPO; overrides DOCKERHUB_ORG"),
