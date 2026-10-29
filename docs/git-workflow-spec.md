@@ -54,7 +54,7 @@ The next promotion overwrites the stable tags it derives from `W9_VERSION`, alwa
 
 Before a PR is merged into `main`:
 
-- required `PR checks` pass (`maintenance-check`, CLI tests, build tests)
+- required `PR checks` pass (metadata/package checks, CLI tests and build tests; pure Markdown changes skip the two test suites)
 - deploy-validation for each changed custom-image app when applicable
 - the PR is squash-merged; no direct pushes or merge commits
 

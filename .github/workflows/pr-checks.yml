@@ -1,12 +1,10 @@
 name: PR checks
 
 on:
-  # Trigger migrations must validate themselves before the new base-branch
-  # pull_request_target configuration is merged. App-only PRs do not use this.
+  # Required checks must run for every PR, including workflow/docs-only changes.
   pull_request:
     branches: [main]
-    types: [opened, synchronize, reopened]
-    paths: [.github/workflows/pr-checks.yml]
+    types: [opened, synchronize, reopened, ready_for_review]
   pull_request_target:
     branches: [main]
     types: [review_requested]
@@ -36,6 +34,7 @@ jobs:
           HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
           HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
           AUTHOR: ${{ github.event.pull_request.user.login }}
+          EVENT_NAME: ${{ github.event_name }}
           RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           set -euo pipefail
@@ -43,7 +42,13 @@ jobs:
             echo 'PR checks currently support same-repository handoffs only.' >&2
             exit 1
           fi
-          if [ "$AUTHOR" = Copilot ]; then
+          current=$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq '.head.sha')
+          test "$current" = "$HEAD_SHA"
+          payload=$(jq -n --arg sha "$HEAD_SHA" --arg url "$RUN_URL" \
+            '{name:"PR checks",head_sha:$sha,status:"in_progress",details_url:$url}')
+          id=$(gh api --method POST "repos/$REPOSITORY/check-runs" --input - --jq '.id' <<< "$payload")
+          echo "check_id=$id" >> "$GITHUB_OUTPUT"
+          if [ "$AUTHOR" = Copilot ] && [ "$EVENT_NAME" = pull_request_target ]; then
             encoded=$(jq -rn --arg branch "$HEAD_BRANCH" '$branch | @uri')
             for attempt in $(seq 1 12); do
               run=$(gh api "repos/$REPOSITORY/actions/runs?branch=$encoded&event=dynamic&per_page=100" \
@@ -59,16 +64,9 @@ jobs:
               sleep 5
             done
           fi
-          current=$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq '.head.sha')
-          test "$current" = "$HEAD_SHA"
-          payload=$(jq -n --arg sha "$HEAD_SHA" --arg url "$RUN_URL" \
-            '{name:"PR checks",head_sha:$sha,status:"in_progress",details_url:$url}')
-          id=$(gh api --method POST "repos/$REPOSITORY/check-runs" --input - --jq '.id' <<< "$payload")
-          echo "check_id=$id" >> "$GITHUB_OUTPUT"
 
   detect-buildable:
     name: Detect image build inputs
-    needs: handoff
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -115,7 +113,8 @@ jobs:
       actions: read
     needs: [handoff, detect-buildable]
     if: >-
-      github.event_name == 'pull_request_target' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      (github.event.pull_request.draft == false || github.event_name == 'pull_request_target') &&
       needs.detect-buildable.outputs.has_apps == 'true'
     strategy:
       fail-fast: false
@@ -132,14 +131,13 @@ jobs:
 
   pr-checks:
     name: Validate PR package
-    needs: handoff
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
       contents: read
       pull-requests: read
     concurrency:
-      group: pr-checks-${{ github.event.pull_request.number }}
+      group: pr-validation-${{ github.event.pull_request.number }}-${{ github.event_name }}
       cancel-in-progress: true
     steps:
       - name: Check PR title format
@@ -163,6 +161,27 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Select validation scope
+        id: scope
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import subprocess
+
+          paths = subprocess.check_output([
+              "git", "diff", "--name-only", "-z", "--no-renames",
+              f"{os.environ['BASE_SHA']}...{os.environ['HEAD_SHA']}",
+          ]).decode().split("\0")
+          paths = [path for path in paths if path]
+          # Only plain Markdown is exempt; any other change keeps the full suites.
+          run_tests = not paths or any(not path.endswith(".md") for path in paths)
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              print(f"run_tests={str(run_tests).lower()}", file=output)
+          PY
+
       - name: Install libs CLI
         run: |
           python -m pip install --upgrade pip
@@ -172,9 +191,11 @@ jobs:
         run: python -m libs maintenance-check
 
       - name: Run CLI tests
+        if: steps.scope.outputs.run_tests == 'true'
         run: python -m pytest cli/tests -q
 
       - name: Run build tests
+        if: steps.scope.outputs.run_tests == 'true'
         run: python -m pytest tests/build -q
 
       - name: Validate i18n keys for changed apps
@@ -218,16 +239,18 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           CHECK_ID: ${{ needs.handoff.outputs.check_id }}
           RESULT: ${{ needs.pr-checks.result }}
+          HANDOFF_RESULT: ${{ needs.handoff.result }}
           BUILD_RESULT: ${{ needs.build-images.result }}
           DETECT_RESULT: ${{ needs.detect-buildable.result }}
           HAS_IMAGES: ${{ needs.detect-buildable.outputs.has_apps }}
           EVENT_NAME: ${{ github.event_name }}
+          IS_DRAFT: ${{ github.event.pull_request.draft }}
         run: |
           set -euo pipefail
           current=$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq '.head.sha')
           build_ok=false
           if [ "$DETECT_RESULT" = success ]; then
-            if [ "$EVENT_NAME" != pull_request_target ]; then
+            if [ "$IS_DRAFT" = true ] && [ "$EVENT_NAME" != pull_request_target ] && [ "$BUILD_RESULT" = skipped ]; then
               build_ok=true
             elif [ "$HAS_IMAGES" = false ] && [ "$BUILD_RESULT" = skipped ]; then
               build_ok=true
@@ -236,7 +259,7 @@ jobs:
             fi
           fi
           conclusion=failure
-          if [ "$RESULT" = success ] && [ "$build_ok" = true ] && [ "$current" = "$HEAD_SHA" ]; then
+          if [ "$HANDOFF_RESULT" = success ] && [ "$RESULT" = success ] && [ "$build_ok" = true ] && [ "$current" = "$HEAD_SHA" ]; then
             conclusion=success
           fi
           gh api --method PATCH "repos/$REPOSITORY/check-runs/$CHECK_ID" \
@@ -246,6 +269,7 @@ jobs:
           fi
 
       - name: Mark successful PR ready
+        if: github.event_name == 'pull_request_target' && github.event.pull_request.user.login == 'Copilot'
         env:
           GH_TOKEN: ${{ secrets.COPILOT_ASSIGN_TOKEN || secrets.MAINTENANCE_STATE_TOKEN }}
           REPOSITORY: ${{ github.repository }}

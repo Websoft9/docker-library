@@ -41,4 +41,6 @@ The maintenance workflow creates/updates the **Actions variable** `MAINTENANCE_S
 
 ## Verification
 
+`PR checks` starts on PR creation, new commits, reopening, and Ready transitions for `main`, regardless of changed paths. The current commit-check handoff supports same-repository branches; fork PRs need a maintainer-owned branch before they can satisfy this gate. Basic validation uses a read-only token and no custom secrets. Same-repository non-draft PRs build candidates only when Dockerfile inputs change; cloud E2E remains limited to Copilot review handoff. Only a successful Copilot review handoff can automatically mark a draft Ready; human drafts stay draft.
+
 One update issue normally produces assignment → agent → PR checks/E2E, followed by manual merge. If a GitHub API operation fails, inspect the exact step error and its job token permissions before changing settings or adding credentials.
