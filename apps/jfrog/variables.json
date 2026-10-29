@@ -1,7 +1,7 @@
 {
   "name": "jfrog",
   "trademark": "JFrog Artifactory",
-  "release": false,
+  "release": true,
   "upstream": {
     "image": "releases-docker.jfrog.io/jfrog/artifactory-oss",
     "docs": [

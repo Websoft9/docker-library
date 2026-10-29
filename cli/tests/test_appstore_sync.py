@@ -321,3 +321,54 @@ def test_appstore_deploy_stub_accepts_shared_options():
 
     assert result.exit_code == 1
     assert "[1/1] appstore-deploy is not implemented yet" in result.output
+
+
+def test_sync_app_dir_version_override_applies_only_to_staged_copy(repo_fixture, app_factory, monkeypatch):
+    app_path = app_factory("demo")
+    (app_path / ".env").write_text("W9_REPO=demo\nW9_VERSION=1.0\n", encoding="utf-8")
+    secret_path = repo_fixture / ".secrets" / "ssh" / "default.pem"
+    secret_path.parent.mkdir(parents=True, exist_ok=True)
+    secret_path.write_text("-----BEGIN OPENSSH PRIVATE KEY-----\n", encoding="utf-8")
+    captured = {}
+
+    def fake_run(command, *, progress=None, verbose=False):
+        if "-r" in command:
+            captured["env"] = (Path(command[-2]) / ".env").read_text(encoding="utf-8")
+        return ""
+
+    monkeypatch.setattr(appstore_sync, "_run", fake_run)
+
+    appstore_sync._sync_app_dir(
+        app_name="demo",
+        host="1.2.3.4",
+        user="root",
+        secret_path=secret_path,
+        container="websoft9",
+        deploy_dir="/websoft9/library/apps",
+        backup_dir="/tmp/backup-demo",
+        version="dev-abc1234",
+    )
+
+    assert captured["env"] == "W9_REPO=demo\nW9_VERSION=dev-abc1234\n"
+    assert (app_path / ".env").read_text(encoding="utf-8") == "W9_REPO=demo\nW9_VERSION=1.0\n"
+
+
+def test_prepare_preview_reports_version_override(repo_fixture, app_factory, monkeypatch):
+    app_factory("demo")
+    write_catalog_schema(repo_fixture)
+    secret_path = repo_fixture / ".secrets" / "ssh" / "default.pem"
+    secret_path.parent.mkdir(parents=True, exist_ok=True)
+    secret_path.write_text("-----BEGIN OPENSSH PRIVATE KEY-----\n", encoding="utf-8")
+    monkeypatch.setattr(appstore_sync, "_run", lambda *args, **kwargs: "")
+    monkeypatch.setattr(appstore_sync, "_sync_app_dir", lambda *args, **kwargs: None)
+
+    payload = appstore_sync.prepare_preview(
+        app_name="demo",
+        host="1.2.3.4",
+        user="root",
+        secret_path=".secrets/ssh/default.pem",
+        container="websoft9",
+        version="dev-abc1234",
+    )
+
+    assert payload["version_override"] == "dev-abc1234"

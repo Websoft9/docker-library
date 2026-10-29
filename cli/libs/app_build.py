@@ -10,6 +10,7 @@ import yaml
 
 from libs import remote
 from libs.credentials import resolve_secret
+from libs.docker_inputs import context_tag as build_context_tag
 from libs.metadata import app_dir
 from libs.repo import repo_path
 
@@ -332,7 +333,8 @@ def build_plan(
 
     Channels:
     - stable: tags derived from W9_VERSION
-    - dev: candidate tags dev-<git-sha> + dev-latest (build)
+    - dev: candidate tags dev-<git-sha>, dev-latest, and the build-input tag
+    - pr: candidate tags dev-<git-sha> and the build-input tag; never dev-latest
     - promote: stable tags; source is dev-<source_sha> when provided, otherwise
       the rolling dev-latest alias (re-tag, no build)
 
@@ -344,16 +346,20 @@ def build_plan(
     channel = (channel or "stable").strip().lower()
     version = plan["w9_version"]
     repo = plan["w9_repo"]
-    if channel not in {"stable", "dev", "promote"}:
+    if channel not in {"stable", "dev", "pr", "promote"}:
         raise ValueError(f"unsupported channel: {channel}")
 
+    context_tag = None
     source_image = None
-    if channel == "dev":
+    if channel in {"dev", "pr"}:
         resolved_sha = (git_sha or "").strip() or None
         if not resolved_sha:
-            raise ValueError("git_sha is required for dev channel")
+            raise ValueError(f"git_sha is required for {channel} channel")
         short_sha = resolved_sha[:7]
-        tags = [f"{repo}:dev-{short_sha}", f"{repo}:dev-latest"]
+        context_tag = build_context_tag(app_name)
+        tags = [f"{repo}:dev-{short_sha}", f"{repo}:{context_tag}"]
+        if channel == "dev":
+            tags.insert(1, f"{repo}:dev-latest")
     else:
         tags = _stable_tags(repo, version)
         if channel == "promote":
@@ -371,6 +377,7 @@ def build_plan(
         "w9_repo": repo,
         "org": resolved_org,
         "tags": tags,
+        "context_tag": context_tag,
         "source_image": source_image,
         "primary_image": source_image or tags[0],
         "source_path": str(source.relative_to(repo_path())),

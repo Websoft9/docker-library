@@ -22,9 +22,12 @@ This repository uses an AI-first delivery model: owners decide demand and the fi
 ## Publishing
 
 - Merging into `main` automatically publishes dev appstore artifacts.
-- After validating dev, create an `X.Y.Z` tag (for example `0.9.0`) on a commit in `main` using GitHub or Git. The tag automatically publishes release artifacts and creates the matching GitHub Release. Do not move or overwrite official tags.
+- After validating dev, open **Releases → Draft a new release** on GitHub, choose/create an `X.Y.Z` tag on `main` (for example `0.9.0`), then click **Publish release**. Saving a draft or pushing only a tag does not publish official artifacts. Do not move or overwrite official tags.
+- The Appstore workflow first calls the existing image workflow to promote exact-context candidates for all custom-image apps, then publishes release artifacts. Missing candidates block Appstore publication. To backfill a historical app, run **Build image to DockerHub** manually with `channel=dev`, that app, and the release tag as the selected ref, then re-run the failed release jobs.
+- Actions update only the generated changelog section of the existing Release, preserving human notes, and upload metadata/checksums/changelog attachments. Re-running replaces generated content rather than duplicating it.
 - Tags are the only official release version source; there is no source-controlled `library.json` to update. The publisher generates legacy `library.json` metadata inside artifacts for existing clients.
 - Manual runs support dev and rc only. Their artifact versions use `<channel>-<commit SHA>`; v2 content hashes remain independent of release versions.
+- The GitHub Release exists before post-publication Actions finish; check the Actions result before announcing that artifacts are ready.
 
 ## Issue automation
 
@@ -34,11 +37,13 @@ For maintenance scan review, check the apps in the issue checklist and comment `
 
 When Copilot requests review after finishing its session, `PR checks` handles `pull_request_target: review_requested`. Within that single workflow run it confirms the latest agent session succeeded, validates the PR, publishes the required `PR checks` check on the exact PR head commit, marks the successful PR Ready, and provisions E2E. The owner performs E2E and manually clicks Merge. No separate Prepare workflow, scheduled polling, PR approval, or manual Ready transition is required.
 
-Draft creation, intermediate pushes, and the automatic Ready transition do not create workflow runs. The normal pre-merge flow has three runs: issue assignment, Copilot agent, and PR checks (including E2E). For a manually authored same-repository PR, request a reviewer to start checks. After further commits, request review again; a new head commit needs its own successful check before merging. Multiple reviewer requests can each trigger a run, so request one reviewer per handoff.
+Draft creation, intermediate pushes, and the automatic Ready transition do not create workflow runs. The normal pre-merge flow has three runs: issue assignment, Copilot agent, and PR checks (validation, image candidates, and E2E).
+
+For custom-image apps, PR checks build only the apps whose Dockerfile **build inputs** changed (Dockerfile, copied context files, `W9_VERSION`, base image reference). The candidate is pushed as `websoft9dev/<app>:dev-<pr-sha>` (amd64 only; `dev-latest` is never moved) and E2E syncs the package with `W9_VERSION=dev-<pr-sha>` so the test server pulls that exact image. The required `PR checks` status fails when the image build fails. For a manually authored same-repository PR, request a reviewer to start checks. After further commits, request review again; a new head commit needs its own successful check before merging. Multiple reviewer requests can each trigger a run, so request one reviewer per handoff.
 
 PRs modifying `.github/workflows/pr-checks.yml` also run checks on opening or pushing through a path-filtered `pull_request` trigger. This lets trigger changes validate themselves before the new `pull_request_target` configuration exists on `main`; app-only PRs do not use this compatibility trigger.
 
-PR validation runs in a separate read-only job without secrets or persisted checkout credentials. Commit-status publishing uses `GITHUB_TOKEN`; the Ready transition uses `COPILOT_ASSIGN_TOKEN` or the existing `MAINTENANCE_STATE_TOKEN`. Cloud credentials are only used by the E2E job with base-branch tooling.
+PR validation runs in a separate read-only job without secrets or persisted checkout credentials. Commit-status publishing uses `GITHUB_TOKEN`; the Ready transition uses `COPILOT_ASSIGN_TOKEN` or the existing `MAINTENANCE_STATE_TOKEN`. The PR image builder receives only `DOCKER_USERNAME` and `DOCKER_PASSWORD`; cloud credentials are only used by the E2E job with base-branch tooling.
 
 E2E waits for SSH first, then shares a five-minute deadline across Websoft9 startup and all application sync retries. Each sync attempt is capped at 60 seconds. Obsolete PR runs are skipped before provisioning, and environments for superseded commits are not announced as ready. Only `PR checks` is a required merge status; an E2E provisioning failure is reported separately.
 

@@ -19,10 +19,10 @@
 - Push to `main` publishes the `dev` channel:
   - appstore artifacts under the `dev` channel
   - candidate images tagged `dev-<git-sha>` and `dev-latest`
-- Push a semver tag such as `0.9.0` publishes the `release` channel:
+- Publishing a stable GitHub Release with a semver tag such as `0.9.0` publishes the `release` channel (a tag push alone does not):
   - appstore artifacts under the `release` channel
-  - stable images promoted from each app's latest validated `dev-<last-change-sha>` image
-  - GitHub Release and Pages deployment
+  - stable images promoted from exact-context candidate tags before Appstore publication
+  - existing GitHub Release changelog/assets updated
 - Manual `workflow_dispatch` may choose the channel explicitly.
 
 ## 3. Image Strategy
@@ -30,16 +30,16 @@
 - A `main` push builds candidate images for changed custom-image apps:
   - immutable: `dev-<git-sha>` (promotion target)
   - rolling alias: `dev-latest` (convenience only)
-- A semver tag does **not** rebuild. It promotes each changed app's latest `dev-<last-change-sha>` image to stable tags.
+- A published stable Release does **not** rebuild. It promotes every custom app's exact-context candidate to stable tags. Main builds also record `dev-src-<Dockerfile-input-hash>`; legacy commit candidates require a successful main build and identical build inputs.
 - Stable tags come from `W9_VERSION` (see `docs/image-tag-spec.md`).
-- The app's last main change must already have produced the matching `dev-<sha>` image. Promotion fails when the source image is missing.
+- Promotion resolves and pins a manifest digest, never uses floating `dev-latest`, and fails with a backfill instruction when no matching candidate exists. Build a missing historical candidate manually at the release tag, then re-run the failed release jobs.
 
 ### Manual Runs
 
 The image workflow (`workflow_dispatch`) targets one app and uses an explicit channel:
 
 - `channel=dev` → build `dev-<sha>` + `dev-latest` for the chosen app
-- `channel=promote` → promote the chosen app to stable tags; `source_sha` defaults to the selected ref
+- `channel=promote` → promote the chosen app to stable tags; resolve an exact-context candidate unless an explicit `source_sha` is supplied
 - runs from an unexpected branch or tag are not part of the normal flow
 
 ### Out-of-band Stable Images
@@ -58,7 +58,7 @@ Before a PR is merged into `main`:
 - deploy-validation for each changed custom-image app when applicable
 - the PR is squash-merged; no direct pushes or merge commits
 
-After a release tag:
+After publishing a GitHub Release:
 
 - the promoted stable image exists
 - `docker compose up -d` succeeds
@@ -66,6 +66,6 @@ After a release tag:
 
 ## 5. Rationale
 
-- Build heavy custom images once on `main`; promote the exact validated image on a tag.
+- Build heavy custom images once on `main`; promote the exact-context image after publishing a Release.
 - Keep one long-lived branch so integration does not drift.
 - Use tags for release boundaries and auditability.

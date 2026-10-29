@@ -9,7 +9,6 @@ Repository settings required by the current CI/CD workflows.
 | Copilot → cloud agent | Enable the agent; disable **Require approval for workflow runs**. |
 | Rules → `main-protection` | Require PRs and the **PR checks** check; required approvals **0**; squash merge and linear history; prohibit force pushes/deletion. Merge remains manual. |
 | Actions → General | Enable the actions referenced in `.github/workflows/`. Jobs declare their own `permissions`; changing the default to write is not a substitute. |
-| Pages → Build and deployment | Source: **GitHub Actions**. The `github-pages` environment must allow release tags. |
 | Environments | No required reviewers for automatic E2E/publishing jobs. |
 
 **Allow GitHub Actions to create and approve pull requests** is a separate Actions setting. Enable it when using `GITHUB_TOKEN` for those operations; it does not grant administrator permissions or guarantee that every PR mutation is allowed. The current Ready step uses a user PAT instead.
@@ -23,6 +22,7 @@ Configure custom secrets under **Secrets and variables → Actions → Secrets**
 | `GITHUB_TOKEN` / `github.token` | Automatically issued per job; do not create it manually. Repository-scoped GitHub App token, restricted by job permissions and organization policies. Used for checks, releases, and ordinary repository API calls. |
 | `MAINTENANCE_STATE_TOKEN` | User PAT for maintenance state, Copilot assignment, and PR Ready. One PAT can cover these operations; the user must have repository access and Copilot eligibility. Current workflows support a classic PAT with `repo` scope; fine-grained tokens need the corresponding Variables, Issues, Pull requests and read permissions. |
 | `COPILOT_ASSIGN_TOKEN` | Optional override for assignment and PR Ready. Leave unset to reuse `MAINTENANCE_STATE_TOKEN`; a second PAT is not required. |
+| `DOCKER_USERNAME`, `DOCKER_PASSWORD` | Push access to the public `websoft9dev/*` repositories. Used by PR candidate builds and `main`/release builds. Scope the token to those repositories; PR builds run Dockerfile code, so do not grant unrelated scopes. |
 
 `permissions:` only controls `GITHUB_TOKEN`, not PAT permissions. `GH_TOKEN` is the environment variable used by `gh`; its rights depend on which credential the workflow puts there. Settings cannot turn `GITHUB_TOKEN` into a user identity or give it repository-variable write access.
 

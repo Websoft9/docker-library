@@ -66,6 +66,70 @@ jobs:
           id=$(gh api --method POST "repos/$REPOSITORY/check-runs" --input - --jq '.id' <<< "$payload")
           echo "check_id=$id" >> "$GITHUB_OUTPUT"
 
+  detect-buildable:
+    name: Detect image build inputs
+    needs: handoff
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      matrix: ${{ steps.detect.outputs.matrix }}
+      has_apps: ${{ steps.detect.outputs.has_apps }}
+    steps:
+      - name: Checkout build-input tooling
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.base.sha || github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      - name: Compare Dockerfile build inputs
+        id: detect
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          if ! git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
+            git fetch --no-tags origin main || git fetch --no-tags origin "$BASE_SHA"
+          fi
+          git cat-file -e "${BASE_SHA}^{commit}"
+          if ! git cat-file -e "${HEAD_SHA}^{commit}" 2>/dev/null; then
+            git fetch --no-tags origin "$HEAD_SHA"
+          fi
+          python3 cli/libs/docker_inputs.py --changed \
+            --base "$BASE_SHA" --head "$HEAD_SHA" --json > inputs.json
+          cat inputs.json
+          echo "matrix=$(jq -c '.apps' inputs.json)" >> "$GITHUB_OUTPUT"
+          if [ "$(jq '.apps | length' inputs.json)" -gt 0 ]; then
+            echo "has_apps=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_apps=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  build-images:
+    name: Build PR image candidates
+    permissions:
+      contents: read
+      actions: read
+    needs: [handoff, detect-buildable]
+    if: >-
+      github.event_name == 'pull_request_target' &&
+      needs.detect-buildable.outputs.has_apps == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        app: ${{ fromJson(needs.detect-buildable.outputs.matrix) }}
+    uses: ./.github/workflows/docker.yml
+    with:
+      app: ${{ matrix.app }}
+      pr_sha: ${{ github.event.pull_request.head.sha }}
+      tooling_sha: ${{ github.event.pull_request.base.sha }}
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
   pr-checks:
     name: Validate PR package
     needs: handoff
@@ -138,7 +202,7 @@ jobs:
 
   report-check:
     name: Report PR checks and mark ready
-    needs: [handoff, pr-checks]
+    needs: [handoff, detect-buildable, pr-checks, build-images]
     if: always() && needs.handoff.outputs.check_id != ''
     runs-on: ubuntu-latest
     timeout-minutes: 3
@@ -154,11 +218,25 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           CHECK_ID: ${{ needs.handoff.outputs.check_id }}
           RESULT: ${{ needs.pr-checks.result }}
+          BUILD_RESULT: ${{ needs.build-images.result }}
+          DETECT_RESULT: ${{ needs.detect-buildable.result }}
+          HAS_IMAGES: ${{ needs.detect-buildable.outputs.has_apps }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           set -euo pipefail
           current=$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq '.head.sha')
+          build_ok=false
+          if [ "$DETECT_RESULT" = success ]; then
+            if [ "$EVENT_NAME" != pull_request_target ]; then
+              build_ok=true
+            elif [ "$HAS_IMAGES" = false ] && [ "$BUILD_RESULT" = skipped ]; then
+              build_ok=true
+            elif [ "$HAS_IMAGES" = true ] && [ "$BUILD_RESULT" = success ]; then
+              build_ok=true
+            fi
+          fi
           conclusion=failure
-          if [ "$RESULT" = success ] && [ "$current" = "$HEAD_SHA" ]; then
+          if [ "$RESULT" = success ] && [ "$build_ok" = true ] && [ "$current" = "$HEAD_SHA" ]; then
             conclusion=success
           fi
           gh api --method PATCH "repos/$REPOSITORY/check-runs/$CHECK_ID" \
@@ -189,10 +267,12 @@ jobs:
 
   provision-e2e:
     name: Provision owner E2E environment
-    needs: [pr-checks, report-check]
+    needs: [pr-checks, report-check, build-images]
     if: >-
+      !cancelled() &&
       needs.pr-checks.result == 'success' &&
       needs.report-check.result == 'success' &&
+      (needs.build-images.result == 'success' || needs.build-images.result == 'skipped') &&
       github.event_name == 'pull_request_target' &&
       github.event.pull_request.user.login == 'Copilot' &&
       github.event.pull_request.head.repo.full_name == github.repository &&
@@ -201,6 +281,7 @@ jobs:
     timeout-minutes: 30
     continue-on-error: true
     permissions:
+      actions: read
       contents: read
       pull-requests: write
     concurrency:
@@ -211,6 +292,13 @@ jobs:
         uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.base.sha }}
+
+      - name: Download PR image candidates
+        if: needs.build-images.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          pattern: image-*
+          path: candidates
 
       - name: Download PR source archive
         env:
@@ -408,9 +496,15 @@ jobs:
                 echo "Appstore sync exceeded the 5-minute post-SSH budget" >&2
                 exit 1
               fi
+              version_args=()
+              candidate="candidates/image-$app/candidate.json"
+              if [ -f "$candidate" ]; then
+                version_args=(--version "$(jq -r '.tag' "$candidate")")
+                echo "PR candidate image for $app: $(jq -r '.image + "@" + .digest' "$candidate")"
+              fi
               if timeout --signal=KILL "$((remaining < 60 ? remaining : 60))s" \
                 .venv/bin/libs appstore-sync --app "$app" --ssh-host "$HOST" \
-                --ssh-user root --ssh-secret-path .secrets/ssh/e2e.pem --progress --json; then
+                --ssh-user root --ssh-secret-path .secrets/ssh/e2e.pem "${version_args[@]}" --progress --json; then
                 break
               fi
               attempt=$((attempt + 1))

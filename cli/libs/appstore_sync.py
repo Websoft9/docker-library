@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import shlex
 import shutil
+import tempfile
 from collections.abc import Callable
 from datetime import datetime, timezone
 from pathlib import Path
@@ -54,6 +55,39 @@ def _run(command: list[str], *, progress: ProgressWriter | None = None, verbose:
     return result.stdout.strip()
 
 
+def _stage_app_dir(app_name: str, version: str | None) -> tuple[Path, Path | None]:
+    """Return the app directory to upload and an optional temp root to clean up.
+
+    A version override is applied only to a temporary copy so the repository
+    .env and the app's supported-version metadata stay untouched.
+    """
+    source = repo_path("apps", app_name)
+    if not version:
+        return source, None
+    if not source.is_dir():
+        raise FileNotFoundError(f"repo app directory not found: apps/{app_name}")
+    temp_root = Path(tempfile.mkdtemp(prefix=f"libs-appstore-sync-{app_name}-"))
+    staged = temp_root / app_name
+    shutil.copytree(source, staged)
+    env_path = staged / ".env"
+    if not env_path.is_file():
+        shutil.rmtree(temp_root, ignore_errors=True)
+        raise FileNotFoundError(f"repo app .env not found: apps/{app_name}/.env")
+    lines = env_path.read_text(encoding="utf-8").splitlines()
+    replaced = False
+    updated = []
+    for line in lines:
+        if line.startswith("W9_VERSION="):
+            updated.append(f"W9_VERSION={version}")
+            replaced = True
+        else:
+            updated.append(line)
+    if not replaced:
+        updated.append(f"W9_VERSION={version}")
+    env_path.write_text("\n".join(updated) + "\n", encoding="utf-8")
+    return staged, temp_root
+
+
 def _sync_app_dir(
     app_name: str,
     host: str,
@@ -63,44 +97,50 @@ def _sync_app_dir(
     deploy_dir: str,
     backup_dir: str,
     *,
+    version: str | None = None,
     progress: ProgressWriter | None = None,
     verbose: bool = False,
 ) -> None:
     staging_dir = f"/tmp/websoft9-appstore-staging-{app_name}"
     remote_host = f"{user}@{host}"
+    staged_dir, cleanup = _stage_app_dir(app_name, version)
 
-    _run(
-        ssh_base(host, user, secret_path)
-        + [
-            (
-                f"rm -rf {staging_dir} && mkdir -p {staging_dir} && mkdir -p {backup_dir} && "
-                f"if docker exec {container} sh -c 'test -d {deploy_dir}/{app_name}'; then "
-                f"docker exec {container} sh -c 'tar czf - -C {deploy_dir} {app_name}' > {backup_dir}/{app_name}.tgz; fi"
-            )
-        ],
-        progress=progress,
-        verbose=verbose,
-    )
+    try:
+        _run(
+            ssh_base(host, user, secret_path)
+            + [
+                (
+                    f"rm -rf {staging_dir} && mkdir -p {staging_dir} && mkdir -p {backup_dir} && "
+                    f"if docker exec {container} sh -c 'test -d {deploy_dir}/{app_name}'; then "
+                    f"docker exec {container} sh -c 'tar czf - -C {deploy_dir} {app_name}' > {backup_dir}/{app_name}.tgz; fi"
+                )
+            ],
+            progress=progress,
+            verbose=verbose,
+        )
 
-    _run(
-        scp_base(host, user, secret_path)
-        + ["-r", str(repo_path("apps", app_name)), f"{remote_host}:{staging_dir}/"],
-        progress=progress,
-        verbose=verbose,
-    )
+        _run(
+            scp_base(host, user, secret_path)
+            + ["-r", str(staged_dir), f"{remote_host}:{staging_dir}/"],
+            progress=progress,
+            verbose=verbose,
+        )
 
-    _run(
-        ssh_base(host, user, secret_path)
-        + [
-            (
-                f"docker exec {container} sh -c 'rm -rf {deploy_dir}/{app_name}' && "
-                f"docker cp {staging_dir}/{app_name} {container}:{deploy_dir} && "
-                f"rm -rf {staging_dir}"
-            )
-        ],
-        progress=progress,
-        verbose=verbose,
-    )
+        _run(
+            ssh_base(host, user, secret_path)
+            + [
+                (
+                    f"docker exec {container} sh -c 'rm -rf {deploy_dir}/{app_name}' && "
+                    f"docker cp {staging_dir}/{app_name} {container}:{deploy_dir} && "
+                    f"rm -rf {staging_dir}"
+                )
+            ],
+            progress=progress,
+            verbose=verbose,
+        )
+    finally:
+        if cleanup is not None:
+            shutil.rmtree(cleanup, ignore_errors=True)
 
 
 def _sync_catalog_file(
@@ -166,6 +206,7 @@ def prepare_preview(
     secret_path: str | None = None,
     container: str = DEFAULT_CONTAINER,
     catalog_dir: str = DEFAULT_CATALOG_DIR,
+    version: str | None = None,
     progress: ProgressWriter | None = None,
     verbose: bool = False,
 ) -> dict:
@@ -191,7 +232,18 @@ def prepare_preview(
     total = 2 if has_catalog else 1
 
     _announce(progress, 1, total, "syncing app directory")
-    _sync_app_dir(app_name, host, user, key_path, container, deploy_dir, backup_dir, progress=progress, verbose=verbose)
+    _sync_app_dir(
+        app_name,
+        host,
+        user,
+        key_path,
+        container,
+        deploy_dir,
+        backup_dir,
+        version=version,
+        progress=progress,
+        verbose=verbose,
+    )
 
     catalog_rel = None
     if has_catalog:
@@ -221,5 +273,6 @@ def prepare_preview(
         "catalog_synced": has_catalog,
         "catalog_target": f"{target_catalog_dir}/{app_name}.json",
         "backup_dir": backup_dir,
+        "version_override": version,
         "rollback": rollback,
     }
