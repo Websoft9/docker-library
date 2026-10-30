@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-10-30
+
+- Update Mattermost Team Edition from `11.11` to `12.0`.
+
 ## 2026-10-12
 
 - Pin Mattermost Team Edition from the floating `11.11` line to the current stable patch `11.11.1` for deterministic deployments.
