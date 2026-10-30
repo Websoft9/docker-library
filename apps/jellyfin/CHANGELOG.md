@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-10-30
+
+- Updated Jellyfin from `12.2` to `12.4`.
+
 ## 2026-10-13
 
 - Updated Jellyfin from `10.10.7` to `12.2`.
@@ -9,4 +13,3 @@
 
 ## Release
 ### Fixes and Enhancements
-
