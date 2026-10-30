@@ -1,0 +1,5 @@
+# MySQL's core path is accepting authenticated SQL connections.
+custom:
+  - id: mysql-query
+    type: script
+    script: check.sh
