@@ -586,6 +586,8 @@ Release body 中由 `<!-- generated-changelog:start -->` / `<!-- generated-chang
 
 正式制品只发布到 R2，并同步更新 GitHub Release；Release 在人工点击 Publish 后就已可见，不代表所有下游制品发布完成，需查看 Action 结果。
 
+正式发布全部上传及 GitHub Release 更新成功后，通过与 maintenance scan 相同的 `WECOM_WEBHOOK` 发送企业微信通知，包含版本、Release notes 摘要、完整 Release、Appstore 制品及运行链接；dev/rc 不通知。摘要按 UTF-8 字节限制截断。公共发送脚本为 `ci/scripts/wecom_notify.py`，负责 Markdown 消息、接口 `errcode` 校验及有界重试；消息模板由各场景维护。缺少 webhook 或通知失败只记录 warning，不影响发布结果。重跑成功的发布会再次通知。
+
 ### 6.3 上传策略
 
 | 目标 | 命令 | R2 路径 |
