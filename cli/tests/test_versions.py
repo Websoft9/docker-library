@@ -111,6 +111,23 @@ def test_scan_apps_reports_same_minor_patch_as_covered(repo_fixture, app_factory
     assert result[0]["version_status"] == "covered-by-current-minor-tag"
 
 
+@pytest.mark.parametrize("raw", ["v1.46.0", "0.64.1.x", "v0.64-lts", "invalid-tag"])
+def test_scan_preserves_literal_current_versions(repo_fixture, app_factory, monkeypatch, raw):
+    app_factory("demo", variables={
+        "name": "demo", "release": True,
+        "upstream": {"image": "https://hub.docker.com/r/org/demo"},
+        "edition": [{"dist": "community", "version": [raw, "latest"]}],
+    })
+    calls = []
+    monkeypatch.setattr(versions, "fetch_candidates", lambda *args, **kwargs: calls.append(args) or (None, None))
+    result = versions.scan_apps(app_filter="demo")[0]
+    assert result["current_version"] == [raw]
+    if calls:
+        assert calls[0][2] == raw
+    else:
+        assert result["error"] == "No valid current versions found"
+
+
 def _variables(name: str, version: str = "1.0") -> dict:
     return {
         "name": name,

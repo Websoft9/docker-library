@@ -24,6 +24,10 @@ The full update pipeline follows five layers:
 2. Image verification
    - for each candidate from the release index, verify the image registry has a matching tag
    - candidates are tried from highest to lowest, so a slightly lower image tag wins when the newest has no image yet
+   - keep the configured tag literal for reports and discovery (`v`, `.x`, `-lts`, `-core`, etc.); normalization is only for numeric comparisons
+   - among newer stable tags, prefer the same variant tokens before version freshness, then partial token overlap, then other variants as fallback; plain tags prefer plain successors. Within the selected similarity tier, apply the minor-tag policy and choose the newest version
+   - image-only channels such as `-lts`/`-core` are discovered from the registry rather than replaced by a plain release-index version; Docker Hub also queries the existing suffix so busy unrelated tags do not hide that channel
+   - scans return up to three distinct stable newer image tags in that order; unavailable release-index candidates are omitted. `latest_version` remains the first recommendation, while `latest_candidates` contains the list. Review tables show the list with the first marked recommended; approval defaults to that first tag and owner edits remain authoritative
    - prefer stable `x.x` image tags over patch tags
 
 3. Structure layer

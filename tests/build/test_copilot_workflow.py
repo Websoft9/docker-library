@@ -230,6 +230,8 @@ def test_e2e_readiness_and_sync_retry_after_startup_failure(tmp_path):
         "SYNC_COUNT": str(tmp_path / "sync_count"),
     }
     script = workflow_step(".github/workflows/pr-checks.yml", "provision-e2e", "Wait for appstore readiness and sync applications")
+    assert 'appstore_startup_state.json' in script
+    assert '== "completed"' in script
     result = subprocess.run(["bash", "-c", script], cwd=tmp_path, env=env, text=True, capture_output=True, timeout=5)
 
     assert result.returncode == 0, result.stderr

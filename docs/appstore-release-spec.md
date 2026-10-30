@@ -569,7 +569,7 @@ artifact/appstore/<channel>/
 ### 6.2 CI 流水线（`appstore-publish.yml`）
 
 ```
-1. release 调用现有 docker.yml，验证并晋升所有自定义镜像；任一失败则不发布 Appstore 制品
+1. release 比较上一可达且版本更低、已发布稳定 Release 的 tag 与当前 tag 的构建输入哈希（裸 tag 不作基线），仅为变化的自定义镜像调用 docker.yml；无变化则跳过镜像 workflow，首个 release 选择全部可构建应用。仅选中应用的镜像失败会阻塞 Appstore 制品发布
 2. 检出发布 tag（fetch-depth: 0），解析 channel 和版本；release 校验稳定 tag 格式及提交属于 main
 3. 检查 R2 apps/ 是否为空 → 空则标记首次发布（--all-apps）
 4. 从 Contentful 拉取 catalog 源数据
@@ -582,7 +582,7 @@ artifact/appstore/<channel>/
 
 Release body 中由 `<!-- generated-changelog:start -->` / `<!-- generated-changelog:end -->` 包围的内容由 Action 管理；重跑替换该区域，不覆盖其外的人工内容。changelog 使用上一稳定 tag 到当前 tag 的显式提交范围。只监听 `published`，更新 Release 描述不会再次启动发布。
 
-镜像候选以 Dockerfile 构建输入哈希标识，优先使用 `dev-src-<hash>`；历史候选必须来自成功的 main 构建且构建输入与本次发布完全一致。禁止按任意 app 最后提交猜 SHA 或回退 `dev-latest`。候选缺失时，手动运行 docker.yml（channel=dev、app、ref=release tag）补建，再重跑正式发布。matrix 中单个 app 失败不取消其它 app，但会阻止后续 Appstore 上传。
+镜像候选以 Dockerfile 构建输入哈希标识，优先使用 `dev-src-<hash>`；历史候选必须来自成功的 main 构建且构建输入与本次发布完全一致。禁止按任意 app 最后提交猜 SHA 或回退 `dev-latest`。本次变更应用候选缺失时，从 main 手动运行 docker.yml（channel=dev、app、target_ref=release tag）补建，再重跑正式发布。历史未变更应用缺失镜像独立手动补建（同一 target_ref，dev 后 promote），不在后续 Release 中重复尝试。手动 promote 失败后由独立回调创建带 `bug` 标签的 Issue，按 app + 目标 ref 去重，重复失败追加运行链接，成功后人工确认关闭。matrix 中单个 app 失败不取消其它 app，但会阻止后续 Appstore 上传。
 
 正式制品只发布到 R2，并同步更新 GitHub Release；Release 在人工点击 Publish 后就已可见，不代表所有下游制品发布完成，需查看 Action 结果。
 

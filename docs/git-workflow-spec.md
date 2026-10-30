@@ -30,9 +30,9 @@
 - A `main` push builds candidate images for changed custom-image apps:
   - immutable: `dev-<git-sha>` (promotion target)
   - rolling alias: `dev-latest` (convenience only)
-- A published stable Release does **not** rebuild. It promotes every custom app's exact-context candidate to stable tags. Main builds also record `dev-src-<Dockerfile-input-hash>`; legacy commit candidates require a successful main build and identical build inputs.
+- A published stable Release does **not** rebuild. It promotes only custom apps whose build-input hashes changed since the previous lower published stable Release tag reachable from the release (all buildable apps for the first release; bare tags are not baselines). With no changes, the image workflow is skipped. Historical missing images are backfilled manually. Main builds also record `dev-src-<Dockerfile-input-hash>`; legacy commit candidates require a successful main build and identical build inputs.
 - Stable tags come from `W9_VERSION` (see `docs/image-tag-spec.md`).
-- Promotion resolves and pins a manifest digest, never uses floating `dev-latest`, and fails with a backfill instruction when no matching candidate exists. Build a missing historical candidate manually at the release tag, then re-run the failed release jobs.
+- Promotion resolves and pins a manifest digest, never uses floating `dev-latest`, and fails with a backfill instruction when no matching candidate exists. Build a missing historical candidate manually from the main workflow with `target_ref=<release tag>`, then re-run the failed release jobs.
 
 ### Manual Runs
 

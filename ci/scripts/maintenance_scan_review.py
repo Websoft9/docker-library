@@ -6,6 +6,7 @@ import html
 import json
 import re
 from pathlib import Path
+from urllib.parse import quote, urlsplit
 
 
 WORKFLOW_MARKER = "<!-- libs:workflow=scan-review -->"
@@ -14,6 +15,49 @@ APPROVAL_START = "<!-- libs:approval-start -->"
 APPROVAL_END = "<!-- libs:approval-end -->"
 CHECKLIST_RE = re.compile(r"^-\s*\[([ xX])\]\s*([^|]+?)\s*\|\s*target:\s*(.*?)\s*$")
 APP_NAME_RE = re.compile(r"^[a-z0-9][a-z0-9_-]*$", re.IGNORECASE)
+
+
+def build_update_child(item: dict, parent: str) -> dict:
+    app = item["app"]
+    target = _clean_target(item.get("target"))
+    if not target:
+        raise ValueError(f"Set an explicit approval target for {app} before starting Copilot")
+    title = f"Update: {app}, target version: {target}"
+    pr_title = f"Update {app} to {target}"
+    body = "\n".join([
+        "<!-- libs:workflow=update-app -->",
+        "<!-- libs:scan-review-child -->",
+        f"<!-- libs:scan-review-child-key:{parent}:{app} -->",
+        "",
+        f"App: `{app}`",
+        f"Target version: {target}",
+        f"Initial PR title: {pr_title}",
+        "",
+        "The owner-approved checklist target above is authoritative. Use it from the initial "
+        "branch/PR creation through implementation; do not replace it with a scan candidate "
+        "or a newly discovered release. If it cannot be used, report the blocker instead.",
+        "",
+        f"Parent: #{parent}",
+        f"Current version: {', '.join(item.get('current') or []) or 'unknown'}",
+        "",
+        "## Scan evidence (reference only; not the approved target)",
+        f"Candidate version: {item.get('latest') or 'unknown'}",
+        f"Scan result: {item.get('status') or 'planned'}",
+        f"Scan error: {item['error']}" if item.get("error") else "",
+    ])
+    instructions = (
+        f"Update {app} to the owner-approved target version {target}. "
+        f"Use '{pr_title}' as the initial PR title, before implementation begins. "
+        "The Target version in the child issue comes from the owner's approval checklist "
+        "and overrides Candidate version and the parent scan table. "
+        "Read AGENTS.md first. Use .github/skills/libs/SKILL.md and follow the update-app "
+        "hidden marker in this issue. The canonical workflow documents and skills are under "
+        "skills/. Work autonomously, run the repository quality gates, and let Copilot create "
+        "the branch and pull request. Open the pull request as ready for review, not as a draft."
+    )
+    return {"app": app, "title": title, "body": body, "instructions": instructions}
+
+
 def _display(value: object) -> str:
     if value is None:
         return "—"
@@ -21,6 +65,24 @@ def _display(value: object) -> str:
         value = ", ".join(str(part) for part in value)
     escaped = html.escape(str(value), quote=False)
     return escaped.replace("|", r"\|").replace("\r", " ").replace("\n", "<br>")
+
+
+def _app_link(record: dict) -> str:
+    label = _display(record["app"])
+    url = str(record.get("upstream_image") or "")
+    if urlsplit(url).scheme not in {"http", "https"}:
+        return label
+    return f"[{label}]({quote(url, safe=':/?=&%#@+~-._')})"
+
+
+def _display_candidates(record: dict) -> str:
+    candidates = record["candidates"]
+    if not candidates:
+        return "—"
+    return "<br>".join(
+        f"**{_display(tag)} (recommended)**" if index == 0 else _display(tag)
+        for index, tag in enumerate(candidates)
+    )
 
 
 def _item_data(item: dict) -> dict:
@@ -36,9 +98,12 @@ def _item_data(item: dict) -> dict:
     ]
     return {
         "app": item.get("name", ""),
+        "upstream_image": item.get("upstream_image"),
         "cadence": item.get("cadence"),
         "current": current,
         "latest": latest,
+        "candidates": [candidate["version"] for candidate in item.get("latest_candidates", [])][:3]
+        or ([latest] if latest else []),
         "status": status or "planned",
         "error": item.get("error"),
         "update_policy": item.get("update_policy"),
@@ -93,15 +158,15 @@ def build_scan_review_issue(items: list[dict], run_id: str, run_url: str, scan_d
     ]
     if records:
         lines.extend([
-            "| App | Current | Latest candidate | Result | Details |",
+            "| App | Current | Latest candidates | Result | Details |",
             "| --- | --- | --- | --- | --- |",
         ])
         for record in records:
             lines.append(
                 "| " + " | ".join((
-                    _display(record["app"]),
+                    _app_link(record),
                     _display(record["current"]),
-                    _display(record["latest"]),
+                    _display_candidates(record),
                     _display(record["status"]),
                     _display(record["error"]),
                 )) + " |"
@@ -161,6 +226,9 @@ def parse_approval(parent_body: str, comment_body: str) -> dict:
         records[str(item["app"]).lower()] = item
 
     checklist = _parse_checklist(parent_body)
+    names = [name for _, name, _ in checklist]
+    if len(names) != len(set(names)):
+        raise ValueError("Each app may only appear once in the approval checklist")
     target_by_app = {name: target for _, name, target in checklist}
 
     match = re.fullmatch(
@@ -192,7 +260,10 @@ def parse_approval(parent_body: str, comment_body: str) -> dict:
         if not (Path("apps") / name / "variables.json").is_file():
             raise ValueError(f"App is not an active repository app: {name}")
         approved.append(name)
-        approved_items.append({**item, "target": target_by_app.get(name) or item.get("latest")})
+        # A present checklist row is authoritative, even if its target is unknown.
+        # Never silently replace an owner's cleared target with the scan candidate.
+        target = target_by_app[name] if name in target_by_app else _clean_target(item.get("latest"))
+        approved_items.append({**item, "target": target})
 
     return {
         "run_id": str(payload.get("run_id", "")),

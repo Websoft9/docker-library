@@ -1,8 +1,33 @@
 from __future__ import annotations
 
 from packaging import version
+import pytest
 
-from libs.versioning import find_latest_version, get_current_versions, normalize_tag, update_status
+from libs.versioning import find_latest_version, get_current_versions, normalize_tag, update_status, select_candidates
+
+
+@pytest.mark.parametrize("current,names,expected", [
+    ("v0.64-lts", ["v0.65.2-lts", "v0.66", "v0.67-core"], "v0.65.2-lts"),
+    ("v0.64-core", ["v0.65-core", "v0.66-lts", "v0.67"], "v0.65-core"),
+    ("1.0-core-alpine", ["1.1-core-alpine", "2.0-core", "3.0"], "1.1-core-alpine"),
+    ("1.0-core-alpine", ["1.1-core", "3.0"], "1.1-core"),
+    ("1.0-lts", ["1.0-lts", "1.1", "1.2"], "1.2"),
+    ("28.1", ["28.2", "29.0-rootless"], "28.2"),
+    ("v1.0", ["1.1", "v1.1"], "v1.1"),
+])
+def test_candidate_prefers_current_variant_before_newest_version(current, names, expected):
+    tags = [{"name": name, "last_updated": "2026-10-30"} for name in names]
+    assert find_latest_version(tags, current)["version"] == expected
+
+
+def test_candidate_list_is_ranked_unique_stable_and_capped():
+    tags = [{"name": name, "last_updated": "2026-10-30"} for name in [
+        "1.1-core-alpine", "1.1-core-alpine", "1.2-core", "1.3", "1.4-other", "2.0-rc1", "1.0-core-alpine",
+    ]]
+    result = select_candidates(tags, "1.0-core-alpine", limit=10)
+    assert result["version"] == "1.1-core-alpine"
+    assert [item["version"] for item in result["candidates"]] == ["1.1-core-alpine", "1.2-core", "1.3"]
+    assert select_candidates([], "1.0", 3) is None
 
 
 def test_normalize_tag_strips_ls_build_and_cli_suffixes():

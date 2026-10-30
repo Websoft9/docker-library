@@ -37,6 +37,10 @@ on:
         description: Published stable Release tag to promote (release promotion only)
         required: false
         type: string
+      release_apps:
+        description: JSON array of changed custom-image apps selected by the release plan
+        required: false
+        type: string
       app:
         description: Build a single app (required for PR candidate builds)
         required: false
@@ -72,6 +76,10 @@ on:
         description: "Optional source commit SHA for promote; otherwise resolve an exact-context candidate"
         required: false
         type: string
+      target_ref:
+        description: Optional historical app ref to build/promote using this workflow's tooling
+        required: false
+        type: string
 
 jobs:
   setup:
@@ -84,13 +92,32 @@ jobs:
       uses: actions/checkout@v7
       with:
         fetch-depth: 0
-        ref: ${{ inputs.pr_sha || inputs.release_tag || github.ref }}
+        ref: ${{ inputs.pr_sha || inputs.release_tag || inputs.target_ref || github.ref }}
+
+    - name: Record manual backfill request
+      if: github.event_name == 'workflow_dispatch' && inputs.channel == 'promote'
+      env:
+        BACKFILL_APP: ${{ inputs.app }}
+        BACKFILL_REF: ${{ inputs.target_ref || github.ref_name }}
+        BACKFILL_WORKFLOW_SHA: ${{ github.sha }}
+        BACKFILL_SOURCE_SHA: ${{ inputs.source_sha }}
+      run: |
+        python3 -c 'import json,os,subprocess; from pathlib import Path; request = {key: os.environ["BACKFILL_" + key.upper()] for key in ("app", "ref", "workflow_sha", "source_sha")}; request["sha"] = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(); Path("backfill.json").write_text(json.dumps(request))'
+
+    - name: Upload manual backfill request
+      if: github.event_name == 'workflow_dispatch' && inputs.channel == 'promote'
+      uses: actions/upload-artifact@v4
+      with:
+        name: image-backfill-${{ github.run_attempt }}
+        path: backfill.json
+        retention-days: 7
 
     - id: set-matrix
       env:
         EVENT_NAME: ${{ github.event_name }}
         INPUT_APP: ${{ inputs.app }}
         RELEASE_TAG: ${{ inputs.release_tag }}
+        RELEASE_APPS: ${{ inputs.release_apps }}
         PR_SHA: ${{ inputs.pr_sha }}
         BEFORE_SHA: ${{ github.event.before }}
         CURRENT_SHA: ${{ github.sha }}
@@ -106,9 +133,7 @@ jobs:
           fi
           git fetch origin main
           git merge-base --is-ancestor HEAD origin/main
-          # Validate every custom image, including apps missed by an earlier partial release.
-          changed_files=$(git ls-tree -r --name-only "$CURRENT_SHA" -- apps)
-          app_list=$(printf '%s\n' "$changed_files" | awk -F/ '$1 == "apps" && NF >= 3 {print $2}' | sort -u)
+          app_list=$(jq -r 'if type == "array" and all(.[]; type == "string") then .[] else error("release_apps must be a JSON string array") end' <<< "$RELEASE_APPS")
         else
           if [ -n "$BEFORE_SHA" ] && [ "$BEFORE_SHA" != "0000000000000000000000000000000000000000" ]; then
             changed_files=$(git diff --name-only "$BEFORE_SHA" "$CURRENT_SHA")
@@ -151,6 +176,7 @@ jobs:
         fi
 
   build:
+    name: ${{ (inputs.release_tag != '' || inputs.channel == 'promote') && 'promote' || 'build' }} (${{ matrix.app }})
     needs: setup
     if: needs.setup.outputs.has_apps == 'true'
     runs-on: ubuntu-latest
@@ -168,7 +194,7 @@ jobs:
       uses: actions/checkout@v7
       with:
         fetch-depth: 0
-        ref: ${{ inputs.pr_sha || inputs.release_tag || github.ref }}
+        ref: ${{ inputs.pr_sha || inputs.release_tag || inputs.target_ref || github.ref }}
         path: source
         persist-credentials: false
 

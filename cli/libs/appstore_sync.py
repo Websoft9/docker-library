@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import shlex
+import hashlib
 import shutil
 import tempfile
 from collections.abc import Callable
@@ -135,6 +136,22 @@ def _sync_app_dir(
                     f"rm -rf {staging_dir}"
                 )
             ],
+            progress=progress,
+            verbose=verbose,
+        )
+        # A successful copy is insufficient: bootstrap can replace the library
+        # concurrently. Read back the exact staged bytes before reporting ready.
+        checksums = "\n".join(
+            f"{hashlib.sha256(path.read_bytes()).hexdigest()}  ./{path.relative_to(staged_dir).as_posix()}"
+            for path in sorted(staged_dir.rglob("*")) if path.is_file()
+        ) + "\n"
+        verify = (
+            f"cd {shlex.quote(f'{deploy_dir}/{app_name}')} && "
+            f"printf %s {shlex.quote(checksums)} | sha256sum -c -"
+        )
+        _run(
+            ssh_base(host, user, secret_path)
+            + [shlex.join(["docker", "exec", container, "sh", "-c", verify])],
             progress=progress,
             verbose=verbose,
         )

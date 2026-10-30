@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import json
+import hashlib
 from pathlib import Path
 
+import pytest
 import typer
 from typer.testing import CliRunner
 
@@ -351,6 +353,28 @@ def test_sync_app_dir_version_override_applies_only_to_staged_copy(repo_fixture,
 
     assert captured["env"] == "W9_REPO=demo\nW9_VERSION=dev-abc1234\n"
     assert (app_path / ".env").read_text(encoding="utf-8") == "W9_REPO=demo\nW9_VERSION=1.0\n"
+
+
+def test_sync_app_dir_verifies_bytes_and_rejects_overwritten_package(repo_fixture, app_factory, monkeypatch):
+    app_path = app_factory("demo")
+    env = app_path / ".env"
+    env.write_text("W9_VERSION=2.0\n")
+    calls = []
+
+    def fake_run(command, **kwargs):
+        calls.append(command)
+        if "sha256sum -c -" in command[-1]:
+            digest = hashlib.sha256(env.read_bytes()).hexdigest()
+            assert f"{digest}  ./.env" in command[-1]
+            raise RuntimeError(".env: FAILED")
+        return ""
+
+    monkeypatch.setattr(appstore_sync, "_run", fake_run)
+    monkeypatch.setattr(appstore_sync, "ssh_base", lambda *args: ["ssh"])
+    monkeypatch.setattr(appstore_sync, "scp_base", lambda *args: ["scp"])
+    with pytest.raises(RuntimeError, match="FAILED"):
+        appstore_sync._sync_app_dir("demo", "host", "root", Path("key"), "websoft9", "/apps", "/backup")
+    assert len(calls) == 4
 
 
 def test_prepare_preview_reports_version_override(repo_fixture, app_factory, monkeypatch):

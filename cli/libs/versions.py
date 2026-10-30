@@ -10,10 +10,18 @@ from libs import http, scan_state
 from libs.metadata import active_app_dirs, resolve_app_metadata
 from libs.output import print_output
 from libs.sources import detect_source_type, fetch_candidates, fetch_verified_candidates
-from libs.versioning import get_current_versions, update_status
+from libs.versioning import get_current_versions, normalize_tag, update_status
+from packaging.version import Version, InvalidVersion
 
 
 app = typer.Typer(help="Scan upstream versions", context_settings={"help_option_names": ["-h", "--help"]})
+
+
+def _comparable(tag: str) -> Version | None:
+    try:
+        return Version(normalize_tag(tag))
+    except InvalidVersion:
+        return None
 
 
 def _parse_target_date(raw_date: str | None) -> date:
@@ -125,7 +133,7 @@ def scan_apps(
             "update_policy": metadata.update_policy,
             "selected_by": selected_by,
             "target_date": target.isoformat(),
-            "current_version": all_versions if plan_only else current_version_strs,
+            "current_version": all_versions if plan_only else [v for v in all_versions if str(v).lower() != "latest"],
             "upstream_image": image_url,
             "source_type": resolve_source_type(variables),
             "release": variables.get("release"),
@@ -152,6 +160,11 @@ def scan_apps(
             continue
 
         highest_version = max(current for current in current_versions if current != "latest")
+        # Preserve the exact configured tag through discovery as well as display.
+        current_tag = next(
+            str(raw) for raw in all_versions
+            if str(raw).lower() != "latest" and _comparable(str(raw)) == highest_version
+        )
         releases = upstream.get("releases")
         if releases:
             latest_version, error = fetch_verified_candidates(
@@ -159,25 +172,32 @@ def scan_apps(
                 image_url,
                 detect_source_type(releases) or "github-tags",
                 releases,
-                str(highest_version),
+                current_tag,
                 major_ahead=major_ahead,
                 page_size=page_size,
+                candidate_limit=3,
             )
         else:
             latest_version, error = fetch_candidates(
                 payload["source_type"],
                 image_url,
-                str(highest_version),
+                current_tag,
                 major_ahead=major_ahead,
                 page_size=page_size,
+                candidate_limit=3,
             )
         if error:
             payload["error"] = f"Failed to fetch tags: {error}"
             payload["latest_version"] = None
             payload["version_status"] = "unavailable"
         else:
+            if latest_version:
+                latest_version = dict(latest_version)
+                payload["latest_candidates"] = latest_version.pop("candidates", [dict(latest_version)])
+            else:
+                payload["latest_candidates"] = []
             payload["latest_version"] = latest_version
-            payload["version_status"] = update_status(str(highest_version), latest_version)
+            payload["version_status"] = update_status(current_tag, latest_version)
 
         payload["network"] = http.network_snapshot()
         payload["scan_elapsed_ms"] = int((time.monotonic() - started) * 1000)

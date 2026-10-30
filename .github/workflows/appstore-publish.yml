@@ -24,25 +24,58 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  release-images:
+  release-plan:
     if: github.event_name == 'release' && github.event.release.prerelease == false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      apps: ${{ steps.plan.outputs.apps }}
+      has_apps: ${{ steps.plan.outputs.has_apps }}
+      from_ref: ${{ steps.plan.outputs.from_ref }}
+      all_apps: ${{ steps.plan.outputs.all_apps }}
+      range: ${{ steps.plan.outputs.range }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.release.tag_name }}
+      - name: Resolve release image changes
+        id: plan
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git merge-base --is-ancestor HEAD origin/main
+          gh api --paginate --slurp "repos/$REPOSITORY/releases?per_page=100" > releases.json
+          python3 ci/scripts/image_release.py --release-tag "$RELEASE_TAG" --releases-file releases.json --output "$GITHUB_OUTPUT"
+
+  release-images:
+    needs: release-plan
+    if: needs.release-plan.outputs.has_apps == 'true'
     uses: ./.github/workflows/docker.yml
     permissions:
       contents: read
       actions: read
     with:
       release_tag: ${{ github.event.release.tag_name }}
+      release_apps: ${{ needs.release-plan.outputs.apps }}
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
   publish:
     name: Build and publish appstore artifacts
-    needs: release-images
+    needs: [release-plan, release-images]
     if: >-
       always() && !cancelled() &&
       (github.event_name != 'release' ||
-       (github.event.release.prerelease == false && needs.release-images.result == 'success'))
+       (github.event.release.prerelease == false && needs.release-plan.result == 'success' &&
+        ((needs.release-plan.outputs.has_apps == 'false' && needs.release-images.result == 'skipped') ||
+         needs.release-images.result == 'success')))
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -98,26 +131,6 @@ jobs:
 
           echo "channel=$channel" >> "$GITHUB_OUTPUT"
           echo "version=$version" >> "$GITHUB_OUTPUT"
-
-      - name: Resolve release base
-        id: release_base
-        if: github.event_name == 'release'
-        env:
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
-        run: |
-          previous=""
-          while IFS= read -r tag; do
-            if [[ "$tag" != "$RELEASE_TAG" && "$tag" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
-              previous="$tag"
-              break
-            fi
-          done < <(git tag --merged HEAD --sort=-version:refname)
-          if [ -n "$previous" ]; then
-            echo "from_ref=$previous" >> "$GITHUB_OUTPUT"
-          else
-            echo "all_apps=true" >> "$GITHUB_OUTPUT"
-          fi
-          echo "range=${previous:+$previous..}$RELEASE_TAG" >> "$GITHUB_OUTPUT"
 
       - name: Set up Python
         uses: actions/setup-python@v7
@@ -183,7 +196,7 @@ jobs:
         env:
           LIBRARY_VERSION: ${{ steps.resolve_channel.outputs.version }}
           INPUT_FROM_REF: ${{ inputs.from_ref }}
-          RELEASE_FROM_REF: ${{ steps.release_base.outputs.from_ref }}
+          RELEASE_FROM_REF: ${{ needs.release-plan.outputs.from_ref }}
         run: |
           args=(
             --channel "${{ steps.resolve_channel.outputs.channel }}"
@@ -191,7 +204,7 @@ jobs:
             --catalog-source-dir dist/catalog-source
             --library-version "$LIBRARY_VERSION"
           )
-          if [[ "${{ steps.check_seed.outputs.seed }}" == "true" || "${{ steps.release_base.outputs.all_apps }}" == "true" ]]; then
+          if [[ "${{ steps.check_seed.outputs.seed }}" == "true" || "${{ needs.release-plan.outputs.all_apps }}" == "true" ]]; then
             args+=(--all-apps)
           fi
           if [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "$INPUT_FROM_REF" ]]; then
@@ -206,7 +219,7 @@ jobs:
         uses: orhun/git-cliff-action@v4
         with:
           config: .github/cliff.toml
-          args: ${{ steps.release_base.outputs.range }} --strip header
+          args: ${{ needs.release-plan.outputs.range }} --strip header
         env:
           OUTPUT: dist/CHANGELOG_RELEASE.md
 

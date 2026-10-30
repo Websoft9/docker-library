@@ -65,20 +65,6 @@ def test_manual_release_is_rejected(tmp_path):
     assert result.returncode != 0
 
 
-def test_release_base_ignores_nonstable_tags(tmp_path):
-    result, output = run_step(
-        tmp_path, "Resolve release base", RELEASE_TAG="0.9.0", TAGS="release-21\n0.9.0\n0.9.0-rc.1\n0.8.1"
-    )
-    assert result.returncode == 0, result.stderr
-    assert output == {"from_ref": "0.8.1", "range": "0.8.1..0.9.0"}
-
-
-def test_first_release_builds_all_app_packages(tmp_path):
-    result, output = run_step(tmp_path, "Resolve release base", RELEASE_TAG="0.9.0", TAGS="0.9.0\nrelease-21")
-    assert result.returncode == 0, result.stderr
-    assert output == {"all_apps": "true", "range": "0.9.0"}
-
-
 def test_rc_purges_only_rc_artifacts(tmp_path):
     result, output = run_step(tmp_path, "Resolve legacy purge URLs", CHANNEL="rc")
     assert result.returncode == 0, result.stderr
@@ -91,9 +77,11 @@ def test_release_is_published_once_and_waits_for_images():
     workflow = yaml.load((REPO_ROOT / ".github/workflows/appstore-publish.yml").read_text(), Loader=yaml.BaseLoader)
     assert workflow["on"]["release"]["types"] == ["published"]
     assert "tags" not in workflow["on"]["push"]
-    assert "release.prerelease == false" in workflow["jobs"]["release-images"]["if"]
+    assert "release.prerelease == false" in workflow["jobs"]["release-plan"]["if"]
+    assert workflow["jobs"]["release-images"]["if"] == "needs.release-plan.outputs.has_apps == 'true'"
     assert workflow["jobs"]["release-images"]["uses"] == "./.github/workflows/docker.yml"
-    assert workflow["jobs"]["publish"]["needs"] == "release-images"
+    assert workflow["jobs"]["release-images"]["with"]["release_apps"] == "${{ needs.release-plan.outputs.apps }}"
+    assert workflow["jobs"]["publish"]["needs"] == ["release-plan", "release-images"]
     assert "needs.release-images.result == 'success'" in workflow["jobs"]["publish"]["if"]
     assert "pages" not in workflow["jobs"]
 
@@ -102,3 +90,27 @@ def test_bare_tag_push_does_not_publish_release(tmp_path):
     result, output = run_step(tmp_path, "Resolve publish channel", REF_TYPE="tag", REF_NAME="0.9.0")
     assert result.returncode != 0
     assert not output
+
+
+@pytest.mark.parametrize("event,plan,has_apps,images,expected", [
+    ("release", "success", "false", "skipped", True),
+    ("release", "success", "true", "success", True),
+    ("release", "success", "true", "failure", False),
+    ("release", "success", "true", "skipped", False),
+    ("release", "failure", "false", "skipped", False),
+    ("push", "skipped", "", "skipped", True),
+    ("workflow_dispatch", "skipped", "", "skipped", True),
+])
+def test_publish_gate_handles_skipped_images(event, plan, has_apps, images, expected):
+    workflow = yaml.safe_load((REPO_ROOT / ".github/workflows/appstore-publish.yml").read_text())
+    expression = workflow["jobs"]["publish"]["if"]
+    for key, value in {
+        "always()": "True", "!cancelled()": "True",
+        "github.event_name": repr(event), "github.event.release.prerelease": "False",
+        "needs.release-plan.result": repr(plan),
+        "needs.release-plan.outputs.has_apps": repr(has_apps),
+        "needs.release-images.result": repr(images),
+    }.items():
+        expression = expression.replace(key, value)
+    expression = expression.replace("== false", "== False").replace("&&", "and").replace("||", "or")
+    assert eval(expression, {"__builtins__": {}}) is expected

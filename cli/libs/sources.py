@@ -7,7 +7,7 @@ from urllib.parse import urljoin
 from packaging import version
 
 from libs.http import get, get_json_with_fallback, probe_url
-from libs.versioning import find_latest_version, normalize_tag
+from libs.versioning import normalize_tag, variant_score, select_candidates
 
 
 VERSION_START_RE = re.compile(r"^v?(\d+)")
@@ -44,17 +44,18 @@ def fetch_candidates(
     current_version: str,
     major_ahead: int = 3,
     page_size: int = 100,
+    candidate_limit: int = 1,
 ) -> tuple[dict | None, str | None]:
     if source_type == "dockerhub-tags":
-        return _fetch_dockerhub(url, current_version, major_ahead, page_size)
+        return _fetch_dockerhub(url, current_version, major_ahead, page_size, candidate_limit)
     if source_type == "ghcr-tags":
-        return _fetch_ghcr(url, current_version, major_ahead, page_size)
+        return _fetch_ghcr(url, current_version, major_ahead, page_size, candidate_limit)
     if source_type == "ecr-public":
-        return _fetch_ecr_public(url, current_version, major_ahead, page_size)
+        return _fetch_ecr_public(url, current_version, major_ahead, page_size, candidate_limit)
     if source_type == "github-releases":
-        return _fetch_github_releases(url, current_version, page_size)
+        return _fetch_github_releases(url, current_version, page_size, candidate_limit)
     if source_type == "github-tags":
-        return _fetch_github_tags(url, current_version, page_size)
+        return _fetch_github_tags(url, current_version, page_size, candidate_limit)
     return None, f"unsupported source type: {source_type}"
 
 
@@ -97,7 +98,7 @@ def _dockerhub_api_url(url: str) -> str | None:
         return None
 
 
-def _fetch_dockerhub(url: str, current_version: str, major_ahead: int, page_size: int) -> tuple[dict | None, str | None]:
+def _fetch_dockerhub(url: str, current_version: str, major_ahead: int, page_size: int, candidate_limit: int = 1) -> tuple[dict | None, str | None]:
     api_url = _dockerhub_api_url(url)
     if not api_url:
         return None, "invalid Docker Hub URL"
@@ -107,13 +108,21 @@ def _fetch_dockerhub(url: str, current_version: str, major_ahead: int, page_size
         tags, error = _dockerhub_tags(api_url, name=None, page_size=page_size)
         if error:
             return None, error
-        return find_latest_version(tags, current_version), None
+        return select_candidates(tags, current_version, candidate_limit), None
 
     major = int(prefix[:-1])
     queries = [prefix] + [f"{m}." for m in range(major + 1, major + 1 + major_ahead)]
     tags = []
     for query in queries:
         page, error = _dockerhub_tags(api_url, name=query, page_size=page_size)
+        if error:
+            return None, error
+        tags.extend(page)
+
+    # A busy repository's first page can contain only unrelated editions.
+    suffix = re.match(r"^v?\d+(?:\.\d+)*([-_].+)$", current_version)
+    if suffix:
+        page, error = _dockerhub_tags(api_url, name=suffix.group(1), page_size=page_size)
         if error:
             return None, error
         tags.extend(page)
@@ -128,7 +137,7 @@ def _fetch_dockerhub(url: str, current_version: str, major_ahead: int, page_size
         if tag_ver.release and tag_ver.release[0] in allowed_majors:
             filtered.append(tag)
 
-    return find_latest_version(filtered, current_version), None
+    return select_candidates(filtered, current_version, candidate_limit), None
 
 
 def _dockerhub_tags(api_url: str, name: str | None, page_size: int) -> tuple[list[dict], str | None]:
@@ -180,7 +189,7 @@ def _ghcr_tags_page(namespace: str, image: str, token: str, page_size: int, last
     return (data or {}).get("tags") or [], (response_headers or {}).get("Link"), None
 
 
-def _fetch_ghcr(url: str, current_version: str, major_ahead: int, page_size: int) -> tuple[dict | None, str | None]:
+def _fetch_ghcr(url: str, current_version: str, major_ahead: int, page_size: int, candidate_limit: int = 1) -> tuple[dict | None, str | None]:
     repository = _ghcr_repository(url)
     if not repository:
         return None, "invalid GHCR URL"
@@ -200,7 +209,7 @@ def _fetch_ghcr(url: str, current_version: str, major_ahead: int, page_size: int
             break
 
     candidates = [{"name": tag, "last_updated": ""} for tag in tags]
-    return find_latest_version(candidates, current_version), None
+    return select_candidates(candidates, current_version, candidate_limit), None
 
 
 def _ecr_public_repository(url: str) -> tuple[str, str] | None:
@@ -264,6 +273,7 @@ def _fetch_ecr_public(
     current_version: str,
     major_ahead: int,
     page_size: int,
+    candidate_limit: int = 1,
 ) -> tuple[dict | None, str | None]:
     repository = _ecr_public_repository(url)
     if not repository:
@@ -300,7 +310,7 @@ def _fetch_ecr_public(
             continue
         filtered.append({"name": tag, "last_updated": ""})
 
-    return find_latest_version(filtered, current_version), None
+    return select_candidates(filtered, current_version, candidate_limit), None
 
 
 def _ecr_public_manifest_exists(namespace: str, image: str, tag: str, token: str) -> tuple[bool, str | None]:
@@ -332,7 +342,7 @@ def _github_api_url(version_from_url: str) -> str | None:
         return None
 
 
-def _fetch_github_releases(url: str, current_version: str, page_size: int) -> tuple[dict | None, str | None]:
+def _fetch_github_releases(url: str, current_version: str, page_size: int, candidate_limit: int = 1) -> tuple[dict | None, str | None]:
     api_url = _github_api_url(url)
     if not api_url:
         return None, "invalid GitHub releases URL"
@@ -351,16 +361,16 @@ def _fetch_github_releases(url: str, current_version: str, page_size: int) -> tu
         })
 
     if not tags:
-        return _fetch_github_tags(url, current_version, page_size)
+        return _fetch_github_tags(url, current_version, page_size, candidate_limit)
 
-    return find_latest_version(tags, current_version), None
+    return select_candidates(tags, current_version, candidate_limit), None
 
 
-def _fetch_github_tags(url: str, current_version: str, page_size: int) -> tuple[dict | None, str | None]:
+def _fetch_github_tags(url: str, current_version: str, page_size: int, candidate_limit: int = 1) -> tuple[dict | None, str | None]:
     tags, error = _github_tags_raw(url, page_size)
     if error:
         return None, error
-    return find_latest_version(tags, current_version), None
+    return select_candidates(tags, current_version, candidate_limit), None
 
 
 def _github_tags_raw(url: str, page_size: int, max_pages: int = 10) -> tuple[list[dict], str | None]:
@@ -436,7 +446,9 @@ def _stable_candidates(tags: list[dict], current_version: str, limit: int = 5) -
     def version_key(name):
         return version.parse(normalize_tag(name))
 
-    return sorted(candidates, key=version_key, reverse=True)[:limit]
+    ordered = sorted(candidates, key=lambda name: (version_key(name), name), reverse=True)
+    ordered.sort(key=lambda name: variant_score(name, current_version))
+    return ordered[:limit]
 
 
 def _dockerhub_verify(api_url: str, candidate: str, page_size: int) -> dict | None:
@@ -452,16 +464,17 @@ def _dockerhub_verify(api_url: str, candidate: str, page_size: int) -> dict | No
         if error or not data:
             continue
 
+        matches = []
         for tag in (data or {}).get("results") or []:
             tag_name = tag["name"]
             try:
                 if version.parse(normalize_tag(tag_name)) == candidate_ver:
-                    return {
-                        "version": tag_name,
-                        "last_updated": tag["last_updated"],
-                    }
+                    matches.append(tag)
             except version.InvalidVersion:
                 continue
+        if matches:
+            best = min(matches, key=lambda tag: (variant_score(tag["name"], candidate), tag["name"] != candidate, len(tag["name"]), tag["name"]))
+            return {"version": best["name"], "last_updated": best["last_updated"]}
     return None
 
 
@@ -473,6 +486,7 @@ def fetch_verified_candidates(
     current_version: str,
     major_ahead: int = 3,
     page_size: int = 100,
+    candidate_limit: int = 1,
 ) -> tuple[dict | None, str | None]:
     def fallback() -> tuple[dict | None, str | None]:
         return fetch_candidates(
@@ -481,7 +495,13 @@ def fetch_verified_candidates(
             current_version,
             major_ahead=major_ahead,
             page_size=page_size,
+            candidate_limit=candidate_limit,
         )
+
+    # Release indexes often omit image-only variants such as -lts or -core.
+    # Use registry discovery for these tags rather than verifying plain releases.
+    if re.match(r"^v?\d+(?:\.\d+)*[-_]", current_version):
+        return fallback()
 
     if index_type == "github-releases":
         index_tags, error = _github_releases_raw(index_url, page_size)
@@ -518,6 +538,12 @@ def fetch_verified_candidates(
             continue
     wanted = filtered
 
+    confirmed_tags = []
+
+    def collect(confirmed: dict) -> dict | None:
+        confirmed_tags.append({"name": confirmed["version"], "last_updated": confirmed["last_updated"]})
+        return select_candidates(confirmed_tags, current_version, candidate_limit)
+
     if verify_type == "dockerhub-tags":
         api_url = _dockerhub_api_url(verify_url)
         if not api_url:
@@ -525,7 +551,11 @@ def fetch_verified_candidates(
         for candidate in wanted:
             confirmed = _dockerhub_verify(api_url, candidate, page_size)
             if confirmed:
-                return confirmed, None
+                result = collect(confirmed)
+                if len({tag["name"] for tag in confirmed_tags}) >= max(1, min(candidate_limit, 3)):
+                    return result, None
+        if confirmed_tags:
+            return select_candidates(confirmed_tags, current_version, candidate_limit), None
         return fallback()
 
     if verify_type == "ghcr-tags":
@@ -548,8 +578,13 @@ def fetch_verified_candidates(
 
         tag_set = set(tags)
         for candidate in wanted:
-            if candidate in tag_set or candidate.lstrip("v") in tag_set:
-                return {"version": candidate, "last_updated": ""}, None
+            actual = next((name for name in (candidate, candidate.lstrip("v")) if name in tag_set), None)
+            if actual:
+                result = collect({"version": actual, "last_updated": ""})
+                if len({tag["name"] for tag in confirmed_tags}) >= max(1, min(candidate_limit, 3)):
+                    return result, None
+        if confirmed_tags:
+            return select_candidates(confirmed_tags, current_version, candidate_limit), None
         return fallback()
 
     if verify_type == "ecr-public":
@@ -567,7 +602,12 @@ def fetch_verified_candidates(
                 if error:
                     return fallback()
                 if exists:
-                    return {"version": tag, "last_updated": ""}, None
+                    result = collect({"version": tag, "last_updated": ""})
+                    if len({item["name"] for item in confirmed_tags}) >= max(1, min(candidate_limit, 3)):
+                        return result, None
+                    break
+        if confirmed_tags:
+            return select_candidates(confirmed_tags, current_version, candidate_limit), None
         return fallback()
 
     return None, f"unsupported verify source type: {verify_type}"
