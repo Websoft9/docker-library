@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-10-30
+
+- Add MongoDB 9.0 as the default image version and supported track.
+
 ## 2026-09-30
 
 - Prune MongoDB versions that are out of vendor maintenance, keeping only the maintained tracks `8.3`, `8.0`, and `7.0` (plus `latest`).
