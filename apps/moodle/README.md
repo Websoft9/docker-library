@@ -37,7 +37,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: v5.2.2, latest.
+Supported versions: 5.3, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
