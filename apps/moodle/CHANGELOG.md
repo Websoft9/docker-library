@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-10-30
+
+- Update Moodle to 5.3.
+
 ## 2026-09-17
 
 - Switch to the upstream `elestio/moodle:v5.2.2` image and remove the local Dockerfile and entrypoint.
