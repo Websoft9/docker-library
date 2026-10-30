@@ -33,7 +33,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 11.11.1.
+Supported versions: 12.0.
 
 
 ### Ports
@@ -77,7 +77,7 @@ Configuration files live inside the image; mount a single file read-only to over
 
 - [Official docs](https://docs.mattermost.com/deployment-guide/server/docker-troubleshooting.html)
 
-- [Official docs](https://docs.mattermost.com/product-overview/mattermost-v11-changelog.html)
+- [Official docs](https://docs.mattermost.com/product-overview/mattermost-v12-changelog)
 
 
 <!-- W9_TROUBLESHOOT_START -->
