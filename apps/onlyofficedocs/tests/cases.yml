@@ -1,0 +1,5 @@
+optional:
+  - id: editor-api
+    type: web-access
+    path: /web-apps/apps/api/documents/api.js
+    expect_status: 200

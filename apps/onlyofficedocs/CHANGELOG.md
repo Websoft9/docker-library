@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-10-30
+
+- Updated ONLYOFFICE Docs from `9.4` to `10.0`, including upstream security fixes.
+
 ## 2026-09-12
 
 - Updated ONLYOFFICE Docs from `9.1` to `9.4`.
