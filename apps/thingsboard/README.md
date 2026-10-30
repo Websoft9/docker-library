@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **ThingsBoard**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -26,16 +27,14 @@
 Websoft9 packages this app from the official [ThingsBoard Docker image](https://hub.docker.com/r/thingsboard/tb-node) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
-
 ThingsBoard 4.4 requires a license for production use. Set `TB_LICENSE_SECRET` in `.env` to your license key; without one, the instance runs in watermarked non-production mode and shuts down after 30 cumulative days. See the [Community Grant Program](https://thingsboard.io/community-grant-program/).
-
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 4.3.1, latest.
+Supported versions: 4.4.0-latest, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
