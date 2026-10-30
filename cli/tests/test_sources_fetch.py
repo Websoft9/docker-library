@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import pytest
+
 from libs import sources
 
 
@@ -138,6 +140,48 @@ def test_dockerhub_verify_preserves_v_prefixed_tag_query(monkeypatch):
 
     assert result == {"version": "v0.64.1.x", "last_updated": "2026-10-07"}
     assert calls == ["v0.64.1.x"]
+
+
+def test_variant_registry_search_overrides_plain_release_index(monkeypatch):
+    calls = []
+
+    def tags(url, name, page_size):
+        calls.append(name)
+        if name == "-lts":
+            return [{"name": "v0.65-lts", "last_updated": "2026-10-30"}], None
+        return [{"name": "v0.70", "last_updated": "2026-10-30"}], None
+
+    monkeypatch.setattr(sources, "_dockerhub_tags", tags)
+    monkeypatch.setattr(sources, "_github_tags_raw", lambda *args: pytest.fail("image channel must not be discarded"))
+    latest, error = sources.fetch_verified_candidates(
+        "dockerhub-tags", "https://hub.docker.com/r/org/demo", "github-tags",
+        "https://github.com/org/demo", "v0.64-lts",
+    )
+    assert error is None
+    assert latest["version"] == "v0.65-lts"
+    assert "-lts" in calls
+
+
+def test_registry_verification_prefers_plain_tag_over_rootless(monkeypatch):
+    monkeypatch.setattr(sources, "_get_json", lambda *args: ({"results": [
+        {"name": "28.2-rootless", "last_updated": "2026-10-30"},
+        {"name": "28.2", "last_updated": "2026-10-30"},
+    ]}, None))
+    assert sources._dockerhub_verify("https://example.com", "28.2", 100)["version"] == "28.2"
+
+
+def test_verified_alternatives_exclude_unavailable_releases(monkeypatch):
+    monkeypatch.setattr(sources, "_github_tags_raw", lambda *args: ([
+        {"name": tag, "last_updated": ""} for tag in ["1.4.0", "1.3.0", "1.2.0", "1.1.0"]
+    ], None))
+    monkeypatch.setattr(sources, "_dockerhub_verify", lambda url, candidate, page_size:
+        {"version": candidate, "last_updated": ""} if candidate in {"1.3", "1.2", "1.1"} else None)
+    result, error = sources.fetch_verified_candidates(
+        "dockerhub-tags", "https://hub.docker.com/r/org/demo", "github-tags", "https://github.com/org/demo", "1.0", candidate_limit=3,
+    )
+    assert error is None
+    assert result["version"] == "1.3"
+    assert [item["version"] for item in result["candidates"]] == ["1.3", "1.2", "1.1"]
 
 
 def test_fetch_verified_candidates_skips_minor_tag_equal_to_current(monkeypatch):

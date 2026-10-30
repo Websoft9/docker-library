@@ -59,34 +59,15 @@ jobs:
           python3 - <<'PY' > children.ndjson
           import json
           import os
+          import sys
+
+          sys.path.insert(0, "ci/scripts")
+          from maintenance_scan_review import build_update_child
 
           approval = json.load(open("approval.json", encoding="utf-8"))
           parent = os.environ["PARENT"]
           for item in approval["items"]:
-              app = item["app"]
-              current = ", ".join(item.get("current") or []) or "unknown"
-              candidate = item.get("latest") or "unknown"
-              target = item.get("target") or candidate
-              status = item.get("status") or "planned"
-              error = item.get("error")
-              body = "\n".join([
-                  "<!-- libs:workflow=update-app -->",
-                  "<!-- libs:scan-review-child -->",
-                  f"<!-- libs:scan-review-child-key:{parent}:{app} -->",
-                  "",
-                  f"Parent: #{parent}",
-                  f"App: `{app}`",
-                  f"Current version: {current}",
-                  f"Candidate version: {candidate}",
-                  f"Target version: {target}",
-                  f"Scan result: {status}",
-                  f"Scan error: {error}" if error else "",
-              ])
-              print(json.dumps({
-                  "app": app,
-                  "title": f"Update: {app}",
-                  "body": body,
-              }, ensure_ascii=False))
+              print(json.dumps(build_update_child(item, parent), ensure_ascii=False))
           PY
 
           links=()
@@ -120,7 +101,10 @@ jobs:
             fi
 
             if [ "$already_assigned" != "true" ]; then
-              instructions='Read AGENTS.md first. Use .github/skills/libs/SKILL.md and follow the update-app hidden marker in this issue. The canonical workflow documents and skills are under skills/. Work autonomously, run the repository quality gates, and let Copilot create the branch and pull request. Open the pull request as ready for review, not as a draft.'
+              # Refresh a reused, unassigned issue before Copilot sees it.
+              jq -n --arg title "$title" --arg body "$body" '{title: $title, body: $body}' \
+                | gh api --method PATCH "repos/$REPOSITORY/issues/$number" --input - >/dev/null
+              instructions=$(jq -r '.instructions' <<< "$child")
               payload=$(jq -n \
                 --arg repo "$REPOSITORY" \
                 --arg instructions "$instructions" \

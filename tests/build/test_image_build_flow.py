@@ -45,7 +45,7 @@ def test_pr_candidates_are_digest_reported_and_do_not_overwrite_description():
     workflow = load(".github/workflows/docker.yml", base_loader=True)
 
     assert "pull_request" not in workflow["on"]
-    assert set(workflow["on"]["workflow_call"]["inputs"]) == {"release_tag", "app", "pr_sha", "tooling_sha"}
+    assert set(workflow["on"]["workflow_call"]["inputs"]) == {"release_tag", "release_apps", "app", "pr_sha", "tooling_sha"}
     assert set(workflow["on"]["workflow_call"]["secrets"]) == {"DOCKER_USERNAME", "DOCKER_PASSWORD"}
 
     build = workflow["jobs"]["build"]

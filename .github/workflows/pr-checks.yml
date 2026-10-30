@@ -493,7 +493,7 @@ jobs:
           while true; do
             remaining=$((DEADLINE - $(date +%s)))
             if [ "$remaining" -le 0 ]; then
-              echo "Websoft9 appstore directories were not ready within the 5-minute post-SSH budget" >&2
+                echo "Websoft9 appstore startup was not completed within the 5-minute post-SSH budget" >&2
               exit 1
             fi
             if timeout --signal=KILL "$((remaining < 10 ? remaining : 10))s" \
@@ -501,7 +501,7 @@ jobs:
               -o BatchMode=yes -o StrictHostKeyChecking=no \
               -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5 \
               root@"$HOST" \
-              'docker exec websoft9 sh -c '\''test -d /websoft9/library/apps'\'''; then
+                'docker exec websoft9 python3 -c '\''import json, os; from pathlib import Path; p = Path(os.environ.get("WEBSOFT9_APPSTORE_STARTUP_STATE_FILE", "/opt/websoft9/data/config/appstore_startup_state.json")); assert json.loads(p.read_text()).get("state") == "completed", "Appstore startup still running or failed"; assert Path("/websoft9/library/apps").is_dir()'\'''; then
               break
             fi
             remaining=$((DEADLINE - $(date +%s)))

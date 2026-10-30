@@ -67,7 +67,7 @@ def resolve_source(candidates: list[str]) -> tuple[str, str]:
             time.sleep(2)
     raise ValueError(
         "No candidate matches this app context. Run Build image to DockerHub manually with "
-        "channel=dev, this app, and the release tag as the selected ref, then re-run the release. "
+        "the main workflow, channel=dev, this app, and target_ref set to the release tag, then re-run the release. "
         "Refusing to promote dev-latest or an image from a different context."
     )
 

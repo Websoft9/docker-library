@@ -119,3 +119,25 @@ def test_main_build_selection_covers_entire_app_context(tmp_path, files, expecte
     lines = dict(line.split("=", 1) for line in output.read_text().splitlines())
     assert json.loads(lines["matrix"])["app"] == expected
     assert lines["has_apps"] == ("true" if expected else "false")
+
+
+def test_release_matrix_only_uses_selected_apps(tmp_path):
+    for name in ("demo", "unrelated"):
+        app = tmp_path / "apps" / name
+        app.mkdir(parents=True)
+        (app / "Dockerfile").write_text(f"ARG {name.upper()}_VERSION=1.0\nFROM scratch\n")
+    bin_dir = tmp_path / "bin"
+    bin_dir.mkdir()
+    git = bin_dir / "git"
+    git.write_text('#!/bin/bash\ncase "$1" in\nrev-parse) printf "head\\n" ;;\nfetch|merge-base) exit 0 ;;\n*) exit 1 ;;\nesac\n')
+    git.chmod(0o755)
+    workflow = yaml.safe_load((REPO_ROOT / ".github/workflows/docker.yml").read_text())
+    script = next(step["run"] for step in workflow["jobs"]["setup"]["steps"] if step.get("id") == "set-matrix")
+    output = tmp_path / "output"
+    result = subprocess.run(["bash", "-c", script], cwd=tmp_path, text=True, capture_output=True, env=os.environ | {
+        "PATH": f"{bin_dir}:{os.environ['PATH']}", "EVENT_NAME": "release", "INPUT_APP": "",
+        "RELEASE_TAG": "0.8.3", "RELEASE_APPS": '["demo"]', "PR_SHA": "", "GITHUB_OUTPUT": str(output),
+    })
+    assert result.returncode == 0, result.stderr
+    lines = dict(line.split("=", 1) for line in output.read_text().splitlines())
+    assert json.loads(lines["matrix"])["app"] == ["demo"]

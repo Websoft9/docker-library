@@ -73,17 +73,37 @@ def get_current_versions(edition: list[dict]):
 
 
 def _variant_tokens(name: str) -> set[str]:
-    normalized = normalize_tag(name).lower()
-    lowered = name.lower()
-    index = lowered.find(normalized)
-    tail = lowered[index + len(normalized):] if index >= 0 else lowered
+    # Strip only the numeric release, retaining channel/edition information.
+    tail = re.sub(r"^v?\d+(?:\.\d+)*", "", name.lower())
+    tail = re.sub(r"(?:^|[-_])ls\d+$", "", tail)
     return {token for token in re.split(r"[-_.]", tail) if token and not token.isdigit()}
+
+
+def variant_score(name: str, current_version: str) -> tuple:
+    """Rank variant continuity before version freshness (lower is better)."""
+    preferred = _variant_tokens(current_version)
+    tokens = _variant_tokens(name)
+    # Exact suffix tokens, then partial overlap, then unrelated variants.
+    if tokens == preferred:
+        return (0, 0, 0)
+    shared = len(tokens & preferred)
+    return (1 if shared else 2, -shared, len(tokens - preferred))
+
+
+def prefer_tag_variants(candidates: list, current_version: str, name=lambda item: item[1]) -> list:
+    if not candidates:
+        return []
+    best = min(variant_score(name(item), current_version) for item in candidates)
+    return [item for item in candidates if variant_score(name(item), current_version) == best]
 
 
 def _prefer_variant(tags: list[dict], candidates: list[tuple], current_version: str) -> tuple:
     preferred = _variant_tokens(current_version)
     if not preferred:
-        return min(candidates, key=lambda item: (len(item[1].split("-")), len(item[1]), item[1]))
+        return min(candidates, key=lambda item: (
+            item[1].startswith("v") != current_version.startswith("v"),
+            len(item[1].split("-")), len(item[1]), item[1],
+        ))
 
     def score(item):
         _version_value, tag_name, _last_updated = item
@@ -120,7 +140,8 @@ def find_latest_version(tags: list[dict], current_version: str) -> dict | None:
         else:
             full_candidates.append((tag_ver, tag_name, tag["last_updated"]))
 
-    pool = minor_candidates or full_candidates
+    variants = prefer_tag_variants(minor_candidates + full_candidates, current_version)
+    pool = [item for item in variants if len(item[0].release) == 2] or variants
     if not pool:
         return None
 
@@ -131,6 +152,24 @@ def find_latest_version(tags: list[dict], current_version: str) -> dict | None:
         "version": best[1],
         "last_updated": best[2],
     }
+
+
+def select_candidates(tags: list[dict], current_version: str, limit: int = 1) -> dict | None:
+    """Keep the old single-candidate API, optionally attaching ranked alternatives."""
+    remaining = list(tags)
+    selected = []
+    for _ in range(max(1, min(limit, 3))):
+        candidate = find_latest_version(remaining, current_version)
+        if candidate is None:
+            break
+        selected.append(candidate)
+        remaining = [tag for tag in remaining if tag["name"] != candidate["version"]]
+    if not selected:
+        return None
+    result = dict(selected[0])
+    if limit > 1:
+        result["candidates"] = selected
+    return result
 
 
 def update_status(current_version: str, candidate: dict | None) -> str:
