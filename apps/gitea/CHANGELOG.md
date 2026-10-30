@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2026-10-30
+
+- Updated Gitea from `28.1` to `28.2`.
+- Kept the existing rootful image variant; rootful and rootless images are not interchangeable.
+- Back up the data volume and let Gitea run its automatic database migration on first start; do not roll back the image after the migration.
+- Regenerated `README.md` from the updated version metadata.
+
 ## 2026-10-13
 
 - Updated Gitea from `1.27` to `28.1`; upstream renumbered from the `1.x` line to the new `28.x` scheme and `28.1` is the current stable `x.x` tag.
