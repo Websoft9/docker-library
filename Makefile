@@ -1,4 +1,4 @@
-.PHONY: help opencode opencode-clear install libs cli remote connector github-token install-git-hooks dns-bind dns-delete websoft9-upgrade create-aliyun-ecs build-ai-commands i18n-check i18n-update test test-cli test-build test-skills
+.PHONY: help opencode opencode-clear install libs cli branch-update remote connector github-token install-git-hooks dns-bind dns-delete websoft9-upgrade create-aliyun-ecs build-ai-commands i18n-check i18n-update test test-cli test-build test-skills
 
 ifeq ($(OS),Windows_NT)
 PYTHON ?= py
@@ -18,6 +18,7 @@ help:
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'opencode-clear' 'list opencode sessions, confirm, then delete them (ARGS: --all/--dry-run)'
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'cli' 'enter an activated shell for libs'
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'libs' 'run one libs command, e.g. make libs ARGS="scan --app wordpress --json"'
+	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'branch-update' 'on a development branch: delete its remote, rebase onto latest origin/main, update local main (ARGS: --dry-run/--force)'
 	@printf '\n  \033[1;35m▸ Server Ops\033[0m\n'
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'dns-bind' 'point the wildcard record (*.<domain>) at the remote host or localhost (ARGS: --domain/--ip/--json)'
 	@printf '  \033[2mmake \033[0m\033[1;32m%-18s\033[0m %s\n' 'dns-delete' 'delete the single wildcard record (*.<domain>) for the domain (ARGS: --domain/--json)'
@@ -61,6 +62,9 @@ libs:
 	@proxy="$${https_proxy:-$${HTTPS_PROXY:-$${http_proxy:-$${HTTP_PROXY:-}}}}"; \
 	if [ -n "$$proxy" ]; then export https_proxy="$$proxy" http_proxy="$$proxy" all_proxy="$$proxy" no_proxy= NO_PROXY=; fi; \
 	$(VENV_BIN)/libs $(ARGS)
+
+branch-update:
+	@bash ci/scripts/branch_update.sh $(ARGS)
 
 dns-bind:
 	@proxy="$${https_proxy:-$${HTTPS_PROXY:-$${http_proxy:-$${HTTP_PROXY:-}}}}"; \

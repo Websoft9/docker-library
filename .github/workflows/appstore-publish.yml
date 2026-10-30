@@ -341,3 +341,14 @@ jobs:
             dist/appstore-publish/legacy/release/library/library.json \
             dist/appstore-publish/legacy/release/library/library.json.sha256 \
             dist/CHANGELOG_RELEASE.md
+
+      - name: Notify WeCom that release was published
+        if: success() && steps.resolve_channel.outputs.channel == 'release'
+        continue-on-error: true
+        env:
+          WECOM_WEBHOOK: ${{ secrets.WECOM_WEBHOOK }}
+          REPOSITORY: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_URL: ${{ github.event.release.html_url }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}
+        run: python ci/scripts/wecom_notify.py --release-notes-file release-notes.md

@@ -31,7 +31,7 @@ Configure custom secrets under **Secrets and variables → Actions → Secrets**
 | Feature | Secret names |
 | --- | --- |
 | E2E server | `ALIYUN_ACCESS_KEY_ID`, `ALIYUN_ACCESS_KEY_SECRET`, `ALIYUN_SSH_PRIVATE_KEY` |
-| WeCom notifications | `WECOM_WEBHOOK` |
+| WeCom notifications (maintenance scan, E2E and successful official releases) | `WECOM_WEBHOOK` |
 | Contentful | `CONTENTFUL_TOKEN`, `CONTENTFUL_GRAPHQLTOKEN` |
 | R2 publishing | `CLOUDFLARE_R2_SECRET_ID`, `CLOUDFLARE_R2_SECRET_KEY`, `CLOUDFLARE_ACCOUNT_ID` |
 | Cloudflare cache purge | `CLOUDFLARE_ZONE_ID`, `CLOUDFLARE_API_TOKEN` |

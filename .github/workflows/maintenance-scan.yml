@@ -297,10 +297,7 @@ jobs:
           print("\n".join(lines))
           PY
 
-          payload=$(jq -n --arg content "$(cat wecom-scan.md)" '{msgtype:"markdown",markdown:{content:$content}}')
-          curl --fail-with-body --silent --show-error --max-time 15 \
-            -H 'Content-Type: application/json' \
-            --data "$payload" "$WECOM_WEBHOOK" || echo '::warning::WeCom notification failed'
+          python ci/scripts/wecom_notify.py --markdown-file wecom-scan.md
 
       - name: Notify WeCom that scan failed
         if: failure()
@@ -314,9 +311,6 @@ jobs:
             echo "::warning::WECOM_WEBHOOK is not set; skipping failure notification"
             exit 0
           fi
-          content=$(printf '# Maintenance scan failed\n> Repository: %s\n> Run: [%s](%s)\n\nPlease check the Actions logs.' \
-            "$REPOSITORY" "$RUN_ID" "$RUN_URL")
-          payload=$(jq -n --arg content "$content" '{msgtype:"markdown",markdown:{content:$content}}')
-          curl --fail-with-body --silent --show-error --max-time 15 \
-            -H 'Content-Type: application/json' \
-            --data "$payload" "$WECOM_WEBHOOK" || echo '::warning::WeCom notification failed'
+          printf '# Maintenance scan failed\n> Repository: %s\n> Run: [%s](%s)\n\nPlease check the Actions logs.' \
+            "$REPOSITORY" "$RUN_ID" "$RUN_URL" > wecom-scan-failed.md
+          python ci/scripts/wecom_notify.py --markdown-file wecom-scan-failed.md
