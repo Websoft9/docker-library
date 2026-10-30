@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-10-30
+
+- Updated Metabase to the official `v0.64-lts` Docker image tag.
+
 ## 2026-10-23
 
 - Updated Metabase to the official `v0.64.1.x` Docker image tag from the invalid `v0.64.x` placeholder.
