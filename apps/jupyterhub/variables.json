@@ -6,7 +6,7 @@
     {
       "dist": "community",
       "version": [
-        "6.0",
+        "6.1",
         "latest"
       ]
     }
@@ -25,9 +25,9 @@
   "upstream": {
     "image": "https://hub.docker.com/r/jupyterhub/jupyterhub",
     "docs": [
-      "https://jupyterhub.readthedocs.io/en/6.0.1/tutorial/quickstart-docker.html",
-      "https://jupyterhub.readthedocs.io/en/6.0.1/tutorial/getting-started/config-basics.html",
-      "https://jupyterhub.readthedocs.io/en/6.0.1/howto/upgrading-v6.html"
+      "https://jupyterhub.readthedocs.io/en/6.1.1/tutorial/quickstart-docker.html",
+      "https://jupyterhub.readthedocs.io/en/6.1.1/tutorial/getting-started/config-basics.html",
+      "https://jupyterhub.readthedocs.io/en/6.1.1/howto/upgrading-v6.html"
     ]
   },
   "env": {
