@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Chatwoot**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -33,7 +34,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: v4.18.0, latest.
+Supported versions: v4.19.1, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 

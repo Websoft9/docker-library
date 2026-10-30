@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 2026-10-30
+- Updated Chatwoot to `v4.19.1` for the upstream security hardening and fixes.
+
 ## 2026-10-13
 - Upgraded Chatwoot from `v4.8.0` to `v4.18.0` based on the latest stable upstream release and image tag.
 - Aligned `.env` and `docker-compose.yml` with current repository policy by converting all variable references to `${VAR}` form and removing upstream source comments from the compose file.
