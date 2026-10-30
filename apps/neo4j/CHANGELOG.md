@@ -1,3 +1,8 @@
+## 2026-10-30
+
+- Updated Neo4j from the floating `2026.09` line to the floating `2026.10` line and refreshed the release-note reference.
+- Added an authenticated Query API smoke test for deploy validation.
+
 ## 2026-10-12
 
 - Updated Neo4j from the floating `2026.07` line to the floating `2026.09` line.
