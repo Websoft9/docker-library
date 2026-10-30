@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-10-30
+
+- Updated JupyterHub to `6.1`.
+
 ## 2026-09-15
 
 - Updated JupyterHub to `6.0`.

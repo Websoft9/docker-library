@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **JupyterHub**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -33,7 +34,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 6.0, latest.
+Supported versions: 6.1, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
@@ -73,11 +74,11 @@ Configuration is overridden by mounting `./src/jupyterhub_config.py` to `/etc/ju
 
 - [Docker Hub image](https://hub.docker.com/r/jupyterhub/jupyterhub)
 
-- [Official docs](https://jupyterhub.readthedocs.io/en/6.0.1/tutorial/quickstart-docker.html)
+- [Official docs](https://jupyterhub.readthedocs.io/en/6.1.1/tutorial/quickstart-docker.html)
 
-- [Official docs](https://jupyterhub.readthedocs.io/en/6.0.1/tutorial/getting-started/config-basics.html)
+- [Official docs](https://jupyterhub.readthedocs.io/en/6.1.1/tutorial/getting-started/config-basics.html)
 
-- [Official docs](https://jupyterhub.readthedocs.io/en/6.0.1/howto/upgrading-v6.html)
+- [Official docs](https://jupyterhub.readthedocs.io/en/6.1.1/howto/upgrading-v6.html)
 
 
 <!-- W9_TROUBLESHOOT_START -->
