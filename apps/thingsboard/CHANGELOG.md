@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-10-30
+### Fixes and Enhancements
+- Update ThingsBoard to 4.4.0-latest and expose the optional `TB_LICENSE_SECRET` for licensed deployments.
+- Support the 4.4 first-run setup and document its production licensing requirement.
+
 ## 2026-09-21
 ### Fixes and Enhancements
 - Update ThingsBoard to 4.3.1 and the bundled PostgreSQL to 18.

@@ -14,7 +14,7 @@
     {
       "dist": "community",
       "version": [
-        "4.3.1",
+        "4.4.0-latest",
         "latest"
       ]
     }
@@ -30,5 +30,8 @@
     "cpu": "1",
     "memory": "2",
     "disk": "2"
+  },
+  "credentials": {
+    "none": true
   }
 }

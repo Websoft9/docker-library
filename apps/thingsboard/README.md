@@ -6,13 +6,17 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **ThingsBoard**.
 2. In the **Access** tab, get the login URL and credentials.
+
+   No preset administrator credentials are shipped; create the admin account in the setup wizard.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
 ### Usage
 
-1. Open the app URL and sign in with the default System Administrator account `sysadmin@thingsboard.org` / `sysadmin`.
-2. The bundled init service loads demo tenants, devices, and dashboards so you can explore the platform right away.
+1. On first launch, complete the setup wizard and create the system administrator account.
+2. Select the option to load demo data if you want sample tenants, devices, and dashboards.
+3. Sign in with the account you created.
 
 ### Change Password
 
@@ -26,14 +30,14 @@
 Websoft9 packages this app from the official [ThingsBoard Docker image](https://hub.docker.com/r/thingsboard/tb-node) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
-
+ThingsBoard 4.4 requires a license for production use. This package defaults to non-production mode, which is watermarked and shuts down after 30 cumulative days. For production, set `TB_LICENSE_SECRET` in `.env` to your license key; a valid key takes precedence over non-production mode. The first launch requires creating the system administrator in the setup wizard; no default login is provided. See the [Community Grant Program](https://thingsboard.io/community-grant-program/).
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 4.3.1, latest.
+Supported versions: 4.4.0-latest, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
