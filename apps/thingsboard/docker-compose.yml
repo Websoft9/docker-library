@@ -15,6 +15,7 @@ services:
     environment:
       - TB_SERVICE_ID=tb-ce-node
       - SPRING_DATASOURCE_URL=jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/${POSTGRESQL_DATABASE_NAME}
+      - TB_LICENSE_SECRET=${TB_LICENSE_SECRET}
     depends_on:
       postgres:
         condition: service_healthy
@@ -43,6 +44,7 @@ services:
       - INSTALL_TB=true
       - LOAD_DEMO=true
       - SPRING_DATASOURCE_URL=jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/${POSTGRESQL_DATABASE_NAME}
+      - TB_LICENSE_SECRET=${TB_LICENSE_SECRET}
     restart: "no"
     depends_on:
       postgres:

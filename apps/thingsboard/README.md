@@ -27,6 +27,8 @@ Websoft9 packages this app from the official [ThingsBoard Docker image](https://
 
 <!-- W9_NOTE_START -->
 
+ThingsBoard 4.4 requires a license for production use. Set `TB_LICENSE_SECRET` in `.env` to your license key; without one, the instance runs in watermarked non-production mode and shuts down after 30 cumulative days. See the [Community Grant Program](https://thingsboard.io/community-grant-program/).
+
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.
