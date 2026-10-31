@@ -1,0 +1,46 @@
+services:
+  dzzoffice:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    ports:
+      - "${W9_HTTP_PORT_SET}:80" # Web Console
+    environment:
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      REDIS_HOST: ${REDIS_HOST}
+    volumes:
+      - dzzoffice_data:/var/www/html
+    depends_on:
+      - mariadb
+      - redis
+
+  mariadb:
+    image: mariadb:${W9_DB_VERSION}
+    container_name: ${W9_ID}-mariadb
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${W9_POWER_PASSWORD}
+      MARIADB_DATABASE: ${MYSQL_DATABASE}
+      MARIADB_USER: ${MYSQL_USER}
+      MARIADB_PASSWORD: ${MYSQL_PASSWORD}
+      MARIADB_AUTO_UPGRADE: "1"
+      MARIADB_DISABLE_UPGRADE_BACKUP: "1"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+  redis:
+    image: redis:8.10
+    container_name: ${W9_ID}-redis
+    restart: unless-stopped
+
+volumes:
+  dzzoffice_data:
+  mariadb_data:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

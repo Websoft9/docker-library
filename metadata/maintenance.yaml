@@ -35,6 +35,7 @@ cadence:
   - wordpresspro
   - dsh
   monthly:
+  - dzzoffice
   - grav
   - inngest
   - jfrog
@@ -44,6 +45,7 @@ cadence:
   - xinference
 update_policy:
   patch-minor:
+  - dzzoffice
   - grav
   - inngest
   - jfrog

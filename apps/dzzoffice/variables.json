@@ -1,0 +1,55 @@
+{
+  "name": "dzzoffice",
+  "trademark": "DzzOffice",
+  "release": false,
+  "upstream": {
+    "image": "https://hub.docker.com/r/xiaohu2023/dzzoffice",
+    "releases": "https://github.com/zyx0814/dzzoffice",
+    "compose": {
+      "compose": "https://raw.githubusercontent.com/zyx0814/dzzoffice-docker/main/compose/docker-compose.yml",
+      "env": "https://raw.githubusercontent.com/zyx0814/dzzoffice-docker/main/compose/db.env"
+    },
+    "docs": ["https://github.com/zyx0814/dzzoffice", "https://github.com/zyx0814/dzzoffice-docker"]
+  },
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["2.4.2", "latest"]
+    }
+  ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 80,
+      "path": "/"
+    }
+  },
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1"
+  },
+  "credentials": {
+    "none": true
+  },
+  "env": {
+    "first_startup_only": [
+      "W9_POWER_PASSWORD",
+      "MYSQL_DATABASE",
+      "MYSQL_USER"
+    ]
+  },
+  "help": {
+    "db": "In the installer, choose MySQL/MariaDB. Use dzzoffice-mariadb as the database host (the default container name), dzzoffice for the database and user, and the W9_POWER_PASSWORD value from .env.",
+    "login": "Create the first administrator in the browser installer; the image does not provide preset administrator credentials."
+  },
+  "externalDB": {
+    "11.8": {
+      "mariadb": {
+        "min": "10.2",
+        "recommended": "11.8",
+        "reason": "DzzOffice documents MariaDB 10.2+; 11.8 is the current MariaDB LTS track."
+      }
+    }
+  }
+}

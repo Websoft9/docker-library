@@ -1,0 +1,14 @@
+{
+  "trademark": "DzzOffice",
+  "catalogBindings": [
+    {
+      "parentKey": "collaboration",
+      "childKey": "document"
+    }
+  ],
+  "summary": "Self-hosted collaboration office suite",
+  "overview": "DzzOffice combines file storage, online office tools, team communication, task boards, and modular collaboration apps in a self-hosted web workspace.",
+  "description": "DzzOffice is an open-source collaborative office suite for teams. It provides file storage, team directories, online document integrations, task boards, discussions, and other modular applications. This package runs the upstream DzzOffice image with MariaDB and Redis; administrators complete initial setup in the browser.",
+  "websiteurl": "https://www.dzzoffice.com",
+  "screenshots": []
+}
