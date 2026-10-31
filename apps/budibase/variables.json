@@ -3,7 +3,7 @@
   "trademark": "Budibase",
   "release": true,
   "upstream": {
-    "image": "https://hub.docker.com/r/budibase/proxy",
+    "image": "https://hub.docker.com/r/budibase/apps",
     "releases": "https://github.com/Budibase/budibase/releases",
     "compose": {
       "compose": "https://raw.githubusercontent.com/Budibase/budibase/master/hosting/docker-compose.yaml",

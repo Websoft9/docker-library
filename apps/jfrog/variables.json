@@ -3,7 +3,7 @@
   "trademark": "JFrog Artifactory",
   "release": true,
   "upstream": {
-    "image": "releases-docker.jfrog.io/jfrog/artifactory-oss",
+    "image": "https://releases-docker.jfrog.io/jfrog/artifactory-oss",
     "docs": [
       "https://www.jfrogchina.com/docs/docker-install-artifactory-1",
       "https://github.com/jfrog/artifactory-docker-examples"

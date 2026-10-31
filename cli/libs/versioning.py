@@ -9,19 +9,20 @@ VARIANT_SUFFIX_RE = re.compile(
     r"^v?(\d+(?:\.\d+)*)(?:[-_]?(rc|alpha|beta|dev|pre|preview|canary|nightly|snapshot|insider)[.-]?(\d+)?)?(?:[-_].*)?$",
     re.IGNORECASE,
 )
+PREFIXED_VERSION_RE = re.compile(r"^([a-z][a-z_-]*?)(?:v)?(\d+(?:\.\d+)*)(.*)$", re.IGNORECASE)
 
 NON_STABLE_CHANNELS = {"canary", "nightly", "snapshot", "preview", "insider"}
 UNSTABLE_TOKENS = ("rc", "alpha", "beta", "dev", "pre", "preview", "canary", "nightly", "snapshot", "insider")
 
 
-def normalize_tag(name: str) -> str:
+def normalize_tag(name: str, reference: str | None = None) -> str:
     """Return the comparable version part of an image or release tag.
 
     Handles common official-image variants such as ``11.4-apache``,
     ``7.1-fpm``, ``11-alpine``, ``9.0-cli-ls84`` and
-    ``11.4.11-php8.3-apache``. If the original value is already a valid
-    PEP 440 version (for example ``12.0-rc`` or ``1.2rc1``), it is preserved
-    so prerelease filtering still works.
+    ``11.4.11-php8.3-apache``. For prefixed numeric tags, ``reference``
+    establishes the prefix (for example ``pg18-trixie`` or ``stable-11248``)
+    so unrelated numbers in image labels are not mistaken for versions.
     """
     normalized = re.sub(r"-ls\d+$", "", name)
     # Metabase publishes release trains with an ``.x`` patch placeholder,
@@ -34,6 +35,12 @@ def normalize_tag(name: str) -> str:
         return normalized
     except version.InvalidVersion:
         match = VARIANT_SUFFIX_RE.match(normalized)
+        if not match and reference:
+            reference_match = PREFIXED_VERSION_RE.match(reference)
+            if reference_match:
+                prefix = reference_match.group(1)
+                if normalized.lower().startswith(prefix.lower()):
+                    match = VARIANT_SUFFIX_RE.match(normalized[len(prefix):])
         if not match:
             return normalized
         base = match.group(1)
@@ -65,7 +72,7 @@ def get_current_versions(edition: list[dict]):
                 valid_versions.append("latest")
                 continue
             try:
-                valid_versions.append(version.parse(normalize_tag(str(current))))
+                valid_versions.append(version.parse(normalize_tag(str(current), str(current))))
             except version.InvalidVersion:
                 continue
 
@@ -73,10 +80,17 @@ def get_current_versions(edition: list[dict]):
 
 
 def _variant_tokens(name: str) -> set[str]:
-    # Strip only the numeric release, retaining channel/edition information.
-    tail = re.sub(r"^v?\d+(?:\.\d+)*", "", name.lower())
-    tail = re.sub(r"(?:^|[-_])ls\d+$", "", tail)
+    if name.lower() == "latest":
+        return set()
+    tail = re.sub(r"(?<!\d)v?\d+(?:\.\d+)*(?:\.x)?", "", name.lower())
+    tail = re.sub(r"(?<=[-_])ls\d+(?=$|[-_])", "", tail)
     return {token for token in re.split(r"[-_.]", tail) if token and not token.isdigit()}
+
+
+def _tag_version(name: str, reference: str | None = None) -> version.Version:
+    if name.lower() == "latest":
+        return version.Version("0")
+    return version.parse(normalize_tag(name, reference))
 
 
 def variant_score(name: str, current_version: str) -> tuple:
@@ -118,14 +132,14 @@ def _prefer_variant(tags: list[dict], candidates: list[tuple], current_version: 
 
 
 def find_latest_version(tags: list[dict], current_version: str) -> dict | None:
-    current_ver = version.parse(normalize_tag(current_version))
+    current_ver = _tag_version(current_version, current_version)
     minor_candidates = []
     full_candidates = []
 
     for tag in tags:
         tag_name = tag["name"]
         try:
-            tag_ver = version.parse(normalize_tag(tag_name))
+            tag_ver = _tag_version(tag_name, current_version)
         except version.InvalidVersion:
             continue
 
@@ -182,8 +196,11 @@ def update_status(current_version: str, candidate: dict | None) -> str:
     if not candidate:
         return "up-to-date"
 
-    current = version.parse(normalize_tag(current_version))
-    latest = version.parse(normalize_tag(str(candidate.get("version", ""))))
+    if current_version.lower() == "latest":
+        return "update-available"
+
+    current = _tag_version(current_version, current_version)
+    latest = _tag_version(str(candidate.get("version", "")), current_version)
     if latest <= current:
         return "up-to-date"
     if len(current.release) == 2 and latest.release[:2] == current.release[:2]:

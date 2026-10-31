@@ -3,7 +3,7 @@
   "trademark": "Oracle Database",
   "release": true,
   "upstream": {
-    "image": "https://container-registry.oracle.com/ords/ocr/ba/database/express"
+    "image": "https://container-registry.oracle.com/database/express"
   },
   "edition": [
     {

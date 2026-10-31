@@ -24,7 +24,7 @@
     "disk": "2"
   },
   "upstream": {
-    "image": "https://github.com/mlflow/mlflow/pkgs/container/mlflow",
+    "image": "ghcr.io/mlflow/mlflow",
     "releases": "https://github.com/mlflow/mlflow/releases",
     "compose": {
       "compose": "https://raw.githubusercontent.com/mlflow/mlflow/v3.17.1/docker-compose/docker-compose.yml",

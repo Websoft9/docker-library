@@ -73,6 +73,28 @@ def test_fetch_verified_candidates_falls_back_when_index_fetch_fails(monkeypatch
     assert latest == {"version": "1.2", "last_updated": "2026-01-01"}
 
 
+def test_fetch_verified_candidates_reads_github_source_without_registry_verification(monkeypatch):
+    calls = []
+
+    def fake_candidates(source_type, url, current_version, **kwargs):
+        calls.append((source_type, url, current_version))
+        return {"version": "1.2.0", "last_updated": ""}, None
+
+    monkeypatch.setattr(sources, "fetch_candidates", fake_candidates)
+
+    latest, error = sources.fetch_verified_candidates(
+        verify_type="github-tags",
+        verify_url="https://github.com/example/project",
+        index_type="github-releases",
+        index_url="https://github.com/example/project/releases",
+        current_version="1.0.0",
+    )
+
+    assert error is None
+    assert latest["version"] == "1.2.0"
+    assert calls == [("github-releases", "https://github.com/example/project/releases", "1.0.0")]
+
+
 def test_fetch_verified_candidates_prefers_verified_dockerhub_candidate(monkeypatch):
     monkeypatch.setattr(sources, "_github_tags_raw", lambda url, page_size: ([{"name": "1.2.0", "last_updated": ""}, {"name": "1.1.0", "last_updated": ""}], None))
     monkeypatch.setattr(sources, "_dockerhub_api_url", lambda url: "https://hub.docker.com/v2/repositories/library/demo/tags")
@@ -243,6 +265,34 @@ def test_fetch_ecr_public_uses_paginated_tags(monkeypatch):
     assert error is None
     assert latest == {"version": "18.11", "last_updated": ""}
     assert calls == [None, "https://public.ecr.aws/next"]
+
+
+def test_fetch_registry_v2_reads_paginated_tags(monkeypatch):
+    pages = [
+        ({"tags": ["1.0", "1.1"]}, {"Link": '<https://registry.example/v2/team/app/tags/list?n=2&last=1.1>; rel="next"'}, None, None),
+        ({"tags": ["1.2"]}, {}, None, None),
+    ]
+    calls = []
+
+    def fake_registry_json(url, params=None, headers=None):
+        calls.append((url, params))
+        return pages[len(calls) - 1]
+
+    monkeypatch.setattr(sources, "_registry_json", fake_registry_json)
+
+    latest, error = sources.fetch_candidates(
+        "registry-v2-tags",
+        "https://registry.example/team/app",
+        "1.0",
+        page_size=2,
+    )
+
+    assert error is None
+    assert latest["version"] == "1.2"
+    assert calls == [
+        ("https://registry.example/v2/team/app/tags/list", {"n": 2}),
+        ("https://registry.example/v2/team/app/tags/list?n=2&last=1.1", None),
+    ]
 
 
 def test_fetch_verified_candidates_verifies_ecr_public_tag(monkeypatch):

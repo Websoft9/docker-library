@@ -37,6 +37,29 @@ def test_normalize_tag_strips_ls_build_and_cli_suffixes():
     assert normalize_tag("version-9.0-cli") == "version-9.0"
 
 
+@pytest.mark.parametrize(
+    "current,tags,expected",
+    [
+        ("pg18-trixie", ["pg18-trixie", "pg19-trixie", "pg19-alpine"], "pg19-trixie"),
+        ("stable-11248", ["stable-11248", "stable-11526"], "stable-11526"),
+    ],
+)
+def test_candidate_matching_supports_prefixed_numeric_tags(current, tags, expected):
+    candidates = [{"name": tag, "last_updated": ""} for tag in tags]
+    assert find_latest_version(candidates, current)["version"] == expected
+
+
+def test_latest_current_channel_returns_latest_stable_target():
+    tags = [
+        {"name": "1.2.0-rc.1", "last_updated": ""},
+        {"name": "1.2.0", "last_updated": ""},
+        {"name": "1.1.0", "last_updated": ""},
+    ]
+
+    assert select_candidates(tags, "latest", limit=3)["version"] == "1.2.0"
+    assert update_status("latest", {"version": "1.2.0"}) == "update-available"
+
+
 def test_normalize_tag_strips_metabase_patch_placeholder():
     assert normalize_tag("v0.64.1.x") == "v0.64.1"
     assert normalize_tag("v0.64.x") == "v0.64"
