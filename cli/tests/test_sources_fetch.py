@@ -269,7 +269,7 @@ def test_fetch_ecr_public_uses_paginated_tags(monkeypatch):
 
 def test_fetch_registry_v2_reads_paginated_tags(monkeypatch):
     pages = [
-        ({"tags": ["1.0", "1.1"]}, {"Link": '<https://registry.example/v2/team/app/tags/list?n=2&last=1.1>; rel="next"'}, None, None),
+        ({"tags": ["1.0", "1.1"]}, {"link": '<https://registry.example/v2/team/app/tags/list?n=2&last=1.1>; rel="next"'}, None, None),
         ({"tags": ["1.2"]}, {}, None, None),
     ]
     calls = []

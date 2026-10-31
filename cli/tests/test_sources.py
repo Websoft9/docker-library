@@ -89,7 +89,7 @@ def test_registry_json_retries_bearer_challenge(monkeypatch):
         calls.append((url, params, headers))
         if url == "https://registry.example/v2/team/app/tags/list":
             if not headers:
-                return None, {"WWW-Authenticate": 'Bearer realm="https://auth.example/token",service="registry",scope="repository:team/app:pull"'}, "HTTP 401 Unauthorized"
+                return None, {"Www-Authenticate": 'Bearer realm="https://auth.example/token",service="registry",scope="repository:team/app:pull"'}, "HTTP 401 Unauthorized"
             return {"tags": ["1.2"]}, {}, None
         return {"token": "test-token"}, {}, None
 

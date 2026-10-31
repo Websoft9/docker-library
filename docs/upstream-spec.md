@@ -68,6 +68,13 @@ Fallback rule:
 - `github-releases` falls back to `github-tags` when the repo publishes no releases
 - GitHub release/tag URLs used as the primary version source are read directly; a separate registry verification is only possible when `upstream.image` points to a supported image registry
 
+## Network Failure Diagnosis
+
+- Distinguish DNS resolution, connection, TLS, HTTP/authentication, and response-parsing failures. Record the source URL, runner environment, failure stage, and HTTP status when available.
+- In Copilot Cloud, DNS or connection failures may be caused by the runner's outbound firewall or hostname allowlist. Check whether the upstream registry hostname is allowed; if it is missing, add that hostname to the applicable allowlist and retry from the same runner.
+- A DNS failure alone does not prove an allowlist block or an invalid upstream URL. If the policy cannot be checked or the retry cannot confirm access, report the source as unavailable with the suspected environment limitation; do not interpret it as no update.
+- HTTP responses such as `401` or `403` are not DNS failures. Preserve the status and registry authentication challenge so that authentication or authorization issues can be diagnosed separately.
+
 ## Scan Outputs
 
 CLI may emit:
