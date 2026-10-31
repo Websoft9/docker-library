@@ -113,13 +113,20 @@ def _registry_auth_params(challenge: str) -> tuple[str | None, dict[str, str]]:
     return token_url, {key: value for key, value in values.items() if key in {"service", "scope"}}
 
 
+def _header_value(headers: dict | None, name: str) -> str | None:
+    if not headers:
+        return None
+    expected = name.lower()
+    return next((value for key, value in headers.items() if key.lower() == expected), None)
+
+
 def _registry_json(
     url: str,
     params: dict | None = None,
     headers: dict | None = None,
 ) -> tuple[dict | list | None, dict | None, str | None, str | None]:
     data, response_headers, error = get_json_with_fallback(url, params, headers)
-    challenge = (response_headers or {}).get("WWW-Authenticate", "")
+    challenge = _header_value(response_headers, "WWW-Authenticate") or ""
     token_url, token_params = _registry_auth_params(challenge)
     if not error or not token_url:
         return data, response_headers, error, None
@@ -163,7 +170,7 @@ def _fetch_registry_v2(
         if error:
             return None, error
         tags.extend({"name": tag, "last_updated": ""} for tag in (data or {}).get("tags") or [])
-        next_url = _registry_next_url((response_headers or {}).get("Link"), next_url)
+        next_url = _registry_next_url(_header_value(response_headers, "Link"), next_url)
         if not next_url:
             return select_candidates(tags, current_version, candidate_limit), None
         params = None
@@ -290,7 +297,7 @@ def _ghcr_tags_page(namespace: str, image: str, token: str, page_size: int, last
     data, response_headers, error = get_json_with_fallback(url, params, {"Authorization": "Bearer " + token})
     if error:
         return [], None, error
-    return (data or {}).get("tags") or [], (response_headers or {}).get("Link"), None
+    return (data or {}).get("tags") or [], _header_value(response_headers, "Link"), None
 
 
 def _fetch_ghcr(url: str, current_version: str, major_ahead: int, page_size: int, candidate_limit: int = 1) -> tuple[dict | None, str | None]:
@@ -367,7 +374,7 @@ def _ecr_public_tags_page(
         return [], None, error
     return (
         (data or {}).get("tags") or [],
-        _ecr_public_next_url((response_headers or {}).get("Link")),
+        _ecr_public_next_url(_header_value(response_headers, "Link")),
         None,
     )
 
