@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-10-31
+- Updated the RabbitMQ image to `4.4-management`.
+- Documented that RabbitMQ 4.4 classic queue v2 files cannot be downgraded to 4.3.x or earlier.
+- Regenerated the README.
+
 ## 2026-09-12
 - Updated the RabbitMQ image to `4.3-management`.
 - Dropped the EOL `3.13-management` line from the supported versions; only `4.3-management` is supported.

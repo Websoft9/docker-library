@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **RabbitMQ**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -27,18 +28,18 @@
 Websoft9 packages this app from the official [RabbitMQ Docker image](https://hub.docker.com/_/rabbitmq) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
-The image tag is pinned to `4.3-management`, which ships the management plugin. The `rabbitmq_data` volume persists broker state under `/var/lib/rabbitmq`, the only volume the official image declares.
+The image tag is pinned to `4.4-management`, which ships the management plugin. The `rabbitmq_data` volume persists broker state under `/var/lib/rabbitmq`, the only volume the official image declares.
 
 Custom configuration lives in `src/rabbitmq.conf`, mounted read-only to `/etc/rabbitmq/conf.d/99-websoft9.conf`. It is merged after the image defaults in `/etc/rabbitmq/conf.d/10-defaults.conf`, so the `99-` prefix lets you override defaults; set only the keys you need.
 
-Upgrading from `4.1.x` to `4.3.x` is not a direct in-place upgrade: the official upgrade path goes through `4.2.x` first. Enable all required feature flags before upgrading, and note that deprecated features are disabled by default and classic queue v1 storage is removed in `4.3.0`.
+Upgrading from `4.1.x` to `4.3.x` is not a direct in-place upgrade: the official upgrade path goes through `4.2.x` first. Enable all required feature flags before upgrading, and note that deprecated features are disabled by default and classic queue v1 storage is removed in `4.3.0`. RabbitMQ 4.4 writes classic queue shared message store files in a new v2 format (`.sqs`); once these files exist, the node cannot be downgraded to `4.3.x` or earlier.
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 4.3-management.
+Supported versions: 4.4-management.
 
 
 ### Ports
