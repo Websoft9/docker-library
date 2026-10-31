@@ -10,6 +10,11 @@ def test_detect_source_type_covers_supported_sources():
     assert sources.detect_source_type("https://public.ecr.aws/gravitational/teleport-distroless") == "ecr-public"
     assert sources.detect_source_type("https://github.com/foo/bar/releases") == "github-releases"
     assert sources.detect_source_type("https://github.com/foo/bar") == "github-tags"
+    assert sources.detect_source_type("docker.osgeo.org/geoserver") == "registry-v2-tags"
+    assert sources.detect_source_type("https://registry.gitlab.cn/omnibus/gitlab-jh") == "registry-v2-tags"
+    assert sources.detect_source_type("https://mcr.microsoft.com/mssql/server") == "registry-v2-tags"
+    assert sources.detect_source_type("https://container-registry.oracle.com/database/express") == "registry-v2-tags"
+    assert sources.detect_source_type("https://www.docker.com/products") is None
     assert sources.detect_source_type("https://example.com/file.txt") is None
 
 
@@ -68,6 +73,36 @@ def test_fetch_candidates_rejects_unsupported_source_type():
 
     assert latest is None
     assert error == "unsupported source type: unknown"
+
+
+def test_registry_repository_extracts_oci_repository_path():
+    assert sources._registry_repository("https://mcr.microsoft.com/v2/mssql/server/tags/list") == (
+        "mcr.microsoft.com",
+        "mssql/server",
+    )
+
+
+def test_registry_json_retries_bearer_challenge(monkeypatch):
+    calls = []
+
+    def fake_get_json(url, params=None, headers=None):
+        calls.append((url, params, headers))
+        if url == "https://registry.example/v2/team/app/tags/list":
+            if not headers:
+                return None, {"WWW-Authenticate": 'Bearer realm="https://auth.example/token",service="registry",scope="repository:team/app:pull"'}, "HTTP 401 Unauthorized"
+            return {"tags": ["1.2"]}, {}, None
+        return {"token": "test-token"}, {}, None
+
+    monkeypatch.setattr(sources, "get_json_with_fallback", fake_get_json)
+
+    data, _, error, token = sources._registry_json("https://registry.example/v2/team/app/tags/list", {"n": 100})
+
+    assert error is None
+    assert data == {"tags": ["1.2"]}
+    assert token == "test-token"
+    assert calls[1][0] == "https://auth.example/token"
+    assert calls[1][1] == {"service": "registry", "scope": "repository:team/app:pull"}
+    assert calls[2][2] == {"Authorization": "Bearer test-token"}
 
 
 def test_get_json_authenticates_github_api_when_token_is_present(monkeypatch):

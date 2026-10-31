@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 import re
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlsplit
 
 from packaging import version
 
@@ -16,6 +16,7 @@ DOCKERHUB_URLS = ("hub.docker.com",)
 GITHUB_RELEASES_URLS = ("github.com",)
 GHCR_URLS = ("ghcr.io",)
 ECR_PUBLIC_URLS = ("gallery.ecr.aws", "public.ecr.aws")
+REGISTRY_SOURCE_TYPE = "registry-v2-tags"
 MANIFEST_ACCEPT = (
     "application/vnd.oci.image.index.v1+json, "
     "application/vnd.docker.distribution.manifest.list.v2+json, "
@@ -24,17 +25,27 @@ MANIFEST_ACCEPT = (
 
 
 def detect_source_type(url: str) -> str | None:
-    lowered = url.lower()
-    if any(marker in lowered for marker in DOCKERHUB_URLS):
+    raw = url.strip()
+    parsed = urlsplit(raw if "://" in raw else f"https://{raw}")
+    host = (parsed.hostname or "").lower()
+    if host in DOCKERHUB_URLS:
         return "dockerhub-tags"
-    if any(marker in lowered for marker in GHCR_URLS):
+    if host in GHCR_URLS:
         return "ghcr-tags"
-    if any(marker in lowered for marker in ECR_PUBLIC_URLS):
+    if host in ECR_PUBLIC_URLS:
         return "ecr-public"
-    if any(marker in lowered for marker in GITHUB_RELEASES_URLS):
-        if "releases" in lowered:
+    if host in GITHUB_RELEASES_URLS:
+        if "releases" in parsed.path.lower():
             return "github-releases"
         return "github-tags"
+    if (
+        parsed.path.startswith("/v2/")
+        or "/tags/list" in parsed.path
+        or (not urlsplit(raw).scheme and bool(parsed.path.strip("/")))
+        or any(token in host.split(".", 1)[0] for token in ("registry", "docker"))
+        or host.startswith("mcr.")
+    ):
+        return REGISTRY_SOURCE_TYPE
     return None
 
 
@@ -52,6 +63,8 @@ def fetch_candidates(
         return _fetch_ghcr(url, current_version, major_ahead, page_size, candidate_limit)
     if source_type == "ecr-public":
         return _fetch_ecr_public(url, current_version, major_ahead, page_size, candidate_limit)
+    if source_type == REGISTRY_SOURCE_TYPE:
+        return _fetch_registry_v2(url, current_version, page_size, candidate_limit)
     if source_type == "github-releases":
         return _fetch_github_releases(url, current_version, page_size, candidate_limit)
     if source_type == "github-tags":
@@ -66,6 +79,97 @@ def _major_prefix(version_str: str) -> str | None:
     return f"{match.group(1)}."
 
 
+def _registry_repository(url: str) -> tuple[str, str] | None:
+    raw = url.strip()
+    parsed = urlsplit(raw if "://" in raw else f"https://{raw}")
+    if not parsed.hostname:
+        return None
+
+    path = parsed.path.strip("/")
+    if path.startswith("v2/"):
+        path = path[3:]
+    path = re.sub(r"/tags(?:/list)?(?:/.*)?$", "", path, flags=re.IGNORECASE)
+    path = re.sub(r"/manifests/.*$", "", path, flags=re.IGNORECASE)
+    repository = path.strip("/")
+    if not repository:
+        return None
+    parts = repository.split("/")
+    parts[-1] = parts[-1].split(":", 1)[0]
+    return parsed.hostname, "/".join(parts)
+
+
+def _registry_auth_params(challenge: str) -> tuple[str | None, dict[str, str]]:
+    scheme, _, parameters = challenge.partition(" ")
+    if scheme.lower() != "bearer":
+        return None, {}
+    values = {
+        key.lower(): quoted if quoted else unquoted
+        for key, quoted, unquoted in re.findall(
+            r'([A-Za-z][\w-]*)\s*=\s*(?:"([^"]*)"|([^,\s]+))',
+            parameters,
+        )
+    }
+    token_url = values.pop("realm", None)
+    return token_url, {key: value for key, value in values.items() if key in {"service", "scope"}}
+
+
+def _registry_json(
+    url: str,
+    params: dict | None = None,
+    headers: dict | None = None,
+) -> tuple[dict | list | None, dict | None, str | None, str | None]:
+    data, response_headers, error = get_json_with_fallback(url, params, headers)
+    challenge = (response_headers or {}).get("WWW-Authenticate", "")
+    token_url, token_params = _registry_auth_params(challenge)
+    if not error or not token_url:
+        return data, response_headers, error, None
+
+    token_data, _, token_error = get_json_with_fallback(token_url, token_params or None)
+    token = (token_data or {}).get("token") or (token_data or {}).get("access_token")
+    if token_error or not token:
+        return None, response_headers, token_error or error, None
+
+    authorized_headers = dict(headers or {})
+    authorized_headers["Authorization"] = "Bearer " + token
+    data, response_headers, error = get_json_with_fallback(url, params, authorized_headers)
+    return data, response_headers, error, token
+
+
+def _registry_next_url(link: str | None, base_url: str) -> str | None:
+    if not link:
+        return None
+    match = re.search(r'<([^>]+)>\s*;\s*rel="?next"?', link, re.IGNORECASE)
+    return urljoin(base_url, match.group(1)) if match else None
+
+
+def _fetch_registry_v2(
+    url: str,
+    current_version: str,
+    page_size: int,
+    candidate_limit: int = 1,
+) -> tuple[dict | None, str | None]:
+    repository = _registry_repository(url)
+    if not repository:
+        return None, "invalid container registry URL"
+
+    host, name = repository
+    next_url: str | None = f"https://{host}/v2/{name}/tags/list"
+    params = {"n": min(page_size, 1000)}
+    token = None
+    tags: list[dict] = []
+    for _ in range(100):
+        headers = {"Authorization": "Bearer " + token} if token else None
+        data, response_headers, error, token = _registry_json(next_url, params, headers)
+        if error:
+            return None, error
+        tags.extend({"name": tag, "last_updated": ""} for tag in (data or {}).get("tags") or [])
+        next_url = _registry_next_url((response_headers or {}).get("Link"), next_url)
+        if not next_url:
+            return select_candidates(tags, current_version, candidate_limit), None
+        params = None
+    return None, "container registry pagination exceeded 100 pages"
+
+
 def _get_json(
     url: str,
     params: dict | None = None,
@@ -75,7 +179,7 @@ def _get_json(
     if "api.github.com" in url and "Authorization" not in request_headers:
         token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
         if token:
-            request_headers["Authorization"] = f"Bearer {token}"
+            request_headers["Authorization"] = "Bearer " + token
     data, _headers, error = get_json_with_fallback(url, params, request_headers or None)
     return data, error
 
@@ -131,7 +235,7 @@ def _fetch_dockerhub(url: str, current_version: str, major_ahead: int, page_size
     filtered = []
     for tag in tags:
         try:
-            tag_ver = version.parse(normalize_tag(tag["name"]))
+            tag_ver = version.parse(normalize_tag(tag["name"], current_version))
         except version.InvalidVersion:
             continue
         if tag_ver.release and tag_ver.release[0] in allowed_majors:
@@ -183,7 +287,7 @@ def _ghcr_tags_page(namespace: str, image: str, token: str, page_size: int, last
         params["last"] = last
     url = f"https://ghcr.io/v2/{namespace}/{image}/tags/list"
     headers = {"Authorization": f"Bearer {token}"}
-    data, response_headers, error = get_json_with_fallback(url, params, headers)
+    data, response_headers, error = get_json_with_fallback(url, params, {"Authorization": "Bearer " + token})
     if error:
         return [], None, error
     return (data or {}).get("tags") or [], (response_headers or {}).get("Link"), None
@@ -303,7 +407,7 @@ def _fetch_ecr_public(
     filtered = []
     for tag in tags:
         try:
-            tag_ver = version.parse(normalize_tag(tag))
+            tag_ver = version.parse(normalize_tag(tag, current_version))
         except version.InvalidVersion:
             continue
         if allowed_majors is not None and not (tag_ver.release and tag_ver.release[0] in allowed_majors):
@@ -320,7 +424,7 @@ def _ecr_public_manifest_exists(namespace: str, image: str, tag: str, token: str
     if not probe.ok:
         return False, "ECR Public unreachable"
     try:
-        response = get(url, headers=headers)
+        response = get(url, headers={"Authorization": "Bearer " + token, "Accept": MANIFEST_ACCEPT})
         if response.status_code == 200:
             return True, None
         if response.status_code == 404:
@@ -424,7 +528,11 @@ def _looks_like_branch_tag(name: str) -> bool:
 
 
 def _stable_candidates(tags: list[dict], current_version: str, limit: int = 5) -> list[str]:
-    current_ver = version.parse(normalize_tag(current_version))
+    current_ver = (
+        version.Version("0")
+        if current_version.lower() == "latest"
+        else version.parse(normalize_tag(current_version, current_version))
+    )
     candidates = set()
 
     for tag in tags:
@@ -432,7 +540,7 @@ def _stable_candidates(tags: list[dict], current_version: str, limit: int = 5) -
         if _looks_like_branch_tag(tag_name):
             continue
         try:
-            tag_ver = version.parse(normalize_tag(tag_name))
+            tag_ver = version.parse(normalize_tag(tag_name, current_version))
         except version.InvalidVersion:
             continue
 
@@ -444,7 +552,7 @@ def _stable_candidates(tags: list[dict], current_version: str, limit: int = 5) -
         candidates.add(tag_name)
 
     def version_key(name):
-        return version.parse(normalize_tag(name))
+        return version.parse(normalize_tag(name, current_version))
 
     ordered = sorted(candidates, key=lambda name: (version_key(name), name), reverse=True)
     ordered.sort(key=lambda name: variant_score(name, current_version))
@@ -452,7 +560,7 @@ def _stable_candidates(tags: list[dict], current_version: str, limit: int = 5) -
 
 
 def _dockerhub_verify(api_url: str, candidate: str, page_size: int) -> dict | None:
-    candidate_ver = version.parse(normalize_tag(candidate))
+    candidate_ver = version.parse(normalize_tag(candidate, candidate))
     queries = [candidate]
     stripped = candidate.lstrip("v")
     if stripped != candidate:
@@ -468,7 +576,7 @@ def _dockerhub_verify(api_url: str, candidate: str, page_size: int) -> dict | No
         for tag in (data or {}).get("results") or []:
             tag_name = tag["name"]
             try:
-                if version.parse(normalize_tag(tag_name)) == candidate_ver:
+                if version.parse(normalize_tag(tag_name, candidate)) == candidate_ver:
                     matches.append(tag)
             except version.InvalidVersion:
                 continue
@@ -498,6 +606,18 @@ def fetch_verified_candidates(
             candidate_limit=candidate_limit,
         )
 
+    if verify_type in {"github-releases", "github-tags"}:
+        if index_type in {"github-releases", "github-tags"}:
+            return fetch_candidates(
+                index_type,
+                index_url,
+                current_version,
+                major_ahead=major_ahead,
+                page_size=page_size,
+                candidate_limit=candidate_limit,
+            )
+        return fallback()
+
     # Release indexes often omit image-only variants such as -lts or -core.
     # Use registry discovery for these tags rather than verifying plain releases.
     if re.match(r"^v?\d+(?:\.\d+)*[-_]", current_version):
@@ -521,18 +641,22 @@ def fetch_verified_candidates(
         return None, None
 
     minors = sorted(
-        {version.parse(normalize_tag(name)).release[:2] for name in candidates},
+        {version.parse(normalize_tag(name, current_version)).release[:2] for name in candidates},
         reverse=True,
     )
     wanted = [".".join(str(p) for p in minor) for minor in minors] + candidates
 
     # A minor tag equal to the current version must never be reported as a
     # candidate: verifying it would echo the current version back.
-    current_ver = version.parse(normalize_tag(current_version))
+    current_ver = (
+        version.Version("0")
+        if current_version.lower() == "latest"
+        else version.parse(normalize_tag(current_version, current_version))
+    )
     filtered = []
     for candidate in wanted:
         try:
-            if version.parse(normalize_tag(candidate)) > current_ver:
+            if version.parse(normalize_tag(candidate, current_version)) > current_ver:
                 filtered.append(candidate)
         except version.InvalidVersion:
             continue

@@ -17,9 +17,9 @@ from packaging.version import Version, InvalidVersion
 app = typer.Typer(help="Scan upstream versions", context_settings={"help_option_names": ["-h", "--help"]})
 
 
-def _comparable(tag: str) -> Version | None:
+def _comparable(tag: str, reference: str | None = None) -> Version | None:
     try:
-        return Version(normalize_tag(tag))
+        return Version(normalize_tag(tag, reference))
     except InvalidVersion:
         return None
 
@@ -123,7 +123,11 @@ def scan_apps(
         selected_by = candidate["selected_by"]
         variables = candidate["variables"]
         current_versions, all_versions = get_current_versions(variables.get("edition", []))
-        current_version_strs = [str(current) for current in current_versions]
+        reported_versions = all_versions if plan_only else [
+            value for value in all_versions if str(value).lower() != "latest"
+        ]
+        if not reported_versions and all_versions and all(str(value).lower() == "latest" for value in all_versions):
+            reported_versions = ["latest"]
         upstream = variables.get("upstream") or {}
         image_url = upstream.get("image") or ""
         payload = {
@@ -133,7 +137,7 @@ def scan_apps(
             "update_policy": metadata.update_policy,
             "selected_by": selected_by,
             "target_date": target.isoformat(),
-            "current_version": all_versions if plan_only else [v for v in all_versions if str(v).lower() != "latest"],
+            "current_version": reported_versions,
             "upstream_image": image_url,
             "source_type": resolve_source_type(variables),
             "release": variables.get("release"),
@@ -144,14 +148,17 @@ def scan_apps(
             continue
 
         if not variables.get("release", False) and not app_filter:
-            payload["error"] = "App release=false"
+            payload["scan_note"] = "Skipped because release=false"
             payload["latest_version"] = None
+            payload["version_status"] = "not-released"
             payload["network"] = http.network_snapshot()
             payload["scan_elapsed_ms"] = int((time.monotonic() - started) * 1000)
             output.append(payload)
             continue
 
-        if not current_versions or ("latest" in current_version_strs and len(current_version_strs) == 1):
+        numeric_versions = [current for current in current_versions if current != "latest"]
+        floating_latest = bool(all_versions) and all(str(raw).lower() == "latest" for raw in all_versions)
+        if not numeric_versions and not floating_latest:
             payload["error"] = "No valid current versions found"
             payload["latest_version"] = None
             payload["network"] = http.network_snapshot()
@@ -159,12 +166,15 @@ def scan_apps(
             output.append(payload)
             continue
 
-        highest_version = max(current for current in current_versions if current != "latest")
-        # Preserve the exact configured tag through discovery as well as display.
-        current_tag = next(
-            str(raw) for raw in all_versions
-            if str(raw).lower() != "latest" and _comparable(str(raw)) == highest_version
-        )
+        if numeric_versions:
+            highest_version = max(numeric_versions)
+            # Preserve the exact configured tag through discovery as well as display.
+            current_tag = next(
+                str(raw) for raw in all_versions
+                if str(raw).lower() != "latest" and _comparable(str(raw), str(raw)) == highest_version
+            )
+        else:
+            current_tag = "latest"
         releases = upstream.get("releases")
         if releases:
             latest_version, error = fetch_verified_candidates(

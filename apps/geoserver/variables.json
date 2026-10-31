@@ -28,8 +28,7 @@
     "disk": "2"
   },
   "upstream": {
-    "image": "docker.osgeo.org/geoserver",
-    "releases": "https://geoserver.org/download/",
+    "image": "https://docker.osgeo.org/geoserver",
     "docs": [
       "https://docs.geoserver.org/latest/en/user/installation/docker.html",
       "https://github.com/geoserver/docker"

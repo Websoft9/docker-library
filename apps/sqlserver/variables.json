@@ -17,7 +17,7 @@
     "disk": "2"
   },
   "upstream": {
-    "image": "https://mcr.microsoft.com/product/mssql/server/about",
+    "image": "https://mcr.microsoft.com/mssql/server",
     "docs": [
       "https://learn.microsoft.com/en-us/sql/linux/install-upgrade/quickstart-install-docker?view=sql-server-ver17",
       "https://learn.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker?view=sql-server-ver16",

@@ -57,7 +57,8 @@ def test_batch_scan_skips_release_false_apps(repo_fixture, app_factory, monkeypa
     result = versions.scan_apps()
 
     assert calls == []
-    assert result[0]["error"] == "App release=false"
+    assert result[0]["scan_note"] == "Skipped because release=false"
+    assert result[0]["version_status"] == "not-released"
     assert result[0]["latest_version"] is None
     assert result[0]["release"] is False
 
@@ -90,6 +91,29 @@ def test_scan_apps_uses_fetch_candidates_when_release_enabled(repo_fixture, app_
     result = versions.scan_apps(app_filter="demo")
 
     assert result[0]["latest_version"] == {"version": "1.1", "last_updated": "2026-01-01"}
+    assert result[0]["version_status"] == "update-available"
+
+
+def test_scan_apps_finds_stable_target_for_latest_only_channel(repo_fixture, app_factory, monkeypatch):
+    app_factory("demo", variables={
+        "name": "demo",
+        "release": True,
+        "upstream": {"image": "https://hub.docker.com/_/demo/tags"},
+        "edition": [{"dist": "community", "version": ["latest"]}],
+    })
+    calls = []
+
+    def fake_fetch(source_type, url, current_version, **kwargs):
+        calls.append(current_version)
+        return {"version": "1.2.0", "last_updated": "2026-01-01"}, None
+
+    monkeypatch.setattr(versions, "fetch_candidates", fake_fetch)
+
+    result = versions.scan_apps(app_filter="demo")
+
+    assert calls == ["latest"]
+    assert result[0]["current_version"] == ["latest"]
+    assert result[0]["latest_version"]["version"] == "1.2.0"
     assert result[0]["version_status"] == "update-available"
 
 

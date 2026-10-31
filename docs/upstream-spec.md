@@ -52,6 +52,7 @@ CLI-first source types (inferred from URL patterns, no manual `type` field):
 - `dockerhub-tags` - `hub.docker.com/...`
 - `ghcr-tags` - `ghcr.io/...`
 - `ecr-public` - `gallery.ecr.aws/...` or `public.ecr.aws/...`
+- `registry-v2-tags` - Docker Registry HTTP API V2 / OCI-compatible registry URLs, including registry image references such as `registry.example.com/group/app`
 - `github-releases` - `github.com/.../releases`
 - `github-tags` - `github.com/org/repo` (tags are the default GitHub source; no `/tags` suffix needed)
 - `raw-compose` - compose files referenced by `upstream.compose.compose`
@@ -65,6 +66,7 @@ Fallback rule:
 - if CLI cannot parse a declared source, return `source-error`
 - AI may then research and propose a corrected source
 - `github-releases` falls back to `github-tags` when the repo publishes no releases
+- GitHub release/tag URLs used as the primary version source are read directly; a separate registry verification is only possible when `upstream.image` points to a supported image registry
 
 ## Scan Outputs
 
@@ -166,6 +168,8 @@ Rollback ladder:
 Rules:
 - `url` must point to a stable upstream source
 - CLI only handles declared source types
+- registry URLs may use the registry's web URL or its image reference; OCI-compatible registries are queried through the standard `/v2/<repository>/tags/list` endpoint, with bearer-token challenges handled from the registry response
+- version matching uses the configured current tag to retain meaningful prefixes and variants, so tags such as `pg18-trixie` and `stable-11248` can be compared without treating arbitrary label numbers as versions
 - AI does not replace declared deterministic scan paths in normal operation
 
 ## Drift Boundaries
