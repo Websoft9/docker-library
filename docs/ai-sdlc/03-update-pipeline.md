@@ -10,7 +10,7 @@ Steps:
 3. Create one scan-review parent issue per non-dry-run scan, including no-update and undetermined results.
 4. Owner reviews the evidence, checks the approved apps in the issue checklist, optionally edits each target version, and comments `/approve-updates`.
 5. The scan-review workflow creates one linked child issue per explicitly approved app and assigns Copilot to it. The `/approve-updates` comment is the owner approval that starts the update assessment.
-6. AI researches upstream release notes and docs. Network probes use a 2s per-attempt budget with at most 2 retries; on local failure, fetch through the remote host's egress instead of extending timeouts.
+6. AI researches upstream release notes and docs. Network probes use a 2s per-attempt budget with at most 2 retries; on local failure, fetch through the remote host's egress instead of extending timeouts. For DNS or connection failures in Copilot Cloud, check the runner's outbound firewall and hostname allowlist; add a missing registry hostname and retry from the same runner. A resolver failure alone does not prove that the URL is invalid or that the upstream has no update; follow the [upstream network failure diagnosis](../upstream-spec.md#network-failure-diagnosis).
 7. AI edits `.env`, `docker-compose.yml`, `variables.json`, `README.md`, and `src/` when needed for the target version and for any app-local conformance fixes required by current repository rules. When `libs app-check --gate database` reports a bundled DB track as EOL, update it to a vendor-supported alive LTS track in the same update.
 8. AI registers any new translatable env key in `i18n/translation.json`.
 9. AI runs automated validation.
