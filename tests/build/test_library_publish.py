@@ -65,6 +65,12 @@ def test_summarize_versions_deduplicates_and_preserves_order():
     assert library_publish.summarize_versions(editions) == ["1.0", "2.0", "9.9"]
 
 
+def test_build_apps_version_summary_uses_first_version_per_app(build_fixture, monkeypatch):
+    monkeypatch.setattr(library_publish, "APPS_DIR", build_fixture / "apps")
+
+    assert library_publish.build_apps_version_summary() == [{"id": "demo", "version": "1.0"}]
+
+
 def test_app_package_and_checksum_entry_shapes():
     assert library_publish.build_app_package_entry("demo") == {"latest": "apps/demo/latest.zip"}
     assert library_publish.build_app_checksum_entry("demo") == {"latest": "apps/demo/latest.zip.sha256"}
@@ -301,3 +307,8 @@ def test_full_publish_without_source_library_json(build_fixture, monkeypatch, ca
     with ZipFile(output / "appstore" / channel / "library" / "full" / "latest.zip") as archive:
         assert json.loads(archive.read("library/library.json")) == expected
     assert (output / "appstore" / channel / "library" / "apps" / "demo" / "latest.zip").exists()
+    versions_path = output / "appstore" / channel / "apps-verson.json"
+    if channel == "dev":
+        assert json.loads(versions_path.read_text()) == [{"id": "demo", "version": "1.0"}]
+    else:
+        assert not versions_path.exists()

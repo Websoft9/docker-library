@@ -118,6 +118,17 @@ def summarize_versions(edition_list: list[dict]) -> list[str]:
     return versions
 
 
+def build_apps_version_summary() -> list[dict[str, str]]:
+    apps_versions = []
+    for app_dir in sorted(path for path in APPS_DIR.iterdir() if path.is_dir()):
+        variables = load_variables_json(app_dir)
+        versions = summarize_versions(variables.get("edition", []))
+        if not versions:
+            raise SystemExit(f"app {app_dir.name} has no versions in variables.json")
+        apps_versions.append({"id": app_dir.name, "version": versions[0]})
+    return apps_versions
+
+
 APP_PACKAGE_NAME = "latest.zip"
 
 
@@ -616,6 +627,8 @@ def build_v2_appstore_artifacts(
     catalog_dir.mkdir(parents=True, exist_ok=True)
     library_dir.mkdir(parents=True, exist_ok=True)
     manifests_dir.mkdir(parents=True, exist_ok=True)
+    if channel == "dev":
+        write_json(output_dir / "apps-verson.json", build_apps_version_summary())
 
     catalog_sources = ensure_catalog_source(catalog_source_dir)
     distribution_map = build_distribution_map()

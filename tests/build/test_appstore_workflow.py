@@ -86,6 +86,19 @@ def test_release_is_published_once_and_waits_for_images():
     assert "pages" not in workflow["jobs"]
 
 
+def test_dev_app_versions_are_uploaded_to_fixed_r2_key():
+    workflow = yaml.safe_load((REPO_ROOT / ".github/workflows/appstore-publish.yml").read_text())
+    step = next(
+        step for step in workflow["jobs"]["publish"]["steps"]
+        if step.get("name") == "Upload dev app versions to Cloudflare R2"
+    )
+
+    assert step["if"] == "steps.resolve_channel.outputs.channel == 'dev'"
+    assert "dist/appstore-publish/appstore/dev/apps-verson.json" in step["run"]
+    assert "s3://artifact/appstore/dev/apps-verson.json" in step["run"]
+    assert "aws s3 cp" in step["run"]
+
+
 def test_bare_tag_push_does_not_publish_release(tmp_path):
     result, output = run_step(tmp_path, "Resolve publish channel", REF_TYPE="tag", REF_NAME="0.9.0")
     assert result.returncode != 0

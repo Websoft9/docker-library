@@ -254,6 +254,19 @@ jobs:
             --cache-control "public, max-age=60" \
             --endpoint-url "$AWS_ENDPOINT_URL"
 
+      - name: Upload dev app versions to Cloudflare R2
+        if: steps.resolve_channel.outputs.channel == 'dev'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_SECRET_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
+          AWS_ENDPOINT_URL: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
+        run: |
+          aws s3 cp \
+            dist/appstore-publish/appstore/dev/apps-verson.json \
+            s3://artifact/appstore/dev/apps-verson.json \
+            --cache-control "public, max-age=60" \
+            --endpoint-url "$AWS_ENDPOINT_URL"
+
       - name: Upload v2 per-app packages to Cloudflare R2 (additive only)
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_SECRET_ID }}
