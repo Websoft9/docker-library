@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Kafka**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -33,14 +34,14 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 4.3.1, 4.2.0, 4.1.0, 4.0.1.
+Supported versions: 4.4.0, 4.3.1, 4.2.0, 4.1.0, 4.0.1.
 
 
 ### Ports
 
 | Purpose | Port |
 | --- | --- |
-| Kafka broker | 9092 |
+| Kafka broker (external clients) | 9092 |
 
 
 ### Data Directory
