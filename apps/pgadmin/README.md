@@ -33,7 +33,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 9.18, latest.
+Supported versions: 9.19, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
@@ -73,7 +73,7 @@ Configuration files live inside the image; mount a single file read-only to over
 
 - [Official docs](https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html)
 
-- [Official docs](https://www.pgadmin.org/docs/pgadmin4/9.18/release_notes.html)
+- [Official docs](https://www.pgadmin.org/docs/pgadmin4/9.19/release_notes.html)
 
 
 <!-- W9_TROUBLESHOOT_START -->

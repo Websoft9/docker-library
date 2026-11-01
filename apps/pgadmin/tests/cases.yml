@@ -1,2 +1,1 @@
-skip:
-  - id: web-access
+skip: []
