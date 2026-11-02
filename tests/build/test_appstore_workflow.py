@@ -95,7 +95,7 @@ def test_dev_app_versions_are_uploaded_to_fixed_r2_key():
 
     assert step["if"] == "steps.resolve_channel.outputs.channel == 'dev'"
     assert "dist/appstore-publish/appstore/dev/apps-verson.json" in step["run"]
-    assert "s3://artifact/appstore/dev/apps-verson.json" in step["run"]
+    assert "s3://artifact/appstore/dev/library/apps-verson.json" in step["run"]
     assert "aws s3 cp" in step["run"]
 
 

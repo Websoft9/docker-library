@@ -263,7 +263,7 @@ jobs:
         run: |
           aws s3 cp \
             dist/appstore-publish/appstore/dev/apps-verson.json \
-            s3://artifact/appstore/dev/apps-verson.json \
+            s3://artifact/appstore/dev/library/apps-verson.json \
             --cache-control "public, max-age=60" \
             --endpoint-url "$AWS_ENDPOINT_URL"
 
