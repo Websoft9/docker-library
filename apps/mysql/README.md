@@ -34,7 +34,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 9.7, 9.5, 9.4, 9.3, 9.2, 9.1, 8.2, 8.1, 8.0, 5.7, 5.6, 5.5, latest.
+Supported versions: 26.10, 9.7, 8.4, 8.0, 5.7, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
