@@ -57,7 +57,6 @@ The `latest` tag is not guaranteed to remain valid; pin a specific version for p
 
 - `springboot_workspace` → `/workspace`
 - `springboot_m2` → `/root/.m2`
-- `postgres_data` → `/var/lib/postgresql/data`
 
 
 

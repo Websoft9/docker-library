@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-11-03
+
+- Declared the PostgreSQL dependency using the existing INNGEST_POSTGRES_URI input and standard database/account sources.
+- Declared internal unauthenticated Redis using INNGEST_REDIS_URI; runtime configuration and image versions are unchanged.
+
 ## 2026-10-15
 
 - Restored the archived `inngest` package to active maintenance and rebuilt it into a real Inngest self-hosted server package based on the official self-hosting docs and Docker image.

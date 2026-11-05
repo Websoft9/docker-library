@@ -36,6 +36,31 @@
     "memory": "4",
     "disk": "1"
   },
+  "database": [
+    {
+      "id": "rds",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "mysql",
+          "driver": "mysql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "mysql"
+          ]
+        }
+      ],
+      "datasource": {
+        "TYPO3_DB_HOST": "${host}",
+        "TYPO3_DB_PORT": "${port}",
+        "TYPO3_DB_DBNAME": "${name}",
+        "TYPO3_DB_USERNAME": "${users[*].user}",
+        "TYPO3_DB_PASSWORD": "${users[*].password}"
+      }
+    }
+  ],
   "env": {
     "first_startup_only": [
       "TYPO3_DB_DRIVER",

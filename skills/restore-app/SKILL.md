@@ -17,6 +17,8 @@ Supporting files in this skill:
 
 ## Inputs
 
+Follow `docs/app-database-connection-spec.md` for archived database declarations. Inspect the restore preview's `database_metadata` and `todo`: legacy objects may be restored unchanged, but must be migrated from verified Compose/native sources and checked with `libs app-check --app <app> --gate database-metadata` before publishing. Do not automatically translate legacy fields or mass-rewrite archives. An invalid new declaration blocks restore before files are moved.
+
 - app name (required)
 - cadence (optional, default monthly)
 - update policy (optional, default patch-minor)

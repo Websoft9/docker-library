@@ -24,6 +24,41 @@
     "memory": "1",
     "disk": "4"
   },
+  "database": [
+    {
+      "id": "mysql",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "mysql",
+          "driver": "mysql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "mysql"
+          ]
+        }
+      ],
+      "users": [
+        {
+          "user": "root",
+          "password": "${MYSQL_ROOT_PASSWORD}",
+          "usage": [
+            "application",
+            "administration"
+          ]
+        }
+      ],
+      "datasource": {
+        "ZT_MYSQL_HOST": "${host}",
+        "ZT_MYSQL_PORT": "${port}",
+        "ZT_MYSQL_DB": "${name}",
+        "ZT_MYSQL_USER": "${users[*].user}",
+        "ZT_MYSQL_PASSWORD": "${users[*].password}"
+      }
+    }
+  ],
   "env": {
     "first_startup_only": []
   },

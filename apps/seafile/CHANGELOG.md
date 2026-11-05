@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-11-03
+
+- Declared one MariaDB dependency with three database-name sources, separate initialization and application accounts, and existing native MySQL/MariaDB connection inputs.
+- Declared the Redis cache separately using its existing host, port, and password inputs; preserved the actual REDIS_PASSWORD command source, including an explicitly empty value.
+- Kept initialization credentials, runtime configuration, and image versions unchanged.
+
 ## 2026-09-24
 
 - updated Seafile community package target to `13.0-latest`

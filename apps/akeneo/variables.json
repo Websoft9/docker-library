@@ -36,6 +36,42 @@
     "memory": "4",
     "disk": "5"
   },
+  "database": [
+    {
+      "id": "mysql",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "mysql",
+          "driver": "mysql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "mysql"
+          ]
+        }
+      ],
+      "datasource": {
+        "APP_DATABASE_HOST": "${host}",
+        "APP_DATABASE_PORT": "${port}",
+        "APP_DATABASE_NAME": "${name}",
+        "APP_DATABASE_USER": "${users[*].user}",
+        "APP_DATABASE_PASSWORD": "${users[*].password}"
+      }
+    },
+    {
+      "id": "elasticsearch",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "elasticsearch",
+          "driver": "elasticsearch"
+        }
+      ],
+      "users": []
+    }
+  ],
   "env": {
     "first_startup_only": [
       "AKENEO_ADMIN_USER",

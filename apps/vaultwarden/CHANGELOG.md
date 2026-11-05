@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-11-03
+
+- Declared the MariaDB dependency with MySQL/MariaDB external providers and the existing mysql:// DATABASE_URL mapping.
+- Recorded MYSQL_* database/account sources and preserved their W9_RCODE password origin; runtime configuration and image versions are unchanged.
+
 ## 2026-09-20
 
 - Updated Vaultwarden from `1.34.3` to `1.37.3`, the latest stable upstream release (includes the 1.35.5 / 1.36.0 / 1.37.0 security fixes).

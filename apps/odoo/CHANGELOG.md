@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-11-03
+
+- Declared the PostgreSQL dependency with internal and external providers using the existing HOST, PORT, USER, and PASSWORD inputs.
+- Inherited standard database/account sources without adding a database-name connection mapping, preserving dynamic database creation.
+- Kept runtime configuration, the existing external-database override, and image versions unchanged.
+
 ## 2026-10-27
 - Updated the default Odoo image to 20.0 while retaining the supported older versions.
 - Updated the bundled PostgreSQL version to 16, the minimum supported by Odoo 20.

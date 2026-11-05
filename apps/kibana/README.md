@@ -27,6 +27,14 @@ Websoft9 packages this app from the official [Kibana Docker image](https://hub.d
 
 <!-- W9_NOTE_START -->
 
+Elasticsearch is external and is not bundled. The `ELASTICSEARCH_HOSTS` example in `.env` is disabled by default; it does not identify a configured backend. For a single target, use the native JSON array format:
+
+```dotenv
+ELASTICSEARCH_HOSTS='["https://your-elasticsearch.example.com:9200"]'
+```
+
+Configure authentication and TLS using the [official Kibana settings](https://www.elastic.co/docs/deploy-manage/deploy/self-managed/install-kibana-with-docker). A service-account token is not a database password; changing the host does not provision Elasticsearch or its credentials.
+
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.

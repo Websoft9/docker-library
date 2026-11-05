@@ -31,5 +31,17 @@
     "cpu": "2",
     "memory": "4",
     "disk": "1"
-  }
+  },
+  "database": [
+    {
+      "id": "mysql",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "teamcity-mysql",
+          "driver": "mysql"
+        }
+      ]
+    }
+  ]
 }

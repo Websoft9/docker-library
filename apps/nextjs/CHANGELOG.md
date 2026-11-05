@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-11-03
+
+- Declared the optional external DATABASE_URL input for PostgreSQL/MySQL/MariaDB connections used by uploaded application code.
+- Preserved the no-database default and existing environment pass-through; runtime files and image versions are unchanged.
+
 ## 2026-10-12
 
 - Updated the default Next.js scaffold version to `16.4.0`.

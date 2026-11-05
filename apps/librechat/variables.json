@@ -36,6 +36,43 @@
     "memory": "4",
     "disk": "10"
   },
+  "database": [
+    {
+      "id": "mongodb",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "mongodb",
+          "driver": "mongodb"
+        }
+      ],
+      "name": [
+        "LibreChat"
+      ],
+      "users": []
+    },
+    {
+      "id": "meilisearch",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "meilisearch",
+          "driver": "meilisearch"
+        }
+      ],
+      "users": []
+    },
+    {
+      "id": "postgres",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "vectordb",
+          "driver": "postgresql"
+        }
+      ]
+    }
+  ],
   "env": {
     "secrets": [
       "ADMIN_PANEL_SESSION_SECRET",

@@ -56,7 +56,7 @@ COPY src/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh \
     && a2ensite 000-default \
     && mkdir -p /var/www/html/var/file_storage /var/www/html/var/logs /var/www/html/var/cache \
-    && chown -R www-data:www-data /var/www/html
+    && chown -R www-data:www-data /var/www/html/var
 
 EXPOSE 80
 

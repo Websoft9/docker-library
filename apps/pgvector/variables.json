@@ -13,7 +13,9 @@
   "edition": [
     {
       "dist": "community",
-      "version": ["pg18-trixie"]
+      "version": [
+        "pg18-trixie"
+      ]
     }
   ],
   "requirements": {

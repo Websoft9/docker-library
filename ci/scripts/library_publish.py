@@ -25,6 +25,8 @@ CHANNEL_PACKAGE_NAMES = {
 }
 V2_FULL_LATEST_NAME = "latest.zip"
 MIN_WEBSOFT9_VERSION = "2.4.2"
+LIBRARY_SCHEMA_VERSION = "2"
+DATABASE_TYPES_PATH = "metadata/database-types.json"
 CATALOG_FILE_NAMES = (
     "catalog_en.json",
     "catalog_zh.json",
@@ -92,7 +94,7 @@ def build_library_metadata(channel: str, library_version: str | None) -> dict:
             raise SystemExit("release requires --library-version with a stable X.Y.Z tag")
     elif library_version is None:
         library_version = f"{channel}-{run_git('rev-parse', '--short=12', 'HEAD')}"
-    return {"Version": library_version}
+    return {"Version": library_version, "schemaVersion": LIBRARY_SCHEMA_VERSION}
 
 
 def write_json(path: Path, payload: object) -> None:
@@ -187,6 +189,7 @@ def create_zip_from_directory(source_dir: Path, destination_zip: Path) -> None:
 
 
 def copy_package_contents(package_dir: Path, packaged_library_json: dict) -> None:
+    package_dir.mkdir(parents=True, exist_ok=True)
     for name in ("apps", "docs"):
         source = ROOT / name
         if source.exists():
@@ -195,6 +198,8 @@ def copy_package_contents(package_dir: Path, packaged_library_json: dict) -> Non
     for markdown_file in sorted(ROOT.glob("*.md")):
         shutil.copy2(markdown_file, package_dir / markdown_file.name)
 
+    (package_dir / "metadata").mkdir(exist_ok=True)
+    shutil.copy2(ROOT / DATABASE_TYPES_PATH, package_dir / DATABASE_TYPES_PATH)
     write_json(package_dir / "library.json", packaged_library_json)
 
 
@@ -256,6 +261,14 @@ def build_app_updated_at_map() -> dict[str, str]:
     return updated
 
 
+def build_shared_metadata() -> dict:
+    source = ROOT / DATABASE_TYPES_PATH
+    if not source.is_file():
+        raise SystemExit(f"missing shared database dictionary: {DATABASE_TYPES_PATH}")
+    digest = sha256_file(source)
+    return {"databaseTypes": {"path": f"metadata/database-types-{digest}.json", "sha256": digest}}
+
+
 def build_apps_index(
     channel: str,
     generated_at: str,
@@ -282,9 +295,10 @@ def build_apps_index(
         )
 
     return {
-        "schemaVersion": "1",
+        "schemaVersion": LIBRARY_SCHEMA_VERSION,
         "channel": channel,
         "generatedAt": generated_at,
+        "metadata": build_shared_metadata(),
         "appCount": len(apps),
         "apps": apps,
     }
@@ -354,7 +368,7 @@ def build_apps_delta(
     changed_apps = sorted(changed_apps_since(from_ref) - set(added_apps) - set(removed_apps))
 
     return {
-        "schemaVersion": "1",
+        "schemaVersion": LIBRARY_SCHEMA_VERSION,
         "channel": channel,
         "fromRef": from_ref,
         "fromVersion": from_version,
@@ -374,9 +388,10 @@ def build_library_manifest(
     apps_delta_name: str,
     checksum_names: dict,
     generated_at: str,
+    shared_metadata: dict | None = None,
 ) -> dict:
     return {
-        "schemaVersion": "1",
+        "schemaVersion": LIBRARY_SCHEMA_VERSION,
         "datasetVersion": dataset_version,
         "channel": channel,
         "fullPackage": full_package_names,
@@ -384,6 +399,7 @@ def build_library_manifest(
         "appsDelta": apps_delta_name,
         "appPackagesBase": "apps/",
         "supportsPartialUpdate": True,
+        "metadata": shared_metadata or {},
         "checksum": checksum_names,
         "generatedAt": generated_at,
     }
@@ -422,6 +438,7 @@ def build_appstore_manifest(
         "library": {
             "manifest": "library/manifest.json",
             "datasetVersion": library_dsv,
+            "schemaVersion": LIBRARY_SCHEMA_VERSION,
         },
         "generatedAt": generated_at,
     }
@@ -505,6 +522,11 @@ def validate_library_artifacts(output_dir: Path, manifest: dict, changed_app_nam
     for checksum_name in manifest["checksum"].values():
         if not (output_dir / checksum_name).exists():
             raise SystemExit(f"missing library checksum: {checksum_name}")
+
+    for entry in manifest.get("metadata", {}).values():
+        source = output_dir / entry["path"]
+        if not source.is_file() or sha256_file(source) != entry["sha256"]:
+            raise SystemExit("missing or mismatched shared library metadata")
 
     apps_delta = json.loads((output_dir / manifest["appsDelta"]).read_text(encoding="utf-8"))
     for key in ("addedApps", "changedApps", "removedApps"):
@@ -680,6 +702,12 @@ def build_v2_appstore_artifacts(
     # ── library – compute index & delta BEFORE per-app zips ──
     app_updated_at = build_app_updated_at_map()
     apps_index, library_dsv = build_apps_index_with_version(channel, generated_at, app_updated_at)
+    shared_metadata = apps_index["metadata"]
+    dictionary_entry = shared_metadata["databaseTypes"]
+    dictionary_output = library_dir / dictionary_entry["path"]
+    dictionary_output.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT / DATABASE_TYPES_PATH, dictionary_output)
+    write_checksum_file(dictionary_output)
     full_latest_name = V2_FULL_LATEST_NAME
 
     with tempfile.TemporaryDirectory() as tmp_dir_name:
@@ -732,6 +760,7 @@ def build_v2_appstore_artifacts(
         "fullPackage": f"full/{write_checksum_file(full_dir / full_latest_name)}",
         "appsIndex": write_checksum_file(library_dir / apps_index_name),
         "appsDelta": write_checksum_file(library_dir / apps_delta_name),
+        "databaseTypes": f"{dictionary_entry['path']}.sha256",
     }
 
     library_manifest = build_library_manifest(
@@ -742,6 +771,7 @@ def build_v2_appstore_artifacts(
         apps_delta_name=apps_delta_name,
         checksum_names=library_checksums,
         generated_at=generated_at,
+        shared_metadata=shared_metadata,
     )
     write_json(library_dir / "manifest.json", library_manifest)
     write_checksum_file(library_dir / "manifest.json")

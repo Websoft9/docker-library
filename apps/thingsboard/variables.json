@@ -31,6 +31,29 @@
     "memory": "2",
     "disk": "2"
   },
+  "database": [
+    {
+      "id": "postgres",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "postgres",
+          "driver": "postgresql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "postgresql"
+          ]
+        }
+      ],
+      "datasource": {
+        "SPRING_DATASOURCE_URL": "jdbc:postgresql://${host}:${port}/${name}",
+        "SPRING_DATASOURCE_USERNAME": "${users[*].user}",
+        "SPRING_DATASOURCE_PASSWORD": "${users[*].password}"
+      }
+    }
+  ],
   "credentials": {
     "none": true
   }

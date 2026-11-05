@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-11-04
+
+- Declared external PostgreSQL through the existing `DATABASE_URL`; confirmed that the mounted proxy configuration does not override the database connection.
+- Kept bundled initialization independent and left Compose, `.env`, image versions, and source configuration unchanged.
+- Verified native input delivery, default configuration, and initialization isolation statically without deployment or live database verification.
+
 ## 2026-10-12
 
 - Replaced the incorrect WordPress/MariaDB package with the official LiteLLM proxy self-hosting topology.

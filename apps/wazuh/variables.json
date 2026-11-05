@@ -31,5 +31,34 @@
     "cpu": "2",
     "memory": "4",
     "disk": "10"
-  }
+  },
+  "database": [
+    {
+      "id": "indexer",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "wazuh.indexer",
+          "driver": "opensearch"
+        }
+      ],
+      "users": [
+        {
+          "user": "${INDEXER_USERNAME}",
+          "password": "${INDEXER_PASSWORD}",
+          "usage": [
+            "application",
+            "administration"
+          ]
+        },
+        {
+          "user": "${DASHBOARD_USERNAME}",
+          "password": "${DASHBOARD_PASSWORD}",
+          "usage": [
+            "application"
+          ]
+        }
+      ]
+    }
+  ]
 }

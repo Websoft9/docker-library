@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-03
+- Declared the PostgreSQL dependency and existing JDBC URL and credential inputs, preserving the JDBC protocol prefix.
+- Kept runtime configuration and image versions unchanged.
+
 ## 2026-09-14
 
 - Pin SonarQube Community Build to `26.9.0.129388-community` (alias `latest`).

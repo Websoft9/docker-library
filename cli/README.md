@@ -57,9 +57,13 @@ py -m venv .venv
 
 - `libs list` - list active apps
 - `libs image-stats` - summarize image usage across all apps by registry: docker.io total with the Docker official vs docker.io third-party split (official % of docker.io), plus other registries; `--app <name>` for one app, `--include-archived` adds archived apps
-- `libs app-info --app <name>` - show one app
+- `libs app-info --app <name>` - show one app; `database_connections` contains declarations, `database_metadata` contains validation, `database_lifecycle` contains lifecycle findings (`database` remains the lifecycle compatibility alias); no credential source values are resolved
+- Complex app packages declare known bundled database information only and do not offer external databases. Missing fields or unknown managed stores do not block other known declarations; metadata does not require runtime rewiring or initialization separation. See [the database connection specification](../docs/app-database-connection-spec.md#13-复杂应用信息优先与本轮收缩).
 - `libs scan` - scan upstream versions
-- `libs app-check --app <name>` - run structure + policy gates
+- `libs app-check --app <name>` - run structure + policy + database declaration gates; legacy database objects are accepted with migration warnings during transition
+- `libs app-check --app <name> --gate database-metadata` - validate declaration shape, component IDs, Compose service references and dictionary drivers; does not connect to databases
+- `libs app-check --app <name> --gate secrets` - strict random-template and reference compatibility check; separate from the existing aggregate gates during migration, with no key generation or rotation
+- `PYTHONPATH="$PWD/cli" .venv/bin/python -m libs.secret_audit --output metadata/secret-coverage.json` - rebuild the value-free secret candidate inventory; unclassified names require source review, not automatic declaration
 - `libs app-check --app <name> --gate structure`
 - `libs app-check --app <name> --gate policy`
 - `libs app-report --app <name>` - generate a short readiness report
@@ -78,7 +82,7 @@ py -m venv .venv
 - `libs app-deploy --app <name> [--ssh-host <ip>] [--progress] [--verbose]` - deploy one app locally or remotely; `--progress` prints step headers to stderr and `--verbose` also prints raw command output
 - `libs app-deploy --app <name> --version <tag>` - deploy a specific image tag by overriding `W9_VERSION` without modifying the repo `.env`
 - `libs app-down --app <name> [--ssh-host <ip>] [--progress] [--json]` - tear one app down with `docker compose down -v`
-- `libs appstore-sync --app <name> --ssh-host <ip> [--version <tag>] [--progress] [--verbose]` - sync one app directory into the remote websoft9 container library and sync `metadata/catalog/<app>.json` into the container catalog directory for appstore testing; `--version` overrides `W9_VERSION` in the synced copy only (used for PR candidate images)
+- `libs appstore-sync --app <name> --ssh-host <ip> [--version <tag>] [--progress] [--verbose]` - sync the shared `metadata/database-types.json` with checksum verification and backup, then the app directory and optional `metadata/catalog/<app>.json` into the remote websoft9 library; returns rollback commands including the dictionary. `--version` overrides `W9_VERSION` in the synced copy only. Confirm the test consumer supports library schema 2 before syncing new declarations.
 - `libs appstore-deploy --app <name> --ssh-host <ip> [--progress] [--verbose]` - deploy one app into a websoft9 container appstore (not implemented yet; pending the websoft9 container CLI)
 - remote-aware commands suppress the routine `known hosts` add warning from ephemeral SSH targets; real stderr still passes through
 - `libs proxy` - show, save, or clear the saved proxy

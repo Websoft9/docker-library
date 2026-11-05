@@ -2,11 +2,14 @@ from __future__ import annotations
 
 import shlex
 import hashlib
+import json
 import shutil
 import tempfile
 from collections.abc import Callable
 from datetime import datetime, timezone
 from pathlib import Path
+
+import jsonschema
 
 from libs import catalog
 from libs import remote
@@ -19,6 +22,7 @@ from libs.repo import repo_path
 DEFAULT_CONTAINER = "websoft9"
 DEFAULT_APP_DEPLOY_DIR = "/websoft9/library/apps"
 DEFAULT_CATALOG_DIR = "/websoft9/library/metadata/catalog"
+DEFAULT_METADATA_DIR = "/websoft9/library/metadata"
 DEFAULT_KEY = ".secrets/ssh/default.pem"
 
 ProgressWriter = Callable[[str], None]
@@ -216,6 +220,55 @@ def _sync_catalog_file(
     return str(source.relative_to(repo_path()))
 
 
+def _sync_database_types(
+    app_name: str,
+    host: str,
+    user: str,
+    secret_path: Path,
+    container: str,
+    backup_dir: str,
+    *,
+    progress: ProgressWriter | None = None,
+    verbose: bool = False,
+) -> str:
+    source = repo_path("metadata", "database-types.json")
+    try:
+        definitions = json.loads(source.read_text(encoding="utf-8"))
+        schema = json.loads(repo_path("metadata", "variables.schema.json").read_text(encoding="utf-8"))
+        jsonschema.Draft202012Validator({"$defs": schema["$defs"], "$ref": "#/$defs/databaseTypes"}).validate(definitions)
+    except (ValueError, KeyError, jsonschema.ValidationError) as error:
+        raise ValueError("Invalid shared database dictionary; repair it before syncing.") from error
+    digest = hashlib.sha256(source.read_bytes()).hexdigest()
+    staging = f"/tmp/websoft9-appstore-staging-{app_name}-database-types"
+    target = f"{DEFAULT_METADATA_DIR}/database-types.json"
+    temporary = f"{DEFAULT_METADATA_DIR}/.database-types-{digest}.tmp"
+    backup = f"{backup_dir}/database-types.json.bak"
+    _run(
+        ssh_base(host, user, secret_path) + [
+            f"mkdir -p {shlex.quote(staging)} {shlex.quote(backup_dir)} && "
+            f"if {shlex.join(['docker', 'exec', container, 'test', '-f', target])}; then "
+            f"{shlex.join(['docker', 'cp', f'{container}:{target}', backup])}; "
+            f"else touch {shlex.quote(backup + '.missing')}; fi"
+        ], progress=progress, verbose=verbose,
+    )
+    _run(
+        scp_base(host, user, secret_path) + [str(source), f"{user}@{host}:{staging}/"],
+        progress=progress, verbose=verbose,
+    )
+    verify_and_replace = (
+        f"printf %s {shlex.quote(f'{digest}  {temporary}' + chr(10))} | sha256sum -c - && "
+        f"mv {shlex.quote(temporary)} {shlex.quote(target)}"
+    )
+    command = " && ".join([
+        shlex.join(["docker", "exec", container, "mkdir", "-p", DEFAULT_METADATA_DIR]),
+        shlex.join(["docker", "cp", f"{staging}/database-types.json", f"{container}:{temporary}"]),
+        shlex.join(["docker", "exec", container, "sh", "-c", verify_and_replace]),
+        f"rm -rf {shlex.quote(staging)}",
+    ])
+    _run(ssh_base(host, user, secret_path) + [command], progress=progress, verbose=verbose)
+    return digest
+
+
 def prepare_preview(
     app_name: str,
     host: str | None = None,
@@ -241,14 +294,26 @@ def prepare_preview(
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
     backup_dir = f"/tmp/websoft9-appstore-sync-{app_name}-{timestamp}"
 
+    from libs.validate import _database_metadata_result
+
+    metadata_check = _database_metadata_result(repo_path("apps", app_name))
+    if not metadata_check["ok"]:
+        raise ValueError("Invalid database declaration; run libs app-check before appstore-sync.")
+    if not repo_path("metadata", "database-types.json").is_file():
+        raise FileNotFoundError("missing metadata/database-types.json")
     catalog_source = repo_path("metadata", "catalog", f"{app_name}.json")
     has_catalog = catalog_source.exists()
     if has_catalog:
         catalog.load_catalog(app_name)
 
-    total = 2 if has_catalog else 1
+    total = 3 if has_catalog else 2
 
-    _announce(progress, 1, total, "syncing app directory")
+    _announce(progress, 1, total, "syncing shared database dictionary")
+    database_types_sha256 = _sync_database_types(
+        app_name, host, user, key_path, container, backup_dir, progress=progress, verbose=verbose,
+    )
+
+    _announce(progress, 2, total, "syncing app directory")
     _sync_app_dir(
         app_name,
         host,
@@ -264,13 +329,14 @@ def prepare_preview(
 
     catalog_rel = None
     if has_catalog:
-        _announce(progress, 2, total, "syncing catalog commercial data")
+        _announce(progress, 3, total, "syncing catalog commercial data")
         catalog_rel = _sync_catalog_file(
             app_name, host, user, key_path, container, target_catalog_dir, backup_dir, progress=progress, verbose=verbose
         )
 
     rollback = [
         f"{_ssh_shell_prefix(key_path)} {user}@{host} 'if test -f {backup_dir}/{app_name}.tgz; then docker exec {container} sh -c \"rm -rf {deploy_dir}/{app_name}\" && docker exec -i {container} sh -c \"tar xzf - -C {deploy_dir}\" < {backup_dir}/{app_name}.tgz; fi'",
+        f"{_ssh_shell_prefix(key_path)} {user}@{host} 'if test -f {backup_dir}/database-types.json.bak; then docker cp {backup_dir}/database-types.json.bak {container}:{DEFAULT_METADATA_DIR}/database-types.json; elif test -f {backup_dir}/database-types.json.bak.missing; then docker exec {container} rm -f {DEFAULT_METADATA_DIR}/database-types.json; fi'",
     ]
     if has_catalog:
         rollback.append(
@@ -288,6 +354,9 @@ def prepare_preview(
         "app_target": f"{deploy_dir}/{app_name}",
         "catalog_source": catalog_rel,
         "catalog_synced": has_catalog,
+        "database_types_synced": True,
+        "database_types_sha256": database_types_sha256,
+        "database_types_target": f"{DEFAULT_METADATA_DIR}/database-types.json",
         "catalog_target": f"{target_catalog_dir}/{app_name}.json",
         "backup_dir": backup_dir,
         "version_override": version,

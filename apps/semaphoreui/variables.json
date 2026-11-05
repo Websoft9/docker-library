@@ -30,6 +30,31 @@
     "memory": "2",
     "disk": "4"
   },
+  "database": [
+    {
+      "id": "rds",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "mysql",
+          "driver": "mysql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "mysql"
+          ]
+        }
+      ],
+      "datasource": {
+        "SEMAPHORE_DB_HOST": "${host}",
+        "SEMAPHORE_DB_PORT": "${port}",
+        "SEMAPHORE_DB": "${name}",
+        "SEMAPHORE_DB_USER": "${users[*].user}",
+        "SEMAPHORE_DB_PASS": "${users[*].password}"
+      }
+    }
+  ],
   "env": {
     "first_startup_only": [
       "SEMAPHORE_ADMIN",

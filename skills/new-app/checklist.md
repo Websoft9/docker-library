@@ -7,6 +7,7 @@
 - [ ] Scaffold via `.venv/bin/libs app-new --name ... --trademark ... [--version <x.x> --repo <image> --docs-* ... --upstream-releases <url> --upstream-compose <url> --upstream-env <url>]`; it refuses duplicates and runs the quality gates; omitted version/repo become TODO placeholders
 - [ ] Fill any missing upstream fields in `variables.json` after research confirms what is applicable; omit fields that are not applicable
 - [ ] Fill compose design, upstream metadata, DB version, and i18n keys beyond the skeleton
+- [ ] Declare verified `database[]` components per `docs/app-database-connection-spec.md`; omit when not applicable; run `libs app-check --app <app> --gate database-metadata`
 - [ ] Use braced `${VAR}` form for all environment variable references in `.env`, `docker-compose.yml`, and config templates
 - [ ] Decide env groups: enable password group (DB/login apps) and web group (web apps); delete unused groups
 - [ ] Apply `docs/w9-env-spec.md` decision rules for `W9_URL`, `W9_URL_REPLACE`, `W9_LOGIN*`, `_SET` ports, and dependency helpers

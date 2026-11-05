@@ -22,6 +22,98 @@
     "memory": "4",
     "disk": "1"
   },
+  "database": [
+    {
+      "id": "postgres",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "db",
+          "driver": "postgresql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "postgresql"
+          ]
+        }
+      ],
+      "name": [
+        "${CKAN_POSTGRES_DB}",
+        "${CKAN_DATASTORE_POSTGRES_DB}",
+        "ckan_test",
+        "datastore_test"
+      ],
+      "users": [
+        {
+          "user": "${POSTGRES_USER}",
+          "password": "${POSTGRES_PASSWORD}",
+          "usage": [
+            "initialization",
+            "administration"
+          ]
+        },
+        {
+          "user": "${CKAN_POSTGRES_USER}",
+          "password": "${CKAN_POSTGRES_USER_PWD}",
+          "usage": [
+            "application"
+          ]
+        },
+        {
+          "user": "${CKAN_DATASTORE_POSTGRES_WRITE_USER}",
+          "password": "${CKAN_DATASTORE_POSTGRES_WRITE_PWD}",
+          "usage": [
+            "application"
+          ]
+        },
+        {
+          "user": "${CKAN_DATASTORE_POSTGRES_READ_USER}",
+          "password": "${CKAN_DATASTORE_POSTGRES_READ_PWD}",
+          "usage": [
+            "application"
+          ]
+        }
+      ],
+      "datasource": {
+        "CKAN_SQLALCHEMY_URL": "postgresql://${users[*].user}:${users[*].password}@${host}:${port}/${name}",
+        "CKAN_DATASTORE_WRITE_URL": "postgresql://${users[*].user}:${users[*].password}@${host}:${port}/${name}",
+        "CKAN_DATASTORE_READ_URL": "postgresql://${users[*].user}:${users[*].password}@${host}:${port}/${name}"
+      }
+    },
+    {
+      "id": "solr",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "solr",
+          "driver": "solr"
+        }
+      ],
+      "name": [
+        "ckan"
+      ],
+      "users": [],
+      "datasource": {
+        "CKAN_SOLR_URL": "http://${host}:${port}/solr/${name}"
+      }
+    },
+    {
+      "id": "redis",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "redis",
+          "driver": "redis"
+        }
+      ],
+      "name": [
+        "1",
+        "${CKAN__HARVEST__MQ__REDIS_DB}"
+      ],
+      "users": []
+    }
+  ],
   "upstream": {
     "image": "https://hub.docker.com/r/ckan/ckan-base",
     "releases": "https://github.com/ckan/ckan/releases",
@@ -37,8 +129,7 @@
   "env": {
     "secrets": [
       "CKAN___BEAKER__SESSION__SECRET",
-      "CKAN___API_TOKEN__JWT__ENCODE__SECRET",
-      "CKAN___API_TOKEN__JWT__DECODE__SECRET"
+      "CKAN_API_TOKEN_SECRET"
     ]
   }
 }

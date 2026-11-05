@@ -33,5 +33,29 @@
     "cpu": "1",
     "memory": "2",
     "disk": "8"
-  }
+  },
+  "database": [
+    {
+      "id": "rds",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "db",
+          "driver": "mysql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "mysql"
+          ]
+        }
+      ],
+      "datasource": {
+        "DB_HOST": "${host}",
+        "DB_DATABASE": "${name}",
+        "DB_USER": "${users[*].user}",
+        "DB_PASSWORD": "${users[*].password}"
+      }
+    }
+  ]
 }

@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-11-03
+- Declared the MySQL dependency and existing native `WORDPRESS_DB_*` mappings for external MySQL/MariaDB connections, inheriting database names and accounts from the shared dictionary.
+- Declared the internal Redis dependency without credentials and recorded the existing `WP_REDIS_HOST`, `WP_REDIS_PORT`, and `WP_REDIS_DATABASE` sources used by WordPress and its bootstrap helper.
+- Kept runtime configuration and image versions unchanged; bootstrap helpers and Varnish are not database components.
+
 ## 2026-09-15
 - Added a bundled Redis `7.4` service for WordPress object caching.
 - Extended `src/websoft9-url.php` so the package injects `WP_REDIS_*` constants and `WP_CACHE` at runtime from `.env`, matching the existing runtime URL override approach.

@@ -27,6 +27,8 @@ Websoft9 packages this app from the official [LibreChat Docker image](https://hu
 
 <!-- W9_NOTE_START -->
 
+This package does not offer external databases. Metadata describes the bundled MongoDB, Meilisearch, and RAG PostgreSQL services using their existing environment and command sources. MongoDB explicitly runs without authentication; Meilisearch API keys are not database account passwords. The admin-panel image is not a ClickHouse database. Declarations do not rewrite configuration, migrate data, or rotate credentials.
+
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.

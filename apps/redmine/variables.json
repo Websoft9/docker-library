@@ -30,5 +30,30 @@
     "cpu": "1",
     "memory": "1",
     "disk": "1"
-  }
+  },
+  "database": [
+    {
+      "id": "rds",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "mysql",
+          "driver": "mysql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "mysql",
+            "mariadb"
+          ]
+        }
+      ],
+      "datasource": {
+        "REDMINE_DB_MYSQL": "${host}",
+        "REDMINE_DB_DATABASE": "${name}",
+        "REDMINE_DB_USERNAME": "${users[*].user}",
+        "REDMINE_DB_PASSWORD": "${users[*].password}"
+      }
+    }
+  ]
 }

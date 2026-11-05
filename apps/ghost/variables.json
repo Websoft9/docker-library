@@ -35,6 +35,30 @@
     "memory": "1",
     "disk": "4"
   },
+  "database": [
+    {
+      "id": "rds",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "mysql",
+          "driver": "mysql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "mysql"
+          ]
+        }
+      ],
+      "datasource": {
+        "database__connection__host": "${host}",
+        "database__connection__database": "${name}",
+        "database__connection__user": "${users[*].user}",
+        "database__connection__password": "${users[*].password}"
+      }
+    }
+  ],
   "help": {
     "login": "First run: open /ghost and create the administrator account in the browser, then log in with those credentials."
   }

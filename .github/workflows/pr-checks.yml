@@ -176,8 +176,12 @@ jobs:
               f"{os.environ['BASE_SHA']}...{os.environ['HEAD_SHA']}",
           ]).decode().split("\0")
           paths = [path for path in paths if path]
-          # Only plain Markdown is exempt; any other change keeps the full suites.
-          run_tests = not paths or any(not path.endswith(".md") for path in paths)
+          run_tests = not paths or any(
+              not path.endswith(".md")
+              or path.startswith(("skills/", ".github/skills/"))
+              or path == "docs/app-database-connection-spec.md"
+              for path in paths
+          )
           with open(os.environ["GITHUB_OUTPUT"], "a") as output:
               print(f"run_tests={str(run_tests).lower()}", file=output)
           PY
@@ -197,6 +201,10 @@ jobs:
       - name: Run build tests
         if: steps.scope.outputs.run_tests == 'true'
         run: python -m pytest tests/build -q
+
+      - name: Run skill tests
+        if: steps.scope.outputs.run_tests == 'true'
+        run: python -m pytest tests/skills -q
 
       - name: Validate i18n keys for changed apps
         env:

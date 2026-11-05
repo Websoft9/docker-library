@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-11-03
+
+- Declared the bundled MySQL dependency with standard database/account sources for installer display.
+- Did not invent native connection mappings or external providers for the installation wizard; runtime configuration and image versions are unchanged.
+
 ## 2026-10-22
 
 - Confirmed the Drupal package stays on the stable `11.4-apache` line, which resolves to upstream `11.4.11`.

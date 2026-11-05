@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-03
+- Declared the MySQL dependency and existing native inputs for MySQL/MariaDB connections, inheriting standard database and account sources.
+- Kept runtime configuration and image versions unchanged.
+
 ## 2026-10-24
 - Updated PrestaShop from `9.1` to `9.2`.
 

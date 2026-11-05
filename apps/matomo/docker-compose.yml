@@ -6,16 +6,16 @@ version: '3.8'
 
 services:
   matomo:
-    image: $W9_REPO:$W9_VERSION
+    image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     ports:
-      - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'
+      - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}' # Web Console
     env_file: .env
     environment:
-      - MATOMO_DATABASE_HOST=${W9_ID}-mysql
-      - MATOMO_DATABASE_USERNAME=matomo
-      - MATOMO_DATABASE_PASSWORD=${W9_POWER_PASSWORD}
-      - MATOMO_DATABASE_DBNAME=matomo
+      - MATOMO_DATABASE_HOST=${MATOMO_DATABASE_HOST}
+      - MATOMO_DATABASE_USERNAME=${MATOMO_DATABASE_USERNAME}
+      - MATOMO_DATABASE_PASSWORD=${MATOMO_DATABASE_PASSWORD}
+      - MATOMO_DATABASE_DBNAME=${MATOMO_DATABASE_DBNAME}
     volumes:
       - 'matomo:/var/www/html'
     restart: unless-stopped
@@ -23,7 +23,7 @@ services:
       - mysql
 
   mysql:
-    image: mysql:$W9_DB_VERSION
+    image: mysql:${W9_DB_VERSION}
     container_name: ${W9_ID}-mysql
     command: --default-authentication-plugin=mysql_native_password    
     environment:

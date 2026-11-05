@@ -19,13 +19,13 @@ services:
     container_name: ${W9_ID}-postgresql
     restart: unless-stopped
     environment:
-      - POSTGRES_DB=${DATABASE_DB}
-      - POSTGRES_USER=${DATABASE_USER}
-      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
-      - EXAMPLES_DB=${EXAMPLES_DB}
-      - EXAMPLES_HOST=${EXAMPLES_HOST}
-      - EXAMPLES_USER=${EXAMPLES_USER}
-      - EXAMPLES_PASSWORD=${EXAMPLES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - EXAMPLES_DB=examples
+      - EXAMPLES_HOST=${W9_ID}-postgresql
+      - EXAMPLES_USER=examples
+      - EXAMPLES_PASSWORD=${W9_POWER_PASSWORD}
       - EXAMPLES_PORT=5432
     volumes:
       - postgresql:/var/lib/postgresql/data
@@ -75,7 +75,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "celery -A superset.tasks.celery_app:app inspect ping -d celery@$$HOSTNAME",
+          "celery -A superset.tasks.celery_app:app inspect ping -d celery@$${HOSTNAME}",
         ]
 
   superset-worker-beat:

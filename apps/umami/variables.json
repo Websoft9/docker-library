@@ -32,5 +32,43 @@
     "cpu": "1",
     "memory": "1",
     "disk": "1"
-  }
+  },
+  "database": [
+    {
+      "id": "postgres",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "postgresql",
+          "driver": "postgresql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "postgresql"
+          ]
+        }
+      ],
+      "users": [
+        {
+          "user": "${POSTGRES_USER}",
+          "password": "${POSTGRES_PASSWORD}",
+          "usage": [
+            "initialization",
+            "administration"
+          ]
+        },
+        {
+          "user": "umami",
+          "password": "${W9_RCODE}",
+          "usage": [
+            "application"
+          ]
+        }
+      ],
+      "datasource": {
+        "DATABASE_URL": "${url}"
+      }
+    }
+  ]
 }

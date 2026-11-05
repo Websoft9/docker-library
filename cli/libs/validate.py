@@ -7,6 +7,8 @@ from pathlib import Path
 
 import typer
 import yaml
+import jsonschema
+from dotenv import dotenv_values
 
 from libs.metadata import app_dir
 from libs.output import print_output
@@ -47,18 +49,26 @@ def _read_compose(path: Path) -> dict:
         return yaml.safe_load(file) or {}
 
 
-def _container_port(entry) -> int | None:
+def _container_port(entry, env: dict | None = None) -> int | None:
     if isinstance(entry, bool):
         return None
     if isinstance(entry, int):
         return entry
     if isinstance(entry, dict):
-        try:
-            return int(entry.get("target"))
-        except (TypeError, ValueError):
-            return None
+        return _container_port(entry.get("target"), env)
     if isinstance(entry, str):
-        token = entry.strip().strip("'\"").rsplit(":", 1)[-1].split("/", 1)[0]
+        def resolve(reference):
+            name = reference.group(1) or reference.group(4)
+            value = (env or {}).get(name)
+            modifier = reference.group(2)
+            if modifier and (value is None or modifier == ":-" and value == ""):
+                return reference.group(3)
+            return value if value is not None else reference.group(0)
+
+        token = re.sub(
+            r"\$\{([A-Za-z_][A-Za-z0-9_]*)(?:(:-|-)([^{}]*))?\}|\$([A-Za-z_][A-Za-z0-9_]*)",
+            resolve, entry.strip().strip("'\""),
+        ).rsplit(":", 1)[-1].split("/", 1)[0]
         try:
             return int(token)
         except ValueError:
@@ -66,13 +76,13 @@ def _container_port(entry) -> int | None:
     return None
 
 
-def _compose_container_ports(compose: dict) -> set[int]:
+def _compose_container_ports(compose: dict, env: dict | None = None) -> set[int]:
     ports: set[int] = set()
     for service in (compose.get("services") or {}).values():
         if not isinstance(service, dict):
             continue
         for entry in service.get("ports", []) or []:
-            port = _container_port(entry)
+            port = _container_port(entry, env)
             if port is not None:
                 ports.add(port)
     return ports
@@ -167,7 +177,8 @@ def _policy_result(target: Path) -> dict:
             variables = json.loads(variables_path.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
             variables = {}
-        container_ports = _compose_container_ports(compose)
+        port_env = dotenv_values(env_path, interpolate=False) if env_path.exists() else {}
+        container_ports = _compose_container_ports(compose, port_env)
         compose_services = set((compose.get("services") or {}).keys())
         access_keys = set((variables.get("access") or {}).keys())
         for key, entry in (variables.get("access") or {}).items():
@@ -241,6 +252,78 @@ def _policy_result(target: Path) -> dict:
         "setup_missing_services": setup_missing_services,
         "setup_duplicate_ids": setup_duplicate_ids,
     }
+
+
+def _database_metadata_result(target: Path) -> dict:
+    result = {"ok": True, "status": "not_applicable", "errors": [], "warnings": []}
+    variables_path = target / "variables.json"
+    if not variables_path.exists():
+        return result
+    try:
+        variables = json.loads(variables_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {**result, "ok": False, "status": "invalid", "errors": ["variables.json: invalid JSON"]}
+    if not isinstance(variables, dict):
+        return {**result, "ok": False, "status": "invalid", "errors": ["variables.json: expected object"]}
+    if "database" not in variables:
+        return result
+
+    errors = result["errors"]
+    database = variables["database"]
+    try:
+        schema = json.loads(repo_path("metadata", "variables.schema.json").read_text(encoding="utf-8"))
+        validator = jsonschema.Draft202012Validator({"$defs": schema["$defs"], **schema["properties"]["database"]})
+        for error in validator.iter_errors(database):
+            path = "/".join(str(part) for part in error.path)
+            errors.append(f"database/{path}: violates {error.validator}")
+    except (OSError, ValueError, KeyError):
+        errors.append("metadata/variables.schema.json: missing or invalid database schema")
+    if errors:
+        return {**result, "ok": False, "status": "invalid"}
+    if isinstance(database, dict):
+        return {**result, "status": "legacy", "warnings": ["Migrate legacy database object to database[] before publishing this app."]}
+    if not database:
+        return {**result, "status": "ok"}
+
+    try:
+        database_types = json.loads(repo_path("metadata", "database-types.json").read_text(encoding="utf-8"))
+        dictionary_validator = jsonschema.Draft202012Validator({"$defs": schema["$defs"], "$ref": "#/$defs/databaseTypes"})
+        if not dictionary_validator.is_valid(database_types):
+            errors.append("metadata/database-types.json: invalid type definitions")
+            database_types = {}
+    except (OSError, ValueError):
+        errors.append("metadata/database-types.json: missing or invalid JSON")
+        database_types = {}
+    compose_path = target / "docker-compose.yml"
+    compose = _read_compose(compose_path) if compose_path.exists() else {}
+    services = compose.get("services") or {}
+    component_ids: set[str] = set()
+    internal_services: set[str] = set()
+    labels = {"host", "port", "name", "url", "users[*].user", "users[*].password"}
+    for index, component in enumerate(database):
+        prefix = f"database/{index}"
+        if component["id"] in component_ids:
+            errors.append(f"{prefix}/id: duplicate component id")
+        component_ids.add(component["id"])
+        for provider in component["providers"]:
+            if provider["type"] == "internal":
+                service = provider["service"]
+                if service not in services:
+                    errors.append(f"{prefix}/providers: internal service does not exist")
+                if service in internal_services:
+                    errors.append(f"{prefix}/providers: internal service declared more than once")
+                internal_services.add(service)
+                drivers = [provider["driver"]]
+            else:
+                drivers = provider["drivers"]
+            if any(driver not in database_types for driver in drivers):
+                errors.append(f"{prefix}/providers: unknown database driver")
+        for variable, expression in component.get("datasource", {}).items():
+            if any(label not in labels for label in re.findall(r"\$\{([^{}]*)\}", expression)):
+                errors.append(f"{prefix}/datasource/{variable}: unknown connection attribute")
+            elif "${" in re.sub(r"\$\{[^{}]*\}", "", expression):
+                errors.append(f"{prefix}/datasource/{variable}: malformed connection attribute")
+    return {**result, "ok": not errors, "status": "invalid" if errors else "ok"}
 
 
 def _version_result(target: Path) -> dict:
@@ -386,10 +469,16 @@ def _resolve_app_or_exit(app_name: str) -> Path:
 
 def check_app(app_name: str, gate: str = "all") -> dict:
     target = _resolve_app_or_exit(app_name)
+    if gate == "secrets":
+        from libs.secret_audit import check_secret_templates
+
+        result = check_secret_templates(target)
+        return {"app": app_name, "gate": gate, "result": result, "ok": result["ok"]}
     structure = _structure_result(target)
     policy = _policy_result(target)
     version = _version_result(target)
     database = _database_result(target)
+    database_metadata = _database_metadata_result(target)
 
     if gate == "structure":
         return {"app": app_name, "gate": gate, "result": structure, "ok": structure["ok"]}
@@ -399,6 +488,8 @@ def check_app(app_name: str, gate: str = "all") -> dict:
         return {"app": app_name, "gate": gate, "result": version, "ok": version["ok"]}
     if gate in ("database", "db"):
         return {"app": app_name, "gate": "database", "result": database, "ok": database["ok"]}
+    if gate == "database-metadata":
+        return {"app": app_name, "gate": gate, "result": database_metadata, "ok": database_metadata["ok"]}
 
     return {
         "app": app_name,
@@ -406,7 +497,8 @@ def check_app(app_name: str, gate: str = "all") -> dict:
         "policy": policy,
         "version": version,
         "database": database,
-        "ok": structure["ok"] and policy["ok"],
+        "database_metadata": database_metadata,
+        "ok": structure["ok"] and policy["ok"] and database_metadata["ok"],
     }
 
 

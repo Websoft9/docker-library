@@ -21,6 +21,51 @@
     "memory": "8",
     "disk": "1"
   },
+  "database": [
+    {
+      "id": "mariadb",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "mariadb",
+          "driver": "mariadb"
+        }
+      ],
+      "name": [],
+      "users": [
+        {
+          "user": "root",
+          "password": "${MYSQL_ROOT_PASSWORD}",
+          "usage": [
+            "initialization",
+            "administration"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "redis-cache",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "redis-cache",
+          "driver": "redis"
+        }
+      ],
+      "users": []
+    },
+    {
+      "id": "redis-queue",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "redis-queue",
+          "driver": "redis"
+        }
+      ],
+      "users": []
+    }
+  ],
   "upstream": {
     "image": "https://hub.docker.com/r/frappe/erpnext",
     "docs": [
@@ -34,6 +79,6 @@
     ]
   },
   "help": {
-    "db": "ERPNext requires MariaDB 10.6+ and Redis. This package bundles MariaDB 11.8 and Redis 6.2 for a single-node deployment."
+    "db": "ERPNext requires MariaDB 10.6+ and Redis. This package bundles MariaDB 11.8 and Redis 6.2 for a single-node deployment and does not offer external databases. Metadata lists known internal services and the provisioning root account only; Frappe generates site databases and business accounts."
   }
 }

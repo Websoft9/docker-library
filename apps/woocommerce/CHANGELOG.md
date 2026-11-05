@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-11-03
+
+- Declared the MySQL dependency and existing native `WORDPRESS_DB_*` mappings shared by the web and bootstrap services, including external MySQL/MariaDB engines.
+- Inherited database names and accounts from the shared dictionary without changing runtime configuration or image versions.
+
 ## 2026-09-15
 
 - Added the initial WooCommerce package, based on the official WordPress image with bundled MySQL 8.4.

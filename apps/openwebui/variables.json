@@ -35,5 +35,18 @@
     "cpu": "2",
     "memory": "4",
     "disk": "10"
-  }
+  },
+  "database": [
+    {
+      "id": "chroma",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "chroma",
+          "driver": "chroma"
+        }
+      ],
+      "users": []
+    }
+  ]
 }

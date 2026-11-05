@@ -146,7 +146,10 @@ def collect_app_info(app_name: str) -> dict:
     compose_summary = _compose_summary(target / "docker-compose.yml")
 
     from libs.app_deploy import _compose_published_ports
-    from libs.validate import _database_result
+    from libs.validate import _database_metadata_result, _database_result
+
+    database_lifecycle = _database_result(target)
+    database_connections = variables.get("database")
 
     return {
         "name": app_name,
@@ -175,7 +178,10 @@ def collect_app_info(app_name: str) -> dict:
         "services": compose_summary["services"],
         "images": compose_summary["images"],
         "credentials": variables.get("credentials"),
-        "database": _database_result(target),
+        "database": database_lifecycle,
+        "database_lifecycle": database_lifecycle,
+        "database_connections": database_connections if isinstance(database_connections, list) else [],
+        "database_metadata": _database_metadata_result(target),
         "tests": _test_summary(target / "tests" / "cases.yml"),
         "env_keys": sorted(env_values),
     }
@@ -285,6 +291,13 @@ def restore_app(app_name: str, cadence: str = "monthly", update_policy: str = "p
             "update_policy": update_policy,
             "dry_run": dry_run,
         }
+        from libs.validate import _database_metadata_result
+
+        actions["database_metadata"] = _database_metadata_result(source)
+        if actions["database_metadata"]["status"] == "legacy":
+            actions["todo"] = ["Migrate database to database[] and run libs app-check before publishing."]
+        elif not actions["database_metadata"]["ok"]:
+            raise ValueError("Invalid database metadata; repair the archived declaration before restoring.")
 
         archived_apps = archive.get("apps") or []
         overrides = archive.get("overrides") or {}

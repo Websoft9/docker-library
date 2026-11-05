@@ -46,6 +46,31 @@
       "ADMIN_PASSWD"
     ]
   },
+  "database": [
+    {
+      "id": "rds",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "mysql",
+          "driver": "mysql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "mysql",
+            "mariadb"
+          ]
+        }
+      ],
+      "datasource": {
+        "DB_SERVER": "${host}",
+        "DB_NAME": "${name}",
+        "DB_USER": "${users[*].user}",
+        "DB_PASSWD": "${users[*].password}"
+      }
+    }
+  ],
   "help": {
     "db": "PrestaShop 9 supports MySQL 5.7+ and MariaDB 10.2+. This package bundles MySQL 8.4 LTS for a single-node deployment."
   }

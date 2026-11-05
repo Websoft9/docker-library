@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-11-03
+
+- Declared the three internal PostgreSQL, ClickHouse, and Redis dependencies; excluded MinIO object storage from database declarations.
+- Inherited standard PostgreSQL/ClickHouse sources and declared Redis's default account with the REDIS_AUTH password source used by its startup command.
+- Preserved the documented internal-only scope; runtime configuration and image versions are unchanged.
+
 ## 2026-10-15
 
 - Restored the archived `langfuse` package to active maintenance and rebuilt it into a real Langfuse v4 self-hosted package based on the official docker-compose deployment.

@@ -59,7 +59,6 @@ The `latest` tag is not guaranteed to remain valid; pin a specific version for p
 
 
 - `django_app` → `/app`
-- `postgres_data` → `/var/lib/postgresql/data`
 
 
 

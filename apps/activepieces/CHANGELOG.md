@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-04
+
+- Separated bundled PostgreSQL initialization from `AP_POSTGRES_*` application inputs, preserving the original database, user, and password seed; removed unnecessary application env-file injection into PostgreSQL.
+- Declared external PostgreSQL using the five existing native inputs shared by app and worker; retained internal Redis and the fixed PostgreSQL driver.
+- Preserved images, volumes, commands, and startup dependencies; verified default/override configuration and initialization isolation statically without deployment or live database verification.
+
 ## 2026-10-13
 
 - Upgraded Activepieces from `0.88.4-hotfix.1` to `0.92.3`.

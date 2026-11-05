@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-03
+- Declared the bundled MySQL dependency and existing native `WORDPRESS_DB_*` mappings for external MySQL/MariaDB connections, inheriting database names and accounts from the shared dictionary.
+- Kept runtime configuration and image versions unchanged.
+
 ## 2026-10-22
 - Checked the WordPress `7.1.3` maintenance and security release. `W9_VERSION=7.1` is already on the same multi-arch digest as `7.1.3`, so no package version change is required.
 - Added a `tests/cases.yml` install page check to cover the `/wp-admin/install.php` path.

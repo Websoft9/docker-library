@@ -15,9 +15,13 @@ services:
     restart: unless-stopped
     env_file: .env
     environment:
-      MYSQL_ROOT_PASSWORD: notSecureChangeMe
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     profiles:
       - db
+    networks:
+      default:
+        aliases:
+          - mysql
 
 networks:
   default:

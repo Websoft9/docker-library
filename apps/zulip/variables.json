@@ -21,6 +21,28 @@
     "memory": "2",
     "disk": "10"
   },
+  "database": [
+    {
+      "id": "postgres",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "database",
+          "driver": "postgresql"
+        }
+      ]
+    },
+    {
+      "id": "redis",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "redis",
+          "driver": "redis"
+        }
+      ]
+    }
+  ],
   "credentials": {},
   "env": {
     "first_startup_only": [

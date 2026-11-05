@@ -217,7 +217,7 @@ AI SHOULD NOT redo the local dependency inventory or local compose parsing that 
 
 Embedded database versions are decided from three layers:
 
-1. `variables.json externalDB` - the app's verified requirement result (min / recommended / reason). It is a result cache, not the source of truth; humans or AI verify it against vendor docs and test it.
+1. Official release notes or vendor documentation - the vendor-tested minimum and upper bound. `variables.json externalDB` remains user-facing verified help only and is never a computation input.
 2. `metadata/db-lifecycle.json` - engine-level lifecycle facts (track and EOL per version), shared by all apps. Refreshed by `libs db-refresh` from the endoflife.date API; the read path treats snapshots older than 45 days as stale. Data changes are reviewed by PR like any data change.
 3. Registry tags - tag availability, fetched by the CLI at assessment time (existing `dockerhub-tags` parser).
 
@@ -246,16 +246,16 @@ Schema of `metadata/db-lifecycle.json`:
 
 Decision rule:
 
-- candidates = available tags ∩ (>= externalDB.min) ∩ alive in db-lifecycle
+- candidates = available tags ∩ (>= vendor-tested minimum from official docs) ∩ alive in db-lifecycle
 - LTS/stabled tracks rank above innovation/short-term
 - untested majors above the vendor's documented/tested upper bound are not eligible (AI judgment from prose docs)
-- the chosen version is recorded back into `externalDB.recommended` with a reason
+- record the chosen version and official references in the assessment; any verified `externalDB` help update remains separate from computation
 - implementation rule: when the current bundled track is EOL and the vendor supports a newer alive LTS, update `W9_DB_VERSION` in the same app update; run `libs app-check --app <app> --gate database` and record the change in `CHANGELOG.md`
 
 Division of labor:
 
-- CLI: current `W9_DB_VERSION`, declared min, lifecycle table, registry tags
-- AI: vendor-tested upper bound, final pick, recording the verified result into externalDB
+- CLI: current `W9_DB_VERSION`, lifecycle table, registry tags
+- AI: vendor-tested minimum and upper bound from official docs, final pick, recording the verified result in the assessment
 
 ## Design Rule
 

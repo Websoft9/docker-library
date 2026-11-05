@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-11-04
+
+- Declared the internal PostgreSQL and Redis dependencies using their real service names and standard environment sources.
+- Preserved Redis authentication from the service's REDIS_PASSWORD environment and startup command; excluded RabbitMQ and out-of-scope Memcached.
+- Did not invent unconfirmed external connection mappings; runtime files, first-start configuration, and image versions are unchanged.
+
 ## 2026-09-18
 
 - Fixed the first-start organization bootstrap on the 12.x image: the password file is now written as root before being chowned to `zulip`, so the post-setup script no longer fails with `Permission denied` when the container root lacks DAC override.

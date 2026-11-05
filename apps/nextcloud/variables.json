@@ -31,6 +31,31 @@
     "memory": "2",
     "disk": "4"
   },
+  "database": [
+    {
+      "id": "mysql",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "db",
+          "driver": "mysql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "mysql",
+            "mariadb"
+          ]
+        }
+      ],
+      "datasource": {
+        "MYSQL_HOST": "${host}",
+        "MYSQL_DATABASE": "${name}",
+        "MYSQL_USER": "${users[*].user}",
+        "MYSQL_PASSWORD": "${users[*].password}"
+      }
+    }
+  ],
   "env": {
     "first_startup_only": [
       "NEXTCLOUD_ADMIN_USER",

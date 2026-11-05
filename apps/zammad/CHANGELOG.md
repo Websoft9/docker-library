@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2026-11-04
+
+- Declared PostgreSQL, Elasticsearch, and Redis dependencies, excluding Memcached and application/helper containers.
+- Recorded the script-created ZAMMAD_DB/ZAMMAD_DB_USER/ZAMMAD_DB_PASS sources separately from the PostgreSQL bootstrap account, preserving W9_RCODE provenance.
+- Mapped existing PostgreSQL inputs shared by all application services; kept Elasticsearch and Redis internal with their confirmed unauthenticated configuration.
+- Kept initialization scripts, runtime configuration, and image versions unchanged.
+
 ## 2026-09-20
 - Update Zammad from 6.5 to 7.1 and switch the image to the official `ghcr.io/zammad/zammad`.
 - Rework `docker-compose.yml` and `.env` to the current upstream stack: PostgreSQL 17, Redis 8.10, Memcached 1.6, and a dedicated non-superuser `zammad` role/database provisioned on first init.

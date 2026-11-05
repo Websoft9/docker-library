@@ -23,6 +23,18 @@
     "memory": "1",
     "disk": "1"
   },
+  "database": [
+    {
+      "id": "mysql",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "mysql",
+          "driver": "mysql"
+        }
+      ]
+    }
+  ],
   "upstream": {
     "image": "https://hub.docker.com/r/nopcommerceteam/nopcommerce",
     "releases": "https://github.com/nopSolutions/nopCommerce/releases",

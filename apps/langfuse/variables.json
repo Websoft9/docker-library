@@ -16,7 +16,10 @@
   "edition": [
     {
       "dist": "community",
-      "version": ["4.59", "latest"]
+      "version": [
+        "4.59",
+        "latest"
+      ]
     }
   ],
   "access": {
@@ -31,10 +34,55 @@
     "memory": "16",
     "disk": "20"
   },
+  "database": [
+    {
+      "id": "postgres",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "postgres",
+          "driver": "postgresql"
+        }
+      ]
+    },
+    {
+      "id": "clickhouse",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "clickhouse",
+          "driver": "clickhouse"
+        }
+      ]
+    },
+    {
+      "id": "redis",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "redis",
+          "driver": "redis"
+        }
+      ],
+      "users": [
+        {
+          "user": "default",
+          "password": "${REDIS_AUTH}",
+          "usage": [
+            "application"
+          ]
+        }
+      ]
+    }
+  ],
   "credentials": {},
   "env": {
     "first_startup_only": [],
-    "secrets": ["NEXTAUTH_SECRET", "SALT", "ENCRYPTION_KEY"]
+    "secrets": [
+      "NEXTAUTH_SECRET",
+      "SALT",
+      "ENCRYPTION_KEY"
+    ]
   },
   "help": {
     "login": "Langfuse ships with no default account. Open the site, click Sign up to create the first user, then create your organization and project in the UI."

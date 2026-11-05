@@ -225,7 +225,7 @@ def scan_command(
 @app.command("app-check")
 def check_command(
     app_name: str = typer.Option(..., "--app", help="App name"),
-    gate: str = typer.Option("all", "--gate", help="all | structure | policy | version | database"),
+    gate: str = typer.Option("all", "--gate", help="all | structure | policy | version | database | database-metadata | secrets"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
 ) -> None:
     """Run quality gate checks for one app."""
@@ -250,6 +250,7 @@ def report_command(
             "policy": check["policy"],
             "version": check["version"],
             "database": check["database"],
+            "database_metadata": check["database_metadata"],
         },
         "advisories": [
             item for item in check["database"].get("databases", []) if item.get("status") == "eol"

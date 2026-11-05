@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-03
+- Declared the PostgreSQL application database and existing native connection inputs, inheriting standard database and account sources.
+- Kept the fixed database type, runtime configuration, and image versions unchanged.
+
 ## 2026-10-30
 
 - Updated Metabase to the official `v0.64-lts` Docker image tag.

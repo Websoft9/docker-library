@@ -15,7 +15,7 @@
 - [ ] Perform read-only conformance screening for app-local structure, policy, metadata, and generated README compatibility
 - [ ] Classify conformance finding: ok | minor-fixes | blocking-fixes
 - [ ] Identify DB dependency images from `.venv/bin/libs app-drift` output
-- [ ] Read `externalDB` in `apps/<app>/variables.json`
+- [ ] Verify the vendor-tested DB minimum in official docs; keep `externalDB` as help only, never a computation input
 - [ ] Read `metadata/db-lifecycle.json`; run `.venv/bin/libs db-refresh` if engine missing or snapshot stale (>45 days)
 - [ ] Compute DB candidates: alive, >= min, LTS preferred over innovation
 - [ ] Judge vendor-tested DB upper bound from release notes or docs

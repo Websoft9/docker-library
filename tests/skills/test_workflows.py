@@ -46,6 +46,24 @@ def test_new_app_skill_workflow_smoke(skill_repo_fixture):
     variables = json.loads((skill_repo_fixture / "apps" / "smoke-app" / "variables.json").read_text(encoding="utf-8"))
     assert "releases" not in variables["upstream"]
     assert "compose" not in variables["upstream"]
+    assert "database" not in variables
+    assert any("database[]" in item for item in payload["todo"])
+
+
+def test_database_declaration_skill_workflow_blocks_unknown_driver(skill_app_factory):
+    target = skill_app_factory("db-app", variables={"database": [{
+        "id": "rds", "providers": [{"type": "external", "drivers": ["postgresql"]}],
+        "datasource": {"DATABASE_URL": "${url}"},
+    }]})
+    result = runner.invoke(main.app, ["app-check", "--app", "db-app", "--json"])
+    assert result.exit_code == 0
+    assert _json_output(result)["database_metadata"]["ok"] is True
+    variables = json.loads((target / "variables.json").read_text())
+    variables["database"][0]["providers"][0]["drivers"] = ["sqlite"]
+    (target / "variables.json").write_text(json.dumps(variables))
+    invalid = runner.invoke(main.app, ["app-check", "--app", "db-app", "--json"])
+    assert invalid.exit_code == 1
+    assert _json_output(invalid)["database_metadata"]["ok"] is False
 
 
 def test_archive_restore_skill_workflow_smoke(skill_repo_fixture, skill_app_factory):

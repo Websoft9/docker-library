@@ -35,6 +35,50 @@
     "memory": "2",
     "disk": "1"
   },
+  "database": [
+    {
+      "id": "rds",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "mysql",
+          "driver": "mysql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "mysql",
+            "mariadb"
+          ]
+        }
+      ],
+      "datasource": {
+        "WORDPRESS_DB_HOST": "${host}:${port}",
+        "WORDPRESS_DB_NAME": "${name}",
+        "WORDPRESS_DB_USER": "${users[*].user}",
+        "WORDPRESS_DB_PASSWORD": "${users[*].password}"
+      }
+    },
+    {
+      "id": "redis",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "redis",
+          "driver": "redis"
+        }
+      ],
+      "name": [
+        "${WP_REDIS_DATABASE}"
+      ],
+      "users": [],
+      "datasource": {
+        "WP_REDIS_HOST": "${host}",
+        "WP_REDIS_PORT": "${port}",
+        "WP_REDIS_DATABASE": "${name}"
+      }
+    }
+  ],
   "help": {
     "db": "WordPress recommends MySQL 8.0+ or MariaDB 10.11+. This package bundles MySQL 8.4, Redis 7.4, and Varnish for a single-node deployment."
   }

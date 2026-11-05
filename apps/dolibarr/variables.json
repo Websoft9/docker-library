@@ -40,6 +40,31 @@
       "W9_LOGIN_PASSWORD"
     ]
   },
+  "database": [
+    {
+      "id": "rds",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "mariadb",
+          "driver": "mariadb"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "mysql",
+            "mariadb"
+          ]
+        }
+      ],
+      "datasource": {
+        "DOLI_DB_HOST": "${host}",
+        "DOLI_DB_NAME": "${name}",
+        "DOLI_DB_USER": "${users[*].user}",
+        "DOLI_DB_PASSWORD": "${users[*].password}"
+      }
+    }
+  ],
   "help": {
     "db": "Dolibarr requires MariaDB or MySQL. This package bundles MariaDB for a single-node deployment."
   }

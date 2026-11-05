@@ -10,10 +10,10 @@ services:
       - nextcloud-data:/var/www/html/data
     env_file: .env
     environment:
-      MYSQL_PASSWORD: ${W9_POWER_PASSWORD}
-      MYSQL_DATABASE: nextcloud
-      MYSQL_USER: nextcloud
-      MYSQL_HOST: ${W9_ID}-mysql
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_HOST: ${MYSQL_HOST}
     depends_on:
       db:
         condition: service_healthy

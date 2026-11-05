@@ -33,6 +33,44 @@
     "memory": "8",
     "disk": "20"
   },
+  "database": [
+    {
+      "id": "postgres",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "postgresql",
+          "driver": "postgresql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "postgresql"
+          ]
+        }
+      ],
+      "datasource": {
+        "CANVAS_DATABASE_HOST": "${host}",
+        "CANVAS_DATABASE_USERNAME": "${users[*].user}",
+        "CANVAS_DATABASE_PRODUCTION": "${name}",
+        "POSTGRES_PASSWORD": "${users[*].password}"
+      }
+    },
+    {
+      "id": "redis",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "redis",
+          "driver": "redis"
+        }
+      ],
+      "users": [],
+      "datasource": {
+        "CANVAS_REDIS_URL": "redis://${host}:${port}"
+      }
+    }
+  ],
   "env": {
     "first_startup_only": [
       "CANVAS_LMS_ADMIN_EMAIL",

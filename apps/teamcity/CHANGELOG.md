@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-11-03
+
+- Declared the bundled teamcity-mysql dependency with standard MySQL database/account sources for first-run setup.
+- Did not treat the server or agent as databases or invent native connection mappings; runtime configuration and image versions are unchanged.
+
 ## 2026-09-21
 
 - Update TeamCity to 2026.2 and the bundled MySQL to 8.4.

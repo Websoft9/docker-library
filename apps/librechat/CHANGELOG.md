@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-11-04
+
+- Declared internal MongoDB, Meilisearch, and PostgreSQL vector storage, preserving MongoDB's explicit no-auth configuration and LibreChat database name.
+- Kept Meilisearch API keys outside account/password metadata and excluded the non-database admin-panel despite its image path.
+- Kept all three stores internal-only and removed external providers and connection mappings.
+- Restored the original API/RAG addresses and credentials and Meilisearch environment wiring; removed RAG variables added solely for external databases without changing bundled initialization.
+- Preserved default connections, image versions, and Meilisearch API key handling; passed static configuration and regression checks without deployment or live database verification.
+
 ## 2026-10-12
 
 - Hardened the packaged `v0.8.7` deployment with explicit generated secrets for the admin panel, Meilisearch, JWT, and credential storage.

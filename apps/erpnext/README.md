@@ -27,6 +27,10 @@ Websoft9 packages this app from the official [ERPNext Docker image](https://hub.
 
 <!-- W9_NOTE_START -->
 
+This package keeps MariaDB and both Redis services internal and does not offer external databases. Database metadata records known internal services and the root provisioning account; Frappe generates site database names and business accounts, which are not guessed in metadata.
+
+Site creation uses the bundled MariaDB password seed `W9_POWER_PASSWORD`; `W9_LOGIN_PASSWORD` remains the ERPNext administrator password. Existing sites retain their saved credentials. The declaration does not rewrite shared site configuration, migrate data, or rotate passwords.
+
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.

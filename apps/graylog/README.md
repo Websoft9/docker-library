@@ -33,6 +33,8 @@ Websoft9 packages this app from the official [Graylog Docker image](https://hub.
 
 <!-- W9_NOTE_START -->
 
+This package does not offer external databases. Metadata records the known bundled MongoDB service and the `graylog` database used by both Graylog and Data Node, without changing runtime files. The managed Data Node search endpoint, TLS, and credentials remain unknown; commented ports, the 8999 management API, and Graylog login credentials are not search connection evidence. This partial declaration does not claim complete storage information, live credential validity, or perform configuration writes.
+
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.

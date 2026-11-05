@@ -27,6 +27,47 @@
     "memory": "4",
     "disk": "1"
   },
+  "database": [
+    {
+      "id": "mariadb",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "mariadb",
+          "driver": "mariadb"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "mysql",
+            "mariadb"
+          ]
+        }
+      ],
+      "name": [
+        "${MYSQL_DATABASE}"
+      ],
+      "users": [
+        {
+          "user": "root",
+          "password": "${MYSQL_ROOT_PASSWORD}",
+          "usage": [
+            "administration"
+          ]
+        },
+        {
+          "user": "${MYSQL_USER}",
+          "password": "${MYSQL_PASSWORD}",
+          "usage": [
+            "application"
+          ]
+        }
+      ],
+      "datasource": {
+        "DATABASE_URL": "mysql://${users[*].user}:${users[*].password}@${host}:${port}/${name}"
+      }
+    }
+  ],
   "upstream": {
     "image": "https://hub.docker.com/r/vaultwarden/server",
     "releases": "https://github.com/dani-garcia/vaultwarden/releases",

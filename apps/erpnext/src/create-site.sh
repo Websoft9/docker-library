@@ -33,7 +33,7 @@ if [ ! -d sites/frontend ]; then
     --mariadb-user-host-login-scope='%' \
     --admin-password="${W9_LOGIN_PASSWORD}" \
     --db-root-username=root \
-    --db-root-password="${W9_LOGIN_PASSWORD}" \
+    --db-root-password="${W9_POWER_PASSWORD}" \
     --install-app erpnext \
     --set-default frontend
 else

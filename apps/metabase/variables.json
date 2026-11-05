@@ -31,6 +31,31 @@
     "memory": "1",
     "disk": "1"
   },
+  "database": [
+    {
+      "id": "rds",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "postgres",
+          "driver": "postgresql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "postgresql"
+          ]
+        }
+      ],
+      "datasource": {
+        "MB_DB_HOST": "${host}",
+        "MB_DB_PORT": "${port}",
+        "MB_DB_DBNAME": "${name}",
+        "MB_DB_USER": "${users[*].user}",
+        "MB_DB_PASS": "${users[*].password}"
+      }
+    }
+  ],
   "help": {
     "login": "First run: open the site and create the administrator account in the Metabase setup wizard, then sign in with those credentials."
   }

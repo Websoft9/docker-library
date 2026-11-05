@@ -75,7 +75,7 @@ bootstrap_if_needed() {
     fi
 
     php bin/console pim:installer:db --catalog "${INSTALL_CATALOG}" --env=prod --no-interaction
-    chown -R www-data:www-data "${APP_DIR}"
+    chown -R www-data:www-data "${APP_DIR}/var"
     create_admin_if_missing
 }
 

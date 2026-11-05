@@ -39,5 +39,29 @@
     "cpu": "1",
     "memory": "2",
     "disk": "1"
-  }
+  },
+  "database": [
+    {
+      "id": "postgres",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "db",
+          "driver": "postgresql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "postgresql"
+          ]
+        }
+      ],
+      "datasource": {
+        "KONG_PG_HOST": "${host}",
+        "KONG_PG_DATABASE": "${name}",
+        "KONG_PG_USER": "${users[*].user}",
+        "KONG_PG_PASSWORD": "${users[*].password}"
+      }
+    }
+  ]
 }
