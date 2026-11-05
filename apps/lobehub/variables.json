@@ -23,20 +23,41 @@
       ]
     }
   ],
-  "database": {
-    "type": "postgresql",
-    "supported_modes": [
-      "bundled"
-    ],
-    "default_mode": "bundled",
-    "bundled": {
-      "service": "postgresql",
-      "internal_host": "${W9_ID}-postgresql",
-      "database_env": "LOBE_DB_NAME",
-      "username_env": "POSTGRES_USER",
-      "password_env": "POSTGRES_PASSWORD"
+  "database": [
+    {
+      "id": "rds",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "postgresql",
+          "driver": "postgresql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "postgresql"
+          ]
+        }
+      ],
+      "datasource": {
+        "DATABASE_URL": "postgresql://${users[*].user}:${users[*].password}@${host}:${port}/${name}"
+      }
+    },
+    {
+      "id": "redis",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "redis",
+          "driver": "redis"
+        }
+      ],
+      "users": [],
+      "datasource": {
+        "REDIS_URL": "redis://${host}:${port}"
+      }
     }
-  },
+  ],
   "requirements": {
     "cpu": "2",
     "memory": "4",

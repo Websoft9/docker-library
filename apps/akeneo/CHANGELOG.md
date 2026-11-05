@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 2026-11-05
+
+- Limited final image-build and post-initialization ownership changes to the writable `var` directory; source and frontend dependencies already belong to `www-data`.
+- Avoided redundant recursive ownership changes across `node_modules`, which exceeded the remote test build budget.
+- Kept database connections, image versions, and source dependencies unchanged.
+- Verified remote image build, fresh initialization, login-page access, and database-marker preservation after retained-volume recreation. Full baseline migration requires a separately built baseline image; Owner E2E and external MySQL tests remain pending.
+
+## 2026-11-04
+
+- Declared internal MySQL and unauthenticated Elasticsearch dependencies, retaining the existing APP_DATABASE_* inputs shared by web and worker.
+- Separated bundled MySQL initialization into independent MYSQL_* defaults and declared external MySQL inputs.
+- Image versions and default connections are unchanged; static configuration checks passed, but deployment and live connection validation were not performed.
+
 ## 2026-10-13
 - Added `tests/cases.yml` coverage for the Akeneo login page so deploy validation exercises the real web entry path instead of only default checks.
 - Hardened the Docker image package-install step with an apt index refresh retry to avoid transient Debian mirror 404 failures during build.

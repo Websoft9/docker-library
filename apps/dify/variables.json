@@ -23,6 +23,52 @@
     "memory": "4",
     "disk": "9"
   },
+  "database": [
+    {
+      "id": "postgres",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "db",
+          "driver": "postgresql"
+        }
+      ],
+      "name": [
+        "${POSTGRES_DB}",
+        "${DB_PLUGIN_DATABASE}"
+      ],
+      "users": [
+        {
+          "user": "postgres",
+          "password": "${POSTGRES_PASSWORD}"
+        }
+      ]
+    },
+    {
+      "id": "redis",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "redis",
+          "driver": "redis"
+        }
+      ],
+      "name": [
+        "0",
+        "1"
+      ]
+    },
+    {
+      "id": "weaviate",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "weaviate",
+          "driver": "weaviate"
+        }
+      ]
+    }
+  ],
   "upstream": {
     "image": "https://hub.docker.com/r/langgenius/dify-api"
   }

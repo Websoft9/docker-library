@@ -23,6 +23,31 @@
     "memory": "1",
     "disk": "2"
   },
+  "database": [
+    {
+      "id": "mysql",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "mysql",
+          "driver": "mysql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "mysql",
+            "mariadb"
+          ]
+        }
+      ],
+      "datasource": {
+        "MATOMO_DATABASE_HOST": "${host}",
+        "MATOMO_DATABASE_DBNAME": "${name}",
+        "MATOMO_DATABASE_USERNAME": "${users[*].user}",
+        "MATOMO_DATABASE_PASSWORD": "${users[*].password}"
+      }
+    }
+  ],
   "upstream": {
     "image": "https://hub.docker.com/_/matomo"
   }

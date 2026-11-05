@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-11-04
+
+- Moved the optional database root password to `MYSQL_ROOT_PASSWORD` backed by `W9_POWER_PASSWORD`, preserving the existing default without rotating installed credentials.
+- Added the `mysql` network alias and declared the optional internal MariaDB dependency; the `db` profile remains disabled by default.
+- Image versions are unchanged; deployment and live connection validation were not performed.
+
 ## 2026-09-14
 
 - Declared `variables.json.access` for the app (`web`, port 80) and the `/phpmyadmin/` path (`admin`, port 80).

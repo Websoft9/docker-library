@@ -13,12 +13,12 @@
 
 1. Open Supabase from the published web port and sign in to Studio with the dashboard basic auth credentials.
 2. The main entrypoint is the API gateway on port `8000`, exposed by `W9_HTTP_PORT_SET`; Studio, Auth, REST, Realtime, Storage, and Functions all sit behind that gateway.
-3. Keep the bundled Postgres and Supavisor services internal unless you intentionally redesign the stack.
+3. Keep the bundled Postgres and Supavisor services internal. This package declares known database information only and does not offer external databases.
 
 ### Change Password
 
 1. Change the Studio dashboard password by updating `W9_LOGIN_PASSWORD` / `DASHBOARD_PASSWORD` in `.env` and recreating the `api-gw` service.
-2. Do not rely on changing `POSTGRES_PASSWORD` after the first startup; the upstream stack treats the database password as an initialized secret and changing it later requires a dedicated rotation procedure.
+2. Do not rely on changing `POSTGRES_PASSWORD` after the first startup; the initialized roles require the upstream password rotation procedure, not just an environment edit.
 <!-- W9_GUIDE_END -->
 
 ## Configuration Reference
@@ -29,6 +29,8 @@ Websoft9 packages this app from the official [Supabase Docker image](https://git
 This package rebuilds Supabase against the official self-hosted Docker stack `self-hosted/v0.8.1`.
 
 The base package keeps the upstream default Envoy gateway, Supavisor pooler, bundled Postgres 17, and the core Studio/Auth/Rest/Realtime/Storage/Functions services.
+
+Database metadata describes the bundled instance, its known roles, and the main and `_supabase` databases. Existing connection variables and initialization scripts remain the source of truth; the declaration does not select a connection, rewrite configuration, migrate data, rotate passwords, or update existing Supavisor tenants. The roles, extensions, schemas, and pooler configuration are maintained as one bundled stack.
 
 Optional upstream overrides such as Kong, PgBouncer, S3/MinIO, TLS proxies, and logs/analytics are intentionally not enabled in this base package.
 
@@ -65,7 +67,7 @@ Supported versions: 0.8.1.
 Environment variables are defined in the app's `.env` file; see the reference section at the end of `.env` for supported variables.
 
 
-Note: `POSTGRES_PASSWORD` take effect on first startup only; changing them after deployment may not take effect until the app is re-initialized.
+Note: `POSTGRES_PASSWORD` takes effect on first startup only; changing it does not rotate passwords in an initialized database.
 
 
 ### Configuration Files
@@ -117,7 +119,7 @@ Note: `POSTGRES_PASSWORD` take effect on first startup only; changing them after
 - The user-facing entrypoint is the API gateway on `W9_HTTP_PORT_SET` (internal port `8000`), not the Studio container's internal `3000` port.
 
 **Database password changed after first boot?**
-- `POSTGRES_PASSWORD` is effectively first-startup-only for the initialized stack. If you need to rotate it later, follow the upstream self-hosted database password rotation procedure instead of only editing `.env`.
+- Follow the upstream self-hosted database password rotation procedure for existing roles; changing `POSTGRES_PASSWORD` in the environment does not rotate an initialized database.
 
 **Want Kong, PgBouncer, logs, S3/MinIO, or TLS proxy support?**
 - Those upstream features require additional compose override files and extra configuration. They are intentionally omitted from this base package.

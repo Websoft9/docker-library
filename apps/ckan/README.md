@@ -27,6 +27,10 @@ Websoft9 packages this app from the official [Ckan Docker image](https://hub.doc
 
 <!-- W9_NOTE_START -->
 
+New installations use two random templates declared in `env.secrets`: the session secret and `CKAN_API_TOKEN_SECRET`. The JWT encode/decode settings both reference the same seed and preserve CKAN's `string:` prefix. Websoft9 generates these on instance creation and reuses them for installation retries; direct Compose does not generate production secrets.
+
+Keep existing instance secrets when recreating or upgrading. Replacing JWT/session keys can invalidate tokens and sessions; do not reset them from package defaults. Back up the instance `.env` with its data, and use the application-specific rotation procedure when a change is intentional.
+
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.

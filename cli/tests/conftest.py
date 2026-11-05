@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 from pathlib import Path
 
 import pytest
@@ -44,6 +45,8 @@ def repo_fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
         encoding="utf-8",
     )
     (tmp_path / "i18n" / "translation.json").write_text("{}\n", encoding="utf-8")
+    for name in ("variables.schema.json", "database-types.json"):
+        shutil.copy2(Path(__file__).resolve().parents[2] / "metadata" / name, tmp_path / "metadata" / name)
     monkeypatch.chdir(tmp_path)
     return tmp_path
 

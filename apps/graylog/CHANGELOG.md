@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-11-04
+
+- Declared only the known internal MongoDB service and graylog database used by Graylog and Data Node; no external databases are offered.
+- Left managed Data Node search endpoint, TLS, and credentials unknown rather than guessing OpenSearch or treating commented ports, the management API, or Graylog login credentials as database evidence.
+- Kept all runtime files unchanged; partial known metadata does not imply complete storage information or live credential verification.
+
 ## 2026-10-16
 
 - Split `variables.json.credentials` into `credentials.initial` (preflight setup password from container logs) and `credentials.login` (steady-state password from `W9_LOGIN_PASSWORD`).

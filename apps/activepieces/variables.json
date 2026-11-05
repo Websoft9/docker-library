@@ -31,21 +31,46 @@
       "path": "/"
     }
   },
-  "database": {
-    "type": "postgresql",
-    "supported_modes": [
-      "bundled",
-      "external"
-    ],
-    "default_mode": "bundled",
-    "bundled": {
-      "service": "postgres",
-      "internal_host": "${W9_ID}-postgresql",
-      "database_env": "AP_POSTGRES_DATABASE",
-      "username_env": "AP_POSTGRES_USERNAME",
-      "password_env": "AP_POSTGRES_PASSWORD"
+  "database": [
+    {
+      "id": "rds",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "postgres",
+          "driver": "postgresql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "postgresql"
+          ]
+        }
+      ],
+      "datasource": {
+        "AP_POSTGRES_HOST": "${host}",
+        "AP_POSTGRES_PORT": "${port}",
+        "AP_POSTGRES_DATABASE": "${name}",
+        "AP_POSTGRES_USERNAME": "${users[*].user}",
+        "AP_POSTGRES_PASSWORD": "${users[*].password}"
+      }
+    },
+    {
+      "id": "redis",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "redis",
+          "driver": "redis"
+        }
+      ],
+      "users": [],
+      "datasource": {
+        "AP_REDIS_HOST": "${host}",
+        "AP_REDIS_PORT": "${port}"
+      }
     }
-  },
+  ],
   "requirements": {
     "cpu": "2",
     "memory": "4",

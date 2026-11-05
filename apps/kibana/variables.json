@@ -28,5 +28,21 @@
     "cpu": "2",
     "memory": "4",
     "disk": "5"
-  }
+  },
+  "database": [
+    {
+      "id": "elasticsearch",
+      "providers": [
+        {
+          "type": "external",
+          "drivers": [
+            "elasticsearch"
+          ]
+        }
+      ],
+      "datasource": {
+        "ELASTICSEARCH_HOSTS": "[\"${url}\"]"
+      }
+    }
+  ]
 }

@@ -50,6 +50,8 @@ def skill_repo_fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     )
 
     shutil.copy2(REPO_ROOT / "metadata" / "new-app.schema.json", tmp_path / "metadata" / "new-app.schema.json")
+    for name in ("variables.schema.json", "database-types.json"):
+        shutil.copy2(REPO_ROOT / "metadata" / name, tmp_path / "metadata" / name)
     shutil.copytree(REPO_ROOT / "metadata" / "templates", tmp_path / "metadata" / "templates", dirs_exist_ok=True)
     shutil.copy2(REPO_ROOT / "i18n" / "translation.json", tmp_path / "i18n" / "translation.json")
 

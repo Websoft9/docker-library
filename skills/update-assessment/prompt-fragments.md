@@ -28,8 +28,8 @@ A major version jump alone is not enough to choose `review-first`. For this repo
 
 ## DB Decision Rule
 
-Candidates = alive tracks from `metadata/db-lifecycle.json` with version >= the app's `externalDB` min. LTS/stable tracks outrank innovation/short-term tracks. A DB major above the vendor-tested upper bound is not eligible.
+Candidates = alive tracks from `metadata/db-lifecycle.json` with version >= the vendor-tested minimum from official release notes or docs. LTS/stable tracks outrank innovation/short-term tracks. A DB major above the vendor-tested upper bound is not eligible.
 
-`externalDB` is a verified result cache, `db-lifecycle.json` is the engine fact source. Use both plus live registry tags; never invent requirements from memory.
+`externalDB` is user-facing help only, never a computation source. Read the current `W9_DB_VERSION` from `.env`, lifecycle facts from `db-lifecycle.json`, vendor bounds from official docs, and availability from live registry tags; never invent requirements from memory. Connection declarations in `database[]` are separate from version selection.
 
 An EOL'd current `W9_DB_VERSION` is a P1 finding: report the best LTS candidate with a reason, but do not block the main version decision on it.

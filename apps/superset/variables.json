@@ -30,6 +30,78 @@
     "memory": "8",
     "disk": "3"
   },
+  "database": [
+    {
+      "id": "postgres",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "db",
+          "driver": "postgresql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "postgresql"
+          ]
+        }
+      ],
+      "name": [
+        "${POSTGRES_DB}",
+        "${EXAMPLES_DB}",
+        "superset_cypress"
+      ],
+      "users": [
+        {
+          "user": "${POSTGRES_USER}",
+          "password": "${POSTGRES_PASSWORD}",
+          "usage": [
+            "application",
+            "initialization",
+            "administration"
+          ]
+        },
+        {
+          "user": "${EXAMPLES_USER}",
+          "password": "${EXAMPLES_PASSWORD}",
+          "usage": [
+            "application"
+          ]
+        }
+      ],
+      "datasource": {
+        "DATABASE_HOST": "${host}",
+        "DATABASE_PORT": "${port}",
+        "DATABASE_DB": "${name}",
+        "DATABASE_USER": "${users[*].user}",
+        "DATABASE_PASSWORD": "${users[*].password}",
+        "EXAMPLES_HOST": "${host}",
+        "EXAMPLES_PORT": "${port}",
+        "EXAMPLES_DB": "${name}",
+        "EXAMPLES_USER": "${users[*].user}",
+        "EXAMPLES_PASSWORD": "${users[*].password}"
+      }
+    },
+    {
+      "id": "redis",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "redis",
+          "driver": "redis"
+        }
+      ],
+      "name": [
+        "0",
+        "1"
+      ],
+      "users": [],
+      "datasource": {
+        "REDIS_HOST": "${host}",
+        "REDIS_PORT": "${port}"
+      }
+    }
+  ],
   "credentials": {},
   "env": {
     "first_startup_only": [

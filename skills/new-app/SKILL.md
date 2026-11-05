@@ -17,6 +17,8 @@ Supporting files in this skill:
 
 ## Inputs
 
+Database declarations follow `docs/app-database-connection-spec.md` and `metadata/database-types.json`. Use `database[]` for verified components, real Compose service names for internal providers, and native `datasource` mappings for external providers. Omit the field for apps without database components; exclude SQLite and etcd, and leave Memcached out until its scope is decided. Do not copy passwords, choose a connection, or create database objects from metadata. Run `libs app-check --app <app> --gate database-metadata` as well as deployment validation. Preserve the separate roles of `externalDB` help and database lifecycle facts.
+
 - app name (required)
 - trademark (required)
 - official references (required): at least one URL for the project repository, image registry, or install docs

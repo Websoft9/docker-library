@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-11-04
+
+- Declared only the optional internal Chroma dependency, retaining its disabled-by-default profile and unconfigured connection inputs.
+- Excluded application-internal SQLite and Ollama; did not invent database credentials, external support, or an active connection.
+- Runtime configuration and image versions are unchanged.
+
 ## 2026-09-13
 - Pinned the Open WebUI image to `0.11`; `main` is kept only as a rolling test option and is not guaranteed.
 - Dropped the `cuda` edition and removed `docker-compose-gpu.yml`; added a note explaining the CUDA variant is out of scope for this package.

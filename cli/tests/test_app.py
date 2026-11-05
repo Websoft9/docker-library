@@ -56,6 +56,25 @@ def test_collect_app_info_returns_relative_path(app_factory):
     assert result["requirements"] == {"cpu": "1"}
 
 
+def test_app_info_keeps_lifecycle_compatibility_and_exposes_declarations(app_factory):
+    connections = [{"id": "rds", "providers": [{"type": "external", "drivers": ["postgresql"]}],
+                    "datasource": {"DATABASE_URL": "${url}"}}]
+    app_factory("demo", variables={"name": "demo", "database": connections})
+    result = app_module.collect_app_info("demo")
+    assert result["database_connections"] == connections
+    assert result["database_lifecycle"] == result["database"]
+    assert result["database_metadata"]["status"] == "ok"
+
+
+def test_restore_legacy_database_reports_migration_without_guessing_sources(app_factory):
+    target = app_factory("legacy", archived=True, variables={"database": {"type": "postgresql"}})
+    original = (target / "variables.json").read_bytes()
+    result = app_module.restore_app("legacy")
+    assert result["database_metadata"]["status"] == "legacy"
+    assert result["todo"]
+    assert (target.parents[2] / "apps" / "legacy" / "variables.json").read_bytes() == original
+
+
 def test_archive_app_real_move_updates_metadata(repo_fixture, app_factory):
     app_factory("ghost")
     maintenance_path = repo_fixture / "metadata" / "maintenance.yaml"

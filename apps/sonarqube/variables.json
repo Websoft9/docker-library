@@ -38,6 +38,29 @@
     "disk": "15"
   },
   "credentials": {},
+  "database": [
+    {
+      "id": "postgres",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "db",
+          "driver": "postgresql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "postgresql"
+          ]
+        }
+      ],
+      "datasource": {
+        "SONAR_JDBC_URL": "jdbc:postgresql://${host}:${port}/${name}",
+        "SONAR_JDBC_USERNAME": "${users[*].user}",
+        "SONAR_JDBC_PASSWORD": "${users[*].password}"
+      }
+    }
+  ],
   "env": {
     "first_startup_only": []
   },

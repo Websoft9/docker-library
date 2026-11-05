@@ -16,7 +16,10 @@
   "edition": [
     {
       "dist": "community",
-      "version": ["v1.46.0", "latest"]
+      "version": [
+        "v1.46.0",
+        "latest"
+      ]
     }
   ],
   "access": {
@@ -31,10 +34,48 @@
     "memory": "4",
     "disk": "10"
   },
+  "database": [
+    {
+      "id": "postgres",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "postgresql",
+          "driver": "postgresql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "postgresql"
+          ]
+        }
+      ],
+      "datasource": {
+        "INNGEST_POSTGRES_URI": "${url}"
+      }
+    },
+    {
+      "id": "redis",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "redis",
+          "driver": "redis"
+        }
+      ],
+      "users": [],
+      "datasource": {
+        "INNGEST_REDIS_URI": "redis://${host}:${port}"
+      }
+    }
+  ],
   "credentials": {},
   "env": {
     "first_startup_only": [],
-    "secrets": ["INNGEST_EVENT_KEY", "INNGEST_SIGNING_KEY"]
+    "secrets": [
+      "INNGEST_EVENT_KEY",
+      "INNGEST_SIGNING_KEY"
+    ]
   },
   "help": {
     "db": ""

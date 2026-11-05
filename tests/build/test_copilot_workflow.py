@@ -162,6 +162,9 @@ def test_commit_check_only_unlocks_tested_head(tmp_path, result, head, detect, h
 
 @pytest.mark.parametrize("paths,run_tests", [
     (["docs/runbook.md", "README.md"], False),
+    (["skills/new-app/SKILL.md"], True),
+    ([".github/skills/libs/SKILL.md"], True),
+    (["docs/app-database-connection-spec.md"], True),
     ([".github/workflows/maintenance-scan.yml"], True),
     (["apps/wordpress/.env"], True),
     (["docs/runbook.md", "cli/libs/main.py"], True),

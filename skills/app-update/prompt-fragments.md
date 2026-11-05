@@ -12,6 +12,8 @@ Update only what is required for the approved target version. Avoid unrelated cl
 
 Run the relevant quality gates for the changed app. Prefer app-local validation evidence over generic statements.
 
+When database declarations are touched, use `docs/app-database-connection-spec.md` and run `libs app-check --app <app> --gate database-metadata`. Keep lifecycle checks separate. For declaration-only changes, report metadata evidence and do not claim a runtime deployment.
+
 ## Report Rule
 
 Summarize:

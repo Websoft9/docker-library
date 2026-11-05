@@ -29,6 +29,22 @@
     "memory": "4",
     "disk": "1"
   },
+  "database": [
+    {
+      "id": "mongodb",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "mongodb",
+          "driver": "mongodb"
+        }
+      ],
+      "name": [
+        "graylog"
+      ],
+      "users": []
+    }
+  ],
   "credentials": {
     "initial": {
       "username": {
@@ -54,6 +70,7 @@
     }
   },
   "help": {
+    "db": "This package does not offer external databases. Metadata declares the known internal MongoDB connection only; the managed Data Node search endpoint, TLS, and credentials are not inferred from commented ports or Graylog login credentials.",
     "login": "First run: read the temporary admin password from the container logs (docker logs graylog) to complete initialization, then log in with the account and password shown below."
   }
 }

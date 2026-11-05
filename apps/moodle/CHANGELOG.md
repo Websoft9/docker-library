@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-03
+- Declared the MariaDB dependency and existing native connection inputs, explicitly using the package's MYSQL_* initialization sources for database names and accounts.
+- Kept the fixed database type, first-install behavior, runtime configuration, and image versions unchanged.
+
 ## 2026-10-30
 
 - Update Moodle to 5.3.

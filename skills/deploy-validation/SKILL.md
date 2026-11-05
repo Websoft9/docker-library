@@ -17,6 +17,8 @@ Supporting files in this skill:
 
 ## Inputs
 
+Database declarations follow `docs/app-database-connection-spec.md`. The `database_metadata` result in `app-check` validates declarations and blocks the overall gate on errors; the existing `database` gate checks lifecycle, not connectivity. A valid declaration does not prove credentials or a live connection. For declaration-only changes without runtime input changes, run metadata checks and explicitly report runtime deployment as not required, rather than claiming deploy/functional evidence.
+
 - app name (required)
 - target: local | remote (default from `.secrets/remote.env`; fallback local)
 - ssh host (required when target=remote)

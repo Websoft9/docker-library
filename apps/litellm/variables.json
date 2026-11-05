@@ -43,18 +43,25 @@
       "UI_PASSWORD"
     ]
   },
-  "database": {
-    "type": "postgresql",
-    "supported_modes": [
-      "bundled"
-    ],
-    "default_mode": "bundled",
-    "bundled": {
-      "service": "postgresql",
-      "internal_host": "${W9_ID}-postgresql",
-      "database_env": "POSTGRES_DB",
-      "username_env": "POSTGRES_USER",
-      "password_env": "POSTGRES_PASSWORD"
+  "database": [
+    {
+      "id": "rds",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "postgresql",
+          "driver": "postgresql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "postgresql"
+          ]
+        }
+      ],
+      "datasource": {
+        "DATABASE_URL": "postgresql://${users[*].user}:${users[*].password}@${host}:${port}/${name}"
+      }
     }
-  }
+  ]
 }

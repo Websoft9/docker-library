@@ -155,58 +155,14 @@
       }
     },
     "database": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": [
-            "postgresql",
-            "mysql",
-            "mariadb",
-            "mongodb",
-            "redis"
-          ]
+      "oneOf": [
+        {
+          "$ref": "#/$defs/databaseComponents"
         },
-        "supported_modes": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "enum": [
-              "bundled",
-              "external"
-            ]
-          }
-        },
-        "default_mode": {
-          "type": "string",
-          "enum": [
-            "bundled",
-            "external"
-          ]
-        },
-        "bundled": {
-          "type": "object",
-          "additionalProperties": true,
-          "properties": {
-            "service": {
-              "type": "string"
-            },
-            "internal_host": {
-              "type": "string"
-            },
-            "database_env": {
-              "type": "string"
-            },
-            "username_env": {
-              "type": "string"
-            },
-            "password_env": {
-              "type": "string"
-            }
-          }
+        {
+          "$ref": "#/$defs/legacyDatabase"
         }
-      }
+      ]
     },
     "env": {
       "type": "object",
@@ -225,7 +181,7 @@
             "type": "string",
             "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
           },
-          "description": "Names of .env keys that hold pre-generated secrets. The .env value is a plain-text, correctly-shaped default; a consumer may regenerate a similar value and overwrite it. No per-secret generation rules are declared here."
+          "description": "Names of .env keys holding supported random templates or variable references. A consumer generates literal seeds once and preserves shared references; structured or derived keys need dedicated handling. No per-secret generation rules are declared here."
         }
       }
     },
@@ -284,6 +240,251 @@
     }
   },
   "$defs": {
+    "databaseUsers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "user"
+        ],
+        "properties": {
+          "user": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "usage": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "application",
+                "initialization",
+                "administration"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "databaseNames": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "databaseProvider": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "service",
+            "driver"
+          ],
+          "properties": {
+            "type": {
+              "const": "internal"
+            },
+            "service": {
+              "type": "string",
+              "minLength": 1
+            },
+            "driver": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "drivers"
+          ],
+          "properties": {
+            "type": {
+              "const": "external"
+            },
+            "drivers": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "databaseComponents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "providers"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "providers": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/$defs/databaseProvider"
+            }
+          },
+          "name": {
+            "$ref": "#/$defs/databaseNames"
+          },
+          "users": {
+            "$ref": "#/$defs/databaseUsers"
+          },
+          "datasource": {
+            "type": "object",
+            "minProperties": 1,
+            "propertyNames": {
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+            },
+            "additionalProperties": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "if": {
+          "properties": {
+            "providers": {
+              "contains": {
+                "properties": {
+                  "type": {
+                    "const": "external"
+                  }
+                },
+                "required": [
+                  "type"
+                ]
+              }
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "datasource"
+          ]
+        }
+      }
+    },
+    "databaseTypes": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9-]*$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "images",
+          "host",
+          "port",
+          "url"
+        ],
+        "properties": {
+          "images": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "host": {
+            "const": ""
+          },
+          "port": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 65535
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "$ref": "#/$defs/databaseNames"
+          },
+          "users": {
+            "$ref": "#/$defs/databaseUsers"
+          }
+        }
+      }
+    },
+    "legacyDatabase": {
+      "deprecated": true,
+      "description": "Read-only compatibility for existing packages; new declarations use databaseComponents.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "postgresql",
+            "mysql",
+            "mariadb",
+            "mongodb",
+            "redis"
+          ]
+        },
+        "supported_modes": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "bundled",
+              "external"
+            ]
+          }
+        },
+        "default_mode": {
+          "enum": [
+            "bundled",
+            "external"
+          ]
+        },
+        "bundled": {
+          "type": "object",
+          "properties": {
+            "service": {
+              "type": "string"
+            },
+            "internal_host": {
+              "type": "string"
+            },
+            "database_env": {
+              "type": "string"
+            },
+            "username_env": {
+              "type": "string"
+            },
+            "password_env": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
     "credentialSlots": {
       "type": "object",
       "additionalProperties": false,

@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-03
+- Declared the PostgreSQL dependency and existing DSN mapping, preserving SSL and timeout parameters and the W9_RCODE password source.
+- Kept the fixed database driver, runtime configuration, and image versions unchanged.
+
 ## 2026-10-30
 
 - Update Mattermost Team Edition from `11.11` to `12.0`.

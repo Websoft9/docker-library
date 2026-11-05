@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-11-03
+
+- Declared optional external PostgreSQL/MySQL/MariaDB support through the existing DATABASE_URL input.
+- Preserved the unset default and SQLite fallback without declaring SQLite or an internal database; runtime files and image versions are unchanged.
+
 ## 2026-09-16
 
 - Split the Django startup into ordered hooks under `src/entrypoint.d/` plus a `src/start.sh`, with a user hook directory at `/app/.w9/entrypoint.d/` and an optional `/app/.w9/start.sh` override.

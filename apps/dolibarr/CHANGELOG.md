@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-03
+- Declared the MariaDB dependency and existing native inputs for MySQL/MariaDB connections, inheriting standard database and account sources.
+- Kept runtime configuration and image versions unchanged; commented optional inputs are not declared as connected inputs.
+
 ## 2026-10-13
 
 - Switched Dolibarr from the archived `tuxgasy/dolibarr` image to the maintained official `dolibarr/dolibarr` image.

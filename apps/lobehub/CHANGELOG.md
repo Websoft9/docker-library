@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-11-04
+
+- Declared external PostgreSQL through the existing `DATABASE_URL`, retaining independent bundled initialization and internal Redis.
+- Left Compose, `.env`, image versions, RustFS, and its initialization helper unchanged; preserved bundled `pg_search,pg_cron` preloading. External databases must satisfy the application's extension and permission requirements.
+- Verified native input delivery, default configuration, and initialization isolation statically without deployment or live database verification.
+
 ## 2026-10-12
 
 - Updated the main image from `lobehub/lobehub:2.2.17` to `lobehub/lobehub:2.2.19`.

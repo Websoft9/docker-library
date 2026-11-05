@@ -6,6 +6,7 @@
 - [ ] Read upstream release notes and upgrade notes
 - [ ] Choose `x.x` or `x.x.x` tag using repository policy
 - [ ] Update only required files
+- [ ] If database metadata is touched, migrate verified legacy sources to `database[]` per `docs/app-database-connection-spec.md` and run the `database-metadata` gate
 - [ ] Use braced `${VAR}` form for **all** environment-variable references in every edited file (`.env`, `docker-compose.yml`, mounted config templates), not only the lines changed this run
 - [ ] Scan edited files for remaining bare `$VAR` references and fix all hits before handoff
 - [ ] Fix minimum app-local conformance drift required by current gates or generation rules

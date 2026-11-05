@@ -150,12 +150,14 @@ When a package must ship several plain-text secrets that are injected before `do
 Rules:
 
 - declare names only; there are no per-secret length/charset/pattern rules
-- each declared name must exist in `.env` with a non-empty plain-text default; that default is the
-  shape template, not a production secret
+- each declared name must exist in `.env` with a non-empty random template or supported variable
+  reference; a template is not a production secret
 - consumers may regenerate a same-shaped value and overwrite the instance `.env`; redeploy must never
   auto-rotate it
 - `W9_POWER_PASSWORD` is the single-value special case of this mechanism
 - the canonical consumer contract lives in `docs/appstore-release-spec.md`
+- new or changed secret inputs must pass `libs app-check --app <app> --gate secrets`; see
+  `docs/app-secret-spec.md` for supported formats, shared references and the coverage inventory
 
 ### Dependency Modeling
 

@@ -30,5 +30,41 @@
     "cpu": "2",
     "memory": "4",
     "disk": "10"
-  }
+  },
+  "database": [
+    {
+      "id": "postgres",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "postgres",
+          "driver": "postgresql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "postgresql"
+          ]
+        }
+      ],
+      "datasource": {
+        "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN": "postgresql+psycopg2://${users[*].user}:${users[*].password}@${host}:${port}/${name}",
+        "AIRFLOW__CELERY__RESULT_BACKEND": "db+postgresql://${users[*].user}:${users[*].password}@${host}:${port}/${name}"
+      }
+    },
+    {
+      "id": "redis",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "redis",
+          "driver": "redis"
+        }
+      ],
+      "name": [
+        "0"
+      ],
+      "users": []
+    }
+  ]
 }

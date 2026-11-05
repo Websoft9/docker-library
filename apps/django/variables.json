@@ -40,6 +40,24 @@
     "memory": "2",
     "disk": "5"
   },
+  "database": [
+    {
+      "id": "rds",
+      "providers": [
+        {
+          "type": "external",
+          "drivers": [
+            "postgresql",
+            "mysql",
+            "mariadb"
+          ]
+        }
+      ],
+      "datasource": {
+        "DATABASE_URL": "${url}"
+      }
+    }
+  ],
   "help": {
     "db": "No database by default (SQLite). Uncomment DATABASE_URL in .env to use an external PostgreSQL or MySQL database."
   }

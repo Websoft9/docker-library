@@ -22,7 +22,7 @@ services:
     # add redis_socketio for backward compatibility
     command:
       - >
-        ls -1 apps > sites/apps.txt; bench set-config -g db_host $${DB_HOST}; bench set-config -gp db_port $${DB_PORT}; bench set-config -g redis_cache "redis://$${REDIS_CACHE}"; bench set-config -g redis_queue "redis://$${REDIS_QUEUE}"; bench set-config -g redis_socketio "redis://$${REDIS_QUEUE}"; bench set-config -gp socketio_port $${SOCKETIO_PORT};
+        ls -1 apps > sites/apps.txt; bench set-config -g db_host "$${DB_HOST}"; bench set-config -gp db_port "$${DB_PORT}"; bench set-config -g redis_cache "redis://$${REDIS_CACHE}"; bench set-config -g redis_queue "redis://$${REDIS_QUEUE}"; bench set-config -g redis_socketio "redis://$${REDIS_QUEUE}"; bench set-config -gp socketio_port $${SOCKETIO_PORT};
     environment:
       DB_HOST: ${W9_ID}-mariadb
       DB_PORT: "3306"
@@ -56,7 +56,7 @@ services:
     image: mariadb:${W9_DB_VERSION}
     container_name: ${W9_ID}-mariadb
     healthcheck:
-      test: mysqladmin ping -h localhost --password=${W9_POWER_PASSWORD}
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 1s
       retries: 15
     restart: unless-stopped

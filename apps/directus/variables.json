@@ -32,6 +32,45 @@
     "memory": "2",
     "disk": "4"
   },
+  "database": [
+    {
+      "id": "rds",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "postgresql",
+          "driver": "postgresql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "postgresql"
+          ]
+        }
+      ],
+      "datasource": {
+        "DB_HOST": "${host}",
+        "DB_PORT": "${port}",
+        "DB_DATABASE": "${name}",
+        "DB_USER": "${users[*].user}",
+        "DB_PASSWORD": "${users[*].password}"
+      }
+    },
+    {
+      "id": "redis",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "cache",
+          "driver": "redis"
+        }
+      ],
+      "users": [],
+      "datasource": {
+        "REDIS": "redis://${host}:${port}"
+      }
+    }
+  ],
   "env": {
     "first_startup_only": [
       "ADMIN_EMAIL",

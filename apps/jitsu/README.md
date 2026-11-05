@@ -27,6 +27,8 @@
 Websoft9 packages this app from the official [Jitsu Docker image](https://hub.docker.com/r/jitsucom/console) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
+This package does not offer external databases. Metadata describes the bundled PostgreSQL, MongoDB, and ClickHouse services without changing console, rotor, bulker, or ingest connection expressions. The `newjitsu` URL parameter is a PostgreSQL schema, not another database; Redpanda is not a database component. Declarations do not migrate data or rotate passwords.
+
 - This package uses the official deprecated Compose topology because upstream does not provide a production Helm chart for the full Kubernetes architecture.
 - Upstream documents that feature-complete self-hosting since Jitsu 2.14 requires Kubernetes for the operator, function servers, and connector sync jobs.
 <!-- W9_NOTE_END -->

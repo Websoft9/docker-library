@@ -14,7 +14,10 @@
   "edition": [
     {
       "dist": "community",
-      "version": ["7.1", "latest"]
+      "version": [
+        "7.1",
+        "latest"
+      ]
     }
   ],
   "access": {
@@ -32,6 +35,31 @@
     "memory": "2",
     "disk": "1"
   },
+  "database": [
+    {
+      "id": "rds",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "mysql",
+          "driver": "mysql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "mysql",
+            "mariadb"
+          ]
+        }
+      ],
+      "datasource": {
+        "WORDPRESS_DB_HOST": "${host}:${port}",
+        "WORDPRESS_DB_NAME": "${name}",
+        "WORDPRESS_DB_USER": "${users[*].user}",
+        "WORDPRESS_DB_PASSWORD": "${users[*].password}"
+      }
+    }
+  ],
   "credentials": {},
   "env": {
     "first_startup_only": [

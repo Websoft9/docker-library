@@ -22,6 +22,32 @@
     "memory": "2",
     "disk": "1"
   },
+  "database": [
+    {
+      "id": "mariadb",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "db",
+          "driver": "mariadb"
+        }
+      ],
+      "name": [],
+      "users": [
+        {
+          "user": "root",
+          "password": "${MYSQL_ROOT_PASSWORD}",
+          "usage": [
+            "administration"
+          ]
+        }
+      ],
+      "datasource": {
+        "PMA_HOST": "${host}",
+        "PMA_PORT": "${port}"
+      }
+    }
+  ],
   "upstream": {
     "image": "https://hub.docker.com/_/phpmyadmin",
     "docs": [

@@ -33,6 +33,38 @@
     "memory": "8",
     "disk": "1"
   },
+  "database": [
+    {
+      "id": "couchdb",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "couchdb-service",
+          "driver": "couchdb"
+        }
+      ]
+    },
+    {
+      "id": "redis",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "redis-service",
+          "driver": "redis"
+        }
+      ]
+    },
+    {
+      "id": "litellm-postgres",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "litellm-db",
+          "driver": "postgresql"
+        }
+      ]
+    }
+  ],
   "env": {
     "first_startup_only": [
       "BB_ADMIN_USER_EMAIL",

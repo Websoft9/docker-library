@@ -39,12 +39,77 @@
     "memory": "4",
     "disk": "40"
   },
+  "database": [
+    {
+      "id": "postgres",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "db",
+          "driver": "postgresql"
+        }
+      ],
+      "name": [
+        "${POSTGRES_DB}",
+        "_supabase"
+      ],
+      "users": [
+        {
+          "user": "postgres",
+          "password": "${POSTGRES_PASSWORD}",
+          "usage": [
+            "application",
+            "administration"
+          ]
+        },
+        {
+          "user": "supabase_admin",
+          "password": "${POSTGRES_PASSWORD}",
+          "usage": [
+            "application"
+          ]
+        },
+        {
+          "user": "authenticator",
+          "password": "${POSTGRES_PASSWORD}",
+          "usage": [
+            "application"
+          ]
+        },
+        {
+          "user": "pgbouncer",
+          "password": "${POSTGRES_PASSWORD}",
+          "usage": [
+            "application"
+          ]
+        },
+        {
+          "user": "supabase_auth_admin",
+          "password": "${POSTGRES_PASSWORD}",
+          "usage": [
+            "application"
+          ]
+        },
+        {
+          "user": "supabase_functions_admin",
+          "password": "${POSTGRES_PASSWORD}"
+        },
+        {
+          "user": "supabase_storage_admin",
+          "password": "${POSTGRES_PASSWORD}",
+          "usage": [
+            "application"
+          ]
+        }
+      ]
+    }
+  ],
   "env": {
     "first_startup_only": [
       "POSTGRES_PASSWORD"
     ]
   },
   "help": {
-    "db": "This package rebuilds Supabase against self-hosted v0.8.1 and follows the upstream Postgres 17 base stack. External database, Kong, logs/analytics, PgBouncer, and TLS proxy overrides are not enabled in the base package."
+    "db": "This package declares its bundled Supabase Postgres databases and known roles for information only; external databases are not offered. Keep the existing roles, shared password, extensions, and initialization scripts together. Kong, logs/analytics, PgBouncer, and TLS proxy overrides are not enabled in the base package."
   }
 }

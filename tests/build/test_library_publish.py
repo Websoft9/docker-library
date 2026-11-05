@@ -96,7 +96,7 @@ def test_build_apps_index_with_fixture_apps(build_fixture, monkeypatch):
 
     index = library_publish.build_apps_index("dev", "2026-01-01T00:00:00Z")
 
-    assert index["schemaVersion"] == "1"
+    assert index["schemaVersion"] == "2"
     assert "datasetVersion" not in index
     assert index["appCount"] == 1
     entry = index["apps"][0]
@@ -224,7 +224,7 @@ def test_validate_catalog_artifacts_rejects_missing_files(tmp_path: Path):
 def test_release_metadata_uses_tag_without_source_version_file(build_fixture, monkeypatch):
     monkeypatch.setattr(library_publish, "ROOT", build_fixture)
     assert not (build_fixture / "library.json").exists()
-    assert library_publish.build_library_metadata("release", "2.0.0") == {"Version": "2.0.0"}
+    assert library_publish.build_library_metadata("release", "2.0.0") == {"Version": "2.0.0", "schemaVersion": "2"}
 
 
 @pytest.mark.parametrize("value", [None, "", "v2.0.0", "2.0", "2.0.0-rc.1", "02.0.0", "../2.0.0"])
@@ -236,7 +236,7 @@ def test_release_metadata_rejects_missing_or_nonstable_versions(value):
 @pytest.mark.parametrize("channel", ["dev", "rc"])
 def test_nonrelease_metadata_defaults_to_commit_version(channel, monkeypatch):
     monkeypatch.setattr(library_publish, "run_git", lambda *args: "abcdef123456")
-    assert library_publish.build_library_metadata(channel, None) == {"Version": f"{channel}-abcdef123456"}
+    assert library_publish.build_library_metadata(channel, None) == {"Version": f"{channel}-abcdef123456", "schemaVersion": "2"}
 
 
 def test_release_packages_embed_generated_metadata_without_source_file(build_fixture, monkeypatch):
@@ -301,14 +301,60 @@ def test_full_publish_without_source_library_json(build_fixture, monkeypatch, ca
 
     assert library_publish.main() == 0
     capsys.readouterr()
-    expected = {"Version": "2.0.0" if channel == "release" else f"{channel}-abcdef123456"}
+    expected = {"Version": "2.0.0" if channel == "release" else f"{channel}-abcdef123456", "schemaVersion": "2"}
     assert not (build_fixture / "library.json").exists()
     assert json.loads((output / "legacy" / channel / "library" / "library.json").read_text()) == expected
     with ZipFile(output / "appstore" / channel / "library" / "full" / "latest.zip") as archive:
         assert json.loads(archive.read("library/library.json")) == expected
+        assert archive.read("library/metadata/database-types.json") == (build_fixture / "metadata" / "database-types.json").read_bytes()
+    library_dir = output / "appstore" / channel / "library"
+    manifest = json.loads((library_dir / "manifest.json").read_text())
+    assert manifest["schemaVersion"] == "2"
+    dictionary = manifest["metadata"]["databaseTypes"]
+    assert library_publish.sha256_file(library_dir / dictionary["path"]) == dictionary["sha256"]
+    assert (library_dir / manifest["checksum"]["databaseTypes"]).is_file()
     assert (output / "appstore" / channel / "library" / "apps" / "demo" / "latest.zip").exists()
     versions_path = output / "appstore" / channel / "apps-verson.json"
     if channel == "dev":
         assert json.loads(versions_path.read_text()) == [{"id": "demo", "version": "1.0"}]
     else:
         assert not versions_path.exists()
+
+
+def test_dictionary_only_change_updates_dataset_without_changing_app_hash(build_fixture, monkeypatch):
+    monkeypatch.setattr(library_publish, "ROOT", build_fixture)
+    monkeypatch.setattr(library_publish, "APPS_DIR", build_fixture / "apps")
+    baseline, old_version = library_publish.build_apps_index_with_version("dev", "2026-01-01T00:00:00Z")
+    path = build_fixture / "metadata" / "database-types.json"
+    definitions = json.loads(path.read_text())
+    definitions["postgresql"]["port"] = 5433
+    path.write_text(json.dumps(definitions))
+    current, new_version = library_publish.build_apps_index_with_version("dev", "2026-01-01T00:00:00Z")
+    assert old_version != new_version
+    assert baseline["apps"] == current["apps"]
+    assert baseline["metadata"] != current["metadata"]
+
+
+def test_dictionary_only_increment_delivers_shared_file_without_rebuilding_apps(build_fixture, monkeypatch):
+    monkeypatch.setattr(library_publish, "ROOT", build_fixture)
+    monkeypatch.setattr(library_publish, "APPS_DIR", build_fixture / "apps")
+    monkeypatch.setattr(library_publish, "apps_in_ref", lambda ref: {"demo"})
+    monkeypatch.setattr(library_publish, "changed_apps_since", lambda ref: set())
+    monkeypatch.setattr(library_publish, "build_app_updated_at_map", lambda: {})
+    catalog = build_fixture / "catalog-source"
+    catalog.mkdir()
+    for filename in library_publish.CATALOG_FILE_NAMES:
+        (catalog / filename).write_text("[]\n")
+    output = build_fixture / "incremental"
+    result = library_publish.build_v2_appstore_artifacts(
+        output, catalog, "library-dev.zip", {"Version": "dev-test", "schemaVersion": "2"},
+        "unused", "previous", "previous-version", "dev", "2026-01-01T00:00:00Z",
+    )
+    manifest = json.loads((output / "library" / "manifest.json").read_text())
+    entry = manifest["metadata"]["databaseTypes"]
+    assert (output / "library" / entry["path"]).is_file()
+    assert not list((output / "library" / "apps").rglob("*.zip"))
+    assert json.loads((output / "library" / result["library"]["appsDelta"]).read_text())["changedApps"] == []
+    (output / "library" / entry["path"]).write_text("corrupted")
+    with pytest.raises(SystemExit, match="mismatched shared"):
+        library_publish.validate_library_artifacts(output / "library", manifest, set())

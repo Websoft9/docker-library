@@ -21,6 +21,68 @@
     "memory": "2",
     "disk": "4"
   },
+  "database": [
+    {
+      "id": "mariadb",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "db",
+          "driver": "mariadb"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "mariadb",
+            "mysql"
+          ]
+        }
+      ],
+      "name": [
+        "${SEAFILE_MYSQL_DB_CCNET_DB_NAME}",
+        "${SEAFILE_MYSQL_DB_SEAFILE_DB_NAME}",
+        "${SEAFILE_MYSQL_DB_SEAHUB_DB_NAME}"
+      ],
+      "users": [
+        {
+          "user": "root",
+          "password": "${INIT_SEAFILE_MYSQL_ROOT_PASSWORD}",
+          "usage": [
+            "initialization",
+            "administration"
+          ]
+        },
+        {
+          "user": "${SEAFILE_MYSQL_DB_USER}",
+          "password": "${SEAFILE_MYSQL_DB_PASSWORD}",
+          "usage": [
+            "application"
+          ]
+        }
+      ],
+      "datasource": {
+        "SEAFILE_MYSQL_DB_HOST": "${host}",
+        "SEAFILE_MYSQL_DB_PORT": "${port}",
+        "SEAFILE_MYSQL_DB_USER": "${users[*].user}",
+        "SEAFILE_MYSQL_DB_PASSWORD": "${users[*].password}"
+      }
+    },
+    {
+      "id": "redis",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "redis",
+          "driver": "redis"
+        }
+      ],
+      "datasource": {
+        "REDIS_HOST": "${host}",
+        "REDIS_PORT": "${port}",
+        "REDIS_PASSWORD": "${users[*].password}"
+      }
+    }
+  ],
   "env": {
     "first_startup_only": [
       "INIT_SEAFILE_MYSQL_ROOT_PASSWORD",

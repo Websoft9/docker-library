@@ -34,6 +34,80 @@
     "memory": "4",
     "disk": "8"
   },
+  "database": [
+    {
+      "id": "postgres",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "zammad-postgresql",
+          "driver": "postgresql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "postgresql"
+          ]
+        }
+      ],
+      "name": [
+        "${ZAMMAD_DB}"
+      ],
+      "users": [
+        {
+          "user": "${POSTGRES_USER}",
+          "password": "${POSTGRES_PASSWORD}",
+          "usage": [
+            "initialization",
+            "administration"
+          ]
+        },
+        {
+          "user": "${ZAMMAD_DB_USER}",
+          "password": "${ZAMMAD_DB_PASS}",
+          "usage": [
+            "application"
+          ]
+        }
+      ],
+      "datasource": {
+        "POSTGRESQL_HOST": "${host}",
+        "POSTGRESQL_PORT": "${port}",
+        "POSTGRESQL_DB": "${name}",
+        "POSTGRESQL_USER": "${users[*].user}",
+        "POSTGRESQL_PASS": "${users[*].password}"
+      }
+    },
+    {
+      "id": "elasticsearch",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "zammad-elasticsearch",
+          "driver": "elasticsearch"
+        }
+      ],
+      "users": [],
+      "datasource": {
+        "ELASTICSEARCH_HOST": "${host}",
+        "ELASTICSEARCH_PORT": "${port}"
+      }
+    },
+    {
+      "id": "redis",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "zammad-redis",
+          "driver": "redis"
+        }
+      ],
+      "users": [],
+      "datasource": {
+        "REDIS_URL": "redis://${host}:${port}"
+      }
+    }
+  ],
   "credentials": {},
   "env": {
     "first_startup_only": [

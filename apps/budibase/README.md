@@ -27,6 +27,8 @@ Websoft9 packages this app from the official [Budibase Docker image](https://hub
 
 <!-- W9_NOTE_START -->
 
+This package does not offer external databases. Database metadata describes the bundled CouchDB, authenticated Redis, and LiteLLM PostgreSQL services using their existing configuration sources. It does not rewrite connection settings, separate initialization inputs, migrate data, or rotate passwords; MinIO and helper services are not database components.
+
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.

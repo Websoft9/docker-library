@@ -3,6 +3,7 @@ services:
     restart: unless-stopped
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
+    entrypoint: ["bash", "/bootstrap/init.sh"]
     env_file:
       - .env
     ports:
@@ -14,9 +15,22 @@ services:
         max-file: "10"
     environment:
       - TB_SERVICE_ID=tb-ce-node
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/${POSTGRESQL_DATABASE_NAME}
+      - TB_LICENSE_INSTANCE_DATA_FILE=/data/license.data
+      - REPORTS_SERVER_ENDPOINT_URL=http://${W9_ID}-web-report:8383
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
       - NON_PRODUCTION_USE=${NON_PRODUCTION_USE}
       - TB_LICENSE_SECRET=${TB_LICENSE_SECRET}
+    volumes:
+      - license-data:/data
+      - ./src:/bootstrap:ro
+    healthcheck:
+      test: ["CMD", "bash", "-ec", '[[ -f /data/.tb-installed ]] && : </dev/tcp/127.0.0.1/8080']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 180s
     depends_on:
       postgres:
         condition: service_healthy
@@ -26,31 +40,35 @@ services:
     image: postgres:${W9_DB_VERSION}
     container_name: ${W9_ID}-postgres
     environment:
-      - POSTGRES_USER=${POSTGRESQL_USER}
-      - POSTGRES_DB=${POSTGRESQL_DATABASE_NAME}
-      - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - postgres-data:/var/lib/postgresql
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${POSTGRESQL_USER}", "-d", "${POSTGRESQL_DATABASE_NAME}"]
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 10
       start_period: 10s
 
-  init:
-    image: ${W9_REPO}:${W9_VERSION}
-    container_name: ${W9_ID}-init
-    environment:
-      - INSTALL_TB=true
-      - LOAD_DEMO=true
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/${POSTGRESQL_DATABASE_NAME}
-      - NON_PRODUCTION_USE=${NON_PRODUCTION_USE}
-      - TB_LICENSE_SECRET=${TB_LICENSE_SECRET}
-    restart: "no"
+  tb-web-report:
+    image: thingsboard/tb-web-report:${W9_VERSION}
+    container_name: ${W9_ID}-web-report
+    restart: unless-stopped
     depends_on:
-      postgres:
-        condition: service_healthy
+      thingsboard-ce:
+        condition: service_started
+    environment:
+      HTTP_BIND_ADDRESS: 0.0.0.0
+      HTTP_BIND_PORT: 8383
+      LOGGER_LEVEL: info
+      LOG_FOLDER: logs
+      LOGGER_FILENAME: tb-web-report-%DATE%.log
+      DOCKER_MODE: "true"
+      DEFAULT_PAGE_NAVIGATION_TIMEOUT: 120000
+      DASHBOARD_IDLE_WAIT_TIME: 3000
+      USE_NEW_PAGE_FOR_REPORT: "true"
 
 networks:
   default:
@@ -59,3 +77,4 @@ networks:
 
 volumes:
   postgres-data:
+  license-data:

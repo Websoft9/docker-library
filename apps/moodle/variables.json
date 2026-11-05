@@ -35,6 +35,50 @@
     "disk": "5"
   },
   "credentials": {},
+  "database": [
+    {
+      "id": "rds",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "mariadb",
+          "driver": "mariadb"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "mariadb"
+          ]
+        }
+      ],
+      "name": [
+        "${MYSQL_DATABASE}"
+      ],
+      "users": [
+        {
+          "user": "root",
+          "password": "${MYSQL_ROOT_PASSWORD}",
+          "usage": [
+            "administration"
+          ]
+        },
+        {
+          "user": "${MYSQL_USER}",
+          "password": "${MYSQL_PASSWORD}",
+          "usage": [
+            "application"
+          ]
+        }
+      ],
+      "datasource": {
+        "MOODLE_DATABASE_HOST": "${host}",
+        "MOODLE_DATABASE_PORT_NUMBER": "${port}",
+        "MOODLE_DATABASE_NAME": "${name}",
+        "MOODLE_DATABASE_USER": "${users[*].user}",
+        "MOODLE_DATABASE_PASSWORD": "${users[*].password}"
+      }
+    }
+  ],
   "env": {
     "first_startup_only": [
       "MOODLE_HOST",

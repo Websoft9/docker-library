@@ -37,6 +37,30 @@
     "memory": "2",
     "disk": "1"
   },
+  "database": [
+    {
+      "id": "postgres",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "postgresql",
+          "driver": "postgresql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "postgresql"
+          ]
+        }
+      ],
+      "datasource": {
+        "HOST": "${host}",
+        "PORT": "${port}",
+        "USER": "${users[*].user}",
+        "PASSWORD": "${users[*].password}"
+      }
+    }
+  ],
   "externalDB": {
     "20.0": {
       "postgresql": {

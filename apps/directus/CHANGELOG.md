@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-03
+- Declared the PostgreSQL dependency, existing native connection inputs, and internal unauthenticated Redis cache.
+- Kept the fixed database client, runtime configuration, and image versions unchanged.
+
 ## 2026-10-13
 
 - Update Directus from 11.13 to 12.5.0.

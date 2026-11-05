@@ -37,6 +37,44 @@
     "memory": "8",
     "disk": "20"
   },
+  "database": [
+    {
+      "id": "postgres",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "postgres",
+          "driver": "postgresql"
+        }
+      ],
+      "name": [
+        "postgres"
+      ]
+    },
+    {
+      "id": "mongodb",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "mongodb",
+          "driver": "mongodb"
+        }
+      ],
+      "name": [
+        "admin"
+      ]
+    },
+    {
+      "id": "clickhouse",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "clickhouse",
+          "driver": "clickhouse"
+        }
+      ]
+    }
+  ],
   "credentials": {},
   "env": {
     "first_startup_only": [
@@ -46,6 +84,6 @@
     ]
   },
   "help": {
-    "db": "Jitsu core mode bundles PostgreSQL 14, MongoDB 7.0, ClickHouse 26.8, and Redpanda v26.2.2. Full functions, profile builders, and connector syncs still require Kubernetes upstream."
+    "db": "Jitsu core mode bundles PostgreSQL 14, MongoDB 7.0, ClickHouse 26.8, and Redpanda v26.2.2. Database metadata describes known internal stores only; this package does not offer external databases. Full functions, profile builders, and connector syncs still require Kubernetes upstream."
   }
 }

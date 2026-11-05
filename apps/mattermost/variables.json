@@ -29,5 +29,36 @@
     "cpu": "1",
     "memory": "2",
     "disk": "8"
-  }
+  },
+  "database": [
+    {
+      "id": "postgres",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "postgres",
+          "driver": "postgresql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "postgresql"
+          ]
+        }
+      ],
+      "users": [
+        {
+          "user": "${POSTGRES_USER}",
+          "password": "${W9_RCODE}",
+          "usage": [
+            "application",
+            "administration"
+          ]
+        }
+      ],
+      "datasource": {
+        "MM_SQLSETTINGS_DATASOURCE": "${url}?sslmode=disable&connect_timeout=10"
+      }
+    }
+  ]
 }

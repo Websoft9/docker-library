@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-11-04
+
+- Added the missing `W9_LOGIN_USER=admin` source for the existing native administrator username reference, restoring the login variable pair without rotating passwords.
+- Declared internal/external MySQL through five existing first-install inputs, preserving independent initialization and the fixed `mysqli` driver.
+- Left Compose and the entrypoint unchanged; static configuration checks passed without deployment, forced reinstallation, or existing-site migration.
+
 ## 2026-09-21
 ### Fixes and Enhancements
 - Refresh `.env` to the current template layout and add the `TYPO3_*` first-run install variables.

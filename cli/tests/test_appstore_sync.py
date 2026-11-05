@@ -264,7 +264,8 @@ def test_prepare_preview_missing_catalog_still_syncs_app_dir(repo_fixture, app_f
     assert payload["catalog_synced"] is False
     assert payload["catalog_source"] is None
     assert payload["app_target"] == "/websoft9/library/apps/demo"
-    assert len(payload["rollback"]) == 1
+    assert len(payload["rollback"]) == 2
+    assert payload["database_types_synced"] is True
 
 
 def test_prepare_preview_with_catalog_syncs_both(repo_fixture, app_factory, monkeypatch):
@@ -288,7 +289,44 @@ def test_prepare_preview_with_catalog_syncs_both(repo_fixture, app_factory, monk
     assert payload["catalog_synced"] is True
     assert payload["catalog_source"] == "metadata/catalog/demo.json"
     assert payload["catalog_target"] == "/websoft9/library/metadata/catalog/demo.json"
-    assert len(payload["rollback"]) == 2
+    assert len(payload["rollback"]) == 3
+    assert payload["database_types_target"] == "/websoft9/library/metadata/database-types.json"
+
+
+def test_sync_dictionary_verifies_staged_bytes_before_replacing(repo_fixture, monkeypatch):
+    calls = []
+    (repo_fixture / "key.pem").write_text("-----BEGIN OPENSSH PRIVATE KEY-----\n", encoding="utf-8")
+    monkeypatch.setattr(appstore_sync, "_run", lambda command, **kwargs: calls.append(command) or "")
+    digest = appstore_sync._sync_database_types(
+        "demo", "1.2.3.4", "root", repo_fixture / "key.pem", "websoft9", "/tmp/backup-demo",
+    )
+    assert digest == hashlib.sha256((repo_fixture / "metadata" / "database-types.json").read_bytes()).hexdigest()
+    assert "database-types.json.bak" in calls[0][-1]
+    assert "database-types.json.bak.missing" in calls[0][-1]
+    assert calls[1][0] == "scp"
+    assert "sha256sum -c - && mv" in calls[2][-1]
+    assert f".database-types-{digest}.tmp" in calls[2][-1]
+
+
+def test_sync_missing_dictionary_does_not_mutate_remote(repo_fixture, app_factory, monkeypatch):
+    app_factory("demo")
+    key = repo_fixture / "key.pem"
+    key.write_text("test fixture")
+    (repo_fixture / "metadata" / "database-types.json").unlink()
+    calls = []
+    monkeypatch.setattr(appstore_sync, "_run", lambda *args, **kwargs: calls.append(args))
+    with pytest.raises(FileNotFoundError, match="database-types.json"):
+        appstore_sync.prepare_preview("demo", host="1.2.3.4", secret_path=str(key))
+    assert calls == []
+
+
+def test_sync_invalid_dictionary_does_not_mutate_remote(repo_fixture, monkeypatch):
+    (repo_fixture / "metadata" / "database-types.json").write_text('{"mysql": {}}', encoding="utf-8")
+    calls = []
+    monkeypatch.setattr(appstore_sync, "_run", lambda *args, **kwargs: calls.append(args))
+    with pytest.raises(ValueError, match="Invalid shared database dictionary"):
+        appstore_sync._sync_database_types("demo", "1.2.3.4", "root", repo_fixture / "key.pem", "websoft9", "/tmp/backup")
+    assert calls == []
 
 
 def test_appstore_deploy_stub_not_implemented():

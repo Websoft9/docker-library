@@ -23,6 +23,18 @@
     "memory": "1",
     "disk": "2"
   },
+  "database": [
+    {
+      "id": "mysql",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "mysql",
+          "driver": "mysql"
+        }
+      ]
+    }
+  ],
   "upstream": {
     "image": "https://hub.docker.com/_/drupal",
     "releases": "https://www.drupal.org/project/drupal/releases",

@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-11-04
+- Wired native MySQL connection inputs through `.env` while preserving bundled database initialization defaults.
+- Declared the internal MySQL dependency and external MySQL/MariaDB inputs; image versions are unchanged.
+- Deployment and live connection validation were not performed.
+
 ## 2026-10-12
 - Updated Nextcloud to `35.0`.
 - Kept the bundled MySQL image on `8.4`, which remains supported by Nextcloud 35.

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-11-03
+
+- Declared the PostgreSQL dependency and existing DATABASE_URL input, keeping the fixed database type out of connection mappings.
+- Distinguished the PostgreSQL initialization/administration account from the script-created umami application account whose password comes from W9_RCODE.
+- Kept the initialization script, runtime configuration, and image versions unchanged.
+
 ## 2026-09-20
 
 - Update Umami to 3.4 and switch the image to the official `ghcr.io/umami-software/umami`.

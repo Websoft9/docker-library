@@ -1,53 +1,53 @@
-# Appstore 发布规范
+# Appstore Release Specification
 
-| 属性 | 值 |
+| Property | Value |
 |------|-----|
-| 状态 | 可实施草案 |
-| 适用 | docker-library 仓库维护者、发布负责人、消费端开发者 |
+| Status | Implementation-ready draft |
+| Audience | docker-library maintainers, release owners, and consumer developers |
 
 ---
 
-## 1. 核心模型
+## 1. Core Model
 
-`appstore` 是本项目的发布目标——一个由两个子数据集组成的聚合制品：
+`appstore` is this project's release target: an aggregate artifact containing two constituent datasets:
 
-| 子数据集 | 内容 | 事实源 |
+| Dataset | Content | Source of Truth |
 |----------|------|--------|
-| **catalog** | 应用描述（名称、分类、简介、截图 URL、logo URL 等） | Contentful |
-| **library** | 安装模板（`variables.json`、`.env`、`docker-compose.yml` 等） | 本仓库 `apps/` 目录 |
+| **catalog** | Application descriptions (names, categories, summaries, screenshot URLs, logo URLs, etc.) | Contentful |
+| **library** | Installation templates (`variables.json`, `.env`, `docker-compose.yml`, etc.) | This repository's `apps/` directory |
 
-**appstore 不是第三套独立事实源**——它是对 catalog 与 library 的聚合与发布。
+**appstore is not a third independent source of truth**: it aggregates and publishes catalog and library.
 
-### 说明性字段
+### Help Fields
 
-`variables.json` 中的 help text 统一放在 `help` 对象（如 `help.db`），供界面以 help text 形式展示：
+Help text in `variables.json` belongs in the `help` object (for example, `help.db`) for display in the interface:
 
-- 它们是人类可读文案，不参与任何计算
-- 计算事实只来自 `.env`（如 `W9_DB_VERSION`）与 `metadata/`
-- `help` 为增量新增，不修改、不取代 `requirements`、`externalDB` 等既有字段
+- These are human-readable strings, not computational inputs.
+- Computational facts come only from `.env` (for example, `W9_DB_VERSION`) and `metadata/`.
+- `help` is an additive field; it does not modify or replace existing fields such as `requirements` or `externalDB`.
 
-`help` 字段规则：
+Rules for `help` fields:
 
-- 每个 key 一条单句字符串
-- 若个别版本要求不同，在同一句话中注明，例如 `MySQL 8.0+ (7.0+ requires 8.4+)`
-- 不做版本键控对象，避免额外维护负担
-- 复杂登录（例如必须先完成一次性初始化、再使用固定账号密码）**必须**声明 `help.login`，且界面应把它展示在凭据区**之上**，让用户先阅读说明再登录
-- `help.login` 不可省略：凭据区只展示最终账号密码，缺少 `help.login` 时用户不知道还存在初始化步骤
+- Each key contains a single-sentence string.
+- State version-specific requirements in the same sentence, for example, `MySQL 8.0+ (7.0+ requires 8.4+)`.
+- Do not introduce version-keyed objects and their additional maintenance burden.
+- Complex login (for example, one-time initialization followed by fixed credentials) **must** declare `help.login`. The interface must display it **above** the credentials area so users read the instructions before logging in.
+- `help.login` must not be omitted: the credentials area shows only the final credentials, leaving users unaware of prerequisite initialization otherwise.
 
-### 凭据获取元数据
+### Credential Retrieval Metadata
 
-`variables.json` 可声明 machine-readable 的 `credentials` 对象，供消费端在部署后解析管理员密码、token 等动态凭据。
+`variables.json` may declare a machine-readable `credentials` object for consumers to retrieve dynamic administrator passwords, tokens, and other credentials after deployment.
 
-- `credentials` 不是人类文案；它是消费端执行固定逻辑时读取的结构化声明
-- `credentials` 不替代 `.env` 中已有的字面值凭据；若 `W9_LOGIN_PASSWORD` 本身就是固定值，仍直接使用 `.env`
-- `credentials` 支持按阶段分组声明（`initial` 初始化凭证 + `login` 登录凭证），也兼容直接在顶层声明单阶段槽位（`username` / `password` / `token`，默认等价于 `login`）
-- 复杂登录（一次性初始化 + 固定终态账号）：在 `credentials.initial` 中声明首次初始化凭证（如从 `container-log` 提取一次性临时密码或从 `container-file` 读取解锁密码），在 `credentials.login` 中声明终态固定凭证（如 `container-env` 指向 `W9_LOGIN_PASSWORD`），同时保留 `.env` 的 `W9_LOGIN_USER` / `W9_LOGIN_PASSWORD` 供当前前端渲染，并配置 `help.login` 说明初始化与正式登录的关系
-- `credentials` 仅描述“凭据从哪里取”，不允许在仓库中写任意宿主级 shell
-- 镜像不预置管理员账号、由安装向导创建时，声明 `credentials.none: true`，且不要填写 `W9_LOGIN_USER` / `W9_LOGIN_PASSWORD`
+- `credentials` is a structured declaration used by fixed consumer logic, not human-readable copy.
+- It does not replace existing literal credentials in `.env`; if `W9_LOGIN_PASSWORD` is fixed, continue using `.env` directly.
+- It supports stage groups (`initial` initialization credentials and `login` login credentials), as well as top-level single-stage slots (`username` / `password` / `token`, equivalent to `login` by default).
+- For complex login (one-time initialization followed by fixed final credentials), declare the initial credentials in `credentials.initial` (for example, a temporary password from `container-log` or an unlock password from `container-file`), and the final credentials in `credentials.login` (for example, `container-env` referencing `W9_LOGIN_PASSWORD`). Retain `.env` fields `W9_LOGIN_USER` / `W9_LOGIN_PASSWORD` for the current frontend, and use `help.login` to explain the relationship between initialization and regular login.
+- `credentials` describes only where to retrieve credentials; arbitrary host-level shell commands are not permitted in the repository.
+- If an installation wizard creates the administrator account rather than the image provisioning one, declare `credentials.none: true` and omit `W9_LOGIN_USER` / `W9_LOGIN_PASSWORD`.
 
-当前约定支持 3 个固定槽位：`username`、`password`、`token`。每个槽位都声明“值从哪里来”的 source。既可直接挂在 `credentials.<slot>` 下（单阶段简写），也可挂在 `credentials.initial.<slot>` 或 `credentials.login.<slot>` 下（分阶段声明）。
+The current contract supports three fixed slots: `username`, `password`, and `token`. Each declares a source for its value, either directly under `credentials.<slot>` (single-stage shorthand) or under `credentials.initial.<slot>` / `credentials.login.<slot>` (stage groups).
 
-单阶段简写结构：
+Single-stage shorthand:
 
 ```json
 {
@@ -64,7 +64,7 @@
 }
 ```
 
-分阶段结构（区分初始化凭证 `initial` 与日常登录凭证 `login`）：
+Stage groups (separating `initial` initialization credentials from regular `login` credentials):
 
 ```json
 {
@@ -95,36 +95,36 @@
 }
 ```
 
-支持的 `source`：
+Supported `source` values:
 
-- `inline`: 值直接内联写在 `variables.json` 中，适合固定且非敏感的登录标识，例如 `username`
-- `container-env`: 值存在目标应用容器的运行环境变量中，消费端读取声明的 `name`
-- `container-file`: 密码存在目标应用容器内的某个文本或结构化文件，消费端以只读方式读取 `path`；实现不应假设容器内存在 `cat`、`sh` 或其他特定用户空间工具
-- `container-log`: 密码存在目标应用容器日志中，消费端读取 `docker logs <W9_ID>` 的输出并按 `pattern` 提取
-- `container-cli`: 密码需要通过目标应用容器内的官方只读 CLI 获取，消费端按 `argv` 直接执行，不通过 shell 拼接
+- `inline`: A value embedded directly in `variables.json`, suitable for fixed, nonsensitive login identifiers such as `username`.
+- `container-env`: A value in the target application container's runtime environment; the consumer reads the declared `name`.
+- `container-file`: A password in a text or structured file inside the target application container; the consumer reads `path` read-only, without assuming that `cat`, `sh`, or any particular userspace tool is available.
+- `container-log`: A password in the target application container's logs; the consumer reads `docker logs <W9_ID>` and extracts it using `pattern`.
+- `container-cli`: A password retrieved through the official read-only CLI inside the target application container; the consumer executes `argv` directly without shell concatenation.
 
-字段规则：
+Field rules:
 
-- 每个槽位对象（位于 `credentials.<slot>`、`credentials.initial.<slot>` 或 `credentials.login.<slot>`）均遵循相同的 `credentialSource` 契约：
-  - `source=inline` 时必须声明 `value`
-  - `source=container-env` 时必须声明 `name`
-  - `source=container-file` 时必须声明 `path`
-  - `source=container-log` 时必须声明 `pattern`
-  - `source=container-cli` 时必须声明 `argv`
-- `slot` 当前只允许 `username`、`password`、`token`
-- 阶段分组键当前支持 `initial`（首次初始化/预检向导凭证）和 `login`（常规/终态登录凭证）；仅在应用**同时存在两套不同阶段的已知凭据**（如先用初始化凭据通过安装向导、再用应用包预设的固定账号登录）时才使用 `initial` + `login` 分组；如果应用只有一套由包提供或提取的凭据（无论后续是否引导用户自行改密），直接使用顶层 `credentials.<slot>` 即可
-- `format` 可选，当前支持 `text`、`json`、`env`
-- `format=json` 时必须声明 `jsonPath`
-- `format=env` 时必须声明 `key`
-- `match` 可选，当前支持 `substring`、`regex`
-- `match=regex` 时必须声明 `group`
-- `trim` 可选，默认由消费端按 `true` 处理
-- `credentials` 为 machine-readable 结构，不做自由文本，不在其中嵌入完整 shell 命令
-- `inline` 主要用于固定、非敏感值；不要把动态生成的 secret 明文内联到 `variables.json`
-- `container-cli.argv` 必须是参数数组，不接受完整 shell 字符串，也不应用于重置密码、创建密码等带副作用动作
-- 旧的 `W9_LOGIN_GET_PASSWORD` / `W9_LOGIN_GET_TOKEN` 可作为兼容兜底，但新 app 或被触达的 app 不再推荐新增使用
+- Every slot object (under `credentials.<slot>`, `credentials.initial.<slot>`, or `credentials.login.<slot>`) follows the same `credentialSource` contract:
+  - `source=inline` requires `value`.
+  - `source=container-env` requires `name`.
+  - `source=container-file` requires `path`.
+  - `source=container-log` requires `pattern`.
+  - `source=container-cli` requires `argv`.
+- `slot` currently permits only `username`, `password`, and `token`.
+- Stage keys support `initial` (first initialization/preflight wizard credentials) and `login` (regular/final login credentials). Use these groups only when the application **has two known credential sets for different stages** (for example, initialization credentials for a wizard followed by package-provided fixed login credentials). For a single package-provided or retrieved credential set, use top-level `credentials.<slot>`, even if users are later prompted to change their password.
+- Optional `format` supports `text`, `json`, and `env`.
+- `format=json` requires `jsonPath`.
+- `format=env` requires `key`.
+- Optional `match` supports `substring` and `regex`.
+- `match=regex` requires `group`.
+- Optional `trim` defaults to `true` in the consumer.
+- `credentials` is machine-readable; do not use free text or embed complete shell commands.
+- `inline` is primarily for fixed, nonsensitive values; do not embed dynamically generated plaintext secrets in `variables.json`.
+- `container-cli.argv` must be an argument array, not a complete shell string, and must not perform side effects such as password resets or creation.
+- Legacy `W9_LOGIN_GET_PASSWORD` / `W9_LOGIN_GET_TOKEN` may remain as compatibility fallbacks, but adding them to new or modified apps is no longer recommended.
 
-示例：
+Examples:
 
 ```json
 {
@@ -169,11 +169,11 @@
 }
 ```
 
-### 声明式 Secret（`env.secrets`）
+### Declarative Secrets (`env.secrets`)
 
-有些应用在启动前就需要一组**明文 secret**（典型来源是 `.env`，并在 `docker compose up` 之前注入）。`credentials` 只解决“部署后从哪里读回凭据”，解决不了“启动前先有值”。为此 `variables.json` 提供 `env.secrets`。
+Some applications need **plaintext secrets** before startup, usually supplied through `.env` before `docker compose up`. `credentials` describes post-deployment retrieval, not pre-startup provisioning. `variables.json` therefore provides `env.secrets`.
 
-它**只声明名字，不声明任何生成规则**：
+It **declares names only, not generation rules**:
 
 ```json
 {
@@ -183,34 +183,38 @@
 }
 ```
 
-语义（固定，不随应用变化）：
+Semantics (fixed across applications):
 
-- `.env` 里为每个声明名提供一个**明文默认值**，该默认值同时充当“形状模板”。
-- 消费端（AppOS/Console）可以在**创建实例时**生成、或在界面上由用户触发**“重新生成”**，用新值覆盖实例 `.env`。
-- **重建 / redeploy 绝不自动重算**，否则每次 `up` 都会更换密钥，导致数据或加密失效。
-- 生成规则只有一条：**产出与当前值同形状（同长度、同字符类）的随机串**。因此不提供 length/charset 规则。
-- 生成结果必须能安全放进 `.env`/compose：**不得包含 `$`、空格、`#`、换行**（`$` 会触发 compose 插值）。默认使用 `alnum` 或 `base64url`（去掉 `=`）。
-- 默认值是**占位/形状模板，不是生产密钥**，可以进 git；规范要求默认值本身必须形状正确且接近生产强度。
+- Supply a **plaintext default value** for each random seed in `.env`, also serving as its shape template. Shared values and fixed protocol prefixes use existing variable references rather than independent randomization.
+- The consumer generates values **when creating an instance** and writes them into its `.env`. Explicit user settings take precedence over cached values; installation retries reuse the same instance cache. This repository does not promise a generic regeneration interface; existing instances require application-specific rotation.
+- **Recreation/redeployment must never automatically regenerate values**: changing keys on every `up` would invalidate data or encryption.
+- There is one generation rule: **produce a random string with the current value's shape (length and character classes)**. No length/charset rules are provided.
+- Generated values must be safe in `.env`/Compose: **no `$`, spaces, `#`, or newlines** (`$` triggers Compose interpolation). The current consumer supports alphanumeric, hex, hyphen-separated segments, and the fixed `sk-` prefix; this does not promise general base64url, base64, UUID, or JWT generation.
+- Defaults are **placeholders/shape templates, not production keys**, and may be committed to Git. They must have the correct shape and approximate production strength.
 
-`W9_POWER_PASSWORD` 是这套机制的**单值特例**，等价于：
+`W9_POWER_PASSWORD` is a **single-value special case** of this mechanism, equivalent to:
 
 ```json
 { "env": { "secrets": ["W9_POWER_PASSWORD"] } }
 ```
 
-因此已有使用 `W9_POWER_PASSWORD` 的应用无需迁移；需要**多个、形状不同**的 secret 时，改用 `env.secrets` 列多个名字即可。
+Existing applications using `W9_POWER_PASSWORD` therefore need no migration. When **multiple secrets with different shapes** are required, list their names in `env.secrets`.
 
-校验规则（`libs app-check --gate policy`）：
+Validation rules (`libs app-check --gate policy`):
 
-- `env.secrets` 中每个名字都必须真实存在于该应用的 `.env`
-- 每个名字的默认值不得为空
+- Every name in `env.secrets` must exist in that application's `.env`.
+- Each default value must be nonempty.
+- Added or modified secret declarations/sources must also pass `libs app-check --app <app> --gate secrets`, checking supported template formats, at least 12 random characters, missing/empty references, cycles, and unsupported reference syntax. At least 32 random characters are recommended for production seeds.
+- During migration, `--gate secrets` is a separate strict gate, not included in existing `all`/`policy` aggregates. Passing legacy gates does not prove generation compatibility. Semaphore UI's known base64 template still fails; the first batch does not bypass that error.
 
-非目标：
+Non-goals:
 
-- 不引入 per-secret 的 length/charset/pattern 规则，也不引入模板语言
-- 格式极端（校验位、派生、特定编码）的 secret 仍由应用包内生成（init/entrypoint），不进 `env.secrets`
+- No per-secret length/charset/pattern rules or template language.
+- Secrets with specialized formats (check digits, derivation, or particular encodings) remain application-owned (init/entrypoint), outside `env.secrets`.
 
-示例（`openhands`）：
+See the [Application Secret Spec](app-secret-spec.md) for classification, the current consumer format snapshot, repository scan boundaries, post-generation validation, and known specialized follow-ups. The rebuildable `metadata/secret-coverage.json` inventory is neither consumer configuration nor instance secret storage.
+
+Example (`openhands`):
 
 `.env`
 
@@ -229,21 +233,21 @@ OH_SECRET_KEY=Pv5Rt8Wy2Nk7Mc4Xb1Lz6Df0Gh3Jq9Ue
 }
 ```
 
-### 登录前步骤（`setup.steps`）
+### Pre-Login Steps (`setup.steps`)
 
-有些应用在最终登录之前，必须先完成一组前置动作，例如：查看容器日志中的一次性 token、
-读取容器文件中的初始化密码、执行官方只读 CLI 查看 bootstrap 信息、或者打开初始化向导。
+Some applications require prerequisite actions before final login: viewing a one-time token in container logs,
+reading an initialization password from a container file, running an official read-only CLI for bootstrap information, or opening an initialization wizard.
 
-为此 `variables.json` 提供 `setup` 对象：
+`variables.json` provides the `setup` object for these steps:
 
 ```json
 {
   "setup": {
-    "summary": "可选，总说明",
+    "summary": "Optional overall summary",
     "steps": [
       {
         "id": "setup-token",
-        "text": "先查看容器日志，复制其中的一次性 setup token。",
+        "text": "View the container logs and copy the one-time setup token.",
         "action": {
           "type": "show-log",
           "service": "portainer",
@@ -252,7 +256,7 @@ OH_SECRET_KEY=Pv5Rt8Wy2Nk7Mc4Xb1Lz6Df0Gh3Jq9Ue
       },
       {
         "id": "setup-wizard",
-        "text": "打开页面并完成初始化向导。",
+        "text": "Open the page and complete the initialization wizard.",
         "action": {
           "type": "open",
           "access": "web"
@@ -263,157 +267,161 @@ OH_SECRET_KEY=Pv5Rt8Wy2Nk7Mc4Xb1Lz6Df0Gh3Jq9Ue
 }
 ```
 
-前端渲染顺序：
+Frontend rendering order:
 
-- `setup` 区域必须显示在 login / credentials 区域之前
-- `setup.summary` 为整体摘要，可省略
-- `setup.steps[].text` 为每一步的人类说明
+- The `setup` area must precede the login/credentials area.
+- `setup.summary` is an optional overall summary.
+- `setup.steps[].text` contains human-readable instructions for each step.
 
-`action` 的 v1 支持范围（封闭词汇）：
+Supported v1 `action` types (closed vocabulary):
 
-- `show-log`: 展示某个 compose service 的容器日志原文；字段：`service`，可选 `tail`
-- `show-env`: 展示容器运行环境中的某个变量；字段：`name`
-- `show-file`: 展示容器内文件或从结构化文件读值；字段：`path`，可选 `format=text|json|env`，以及 `jsonPath` / `key`
-- `show-cli`: 执行容器内官方只读 CLI 并展示输出；字段：`argv`，可选 `format=text|json|env`，以及 `jsonPath` / `key`
-- `open`: 打开应用入口；字段：`access`，可选 `path`
+- `show-log`: Display the raw container logs of a Compose service; fields: `service`, optional `tail`.
+- `show-env`: Display a container runtime environment variable; field: `name`.
+- `show-file`: Display a container file or read a structured value; fields: `path`, optional `format=text|json|env`, and `jsonPath` / `key`.
+- `show-cli`: Run an official read-only CLI in the container and display its output; fields: `argv`, optional `format=text|json|env`, and `jsonPath` / `key`.
+- `open`: Open an application entry point; fields: `access`, optional `path`.
 
-容器目标规则：
+Container target rules:
 
-- `show-env` / `show-file` / `show-cli` 默认作用于主应用容器（即 `${W9_ID}`），与现有 `credentials` 的读取规则保持一致
-- `show-log` 因为日志通常需要区分 compose service，所以显式声明 `service`
+- `show-env` / `show-file` / `show-cli` target the main application container (`${W9_ID}`) by default, consistent with existing `credentials` retrieval rules.
+- `show-log` explicitly declares `service` because logs usually need to distinguish Compose services.
 
-`open` 与 `access` 的统一规则：
+Unified `open` and `access` rules:
 
-- `open` 不再自己定义 host / port / scheme
-- `access` 必须引用 `variables.json.access` 中已有键（如 `web` / `admin` / `api`）
-- 最终 URL 的 scheme / port 来自 `access[<key>]`
-- 若声明了 `action.path`，它覆盖该 access 的默认 path；否则使用 `access[<key>].path`（缺省视为 `/`）
+- `open` does not define its own host/port/scheme.
+- `access` must reference an existing key in `variables.json.access` (for example, `web` / `admin` / `api`).
+- The final URL's scheme/port come from `access[<key>]`.
+- If declared, `action.path` overrides that access entry's default path; otherwise use `access[<key>].path` (default `/`).
 
-边界与非目标：
+Boundaries and non-goals:
 
-- 不支持 `pattern` / `group`
-- 不支持任意 shell，不支持宿主命令
-- 不支持自动执行有副作用的命令；v1 只负责渲染说明、展示值、打开页面
-- 不支持条件分支、多结果工作流或状态机
+- No `pattern` / `group` support.
+- No arbitrary shell or host commands.
+- No automatic execution of commands with side effects; v1 only renders instructions, displays values, and opens pages.
+- No conditional branches, multi-result workflows, or state machines.
 
-与 `credentials` 的职责分工：
+Responsibilities relative to `credentials`:
 
-- `setup`：登录前需要看到或完成的非凭据类步骤说明或页面入口引导（如打开向导页面）
-- `credentials`：凭据提取声明，可通过 `credentials.initial`（初始化阶段凭证）与 `credentials.login`（日常登录阶段凭证）直接区分两阶段凭证，也可在单阶段下直接使用顶层 `username` / `password` / `token`
+- `setup`: Noncredential instructions or page-entry guidance to view or complete before login (for example, opening a wizard).
+- `credentials`: Credential retrieval declarations, using `credentials.initial` and `credentials.login` for distinct stages or top-level `username` / `password` / `token` for a single stage.
 
-迁移建议：
+Migration guidance:
 
-- 当应用同时存在“一次性初始化凭证”和“终态固定登录凭证”（如 `graylog`）时，优先使用 `credentials.initial` + `credentials.login` 在 `credentials` 内部直接区分
-- 若日志内容不适合用正则提取具体凭据、仅需向用户展示整段日志并配合向导步骤，可使用 `setup.steps[].action.type=show-log`
-- `help.login` 继续保留，用来描述初始化与最终登录方式的说明
+- When both one-time initialization credentials and fixed final login credentials exist (for example, `graylog`), prefer `credentials.initial` + `credentials.login` to distinguish them directly.
+- When logs are unsuitable for regex credential extraction and only need displaying alongside wizard steps, use `setup.steps[].action.type=show-log`.
+- Retain `help.login` to explain initialization and final login.
 
-### 职责边界
+### Responsibility Boundaries
 
-| 本项目负责 | 本项目不负责 |
+| This Project Owns | This Project Does Not Own |
 |-----------|-------------|
-| 维护 `apps/` 下的安装模板 | 提供 appstore 在线 API |
-| 从 Contentful 拉取 catalog 数据 | 决定下游（AppOS、Console）如何消费 |
-| 组装并发布完整的 `appstore` 制品到 R2 | 将消费端逻辑耦合进发布规范 |
-| 并行期内同时维护 legacy 与 v2 | — |
+| Maintaining installation templates under `apps/` | Providing an online appstore API |
+| Fetching catalog data from Contentful | Deciding how downstream consumers (AppOS, Console) consume it |
+| Assembling and publishing complete `appstore` artifacts to R2 | Coupling consumer logic into the release specification |
+| Maintaining legacy and v2 during the transition | Not applicable |
 
 ---
 
-## 2. 版本语义
+## 2. Version Semantics
 
-发布体系中区分三类版本，分别作用于 `catalog`、`library` 和 `appstore` 根级：
+The release system distinguishes three version concepts at the `catalog`, `library`, and `appstore` root levels:
 
-| 版本 | 含义 | 变更条件 | 格式 |
+| Version | Meaning | Change Trigger | Format |
 |------|------|---------|------|
-| `schemaVersion` | 数据结构契约版本 | 删字段、改类型、改文件布局 | 单调递增字符串（`"1"`, `"2"`） |
-| `datasetVersion` | 数据内容快照版本 | **任何**内容变更 | 内容哈希（SHA-256 前 16 位 hex） |
-| `channel` | 稳定性通道 | 发布目标决定 | `dev` / `rc` / `release` |
+| `schemaVersion` | Data structure contract version | Field removal, type changes, or file-layout changes | Monotonically increasing string (`"1"`, `"2"`) |
+| `datasetVersion` | Data content snapshot version | **Any** content change | Content hash (first 16 hex characters of SHA-256) |
+| `channel` | Stability channel | Release target | `dev` / `rc` / `release` |
 
-`catalog`、`library` 和 `appstore` 根级各自拥有**独立**的 `datasetVersion`：
+`catalog`, `library`, and the `appstore` root each have an **independent** `datasetVersion`:
 
-- `catalog.datasetVersion`：基于 4 个 catalog JSON 文件的校验和计算
-- `library.datasetVersion`：基于 `apps-index` 的序列化内容计算
-- `appstore.datasetVersion`：基于上述两者的组合计算
+- `catalog.datasetVersion`: Computed from the checksums of the four catalog JSON files.
+- `library.datasetVersion`: Computed from serialized `apps-index` content, including the shared database dictionary fingerprint; a dictionary-only change also produces a new version.
+- `appstore.datasetVersion`: Computed from the combination of the two above.
 
-这意味着**纯 catalog 描述变更不会导致 `library.datasetVersion` 变化**（反之亦然），客户端可精确判断哪部分数据需要刷新。
+Thus **catalog-only description changes do not change `library.datasetVersion`** (and vice versa), allowing clients to identify exactly which dataset needs refreshing.
 
-### 2.1 schemaVersion 兼容性承诺
+### 2.1 schemaVersion Compatibility Guarantee
 
-同一 `schemaVersion` 内遵循**"只增不减"**规则：
+Within a `schemaVersion`, follow an **additive-only** rule:
 
-- ✅ 可以：新增字段、新增文件、新增 app 条目
-- ❌ 不能：删除已有字段、改变字段类型、改变文件命名规则
-- 消费者忽略未知字段后仍能正常工作
+- Allowed: New fields, files, and app entries.
+- Prohibited: Removing existing fields, changing field types, or changing file-naming rules.
+- Consumers must continue working when ignoring unknown fields.
 
-**这意味着 99% 的日常变更只触发 `datasetVersion` 递增，不触发 `schemaVersion` 升级。**
+**This means 99% of routine changes update only `datasetVersion`, not `schemaVersion`.**
 
-### 2.2 schemaVersion 升级条件
+### 2.2 schemaVersion Upgrade Conditions
 
-以下任一发生时才升级：
-- 删除已有字段
-- 改变字段类型
-- 改变文件布局或 manifest 自身结构
+Upgrade only when one of the following occurs:
+- Removing an existing field.
+- Changing a field's type.
+- Changing the file layout or manifest structure.
 
-升级流程：提前公告 → 过渡期新旧并存 → 消费者升级 → 下线旧格式。
+Upgrade sequence: Announce in advance -> coexist during transition -> upgrade consumers -> retire the old format.
 
-### 2.3 消费者兼容性
+After migrating database connection declarations from objects to `database[]`, the library manifest, apps-index, apps-delta, and generated `library.json` use `schemaVersion: "2"`; catalog and root manifest structures remain version 1. The root manifest explicitly declares `library.schemaVersion` as version 2. Consumers must check the library contract; do not distribute new-format apps to old clients before upgrade, including through legacy download entry points. Schema compatibility for old objects does not prove that old clients support the new arrays.
 
-消费者维护自己支持的 `schemaVersion` 列表，下载 manifest 后自行判断：
+### 2.3 Consumer Compatibility
+
+Consumers maintain their own supported `schemaVersion` list and check downloaded manifests:
 
 ```
 if manifest.schemaVersion in SUPPORTED:
-    正常消费
+    consume normally
 else:
-    回退到上次成功的 datasetVersion 快照，提示用户升级
+    fall back to the last successful datasetVersion snapshot and prompt for upgrade
 ```
 
-此模式对标 Helm（`apiVersion`）、Docker Registry（`schemaVersion`）、OSTree（`summary.version`）的行业惯例。
+This follows the conventions of Helm (`apiVersion`), Docker Registry (`schemaVersion`), and OSTree (`summary.version`).
 
 ---
 
-## 3. 更新粒度
+## 3. Update Granularity
 
-| 数据集 | 粒度 | 说明 |
+| Dataset | Granularity | Description |
 |--------|------|------|
-| **catalog** | 全量文件 | 任一 JSON 变化 → 新快照；无字段级 delta |
-| **library** | app 级 | 以 `apps/<app>` 为判断单元；变更类型：`addedApps` / `changedApps` / `removedApps` |
+| **catalog** | Whole files | Any JSON change produces a new snapshot; no field-level delta |
+| **library** | App level | The unit is `apps/<app>`; change types: `addedApps` / `changedApps` / `removedApps` |
 
-`apps-delta` 只表达**变更范围**，真正的增量载荷由单 app 制品承担。客户端更新策略：
+`apps-delta` expresses only the **change scope**; individual app artifacts carry the actual incremental payload. Client update strategy:
 
-1. 首装或本地损坏 → 下载全量包
-2. 增量更新 → 仅下载 `addedApps` + `changedApps` 对应的 app 包
-3. `removedApps` → 本地删除
-4. 任一 app 更新失败 → 回退到全量包恢复
+1. First installation or local corruption -> download the full package.
+2. Incremental update -> download only app packages in `addedApps` + `changedApps`.
+3. `removedApps` -> remove locally.
+4. Any app update failure -> recover using the full package.
 
-### 3.1 Channel 数据差异
+Library version 2 also requires downloading `metadata.databaseTypes.path` from the manifest and verifying its `sha256` and checksum. The dictionary has a content-addressed filename. An app delta may be empty for dictionary-only changes, but the dictionary update must not be skipped. Validate apps and dictionary in a temporary snapshot, then activate them together; on failure, retain or restore the last complete local snapshot. Unchanged app packages need no rebuild, and the dictionary is not duplicated in every app package.
 
-为保持与旧体系一致，`dev` 与 `release` 的数据范围**不是完全相同**：
+### 3.1 Channel Data Differences
 
-- `release`：只消费 Contentful 中 `production=true` 的 product 条目
-- `dev`：不过滤 `production`，因此包含更多 product 条目，便于开发、联调与测试
-- 所有通道都会将仓库 `apps/*/variables.json` 中的 `edition -> distribution` 信息补写回 `product_*.json`，确保版本值采用数组结构
+For consistency with the legacy system, `dev` and `release` **do not have identical data scope**:
 
-因此，`dev` 通道天然是"更宽、更富"的数据集，而 `release` 通道是"更收敛、更生产化"的数据集；两者的 `distribution` 数据结构保持一致。
+- `release`: Includes only Contentful product entries with `production=true`.
+- `dev`: Does not filter `production`, so it includes more product entries for development, integration, and testing.
+- All channels supplement `product_*.json` with `edition -> distribution` information from repository `apps/*/variables.json`, ensuring that version values use arrays.
 
-### 3.2 Contentful 可见性标记
+Thus `dev` is a broader, richer dataset, while `release` is narrower and production-oriented; both use the same `distribution` structure.
 
-`appStore` 和 `production` 是两个独立的可见性开关：
+### 3.2 Contentful Visibility Flags
 
-| App 状态 | `appStore` | `production` | 结果 |
+`appStore` and `production` are independent visibility flags:
+
+| App State | `appStore` | `production` | Result |
 |---|---|---|---|
-| Active public，准备发布 | `true` | `true` | dev + release 可见 |
-| Active public，仅开发（`variables.json.release=false`） | `true` | `false` | 仅 dev 可见 |
-| Internal（`scope=internal`） | `false` | `false` | appstore 不可见 |
-| Archived | `false` | `false` | appstore 不可见 |
+| Active public, ready for release | `true` | `true` | Visible in dev + release |
+| Active public, development only (`variables.json.release=false`) | `true` | `false` | Visible only in dev |
+| Internal (`scope=internal`) | `false` | `false` | Not visible in appstore |
+| Archived | `false` | `false` | Not visible in appstore |
 
-`production` 由 `apps/<app>/variables.json` 的 `release` 推导；`appStore` 由 app 是否 active 且 scope 为 public 推导。`catalog-push --apply` 会在新增或更新 Contentful entry 时同时写入这两个字段，因此不需要在 `metadata/catalog/<app>.json` 中重复声明。
+`production` derives from `release` in `apps/<app>/variables.json`; `appStore` derives from whether the app is active and public in scope. `catalog-push --apply` writes both fields when creating or updating Contentful entries, so they need not be repeated in `metadata/catalog/<app>.json`.
 
-`metadata/catalog/*.json` 变化在 PR 阶段只做 dry-run 校验，合并到 `main` 后由 `Sync data to Contentful` workflow 执行 `catalog-push --apply`。
+Changes to `metadata/catalog/*.json` receive dry-run validation in PRs. After merging to `main`, the `Sync data to Contentful` workflow runs `catalog-push --apply`.
 
 ---
 
-## 4. 输出物模型
+## 4. Artifact Model
 
-### 4.1 R2 目录结构
+### 4.1 R2 Directory Layout
 
 ```
 artifact/appstore/<channel>/
@@ -430,6 +438,9 @@ artifact/appstore/<channel>/
 │   ├── manifest.json
 │   ├── apps-index-<datasetVersion>.json
 │   ├── apps-delta-<fromVersion>-to-<toVersion>.json
+│   ├── metadata/
+│   │   ├── database-types-<sha256>.json
+│   │   └── database-types-<sha256>.json.sha256
 │   ├── full/
 │   │   └── latest.zip
 │   └── apps/
@@ -440,25 +451,25 @@ artifact/appstore/<channel>/
     └── appstore-manifest.json
 ```
 
-### 4.2 设计要点
+### 4.2 Design Principles
 
-| 要点 | 说明 |
+| Principle | Description |
 |------|------|
-| 全量包兜底 | 每次发布都重建，用于首装、灾备、回退 |
-| 通道只由目录表达 | `artifact/appstore/<channel>/` 已隔离 `dev` / `rc` / `release`，v2 文件名不再重复携带通道语义 |
-| catalog full 仅保留 latest | catalog 已有稳定命名的 JSON 文件与 checksum，`full/latest.zip` 仅承担冷启动与兜底恢复 |
-| library full 仅保留 latest | library 与 catalog 保持一致，v2 R2 不保留全量历史快照，仅保留固定入口 `full/latest.zip` |
-| 单 app 包仅 `latest.zip` | 不保留版本化包，R2 仅作分发缓存；审计追溯由 git 保证 |
-| 增量构建 | 仅 `addedApps` + `changedApps` 触发重建，未变更 app 不触碰 |
-| 上传策略 | `aws s3 sync`（默认不删除），首次发布由 `check_seed` 检测并全量播种 |
-| 无孤儿堆积 | 单 app 只有 2 个文件，无需定时清理 |
-| 图片 | v2 使用在线 URL，不打包二进制 |
+| Full-package fallback | Rebuilt for every release, for first installation, disaster recovery, and rollback |
+| Channels expressed only by directories | `artifact/appstore/<channel>/` isolates `dev` / `rc` / `release`; v2 filenames do not repeat channel semantics |
+| Catalog full package retains only latest | Catalog has stable JSON filenames and checksums; `full/latest.zip` is only for cold starts and fallback recovery |
+| Library full package retains only latest | Consistent with catalog, v2 R2 retains no historical full snapshots, only `full/latest.zip` |
+| Individual app packages use only `latest.zip` | No versioned packages; R2 is a distribution cache, while Git provides audit history |
+| Incremental builds | Rebuild only `addedApps` + `changedApps`; leave unchanged apps untouched |
+| Upload strategy | `aws s3 sync` (no deletion by default); `check_seed` detects the first release and triggers full seeding |
+| No orphan accumulation | Only two files per app, requiring no scheduled cleanup |
+| Images | v2 uses online URLs, not bundled binaries |
 
 ---
 
-## 5. Manifest 契约
+## 5. Manifest Contracts
 
-### 5.1 appstore 根 manifest
+### 5.1 appstore Root Manifest
 
 ```json
 {
@@ -471,15 +482,16 @@ artifact/appstore/<channel>/
   },
   "library": {
     "manifest": "library/manifest.json",
-    "datasetVersion": "85f687824c03ef93"
+    "datasetVersion": "85f687824c03ef93",
+    "schemaVersion": "2"
   },
   "generatedAt": "2026-06-09T12:00:00Z"
 }
 ```
 
-消费者只需下载这一个文件，即可通过 `catalog.datasetVersion` 和 `library.datasetVersion` 分别判断哪部分数据需要更新。
+Consumers download this single file and compare `catalog.datasetVersion` and `library.datasetVersion` to determine which datasets need updating.
 
-### 5.2 catalog manifest
+### 5.2 catalog Manifest
 
 ```json
 {
@@ -504,11 +516,11 @@ artifact/appstore/<channel>/
 }
 ```
 
-### 5.3 library manifest
+### 5.3 library Manifest
 
 ```json
 {
-  "schemaVersion": "1",
+  "schemaVersion": "2",
   "datasetVersion": "85f687824c03ef93",
   "channel": "release",
   "fullPackage": "full/latest.zip",
@@ -516,16 +528,23 @@ artifact/appstore/<channel>/
   "appsDelta": "apps-delta-7ee7a10b7da49f38-to-85f687824c03ef93.json",
   "appPackagesBase": "apps/",
   "supportsPartialUpdate": true,
+  "metadata": {
+    "databaseTypes": {
+      "path": "metadata/database-types-<sha256>.json",
+      "sha256": "<sha256>"
+    }
+  },
   "checksum": {
     "fullPackage": "full/latest.zip.sha256",
     "appsIndex": "apps-index-85f687824c03ef93.json.sha256",
-    "appsDelta": "apps-delta-7ee7a10b7da49f38-to-85f687824c03ef93.json.sha256"
+    "appsDelta": "apps-delta-7ee7a10b7da49f38-to-85f687824c03ef93.json.sha256",
+    "databaseTypes": "metadata/database-types-<sha256>.json.sha256"
   },
   "generatedAt": "2026-06-09T12:00:00Z"
 }
 ```
 
-### 5.4 apps-index 条目结构
+### 5.4 apps-index Entry Structure
 
 ```json
 {
@@ -540,208 +559,210 @@ artifact/appstore/<channel>/
 }
 ```
 
-客户端通过对比 `hash` 字段判断 app 是否变更。
+Clients compare the `hash` field to detect app changes.
 
-`updatedAt` 是该应用安装模板（`apps/<app>` 整个目录）最后一次内容变更的时间，取自 Git 提交的 author date，统一为 UTC。它只用于展示"最近更新"，不参与增量判断；应用没有可用的 Git 记录时回退为本次发布的 `generatedAt`。
+The apps-index root includes the same `metadata` dictionary fingerprint as the library manifest. Full packages retain the installation path `library/metadata/database-types.json`. Content-addressed filenames serve incremental distribution without changing the installation path. The removed `database-defaults.json` draft is not used for publishing or declaration resolution.
+
+`updatedAt` is the last content-change time for the entire application template directory (`apps/<app>`), taken from the Git commit's author date in UTC. It is display-only ("last updated"), not an incremental-update input. Without usable Git history, fall back to this release's `generatedAt`.
 
 ---
 
-## 6. 发布流程
+## 6. Release Process
 
-### 6.1 触发方式
+### 6.1 Triggers
 
-| 事件 | channel |
+| Event | channel |
 |------|---------|
-| push 到 `main` 分支 | `dev` |
-| GitHub Release 发布（`release.published`，稳定 tag 且提交属于 `main`） | `release` |
-| `workflow_dispatch` | 手动选择 `dev` / `rc` |
+| Push to `main` | `dev` |
+| Published GitHub Release (`release.published`, stable tag with its commit on `main`) | `release` |
+| `workflow_dispatch` | Manually select `dev` / `rc` |
 
-正式发布在 GitHub 网页 **Releases → Draft a new release** 中选择或创建 `X.Y.Z` tag（例如 `0.9.0`，Target 为 main），然后点击 **Publish release**。仅推送 tag 或保存 draft 不会正式发布；prerelease 不进入正式通道。Action checkout 已发布 Release 的 tag，而非运行时最新的 main。无需提交版本号修改；不要使用 `v` 前缀或预发布后缀，正式 tag 不移动、不覆盖。
+For a stable release, use GitHub **Releases -> Draft a new release**, select or create an `X.Y.Z` tag (for example, `0.9.0`, targeting main), then click **Publish release**. Pushing a tag or saving a draft does not publish artifacts; prereleases do not enter the stable channel. The Action checks out the published Release's tag, not the latest main at execution time. No committed version-number change is required. Do not use a `v` prefix or prerelease suffix, or move/overwrite stable tags.
 
-版本来源统一如下：
+Version sources:
 
-- 正式发布：tag 名就是唯一版本源，用于 GitHub Release、legacy `library.json.Version` 和 `library-<version>.zip`。
-- dev/rc：版本为 `<channel>-<commit SHA>`，例如 `dev-abcdef123456`。
-- 源码不维护根目录 `library.json`；发布时生成兼容旧客户端的 `library.json`，全量制品中继续包含它。
-- v2 三层 `datasetVersion` 继续基于内容计算，与正式 tag 版本独立。
-- release 增量基线取当前提交历史中已有的稳定版本 tag；没有稳定基线时构建全部 app 包。
+- Stable releases: The tag name is the sole version source for the GitHub Release, legacy `library.json.Version`, and `library-<version>.zip`.
+- dev/rc: Use `<channel>-<commit SHA>`, for example, `dev-abcdef123456`.
+- Source code does not maintain the root `library.json`; releases generate it for old-client compatibility and include it in full artifacts.
+- All three v2 `datasetVersion` values remain content-derived, independent of stable tag versions.
+- The release incremental baseline uses a stable version tag in the current commit history; without one, build all app packages.
 
-### 6.2 CI 流水线（`appstore-publish.yml`）
+### 6.2 CI Pipeline (`appstore-publish.yml`)
 
 ```
-1. release 比较上一可达且版本更低、已发布稳定 Release 的 tag 与当前 tag 的构建输入哈希（裸 tag 不作基线），仅为变化的自定义镜像调用 docker.yml；无变化则跳过镜像 workflow，首个 release 选择全部可构建应用。仅选中应用的镜像失败会阻塞 Appstore 制品发布
-2. 检出发布 tag（fetch-depth: 0），解析 channel 和版本；release 校验稳定 tag 格式及提交属于 main
-3. 检查 R2 apps/ 是否为空 → 空则标记首次发布（--all-apps）
-4. 从 Contentful 拉取 catalog 源数据
-5. 运行 `ci/scripts/library_publish.py` 构建所有制品（v2 + legacy），并以仓库 variables.json 统一 product distribution 数据结构
-6. 上传 v2 制品到新 R2 路径（`channel` 只由目录表达，full 固定入口统一为 `latest.zip`）
-7. 上传 legacy 制品到旧 R2 路径（兼容旧消费者）
-8. 清除 Cloudflare 缓存
-9. 更新已存在的 GitHub Release 的自动 changelog 区域并上传附件，保留人工说明
+1. For release, compare build-input hashes between the current tag and the preceding reachable lower-version tag of a published stable Release (bare tags are not baselines). Invoke docker.yml only for changed custom images; skip it if none changed. The first release selects all buildable apps. Only selected-app image failures block Appstore artifacts.
+2. Check out the release tag (fetch-depth: 0), resolve channel/version; validate stable tag format and main ancestry for release.
+3. Check whether R2 apps/ is empty -> mark first release if empty (--all-apps).
+4. Fetch catalog source data from Contentful.
+5. Run `ci/scripts/library_publish.py` to build all artifacts (v2 + legacy), normalizing product distribution structures from repository variables.json.
+6. Upload v2 artifacts to the new R2 paths (`channel` is directory-only; full-package entry points use `latest.zip`).
+7. Upload legacy artifacts to the old R2 paths (for legacy consumers).
+8. Purge Cloudflare caches.
+9. Update the existing GitHub Release's generated changelog area and upload attachments, preserving manual notes.
 ```
 
-Release body 中由 `<!-- generated-changelog:start -->` / `<!-- generated-changelog:end -->` 包围的内容由 Action 管理；重跑替换该区域，不覆盖其外的人工内容。changelog 使用上一稳定 tag 到当前 tag 的显式提交范围。只监听 `published`，更新 Release 描述不会再次启动发布。
+The Action manages the Release body between `<!-- generated-changelog:start -->` / `<!-- generated-changelog:end -->`. Reruns replace only that area, preserving manual content outside it. The changelog uses the explicit commit range from the previous stable tag to the current tag. Only `published` triggers publishing; editing a Release description does not retrigger it.
 
-镜像候选以 Dockerfile 构建输入哈希标识，优先使用 `dev-src-<hash>`；历史候选必须来自成功的 main 构建且构建输入与本次发布完全一致。禁止按任意 app 最后提交猜 SHA 或回退 `dev-latest`。本次变更应用候选缺失时，从 main 手动运行 docker.yml（channel=dev、app、target_ref=release tag）补建，再重跑正式发布。历史未变更应用缺失镜像独立手动补建（同一 target_ref，dev 后 promote），不在后续 Release 中重复尝试。手动 promote 失败后由独立回调创建带 `bug` 标签的 Issue，按 app + 目标 ref 去重，重复失败追加运行链接，成功后人工确认关闭。matrix 中单个 app 失败不取消其它 app，但会阻止后续 Appstore 上传。
+Image candidates are identified by Dockerfile build-input hashes, preferably `dev-src-<hash>`. Historical candidates must come from successful main builds with inputs identical to this release. Do not guess a SHA from an arbitrary app's last commit or fall back to `dev-latest`. If a changed app lacks a candidate, manually run docker.yml from main (channel=dev, app, target_ref=release tag), then rerun the stable release. Missing images for historically unchanged apps require separate manual builds (same target_ref, dev then promote), not repeated attempts in later Releases. A separate callback creates a `bug` Issue after manual promotion failure, deduplicated by app + target ref; repeat failures append run links, and success requires manual closure. A matrix app failure does not cancel other apps, but blocks subsequent Appstore uploads.
 
-正式制品只发布到 R2，并同步更新 GitHub Release；Release 在人工点击 Publish 后就已可见，不代表所有下游制品发布完成，需查看 Action 结果。
+Stable artifacts are published only to R2, with the GitHub Release updated alongside them. The Release becomes visible when Publish is clicked; this does not mean all downstream artifacts have finished publishing. Check the Action result.
 
-正式发布全部上传及 GitHub Release 更新成功后，通过与 maintenance scan 相同的 `WECOM_WEBHOOK` 发送企业微信通知，包含版本、Release notes 摘要、完整 Release、Appstore 制品及运行链接；dev/rc 不通知。摘要按 UTF-8 字节限制截断。公共发送脚本为 `ci/scripts/wecom_notify.py`，负责 Markdown 消息、接口 `errcode` 校验及有界重试；消息模板由各场景维护。缺少 webhook 或通知失败只记录 warning，不影响发布结果。重跑成功的发布会再次通知。
+After all stable-release uploads and the GitHub Release update succeed, send a WeCom notification using the same `WECOM_WEBHOOK` as maintenance scans, including the version, release-note summary, full Release, Appstore artifacts, and run links. Do not notify for dev/rc. Truncate summaries by UTF-8 byte limits. Shared `ci/scripts/wecom_notify.py` handles Markdown messages, API `errcode` checks, and bounded retries; each use case owns its message template. A missing webhook or failed notification produces a warning without affecting release success. Successful reruns send notifications again.
 
-### 6.3 上传策略
+### 6.3 Upload Strategy
 
-| 目标 | 命令 | R2 路径 |
+| Target | Command | R2 Path |
 |------|------|--------|
 | v2 catalog | `aws s3 sync` | `appstore/<channel>/catalog/` |
-| v2 library 元数据 | `aws s3 sync --exclude "apps/*"` | `appstore/<channel>/library/` |
-| v2 单 app 包 | `aws s3 cp --recursive` | `appstore/<channel>/library/apps/` |
+| v2 library metadata | `aws s3 sync --exclude "apps/*"` | `appstore/<channel>/library/` |
+| v2 individual app packages | `aws s3 cp --recursive` | `appstore/<channel>/library/apps/` |
 | v2 manifests | `aws s3 sync` | `appstore/<channel>/manifests/` |
 | legacy library | `aws s3 sync` | `<channel>/websoft9/plugin/library/` |
 | legacy media | `aws s3 sync` | `<channel>/websoft9/plugin/media/` |
 
-所有 `sync` 均为默认追加/覆盖模式，不删除目标已有文件。
+All `sync` operations use the default add/overwrite behavior and do not delete existing destination files.
 
 ---
 
-## 7. Legacy 兼容
+## 7. Legacy Compatibility
 
-并行期内 legacy 与 v2 通过**同一 workflow、不同 R2 路径**共存：
+During the transition, legacy and v2 coexist through the **same workflow, using different R2 paths**:
 
-| 制品 | v2 路径 | legacy 路径 |
+| Artifact | v2 Path | Legacy Path |
 |------|--------|------------|
-| catalog | `appstore/<channel>/catalog/` | `<channel>/websoft9/plugin/media/`（打包为 `media.zip`） |
-| library | `appstore/<channel>/library/` | `<channel>/websoft9/plugin/library/`（打包为 `library-*.zip`） |
+| catalog | `appstore/<channel>/catalog/` | `<channel>/websoft9/plugin/media/` (packaged as `media.zip`) |
+| library | `appstore/<channel>/library/` | `<channel>/websoft9/plugin/library/` (packaged as `library-*.zip`) |
 
-**legacy `media.zip` 保持旧格式**：内含 `json/` + `logos/` + `screenshots/`，图片从 Contentful URL 下载后打包。v2 目录中不包含图片二进制，统一使用在线 URL。
+**Legacy `media.zip` retains the old format**: `json/` + `logos/` + `screenshots/`, with images downloaded from Contentful URLs and bundled. v2 directories contain no image binaries and use online URLs instead.
 
-每次 push 同时产出两套制品，迁移窗口结束后下线 legacy 上传步骤。
-
----
-
-## 8. 校验门禁
-
-发布时必须通过以下检查，任一失败则中止：
-
-1. catalog 四个核心 JSON 可生成
-2. catalog / library / appstore 三层 manifest 字段完整、可追溯
-3. `apps-index` 和 `apps-delta` 可生成，delta 结构符合 app 级定义
-4. 所有 checksum 与实际文件一致
-5. 单 app 制品可生成（每个变更 app 的 `latest.zip` + `.sha256`）
-6. 根 manifest 可追溯到 catalog 与 library
-7. Legacy 兼容制品完整性
+Each push produces both artifact sets; retire legacy upload steps after the migration window closes.
 
 ---
 
-## 9. Phase 1 范围
+## 8. Validation Gates
 
-| # | 事项 |
+Releases must pass all checks below; abort on any failure:
+
+1. All four core catalog JSON files can be generated.
+2. catalog/library/appstore manifests have complete, traceable fields.
+3. `apps-index` and `apps-delta` can be generated, with app-level delta structure.
+4. All checksums match actual files.
+5. Individual app artifacts can be generated (`latest.zip` + `.sha256` for every changed app).
+6. The root manifest is traceable to catalog and library.
+7. Legacy compatibility artifacts are complete.
+
+---
+
+## 9. Phase 1 Scope
+
+| # | Item |
 |---|------|
-| 1 | 同一 workflow 同时产出 v2 与 legacy，两者目录和命名规则彼此独立 |
-| 2 | 新增 `artifact/appstore/<channel>/{catalog,library,manifests}` 目录结构 |
-| 3 | 为三层分别建立 `schemaVersion` + `datasetVersion` |
-| 4 | 旧 library / catalog 构建逻辑迁回本项目 |
-| 5 | Library 更新粒度固定为 app 级 |
-| 6 | v2 catalog full 与 library full 均仅输出 `full/latest.zip`；单 app 包继续使用 `latest.zip` |
-| 7 | Manifest + checksum 覆盖所有制品 |
-| 8 | 首次发布自动全量播种，后续增量构建 |
+| 1 | Produce v2 and legacy in one workflow, with independent directory and naming rules |
+| 2 | Add `artifact/appstore/<channel>/{catalog,library,manifests}` |
+| 3 | Establish separate `schemaVersion` + `datasetVersion` at each of the three levels |
+| 4 | Bring legacy library/catalog build logic back into this project |
+| 5 | Fix library update granularity at app level |
+| 6 | v2 catalog and library full packages output only `full/latest.zip`; individual app packages retain `latest.zip` |
+| 7 | Cover all artifacts with manifests and checksums |
+| 8 | Automatically seed the first release fully; build incrementally thereafter |
 
 ---
 
-## 10. 行业对标
+## 10. Industry References
 
-本规范对标 **Static Artifact Repository** 模式（Helm Chart Repo、OSTree Summary、APT Repo）：
+This specification follows the **Static Artifact Repository** model (Helm Chart Repo, OSTree Summary, APT Repo):
 
-| 特性 | 对标 | 本规范 |
+| Feature | Reference | This Specification |
 |------|------|--------|
-| 索引发现 | Helm `index.yaml` | `apps-index-{dsv}.json` |
-| 增量更新 | OSTree static-deltas | `apps-delta-{from}-to-{to}.json` |
-| 校验链 | APT `Release` + SHA-256 | `*.sha256` 贯穿三层 manifest |
-| 通道隔离 | Debian stable/testing | `dev` / `rc` / `release` |
-| 制品签名 | Phase 2 | 计划中 |
+| Index discovery | Helm `index.yaml` | `apps-index-{dsv}.json` |
+| Incremental updates | OSTree static-deltas | `apps-delta-{from}-to-{to}.json` |
+| Verification chain | APT `Release` + SHA-256 | `*.sha256` across all three manifest levels |
+| Channel isolation | Debian stable/testing | `dev` / `rc` / `release` |
+| Artifact signing | Phase 2 | Planned |
 
-> **Phase 2 展望**：制品签名（对标 TUF/Helm provenance）、SLSA 出处证明。
+> **Phase 2 outlook**: Artifact signing (TUF/Helm provenance) and SLSA provenance attestations.
 
 ---
 
-## 11. 消费者指南
+## 11. Consumer Guide
 
-消费者无需维护额外的状态文件——**上一次下载成功的 `appstore-manifest.json` 本身就是完整的状态记录**。更新时将新下载的 manifest 与本地缓存的旧 manifest 对比即可。
+Consumers need no additional state file: **the last successfully downloaded `appstore-manifest.json` is the complete state record**. Compare a newly downloaded manifest with the locally cached previous manifest when updating.
 
-### 11.1 首次安装（冷启动）
-
-```
-1. 下载 appstore-manifest.json
-2. 检查 schemaVersion 兼容性 → 不兼容则中止
-
-3. 下载 catalog 全量数据：
-   → 下载 catalog/manifest.json
-  → 下载 full/latest.zip（固定入口）
-  → 校验 full/latest.zip.sha256
-   → 解压到本地
-
-4. 下载 library 全量数据：
-  → 下载 full/latest.zip（全量包，含所有 app 模板）
-  → 校验 full/latest.zip.sha256
-   → 解压到本地 apps/ 目录
-
-5. 下载并缓存 apps-index-<datasetVersion>.json
-  → 读取每个应用的 updatedAt（模板最后变更时间）
-
-6. 保存本次下载的 appstore-manifest.json 到本地作为状态锚点
-```
-
-### 11.2 增量更新
+### 11.1 First Installation (Cold Start)
 
 ```
-1. 下载最新的 appstore-manifest.json
+1. Download appstore-manifest.json.
+2. Check schemaVersion compatibility -> abort if incompatible.
 
-2. 对比新 manifest 与本地缓存的旧 manifest：
-   → 如果 catalog.datasetVersion 不同：
-       下载 catalog/manifest.json → 逐个对比 checksum → 下载变更的 JSON
-   → 如果 library.datasetVersion 不同：
-       下载 apps-index-<datasetVersion>.json 并替换本地缓存
-         （未变更应用的 updatedAt 只能从这里获得）
+3. Download the full catalog:
+   -> Download catalog/manifest.json.
+  -> Download full/latest.zip (fixed entry point).
+  -> Verify full/latest.zip.sha256.
+   -> Extract locally.
+
+4. Download the full library:
+  -> Download full/latest.zip (all app templates).
+  -> Verify full/latest.zip.sha256.
+   -> Extract to the local apps/ directory.
+
+5. Download and cache apps-index-<datasetVersion>.json.
+  -> Read each app's updatedAt (last template-change time).
+
+6. Save the downloaded appstore-manifest.json locally as the state record.
+```
+
+### 11.2 Incremental Updates
+
+```
+1. Download the latest appstore-manifest.json.
+
+2. Compare the new manifest with the locally cached previous one:
+   -> If catalog.datasetVersion differs:
+       Download catalog/manifest.json -> compare checksums -> download changed JSON files.
+   -> If library.datasetVersion differs:
+       Download apps-index-<datasetVersion>.json and replace the local cache.
+         (This is the only source of updatedAt for unchanged apps.)
        if supportsPartialUpdate:
-         下载 apps-delta → 下载 changed/added app 的 latest.zip
+         Download apps-delta -> download latest.zip for changed/added apps.
        else:
-         下载全量包
-   → 如果都相同：什么都不做，结束
+         Download the full package.
+   -> If both match: Do nothing and finish.
 
-3. 更新成功后，用新 manifest 替换本地缓存
+3. After successful update, replace the cached manifest with the new one.
 ```
 
-**典型场景开销**：
+**Typical Request Costs**:
 
-| 场景 | HTTP 请求 |
+| Scenario | HTTP Requests |
 |------|----------|
-| 无变化 | 1（appstore-manifest.json，~200B） |
-| 仅 catalog 变了 1 个文件 | 3（根 manifest + catalog manifest + 1 个 JSON） |
-| 仅 library 变了 2 个 app | 4（根 manifest + library manifest + delta + 2 个 zip） |
+| No changes | 1 (appstore-manifest.json, ~200B) |
+| One catalog file changed | 3 (root manifest + catalog manifest + one JSON) |
+| Two library apps changed | 4 (root manifest + library manifest + delta + two ZIPs) |
 
-> 需要展示 `updatedAt` 时，library 更新会额外包含 1 次 `apps-index` 请求（约 136 KB，gzip 后约 24 KB）。
+> Displaying `updatedAt` adds one `apps-index` request to a library update (approximately 136 KB, or 24 KB gzipped).
 
-### 11.3 异常恢复
+### 11.3 Failure Recovery
 
 ```
-增量更新中任一文件下载或校验失败：
-  → 回退策略：下载 library/full/latest.zip 全量覆盖本地 apps/
-  → 用本次下载的 manifest 替换本地缓存
+If any incremental-update download or verification fails:
+  -> Fallback: Download library/full/latest.zip and replace local apps/ completely.
+  -> Replace the cached manifest with the downloaded manifest.
 
-schemaVersion 不在本地支持列表中：
-  → 不更新任何数据，保持本地缓存的旧 manifest
-  → 提示用户升级客户端
+If schemaVersion is not locally supported:
+  -> Do not update data; retain the previously cached manifest.
+  -> Prompt the user to upgrade the client.
 ```
 
-### 11.4 缓存策略建议
+### 11.4 Recommended Cache Policy
 
-| 资源 | 建议 | 原因 |
+| Resource | Recommendation | Reason |
 |------|------|------|
-| `appstore-manifest.json` | Cache-Control: 60s | 入口文件，需及时感知更新 |
-| `catalog/manifest.json` | Cache-Control: 60s | 体积极小，变更频率低 |
-| `catalog/full/latest.zip` | Cache-Control: 60s | 冷启动与兜底恢复入口，覆盖发布后需尽快生效 |
-| `apps-index-*.json` | Cache-Control: 60s | 应用索引与 updatedAt，仅在 datasetVersion 变化时重新下载 |
-| `apps-delta-*.json` | Cache-Control: 60s | 体积极小 |
-| `apps/{app}/latest.zip` | Cache-Control: 60s | 模板文件体积极小，变更后需立即生效 |
-| `library/full/latest.zip` | Cache-Control: 60s | library 全量固定入口 |
-| `*.sha256` | 跟随对应文件 | 校验与被校验文件同步缓存 |
-| `catalog_*.json / product_*.json` | Cache-Control: 3600 | 描述数据，变更频率中等 |
+| `appstore-manifest.json` | Cache-Control: 60s | Entry point; updates must be discovered promptly |
+| `catalog/manifest.json` | Cache-Control: 60s | Very small, changes infrequently |
+| `catalog/full/latest.zip` | Cache-Control: 60s | Cold-start/recovery entry point; replacements must become available promptly |
+| `apps-index-*.json` | Cache-Control: 60s | App index and updatedAt; downloaded again only when datasetVersion changes |
+| `apps-delta-*.json` | Cache-Control: 60s | Very small |
+| `apps/{app}/latest.zip` | Cache-Control: 60s | Small templates; changes must become available immediately |
+| `library/full/latest.zip` | Cache-Control: 60s | Fixed full-library entry point |
+| `*.sha256` | Match the corresponding file | Cache checksums together with the files they verify |
+| `catalog_*.json / product_*.json` | Cache-Control: 3600 | Descriptive data, changes moderately often |

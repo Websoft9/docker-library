@@ -16,6 +16,31 @@
     "memory": "2",
     "disk": "8"
   },
+  "database": [
+    {
+      "id": "rds",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "mariadb",
+          "driver": "mariadb"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "mysql",
+            "mariadb"
+          ]
+        }
+      ],
+      "datasource": {
+        "ESPOCRM_DATABASE_HOST": "${host}",
+        "ESPOCRM_DATABASE_NAME": "${name}",
+        "ESPOCRM_DATABASE_USER": "${users[*].user}",
+        "ESPOCRM_DATABASE_PASSWORD": "${users[*].password}"
+      }
+    }
+  ],
   "env": {
     "first_startup_only": [
       "ESPOCRM_ADMIN_USERNAME",

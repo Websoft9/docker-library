@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-11-03
+
+- Declared optional external PostgreSQL/MySQL/MariaDB support through the existing DATABASE_URL input and Spring datasource mapping.
+- Preserved the no-database default without adding an internal database or profiles; runtime files and image versions are unchanged.
+
 ## 2026-09-17
 
 - Split the Spring Boot startup into ordered hooks under `src/entrypoint.d/` plus a `src/start.sh`, with a user hook directory at `/workspace/.w9/entrypoint.d/` and an optional `/workspace/.w9/start.sh` override.

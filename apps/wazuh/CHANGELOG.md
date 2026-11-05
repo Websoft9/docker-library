@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-11-04
+
+- Declared the internal OpenSearch-compatible Wazuh Indexer, with HTTPS confirmed by its mounted configuration.
+- Recorded existing INDEXER_* and DASHBOARD_* account sources, excluding password hashes and Wazuh API credentials from database password metadata.
+- Excluded certificate generation, sysctl helpers, manager, and dashboard as database instances; runtime configuration and image versions are unchanged.
+
 ## 2026-09-20
 
 - Rebuild the package as the official Wazuh single-node stack (manager, indexer and dashboard at 4.14.7).

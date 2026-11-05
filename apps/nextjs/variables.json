@@ -32,6 +32,24 @@
     "memory": "2",
     "disk": "5"
   },
+  "database": [
+    {
+      "id": "rds",
+      "providers": [
+        {
+          "type": "external",
+          "drivers": [
+            "postgresql",
+            "mysql",
+            "mariadb"
+          ]
+        }
+      ],
+      "datasource": {
+        "DATABASE_URL": "${url}"
+      }
+    }
+  ],
   "credentials": {},
   "env": {
     "first_startup_only": [

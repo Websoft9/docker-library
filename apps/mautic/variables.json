@@ -22,6 +22,31 @@
     "memory": "1",
     "disk": "4"
   },
+  "database": [
+    {
+      "id": "rds",
+      "providers": [
+        {
+          "type": "internal",
+          "service": "db",
+          "driver": "mysql"
+        },
+        {
+          "type": "external",
+          "drivers": [
+            "mysql"
+          ]
+        }
+      ],
+      "datasource": {
+        "MAUTIC_DB_HOST": "${host}",
+        "MAUTIC_DB_PORT": "${port}",
+        "MAUTIC_DB_DATABASE": "${name}",
+        "MAUTIC_DB_USER": "${users[*].user}",
+        "MAUTIC_DB_PASSWORD": "${users[*].password}"
+      }
+    }
+  ],
   "upstream": {
     "image": "https://hub.docker.com/r/mautic/mautic"
   }

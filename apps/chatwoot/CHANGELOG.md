@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-11-03
+
+- Declared the PostgreSQL dependency and existing native inputs consumed by both Rails and Sidekiq.
+- Declared Redis separately as internal and unauthenticated, preserving its REDIS_URL input; runtime configuration and image versions are unchanged.
+
 ## 2026-10-30
 - Updated Chatwoot to `v4.19.1` for the upstream security hardening and fixes.
 
