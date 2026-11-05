@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 2026-11-05
+- Add `v2.2.2` as a supported QwenPaw version while keeping `latest`.
+
 ## 2026-10-13
 - Initial QwenPaw community package: QwenPaw **Hub**, the multi-user control plane, so one address can host an administrator and multiple user runtimes.
 - Use the official `agentscope/qwenpaw` image directly; no custom image is built.
