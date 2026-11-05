@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-05
+
+- Updated supported Kafka versions to `4.4.0`, `4.3.2`, `4.2.2`, `4.1.0`, and `4.0.1`.
+
 ## 2026-11-01
 
 - Updated Kafka from `4.3.1` to `4.4.0`.

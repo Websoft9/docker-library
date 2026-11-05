@@ -41,7 +41,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 2.20.0-jupyter, latest-jupyter.
+Supported versions: 2.21.0-jupyter, latest-jupyter.
 
 
 ### Ports
