@@ -19,6 +19,7 @@ coverage.xml
 htmlcov/
 
 ## Build & publish artifacts
+/build/
 dist/
 artifacts/
 library/
