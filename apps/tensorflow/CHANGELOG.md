@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-05
+
+- Updated Tensorflow community package from `2.20.0-jupyter` to `2.21.0-jupyter`.
+
 ## 2026-09-21
 
 - Updated Tensorflow community package from `2.19.0-jupyter` to `2.20.0-jupyter`.
