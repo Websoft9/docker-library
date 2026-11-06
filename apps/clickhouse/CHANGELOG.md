@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-06
+
+- Update ClickHouse from `26.9` to `26.10`, the owner-approved stable upstream tag.
+
 ## 2026-10-13
 
 - Update ClickHouse from `26.8` to `26.9` based on the latest stable upstream branch tag.
