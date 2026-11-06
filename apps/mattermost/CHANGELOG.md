@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 2026-11-06
+- Update Mattermost Team Edition from `12.0` to `12.1` and PostgreSQL from `14.0` to `15.0` to meet Mattermost 12.1's minimum database requirement.
+
 ## 2026-11-03
 - Declared the PostgreSQL dependency and existing DSN mapping, preserving SSL and timeout parameters and the W9_RCODE password source.
 - Kept the fixed database driver, runtime configuration, and image versions unchanged.

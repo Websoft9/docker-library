@@ -33,7 +33,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 12.0.
+Supported versions: 12.1.
 
 
 ### Ports
