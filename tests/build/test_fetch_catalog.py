@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import json
 
+import jsonschema
+import pytest
+
 from _helpers import REPO_ROOT, load_build_module
 
 fetch_catalog = load_build_module("fetch_catalog_test", REPO_ROOT / "ci" / "scripts" / "fetch_catalog.py")
@@ -47,6 +50,32 @@ def test_fetch_product_entries_uses_stable_id_ordering():
 
 def test_product_query_requests_production_field():
     assert "\n      production\n" in fetch_catalog.PRODUCT_QUERY
+
+
+def test_product_query_requests_new_fields():
+    for name in ("hasEnterprise", "useCases", "keywords"):
+        assert f"\n      {name}\n" in fetch_catalog.PRODUCT_QUERY
+
+
+@pytest.mark.parametrize("enterprise,lists", [(True, ["analytics"]), (False, []), (None, None)])
+@pytest.mark.parametrize("locale", ["en-US", "zh-CN"])
+def test_fetch_product_entries_preserves_new_fields(monkeypatch, tmp_path, enterprise, lists, locale):
+    values = {"hasEnterprise": enterprise, "useCases": lists, "keywords": lists}
+
+    def fake_run_query(token, query, variables):
+        assert query == fetch_catalog.PRODUCT_QUERY
+        assert variables["locale"] == locale
+        return {"productCollection": {"total": 1, "items": [{"key": "demo", **values}]}}
+
+    monkeypatch.setattr(fetch_catalog, "run_query", fake_run_query)
+    entries = fetch_catalog.fetch_product_entries("token", locale, None)
+    path = tmp_path / "product.json"
+    fetch_catalog.write_json(path, entries)
+    exported = json.loads(path.read_text())[0]
+    properties = json.loads((REPO_ROOT / "metadata/product-artifact.schema.json").read_text())["items"]["properties"]
+    for name, value in values.items():
+        assert exported[name] == value
+        jsonschema.validate(exported[name], properties[name])
 
 
 def test_apply_default_logo_fills_missing_logo_per_locale():

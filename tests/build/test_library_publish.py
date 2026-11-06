@@ -110,10 +110,14 @@ def test_apps_index_version_ignores_publication_and_display_times(build_fixture,
     assert library_publish.build_apps_index_with_version("dev", "2026-02-01T00:00:00Z")[1] != old_version
 
 
-def test_previous_published_index_supplies_dataset_version(build_fixture, monkeypatch):
+@pytest.mark.parametrize("schema_version", ["1", "2"])
+def test_previous_published_index_supplies_dataset_version(build_fixture, monkeypatch, schema_version):
     monkeypatch.setattr(library_publish, "ROOT", build_fixture)
     monkeypatch.setattr(library_publish, "APPS_DIR", build_fixture / "apps")
     index, version = library_publish.build_apps_index_with_version("dev", "2026-01-01T00:00:00Z")
+    index["schemaVersion"] = schema_version
+    if schema_version == "1":
+        index.pop("metadata")
     path = build_fixture / "previous.json"
     path.write_text(json.dumps(index))
 
@@ -126,6 +130,19 @@ def test_previous_published_index_supplies_dataset_version(build_fixture, monkey
     path.write_text(json.dumps(index))
     with pytest.raises(SystemExit, match="application identity"):
         library_publish.load_previous_apps_index(str(path), "dev")
+
+
+@pytest.mark.parametrize("schema_version", ["3", 1, None, [], {}])
+def test_previous_published_index_rejects_unknown_schema(build_fixture, monkeypatch, schema_version):
+    monkeypatch.setattr(library_publish, "ROOT", build_fixture)
+    monkeypatch.setattr(library_publish, "APPS_DIR", build_fixture / "apps")
+    index, _ = library_publish.build_apps_index_with_version("release", "2026-01-01T00:00:00Z")
+    index["schemaVersion"] = schema_version
+    path = build_fixture / "previous.json"
+    path.write_text(json.dumps(index))
+
+    with pytest.raises(SystemExit, match="invalid previous apps index"):
+        library_publish.load_previous_apps_index(str(path), "release")
 
 
 def test_published_delta_compares_fingerprints_not_git_history(monkeypatch):
@@ -191,7 +208,7 @@ def test_build_apps_index_with_fixture_apps(build_fixture, monkeypatch):
 
     index = library_publish.build_apps_index("dev", "2026-01-01T00:00:00Z")
 
-    assert index["schemaVersion"] == "2"
+    assert index["schemaVersion"] == "1"
     assert "datasetVersion" not in index
     assert index["appCount"] == 1
     entry = index["apps"][0]
@@ -233,6 +250,7 @@ def test_build_apps_delta_computes_added_changed_removed(monkeypatch):
     assert delta["addedApps"] == ["b"]
     assert delta["removedApps"] == ["a"]
     assert delta["changedApps"] == ["c"]
+    assert delta["schemaVersion"] == "1"
 
 
 def test_distribution_map_and_merge_product_distribution(build_fixture, monkeypatch):
@@ -283,6 +301,7 @@ def test_manifest_builders_have_expected_shape():
     library = library_publish.build_library_manifest(
         "l-dsv", "dev", "full/latest.zip", "apps-index.json", "apps-delta.json", {"fullPackage": "x.sha256"}, "2026-01-01T00:00:00Z"
     )
+    assert library["schemaVersion"] == "1"
     assert library["supportsPartialUpdate"] is True
     assert library["appPackagesBase"] == "apps/"
 
@@ -292,6 +311,7 @@ def test_manifest_builders_have_expected_shape():
     assert appstore["minWebsoft9Version"] == library_publish.MIN_WEBSOFT9_VERSION
     assert appstore["catalog"]["manifest"] == "catalog/manifest.json"
     assert appstore["library"]["manifest"] == "library/manifest.json"
+    assert appstore["schemaVersion"] == appstore["library"]["schemaVersion"] == "1"
 
 
 def test_ensure_catalog_source_requires_all_four_files(tmp_path: Path):
@@ -319,7 +339,7 @@ def test_validate_catalog_artifacts_rejects_missing_files(tmp_path: Path):
 def test_release_metadata_uses_tag_without_source_version_file(build_fixture, monkeypatch):
     monkeypatch.setattr(library_publish, "ROOT", build_fixture)
     assert not (build_fixture / "library.json").exists()
-    assert library_publish.build_library_metadata("release", "2.0.0") == {"Version": "2.0.0", "schemaVersion": "2"}
+    assert library_publish.build_library_metadata("release", "2.0.0") == {"Version": "2.0.0", "schemaVersion": "1"}
 
 
 @pytest.mark.parametrize("value", [None, "", "v2.0.0", "2.0", "2.0.0-rc.1", "02.0.0", "../2.0.0"])
@@ -331,7 +351,7 @@ def test_release_metadata_rejects_missing_or_nonstable_versions(value):
 @pytest.mark.parametrize("channel", ["dev", "rc"])
 def test_nonrelease_metadata_defaults_to_commit_version(channel, monkeypatch):
     monkeypatch.setattr(library_publish, "run_git", lambda *args: "abcdef123456")
-    assert library_publish.build_library_metadata(channel, None) == {"Version": f"{channel}-abcdef123456", "schemaVersion": "2"}
+    assert library_publish.build_library_metadata(channel, None) == {"Version": f"{channel}-abcdef123456", "schemaVersion": "1"}
 
 
 def test_release_packages_embed_generated_metadata_without_source_file(build_fixture, monkeypatch):
@@ -396,7 +416,7 @@ def test_full_publish_without_source_library_json(build_fixture, monkeypatch, ca
 
     assert library_publish.main() == 0
     capsys.readouterr()
-    expected = {"Version": "2.0.0" if channel == "release" else f"{channel}-abcdef123456", "schemaVersion": "2"}
+    expected = {"Version": "2.0.0" if channel == "release" else f"{channel}-abcdef123456", "schemaVersion": "1"}
     assert not (build_fixture / "library.json").exists()
     assert json.loads((output / "legacy" / channel / "library" / "library.json").read_text()) == expected
     with ZipFile(output / "appstore" / channel / "library" / "full" / "latest.zip") as archive:
@@ -404,7 +424,7 @@ def test_full_publish_without_source_library_json(build_fixture, monkeypatch, ca
         assert archive.read("library/metadata/database-types.json") == (build_fixture / "metadata" / "database-types.json").read_bytes()
     library_dir = output / "appstore" / channel / "library"
     manifest = json.loads((library_dir / "manifest.json").read_text())
-    assert manifest["schemaVersion"] == "2"
+    assert manifest["schemaVersion"] == "1"
     assert manifest["supportsPartialUpdate"] is False
     dictionary = manifest["metadata"]["databaseTypes"]
     assert library_publish.sha256_file(library_dir / dictionary["path"]) == dictionary["sha256"]
@@ -431,13 +451,15 @@ def test_dictionary_only_change_updates_dataset_without_changing_app_hash(build_
     assert baseline["metadata"] != current["metadata"]
 
 
-def test_dictionary_only_increment_delivers_shared_file_without_rebuilding_apps(build_fixture, monkeypatch):
+@pytest.mark.parametrize("schema_version", ["1", "2"])
+def test_dictionary_only_increment_delivers_shared_file_without_rebuilding_apps(build_fixture, monkeypatch, schema_version):
     monkeypatch.setattr(library_publish, "ROOT", build_fixture)
     monkeypatch.setattr(library_publish, "APPS_DIR", build_fixture / "apps")
     monkeypatch.setattr(library_publish, "apps_in_ref", lambda ref: {"demo"})
     monkeypatch.setattr(library_publish, "changed_apps_since", lambda ref: set())
     monkeypatch.setattr(library_publish, "build_app_updated_at_map", lambda: {})
     previous, previous_version = library_publish.build_apps_index_with_version("dev", "2026-01-01T00:00:00Z")
+    previous["schemaVersion"] = schema_version
     dictionary = build_fixture / "metadata" / "database-types.json"
     definitions = json.loads(dictionary.read_text())
     definitions["postgresql"]["port"] = 5433
@@ -448,17 +470,19 @@ def test_dictionary_only_increment_delivers_shared_file_without_rebuilding_apps(
         (catalog / filename).write_text("[]\n")
     output = build_fixture / "incremental"
     result = library_publish.build_v2_appstore_artifacts(
-        output, catalog, "library-dev.zip", {"Version": "dev-test", "schemaVersion": "2"},
+        output, catalog, "library-dev.zip", {"Version": "dev-test", "schemaVersion": "1"},
         "unused", "previous", "previous-version", "dev", "2026-01-01T00:00:00Z",
         previous_apps_index=previous,
     )
     manifest = json.loads((output / "library" / "manifest.json").read_text())
+    assert manifest["schemaVersion"] == "1"
     assert manifest["supportsPartialUpdate"] is True
     assert manifest["datasetVersion"] != previous_version
     entry = manifest["metadata"]["databaseTypes"]
     assert (output / "library" / entry["path"]).is_file()
     assert not list((output / "library" / "apps").rglob("*.zip"))
     delta = json.loads((output / "library" / result["library"]["appsDelta"]).read_text())
+    assert delta["schemaVersion"] == "1"
     assert delta["fromVersion"] == previous_version
     assert delta["toVersion"] == manifest["datasetVersion"]
     assert delta["addedApps"] == delta["changedApps"] == delta["removedApps"] == []

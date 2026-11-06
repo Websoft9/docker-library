@@ -58,6 +58,9 @@ query($locale: String!, $skip: Int!, $production: Boolean) {
       summary
       overview
       websiteurl
+      hasEnterprise
+      useCases
+      keywords
       description
       screenshots
       distribution
