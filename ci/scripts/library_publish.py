@@ -41,6 +41,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", required=True)
     parser.add_argument("--catalog-source-dir", required=True)
     parser.add_argument("--from-ref", default=None)
+    parser.add_argument("--previous-apps-index", default=None, help="Verified apps index from the last successful publication in this channel")
     parser.add_argument("--library-version", default=None, help="Release tag version; dev/rc default to <channel>-<commit SHA>")
     parser.add_argument("--all-apps", action="store_true", help="Build per-app packages for all apps (first-publish seed)")
     return parser.parse_args()
@@ -81,10 +82,39 @@ def format_dataset_version(dt: datetime) -> str:
     return dt.strftime("%Y.%m.%d.%H%M%S")
 
 
-def resolve_from_version(from_ref: str | None) -> str:
-    if not from_ref:
-        return "initial"
-    return run_git("rev-parse", "--short=16", from_ref)
+def load_previous_apps_index(path: str | None, channel: str) -> dict | None:
+    if path is None:
+        return None
+    try:
+        payload = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise SystemExit(f"invalid previous apps index: {exc}") from exc
+    if (
+        not isinstance(payload, dict)
+        or payload.get("schemaVersion") != LIBRARY_SCHEMA_VERSION
+        or payload.get("channel") != channel
+        or not isinstance(payload.get("datasetVersion"), str)
+        or not re.fullmatch(r"[a-f0-9]{16}", payload["datasetVersion"])
+        or not isinstance(payload.get("apps"), list)
+    ):
+        raise SystemExit("invalid previous apps index: schema, channel, version or apps")
+    names: set[str] = set()
+    for app in payload["apps"]:
+        if (
+            not isinstance(app, dict)
+            or not isinstance(app.get("app"), str)
+            or not re.fullmatch(r"[a-z0-9][a-z0-9_-]*", app["app"])
+            or app["app"] in names
+            or not isinstance(app.get("hash"), str)
+            or not re.fullmatch(r"[a-f0-9]{64}", app["hash"])
+        ):
+            raise SystemExit("invalid previous apps index: application identity or fingerprint")
+        names.add(app["app"])
+    return payload
+
+
+def resolve_from_version(previous_apps_index: dict | None) -> str:
+    return previous_apps_index["datasetVersion"] if previous_apps_index is not None else "initial"
 
 
 def build_library_metadata(channel: str, library_version: str | None) -> dict:
@@ -315,7 +345,14 @@ def build_apps_index_with_version(
     carry a version that does not describe it (for example the catalog version).
     """
     apps_index = build_apps_index(channel, generated_at, app_updated_at)
-    serialized = json.dumps(apps_index, sort_keys=True, ensure_ascii=False)
+    versioned_content = {
+        key: value for key, value in apps_index.items() if key not in {"generatedAt", "apps"}
+    }
+    versioned_content["apps"] = [
+        {key: value for key, value in app.items() if key != "updatedAt"}
+        for app in apps_index["apps"]
+    ]
+    serialized = json.dumps(versioned_content, sort_keys=True, ensure_ascii=False)
     dataset_version = _hash_content(serialized)
     apps_index["datasetVersion"] = dataset_version
     return apps_index, dataset_version
@@ -359,13 +396,22 @@ def build_apps_delta(
     to_version: str,
     channel: str,
     generated_at: str,
+    previous_apps_index: dict | None = None,
 ) -> dict:
     current_apps = {entry["app"] for entry in apps_index["apps"]}
-    previous_apps = apps_in_ref(from_ref)
+    if previous_apps_index is not None:
+        previous_hashes = {entry["app"]: entry["hash"] for entry in previous_apps_index["apps"]}
+        previous_apps = set(previous_hashes)
+        changed_apps = sorted(
+            entry["app"] for entry in apps_index["apps"]
+            if entry["app"] in previous_hashes and entry["hash"] != previous_hashes[entry["app"]]
+        )
+    else:
+        previous_apps = apps_in_ref(from_ref)
+        changed_apps = sorted(changed_apps_since(from_ref) - (current_apps - previous_apps) - (previous_apps - current_apps))
 
     added_apps = sorted(current_apps - previous_apps)
     removed_apps = sorted(previous_apps - current_apps)
-    changed_apps = sorted(changed_apps_since(from_ref) - set(added_apps) - set(removed_apps))
 
     return {
         "schemaVersion": LIBRARY_SCHEMA_VERSION,
@@ -389,6 +435,7 @@ def build_library_manifest(
     checksum_names: dict,
     generated_at: str,
     shared_metadata: dict | None = None,
+    supports_partial_update: bool = True,
 ) -> dict:
     return {
         "schemaVersion": LIBRARY_SCHEMA_VERSION,
@@ -398,7 +445,7 @@ def build_library_manifest(
         "appsIndex": apps_index_name,
         "appsDelta": apps_delta_name,
         "appPackagesBase": "apps/",
-        "supportsPartialUpdate": True,
+        "supportsPartialUpdate": supports_partial_update,
         "metadata": shared_metadata or {},
         "checksum": checksum_names,
         "generatedAt": generated_at,
@@ -642,6 +689,7 @@ def build_v2_appstore_artifacts(
     channel: str,
     generated_at: str,
     all_apps: bool = False,
+    previous_apps_index: dict | None = None,
 ) -> dict:
     catalog_dir = output_dir / "catalog"
     library_dir = output_dir / "library"
@@ -718,19 +766,20 @@ def build_v2_appstore_artifacts(
 
     apps_delta = build_apps_delta(
         apps_index=apps_index,
-        from_ref=from_ref,
-        from_version=from_version,
+        from_ref=from_ref if previous_apps_index is not None else None,
+        from_version=resolve_from_version(previous_apps_index),
         to_version=library_dsv,
         channel=channel,
         generated_at=generated_at,
+        previous_apps_index=previous_apps_index,
     )
 
     apps_index_name = f"apps-index-{library_dsv}.json"
-    apps_delta_name = f"apps-delta-{from_version}-to-{library_dsv}.json"
+    apps_delta_name = f"apps-delta-{apps_delta['fromVersion']}-to-{library_dsv}.json"
 
     # Determine which apps actually need (re)built packages.
     # --all-apps (first-publish seed) or from_ref=None both mean "build everything".
-    if all_apps or from_ref is None:
+    if all_apps or previous_apps_index is None:
         changed_app_names: set[str] = {entry["app"] for entry in apps_index["apps"]}
     else:
         changed_app_names = set(apps_delta.get("addedApps", [])) | set(apps_delta.get("changedApps", []))
@@ -772,6 +821,7 @@ def build_v2_appstore_artifacts(
         checksum_names=library_checksums,
         generated_at=generated_at,
         shared_metadata=shared_metadata,
+        supports_partial_update=previous_apps_index is not None,
     )
     write_json(library_dir / "manifest.json", library_manifest)
     write_checksum_file(library_dir / "manifest.json")
@@ -819,7 +869,8 @@ def main() -> int:
     generated_at = now.isoformat().replace("+00:00", "Z")
     dataset_version = format_dataset_version(now)
     from_ref = detect_from_ref(args.from_ref)
-    from_version = resolve_from_version(from_ref)
+    previous_apps_index = load_previous_apps_index(getattr(args, "previous_apps_index", None), channel)
+    from_version = resolve_from_version(previous_apps_index)
     package_name = CHANNEL_PACKAGE_NAMES[channel]
 
     legacy_library_output_dir, v2_appstore_output_dir = build_output_paths(output_root, channel)
@@ -845,6 +896,7 @@ def main() -> int:
         channel=channel,
         generated_at=generated_at,
         all_apps=args.all_apps,
+        previous_apps_index=previous_apps_index,
     )
 
     print(

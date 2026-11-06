@@ -563,6 +563,8 @@ Clients compare the `hash` field to detect app changes.
 
 The apps-index root includes the same `metadata` dictionary fingerprint as the library manifest. Full packages retain the installation path `library/metadata/database-types.json`. Content-addressed filenames serve incremental distribution without changing the installation path. The removed `database-defaults.json` draft is not used for publishing or declaration resolution.
 
+The library `datasetVersion` hashes the index's content fields, including app fingerprints and shared metadata, but excludes root `generatedAt`, app `updatedAt`, and the version field itself. Republishing identical content preserves the version; changing only the database dictionary changes it. Consumers must still check local shared metadata for missing or corrupt files even when the cached dataset version matches.
+
 `updatedAt` is the last content-change time for the entire application template directory (`apps/<app>`), taken from the Git commit's author date in UTC. It is display-only ("last updated"), not an incremental-update input. Without usable Git history, fall back to this release's `generatedAt`.
 
 ---
@@ -585,14 +587,15 @@ Version sources:
 - dev/rc: Use `<channel>-<commit SHA>`, for example, `dev-abcdef123456`.
 - Source code does not maintain the root `library.json`; releases generate it for old-client compatibility and include it in full artifacts.
 - All three v2 `datasetVersion` values remain content-derived, independent of stable tag versions.
-- The release incremental baseline uses a stable version tag in the current commit history; without one, build all app packages.
+- Library deltas use the last successfully published apps index in the same channel, identified by that channel's published Appstore manifest. `fromVersion` is that index's library `datasetVersion`, not a Git SHA, release tag, or root Appstore version. Compare published and current app fingerprints to compute added, changed, and removed apps. Release tags still determine image-promotion baselines, not library dataset versions.
+- Without a published baseline, build all app packages and set `supportsPartialUpdate: false`. Storage failures, malformed baselines, and checksum mismatches fail publishing rather than silently selecting a first publication.
 
 ### 6.2 CI Pipeline (`appstore-publish.yml`)
 
 ```
 1. For release, compare build-input hashes between the current tag and the preceding reachable lower-version tag of a published stable Release (bare tags are not baselines). Invoke docker.yml only for changed custom images; skip it if none changed. The first release selects all buildable apps. Only selected-app image failures block Appstore artifacts.
 2. Check out the release tag (fetch-depth: 0), resolve channel/version; validate stable tag format and main ancestry for release.
-3. Check whether R2 apps/ is empty -> mark first release if empty (--all-apps).
+3. Read the channel's published Appstore manifest from R2, download its referenced library apps index and checksum, and verify version/channel/checksum. Pass it as --previous-apps-index. If no published manifest exists, select --all-apps without partial-update support.
 4. Fetch catalog source data from Contentful.
 5. Run `ci/scripts/library_publish.py` to build all artifacts (v2 + legacy), normalizing product distribution structures from repository variables.json.
 6. Upload v2 artifacts to the new R2 paths (`channel` is directory-only; full-package entry points use `latest.zip`).
@@ -703,12 +706,12 @@ Consumers need no additional state file: **the last successfully downloaded `app
 4. Download the full library:
   -> Download full/latest.zip (all app templates).
   -> Verify full/latest.zip.sha256.
-   -> Extract to the local apps/ directory.
+  -> Stage both library/apps/ and library/metadata/database-types.json in a temporary local snapshot.
 
 5. Download and cache apps-index-<datasetVersion>.json.
   -> Read each app's updatedAt (last template-change time).
 
-6. Save the downloaded appstore-manifest.json locally as the state record.
+6. Activate the validated snapshot, then save the downloaded appstore-manifest.json as the state record.
 ```
 
 ### 11.2 Incremental Updates
@@ -720,15 +723,22 @@ Consumers need no additional state file: **the last successfully downloaded `app
    -> If catalog.datasetVersion differs:
        Download catalog/manifest.json -> compare checksums -> download changed JSON files.
    -> If library.datasetVersion differs:
-       Download apps-index-<datasetVersion>.json and replace the local cache.
+       Download library/manifest.json and verify that its datasetVersion matches the root manifest.
+       Download and stage apps-index-<datasetVersion>.json.
          (This is the only source of updatedAt for unchanged apps.)
-       if supportsPartialUpdate:
-         Download apps-delta -> download latest.zip for changed/added apps.
+       if supportsPartialUpdate and the delta matches the cached and target library.datasetVersion:
+         Download apps-delta -> stage changed/added app ZIPs and apply removals.
        else:
-         Download the full package.
-   -> If both match: Do nothing and finish.
+         Download and verify the full package; stage its apps/ and metadata/ together.
+       Independently compare metadata.databaseTypes.sha256 with the local dictionary.
+         Download metadata.databaseTypes.path when changed, missing, or corrupt.
+         Verify its SHA-256/checksum and stage it as metadata/database-types.json.
+         Do not skip this step when addedApps/changedApps/removedApps are all empty.
+   -> If both versions match:
+       Still repair a missing/corrupt local dictionary using the library manifest's metadata entry.
+       Otherwise, finish without downloading app packages.
 
-3. After successful update, replace the cached manifest with the new one.
+3. Activate the validated app/dictionary/index snapshot together, then replace the cached manifest.
 ```
 
 **Typical Request Costs**:
@@ -737,16 +747,19 @@ Consumers need no additional state file: **the last successfully downloaded `app
 |------|----------|
 | No changes | 1 (appstore-manifest.json, ~200B) |
 | One catalog file changed | 3 (root manifest + catalog manifest + one JSON) |
-| Two library apps changed | 4 (root manifest + library manifest + delta + two ZIPs) |
+| Two library apps changed; dictionary unchanged | 6 (root manifest + library manifest + apps index + delta + two ZIPs) |
+| Dictionary also changed | One additional dictionary payload request |
 
-> Displaying `updatedAt` adds one `apps-index` request to a library update (approximately 136 KB, or 24 KB gzipped).
+> Counts exclude separate checksum requests and assume the local dictionary is intact. Library-update counts include the `apps-index` request used for per-app hashes and `updatedAt`.
 
 ### 11.3 Failure Recovery
 
 ```
 If any incremental-update download or verification fails:
-  -> Fallback: Download library/full/latest.zip and replace local apps/ completely.
-  -> Replace the cached manifest with the downloaded manifest.
+  -> Keep the last complete local snapshot and cached manifest unchanged.
+  -> Optional fallback: Download and verify library/full/latest.zip into a temporary snapshot.
+  -> Restore both apps/ and metadata/database-types.json, never apps/ alone.
+  -> Activate and advance cached state only after the complete fallback passes validation.
 
 If schemaVersion is not locally supported:
   -> Do not update data; retain the previously cached manifest.

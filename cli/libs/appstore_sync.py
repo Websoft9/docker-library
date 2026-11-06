@@ -306,7 +306,7 @@ def prepare_preview(
     if has_catalog:
         catalog.load_catalog(app_name)
 
-    total = 3 if has_catalog else 2
+    total = 4 if has_catalog else 3
 
     _announce(progress, 1, total, "syncing shared database dictionary")
     database_types_sha256 = _sync_database_types(
@@ -334,6 +334,14 @@ def prepare_preview(
             app_name, host, user, key_path, container, target_catalog_dir, backup_dir, progress=progress, verbose=verbose
         )
 
+    _announce(progress, total, total, "refreshing app store catalogs")
+    _run(
+        ssh_base(host, user, key_path)
+        + [shlex.join(["docker", "exec", container, "websoft9", "appstore", "reload", "--json"])],
+        progress=progress,
+        verbose=verbose,
+    )
+
     rollback = [
         f"{_ssh_shell_prefix(key_path)} {user}@{host} 'if test -f {backup_dir}/{app_name}.tgz; then docker exec {container} sh -c \"rm -rf {deploy_dir}/{app_name}\" && docker exec -i {container} sh -c \"tar xzf - -C {deploy_dir}\" < {backup_dir}/{app_name}.tgz; fi'",
         f"{_ssh_shell_prefix(key_path)} {user}@{host} 'if test -f {backup_dir}/database-types.json.bak; then docker cp {backup_dir}/database-types.json.bak {container}:{DEFAULT_METADATA_DIR}/database-types.json; elif test -f {backup_dir}/database-types.json.bak.missing; then docker exec {container} rm -f {DEFAULT_METADATA_DIR}/database-types.json; fi'",
@@ -354,6 +362,7 @@ def prepare_preview(
         "app_target": f"{deploy_dir}/{app_name}",
         "catalog_source": catalog_rel,
         "catalog_synced": has_catalog,
+        "catalog_refreshed": True,
         "database_types_synced": True,
         "database_types_sha256": database_types_sha256,
         "database_types_target": f"{DEFAULT_METADATA_DIR}/database-types.json",
