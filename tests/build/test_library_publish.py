@@ -1,10 +1,14 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
+import subprocess
+import sys
 from types import SimpleNamespace
 
 import pytest
+import yaml
 
 from _helpers import REPO_ROOT, load_build_module
 
@@ -85,9 +89,100 @@ def test_apps_index_dataset_version_describes_its_own_content(build_fixture, mon
     assert index["datasetVersion"] == dataset_version
     assert len(dataset_version) == 16
 
-    body = {key: value for key, value in index.items() if key != "datasetVersion"}
+    body = {key: value for key, value in index.items() if key not in {"datasetVersion", "generatedAt", "apps"}}
+    body["apps"] = [{key: value for key, value in app.items() if key != "updatedAt"} for app in index["apps"]]
     expected = library_publish._hash_content(json.dumps(body, sort_keys=True, ensure_ascii=False))
     assert dataset_version == expected
+
+
+def test_apps_index_version_ignores_publication_and_display_times(build_fixture, monkeypatch):
+    monkeypatch.setattr(library_publish, "APPS_DIR", build_fixture / "apps")
+    monkeypatch.setattr(library_publish, "ROOT", build_fixture)
+    before, old_version = library_publish.build_apps_index_with_version("dev", "2026-01-01T00:00:00Z")
+    after, new_version = library_publish.build_apps_index_with_version(
+        "dev", "2026-02-01T00:00:00Z", {"demo": "2026-01-31T00:00:00Z"},
+    )
+
+    assert old_version == new_version
+    assert before["generatedAt"] != after["generatedAt"]
+    assert before["apps"][0]["updatedAt"] != after["apps"][0]["updatedAt"]
+    (build_fixture / "apps" / "demo" / ".env").write_text("CHANGED=yes\n")
+    assert library_publish.build_apps_index_with_version("dev", "2026-02-01T00:00:00Z")[1] != old_version
+
+
+def test_previous_published_index_supplies_dataset_version(build_fixture, monkeypatch):
+    monkeypatch.setattr(library_publish, "ROOT", build_fixture)
+    monkeypatch.setattr(library_publish, "APPS_DIR", build_fixture / "apps")
+    index, version = library_publish.build_apps_index_with_version("dev", "2026-01-01T00:00:00Z")
+    path = build_fixture / "previous.json"
+    path.write_text(json.dumps(index))
+
+    assert library_publish.load_previous_apps_index(str(path), "dev") == index
+    assert library_publish.resolve_from_version(index) == version
+    assert library_publish.resolve_from_version(None) == "initial"
+    with pytest.raises(SystemExit, match="invalid previous apps index"):
+        library_publish.load_previous_apps_index(str(path), "release")
+    index["apps"].append(index["apps"][0])
+    path.write_text(json.dumps(index))
+    with pytest.raises(SystemExit, match="application identity"):
+        library_publish.load_previous_apps_index(str(path), "dev")
+
+
+def test_published_delta_compares_fingerprints_not_git_history(monkeypatch):
+    previous = {"apps": [{"app": "changed", "hash": "old"}, {"app": "removed", "hash": "old"}, {"app": "same", "hash": "same"}]}
+    current = {"apps": [{"app": "changed", "hash": "new"}, {"app": "added", "hash": "new"}, {"app": "same", "hash": "same"}]}
+    monkeypatch.setattr(library_publish, "run_git", lambda *args: pytest.fail("must use the published snapshot"))
+
+    delta = library_publish.build_apps_delta(current, "HEAD~1", "previous-version", "next-version", "dev", "now", previous)
+
+    assert delta["addedApps"] == ["added"]
+    assert delta["changedApps"] == ["changed"]
+    assert delta["removedApps"] == ["removed"]
+
+
+@pytest.mark.parametrize("scenario", ["first", "existing", "corrupt", "unavailable"])
+def test_workflow_downloads_verified_published_baseline(tmp_path, scenario):
+    workflow = yaml.safe_load((REPO_ROOT / ".github/workflows/appstore-publish.yml").read_text())
+    step = next(step for step in workflow["jobs"]["publish"]["steps"] if step.get("id") == "check_seed")
+    index = {"datasetVersion": "a" * 16, "channel": "dev", "apps": []}
+    source = tmp_path / "source"
+    source.mkdir()
+    index_path = source / f"apps-index-{index['datasetVersion']}.json"
+    index_path.write_text(json.dumps(index))
+    library_publish.write_checksum_file(index_path)
+    if scenario == "corrupt":
+        index_path.write_text("corrupted")
+    (source / "appstore-manifest.json").write_text(json.dumps({"library": {"datasetVersion": index["datasetVersion"]}}))
+    executable_dir = tmp_path / "bin"
+    executable_dir.mkdir()
+    executable = executable_dir / "aws"
+    executable.write_text(
+        f"#!{sys.executable}\n"
+        "import os, pathlib, shutil, sys\n"
+        "scenario = os.environ['SCENARIO']\n"
+        "if scenario == 'unavailable': sys.exit(42)\n"
+        "if sys.argv[1] == 's3api':\n"
+        "    print('None' if scenario == 'first' else 'appstore/dev/manifests/appstore-manifest.json')\n"
+        "else:\n"
+        "    shutil.copyfile(pathlib.Path(os.environ['SOURCE']) / sys.argv[3].rsplit('/', 1)[-1], sys.argv[4])\n"
+    )
+    executable.chmod(0o755)
+    output = tmp_path / "outputs"
+    env = dict(os.environ, PATH=f"{executable_dir}:{os.environ['PATH']}", CHANNEL="dev",
+               AWS_ENDPOINT_URL="https://unused.invalid", GITHUB_OUTPUT=str(output),
+               SCENARIO=scenario, SOURCE=str(source))
+
+    result = subprocess.run(["bash", "-c", step["run"]], cwd=tmp_path, env=env, capture_output=True, text=True)
+
+    if scenario in {"corrupt", "unavailable"}:
+        assert result.returncode != 0
+        assert not output.exists()
+    else:
+        assert result.returncode == 0, result.stderr
+        outputs = dict(line.split("=", 1) for line in output.read_text().splitlines())
+        assert outputs["seed"] == ("true" if scenario == "first" else "false")
+        if scenario == "existing":
+            assert json.loads(Path(outputs["index_path"]).read_text()) == index
 
 
 def test_build_apps_index_with_fixture_apps(build_fixture, monkeypatch):
@@ -310,6 +405,7 @@ def test_full_publish_without_source_library_json(build_fixture, monkeypatch, ca
     library_dir = output / "appstore" / channel / "library"
     manifest = json.loads((library_dir / "manifest.json").read_text())
     assert manifest["schemaVersion"] == "2"
+    assert manifest["supportsPartialUpdate"] is False
     dictionary = manifest["metadata"]["databaseTypes"]
     assert library_publish.sha256_file(library_dir / dictionary["path"]) == dictionary["sha256"]
     assert (library_dir / manifest["checksum"]["databaseTypes"]).is_file()
@@ -341,6 +437,11 @@ def test_dictionary_only_increment_delivers_shared_file_without_rebuilding_apps(
     monkeypatch.setattr(library_publish, "apps_in_ref", lambda ref: {"demo"})
     monkeypatch.setattr(library_publish, "changed_apps_since", lambda ref: set())
     monkeypatch.setattr(library_publish, "build_app_updated_at_map", lambda: {})
+    previous, previous_version = library_publish.build_apps_index_with_version("dev", "2026-01-01T00:00:00Z")
+    dictionary = build_fixture / "metadata" / "database-types.json"
+    definitions = json.loads(dictionary.read_text())
+    definitions["postgresql"]["port"] = 5433
+    dictionary.write_text(json.dumps(definitions))
     catalog = build_fixture / "catalog-source"
     catalog.mkdir()
     for filename in library_publish.CATALOG_FILE_NAMES:
@@ -349,12 +450,18 @@ def test_dictionary_only_increment_delivers_shared_file_without_rebuilding_apps(
     result = library_publish.build_v2_appstore_artifacts(
         output, catalog, "library-dev.zip", {"Version": "dev-test", "schemaVersion": "2"},
         "unused", "previous", "previous-version", "dev", "2026-01-01T00:00:00Z",
+        previous_apps_index=previous,
     )
     manifest = json.loads((output / "library" / "manifest.json").read_text())
+    assert manifest["supportsPartialUpdate"] is True
+    assert manifest["datasetVersion"] != previous_version
     entry = manifest["metadata"]["databaseTypes"]
     assert (output / "library" / entry["path"]).is_file()
     assert not list((output / "library" / "apps").rglob("*.zip"))
-    assert json.loads((output / "library" / result["library"]["appsDelta"]).read_text())["changedApps"] == []
+    delta = json.loads((output / "library" / result["library"]["appsDelta"]).read_text())
+    assert delta["fromVersion"] == previous_version
+    assert delta["toVersion"] == manifest["datasetVersion"]
+    assert delta["addedApps"] == delta["changedApps"] == delta["removedApps"] == []
     (output / "library" / entry["path"]).write_text("corrupted")
     with pytest.raises(SystemExit, match="mismatched shared"):
         library_publish.validate_library_artifacts(output / "library", manifest, set())

@@ -266,6 +266,7 @@ def test_prepare_preview_missing_catalog_still_syncs_app_dir(repo_fixture, app_f
     assert payload["app_target"] == "/websoft9/library/apps/demo"
     assert len(payload["rollback"]) == 2
     assert payload["database_types_synced"] is True
+    assert payload["catalog_refreshed"] is True
 
 
 def test_prepare_preview_with_catalog_syncs_both(repo_fixture, app_factory, monkeypatch):
@@ -291,6 +292,48 @@ def test_prepare_preview_with_catalog_syncs_both(repo_fixture, app_factory, monk
     assert payload["catalog_target"] == "/websoft9/library/metadata/catalog/demo.json"
     assert len(payload["rollback"]) == 3
     assert payload["database_types_target"] == "/websoft9/library/metadata/database-types.json"
+
+
+@pytest.mark.parametrize("has_catalog", [False, True])
+def test_prepare_preview_refreshes_once_after_all_copies(repo_fixture, app_factory, monkeypatch, has_catalog):
+    app_factory("demo")
+    if has_catalog:
+        write_catalog_support(repo_fixture, "demo", {"trademark": "Demo", "summary": "Summary"})
+    key = repo_fixture / "key.pem"
+    key.write_text("test fixture", encoding="utf-8")
+    calls = []
+    progress = []
+    monkeypatch.setattr(appstore_sync, "_run", lambda command, **kwargs: calls.append(command) or "")
+
+    payload = appstore_sync.prepare_preview(
+        "demo", host="1.2.3.4", secret_path=str(key), container="custom", progress=progress.append,
+    )
+
+    refresh_commands = [command for command in calls if "appstore reload --json" in command[-1]]
+    assert len(refresh_commands) == 1
+    assert refresh_commands[0] == calls[-1]
+    assert calls[-1][-1] == "docker exec custom websoft9 appstore reload --json"
+    assert any("docker cp" in command[-1] for command in calls[:-1])
+    if has_catalog:
+        assert "catalog/demo.json" in calls[-2][-1]
+    total = 4 if has_catalog else 3
+    assert progress[-1] == f"[{total}/{total}] refreshing app store catalogs"
+    assert payload["catalog_refreshed"] is True
+
+
+def test_prepare_preview_refresh_failure_is_not_reported_as_success(repo_fixture, app_factory, monkeypatch):
+    app_factory("demo")
+    key = repo_fixture / "key.pem"
+    key.write_text("test fixture", encoding="utf-8")
+
+    def fake_run(command, **kwargs):
+        if "appstore reload --json" in command[-1]:
+            raise RuntimeError("app store refresh failed")
+        return ""
+
+    monkeypatch.setattr(appstore_sync, "_run", fake_run)
+    with pytest.raises(RuntimeError, match="app store refresh failed"):
+        appstore_sync.prepare_preview("demo", host="1.2.3.4", secret_path=str(key))
 
 
 def test_sync_dictionary_verifies_staged_bytes_before_replacing(repo_fixture, monkeypatch):

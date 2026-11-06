@@ -176,19 +176,40 @@ jobs:
             done
           done
 
-      - name: Check if first v2 publish (R2 apps/ prefix empty)
+      - name: Resolve last published library baseline
         id: check_seed
         env:
+          CHANNEL: ${{ steps.resolve_channel.outputs.channel }}
           AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_SECRET_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
           AWS_ENDPOINT_URL: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
         run: |
-          count=$(aws s3 ls "s3://artifact/appstore/${{ steps.resolve_channel.outputs.channel }}/library/apps/" --recursive --endpoint-url "$AWS_ENDPOINT_URL" 2>/dev/null | wc -l)
-          if [ "$count" -eq 0 ]; then
-            echo "R2 apps/ prefix is empty — first publish, will seed all app packages"
+          set -euo pipefail
+          manifest_key="appstore/$CHANNEL/manifests/appstore-manifest.json"
+          existing=$(aws s3api list-objects-v2 --bucket artifact --prefix "$manifest_key" \
+            --query "Contents[?Key=='$manifest_key'].Key | [0]" --output text \
+            --endpoint-url "$AWS_ENDPOINT_URL")
+          if [[ "$existing" == None || -z "$existing" ]]; then
+            echo "No published manifest; build all app packages without an incremental baseline"
             echo "seed=true" >> "$GITHUB_OUTPUT"
           else
-            echo "R2 apps/ prefix has $count objects — incremental publish"
+            test "$existing" = "$manifest_key"
+            mkdir -p dist/previous-library
+            aws s3 cp "s3://artifact/$manifest_key" dist/previous-library/appstore-manifest.json \
+              --endpoint-url "$AWS_ENDPOINT_URL"
+            version=$(jq -er '.library.datasetVersion | select(type == "string" and test("^[a-f0-9]{16}$"))' \
+              dist/previous-library/appstore-manifest.json)
+            index="apps-index-$version.json"
+            for name in "$index" "$index.sha256"; do
+              aws s3 cp "s3://artifact/appstore/$CHANNEL/library/$name" "dist/previous-library/$name" \
+                --endpoint-url "$AWS_ENDPOINT_URL"
+            done
+            pushd dist/previous-library > /dev/null
+            sha256sum --strict --check "$index.sha256"
+            jq -e --arg version "$version" --arg channel "$CHANNEL" \
+              '.datasetVersion == $version and .channel == $channel' "$index" > /dev/null
+            popd > /dev/null
+            echo "index_path=$PWD/dist/previous-library/$index" >> "$GITHUB_OUTPUT"
             echo "seed=false" >> "$GITHUB_OUTPUT"
           fi
 
@@ -197,6 +218,7 @@ jobs:
           LIBRARY_VERSION: ${{ steps.resolve_channel.outputs.version }}
           INPUT_FROM_REF: ${{ inputs.from_ref }}
           RELEASE_FROM_REF: ${{ needs.release-plan.outputs.from_ref }}
+          PREVIOUS_APPS_INDEX: ${{ steps.check_seed.outputs.index_path }}
         run: |
           args=(
             --channel "${{ steps.resolve_channel.outputs.channel }}"
@@ -206,6 +228,9 @@ jobs:
           )
           if [[ "${{ steps.check_seed.outputs.seed }}" == "true" || "${{ needs.release-plan.outputs.all_apps }}" == "true" ]]; then
             args+=(--all-apps)
+          fi
+          if [[ -n "$PREVIOUS_APPS_INDEX" ]]; then
+            args+=(--previous-apps-index "$PREVIOUS_APPS_INDEX")
           fi
           if [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "$INPUT_FROM_REF" ]]; then
             args+=(--from-ref "$INPUT_FROM_REF")
