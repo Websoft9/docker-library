@@ -24,26 +24,84 @@
         "type": "object",
         "additionalProperties": true,
         "properties": {
-          "id": { "type": "string", "minLength": 1 }
+          "id": {
+            "type": "string",
+            "minLength": 1
+          }
         }
       },
-      "key": { "type": "string", "minLength": 1 },
-      "hot": { "type": ["integer", "null"] },
-      "trademark": { "type": "string", "minLength": 1 },
-      "summary": { "type": "string" },
-      "overview": { "type": "string" },
-      "websiteurl": { "type": "string", "minLength": 1 },
-      "description": { "type": "string" },
+      "key": {
+        "type": "string",
+        "minLength": 1
+      },
+      "hot": {
+        "type": [
+          "integer",
+          "null"
+        ]
+      },
+      "trademark": {
+        "type": "string",
+        "minLength": 1
+      },
+      "summary": {
+        "type": "string"
+      },
+      "overview": {
+        "type": "string"
+      },
+      "websiteurl": {
+        "type": "string",
+        "minLength": 1
+      },
+      "hasEnterprise": {
+        "type": [
+          "boolean",
+          "null"
+        ]
+      },
+      "useCases": {
+        "type": [
+          "array",
+          "null"
+        ],
+        "items": {
+          "type": "string"
+        }
+      },
+      "keywords": {
+        "type": [
+          "array",
+          "null"
+        ],
+        "items": {
+          "type": "string"
+        }
+      },
+      "description": {
+        "type": "string"
+      },
       "screenshots": {
         "type": "array",
         "items": {
           "type": "object",
           "additionalProperties": true,
-          "required": ["key", "value"],
+          "required": [
+            "key",
+            "value"
+          ],
           "properties": {
-            "id": { "type": "string" },
-            "key": { "type": "string", "minLength": 1 },
-            "value": { "type": "string", "minLength": 1 }
+            "id": {
+              "type": "string"
+            },
+            "key": {
+              "type": "string",
+              "minLength": 1
+            },
+            "value": {
+              "type": "string",
+              "minLength": 1
+            }
           }
         }
       },
@@ -52,56 +110,105 @@
         "items": {
           "type": "object",
           "additionalProperties": true,
-          "required": ["key", "value"],
+          "required": [
+            "key",
+            "value"
+          ],
           "properties": {
-            "key": { "type": "string", "minLength": 1 },
+            "key": {
+              "type": "string",
+              "minLength": 1
+            },
             "value": {
               "type": "array",
-              "items": { "type": "string", "minLength": 1 }
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
             }
           }
         }
       },
-      "vcpu": { "type": "integer" },
-      "memory": { "type": "integer" },
-      "storage": { "type": "integer" },
+      "vcpu": {
+        "type": "integer"
+      },
+      "memory": {
+        "type": "integer"
+      },
+      "storage": {
+        "type": "integer"
+      },
       "logo": {
         "type": "object",
         "additionalProperties": true,
-        "required": ["imageurl"],
+        "required": [
+          "imageurl"
+        ],
         "properties": {
-          "imageurl": { "type": "string", "minLength": 1 }
+          "imageurl": {
+            "type": "string",
+            "minLength": 1
+          }
         }
       },
       "catalogCollection": {
         "type": "object",
         "additionalProperties": true,
-        "required": ["items"],
+        "required": [
+          "items"
+        ],
         "properties": {
           "items": {
             "type": "array",
             "items": {
               "type": "object",
               "additionalProperties": true,
-              "required": ["key", "title", "catalogCollection"],
+              "required": [
+                "key",
+                "title",
+                "catalogCollection"
+              ],
               "properties": {
-                "key": { "type": "string", "minLength": 1 },
-                "title": { "type": "string", "minLength": 1 },
+                "key": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "title": {
+                  "type": "string",
+                  "minLength": 1
+                },
                 "catalogCollection": {
                   "type": "object",
                   "additionalProperties": true,
-                  "required": ["items"],
+                  "required": [
+                    "items"
+                  ],
                   "properties": {
                     "items": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "additionalProperties": true,
-                        "required": ["key", "title"],
+                        "required": [
+                          "key",
+                          "title"
+                        ],
                         "properties": {
-                          "key": { "type": "string", "minLength": 1 },
-                          "title": { "type": "string", "minLength": 1 },
-                          "position": { "type": ["number", "integer", "null"] }
+                          "key": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "title": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "position": {
+                            "type": [
+                              "number",
+                              "integer",
+                              "null"
+                            ]
+                          }
                         }
                       }
                     }

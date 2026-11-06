@@ -25,7 +25,7 @@ CHANNEL_PACKAGE_NAMES = {
 }
 V2_FULL_LATEST_NAME = "latest.zip"
 MIN_WEBSOFT9_VERSION = "2.4.2"
-LIBRARY_SCHEMA_VERSION = "2"
+LIBRARY_SCHEMA_VERSION = "1"
 DATABASE_TYPES_PATH = "metadata/database-types.json"
 CATALOG_FILE_NAMES = (
     "catalog_en.json",
@@ -91,7 +91,7 @@ def load_previous_apps_index(path: str | None, channel: str) -> dict | None:
         raise SystemExit(f"invalid previous apps index: {exc}") from exc
     if (
         not isinstance(payload, dict)
-        or payload.get("schemaVersion") != LIBRARY_SCHEMA_VERSION
+        or payload.get("schemaVersion") not in ("1", "2")
         or payload.get("channel") != channel
         or not isinstance(payload.get("datasetVersion"), str)
         or not re.fullmatch(r"[a-f0-9]{16}", payload["datasetVersion"])

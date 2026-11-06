@@ -359,7 +359,7 @@ Upgrade only when one of the following occurs:
 
 Upgrade sequence: Announce in advance -> coexist during transition -> upgrade consumers -> retire the old format.
 
-After migrating database connection declarations from objects to `database[]`, the library manifest, apps-index, apps-delta, and generated `library.json` use `schemaVersion: "2"`; catalog and root manifest structures remain version 1. The root manifest explicitly declares `library.schemaVersion` as version 2. Consumers must check the library contract; do not distribute new-format apps to old clients before upgrade, including through legacy download entry points. Schema compatibility for old objects does not prove that old clients support the new arrays.
+Shared database dictionaries and optional `database[]` declarations are additive library schema 1 extensions. The former database object was experimental and was not enabled in product consumers, so these declarations do not replace an active product contract. The library manifest, apps-index, apps-delta, generated `library.json`, and root manifest's `library.schemaVersion` remain version 1. Consumers may ignore unused declarations; implementing database connection features still requires support for the array declarations and shared dictionary.
 
 ### 2.3 Consumer Compatibility
 
@@ -390,7 +390,7 @@ This follows the conventions of Helm (`apiVersion`), Docker Registry (`schemaVer
 3. `removedApps` -> remove locally.
 4. Any app update failure -> recover using the full package.
 
-Library version 2 also requires downloading `metadata.databaseTypes.path` from the manifest and verifying its `sha256` and checksum. The dictionary has a content-addressed filename. An app delta may be empty for dictionary-only changes, but the dictionary update must not be skipped. Validate apps and dictionary in a temporary snapshot, then activate them together; on failure, retain or restore the last complete local snapshot. Unchanged app packages need no rebuild, and the dictionary is not duplicated in every app package.
+When the library manifest declares `metadata.databaseTypes`, download its `path` and verify its `sha256` and checksum. Older schema 1 manifests may omit this optional entry. The dictionary has a content-addressed filename. An app delta may be empty for dictionary-only changes, but the dictionary update must not be skipped. Validate apps and dictionary in a temporary snapshot, then activate them together; on failure, retain or restore the last complete local snapshot. Unchanged app packages need no rebuild, and the dictionary is not duplicated in every app package.
 
 ### 3.1 Channel Data Differences
 
@@ -416,6 +416,18 @@ Thus `dev` is a broader, richer dataset, while `release` is narrower and product
 `production` derives from `release` in `apps/<app>/variables.json`; `appStore` derives from whether the app is active and public in scope. `catalog-push --apply` writes both fields when creating or updating Contentful entries, so they need not be repeated in `metadata/catalog/<app>.json`.
 
 Changes to `metadata/catalog/*.json` receive dry-run validation in PRs. After merging to `main`, the `Sync data to Contentful` workflow runs `catalog-push --apply`.
+
+### 3.3 Additional Product Fields
+
+`ci/scripts/fetch_catalog.py` exports these optional fields to `product_en.json` and `product_zh.json`:
+
+| Contentful Field | Exported JSON Key | Type |
+|---|---|---|
+| HasEnterprise | `hasEnterprise` | Boolean or null |
+| Use Cases | `useCases` | String array or null |
+| Keywords | `keywords` | String array or null |
+
+The script requests these Field IDs directly in the existing product query, without schema introspection or dynamic aliases. Field IDs must match the Contentful model exactly; GraphQL query errors stop the export rather than silently dropping fields. Values, including false, empty lists, and null, are preserved without inferred defaults. These are additive catalog extensions; schemaVersion remains 1, and existing channel filters and localization rules are unchanged.
 
 ---
 
@@ -483,7 +495,7 @@ artifact/appstore/<channel>/
   "library": {
     "manifest": "library/manifest.json",
     "datasetVersion": "85f687824c03ef93",
-    "schemaVersion": "2"
+    "schemaVersion": "1"
   },
   "generatedAt": "2026-06-09T12:00:00Z"
 }
@@ -520,7 +532,7 @@ Consumers download this single file and compare `catalog.datasetVersion` and `li
 
 ```json
 {
-  "schemaVersion": "2",
+  "schemaVersion": "1",
   "datasetVersion": "85f687824c03ef93",
   "channel": "release",
   "fullPackage": "full/latest.zip",
@@ -588,6 +600,7 @@ Version sources:
 - Source code does not maintain the root `library.json`; releases generate it for old-client compatibility and include it in full artifacts.
 - All three v2 `datasetVersion` values remain content-derived, independent of stable tag versions.
 - Library deltas use the last successfully published apps index in the same channel, identified by that channel's published Appstore manifest. `fromVersion` is that index's library `datasetVersion`, not a Git SHA, release tag, or root Appstore version. Compare published and current app fingerprints to compute added, changed, and removed apps. Release tags still determine image-promotion baselines, not library dataset versions.
+- Baseline readers accept published apps indexes with schema 1 or 2, retaining compatibility with dev artifacts already labeled schema 2. New artifacts use schema 1; baseline compatibility is independent of the output schema. Unknown schemas and invalid channel/version/app fingerprints remain publication errors.
 - Without a published baseline, build all app packages and set `supportsPartialUpdate: false`. Storage failures, malformed baselines, and checksum mismatches fail publishing rather than silently selecting a first publication.
 
 ### 6.2 CI Pipeline (`appstore-publish.yml`)
