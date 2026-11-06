@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-06
+
+- Updated Uptime Kuma to 2.5.9, including upstream bug and security fixes.
+
 ## 2026-09-20
 
 - Updated `W9_VERSION` from `2.0.2` to `2.5.5` and aligned `variables.json.edition` with the current upstream tag (upstream publishes no `x.x` tag, so the patch pin is intentional).
