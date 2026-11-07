@@ -150,14 +150,14 @@ def summarize_versions(edition_list: list[dict]) -> list[str]:
     return versions
 
 
-def build_apps_version_summary() -> list[dict[str, str]]:
+def build_apps_version_summary() -> list[dict[str, str | list[str]]]:
     apps_versions = []
     for app_dir in sorted(path for path in APPS_DIR.iterdir() if path.is_dir()):
         variables = load_variables_json(app_dir)
         versions = summarize_versions(variables.get("edition", []))
         if not versions:
             raise SystemExit(f"app {app_dir.name} has no versions in variables.json")
-        apps_versions.append({"id": app_dir.name, "version": versions[0]})
+        apps_versions.append({"id": app_dir.name, "version": versions})
     return apps_versions
 
 
