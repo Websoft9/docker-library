@@ -224,11 +224,14 @@ def test_e2e_readiness_and_sync_retry_after_startup_failure(tmp_path):
         'count=${count:-0}; count=$((count + 1)); printf "%s" "$count" > "$SYNC_COUNT"\n'
         '[ "$count" -ge 2 ]',
     )
+    (tmp_path / "apps/odoo").mkdir(parents=True)
+    (tmp_path / "apps/odoo/.env").write_text("W9_VERSION=18.0\n")
     env = os.environ | {
         "PATH": f"{mock_bin}:{os.environ['PATH']}",
         "HOST": "192.0.2.1",
         "APPS": "odoo",
         "DEADLINE": "1300",
+        "GITHUB_OUTPUT": str(tmp_path / "output"),
         "SSH_COUNT": str(tmp_path / "ssh_count"),
         "SYNC_COUNT": str(tmp_path / "sync_count"),
     }
@@ -245,6 +248,56 @@ def test_e2e_readiness_and_sync_retry_after_startup_failure(tmp_path):
     result = subprocess.run(["bash", "-c", script], cwd=tmp_path, env=env, text=True, capture_output=True, timeout=5)
     assert result.returncode != 0
     assert "5-minute post-SSH budget" in result.stderr
+
+
+def test_e2e_sync_reports_the_versions_deployed_to_the_server(tmp_path):
+    mock_bin = tmp_path / "bin"
+    executable(mock_bin / "date", 'printf "1000\\n"')
+    executable(mock_bin / "timeout", 'while [[ "$1" == --* ]]; do shift; done\nshift\nexec "$@"')
+    executable(mock_bin / "ssh", "exit 0")
+    executable(mock_bin / "sleep", "exit 0")
+    executable(
+        tmp_path / ".venv/bin/libs",
+        'printf "%s\\n" "$*" >> "$SYNC_CALLS"',
+    )
+    (tmp_path / "apps/mattermost").mkdir(parents=True)
+    (tmp_path / "apps/mattermost/.env").write_text("W9_VERSION=12.1\n")
+    (tmp_path / "apps/odoo").mkdir(parents=True)
+    (tmp_path / "apps/odoo/.env").write_text("W9_VERSION=18.0\n")
+    candidate = tmp_path / "candidates/image-mattermost"
+    candidate.mkdir(parents=True)
+    (candidate / "candidate.json").write_text(json.dumps({
+        "tag": "12.2",
+        "image": "mattermost/mattermost-team-edition",
+        "digest": "sha256:example",
+    }))
+    output = tmp_path / "output"
+    calls = tmp_path / "sync_calls"
+    env = os.environ | {
+        "PATH": f"{mock_bin}:{os.environ['PATH']}",
+        "HOST": "192.0.2.1",
+        "APPS": "mattermost,odoo",
+        "DEADLINE": "1300",
+        "GITHUB_OUTPUT": str(output),
+        "SYNC_CALLS": str(calls),
+    }
+    script = workflow_step(".github/workflows/pr-checks.yml", "provision-e2e", "Wait for appstore readiness and sync applications")
+
+    result = subprocess.run(["bash", "-c", script], cwd=tmp_path, env=env, text=True, capture_output=True, timeout=5)
+
+    assert result.returncode == 0, result.stderr
+    assert output.read_text() == "display=mattermost: 12.2, odoo: 18.0\n"
+    sync_calls = calls.read_text().splitlines()
+    assert "--app mattermost" in sync_calls[0] and "--version 12.2" in sync_calls[0]
+    assert "--app odoo" in sync_calls[1] and "--version" not in sync_calls[1]
+
+
+def test_e2e_wecom_ready_notification_includes_synced_target_versions():
+    workflow = yaml.safe_load((REPO_ROOT / ".github/workflows/pr-checks.yml").read_text())
+    step = next(step for step in workflow["jobs"]["provision-e2e"]["steps"]
+                if step.get("name") == "Notify WeCom that environment is ready")
+    assert step["env"]["TARGET_VERSIONS"] == "${{ steps.sync.outputs.display }}"
+    assert "> App target version: %s\\n" in step["run"]
 
 
 def test_e2e_skips_superseded_commit_before_reading_applications(tmp_path):

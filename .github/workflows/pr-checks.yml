@@ -491,6 +491,7 @@ jobs:
           exit 1
 
       - name: Wait for appstore readiness and sync applications
+        id: sync
         if: steps.apps.outputs.list != ''
         env:
           HOST: ${{ steps.server.outputs.ip }}
@@ -520,19 +521,28 @@ jobs:
           done
 
           IFS=',' read -r -a app_list <<< "$APPS"
+          target_versions=()
           for app in "${app_list[@]}"; do
             attempt=0
+            version_args=()
+            candidate="candidates/image-$app/candidate.json"
+            if [ -f "$candidate" ]; then
+              target_version=$(jq -r '.tag' "$candidate")
+              version_args=(--version "$target_version")
+              echo "PR candidate image for $app: $(jq -r '.image + "@" + .digest' "$candidate")"
+            else
+              target_version=$(awk -F= '$1 == "W9_VERSION" { print substr($0, index($0, "=") + 1); exit }' "apps/$app/.env")
+            fi
+            if ! [[ "$target_version" =~ ^[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}$ ]]; then
+              echo "::error::Could not determine a valid target version for $app"
+              exit 1
+            fi
+            target_versions+=("$app: $target_version")
             while true; do
               remaining=$((DEADLINE - $(date +%s)))
               if [ "$remaining" -le 0 ]; then
                 echo "Appstore sync exceeded the 5-minute post-SSH budget" >&2
                 exit 1
-              fi
-              version_args=()
-              candidate="candidates/image-$app/candidate.json"
-              if [ -f "$candidate" ]; then
-                version_args=(--version "$(jq -r '.tag' "$candidate")")
-                echo "PR candidate image for $app: $(jq -r '.image + "@" + .digest' "$candidate")"
               fi
               if timeout --signal=KILL "$((remaining < 60 ? remaining : 60))s" \
                 .venv/bin/libs appstore-sync --app "$app" --ssh-host "$HOST" \
@@ -549,6 +559,8 @@ jobs:
               sleep "$((remaining < 10 ? remaining : 10))"
             done
           done
+          display=$(printf '%s, ' "${target_versions[@]}")
+          printf 'display=%s\n' "${display%, }" >> "$GITHUB_OUTPUT"
 
       - name: Report test environment
         id: report
@@ -594,13 +606,14 @@ jobs:
           HOST: ${{ steps.server.outputs.ip }}
           EXPIRES: ${{ steps.server.outputs.expires }}
           APPS: ${{ steps.apps.outputs.list }}
+          TARGET_VERSIONS: ${{ steps.sync.outputs.display }}
         run: |
           if [ -z "${WECOM_WEBHOOK:-}" ]; then
             echo '::warning::WECOM_WEBHOOK is not set; skipping ready notification'
             exit 0
           fi
-          content=$(printf '# Websoft9 E2E environment ready\n> Repository: %s\n> PR: [%s](%s)\n> App: %s\n> Commit: `%s`\n> Server IP: `%s`\n> Expires: %s\n\nPlease complete the Websoft9 installation, login, and core workflow checks.' \
-            "$REPOSITORY" "#$PR_NUMBER" "$PR_URL" "$APPS" "${HEAD_SHA:0:12}" "$HOST" "$EXPIRES")
+          content=$(printf '# Websoft9 E2E environment ready\n> Repository: %s\n> PR: [%s](%s)\n> App: %s\n> App target version: %s\n> Commit: `%s`\n> Server IP: `%s`\n> Expires: %s\n\nPlease complete the Websoft9 installation, login, and core workflow checks.' \
+            "$REPOSITORY" "#$PR_NUMBER" "$PR_URL" "$APPS" "$TARGET_VERSIONS" "${HEAD_SHA:0:12}" "$HOST" "$EXPIRES")
           payload=$(jq -n --arg content "$content" '{msgtype:"markdown",markdown:{content:$content}}')
           curl --fail-with-body --silent --show-error --max-time 15 \
             -H 'Content-Type: application/json' \
