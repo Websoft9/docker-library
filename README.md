@@ -65,6 +65,12 @@ https://artifact.websoft9.com/appstore/dev/manifests/appstore-manifest.json
 https://artifact.websoft9.com/appstore/rc/manifests/appstore-manifest.json
 ```
 
+The development app version index is also available at:
+
+```text
+https://artifact.websoft9.com/appstore/dev/library/apps-verson.json
+```
+
 Each channel uses the same layout:
 
 ```text
