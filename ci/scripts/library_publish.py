@@ -485,7 +485,6 @@ def build_appstore_manifest(
         "library": {
             "manifest": "library/manifest.json",
             "datasetVersion": library_dsv,
-            "schemaVersion": LIBRARY_SCHEMA_VERSION,
         },
         "generatedAt": generated_at,
     }

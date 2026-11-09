@@ -358,7 +358,14 @@ def test_wordpress_database_declaration_matches_native_inputs(app, services):
             },
         }
         native_inputs.update(components["redis"]["datasource"])
-    assert native_inputs <= set(collect_app_info(app)["env_keys"])
+    env_keys = set(collect_app_info(app)["env_keys"])
+    assert native_inputs <= env_keys
+    if app == "wordpress":
+        assert not (target / ".env.external-db").exists()
+        assert not env_keys.intersection({
+            "W9_DB_HOST_SET", "W9_DB_PORT_SET", "W9_DB_NAME_SET",
+            "W9_DB_USER_SET", "W9_DB_PASSWORD_SET",
+        })
     compose = yaml.safe_load((target / "docker-compose.yml").read_text(encoding="utf-8"))
     for service_name in services:
         service = compose["services"][service_name]
@@ -1176,7 +1183,10 @@ def test_odoo_database_declaration_preserves_dynamic_database_support():
     from dotenv import dotenv_values
 
     target = REPO_ROOT / "apps" / "odoo"
-    components = json.loads((target / "variables.json").read_text(encoding="utf-8"))["database"]
+    variables = json.loads((target / "variables.json").read_text(encoding="utf-8"))
+    components = variables["database"]
+    assert not (target / ".env.external-db").exists()
+    assert "external-db installation override" not in variables["help"]["db"]
     assert components == [{
         "id": "postgres",
         "providers": [
@@ -1188,8 +1198,14 @@ def test_odoo_database_declaration_preserves_dynamic_database_support():
             "USER": "${users[*].user}", "PASSWORD": "${users[*].password}",
         },
     }]
+    assert not any(key in variables["help"]["db"] for key in components[0]["datasource"])
     compose = yaml.safe_load((target / "docker-compose.yml").read_text(encoding="utf-8"))
     values = dotenv_values(target / ".env", interpolate=False)
+    assert not set(values).intersection({
+        "W9_DB_HOST_SET", "W9_DB_PORT_SET", "W9_DB_NAME_SET",
+        "W9_DB_USER_SET", "W9_DB_PASSWORD_SET",
+    })
+    assert compose["services"]["odoo"]["env_file"] == ".env"
     service = compose["services"]["postgresql"]
     assert values["HOST"] == service["container_name"]
     assert values["PORT"] == "5432"
