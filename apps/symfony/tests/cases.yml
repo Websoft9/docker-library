@@ -1,0 +1,4 @@
+custom:
+  - id: console-smoke
+    type: script
+    script: console-smoke.sh
