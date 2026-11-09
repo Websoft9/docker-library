@@ -71,6 +71,6 @@
     }
   },
   "help": {
-    "db": "Odoo 17-20 requires PostgreSQL. Odoo 20 needs PostgreSQL 16.0 or above; this package bundles PostgreSQL 16 and keeps the external-db installation override for an external PostgreSQL service."
+    "db": "Odoo 17-20 requires PostgreSQL (16.0+ for Odoo 20); this package includes PostgreSQL 16 and supports connecting to an external PostgreSQL server."
   }
 }

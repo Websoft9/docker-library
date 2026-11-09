@@ -140,7 +140,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests
+          pip install requests boto3
 
       - name: Fetch catalog inputs
         env:
@@ -254,93 +254,27 @@ jobs:
           name: appstore-publish-${{ steps.resolve_channel.outputs.channel }}
           path: dist/appstore-publish
 
-      - name: Upload v2 catalog to Cloudflare R2
+      - name: Upload Appstore to Cloudflare R2 with failure rollback
+        id: upload_appstore
         env:
+          CHANNEL: ${{ steps.resolve_channel.outputs.channel }}
           AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_SECRET_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
           AWS_ENDPOINT_URL: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
         run: |
-          aws s3 sync \
-            dist/appstore-publish/appstore/${{ steps.resolve_channel.outputs.channel }}/catalog \
-            s3://artifact/appstore/${{ steps.resolve_channel.outputs.channel }}/catalog \
-            --cache-control "public, max-age=60" \
-            --endpoint-url "$AWS_ENDPOINT_URL"
+          python ci/scripts/appstore_upload.py \
+            --output-dir dist/appstore-publish \
+            --channel "$CHANNEL" \
+            --backup-dir dist/appstore-upload-backup
 
-      - name: Upload v2 library metadata to Cloudflare R2
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_SECRET_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
-          AWS_ENDPOINT_URL: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
-        run: |
-          aws s3 sync \
-            dist/appstore-publish/appstore/${{ steps.resolve_channel.outputs.channel }}/library \
-            s3://artifact/appstore/${{ steps.resolve_channel.outputs.channel }}/library \
-            --exclude "apps/*" \
-            --cache-control "public, max-age=60" \
-            --endpoint-url "$AWS_ENDPOINT_URL"
-
-      - name: Upload dev app versions to Cloudflare R2
-        if: steps.resolve_channel.outputs.channel == 'dev'
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_SECRET_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
-          AWS_ENDPOINT_URL: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
-        run: |
-          aws s3 cp \
-            dist/appstore-publish/appstore/dev/apps-verson.json \
-            s3://artifact/appstore/dev/library/apps-verson.json \
-            --cache-control "public, max-age=60" \
-            --endpoint-url "$AWS_ENDPOINT_URL"
-
-      - name: Upload v2 per-app packages to Cloudflare R2 (additive only)
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_SECRET_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
-          AWS_ENDPOINT_URL: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
-        run: |
-          if [ -d "dist/appstore-publish/appstore/${{ steps.resolve_channel.outputs.channel }}/library/apps" ]; then
-            aws s3 cp --recursive \
-              dist/appstore-publish/appstore/${{ steps.resolve_channel.outputs.channel }}/library/apps \
-              s3://artifact/appstore/${{ steps.resolve_channel.outputs.channel }}/library/apps \
-              --cache-control "public, max-age=60" \
-              --endpoint-url "$AWS_ENDPOINT_URL"
-          fi
-
-      - name: Upload v2 manifests to Cloudflare R2
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_SECRET_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
-          AWS_ENDPOINT_URL: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
-        run: |
-          aws s3 sync \
-            dist/appstore-publish/appstore/${{ steps.resolve_channel.outputs.channel }}/manifests \
-            s3://artifact/appstore/${{ steps.resolve_channel.outputs.channel }}/manifests \
-            --cache-control "public, max-age=60" \
-            --endpoint-url "$AWS_ENDPOINT_URL"
-
-      # ── legacy uploads (old R2 paths, kept for backward compatibility) ──
-
-      - name: Upload legacy library to Cloudflare R2
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_SECRET_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
-          AWS_ENDPOINT_URL: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
-        run: |
-          aws s3 sync \
-            dist/appstore-publish/legacy/${{ steps.resolve_channel.outputs.channel }}/library \
-            s3://artifact/${{ steps.resolve_channel.outputs.channel }}/websoft9/plugin/library \
-            --endpoint-url "$AWS_ENDPOINT_URL"
-
-      - name: Upload legacy media to Cloudflare R2
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_SECRET_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
-          AWS_ENDPOINT_URL: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
-        run: |
-          aws s3 sync \
-            dist/appstore-publish/legacy/${{ steps.resolve_channel.outputs.channel }}/media \
-            s3://artifact/${{ steps.resolve_channel.outputs.channel }}/websoft9/plugin/media \
-            --endpoint-url "$AWS_ENDPOINT_URL"
+      - name: Preserve failed upload recovery backup
+        if: failure() && steps.upload_appstore.outcome == 'failure'
+        uses: actions/upload-artifact@v7
+        with:
+          name: appstore-upload-backup-${{ steps.resolve_channel.outputs.channel }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: dist/appstore-upload-backup
+          if-no-files-found: warn
+          retention-days: 7
 
       - name: Resolve legacy purge URLs
         id: purge_urls

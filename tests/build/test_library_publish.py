@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
-from types import SimpleNamespace
+from types import ModuleType, SimpleNamespace
 
 import pytest
 import yaml
@@ -13,12 +13,208 @@ import yaml
 from _helpers import REPO_ROOT, load_build_module
 
 library_publish = load_build_module("library_publish_test", REPO_ROOT / "ci" / "scripts" / "library_publish.py")
+appstore_upload = load_build_module("appstore_upload_test", REPO_ROOT / "ci" / "scripts" / "appstore_upload.py")
 
 
 def test_hash_content_is_deterministic_and_input_sensitive():
     assert library_publish._hash_content("a", "b") == library_publish._hash_content("a", "b")
     assert library_publish._hash_content("a") != library_publish._hash_content("b")
     assert len(library_publish._hash_content("a")) == 16
+
+
+class FakeUploadError(Exception):
+    def __init__(self, code):
+        self.response = {"Error": {"Code": code}}
+
+
+class FakeUploadStore:
+    def __init__(self, objects=None, fail_key=None, backup_error=None, rollback_error=False):
+        self.objects = dict(objects or {})
+        self.fail_key = fail_key
+        self.backup_error = backup_error
+        self.rollback_error = rollback_error
+        self.failed = False
+        self.uploaded = []
+
+    def head_object(self, Bucket, Key):
+        if self.backup_error:
+            raise FakeUploadError(self.backup_error)
+        if Key not in self.objects:
+            raise FakeUploadError("404")
+        return self.objects[Key][1]
+
+    def download_file(self, bucket, key, destination):
+        Path(destination).write_bytes(self.objects[key][0])
+
+    def upload_file(self, source, bucket, key, ExtraArgs):
+        if self.failed and self.rollback_error:
+            raise RuntimeError("simulated rollback failure")
+        self.objects[key] = (Path(source).read_bytes(), ExtraArgs)
+        self.uploaded.append(key)
+        if key == self.fail_key and not self.failed:
+            self.failed = True
+            raise RuntimeError("simulated upload failure after mutation")
+
+    def delete_object(self, Bucket, Key):
+        if self.rollback_error:
+            raise RuntimeError("simulated delete failure")
+        self.objects.pop(Key, None)
+
+
+@pytest.fixture
+def upload_fixture(tmp_path):
+    output = tmp_path / "upload"
+    paths = (
+        "appstore/dev/catalog/product_en.json", "appstore/dev/catalog/manifest.json",
+        "appstore/dev/library/full/latest.zip", "appstore/dev/library/manifest.json",
+        "appstore/dev/library/manifest.json.sha256", "appstore/dev/library/apps/demo/latest.zip",
+        "appstore/dev/manifests/appstore-manifest.json.sha256", "appstore/dev/manifests/appstore-manifest.json",
+        "appstore/dev/apps-verson.json", "legacy/dev/library/library-dev.zip", "legacy/dev/media/media-dev.zip",
+    )
+    for name in paths:
+        path = output / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(b"new")
+    return output
+
+
+def test_upload_commits_manifests_after_packages_and_preserves_unrelated_objects(upload_fixture, tmp_path):
+    unrelated = {"appstore/dev/library/apps/unchanged/latest.zip": (b"old", {"CacheControl": "custom"})}
+    client = FakeUploadStore(unrelated)
+    plan = appstore_upload.upload_plan(upload_fixture, "dev")
+    assert appstore_upload.upload_artifacts(client, upload_fixture, "dev", tmp_path / "backup") == len(plan)
+    assert client.uploaded[-1] == "appstore/dev/manifests/appstore-manifest.json"
+    assert client.uploaded.index("appstore/dev/library/apps/demo/latest.zip") < client.uploaded.index("appstore/dev/library/manifest.json")
+    assert client.uploaded.index("dev/websoft9/plugin/media/media-dev.zip") < client.uploaded.index("appstore/dev/library/manifest.json")
+    assert client.objects["appstore/dev/library/apps/unchanged/latest.zip"] == unrelated["appstore/dev/library/apps/unchanged/latest.zip"]
+    assert client.objects["appstore/dev/library/apps-verson.json"][0] == b"new"
+
+
+@pytest.mark.parametrize("first_publication", [False, True])
+@pytest.mark.parametrize("failure_stage", ["data", "component", "root"])
+def test_upload_failure_restores_bytes_headers_and_removes_new_objects(upload_fixture, tmp_path, first_publication, failure_stage):
+    fail_key = {"data": "appstore/dev/library/full/latest.zip", "component": "appstore/dev/library/manifest.json",
+                "root": "appstore/dev/manifests/appstore-manifest.json"}[failure_stage]
+    plan = appstore_upload.upload_plan(upload_fixture, "dev")
+    original = {} if first_publication else {
+        key: (b"old", {"CacheControl": "private", "ContentType": "application/zip", "Metadata": {"owner": "original"}})
+        for _, key, _ in plan if not key.endswith("apps-verson.json")
+    }
+    client = FakeUploadStore(original, fail_key=fail_key)
+    with pytest.raises(RuntimeError, match="simulated upload failure"):
+        appstore_upload.upload_artifacts(client, upload_fixture, "dev", tmp_path / "backup")
+    assert client.objects == original
+
+
+@pytest.mark.parametrize("code", ["403", "500"])
+def test_upload_backup_errors_prevent_all_writes(upload_fixture, tmp_path, code):
+    client = FakeUploadStore(backup_error=code)
+    with pytest.raises(FakeUploadError):
+        appstore_upload.upload_artifacts(client, upload_fixture, "dev", tmp_path / "backup")
+    assert client.uploaded == []
+
+
+def test_upload_backup_download_failure_prevents_all_writes(upload_fixture, tmp_path, monkeypatch):
+    plan = appstore_upload.upload_plan(upload_fixture, "dev")
+    client = FakeUploadStore({key: (b"old", {}) for _, key, _ in plan})
+
+    def fail_download(*args):
+        raise RuntimeError("simulated backup download failure")
+
+    monkeypatch.setattr(client, "download_file", fail_download)
+    with pytest.raises(RuntimeError, match="backup download failure"):
+        appstore_upload.upload_artifacts(client, upload_fixture, "dev", tmp_path / "backup")
+    assert client.uploaded == []
+
+
+def test_upload_interrupt_restores_existing_objects(upload_fixture, tmp_path, monkeypatch):
+    plan = appstore_upload.upload_plan(upload_fixture, "dev")
+    original = {key: (b"old", {}) for _, key, _ in plan}
+    client = FakeUploadStore(original)
+    upload_file = client.upload_file
+    interrupted = False
+
+    def interrupt_upload(*args, **kwargs):
+        nonlocal interrupted
+        upload_file(*args, **kwargs)
+        if not interrupted:
+            interrupted = True
+            raise KeyboardInterrupt("simulated interruption")
+
+    monkeypatch.setattr(client, "upload_file", interrupt_upload)
+    with pytest.raises(KeyboardInterrupt, match="simulated interruption"):
+        appstore_upload.upload_artifacts(client, upload_fixture, "dev", tmp_path / "backup")
+    assert client.objects == original
+
+
+def test_failed_rollback_is_reported_and_keeps_backup(upload_fixture, tmp_path):
+    key = "appstore/dev/library/full/latest.zip"
+    client = FakeUploadStore({key: (b"old", {"ContentType": "application/zip"})}, fail_key=key, rollback_error=True)
+    backup = tmp_path / "backup"
+    with pytest.raises(RuntimeError, match="rollback also failed"):
+        appstore_upload.upload_artifacts(client, upload_fixture, "dev", backup)
+    journal = json.loads((backup / "journal.json").read_text())
+    entry = next(entry for entry in journal["objects"] if entry["key"] == key)
+    assert (backup / entry["backup"]).read_bytes() == b"old"
+
+
+@pytest.mark.parametrize("channel", ["rc", "release"])
+def test_upload_keeps_channel_and_legacy_paths(upload_fixture, tmp_path, channel):
+    (upload_fixture / "appstore/dev").rename(upload_fixture / "appstore" / channel)
+    (upload_fixture / "legacy/dev").rename(upload_fixture / "legacy" / channel)
+    client = FakeUploadStore()
+    appstore_upload.upload_artifacts(client, upload_fixture, channel, tmp_path / "backup")
+    assert client.uploaded[-1] == f"appstore/{channel}/manifests/appstore-manifest.json"
+    assert all(key.startswith((f"appstore/{channel}/", f"{channel}/websoft9/")) for key in client.uploaded)
+    assert not any(key.endswith("apps-verson.json") for key in client.uploaded)
+
+
+def test_workflow_uses_one_rollback_upload_before_purge_and_keeps_recovery_backup():
+    workflow = yaml.safe_load((REPO_ROOT / ".github/workflows/appstore-publish.yml").read_text())
+    steps = workflow["jobs"]["publish"]["steps"]
+    upload = next(step for step in steps if step.get("id") == "upload_appstore")
+    assert "ci/scripts/appstore_upload.py" in upload["run"]
+    assert "--backup-dir dist/appstore-upload-backup" in upload["run"]
+    assert not any("aws s3 sync" in step.get("run", "") and "s3://artifact/" in step["run"] for step in steps)
+    recovery = next(step for step in steps if step.get("name") == "Preserve failed upload recovery backup")
+    assert "steps.upload_appstore.outcome == 'failure'" in recovery["if"]
+    purge = next(step for step in steps if step.get("name") == "Purge legacy Cloudflare Cache")
+    assert steps.index(upload) < steps.index(purge)
+
+
+def test_upload_cli_uses_configured_client_without_sdk_or_network(upload_fixture, tmp_path, monkeypatch, capsys):
+    client = FakeUploadStore()
+    captured = {}
+
+    def create_client(service, **kwargs):
+        captured.update(service=service, **kwargs)
+        return client
+
+    boto3 = ModuleType("boto3")
+    boto3.client = create_client
+    config = ModuleType("botocore.config")
+    config.Config = lambda **kwargs: kwargs
+    monkeypatch.setitem(sys.modules, "boto3", boto3)
+    monkeypatch.setitem(sys.modules, "botocore", ModuleType("botocore"))
+    monkeypatch.setitem(sys.modules, "botocore.config", config)
+    monkeypatch.setenv("AWS_ENDPOINT_URL", "https://mock.invalid")
+    monkeypatch.setattr(sys, "argv", [
+        "appstore_upload.py", "--output-dir", str(upload_fixture), "--channel", "dev",
+        "--backup-dir", str(tmp_path / "backup"),
+    ])
+    handlers = {}
+    monkeypatch.setattr(appstore_upload.signal, "signal", lambda signum, handler: handlers.update({signum: handler}))
+
+    appstore_upload.main()
+
+    assert captured == {
+        "service": "s3", "endpoint_url": "https://mock.invalid", "region_name": "auto",
+        "config": {"request_checksum_calculation": "when_required", "response_checksum_validation": "when_required"},
+    }
+    assert client.uploaded[-1] == "appstore/dev/manifests/appstore-manifest.json"
+    assert f"Published {len(client.uploaded)} Appstore objects in dev" in capsys.readouterr().out
+    with pytest.raises(KeyboardInterrupt, match="attempting rollback"):
+        handlers[appstore_upload.signal.SIGTERM](appstore_upload.signal.SIGTERM, None)
 
 
 def test_to_utc_z_normalizes_offsets():
@@ -310,8 +506,8 @@ def test_manifest_builders_have_expected_shape():
     )
     assert appstore["minWebsoft9Version"] == library_publish.MIN_WEBSOFT9_VERSION
     assert appstore["catalog"]["manifest"] == "catalog/manifest.json"
-    assert appstore["library"]["manifest"] == "library/manifest.json"
-    assert appstore["schemaVersion"] == appstore["library"]["schemaVersion"] == "1"
+    assert appstore["library"] == {"manifest": "library/manifest.json", "datasetVersion": "l-dsv"}
+    assert appstore["schemaVersion"] == "1"
 
 
 def test_ensure_catalog_source_requires_all_four_files(tmp_path: Path):

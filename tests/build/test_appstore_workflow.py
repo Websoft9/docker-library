@@ -6,7 +6,7 @@ import subprocess
 import pytest
 import yaml
 
-from _helpers import REPO_ROOT
+from _helpers import REPO_ROOT, load_build_module
 
 
 def run_step(tmp_path, name, **values):
@@ -86,17 +86,28 @@ def test_release_is_published_once_and_waits_for_images():
     assert "pages" not in workflow["jobs"]
 
 
-def test_dev_app_versions_are_uploaded_to_fixed_r2_key():
+def test_dev_app_versions_are_uploaded_to_fixed_r2_key(tmp_path):
     workflow = yaml.safe_load((REPO_ROOT / ".github/workflows/appstore-publish.yml").read_text())
     step = next(
         step for step in workflow["jobs"]["publish"]["steps"]
-        if step.get("name") == "Upload dev app versions to Cloudflare R2"
+        if step.get("id") == "upload_appstore"
     )
 
-    assert step["if"] == "steps.resolve_channel.outputs.channel == 'dev'"
-    assert "dist/appstore-publish/appstore/dev/apps-verson.json" in step["run"]
-    assert "s3://artifact/appstore/dev/library/apps-verson.json" in step["run"]
-    assert "aws s3 cp" in step["run"]
+    assert "ci/scripts/appstore_upload.py" in step["run"]
+    assert "--output-dir dist/appstore-publish" in step["run"]
+    assert '--channel "$CHANNEL"' in step["run"]
+    assert step["env"]["CHANNEL"] == "${{ steps.resolve_channel.outputs.channel }}"
+    uploader = load_build_module("appstore_upload_workflow_test", REPO_ROOT / "ci/scripts/appstore_upload.py")
+    for name in (
+        "appstore/dev/catalog/manifest.json", "appstore/dev/library/manifest.json",
+        "appstore/dev/manifests/appstore-manifest.json", "appstore/dev/apps-verson.json",
+        "legacy/dev/library/library-dev.zip", "legacy/dev/media/media-dev.zip",
+    ):
+        path = tmp_path / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(b"fixture")
+    plan = {key: source for source, key, headers in uploader.upload_plan(tmp_path, "dev")}
+    assert plan["appstore/dev/library/apps-verson.json"] == tmp_path / "appstore/dev/apps-verson.json"
 
 
 def test_bare_tag_push_does_not_publish_release(tmp_path):

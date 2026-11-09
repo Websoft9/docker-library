@@ -359,7 +359,7 @@ Upgrade only when one of the following occurs:
 
 Upgrade sequence: Announce in advance -> coexist during transition -> upgrade consumers -> retire the old format.
 
-Shared database dictionaries and optional `database[]` declarations are additive library schema 1 extensions. The former database object was experimental and was not enabled in product consumers, so these declarations do not replace an active product contract. The library manifest, apps-index, apps-delta, generated `library.json`, and root manifest's `library.schemaVersion` remain version 1. Consumers may ignore unused declarations; implementing database connection features still requires support for the array declarations and shared dictionary.
+Shared database dictionaries and optional `database[]` declarations are additive library schema 1 extensions. The former database object was experimental and was not enabled in product consumers, so these declarations do not replace an active product contract. The library manifest, apps-index, apps-delta, and generated `library.json` remain version 1. The root manifest's catalog and library references contain only `manifest` and `datasetVersion`; each component's schema is declared in its own manifest. Consumers may ignore unused declarations; implementing database connection features still requires support for the array declarations and shared dictionary.
 
 ### 2.3 Consumer Compatibility
 
@@ -473,7 +473,7 @@ artifact/appstore/<channel>/
 | Library full package retains only latest | Consistent with catalog, v2 R2 retains no historical full snapshots, only `full/latest.zip` |
 | Individual app packages use only `latest.zip` | No versioned packages; R2 is a distribution cache, while Git provides audit history |
 | Incremental builds | Rebuild only `addedApps` + `changedApps`; leave unchanged apps untouched |
-| Upload strategy | `aws s3 sync` (no deletion by default); `check_seed` detects the first release and triggers full seeding |
+| Upload strategy | One SDK uploader backs up affected objects before writes and rolls back failed uploads; unchanged app packages remain untouched. `check_seed` detects the first release and triggers full seeding |
 | No orphan accumulation | Only two files per app, requiring no scheduled cleanup |
 | Images | v2 uses online URLs, not bundled binaries |
 
@@ -494,8 +494,7 @@ artifact/appstore/<channel>/
   },
   "library": {
     "manifest": "library/manifest.json",
-    "datasetVersion": "85f687824c03ef93",
-    "schemaVersion": "1"
+    "datasetVersion": "85f687824c03ef93"
   },
   "generatedAt": "2026-06-09T12:00:00Z"
 }
@@ -611,8 +610,8 @@ Version sources:
 3. Read the channel's published Appstore manifest from R2, download its referenced library apps index and checksum, and verify version/channel/checksum. Pass it as --previous-apps-index. If no published manifest exists, select --all-apps without partial-update support.
 4. Fetch catalog source data from Contentful.
 5. Run `ci/scripts/library_publish.py` to build all artifacts (v2 + legacy), normalizing product distribution structures from repository variables.json.
-6. Upload v2 artifacts to the new R2 paths (`channel` is directory-only; full-package entry points use `latest.zip`).
-7. Upload legacy artifacts to the old R2 paths (for legacy consumers).
+6. Back up all R2 objects that this publication will overwrite; abort before any writes if backup fails.
+7. Upload v2 and legacy data packages and checksums, then component manifests, and finally the root manifest. Restore previous objects and delete newly created objects if any upload fails.
 8. Purge Cloudflare caches.
 9. Update the existing GitHub Release's generated changelog area and upload attachments, preserving manual notes.
 ```
@@ -629,14 +628,23 @@ After all stable-release uploads and the GitHub Release update succeed, send a W
 
 | Target | Command | R2 Path |
 |------|------|--------|
-| v2 catalog | `aws s3 sync` | `appstore/<channel>/catalog/` |
-| v2 library metadata | `aws s3 sync --exclude "apps/*"` | `appstore/<channel>/library/` |
-| v2 individual app packages | `aws s3 cp --recursive` | `appstore/<channel>/library/apps/` |
-| v2 manifests | `aws s3 sync` | `appstore/<channel>/manifests/` |
-| legacy library | `aws s3 sync` | `<channel>/websoft9/plugin/library/` |
-| legacy media | `aws s3 sync` | `<channel>/websoft9/plugin/media/` |
+| v2 catalog | S3 SDK | `appstore/<channel>/catalog/` |
+| v2 library metadata | S3 SDK | `appstore/<channel>/library/` |
+| v2 individual app packages | S3 SDK | `appstore/<channel>/library/apps/` |
+| dev app version index | S3 SDK | `appstore/dev/library/apps-verson.json` |
+| v2 manifests | S3 SDK | `appstore/<channel>/manifests/` |
+| legacy library | S3 SDK | `<channel>/websoft9/plugin/library/` |
+| legacy media | S3 SDK | `<channel>/websoft9/plugin/media/` |
 
-All `sync` operations use the default add/overwrite behavior and do not delete existing destination files.
+`ci/scripts/appstore_upload.py` performs one backup-and-rollback upload. Existing R2 paths and filenames remain unchanged.
+
+Before any writes, download every existing destination object in the upload plan and preserve its content headers and custom metadata. Only explicit not-found responses identify new objects; permission, storage, and backup-download failures abort publication. Credentials require object read, write, and delete access, as well as the existing baseline-listing permission.
+
+Upload packages, data, and checksums before component manifests. Write the root manifest checksum immediately before the root manifest, which is the final object. V2 objects retain `Cache-Control: public, max-age=60`. Unchanged app packages and unrelated destination objects are not modified.
+
+On upload failure or a catchable interruption, restore every attempted existing object, including the failing upload, and delete attempted new objects. Any rollback failure is a publication failure, not success. The workflow retains the recovery journal and available old object copies in an `appstore-upload-backup-<channel>-<run>-<attempt>` diagnostic artifact for seven days. Cache purge and GitHub Release updates happen only after successful R2 upload; failures in those later steps do not roll back an already completed R2 publication.
+
+This is compensating rollback, not an atomic multi-object transaction. Readers or CDN caches can still observe mixed versions during upload or rollback. A killed runner, an uncatchable termination, or a failed rollback can prevent restoration; diagnostic artifact upload also requires a live runner. Eliminating that window requires a separately agreed immutable-snapshot layout and single-entry-point activation. This change does not alter the consumer contract or add Contentful writes.
 
 ---
 
