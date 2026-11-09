@@ -1,0 +1,46 @@
+services:
+  symfony:
+    image: ${W9_REPO}:8.5-frankenphp-debian
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "${W9_HTTP_PORT_SET}:8080" # Web Console
+    volumes:
+      - symfony_app:/var/www/html
+      - ./src/entrypoint.sh:/opt/websoft9/entrypoint.sh:ro
+      - ./src/entrypoint.d:/opt/websoft9/entrypoint.d:ro
+    depends_on:
+      permissions:
+        condition: service_completed_successfully
+    entrypoint: ["/bin/bash", "/opt/websoft9/entrypoint.sh"]
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -sS --max-time 5 -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/ | grep -qE '^[1-4][0-9]{2}$'"
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 300s
+
+  permissions:
+    image: alpine:3.21
+    container_name: ${W9_ID}-permissions
+    restart: "no"
+    user: root
+    command:
+      - sh
+      - -c
+      - "chown -R 33:33 /var/www/html && chmod -R u+rwX,g+rwX /var/www/html"
+    volumes:
+      - symfony_app:/var/www/html
+
+volumes:
+  symfony_app:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

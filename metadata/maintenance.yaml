@@ -41,6 +41,7 @@ cadence:
   - langfuse
   - opendesign
   - qwenpaw
+  - symfony
   - xinference
 update_policy:
   patch-minor:
@@ -50,6 +51,7 @@ update_policy:
   - langfuse
   - opendesign
   - qwenpaw
+  - symfony
   - xinference
 lifecycle:
   frozen: []

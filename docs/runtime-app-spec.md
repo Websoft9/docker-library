@@ -8,7 +8,7 @@
 
 ## Scope
 
-Runtime apps run user-uploaded code instead of shipping a finished application. Current members: `nextjs`, `django`, `springboot`, `laravel`.
+Runtime apps run user-uploaded code instead of shipping a finished application. Current members: `nextjs`, `django`, `springboot`, `laravel`, `symfony`.
 
 ## Layout
 
@@ -43,7 +43,7 @@ Environment available to hooks: `APP_DIR`, `W9_HTTP_PORT`, `W9_VERSION` (plus an
 
 ## DATABASE_URL
 
-Default: **no database**. `django` and `laravel` fall back to SQLite; `nextjs` and `springboot` have none.
+Default: **no database**. `django` and `laravel` fall back to SQLite; `nextjs`, `springboot`, and `symfony` have none.
 
 `.env` ships it commented:
 
@@ -59,6 +59,7 @@ When set, the runtime overrides the app's database configuration; when unset, th
 | django | parsed into `DATABASES["default"]` |
 | springboot | `SPRING_DATASOURCE_URL` (JDBC) + `postgres`/`mysql` profile |
 | laravel | `DB_CONNECTION` + `DB_URL` |
+| symfony | passed through as `DATABASE_URL` when Doctrine DBAL is installed |
 
 ## Notes
 

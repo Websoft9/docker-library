@@ -1,0 +1,36 @@
+{
+  "name": "symfony",
+  "trademark": "Symfony",
+  "release": true,
+  "upstream": {
+    "image": "https://github.com/symfony/symfony",
+    "releases": "https://github.com/symfony/symfony/releases",
+    "docs": [
+      "https://github.com/symfony/symfony",
+      "https://symfony.com/doc/current/setup.html",
+      "https://symfony.com/doc/current/setup/docker.html",
+      "https://serversideup.net/open-source/docker-php/docs/image-variations/frankenphp"
+    ]
+  },
+  "edition": [
+    {
+      "dist": "community",
+      "version": ["8.1.11", "latest"]
+    }
+  ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8080,
+      "path": "/"
+    }
+  },
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "5"
+  },
+  "help": {
+    "db": "No database is bundled. Install Doctrine ORM/DBAL in your application to use DATABASE_URL with an external database."
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "trademark": "Symfony",
+  "catalogBindings": [
+    {
+      "parentKey": "itdeveloper",
+      "childKey": "webframework"
+    }
+  ],
+  "summary": "PHP application framework",
+  "overview": "A PHP framework and runtime for building web applications with Symfony.",
+  "description": "Symfony is a PHP framework for building web applications and services. This package provides a ready-to-use FrankenPHP runtime with a starter Symfony project.",
+  "websiteurl": "https://symfony.com",
+  "screenshots": []
+}
