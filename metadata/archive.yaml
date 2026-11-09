@@ -170,7 +170,6 @@ apps:
 - passbolt
 - penpot
 - photoprism
-- php
 - phpfpmapache
 - phpfpmnginx
 - pimcore
@@ -189,7 +188,6 @@ apps:
 - rainbond
 - rclone
 - redash
-- rethinkdb
 - rocketchat
 - rocketmq
 - rowy
@@ -410,8 +408,6 @@ overrides:
   rclone:
     archive_reason: Low user demand
   redash:
-    archive_reason: Low user demand
-  rethinkdb:
     archive_reason: Low user demand
   rocketchat:
     archive_reason: Low user demand

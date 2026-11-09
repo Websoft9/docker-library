@@ -1,0 +1,52 @@
+{
+  "name": "rethinkdb",
+  "trademark": "RethinkDB",
+  "release": true,
+  "upstream": {
+    "image": "https://hub.docker.com/_/rethinkdb",
+    "releases": "https://github.com/rethinkdb/rethinkdb/releases",
+    "docs": [
+      "https://github.com/docker-library/docs/blob/master/rethinkdb/README.md",
+      "https://rethinkdb.com/docs/"
+    ]
+  },
+  "edition": [
+    {
+      "dist": "community",
+      "version": [
+        "2.4.4-bookworm-slim",
+        "latest"
+      ]
+    }
+  ],
+  "access": {
+    "defaultScheme": "http",
+    "web": {
+      "port": 8080,
+      "path": "/"
+    }
+  },
+  "requirements": {
+    "cpu": "1",
+    "memory": "1",
+    "disk": "1"
+  },
+  "credentials": {
+    "username": {
+      "source": "container-env",
+      "name": "W9_LOGIN_USER"
+    },
+    "password": {
+      "source": "container-env",
+      "name": "W9_LOGIN_PASSWORD"
+    }
+  },
+  "env": {
+    "first_startup_only": [
+      "W9_LOGIN_PASSWORD"
+    ]
+  },
+  "help": {
+    "db": "Connect database drivers to port 28015 and open the admin console on port 8080."
+  }
+}

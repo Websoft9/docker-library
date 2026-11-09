@@ -1,0 +1,7 @@
+# The adaptive web-access check covers the admin console. The driver port is
+# the app's primary client interface, so a custom script verifies it inside
+# the deployed container.
+custom:
+  - id: driver-port
+    type: script
+    script: check.sh
