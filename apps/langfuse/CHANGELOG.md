@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-11-10
+
+- Updated Langfuse community images and supported versions from 4.59 to 4.77.
+- Langfuse v4.77 removes automatic tokenization; review the upstream release notes for impact.
+
 ## 2026-11-03
 
 - Declared the three internal PostgreSQL, ClickHouse, and Redis dependencies; excluded MinIO object storage from database declarations.
