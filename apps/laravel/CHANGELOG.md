@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-11-10
+
+- Updated the Laravel framework package version from `13.35.0` to `13.40.0`.
+- Refreshed the generated README so the supported version matches the scaffold target.
+
 ## 2026-11-03
 
 - Declared optional external PostgreSQL/MySQL/MariaDB support through the existing DATABASE_URL input and runtime mapping.
