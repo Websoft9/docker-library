@@ -18,6 +18,7 @@ Supporting files in this skill:
 ## Inputs
 
 Database declarations follow `docs/app-database-connection-spec.md` and `metadata/database-types.json`. Use `database[]` for verified components, real Compose service names for internal providers, and native `datasource` mappings for external providers. Omit the field for apps without database components; exclude SQLite and etcd, and leave Memcached out until its scope is decided. Do not copy passwords, choose a connection, or create database objects from metadata. Run `libs app-check --app <app> --gate database-metadata` as well as deployment validation. Preserve the separate roles of `externalDB` help and database lifecycle facts.
+Pre-startup internal secrets follow `docs/app-secret-spec.md` and `metadata/secret-rules.json`: declare plain `"KEY"` or a single-key object selecting `base64`, `fernet`, or `jwt:<SECRET_KEY>` in `variables.json` `env.secrets`, then run `libs app-check --app <app> --gate secrets`. Verify required lengths and encodings against upstream references; the shared profiles select a generator and typed options, not executable scripts. Websoft9 owns generation and persistence; confirm consumer support before delivery, and never treat a passing template gate as authenticated runtime evidence.
 
 - app name (required)
 - trademark (required)

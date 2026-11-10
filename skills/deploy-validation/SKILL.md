@@ -17,7 +17,9 @@ Supporting files in this skill:
 
 ## Inputs
 
-Database declarations follow `docs/app-database-connection-spec.md`. The `database_metadata` result in `app-check` validates declarations and blocks the overall gate on errors; the existing `database` gate checks lifecycle, not connectivity. A valid declaration does not prove credentials or a live connection. For declaration-only changes without runtime input changes, run metadata checks and explicitly report runtime deployment as not required, rather than claiming deploy/functional evidence.
+Database declarations follow `docs/app-database-connection-spec.md`. The `database_metadata` result in `app-check` validates declarations and blocks the overall gate on errors; the existing `database` gate checks lifecycle, not connectivity. The `secrets` result in `app-check` validates `env.secrets` declarations against `metadata/secret-rules.json`. A valid declaration does not prove credentials or a live connection. For declaration-only changes without runtime input changes, run metadata checks and explicitly report runtime deployment as not required, rather than claiming deploy/functional evidence.
+
+For secret runtime changes, follow `docs/app-secret-spec.md`: verify Websoft9 supports object declarations and the selected generators, then check formats, shared references, an authenticated application action, retry reuse, and retained keys/data across recreation using disposable instances. Neither `app-deploy` nor dictionary synchronization alone proves that the consumer generated keys. Never print real keys, rotate existing instances, or claim runtime success from template gates alone.
 
 - app name (required)
 - target: local | remote (default from `.secrets/remote.env`; fallback local)

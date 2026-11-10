@@ -69,6 +69,13 @@
     "first_startup_only": [
       "BB_ADMIN_USER_EMAIL",
       "BB_ADMIN_USER_PASSWORD"
+    ],
+    "secrets": [
+      "API_ENCRYPTION_KEY",
+      "JWT_SECRET",
+      "INTERNAL_API_KEY",
+      "LITELLM_MASTER_KEY",
+      "LITELLM_SALT_KEY"
     ]
   }
 }

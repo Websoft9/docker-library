@@ -251,6 +251,7 @@ def report_command(
             "version": check["version"],
             "database": check["database"],
             "database_metadata": check["database_metadata"],
+            "secrets": check["secrets"],
         },
         "advisories": [
             item for item in check["database"].get("databases", []) if item.get("status") == "eol"

@@ -20,6 +20,7 @@ Supporting files in this skill:
 ## Inputs
 
 When database metadata is touched, follow `docs/app-database-connection-spec.md`: migrate verified legacy declarations to `database[]`, check all affected components against `metadata/database-types.json`, and run `libs app-check --app <app> --gate database-metadata`. Do not infer sources from old field names alone, alter runtime inputs merely to populate metadata, or treat declarations as connection-selection logic. Keep `externalDB` help and lifecycle facts independent. Declaration-only changes need metadata checks, not a claim that runtime deployment was tested.
+When pre-startup internal secrets are added or changed, follow `docs/app-secret-spec.md` and `metadata/secret-rules.json`: declare plain `"KEY"` or a single-key object selecting `base64`, `fernet`, or `jwt:<SECRET_KEY>` in `variables.json` `env.secrets`, then run `libs app-check --app <app> --gate secrets`. Verify required lengths and encodings against upstream references rather than copying old defaults. Shared profiles select consumer-implemented generators and typed options; do not generate values in package scripts or rotate existing instance keys. Confirm Websoft9 supports the selected declaration and generator before delivery.
 
 - app name (required)
 - target version (optional at entry; required before editing files, but may be auto-detected by this workflow when the upstream choice is clear)

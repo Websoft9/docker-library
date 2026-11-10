@@ -88,6 +88,9 @@
       "INIT_SEAFILE_MYSQL_ROOT_PASSWORD",
       "INIT_SEAFILE_ADMIN_EMAIL",
       "INIT_SEAFILE_ADMIN_PASSWORD"
+    ],
+    "secrets": [
+      "JWT_PRIVATE_KEY"
     ]
   },
   "help": {

@@ -27,6 +27,7 @@ V2_FULL_LATEST_NAME = "latest.zip"
 MIN_WEBSOFT9_VERSION = "2.4.2"
 LIBRARY_SCHEMA_VERSION = "1"
 DATABASE_TYPES_PATH = "metadata/database-types.json"
+SECRET_RULES_PATH = "metadata/secret-rules.json"
 CATALOG_FILE_NAMES = (
     "catalog_en.json",
     "catalog_zh.json",
@@ -230,6 +231,7 @@ def copy_package_contents(package_dir: Path, packaged_library_json: dict) -> Non
 
     (package_dir / "metadata").mkdir(exist_ok=True)
     shutil.copy2(ROOT / DATABASE_TYPES_PATH, package_dir / DATABASE_TYPES_PATH)
+    shutil.copy2(ROOT / SECRET_RULES_PATH, package_dir / SECRET_RULES_PATH)
     write_json(package_dir / "library.json", packaged_library_json)
 
 
@@ -292,11 +294,18 @@ def build_app_updated_at_map() -> dict[str, str]:
 
 
 def build_shared_metadata() -> dict:
-    source = ROOT / DATABASE_TYPES_PATH
-    if not source.is_file():
+    db_source = ROOT / DATABASE_TYPES_PATH
+    if not db_source.is_file():
         raise SystemExit(f"missing shared database dictionary: {DATABASE_TYPES_PATH}")
-    digest = sha256_file(source)
-    return {"databaseTypes": {"path": f"metadata/database-types-{digest}.json", "sha256": digest}}
+    secret_source = ROOT / SECRET_RULES_PATH
+    if not secret_source.is_file():
+        raise SystemExit(f"missing shared secret rules dictionary: {SECRET_RULES_PATH}")
+    db_digest = sha256_file(db_source)
+    secret_digest = sha256_file(secret_source)
+    return {
+        "databaseTypes": {"path": f"metadata/database-types-{db_digest}.json", "sha256": db_digest},
+        "secretRules": {"path": f"metadata/secret-rules-{secret_digest}.json", "sha256": secret_digest},
+    }
 
 
 def build_apps_index(
@@ -755,6 +764,12 @@ def build_v2_appstore_artifacts(
     dictionary_output.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(ROOT / DATABASE_TYPES_PATH, dictionary_output)
     write_checksum_file(dictionary_output)
+
+    secret_rules_entry = shared_metadata["secretRules"]
+    secret_rules_output = library_dir / secret_rules_entry["path"]
+    secret_rules_output.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT / SECRET_RULES_PATH, secret_rules_output)
+    write_checksum_file(secret_rules_output)
     full_latest_name = V2_FULL_LATEST_NAME
 
     with tempfile.TemporaryDirectory() as tmp_dir_name:
@@ -809,6 +824,7 @@ def build_v2_appstore_artifacts(
         "appsIndex": write_checksum_file(library_dir / apps_index_name),
         "appsDelta": write_checksum_file(library_dir / apps_delta_name),
         "databaseTypes": f"{dictionary_entry['path']}.sha256",
+        "secretRules": f"{secret_rules_entry['path']}.sha256",
     }
 
     library_manifest = build_library_manifest(

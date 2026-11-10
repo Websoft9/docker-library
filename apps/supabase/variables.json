@@ -107,6 +107,23 @@
   "env": {
     "first_startup_only": [
       "POSTGRES_PASSWORD"
+    ],
+    "secrets": [
+      "JWT_SECRET",
+      {
+        "ANON_KEY": "jwt:JWT_SECRET"
+      },
+      {
+        "SERVICE_ROLE_KEY": "jwt:JWT_SECRET"
+      },
+      {
+        "SECRET_KEY_BASE": "base64"
+      },
+      "REALTIME_DB_ENC_KEY",
+      "VAULT_ENC_KEY",
+      "PG_META_CRYPTO_KEY",
+      "S3_PROTOCOL_ACCESS_KEY_ID",
+      "S3_PROTOCOL_ACCESS_KEY_SECRET"
     ]
   },
   "help": {

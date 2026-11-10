@@ -187,7 +187,14 @@ def _policy_result(target: Path) -> dict:
             port = entry.get("port")
             if isinstance(port, int) and port not in container_ports:
                 access_missing_ports.append({"key": key, "port": port})
-        for name in (variables.get("env") or {}).get("secrets") or []:
+        for item in (variables.get("env") or {}).get("secrets") or []:
+            name = (
+                item
+                if isinstance(item, str)
+                else next(iter(item.keys()))
+                if isinstance(item, dict) and len(item) == 1
+                else None
+            )
             if not isinstance(name, str):
                 continue
             secrets_declared.append(name)
@@ -468,10 +475,10 @@ def _resolve_app_or_exit(app_name: str) -> Path:
 
 
 def check_app(app_name: str, gate: str = "all") -> dict:
+    from libs.secret_audit import check_secret_templates
+
     target = _resolve_app_or_exit(app_name)
     if gate == "secrets":
-        from libs.secret_audit import check_secret_templates
-
         result = check_secret_templates(target)
         return {"app": app_name, "gate": gate, "result": result, "ok": result["ok"]}
     structure = _structure_result(target)
@@ -479,6 +486,7 @@ def check_app(app_name: str, gate: str = "all") -> dict:
     version = _version_result(target)
     database = _database_result(target)
     database_metadata = _database_metadata_result(target)
+    secrets = check_secret_templates(target)
 
     if gate == "structure":
         return {"app": app_name, "gate": gate, "result": structure, "ok": structure["ok"]}
@@ -498,7 +506,8 @@ def check_app(app_name: str, gate: str = "all") -> dict:
         "version": version,
         "database": database,
         "database_metadata": database_metadata,
-        "ok": structure["ok"] and policy["ok"] and database_metadata["ok"],
+        "secrets": secrets,
+        "ok": structure["ok"] and policy["ok"] and database_metadata["ok"] and secrets["ok"],
     }
 
 

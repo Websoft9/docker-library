@@ -51,6 +51,9 @@
       "W9_ZULIP_REALM_NAME",
       "W9_ZULIP_REALM_STRING_ID",
       "W9_ZULIP_ADMIN_FULL_NAME"
+    ],
+    "secrets": [
+      "SECRETS_secret_key"
     ]
   },
   "help": {

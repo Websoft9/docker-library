@@ -264,7 +264,7 @@ def test_prepare_preview_missing_catalog_still_syncs_app_dir(repo_fixture, app_f
     assert payload["catalog_synced"] is False
     assert payload["catalog_source"] is None
     assert payload["app_target"] == "/websoft9/library/apps/demo"
-    assert len(payload["rollback"]) == 2
+    assert len(payload["rollback"]) == 3
     assert payload["database_types_synced"] is True
     assert payload["catalog_refreshed"] is True
 
@@ -290,8 +290,9 @@ def test_prepare_preview_with_catalog_syncs_both(repo_fixture, app_factory, monk
     assert payload["catalog_synced"] is True
     assert payload["catalog_source"] == "metadata/catalog/demo.json"
     assert payload["catalog_target"] == "/websoft9/library/metadata/catalog/demo.json"
-    assert len(payload["rollback"]) == 3
+    assert len(payload["rollback"]) == 4
     assert payload["database_types_target"] == "/websoft9/library/metadata/database-types.json"
+    assert payload["secret_rules_target"] == "/websoft9/library/metadata/secret-rules.json"
 
 
 @pytest.mark.parametrize("has_catalog", [False, True])
@@ -319,6 +320,11 @@ def test_prepare_preview_refreshes_once_after_all_copies(repo_fixture, app_facto
     total = 4 if has_catalog else 3
     assert progress[-1] == f"[{total}/{total}] refreshing app store catalogs"
     assert payload["catalog_refreshed"] is True
+    secret_rollback = payload["rollback"][2]
+    assert "secret-rules.json.bak" in secret_rollback
+    assert "secret-rules.json.bak.missing" in secret_rollback
+    assert "docker cp" in secret_rollback
+    assert "docker exec custom rm -f /websoft9/library/metadata/secret-rules.json" in secret_rollback
 
 
 def test_prepare_preview_refresh_failure_is_not_reported_as_success(repo_fixture, app_factory, monkeypatch):
@@ -369,6 +375,43 @@ def test_sync_invalid_dictionary_does_not_mutate_remote(repo_fixture, monkeypatc
     monkeypatch.setattr(appstore_sync, "_run", lambda *args, **kwargs: calls.append(args))
     with pytest.raises(ValueError, match="Invalid shared database dictionary"):
         appstore_sync._sync_database_types("demo", "1.2.3.4", "root", repo_fixture / "key.pem", "websoft9", "/tmp/backup")
+    assert calls == []
+
+
+def test_sync_secret_rules_dictionary_validates_and_replaces(repo_fixture, monkeypatch):
+    calls = []
+    (repo_fixture / "key.pem").write_text("-----BEGIN OPENSSH PRIVATE KEY-----\n", encoding="utf-8")
+    monkeypatch.setattr(appstore_sync, "_run", lambda command, **kwargs: calls.append(command) or "")
+    digest = appstore_sync._sync_secret_rules(
+        "demo", "1.2.3.4", "root", repo_fixture / "key.pem", "websoft9", "/tmp/backup-demo",
+    )
+    assert digest == hashlib.sha256((repo_fixture / "metadata" / "secret-rules.json").read_bytes()).hexdigest()
+    assert "secret-rules.json.bak" in calls[0][-1]
+    assert "secret-rules.json.bak.missing" in calls[0][-1]
+    assert "sha256sum -c - && mv" in calls[2][-1]
+    assert f".secret-rules-{digest}.tmp" in calls[2][-1]
+
+    calls.clear()
+    (repo_fixture / "metadata" / "secret-rules.json").write_text('{"base64": {}}', encoding="utf-8")
+    with pytest.raises(ValueError, match="Invalid shared secret rules dictionary"):
+        appstore_sync._sync_secret_rules("demo", "1.2.3.4", "root", repo_fixture / "key.pem", "websoft9", "/tmp/backup")
+    assert calls == []
+
+
+@pytest.mark.parametrize("missing", [False, True])
+def test_prepare_preview_rejects_secret_dictionary_before_remote_writes(repo_fixture, app_factory, monkeypatch, missing):
+    app_factory("demo")
+    key = repo_fixture / "key.pem"
+    key.write_text("test fixture", encoding="utf-8")
+    dictionary = repo_fixture / "metadata" / "secret-rules.json"
+    if missing:
+        dictionary.unlink()
+    else:
+        dictionary.write_text('{"base64": {}}', encoding="utf-8")
+    calls = []
+    monkeypatch.setattr(appstore_sync, "_run", lambda *args, **kwargs: calls.append(args))
+    with pytest.raises((FileNotFoundError, ValueError)):
+        appstore_sync.prepare_preview("demo", host="1.2.3.4", secret_path=str(key))
     assert calls == []
 
 

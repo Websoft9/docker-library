@@ -40,6 +40,14 @@
     "first_startup_only": [
       "W9_LOGIN_USER",
       "W9_LOGIN_PASSWORD"
+    ],
+    "secrets": [
+      "APP_KEYS",
+      "API_TOKEN_SALT",
+      "ADMIN_JWT_SECRET",
+      "TRANSFER_TOKEN_SALT",
+      "JWT_SECRET",
+      "ENCRYPTION_KEY"
     ]
   },
   "help": {

@@ -70,6 +70,11 @@
     }
   ],
   "credentials": {},
+  "env": {
+    "secrets": [
+      "SECRET_KEY_BASE"
+    ]
+  },
   "help": {
     "login": "First run: open the site and create the administrator account in the Chatwoot setup flow, then sign in with those credentials.",
     "db": "After each image upgrade, run `docker compose run --rm rails bundle exec rails db:chatwoot_prepare` before or immediately after restarting the stack so Chatwoot applies the required database migrations."

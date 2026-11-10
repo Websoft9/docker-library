@@ -66,5 +66,12 @@
       ],
       "users": []
     }
-  ]
+  ],
+  "env": {
+    "secrets": [
+      {
+        "AIRFLOW__CORE__FERNET_KEY": "fernet"
+      }
+    ]
+  }
 }

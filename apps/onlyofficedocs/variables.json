@@ -34,5 +34,10 @@
       "port": 80,
       "path": "/"
     }
+  },
+  "env": {
+    "secrets": [
+      "W9_LOGIN_JWT_SECRET"
+    ]
   }
 }

@@ -12,6 +12,7 @@
 - [ ] Decide env groups: enable password group (DB/login apps) and web group (web apps); delete unused groups
 - [ ] Apply `docs/w9-env-spec.md` decision rules for `W9_URL`, `W9_URL_REPLACE`, `W9_LOGIN*`, `_SET` ports, and dependency helpers
 - [ ] Fill `.env` "image environment variables" section: single Docs URL, used vars, up to 5 unused vars commented out
+- [ ] Declare pre-startup internal secrets in `variables.json` `env.secrets` (plain `"KEY"` or a single-key object selecting `base64`, `fernet`, or `jwt:<SECRET_KEY>`) per `docs/app-secret-spec.md`; verify lengths/encodings against upstream references, confirm Websoft9 generator support, and run `.venv/bin/libs app-check --app <app> --gate secrets`
 - [ ] Write `CHANGELOG.md` with the pure-date heading `## YYYY-MM-DD` for the initial change batch
 - [ ] Author `apps/<app>/tests/cases.yml` per `docs/app-tests.md` (built-in checks plus the minimum app-specific cases)
 - [ ] Preflight registry/docs reachability and target port availability with short timeouts

@@ -58,6 +58,11 @@
       }
     }
   ],
+  "env": {
+    "secrets": [
+      "SECRET_KEY"
+    ]
+  },
   "help": {
     "db": "No database by default (SQLite). Uncomment DATABASE_URL in .env to use an external PostgreSQL or MySQL database."
   }

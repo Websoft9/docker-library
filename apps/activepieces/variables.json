@@ -75,5 +75,12 @@
     "cpu": "2",
     "memory": "4",
     "disk": "8"
+  },
+  "env": {
+    "secrets": [
+      "AP_API_KEY",
+      "AP_ENCRYPTION_KEY",
+      "AP_JWT_SECRET"
+    ]
   }
 }

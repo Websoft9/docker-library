@@ -63,7 +63,9 @@
       "SEMAPHORE_ADMIN_PASSWORD"
     ],
     "secrets": [
-      "SEMAPHORE_ACCESS_KEY_ENCRYPTION"
+      {
+        "SEMAPHORE_ACCESS_KEY_ENCRYPTION": "base64"
+      }
     ]
   }
 }

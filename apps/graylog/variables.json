@@ -69,6 +69,11 @@
       }
     }
   },
+  "env": {
+    "secrets": [
+      "GRAYLOG_PASSWORD_SECRET"
+    ]
+  },
   "help": {
     "db": "This package does not offer external databases. Metadata declares the known internal MongoDB connection only; the managed Data Node search endpoint, TLS, and credentials are not inferred from commented ports or Graylog login credentials.",
     "login": "First run: read the temporary admin password from the container logs (docker logs graylog) to complete initialization, then log in with the account and password shown below."
