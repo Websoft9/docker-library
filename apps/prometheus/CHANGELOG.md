@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-10
+
+- Update Prometheus to `v3.16.0` (alias `latest`).
+
 ## 2026-09-28
 
 - Update Prometheus to `v3.15.0` (alias `latest`).

@@ -32,7 +32,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: v3.14.0, latest.
+Supported versions: v3.16.0, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
