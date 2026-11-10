@@ -45,7 +45,7 @@ def repo_fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
         encoding="utf-8",
     )
     (tmp_path / "i18n" / "translation.json").write_text("{}\n", encoding="utf-8")
-    for name in ("variables.schema.json", "database-types.json"):
+    for name in ("variables.schema.json", "database-types.json", "secret-rules.json"):
         shutil.copy2(Path(__file__).resolve().parents[2] / "metadata" / name, tmp_path / "metadata" / name)
     monkeypatch.chdir(tmp_path)
     return tmp_path

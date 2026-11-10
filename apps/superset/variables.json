@@ -108,6 +108,9 @@
       "W9_LOGIN_PASSWORD",
       "ADMIN_PASSWORD",
       "SUPERSET_SECRET_KEY"
+    ],
+    "secrets": [
+      "SUPERSET_SECRET_KEY"
     ]
   }
 }

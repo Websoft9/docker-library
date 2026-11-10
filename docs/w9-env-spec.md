@@ -139,25 +139,30 @@ Rules:
 
 ### Declared Secrets
 
-When a package must ship several plain-text secrets that are injected before `docker compose up`
-(shared across services, or needed by the UI at login), list their `.env` key names in
-`variables.json`:
+When a package ships plain-text secrets that are injected before `docker compose up`
+(signing seeds, encryption keys, internal API tokens), declare them in `variables.json`:
 
 ```json
-{ "env": { "secrets": ["LOCAL_BACKEND_API_KEY", "OH_SECRET_KEY"] } }
+{
+  "env": {
+    "secrets": [
+      "LOCAL_BACKEND_API_KEY",
+      "OH_SECRET_KEY",
+      { "SEMAPHORE_ACCESS_KEY_ENCRYPTION": "base64" }
+    ]
+  }
+}
 ```
 
 Rules:
 
-- declare names only; there are no per-secret length/charset/pattern rules
-- each declared name must exist in `.env` with a non-empty random template or supported variable
-  reference; a template is not a production secret
-- consumers may regenerate a same-shaped value and overwrite the instance `.env`; redeploy must never
-  auto-rotate it
-- `W9_POWER_PASSWORD` is the single-value special case of this mechanism
+- plain variable names regenerate a same-shaped random string (including comma-separated lists); single-key objects select a closed-vocabulary rule (`base64`, `fernet`, or `jwt:<SECRET_KEY>`)
+- each declared name must exist in `.env` with a non-empty default template or supported variable reference; a template is not a production secret
+- do not borrow `${W9_POWER_PASSWORD}` for application encryption or signing keys that have length or character-class constraints
+- consumers regenerate values once on instance creation and overwrite the instance `.env`; redeploy must never auto-rotate them
+- `W9_POWER_PASSWORD` and `W9_RCODE` remain implicit platform password seeds
 - the canonical consumer contract lives in `docs/appstore-release-spec.md`
-- new or changed secret inputs must pass `libs app-check --app <app> --gate secrets`; see
-  `docs/app-secret-spec.md` for supported formats, shared references and the coverage inventory
+- new or changed secret inputs must pass `libs app-check --app <app> --gate secrets`; see `docs/app-secret-spec.md`
 
 ### Dependency Modeling
 

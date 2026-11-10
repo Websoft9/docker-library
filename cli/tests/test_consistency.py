@@ -22,6 +22,51 @@ def test_database_types_match_machine_schema():
     validator.validate(database_types)
 
 
+def test_secret_rules_match_machine_schema():
+    schema = json.loads((REPO_ROOT / "metadata" / "variables.schema.json").read_text(encoding="utf-8"))
+    secret_rules = json.loads((REPO_ROOT / "metadata" / "secret-rules.json").read_text(encoding="utf-8"))
+    jsonschema.Draft202012Validator.check_schema(schema)
+    validator = jsonschema.Draft202012Validator({"$defs": schema["$defs"], "$ref": "#/$defs/secretRules"})
+    validator.validate(secret_rules)
+    assert set(secret_rules.keys()) == {"base64", "fernet", "jwt"}
+
+
+def test_secret_rules_match_documented_profiles():
+    rules = json.loads((REPO_ROOT / "metadata" / "secret-rules.json").read_text(encoding="utf-8"))
+    spec = (REPO_ROOT / "docs" / "app-secret-spec.md").read_text(encoding="utf-8")
+    documented = json.loads(spec.split("```json\n", 1)[1].split("```", 1)[0])
+    assert rules == documented
+
+
+def test_secret_rules_release_manifest_example():
+    spec = (REPO_ROOT / "docs" / "appstore-release-spec.md").read_text(encoding="utf-8")
+    examples = [block.split("```", 1)[0] for block in spec.split("```json\n")[1:]]
+    manifests = [json.loads(example) for example in examples if '"secretRules"' in example]
+    assert len(manifests) == 1
+    manifest = manifests[0]
+    assert manifest["metadata"]["secretRules"]["path"] == "metadata/secret-rules-<sha256>.json"
+    assert manifest["checksum"]["secretRules"] == "metadata/secret-rules-<sha256>.json.sha256"
+
+
+@pytest.mark.parametrize("name,field,value", [
+    ("base64", "generator", "shell"),
+    ("base64", "encoding", "hex"),
+    ("base64", "bytes", 0),
+    ("base64", "min_bytes", 16),
+    ("fernet", "bytes", 16),
+    ("fernet", "encoding", "base64"),
+    ("jwt", "algorithm", "none"),
+    ("jwt", "encoding", "base64"),
+])
+def test_secret_rules_reject_invalid_generator_parameters(name, field, value):
+    schema = json.loads((REPO_ROOT / "metadata" / "variables.schema.json").read_text(encoding="utf-8"))
+    rules = json.loads((REPO_ROOT / "metadata" / "secret-rules.json").read_text(encoding="utf-8"))
+    rules[name][field] = value
+    validator = jsonschema.Draft202012Validator({"$defs": schema["$defs"], "$ref": "#/$defs/secretRules"})
+    with pytest.raises(jsonschema.ValidationError):
+        validator.validate(rules)
+
+
 @pytest.mark.parametrize("database", [
     [],
     [{"id": "rds", "providers": [{"type": "internal", "service": "db", "driver": "postgresql"}]}],
@@ -186,6 +231,8 @@ def test_new_app_schema_accepts_sample_request():
 
 
 def test_variables_schema_accepts_env_secrets():
+    import pytest
+
     schema = json.loads((REPO_ROOT / "metadata" / "variables.schema.json").read_text(encoding="utf-8"))
     sample = {
         "name": "demo",
@@ -193,10 +240,23 @@ def test_variables_schema_accepts_env_secrets():
         "release": True,
         "edition": [{"dist": "community", "version": ["1.0"]}],
         "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
-        "env": {"secrets": ["APP_KEY", "OH_KEY"], "first_startup_only": ["APP_KEY"]},
+        "env": {
+            "secrets": [
+                "APP_KEY",
+                "OH_KEY",
+                {"SEMAPHORE_ACCESS_KEY_ENCRYPTION": "base64"},
+                {"AIRFLOW__CORE__FERNET_KEY": "fernet"},
+                {"ANON_KEY": "jwt:APP_KEY"},
+            ],
+            "first_startup_only": ["APP_KEY"],
+        },
     }
 
     jsonschema.Draft202012Validator(schema).validate(sample)
+
+    invalid_rule = {**sample, "env": {"secrets": [{"APP_KEY": "unknown"}]}}
+    with pytest.raises(jsonschema.ValidationError):
+        jsonschema.Draft202012Validator(schema).validate(invalid_rule)
 
 
 def test_variables_schema_rejects_unknown_env_keys():
@@ -2095,34 +2155,26 @@ def test_documented_database_examples_validate_without_migrating_apps(tmp_path):
         assert result["ok"], f"documented example {example_index}: {result['errors']}"
 
 
-def test_secret_coverage_snapshot_is_complete_and_current():
-    from libs.secret_audit import collect_secret_coverage
+def test_all_apps_pass_secret_gate():
+    from libs.secret_audit import check_secret_templates
 
-    actual = collect_secret_coverage(REPO_ROOT)
-    stored = json.loads((REPO_ROOT / "metadata" / "secret-coverage.json").read_text(encoding="utf-8"))
-    assert stored == actual
-    assert actual["app_count"] == len(list((REPO_ROOT / "apps").glob("*/variables.json")))
-    assert sum(actual["status_counts"].values()) == actual["app_count"]
-    assert len({entry["app"] for entry in actual["apps"]}) == actual["app_count"]
-    blocked = {entry["app"] for entry in actual["apps"] if entry["status"] == "blocked"}
-    assert blocked == {"semaphoreui"}
-    ckan = next(entry for entry in actual["apps"] if entry["app"] == "ckan")
-    assert ckan["template_check"]["ok"]
-    aliases = {entry["name"]: entry["classification"] for entry in ckan["candidates"]}
-    assert aliases["CKAN___API_TOKEN__JWT__ENCODE__SECRET"] == "managed_reference"
-    assert aliases["CKAN___API_TOKEN__JWT__DECODE__SECRET"] == "managed_reference"
-    for entry in actual["apps"]:
-        assert "values" not in entry
-        assert all("value" not in field for field in entry["template_check"]["fields"])
+    failures = {}
+    for path in sorted((REPO_ROOT / "apps").glob("*/variables.json")):
+        result = check_secret_templates(path.parent)
+        if not result["ok"]:
+            failures[path.parent.name] = result["errors"]
+        assert all("value" not in field for field in result["fields"])
+    assert failures == {}, f"apps failed secret gate: {failures}"
 
 
 def test_declared_env_secrets_exist_in_dotenv():
     from libs.drift import parse_env_file
+    from libs.secret_audit import declared_secret_names
 
     problems: dict[str, list[str]] = {}
     for variables_path in sorted((REPO_ROOT / "apps").glob("*/variables.json")):
         data = json.loads(variables_path.read_text(encoding="utf-8"))
-        secrets = (data.get("env") or {}).get("secrets") or []
+        secrets = declared_secret_names((data.get("env") or {}).get("secrets"))
         if not secrets:
             continue
         env_path = variables_path.parent / ".env"

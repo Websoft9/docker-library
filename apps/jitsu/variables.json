@@ -81,6 +81,13 @@
       "W9_LOGIN_USER",
       "W9_LOGIN_PASSWORD",
       "W9_POWER_PASSWORD"
+    ],
+    "secrets": [
+      "JITSU_CONSOLE_TOKEN",
+      "JITSU_BULKER_TOKEN",
+      "JITSU_ROTOR_TOKEN",
+      "JITSU_JWT_SECRET",
+      "JITSU_EE_API_TOKEN"
     ]
   },
   "help": {

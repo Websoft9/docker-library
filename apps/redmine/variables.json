@@ -55,5 +55,10 @@
         "REDMINE_DB_PASSWORD": "${users[*].password}"
       }
     }
-  ]
+  ],
+  "env": {
+    "secrets": [
+      "SECRET_KEY_BASE"
+    ]
+  }
 }

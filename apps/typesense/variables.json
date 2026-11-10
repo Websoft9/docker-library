@@ -24,5 +24,10 @@
   },
   "upstream": {
     "image": "https://hub.docker.com/r/typesense/typesense"
+  },
+  "env": {
+    "secrets": [
+      "W9_LOGIN_API_KEY"
+    ]
   }
 }

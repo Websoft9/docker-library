@@ -146,10 +146,12 @@ def collect_app_info(app_name: str) -> dict:
     compose_summary = _compose_summary(target / "docker-compose.yml")
 
     from libs.app_deploy import _compose_published_ports
+    from libs.secret_audit import check_secret_templates
     from libs.validate import _database_metadata_result, _database_result
 
     database_lifecycle = _database_result(target)
     database_connections = variables.get("database")
+    declared_secrets = (variables.get("env") or {}).get("secrets")
 
     return {
         "name": app_name,
@@ -178,6 +180,8 @@ def collect_app_info(app_name: str) -> dict:
         "services": compose_summary["services"],
         "images": compose_summary["images"],
         "credentials": variables.get("credentials"),
+        "secrets": declared_secrets if isinstance(declared_secrets, list) else [],
+        "secret_metadata": check_secret_templates(target),
         "database": database_lifecycle,
         "database_lifecycle": database_lifecycle,
         "database_connections": database_connections if isinstance(database_connections, list) else [],

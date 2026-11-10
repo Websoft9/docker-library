@@ -279,8 +279,10 @@ Generated review evidence:
   retry/identity checks, unchanged unmanaged literal names, and consumer-source
   fingerprint. No defaults or generated values.
 
-The [Original Inventory](../metadata/secret-coverage.json#L1) remains the first-batch candidate
-inventory and was not rewritten to imply manual security approval. No general
+The original coverage snapshot was a first-batch candidate inventory, not manual
+security approval. It has since been retired; historical contents remain in Git
+history, while current declarations use the shared generation dictionary and live
+secret gates described in [Application Secret Spec](app-secret-spec.md). No general
 repository test, runtime deployment, API authorization, or restoration was
 performed by this review. Solutions, encoding choices, provider provisioning,
 consumer changes, and key rotation remain separate decisions.

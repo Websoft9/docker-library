@@ -76,6 +76,10 @@
       "CANVAS_LMS_ADMIN_EMAIL",
       "CANVAS_LMS_ADMIN_PASSWORD",
       "CANVAS_LMS_ACCOUNT_NAME"
+    ],
+    "secrets": [
+      "ENCRYPTION_KEY",
+      "JWT_ENCRYPTION_KEY"
     ]
   },
   "help": {

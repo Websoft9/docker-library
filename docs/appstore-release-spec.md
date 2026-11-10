@@ -171,48 +171,50 @@ Examples:
 
 ### Declarative Secrets (`env.secrets`)
 
-Some applications need **plaintext secrets** before startup, usually supplied through `.env` before `docker compose up`. `credentials` describes post-deployment retrieval, not pre-startup provisioning. `variables.json` therefore provides `env.secrets`.
+Some applications need **plaintext secrets** before startup, usually supplied through `.env` before `docker compose up`. `credentials` describes post-deployment retrieval, not pre-startup provisioning. `variables.json` therefore provides `env.secrets`, while `metadata/secret-rules.json` defines the shared rule dictionary published alongside `metadata/database-types.json`.
 
-It **declares names only, not generation rules**:
+Simple fields declare the **variable name only**, while fields requiring a specialized encoding or signature use a **single-key rule object**:
 
 ```json
 {
   "env": {
-    "secrets": ["LOCAL_BACKEND_API_KEY", "OH_SECRET_KEY"]
+    "secrets": [
+      "LOCAL_BACKEND_API_KEY",
+      "OH_SECRET_KEY",
+      { "SEMAPHORE_ACCESS_KEY_ENCRYPTION": "base64" },
+      { "AIRFLOW__CORE__FERNET_KEY": "fernet" },
+      "JWT_SECRET",
+      { "ANON_KEY": "jwt:JWT_SECRET" },
+      { "SERVICE_ROLE_KEY": "jwt:JWT_SECRET" }
+    ]
   }
 }
 ```
 
+Supported declaration items (defined in `metadata/secret-rules.json`):
+
+- `"KEY"`: Regenerate a random string with the `.env` default value's shape (preserving length and character classes across alphanumeric, hex case, hyphen-separated segments, and the fixed `sk-` prefix). Comma-separated lists (for example, Strapi `APP_KEYS=k1,k2,k3,k4`) regenerate each item independently by shape and rejoin with `,`.
+- `{ "KEY": "base64" }`: Use the `random_bytes` generator with standard Base64 encoding. Decode the nonempty `.env` default value to determine byte length $N$, generate $N$ random bytes, and encode as standard Base64. The template length must be verified against the application's upstream requirements; Base64 does not imply a universal security minimum.
+- `{ "KEY": "fernet" }`: Generate 32 random bytes and encode as URL-safe Base64 with `=` padding (standard 44-character Fernet key).
+- `{ "KEY": "jwt:<SECRET_KEY>" }`: Decode the `.env` default JWT header and payload, update `iat` to the creation timestamp while preserving the original `exp - iat` duration, and sign with the generated value of `<SECRET_KEY>`.
+
 Semantics (fixed across applications):
 
-- Supply a **plaintext default value** for each random seed in `.env`, also serving as its shape template. Shared values and fixed protocol prefixes use existing variable references rather than independent randomization.
+- The shared dictionary selects a `generator` and typed options (`encoding`, optional raw `bytes`, or `algorithm`); `description` is non-executable documentation. Omitted `bytes` means using the default template's decoded length. JWT declarations require the signing-key variable argument; byte profiles reject arguments. Unknown or invalid dictionary entries must fail, not fall back. Consumers must implement these generators; dictionary publication alone does not enable them.
+- Supply a **nonempty default value** for each declared secret in `.env`, serving as its shape/byte-length/JWT payload template. Shared values and fixed protocol prefixes use existing variable references (for example, `string:${CKAN_API_TOKEN_SECRET}`) rather than independent randomization.
 - The consumer generates values **when creating an instance** and writes them into its `.env`. Explicit user settings take precedence over cached values; installation retries reuse the same instance cache. This repository does not promise a generic regeneration interface; existing instances require application-specific rotation.
 - **Recreation/redeployment must never automatically regenerate values**: changing keys on every `up` would invalidate data or encryption.
-- There is one generation rule: **produce a random string with the current value's shape (length and character classes)**. No length/charset rules are provided.
-- Generated values must be safe in `.env`/Compose: **no `$`, spaces, `#`, or newlines** (`$` triggers Compose interpolation). The current consumer supports alphanumeric, hex, hyphen-separated segments, and the fixed `sk-` prefix; this does not promise general base64url, base64, UUID, or JWT generation.
-- Defaults are **placeholders/shape templates, not production keys**, and may be committed to Git. They must have the correct shape and approximate production strength.
+- Generated values must be safe in `.env`/Compose: **no `$`, spaces, `#`, or newlines** (`$` triggers Compose interpolation).
+- Defaults are **placeholders/templates, not production keys**, and may be committed to Git. They must have the correct shape, byte length, or JWT claims.
 
-`W9_POWER_PASSWORD` is a **single-value special case** of this mechanism, equivalent to:
+`W9_POWER_PASSWORD` and `W9_RCODE` are **implicit platform fields** of this mechanism. Existing applications using `W9_POWER_PASSWORD` for database or login passwords need no repeated declaration. Application-specific signing or encryption keys must be declared in `env.secrets` rather than borrowing `${W9_POWER_PASSWORD}`.
 
-```json
-{ "env": { "secrets": ["W9_POWER_PASSWORD"] } }
-```
+Validation rules (`libs app-check --gate policy` and `--gate secrets`):
 
-Existing applications using `W9_POWER_PASSWORD` therefore need no migration. When **multiple secrets with different shapes** are required, list their names in `env.secrets`.
+- Every declared key in `env.secrets` must exist in that application's `.env` with a nonempty default value.
+- `libs app-check --app <app> --gate secrets` checks supported shape templates (at least 12 random characters per item), `base64`/`fernet`/`jwt:<SECRET_KEY>` rule templates, missing/empty references, cycles, and unsupported reference syntax.
 
-Validation rules (`libs app-check --gate policy`):
-
-- Every name in `env.secrets` must exist in that application's `.env`.
-- Each default value must be nonempty.
-- Added or modified secret declarations/sources must also pass `libs app-check --app <app> --gate secrets`, checking supported template formats, at least 12 random characters, missing/empty references, cycles, and unsupported reference syntax. At least 32 random characters are recommended for production seeds.
-- During migration, `--gate secrets` is a separate strict gate, not included in existing `all`/`policy` aggregates. Passing legacy gates does not prove generation compatibility. Semaphore UI's known base64 template still fails; the first batch does not bypass that error.
-
-Non-goals:
-
-- No per-secret length/charset/pattern rules or template language.
-- Secrets with specialized formats (check digits, derivation, or particular encodings) remain application-owned (init/entrypoint), outside `env.secrets`.
-
-See the [Application Secret Spec](app-secret-spec.md) for classification, the current consumer format snapshot, repository scan boundaries, post-generation validation, and known specialized follow-ups. The rebuildable `metadata/secret-coverage.json` inventory is neither consumer configuration nor instance secret storage.
+See the [Application Secret Spec](app-secret-spec.md) for classification, consumer contract rules, and verification requirements.
 
 Example (`openhands`):
 
@@ -390,7 +392,7 @@ This follows the conventions of Helm (`apiVersion`), Docker Registry (`schemaVer
 3. `removedApps` -> remove locally.
 4. Any app update failure -> recover using the full package.
 
-When the library manifest declares `metadata.databaseTypes`, download its `path` and verify its `sha256` and checksum. Older schema 1 manifests may omit this optional entry. The dictionary has a content-addressed filename. An app delta may be empty for dictionary-only changes, but the dictionary update must not be skipped. Validate apps and dictionary in a temporary snapshot, then activate them together; on failure, retain or restore the last complete local snapshot. Unchanged app packages need no rebuild, and the dictionary is not duplicated in every app package.
+When the library manifest declares `metadata.databaseTypes` (or `metadata.secretRules`), download its `path` and verify its `sha256` and checksum. Older schema 1 manifests may omit these optional entries. Each shared dictionary has a content-addressed filename. An app delta may be empty for dictionary-only changes, but the dictionary update must not be skipped. Validate apps and dictionaries in a temporary snapshot, then activate them together; on failure, retain or restore the last complete local snapshot. Unchanged app packages need no rebuild, and the dictionaries are not duplicated in every app package.
 
 ### 3.1 Channel Data Differences
 
@@ -452,7 +454,9 @@ artifact/appstore/<channel>/
 │   ├── apps-delta-<fromVersion>-to-<toVersion>.json
 │   ├── metadata/
 │   │   ├── database-types-<sha256>.json
-│   │   └── database-types-<sha256>.json.sha256
+│   │   ├── database-types-<sha256>.json.sha256
+│   │   ├── secret-rules-<sha256>.json
+│   │   └── secret-rules-<sha256>.json.sha256
 │   ├── full/
 │   │   └── latest.zip
 │   └── apps/
@@ -543,13 +547,18 @@ Consumers download this single file and compare `catalog.datasetVersion` and `li
     "databaseTypes": {
       "path": "metadata/database-types-<sha256>.json",
       "sha256": "<sha256>"
+    },
+    "secretRules": {
+      "path": "metadata/secret-rules-<sha256>.json",
+      "sha256": "<sha256>"
     }
   },
   "checksum": {
     "fullPackage": "full/latest.zip.sha256",
     "appsIndex": "apps-index-85f687824c03ef93.json.sha256",
     "appsDelta": "apps-delta-7ee7a10b7da49f38-to-85f687824c03ef93.json.sha256",
-    "databaseTypes": "metadata/database-types-<sha256>.json.sha256"
+    "databaseTypes": "metadata/database-types-<sha256>.json.sha256",
+    "secretRules": "metadata/secret-rules-<sha256>.json.sha256"
   },
   "generatedAt": "2026-06-09T12:00:00Z"
 }
@@ -572,7 +581,7 @@ Consumers download this single file and compare `catalog.datasetVersion` and `li
 
 Clients compare the `hash` field to detect app changes.
 
-The apps-index root includes the same `metadata` dictionary fingerprint as the library manifest. Full packages retain the installation path `library/metadata/database-types.json`. Content-addressed filenames serve incremental distribution without changing the installation path. The removed `database-defaults.json` draft is not used for publishing or declaration resolution.
+The apps-index root includes the same `metadata` dictionary fingerprints as the library manifest. Full packages retain the installation paths `library/metadata/database-types.json` and `library/metadata/secret-rules.json`. Content-addressed filenames serve incremental distribution without changing the installation paths. The removed `database-defaults.json` draft is not used for publishing or declaration resolution.
 
 The library `datasetVersion` hashes the index's content fields, including app fingerprints and shared metadata, but excludes root `generatedAt`, app `updatedAt`, and the version field itself. Republishing identical content preserves the version; changing only the database dictionary changes it. Consumers must still check local shared metadata for missing or corrupt files even when the cached dataset version matches.
 

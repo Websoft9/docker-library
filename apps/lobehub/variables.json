@@ -69,5 +69,15 @@
       "port": 3210,
       "path": "/"
     }
+  },
+  "env": {
+    "secrets": [
+      {
+        "KEY_VAULTS_SECRET": "base64"
+      },
+      {
+        "AUTH_SECRET": "base64"
+      }
+    ]
   }
 }

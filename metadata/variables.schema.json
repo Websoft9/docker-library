@@ -178,10 +178,26 @@
           "type": "array",
           "uniqueItems": true,
           "items": {
-            "type": "string",
-            "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+              },
+              {
+                "type": "object",
+                "minProperties": 1,
+                "maxProperties": 1,
+                "propertyNames": {
+                  "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+                },
+                "additionalProperties": {
+                  "type": "string",
+                  "pattern": "^(base64|fernet|jwt:[A-Za-z_][A-Za-z0-9_]*)$"
+                }
+              }
+            ]
           },
-          "description": "Names of .env keys holding supported random templates or variable references. A consumer generates literal seeds once and preserves shared references; structured or derived keys need dedicated handling. No per-secret generation rules are declared here."
+          "description": "Declarations of .env secret keys. Plain variable names regenerate same-shaped values (including comma-separated lists); single-key objects declare a closed-vocabulary generator rule (base64, fernet, or jwt:<SECRET_KEY>)."
         }
       }
     },
@@ -432,6 +448,104 @@
           }
         }
       }
+    },
+    "secretRules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "base64",
+        "fernet",
+        "jwt"
+      ],
+      "properties": {
+        "base64": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/secretByteRule"
+            },
+            {
+              "properties": {
+                "encoding": {
+                  "const": "base64"
+                }
+              }
+            }
+          ]
+        },
+        "fernet": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/secretByteRule"
+            },
+            {
+              "required": [
+                "bytes"
+              ],
+              "properties": {
+                "encoding": {
+                  "const": "base64url"
+                },
+                "bytes": {
+                  "const": 32
+                }
+              }
+            }
+          ]
+        },
+        "jwt": {
+          "$ref": "#/$defs/secretJwtRule"
+        }
+      }
+    },
+    "secretByteRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "generator",
+        "encoding",
+        "description"
+      ],
+      "properties": {
+        "generator": {
+          "const": "random_bytes"
+        },
+        "encoding": {
+          "enum": [
+            "base64",
+            "base64url"
+          ]
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "secretJwtRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "generator",
+        "algorithm",
+        "description"
+      ],
+      "properties": {
+        "generator": {
+          "const": "jwt"
+        },
+        "algorithm": {
+          "const": "HS256"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "description": "JWT signing requires a secret variable argument in the application declaration."
     },
     "legacyDatabase": {
       "deprecated": true,

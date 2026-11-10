@@ -70,5 +70,11 @@
         "DATABASE_URL": "${url}"
       }
     }
-  ]
+  ],
+  "env": {
+    "secrets": [
+      "APP_SECRET",
+      "TWO_FACTOR_ENCRYPTION_KEY"
+    ]
+  }
 }

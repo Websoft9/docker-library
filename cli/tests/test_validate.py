@@ -351,37 +351,97 @@ def test_policy_result_accepts_declared_secrets_with_values(repo_fixture, app_fa
     assert result["secrets_empty"] == []
 
 
-@pytest.mark.parametrize("template,valid", [
-    ("AbC123" * 6, True),
-    ("a1" * 32, True),
-    ("sk-" + "a1" * 32, True),
-    ("1234-45687-12312", True),
-    ("CHANGE_ME", False),
-    ("a1" * 4, False),
-    ("string:" + "a1" * 16, False),
-    ("YWJjZGVmZ2hpamtsbW5vcA==", False),
-    ("eyJhbGc.eyJzdWI.signature", False),
-    ("123e4567-e89b-12d3-a456-426614174000", False),
-    ("prefix-1234567890123456", False),
+@pytest.mark.parametrize("template,rule,valid", [
+    ("AbC123" * 6, None, True),
+    ("a1" * 32, None, True),
+    ("sk-" + "a1" * 32, None, True),
+    ("1234-45687-12312", None, True),
+    ("AbC123" * 6 + "," + "DeF456" * 6, None, True),
+    ("CHANGE_ME", None, False),
+    ("a1" * 4, None, False),
+    ("string:" + "a1" * 16, None, False),
+    ("YWJjZGVmZ2hpamtsbW5vcA==", None, False),
+    ("eyJhbGc.eyJzdWI.signature", None, False),
+    ("123e4567-e89b-12d3-a456-426614174000", None, False),
+    ("prefix-1234567890123456", None, False),
+    ("8NfDK/jj3+j+VRo+2bqbuTpwNiFM77wDhkIgIM7nK+Q=", "base64", True),
+    ("YWJj", "base64", True),
+    ("", "base64", False),
+    ("YWJj!", "base64", False),
+    ("YR==", "base64", False),
+    ("46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=", "fernet", True),
+    ("8NfDK/jj3+j+VRo+2bqbuTpwNiFM77wDhkIgIM7nK+Q=", "fernet", False),
+    (
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiJ9.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE",
+        "jwt:JWT_SECRET",
+        True,
+    ),
+    ("not-a-jwt", "jwt:JWT_SECRET", False),
+    ("eyJhbGciOiJub25lIn0.e30.signature", "jwt:JWT_SECRET", False),
+    ("eyJhbGciOiJSUzI1NiJ9.e30.signature", "jwt:JWT_SECRET", False),
 ])
-def test_secret_template_format_contract(template, valid):
+def test_secret_template_format_contract(template, rule, valid):
     from libs.secret_audit import template_issue
 
-    assert (template_issue(template) is None) == valid
+    assert (template_issue(template, rule) is None) == valid
 
 
-@pytest.mark.parametrize("env,valid", [
-    ("SEED=" + "a1" * 32 + "\nKEY=string:${SEED}\n", True),
-    ("KEY=${W9_POWER_PASSWORD}\nW9_POWER_PASSWORD=\n", True),
-    ("KEY=${MISSING}\n", False),
-    ("KEY=${SEED}\nSEED=${KEY}\n", False),
-    ("KEY=${SEED:-fallback}\n", False),
-    ("KEY=\n", False),
+def test_secret_template_uses_dictionary_parameters(repo_fixture):
+    from libs.secret_audit import load_secret_rules, template_issue
+
+    rules = load_secret_rules()
+    rules["base64"]["bytes"] = 4
+    assert template_issue("YWJj", "base64", rules) is not None
+    assert template_issue("YWJjZA==", "base64", rules) is None
+
+
+@pytest.mark.parametrize("rule,valid", [
+    ("base64", True), ("fernet", True), ("jwt:JWT_SECRET", True),
+    ("base64:KEY", False), ("fernet:KEY", False), ("jwt", False),
+    ("jwt:", False), ("jwt:INVALID-KEY", False), ("unknown", False),
 ])
-def test_secret_gate_validates_references(repo_fixture, app_factory, env, valid):
+def test_secret_declaration_generator_arguments(repo_fixture, rule, valid):
+    from libs.secret_audit import parse_secret_declarations
+
+    declarations, errors = parse_secret_declarations([{"KEY": rule}])
+    assert bool(declarations) == valid
+    assert bool(errors) != valid
+
+
+def test_secret_declarations_reject_missing_dictionary(repo_fixture):
+    from libs.secret_audit import parse_secret_declarations
+
+    (repo_fixture / "metadata" / "secret-rules.json").unlink()
+    declarations, errors = parse_secret_declarations([{"KEY": "base64"}])
+    assert declarations == []
+    assert errors
+
+
+@pytest.mark.parametrize("env,secrets,valid", [
+    ("SEED=" + "a1" * 32 + "\nKEY=string:${SEED}\n", ["KEY"], True),
+    ("KEY=${W9_POWER_PASSWORD}\nW9_POWER_PASSWORD=\n", ["KEY"], True),
+    ("KEY=8NfDK/jj3+j+VRo+2bqbuTpwNiFM77wDhkIgIM7nK+Q=\n", [{"KEY": "base64"}], True),
+    ("KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=\n", [{"KEY": "fernet"}], True),
+    (
+        "JWT_SECRET=" + "a1" * 32 + "\nANON=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiJ9.sig\n",
+        ["JWT_SECRET", {"ANON": "jwt:JWT_SECRET"}],
+        True,
+    ),
+    (
+        "JWT_SECRET=" + "a1" * 32 + "\nANON=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiJ9.sig\n",
+        [{"ANON": "jwt:JWT_SECRET"}],
+        False,
+    ),
+    ("KEY=8NfDK/jj3+j+VRo+2bqbuTpwNiFM77wDhkIgIM7nK+Q=\n", [{"KEY": "unknown"}], False),
+    ("KEY=${MISSING}\n", ["KEY"], False),
+    ("KEY=${SEED}\nSEED=${KEY}\n", ["KEY"], False),
+    ("KEY=${SEED:-fallback}\n", ["KEY"], False),
+    ("KEY=\n", ["KEY"], False),
+])
+def test_secret_gate_validates_references(repo_fixture, app_factory, env, secrets, valid):
     from libs.secret_audit import check_secret_templates
 
-    target = app_factory("demo", env=env, variables={"env": {"secrets": ["KEY"]}})
+    target = app_factory("demo", env=env, variables={"env": {"secrets": secrets}})
     result = check_secret_templates(target)
     assert result["ok"] == valid
     assert "a1" * 32 not in json.dumps(result)
@@ -408,6 +468,19 @@ def test_secret_gate_is_exposed_by_app_check(repo_fixture, app_factory):
     assert payload["gate"] == "secrets"
     assert payload["ok"]
     assert payload["result"]["fields"] == [{"name": "KEY", "kind": "random_template", "references": []}]
+
+    all_payload = validate.check_app("demo", gate="all")
+    assert all_payload["ok"] is True
+    assert all_payload["secrets"]["ok"] is True
+
+    from libs.app import collect_app_info
+
+    info = collect_app_info("demo")
+    assert info["secrets"] == ["KEY"]
+    assert info["secret_metadata"]["ok"] is True
+
+    (repo_fixture / "metadata" / "secret-rules.json").unlink()
+    assert validate.check_app("demo", gate="all")["ok"] is False
 
 
 def test_policy_result_flags_invalid_setup_access_service_and_duplicate_ids(repo_fixture, app_factory):
