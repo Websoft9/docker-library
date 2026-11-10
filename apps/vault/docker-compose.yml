@@ -2,10 +2,8 @@ services:
   vault:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
-    cap_add:
-      - IPC_LOCK
     ports:
-      - "${W9_HTTP_PORT_SET}:8200" # Vault UI and HTTP API and CLI
+      - "${W9_HTTP_PORT_SET}:8200" # Vault UI and HTTP API
     env_file:
       - .env
     volumes:

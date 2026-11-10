@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-11-10
+
+- Updated Vault from `2.1` to the approved `2.2` image tag.
+- Set `disable_mlock` in local configuration and removed the `IPC_LOCK` capability per Vault 2.2 container guidance.
+
 ## 2026-09-20
 
 - Updated Vault from `1.21` to `2.1`, the latest stable upstream minor (upstream `2.1.1`).
