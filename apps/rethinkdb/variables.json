@@ -14,7 +14,7 @@
     {
       "dist": "community",
       "version": [
-        "2.4.4-bookworm-slim",
+        "2.4",
         "latest"
       ]
     }

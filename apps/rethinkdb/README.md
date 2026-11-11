@@ -41,7 +41,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 2.4.4-bookworm-slim, latest.
+Supported versions: 2.4, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
