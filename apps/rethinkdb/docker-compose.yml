@@ -1,0 +1,34 @@
+services:
+
+  rethinkdb:
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
+    restart: unless-stopped
+    env_file: .env
+    command:
+      - /bin/bash
+      - -c
+      - |
+        if [ ! -f /data/rethinkdb_data/metadata ]; then
+          rethinkdb create --initial-password "${W9_LOGIN_PASSWORD}"
+        fi
+        exec rethinkdb --bind all
+    ports:
+      - "${W9_HTTP_PORT_SET}:8080" # Web admin console
+      - "${W9_DB_PORT_SET}:28015" # Database driver
+    volumes:
+      - rethinkdb_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/28015'"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  rethinkdb_data:
+
+networks:
+  default:
+    name: ${W9_NETWORK}
+    external: true

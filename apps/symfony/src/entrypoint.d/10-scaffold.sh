@@ -24,6 +24,12 @@ else
   cp -a "${TMP_ROOT}/app/." "${APP_DIR}/"
   rm -rf "${TMP_ROOT}"
 
+  # composer create-project has already warmed var/cache inside the temp
+  # directory, i.e. before the starter controller below existed. That cache
+  # references the removed temp path and, because Symfony does not revalidate
+  # the compiled container in prod, would leave the app without any route.
+  rm -rf "${APP_DIR}/var/cache" "${APP_DIR}/var/log"
+
   mkdir -p "${APP_DIR}/src/Controller"
   cat > "${APP_DIR}/src/Controller/HomeController.php" <<'PHP'
 <?php

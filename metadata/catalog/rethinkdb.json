@@ -1,0 +1,16 @@
+{
+  "trademark": "RethinkDB",
+  "catalogBindings": [
+    {
+      "parentKey": "database",
+      "childKey": "nosql"
+    }
+  ],
+  "summary": "Realtime JSON document database.",
+  "overview": "Open-source distributed JSON database with ReQL, changefeeds, and a web admin console.",
+  "description": "RethinkDB is an open-source, distributed document database built for realtime applications. It stores JSON documents, uses the ReQL query language, and pushes query results to clients through changefeeds instead of requiring polling. It supports secondary indexes, joins, geospatial and time-series data, and cluster sharding and replication managed from a built-in web administration console.\n\nThis package deploys the official rethinkdb image as a single node. The web admin console is published on port 8080 and the database driver on port 28015. Data is persisted in a named volume mounted at /data, and the admin password is seeded from W9_LOGIN_PASSWORD on first startup only.\n\nTypical use cases include realtime web and mobile apps, multiplayer games, marketplaces, streaming dashboards, and IoT data pipelines.",
+  "websiteurl": "https://rethinkdb.com",
+  "screenshots": [
+    "https://rethinkdb.com/assets/images/landing/rethinkdb-ui_@2x.png"
+  ]
+}

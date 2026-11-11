@@ -43,6 +43,9 @@ cadence:
   - qwenpaw
   - symfony
   - xinference
+  quarterly:
+  - php
+  - rethinkdb
 update_policy:
   patch-minor:
   - grav
@@ -50,7 +53,9 @@ update_policy:
   - jfrog
   - langfuse
   - opendesign
+  - php
   - qwenpaw
+  - rethinkdb
   - symfony
   - xinference
 lifecycle:

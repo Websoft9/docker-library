@@ -10,6 +10,7 @@ services:
       - symfony_app:/var/www/html
       - ./src/entrypoint.sh:/opt/websoft9/entrypoint.sh:ro
       - ./src/entrypoint.d:/opt/websoft9/entrypoint.d:ro
+      - ./src/favicon.ico:/opt/websoft9/favicon.ico:ro
     depends_on:
       permissions:
         condition: service_completed_successfully
