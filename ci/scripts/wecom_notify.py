@@ -26,7 +26,7 @@ def release_message(repository: str, tag: str, release_url: str, run_url: str, n
         f"# Appstore 发布成功：{tag}\n"
         f"> 仓库：{repository}\n"
         f"> [Release 与完整说明]({release_url})\n"
-        "> [Appstore 制品](https://artifact.websoft9.com/release/websoft9/plugin/library/library-latest.zip)\n"
+        "> [Appstore 制品](https://artifact.websoft9.com/appstore/release/manifests/appstore-manifest.json)\n"
         f"> [发布运行记录]({run_url})\n\n"
         "## Release notes\n"
     )

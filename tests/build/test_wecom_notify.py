@@ -21,7 +21,8 @@ def test_release_summary_preserves_links_and_utf8_limit():
     assert "0.8.4" in message and "中文变更" in message
     assert "generated-changelog" not in message
     assert "releases/tag/0.8.4" in message
-    assert "library-latest.zip" in message
+    assert "https://artifact.websoft9.com/appstore/release/manifests/appstore-manifest.json" in message
+    assert "/websoft9/plugin/" not in message
     assert "actions/runs/123" in message
     assert message.endswith("…（内容已截断，完整说明见 Release）")
 

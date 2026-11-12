@@ -21,11 +21,11 @@ This repository uses an AI-first delivery model: owners decide demand and the fi
 
 ## Publishing
 
-- Merging into `main` automatically publishes dev appstore artifacts.
+- Merging into `main` triggers dev Appstore publication. Publication validates the artifacts, not consumer deployment status; each consumer independently checks supported contracts before accepting updates. Only `appstore/<channel>/` is published; legacy library/media publication is retired, with no old-client compatibility commitment. See [consumer compatibility](docs/appstore-release-spec.md#23-consumer-compatibility).
 - After validating dev, open **Releases → Draft a new release** on GitHub, choose/create an `X.Y.Z` tag on `main` (for example `0.9.0`), then click **Publish release**. Saving a draft or pushing only a tag does not publish official artifacts. Do not move or overwrite official tags.
 - The Appstore workflow first calls the existing image workflow to promote exact-context candidates for all custom-image apps, then publishes release artifacts. Missing candidates block Appstore publication. To backfill a historical app, run **Build image to DockerHub** manually with `channel=dev`, that app, and the release tag as the selected ref, then re-run the failed release jobs.
 - Actions update only the generated changelog section of the existing Release, preserving human notes, and upload metadata/checksums/changelog attachments. Re-running replaces generated content rather than duplicating it.
-- Tags are the only official release version source; there is no source-controlled `library.json` to update. The publisher generates legacy `library.json` metadata inside artifacts for existing clients.
+- Tags identify official source releases, not compatibility. Maintain root/catalog/library contract versions only in `metadata/appstore-schema.json`; content fingerprints are generated and publisher tests read their expected versions from that configuration. Only incompatible changes require a contract bump and documentation of the changed behavior; routine compatible updates need neither. The full package embeds `library.json` for traceability; legacy destinations are never overwritten.
 - Manual runs support dev and rc only. Their artifact versions use `<channel>-<commit SHA>`; v2 content hashes remain independent of release versions.
 - The GitHub Release exists before post-publication Actions finish; check the Actions result before announcing that artifacts are ready.
 

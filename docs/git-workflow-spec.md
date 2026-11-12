@@ -25,6 +25,8 @@
   - existing GitHub Release changelog/assets updated
 - Manual `workflow_dispatch` may choose the channel explicitly.
 
+Appstore publication validates artifacts without requiring consumer-readiness approval. Each consumer checks supported contracts and decides whether to accept an update independently. Only the current `appstore/<channel>/` distribution is published. Legacy library/media publication is retired; existing objects are not modified, and old-client compatibility is not maintained. Release tags identify source history, while [Appstore contracts](appstore-release-spec.md) independently govern consumer compatibility.
+
 ## 3. Image Strategy
 
 - A `main` push builds candidate images for changed custom-image apps:

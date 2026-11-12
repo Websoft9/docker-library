@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -32,15 +33,6 @@ def upload_plan(output_dir: Path, channel: str) -> list[tuple[Path, str, dict]]:
         if not versions.is_file():
             raise ValueError("missing dev app version index")
         plan.append((versions, "appstore/dev/library/apps-verson.json", {"CacheControl": "public, max-age=60"}))
-    for name in ("library", "media"):
-        directory = output_dir / "legacy" / channel / name
-        if not directory.is_dir() or not any(directory.rglob("*")):
-            raise ValueError(f"missing legacy upload directory: {directory}")
-        for source in sorted(directory.rglob("*")):
-            if source.is_file():
-                key = f"{channel}/websoft9/plugin/{name}/{source.relative_to(directory).as_posix()}"
-                plan.append((source, key, {}))
-
     def priority(entry: tuple[Path, str, dict]) -> tuple[int, str]:
         key = entry[1]
         if key == f"appstore/{channel}/manifests/appstore-manifest.json":
@@ -58,6 +50,13 @@ def upload_plan(output_dir: Path, channel: str) -> list[tuple[Path, str, dict]]:
                 f"appstore/{channel}/manifests/appstore-manifest.json"):
         if key not in keys:
             raise ValueError(f"missing upload manifest: {key}")
+        source = output_dir / key
+        checksum = source.with_name(f"{source.name}.sha256")
+        if not checksum.is_file():
+            raise ValueError(f"missing upload manifest checksum: {key}.sha256")
+        expected = f"{hashlib.sha256(source.read_bytes()).hexdigest()}  {source.name}"
+        if checksum.read_text(encoding="utf-8").strip() != expected:
+            raise ValueError(f"mismatched upload manifest checksum: {key}")
     return sorted(plan, key=priority)
 
 

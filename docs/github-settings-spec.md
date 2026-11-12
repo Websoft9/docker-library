@@ -34,10 +34,13 @@ Configure custom secrets under **Secrets and variables → Actions → Secrets**
 | WeCom notifications (maintenance scan, E2E and successful official releases) | `WECOM_WEBHOOK` |
 | Contentful | `CONTENTFUL_TOKEN`, `CONTENTFUL_GRAPHQLTOKEN` |
 | R2 publishing | `CLOUDFLARE_R2_SECRET_ID`, `CLOUDFLARE_R2_SECRET_KEY`, `CLOUDFLARE_ACCOUNT_ID` |
-| Cloudflare cache purge | `CLOUDFLARE_ZONE_ID`, `CLOUDFLARE_API_TOKEN` |
 | DockerHub publishing | `DOCKER_USERNAME`, `DOCKER_PASSWORD` |
 
 The maintenance workflow creates/updates the **Actions variable** `MAINTENANCE_SCAN_STATE`; it is not a secret.
+
+## Appstore publication
+
+Appstore publication uses the normal workflow triggers and artifact validation, without consumer-readiness approval variables. Each consumer owns its supported contracts and upgrade schedule; this repository neither configures those versions nor waits for consumer deployment. See [consumer compatibility](appstore-release-spec.md#23-consumer-compatibility).
 
 ## Verification
 

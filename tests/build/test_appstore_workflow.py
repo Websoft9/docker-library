@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import hashlib
 import subprocess
 
 import pytest
@@ -9,9 +10,9 @@ import yaml
 from _helpers import REPO_ROOT, load_build_module
 
 
-def run_step(tmp_path, name, **values):
+def run_step(tmp_path, name, *, job="publish", **values):
     workflow = yaml.safe_load((REPO_ROOT / ".github/workflows/appstore-publish.yml").read_text())
-    script = next(step["run"] for step in workflow["jobs"]["publish"]["steps"] if step.get("name") == name)
+    script = next(step["run"] for step in workflow["jobs"][job]["steps"] if step.get("name") == name)
     bin_dir = tmp_path / "bin"
     bin_dir.mkdir(exist_ok=True)
     git = bin_dir / "git"
@@ -65,12 +66,29 @@ def test_manual_release_is_rejected(tmp_path):
     assert result.returncode != 0
 
 
-def test_rc_purges_only_rc_artifacts(tmp_path):
-    result, output = run_step(tmp_path, "Resolve legacy purge URLs", CHANNEL="rc")
+@pytest.mark.parametrize("event,channel", [
+    ("push", "dev"), ("workflow_dispatch", "dev"),
+    ("workflow_dispatch", "rc"), ("release", "release"),
+])
+@pytest.mark.parametrize("approval", [None, "false", "true"])
+def test_channels_do_not_require_consumer_approval(tmp_path, monkeypatch, event, channel, approval):
+    workflow = (REPO_ROOT / ".github/workflows/appstore-publish.yml").read_text()
+    assert "APPSTORE_CONTRACT_V2_" not in workflow
+    for name in ("DEV", "RC", "RELEASE"):
+        variable = f"APPSTORE_CONTRACT_V2_{name}_READY"
+        if approval is None:
+            monkeypatch.delenv(variable, raising=False)
+        else:
+            monkeypatch.setenv(variable, approval)
+    result, output = run_step(
+        tmp_path, "Resolve publish channel", EVENT_NAME=event,
+        INPUT_CHANNEL=channel, RELEASE_TAG="0.9.0" if event == "release" else "",
+    )
     assert result.returncode == 0, result.stderr
-    assert "/rc/websoft9/plugin/library/library-rc.zip" in output["urls"]
-    assert "/rc/websoft9/plugin/media/media-latest.zip" in output["urls"]
-    assert "/release/" not in output["urls"]
+    assert output == {
+        "channel": channel,
+        "version": "0.9.0" if event == "release" else f"{channel}-abcdef123456",
+    }
 
 
 def test_release_is_published_once_and_waits_for_images():
@@ -84,6 +102,9 @@ def test_release_is_published_once_and_waits_for_images():
     assert workflow["jobs"]["publish"]["needs"] == ["release-plan", "release-images"]
     assert "needs.release-images.result == 'success'" in workflow["jobs"]["publish"]["if"]
     assert "pages" not in workflow["jobs"]
+    release_steps = workflow["jobs"]["release-plan"]["steps"]
+    assert release_steps[0]["uses"] == "actions/checkout@v7"
+    assert workflow["jobs"]["publish"]["steps"][0]["uses"] == "actions/checkout@v7"
 
 
 def test_dev_app_versions_are_uploaded_to_fixed_r2_key(tmp_path):
@@ -106,8 +127,13 @@ def test_dev_app_versions_are_uploaded_to_fixed_r2_key(tmp_path):
         path = tmp_path / name
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(b"fixture")
+        if path.name.endswith("manifest.json"):
+            path.with_name(f"{path.name}.sha256").write_text(
+                f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.name}\n"
+            )
     plan = {key: source for source, key, headers in uploader.upload_plan(tmp_path, "dev")}
     assert plan["appstore/dev/library/apps-verson.json"] == tmp_path / "appstore/dev/apps-verson.json"
+    assert all(key.startswith("appstore/dev/") for key in plan)
 
 
 def test_bare_tag_push_does_not_publish_release(tmp_path):

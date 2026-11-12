@@ -28,6 +28,7 @@ def build_fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     )
     (tmp_path / "archive" / "apps" / "archived-demo").mkdir(parents=True)
     (tmp_path / "metadata").mkdir(parents=True, exist_ok=True)
+    shutil.copy2(REPO_ROOT / "metadata" / "appstore-schema.json", tmp_path / "metadata" / "appstore-schema.json")
     shutil.copy2(REPO_ROOT / "metadata" / "database-types.json", tmp_path / "metadata" / "database-types.json")
     shutil.copy2(REPO_ROOT / "metadata" / "secret-rules.json", tmp_path / "metadata" / "secret-rules.json")
     (tmp_path / "metadata" / "maintenance.yaml").write_text(

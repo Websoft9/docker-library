@@ -14,6 +14,8 @@ from _helpers import REPO_ROOT, load_build_module
 
 library_publish = load_build_module("library_publish_test", REPO_ROOT / "ci" / "scripts" / "library_publish.py")
 appstore_upload = load_build_module("appstore_upload_test", REPO_ROOT / "ci" / "scripts" / "appstore_upload.py")
+CONTRACTS = json.loads((REPO_ROOT / "metadata/appstore-schema.json").read_text(encoding="utf-8"))
+LIBRARY_SCHEMA = CONTRACTS["library"]["schemaVersion"]
 
 
 def test_hash_content_is_deterministic_and_input_sensitive():
@@ -75,7 +77,30 @@ def upload_fixture(tmp_path):
         path = output / name
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(b"new")
+    for name in ("catalog/manifest.json", "library/manifest.json", "manifests/appstore-manifest.json"):
+        library_publish.write_checksum_file(output / "appstore/dev" / name)
     return output
+
+
+@pytest.mark.parametrize("manifest", ["catalog/manifest.json", "library/manifest.json", "manifests/appstore-manifest.json"])
+@pytest.mark.parametrize("failure", ["missing", "corrupt", "payload-changed", "wrong-filename"])
+def test_manifest_checksum_preflight_prevents_remote_operations(upload_fixture, tmp_path, manifest, failure):
+    source = upload_fixture / "appstore/dev" / manifest
+    checksum = source.with_name(f"{source.name}.sha256")
+    if failure == "missing":
+        checksum.unlink()
+    elif failure == "corrupt":
+        checksum.write_text("invalid\n")
+    elif failure == "payload-changed":
+        source.write_bytes(b"changed")
+    else:
+        checksum.write_text(checksum.read_text().replace(source.name, "wrong.json"))
+    client = FakeUploadStore(backup_error="unexpected remote call")
+    backup = tmp_path / "backup"
+    with pytest.raises(ValueError, match="upload manifest checksum"):
+        appstore_upload.upload_artifacts(client, upload_fixture, "dev", backup)
+    assert not backup.exists()
+    assert client.uploaded == []
 
 
 def test_upload_commits_manifests_after_packages_and_preserves_unrelated_objects(upload_fixture, tmp_path):
@@ -85,7 +110,7 @@ def test_upload_commits_manifests_after_packages_and_preserves_unrelated_objects
     assert appstore_upload.upload_artifacts(client, upload_fixture, "dev", tmp_path / "backup") == len(plan)
     assert client.uploaded[-1] == "appstore/dev/manifests/appstore-manifest.json"
     assert client.uploaded.index("appstore/dev/library/apps/demo/latest.zip") < client.uploaded.index("appstore/dev/library/manifest.json")
-    assert client.uploaded.index("dev/websoft9/plugin/media/media-dev.zip") < client.uploaded.index("appstore/dev/library/manifest.json")
+    assert all(key.startswith("appstore/dev/") for key in client.uploaded)
     assert client.objects["appstore/dev/library/apps/unchanged/latest.zip"] == unrelated["appstore/dev/library/apps/unchanged/latest.zip"]
     assert client.objects["appstore/dev/library/apps-verson.json"][0] == b"new"
 
@@ -158,18 +183,41 @@ def test_failed_rollback_is_reported_and_keeps_backup(upload_fixture, tmp_path):
     assert (backup / entry["backup"]).read_bytes() == b"old"
 
 
-@pytest.mark.parametrize("channel", ["rc", "release"])
-def test_upload_keeps_channel_and_legacy_paths(upload_fixture, tmp_path, channel):
-    (upload_fixture / "appstore/dev").rename(upload_fixture / "appstore" / channel)
-    (upload_fixture / "legacy/dev").rename(upload_fixture / "legacy" / channel)
-    client = FakeUploadStore()
+@pytest.mark.parametrize("channel", ["dev", "rc", "release"])
+@pytest.mark.parametrize("stale_legacy_output", [False, True])
+def test_upload_retires_legacy_publication(upload_fixture, tmp_path, channel, stale_legacy_output):
+    if not stale_legacy_output:
+        legacy = upload_fixture / "legacy/dev"
+        (legacy / "library/library-dev.zip").unlink()
+        (legacy / "media/media-dev.zip").unlink()
+        (legacy / "library").rmdir()
+        (legacy / "media").rmdir()
+        legacy.rmdir()
+        (upload_fixture / "legacy").rmdir()
+    if channel != "dev":
+        (upload_fixture / "appstore/dev").rename(upload_fixture / "appstore" / channel)
+        if stale_legacy_output:
+            (upload_fixture / "legacy/dev").rename(upload_fixture / "legacy" / channel)
+    original = {
+        f"{channel}/websoft9/plugin/{name}/{filename}": (
+            b"historical package", {"CacheControl": "private", "Metadata": {"owner": "legacy"}},
+        )
+        for name, filename in (
+            ("library", "library-latest.zip"), ("library", "library.json"),
+            ("media", "media-latest.zip"), ("media", "media-latest.zip.sha256"),
+        )
+    }
+    client = FakeUploadStore(original)
     appstore_upload.upload_artifacts(client, upload_fixture, channel, tmp_path / "backup")
     assert client.uploaded[-1] == f"appstore/{channel}/manifests/appstore-manifest.json"
-    assert all(key.startswith((f"appstore/{channel}/", f"{channel}/websoft9/")) for key in client.uploaded)
-    assert not any(key.endswith("apps-verson.json") for key in client.uploaded)
+    assert all(key.startswith(f"appstore/{channel}/") for key in client.uploaded)
+    assert {key: client.objects[key] for key in original} == original
+    journal = json.loads((tmp_path / "backup/journal.json").read_text())
+    assert all(entry["key"].startswith(f"appstore/{channel}/") for entry in journal["objects"])
+    assert any(key.endswith("apps-verson.json") for key in client.uploaded) is (channel == "dev")
 
 
-def test_workflow_uses_one_rollback_upload_before_purge_and_keeps_recovery_backup():
+def test_workflow_uses_current_only_rollback_upload_and_keeps_recovery_backup():
     workflow = yaml.safe_load((REPO_ROOT / ".github/workflows/appstore-publish.yml").read_text())
     steps = workflow["jobs"]["publish"]["steps"]
     upload = next(step for step in steps if step.get("id") == "upload_appstore")
@@ -178,8 +226,11 @@ def test_workflow_uses_one_rollback_upload_before_purge_and_keeps_recovery_backu
     assert not any("aws s3 sync" in step.get("run", "") and "s3://artifact/" in step["run"] for step in steps)
     recovery = next(step for step in steps if step.get("name") == "Preserve failed upload recovery backup")
     assert "steps.upload_appstore.outcome == 'failure'" in recovery["if"]
-    purge = next(step for step in steps if step.get("name") == "Purge legacy Cloudflare Cache")
-    assert steps.index(upload) < steps.index(purge)
+    assert not any("legacy" in step.get("name", "").lower() for step in steps)
+    scripts = "\n".join(step.get("run", "") for step in steps)
+    assert "/websoft9/plugin/" not in scripts
+    assert "catalog-source/logos" not in scripts
+    assert "catalog-source/screenshots" not in scripts
 
 
 def test_upload_cli_uses_configured_client_without_sdk_or_network(upload_fixture, tmp_path, monkeypatch, capsys):
@@ -306,7 +357,7 @@ def test_apps_index_version_ignores_publication_and_display_times(build_fixture,
     assert library_publish.build_apps_index_with_version("dev", "2026-02-01T00:00:00Z")[1] != old_version
 
 
-@pytest.mark.parametrize("schema_version", ["1", "2"])
+@pytest.mark.parametrize("schema_version", [str(version) for version in range(1, int(LIBRARY_SCHEMA) + 1)])
 def test_previous_published_index_supplies_dataset_version(build_fixture, monkeypatch, schema_version):
     monkeypatch.setattr(library_publish, "ROOT", build_fixture)
     monkeypatch.setattr(library_publish, "APPS_DIR", build_fixture / "apps")
@@ -328,7 +379,7 @@ def test_previous_published_index_supplies_dataset_version(build_fixture, monkey
         library_publish.load_previous_apps_index(str(path), "dev")
 
 
-@pytest.mark.parametrize("schema_version", ["3", 1, None, [], {}])
+@pytest.mark.parametrize("schema_version", [str(int(LIBRARY_SCHEMA) + 1), 1, None, [], {}])
 def test_previous_published_index_rejects_unknown_schema(build_fixture, monkeypatch, schema_version):
     monkeypatch.setattr(library_publish, "ROOT", build_fixture)
     monkeypatch.setattr(library_publish, "APPS_DIR", build_fixture / "apps")
@@ -404,7 +455,7 @@ def test_build_apps_index_with_fixture_apps(build_fixture, monkeypatch):
 
     index = library_publish.build_apps_index("dev", "2026-01-01T00:00:00Z")
 
-    assert index["schemaVersion"] == "1"
+    assert index["schemaVersion"] == LIBRARY_SCHEMA
     assert "datasetVersion" not in index
     assert index["appCount"] == 1
     entry = index["apps"][0]
@@ -446,7 +497,7 @@ def test_build_apps_delta_computes_added_changed_removed(monkeypatch):
     assert delta["addedApps"] == ["b"]
     assert delta["removedApps"] == ["a"]
     assert delta["changedApps"] == ["c"]
-    assert delta["schemaVersion"] == "1"
+    assert delta["schemaVersion"] == LIBRARY_SCHEMA
 
 
 def test_distribution_map_and_merge_product_distribution(build_fixture, monkeypatch):
@@ -489,7 +540,7 @@ def test_manifest_builders_have_expected_shape():
     catalog = library_publish.build_catalog_manifest(
         "c-dsv", {"catalogEn": "catalog_en.json.sha256"}, "2026-01-01T00:00:00Z", "full/latest.zip"
     )
-    assert catalog["schemaVersion"] == "1"
+    assert catalog["schemaVersion"] == CONTRACTS["catalog"]["schemaVersion"]
     assert catalog["source"] == "contentful"
     assert catalog["files"]["catalogEn"] == "catalog_en.json"
     assert catalog["fullPackage"] == "full/latest.zip"
@@ -497,17 +548,19 @@ def test_manifest_builders_have_expected_shape():
     library = library_publish.build_library_manifest(
         "l-dsv", "dev", "full/latest.zip", "apps-index.json", "apps-delta.json", {"fullPackage": "x.sha256"}, "2026-01-01T00:00:00Z"
     )
-    assert library["schemaVersion"] == "1"
+    assert library["schemaVersion"] == LIBRARY_SCHEMA
     assert library["supportsPartialUpdate"] is True
     assert library["appPackagesBase"] == "apps/"
 
     appstore = library_publish.build_appstore_manifest(
         "a-dsv", "dev", "2026-01-01T00:00:00Z", "c-dsv", "l-dsv"
     )
-    assert appstore["minWebsoft9Version"] == library_publish.MIN_WEBSOFT9_VERSION
+    assert "minWebsoft9Version" not in appstore
+    assert appstore["catalog"]["schemaVersion"] == CONTRACTS["catalog"]["schemaVersion"]
+    assert appstore["library"]["schemaVersion"] == LIBRARY_SCHEMA
     assert appstore["catalog"]["manifest"] == "catalog/manifest.json"
-    assert appstore["library"] == {"manifest": "library/manifest.json", "datasetVersion": "l-dsv"}
-    assert appstore["schemaVersion"] == "1"
+    assert appstore["library"] == {"schemaVersion": LIBRARY_SCHEMA, "manifest": "library/manifest.json", "datasetVersion": "l-dsv"}
+    assert appstore["schemaVersion"] == CONTRACTS["schemaVersion"]
 
 
 def test_ensure_catalog_source_requires_all_four_files(tmp_path: Path):
@@ -535,7 +588,7 @@ def test_validate_catalog_artifacts_rejects_missing_files(tmp_path: Path):
 def test_release_metadata_uses_tag_without_source_version_file(build_fixture, monkeypatch):
     monkeypatch.setattr(library_publish, "ROOT", build_fixture)
     assert not (build_fixture / "library.json").exists()
-    assert library_publish.build_library_metadata("release", "2.0.0") == {"Version": "2.0.0", "schemaVersion": "1"}
+    assert library_publish.build_library_metadata("release", "2.0.0") == {"Version": "2.0.0", "schemaVersion": LIBRARY_SCHEMA}
 
 
 @pytest.mark.parametrize("value", [None, "", "v2.0.0", "2.0", "2.0.0-rc.1", "02.0.0", "../2.0.0"])
@@ -547,7 +600,7 @@ def test_release_metadata_rejects_missing_or_nonstable_versions(value):
 @pytest.mark.parametrize("channel", ["dev", "rc"])
 def test_nonrelease_metadata_defaults_to_commit_version(channel, monkeypatch):
     monkeypatch.setattr(library_publish, "run_git", lambda *args: "abcdef123456")
-    assert library_publish.build_library_metadata(channel, None) == {"Version": f"{channel}-abcdef123456", "schemaVersion": "1"}
+    assert library_publish.build_library_metadata(channel, None) == {"Version": f"{channel}-abcdef123456", "schemaVersion": LIBRARY_SCHEMA}
 
 
 def test_release_packages_embed_generated_metadata_without_source_file(build_fixture, monkeypatch):
@@ -580,16 +633,18 @@ def test_main_orchestrates_publish_steps(monkeypatch, tmp_path, capsys):
     monkeypatch.setattr(library_publish, "resolve_from_version", lambda from_ref: "initial")
     monkeypatch.setattr(library_publish, "format_dataset_version", lambda dt: "2026.01.01.000000")
     monkeypatch.setattr(library_publish, "build_output_paths", lambda output_root, channel: (tmp_path / "legacy", tmp_path / "v2"))
-    monkeypatch.setattr(library_publish, "build_legacy_library_artifacts", lambda *args, **kwargs: {"kind": "legacy-library"})
-    monkeypatch.setattr(library_publish, "build_legacy_media_artifacts", lambda *args, **kwargs: {"kind": "legacy-media"})
-    monkeypatch.setattr(library_publish, "build_v2_appstore_artifacts", lambda *args, **kwargs: {"kind": "v2"})
+    monkeypatch.setattr(library_publish, "build_legacy_library_artifacts", lambda *args, **kwargs: pytest.fail("legacy library build must not run"))
+    monkeypatch.setattr(library_publish, "build_legacy_media_artifacts", lambda *args, **kwargs: pytest.fail("legacy media build must not run"))
+    result = {"appstore": {"datasetVersion": "published-hash"}}
+    monkeypatch.setattr(library_publish, "build_v2_appstore_artifacts", lambda *args, **kwargs: result)
 
     assert library_publish.main() == 0
     payload = json.loads(capsys.readouterr().out)
     assert payload["channel"] == "dev"
     assert payload["fromRef"] is None
-    assert payload["legacy"] == {"library": {"kind": "legacy-library"}, "media": {"kind": "legacy-media"}}
-    assert payload["v2"] == {"kind": "v2"}
+    assert "legacy" not in payload
+    assert payload["v2"] == result
+    assert payload["datasetVersion"] == "published-hash"
 
 
 @pytest.mark.parametrize("channel", ["dev", "rc", "release"])
@@ -612,16 +667,16 @@ def test_full_publish_without_source_library_json(build_fixture, monkeypatch, ca
 
     assert library_publish.main() == 0
     capsys.readouterr()
-    expected = {"Version": "2.0.0" if channel == "release" else f"{channel}-abcdef123456", "schemaVersion": "1"}
+    expected = {"Version": "2.0.0" if channel == "release" else f"{channel}-abcdef123456", "schemaVersion": LIBRARY_SCHEMA}
     assert not (build_fixture / "library.json").exists()
-    assert json.loads((output / "legacy" / channel / "library" / "library.json").read_text()) == expected
+    assert not (output / "legacy").exists()
     with ZipFile(output / "appstore" / channel / "library" / "full" / "latest.zip") as archive:
         assert json.loads(archive.read("library/library.json")) == expected
         assert archive.read("library/metadata/database-types.json") == (build_fixture / "metadata" / "database-types.json").read_bytes()
         assert archive.read("library/metadata/secret-rules.json") == (build_fixture / "metadata" / "secret-rules.json").read_bytes()
     library_dir = output / "appstore" / channel / "library"
     manifest = json.loads((library_dir / "manifest.json").read_text())
-    assert manifest["schemaVersion"] == "1"
+    assert manifest["schemaVersion"] == LIBRARY_SCHEMA
     assert manifest["supportsPartialUpdate"] is False
     dictionary = manifest["metadata"]["databaseTypes"]
     assert library_publish.sha256_file(library_dir / dictionary["path"]) == dictionary["sha256"]
@@ -657,13 +712,12 @@ def test_dictionary_only_change_updates_dataset_without_changing_app_hash(
     assert baseline["metadata"][metadata_key] != current["metadata"][metadata_key]
 
 
-@pytest.mark.parametrize("schema_version", ["1", "2"])
 @pytest.mark.parametrize("filename,metadata_key,profile,field,value", [
     ("database-types.json", "databaseTypes", "postgresql", "port", 5433),
     ("secret-rules.json", "secretRules", "base64", "description", "Updated generation profile."),
 ])
 def test_dictionary_only_increment_delivers_shared_file_without_rebuilding_apps(
-    build_fixture, monkeypatch, schema_version, filename, metadata_key, profile, field, value,
+    build_fixture, monkeypatch, filename, metadata_key, profile, field, value,
 ):
     monkeypatch.setattr(library_publish, "ROOT", build_fixture)
     monkeypatch.setattr(library_publish, "APPS_DIR", build_fixture / "apps")
@@ -671,7 +725,6 @@ def test_dictionary_only_increment_delivers_shared_file_without_rebuilding_apps(
     monkeypatch.setattr(library_publish, "changed_apps_since", lambda ref: set())
     monkeypatch.setattr(library_publish, "build_app_updated_at_map", lambda: {})
     previous, previous_version = library_publish.build_apps_index_with_version("dev", "2026-01-01T00:00:00Z")
-    previous["schemaVersion"] = schema_version
     dictionary = build_fixture / "metadata" / filename
     definitions = json.loads(dictionary.read_text())
     definitions[profile][field] = value
@@ -682,19 +735,19 @@ def test_dictionary_only_increment_delivers_shared_file_without_rebuilding_apps(
         (catalog / filename).write_text("[]\n")
     output = build_fixture / "incremental"
     result = library_publish.build_v2_appstore_artifacts(
-        output, catalog, "library-dev.zip", {"Version": "dev-test", "schemaVersion": "1"},
+        output, catalog, "library-dev.zip", {"Version": "dev-test", "schemaVersion": LIBRARY_SCHEMA},
         "unused", "previous", "previous-version", "dev", "2026-01-01T00:00:00Z",
         previous_apps_index=previous,
     )
     manifest = json.loads((output / "library" / "manifest.json").read_text())
-    assert manifest["schemaVersion"] == "1"
+    assert manifest["schemaVersion"] == LIBRARY_SCHEMA
     assert manifest["supportsPartialUpdate"] is True
     assert manifest["datasetVersion"] != previous_version
     entry = manifest["metadata"][metadata_key]
     assert (output / "library" / entry["path"]).is_file()
     assert not list((output / "library" / "apps").rglob("*.zip"))
     delta = json.loads((output / "library" / result["library"]["appsDelta"]).read_text())
-    assert delta["schemaVersion"] == "1"
+    assert delta["schemaVersion"] == LIBRARY_SCHEMA
     assert delta["fromVersion"] == previous_version
     assert delta["toVersion"] == manifest["datasetVersion"]
     assert delta["addedApps"] == delta["changedApps"] == delta["removedApps"] == []
