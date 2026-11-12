@@ -38,17 +38,9 @@ Configure custom secrets under **Secrets and variables → Actions → Secrets**
 
 The maintenance workflow creates/updates the **Actions variable** `MAINTENANCE_SCAN_STATE`; it is not a secret.
 
-## Appstore migration approval
+## Appstore publication
 
-The following repository Actions variables default to closed (unset or anything other than `true` fails publication):
-
-| Variable | Channel |
-| --- | --- |
-| `APPSTORE_CONTRACT_V2_DEV_READY` | dev |
-| `APPSTORE_CONTRACT_V2_RC_READY` | rc |
-| `APPSTORE_CONTRACT_V2_RELEASE_READY` | release, including pre-promotion planning |
-
-Enable each only after verifying that the consumer implements the published root/component contracts. Legacy library/media publication is retired; validating or restoring old packages is not a prerequisite. See [Appstore migration](appstore-release-spec.md#7-legacy-compatibility). These gates are rollout approvals, not client compatibility configuration. This repository does not enable them automatically.
+Appstore publication uses the normal workflow triggers and artifact validation, without consumer-readiness approval variables. Each consumer owns its supported contracts and upgrade schedule; this repository neither configures those versions nor waits for consumer deployment. See [consumer compatibility](appstore-release-spec.md#23-consumer-compatibility).
 
 ## Verification
 

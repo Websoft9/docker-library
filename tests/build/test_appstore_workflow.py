@@ -66,25 +66,29 @@ def test_manual_release_is_rejected(tmp_path):
     assert result.returncode != 0
 
 
-@pytest.mark.parametrize("channel", ["dev", "rc", "release"])
-@pytest.mark.parametrize("ready", ["", "false", "true"])
-def test_migration_gate_requires_explicit_channel_approval(tmp_path, channel, ready):
-    result, _ = run_step(
-        tmp_path, "Verify Appstore migration readiness", CHANNEL=channel,
-        DEV_READY=ready if channel == "dev" else "",
-        RC_READY=ready if channel == "rc" else "",
-        RELEASE_READY=ready if channel == "release" else "",
+@pytest.mark.parametrize("event,channel", [
+    ("push", "dev"), ("workflow_dispatch", "dev"),
+    ("workflow_dispatch", "rc"), ("release", "release"),
+])
+@pytest.mark.parametrize("approval", [None, "false", "true"])
+def test_channels_do_not_require_consumer_approval(tmp_path, monkeypatch, event, channel, approval):
+    workflow = (REPO_ROOT / ".github/workflows/appstore-publish.yml").read_text()
+    assert "APPSTORE_CONTRACT_V2_" not in workflow
+    for name in ("DEV", "RC", "RELEASE"):
+        variable = f"APPSTORE_CONTRACT_V2_{name}_READY"
+        if approval is None:
+            monkeypatch.delenv(variable, raising=False)
+        else:
+            monkeypatch.setenv(variable, approval)
+    result, output = run_step(
+        tmp_path, "Resolve publish channel", EVENT_NAME=event,
+        INPUT_CHANNEL=channel, RELEASE_TAG="0.9.0" if event == "release" else "",
     )
-    assert (result.returncode == 0) is (ready == "true")
-
-
-@pytest.mark.parametrize("ready", ["", "false", "True", "true"])
-def test_release_planning_requires_explicit_approval(tmp_path, ready):
-    result, _ = run_step(
-        tmp_path, "Verify Appstore migration readiness",
-        job="release-plan", MIGRATION_READY=ready,
-    )
-    assert (result.returncode == 0) is (ready == "true")
+    assert result.returncode == 0, result.stderr
+    assert output == {
+        "channel": channel,
+        "version": "0.9.0" if event == "release" else f"{channel}-abcdef123456",
+    }
 
 
 def test_release_is_published_once_and_waits_for_images():
@@ -99,8 +103,8 @@ def test_release_is_published_once_and_waits_for_images():
     assert "needs.release-images.result == 'success'" in workflow["jobs"]["publish"]["if"]
     assert "pages" not in workflow["jobs"]
     release_steps = workflow["jobs"]["release-plan"]["steps"]
-    assert release_steps[0]["env"]["MIGRATION_READY"] == "${{ vars.APPSTORE_CONTRACT_V2_RELEASE_READY }}"
-    assert workflow["jobs"]["publish"]["steps"][0]["name"] == "Verify Appstore migration readiness"
+    assert release_steps[0]["uses"] == "actions/checkout@v7"
+    assert workflow["jobs"]["publish"]["steps"][0]["uses"] == "actions/checkout@v7"
 
 
 def test_dev_app_versions_are_uploaded_to_fixed_r2_key(tmp_path):

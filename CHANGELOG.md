@@ -8,7 +8,7 @@ Project-level changes only: architecture, delivery model, tooling, CI, and relea
 - Staged initial/login credential metadata in `variables.json`.
 
 ### Changed
-- Separated Appstore root/catalog/library compatibility contracts from generated content versions using `metadata/appstore-schema.json` (root 2, catalog 1, library 2). Removed `minWebsoft9Version`, forced full library transitions across contracts, and stopped overwriting legacy destinations. Channel publication now requires explicit migration approval.
+- Separated Appstore root/catalog/library compatibility contracts from generated content versions using `metadata/appstore-schema.json` (root 2, catalog 1, library 2). Removed `minWebsoft9Version`, forced full library transitions across contracts, and stopped overwriting legacy destinations. Publication validates artifacts independently; consumers own compatibility checks and upgrade decisions.
 - Moved the opencode session cleanup script from `build/` to `ci/scripts/` and updated `make opencode-clear` to use it.
 - Moved `fetch_catalog.py` and `library_publish.py` from `build/` to `ci/scripts/`; the `build/` directory is now removed.
 

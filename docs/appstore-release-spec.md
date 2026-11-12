@@ -340,7 +340,7 @@ The release system distinguishes three version concepts at the `catalog`, `libra
 - `library.datasetVersion`: Computed from serialized `apps-index` content, including the shared database and secret-rule dictionary fingerprints; a change to either dictionary alone also produces a new version.
 - `appstore.datasetVersion`: Computed from the contract configuration plus both component content versions. This identifies a combination, not a third independent dataset. A contract-only change also changes this fingerprint.
 
-Maintainers edit `metadata/appstore-schema.json`; it is the sole source of current root/catalog/library contract numbers. The publisher reads it, and publisher tests derive expected current versions from it rather than repeating literals. The manifest examples below illustrate the migration, not a second version configuration. Routine compatible content updates change only generated fingerprints. A contract bump requires documenting the incompatible behavior and implementing it in consumers; it does not require updating generic test expectations or every documentation example.
+Maintainers edit `metadata/appstore-schema.json`; it is the sole source of current root/catalog/library contract numbers. The publisher reads it, and publisher tests derive expected current versions from it rather than repeating literals. The manifest examples below illustrate the migration, not a second version configuration. Routine compatible content updates change only generated fingerprints. A contract bump requires documenting the incompatible behavior; consumers implement it on their own upgrade schedule before accepting that contract. It does not require updating generic test expectations or every documentation example.
 
 Root protocol 2 removes the product-version gate and requires component declarations and checks. The new library contract covers template declarations, `.env` conventions, shared dictionaries, and required installation behavior, including string/object `env.secrets`, random-shape generation, Base64/Fernet/JWT generation, reference resolution and instance-persistent keys. See [the secret contract](app-secret-spec.md). This migration uses library 2; historical code also used index 2 experimentally before reverting to 1. That experimental number alone does not establish compatibility with the current contract. Only consumers verified to implement the current contract are supported; historical clients are not maintained by this publication.
 
@@ -366,7 +366,7 @@ Upgrade only when one of the following occurs:
 - Changing the file layout or manifest structure.
 - Requiring new installation behavior, such as a secret generator old consumers cannot execute safely.
 
-Upgrade sequence: Announce the contract change -> implement and verify consumer support -> enable current publication. Parallel publication of legacy formats is not required.
+Publisher sequence: Document the incompatible change -> bump the affected contract -> validate and publish artifacts. Consumers independently implement and verify support before accepting the new contract; their deployment does not gate publication. Parallel publication of legacy formats is not required.
 
 Optional database declarations were introduced under historical schema 1 without replacing an active product contract. Publication uses the configured library contract consistently in the library manifest, apps-index, apps-delta and embedded `library.json`. Root references repeat each component's schema and dataset versions; the publisher and consumer must verify agreement with the component manifest. New access formats or removal of required password conventions need another contract change; the current contract does not predeclare support for future proposals.
 
@@ -383,7 +383,9 @@ else:
 
 This follows the conventions of Helm (`apiVersion`), Docker Registry (`schemaVersion`), and OSTree (`summary.version`).
 
-Consumers explicitly declare implemented versions in one code module, not a user-editable setting, and must not automatically accept a version merely because the publisher configuration declares it. Consumers must implement the current root contract and the component contracts they consume. Reading a prior supported local snapshot for migration or recovery is optional and does not require continued legacy publication. Root 1 obtains component schemas from their manifests; root 2 requires agreement with root declarations. A consumer using the root always checks its protocol, but checks only components it consumes. A catalog-only site need not support the library contract.
+The publisher owns contract declarations and artifact integrity; each consumer owns its supported versions, upgrade schedule and update activation. Publication does not query consumer deployment status, change consumer configuration or require consumer approval.
+
+Consumers explicitly declare implemented versions in one code module, not a user-editable setting, and must not automatically accept a version merely because the publisher configuration declares it. Before accepting an update, a consumer must support its root contract and the component contracts it consumes; it need not immediately implement every published contract. Reading a prior supported local snapshot for migration or recovery is optional and does not require continued legacy publication. Root 1 obtains component schemas from their manifests; root 2 requires agreement with root declarations. A consumer using the root always checks its protocol, but checks only components it consumes. A catalog-only site need not support the library contract.
 
 Check contracts before any dataset-equality fast path. Compare `(schemaVersion, datasetVersion)` per component; snapshot identities must include root/consumed contract versions or use the protocol-2 combination fingerprint. Missing/corrupt local derived files are repair/sync failures, not evidence of incompatibility. Unsupported contracts report the actual unsupported version; do not claim a client upgrade exists without evidence.
 
@@ -629,7 +631,7 @@ Version sources:
 ### 6.2 CI Pipeline (`appstore-publish.yml`)
 
 ```
-1. Require explicit channel migration approval (section 7) before release planning or artifact publication. For release, compare build-input hashes between the current tag and the preceding reachable lower-version tag of a published stable Release (bare tags are not baselines). Invoke docker.yml only for changed custom images; skip it if none changed. The first release selects all buildable apps. Only selected-app image failures block Appstore artifacts.
+1. For release, compare build-input hashes between the current tag and the preceding reachable lower-version tag of a published stable Release (bare tags are not baselines). Invoke docker.yml only for changed custom images; skip it if none changed. The first release selects all buildable apps. Only selected-app image failures block Appstore artifacts.
 2. Check out the release tag (fetch-depth: 0), resolve channel/version; validate stable tag format and main ancestry for release.
 3. Read the channel's published Appstore manifest from R2, download its referenced library apps index and checksum, and verify version/channel/checksum. Pass it as --previous-apps-index. If no published manifest exists, select --all-apps without partial-update support.
 4. Fetch catalog source data from Contentful.
@@ -683,9 +685,9 @@ Legacy library/media publication is retired for all channels. The workflow build
 
 Historical media packages bundled `json/` + `logos/` + `screenshots/`. Current Appstore directories contain no image binaries and use online URLs instead. No historical package restoration, certification or old-client test matrix is required to publish current artifacts. This retirement does not certify that any retained package is usable.
 
-Publication fails closed unless the corresponding repository variable is exactly `true`: `APPSTORE_CONTRACT_V2_DEV_READY`, `APPSTORE_CONTRACT_V2_RC_READY`, or `APPSTORE_CONTRACT_V2_RELEASE_READY`. Enable each only after verifying consumer support for the published contracts in that channel. Release approval is checked before image promotion as well as before artifact publication. Enabling dev does not enable release.
+Publication uses the normal dev/rc/release triggers and validates producer-owned artifacts. No consumer-readiness variables or approvals are required, including before stable image promotion. Consumer compatibility is checked by each consumer, not by this workflow.
 
-Deploy consumers implementing the newly published root/component contracts before publishing the new stable Appstore. Test unsupported schemas, cold start without cache, dictionary-only changes, cross-contract full activation when migrating supported snapshots, interrupted updates, mixed CDN versions and unchanged installed instances. Consumers must verify root/component/index versions and app hashes against the selected index before activation, with bounded retries on mixed versions. Checksums beside independently changing payloads alone do not prove a consistent combination. A verified compatible cached snapshot may remain usable after a failed update, but neither a compatibility failure nor a download failure may trigger a legacy download.
+Consumer maintainers independently test unsupported schemas, cold start without cache, dictionary-only changes, cross-contract full activation when migrating supported snapshots, interrupted updates, mixed CDN versions and unchanged installed instances. These are consumer acceptance checks, not publication prerequisites. Consumers must verify root/component/index versions and app hashes against the selected index before activation, with bounded retries on mixed versions. Checksums beside independently changing payloads alone do not prove a consistent combination. A verified compatible cached snapshot may remain usable after a failed update, but neither a compatibility failure nor a download failure may trigger a legacy download.
 
 ---
 
@@ -699,7 +701,7 @@ Releases must pass all checks below; abort on any failure:
 4. All checksums match actual files.
 5. Individual app artifacts can be generated (`latest.zip` + `.sha256` for every changed app).
 6. The root manifest is traceable to catalog and library.
-7. Legacy destinations are absent from the upload plan, and channel migration approval has been explicitly provided.
+7. Legacy destinations are absent from the upload plan.
 
 ---
 
@@ -710,7 +712,7 @@ Releases must pass all checks below; abort on any failure:
 | 1 | Produce current Appstore only; preserve legacy destinations without writes |
 | 2 | Add `artifact/appstore/<channel>/{catalog,library,manifests}` |
 | 3 | Establish separate `schemaVersion` + `datasetVersion` at each of the three levels |
-| 4 | Gate each channel until consumer support for current contracts is verified |
+| 4 | Validate publication artifacts; leave compatibility and upgrade decisions to consumers |
 | 5 | Fix library update granularity at app level |
 | 6 | v2 catalog and library full packages output only `full/latest.zip`; individual app packages retain `latest.zip` |
 | 7 | Cover all artifacts with manifests and checksums |

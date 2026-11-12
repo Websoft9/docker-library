@@ -25,7 +25,7 @@
   - existing GitHub Release changelog/assets updated
 - Manual `workflow_dispatch` may choose the channel explicitly.
 
-Appstore publication additionally requires that channel's explicit migration approval variable, as defined in [GitHub Settings Spec](github-settings-spec.md#appstore-migration-approval). Unset approval fails before publication; stable approval is also checked before image promotion. Only the current `appstore/<channel>/` distribution is published. Legacy library/media publication is retired; existing objects are not modified, and old-client compatibility is not maintained. Release tags identify source history, while [Appstore contracts](appstore-release-spec.md) independently govern consumer compatibility.
+Appstore publication validates artifacts without requiring consumer-readiness approval. Each consumer checks supported contracts and decides whether to accept an update independently. Only the current `appstore/<channel>/` distribution is published. Legacy library/media publication is retired; existing objects are not modified, and old-client compatibility is not maintained. Release tags identify source history, while [Appstore contracts](appstore-release-spec.md) independently govern consumer compatibility.
 
 ## 3. Image Strategy
 

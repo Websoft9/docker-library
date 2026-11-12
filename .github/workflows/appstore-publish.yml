@@ -36,14 +36,6 @@ jobs:
       all_apps: ${{ steps.plan.outputs.all_apps }}
       range: ${{ steps.plan.outputs.range }}
     steps:
-      - name: Verify Appstore migration readiness
-        env:
-          MIGRATION_READY: ${{ vars.APPSTORE_CONTRACT_V2_RELEASE_READY }}
-        run: |
-          test "$MIGRATION_READY" = true || {
-            echo "::error::Validate consumer support for the published contracts before enabling APPSTORE_CONTRACT_V2_RELEASE_READY."
-            exit 1
-          }
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
@@ -91,23 +83,6 @@ jobs:
       channel: ${{ steps.resolve_channel.outputs.channel }}
 
     steps:
-      - name: Verify Appstore migration readiness
-        env:
-          CHANNEL: ${{ github.event_name == 'release' && 'release' || inputs.channel || 'dev' }}
-          DEV_READY: ${{ vars.APPSTORE_CONTRACT_V2_DEV_READY }}
-          RC_READY: ${{ vars.APPSTORE_CONTRACT_V2_RC_READY }}
-          RELEASE_READY: ${{ vars.APPSTORE_CONTRACT_V2_RELEASE_READY }}
-        run: |
-          case "$CHANNEL" in
-            dev) ready="$DEV_READY" ;;
-            rc) ready="$RC_READY" ;;
-            release) ready="$RELEASE_READY" ;;
-            *) echo "::error::Invalid Appstore channel"; exit 1 ;;
-          esac
-          test "$ready" = true || {
-            echo "::error::Appstore contract migration is not approved for $CHANNEL. See docs/appstore-release-spec.md."
-            exit 1
-          }
       - name: Check out code
         uses: actions/checkout@v7
         with:
