@@ -2,7 +2,7 @@
 
 | Property | Value |
 |------|-----|
-| Status | Implementation-ready draft |
+| Status | Root protocol 2; deployment gated pending consumer migration |
 | Audience | docker-library maintainers, release owners, and consumer developers |
 
 ---
@@ -320,7 +320,7 @@ Migration guidance:
 | Maintaining installation templates under `apps/` | Providing an online appstore API |
 | Fetching catalog data from Contentful | Deciding how downstream consumers (AppOS, Console) consume it |
 | Assembling and publishing complete `appstore` artifacts to R2 | Coupling consumer logic into the release specification |
-| Maintaining legacy and v2 during the transition | Not applicable |
+| Publishing current Appstore only; leaving retired destinations untouched | Maintaining or certifying legacy packages for old clients |
 
 ---
 
@@ -330,15 +330,21 @@ The release system distinguishes three version concepts at the `catalog`, `libra
 
 | Version | Meaning | Change Trigger | Format |
 |------|------|---------|------|
-| `schemaVersion` | Data structure contract version | Field removal, type changes, or file-layout changes | Monotonically increasing string (`"1"`, `"2"`) |
+| `schemaVersion` | Structure and required behavior contract | Incompatible structure, interpretation, or required installation behavior | Monotonically increasing string (`"1"`, `"2"`, `"3"`) |
 | `datasetVersion` | Data content snapshot version | **Any** content change | Content hash (first 16 hex characters of SHA-256) |
 | `channel` | Stability channel | Release target | `dev` / `rc` / `release` |
 
 `catalog`, `library`, and the `appstore` root each have an **independent** `datasetVersion`:
 
 - `catalog.datasetVersion`: Computed from the checksums of the four catalog JSON files.
-- `library.datasetVersion`: Computed from serialized `apps-index` content, including the shared database dictionary fingerprint; a dictionary-only change also produces a new version.
-- `appstore.datasetVersion`: Computed from the combination of the two above.
+- `library.datasetVersion`: Computed from serialized `apps-index` content, including the shared database and secret-rule dictionary fingerprints; a change to either dictionary alone also produces a new version.
+- `appstore.datasetVersion`: Computed from the contract configuration plus both component content versions. This identifies a combination, not a third independent dataset. A contract-only change also changes this fingerprint.
+
+Maintainers edit `metadata/appstore-schema.json`; it is the sole source of current root/catalog/library contract numbers. The publisher reads it, and publisher tests derive expected current versions from it rather than repeating literals. The manifest examples below illustrate the migration, not a second version configuration. Routine compatible content updates change only generated fingerprints. A contract bump requires documenting the incompatible behavior and implementing it in consumers; it does not require updating generic test expectations or every documentation example.
+
+Root protocol 2 removes the product-version gate and requires component declarations and checks. The new library contract covers template declarations, `.env` conventions, shared dictionaries, and required installation behavior, including string/object `env.secrets`, random-shape generation, Base64/Fernet/JWT generation, reference resolution and instance-persistent keys. See [the secret contract](app-secret-spec.md). This migration uses library 2; historical code also used index 2 experimentally before reverting to 1. That experimental number alone does not establish compatibility with the current contract. Only consumers verified to implement the current contract are supported; historical clients are not maintained by this publication.
+
+Release tags identify the source release, not consumer compatibility. Content fingerprints are generated; compatibility changes require an explicit maintainer decision. Once distributed, including to dev consumers, a contract must not gain incompatible requirements without a new version.
 
 Thus **catalog-only description changes do not change `library.datasetVersion`** (and vice versa), allowing clients to identify exactly which dataset needs refreshing.
 
@@ -346,11 +352,11 @@ Thus **catalog-only description changes do not change `library.datasetVersion`**
 
 Within a `schemaVersion`, follow an **additive-only** rule:
 
-- Allowed: New fields, files, and app entries.
+- Allowed: New fields, files, and app entries only when old implementations can safely ignore the additions.
 - Prohibited: Removing existing fields, changing field types, or changing file-naming rules.
-- Consumers must continue working when ignoring unknown fields.
+- Display-only fields may be ignored. New required execution behavior is not a compatible addition merely because the JSON remains parseable.
 
-**This means 99% of routine changes update only `datasetVersion`, not `schemaVersion`.**
+**Routine compatible changes update only `datasetVersion`, not `schemaVersion`.**
 
 ### 2.2 schemaVersion Upgrade Conditions
 
@@ -358,10 +364,11 @@ Upgrade only when one of the following occurs:
 - Removing an existing field.
 - Changing a field's type.
 - Changing the file layout or manifest structure.
+- Requiring new installation behavior, such as a secret generator old consumers cannot execute safely.
 
-Upgrade sequence: Announce in advance -> coexist during transition -> upgrade consumers -> retire the old format.
+Upgrade sequence: Announce the contract change -> implement and verify consumer support -> enable current publication. Parallel publication of legacy formats is not required.
 
-Shared database dictionaries and optional `database[]` declarations are additive library schema 1 extensions. The former database object was experimental and was not enabled in product consumers, so these declarations do not replace an active product contract. The library manifest, apps-index, apps-delta, and generated `library.json` remain version 1. The root manifest's catalog and library references contain only `manifest` and `datasetVersion`; each component's schema is declared in its own manifest. Consumers may ignore unused declarations; implementing database connection features still requires support for the array declarations and shared dictionary.
+Optional database declarations were introduced under historical schema 1 without replacing an active product contract. Publication uses the configured library contract consistently in the library manifest, apps-index, apps-delta and embedded `library.json`. Root references repeat each component's schema and dataset versions; the publisher and consumer must verify agreement with the component manifest. New access formats or removal of required password conventions need another contract change; the current contract does not predeclare support for future proposals.
 
 ### 2.3 Consumer Compatibility
 
@@ -371,10 +378,16 @@ Consumers maintain their own supported `schemaVersion` list and check downloaded
 if manifest.schemaVersion in SUPPORTED:
     consume normally
 else:
-    fall back to the last successful datasetVersion snapshot and prompt for upgrade
+    reject the update; retain a complete verified local snapshot if one exists
 ```
 
 This follows the conventions of Helm (`apiVersion`), Docker Registry (`schemaVersion`), and OSTree (`summary.version`).
+
+Consumers explicitly declare implemented versions in one code module, not a user-editable setting, and must not automatically accept a version merely because the publisher configuration declares it. Consumers must implement the current root contract and the component contracts they consume. Reading a prior supported local snapshot for migration or recovery is optional and does not require continued legacy publication. Root 1 obtains component schemas from their manifests; root 2 requires agreement with root declarations. A consumer using the root always checks its protocol, but checks only components it consumes. A catalog-only site need not support the library contract.
+
+Check contracts before any dataset-equality fast path. Compare `(schemaVersion, datasetVersion)` per component; snapshot identities must include root/consumed contract versions or use the protocol-2 combination fingerprint. Missing/corrupt local derived files are repair/sync failures, not evidence of incompatibility. Unsupported contracts report the actual unsupported version; do not claim a client upgrade exists without evidence.
+
+No compatibility error, missing manifest, malformed response or checksum failure may bypass checks by downloading a legacy package. A cold start without a verified usable snapshot is unavailable, not a successful empty store. Already installed instances retain their configuration and keys; supporting them requires old-format readers and explicit app-specific upgrade handling.
 
 ---
 
@@ -489,14 +502,16 @@ artifact/appstore/<channel>/
 
 ```json
 {
-  "schemaVersion": "1",
+  "schemaVersion": "2",
   "datasetVersion": "2dccc0f5e5f0d21f",
   "channel": "release",
   "catalog": {
+    "schemaVersion": "1",
     "manifest": "catalog/manifest.json",
     "datasetVersion": "7ee7a10b7da49f38"
   },
   "library": {
+    "schemaVersion": "2",
     "manifest": "library/manifest.json",
     "datasetVersion": "85f687824c03ef93"
   },
@@ -504,7 +519,7 @@ artifact/appstore/<channel>/
 }
 ```
 
-Consumers download this single file and compare `catalog.datasetVersion` and `library.datasetVersion` to determine which datasets need updating.
+Consumers download this single file, check supported root/component contracts, then compare each consumed component's `(schemaVersion, datasetVersion)` to determine which datasets need updating.
 
 ### 5.2 catalog Manifest
 
@@ -535,7 +550,7 @@ Consumers download this single file and compare `catalog.datasetVersion` and `li
 
 ```json
 {
-  "schemaVersion": "1",
+  "schemaVersion": "2",
   "datasetVersion": "85f687824c03ef93",
   "channel": "release",
   "fullPackage": "full/latest.zip",
@@ -583,7 +598,7 @@ Clients compare the `hash` field to detect app changes.
 
 The apps-index root includes the same `metadata` dictionary fingerprints as the library manifest. Full packages retain the installation paths `library/metadata/database-types.json` and `library/metadata/secret-rules.json`. Content-addressed filenames serve incremental distribution without changing the installation paths. The removed `database-defaults.json` draft is not used for publishing or declaration resolution.
 
-The library `datasetVersion` hashes the index's content fields, including app fingerprints and shared metadata, but excludes root `generatedAt`, app `updatedAt`, and the version field itself. Republishing identical content preserves the version; changing only the database dictionary changes it. Consumers must still check local shared metadata for missing or corrupt files even when the cached dataset version matches.
+The library `datasetVersion` hashes the index's content fields, including app fingerprints and shared metadata, but excludes root `generatedAt`, app `updatedAt`, and the version field itself. Republishing identical content preserves the version; changing only the database or secret-rule dictionary changes it. Consumers must still check local shared metadata for missing or corrupt files even when the cached dataset version matches.
 
 `updatedAt` is the last content-change time for the entire application template directory (`apps/<app>`), taken from the Git commit's author date in UTC. It is display-only ("last updated"), not an incremental-update input. Without usable Git history, fall back to this release's `generatedAt`.
 
@@ -603,25 +618,25 @@ For a stable release, use GitHub **Releases -> Draft a new release**, select or 
 
 Version sources:
 
-- Stable releases: The tag name is the sole version source for the GitHub Release, legacy `library.json.Version`, and `library-<version>.zip`.
+- Stable releases: The tag name identifies the GitHub Release and the full package's embedded `library.json.Version`. Release attachments are the root manifest, its checksum and the changelog.
 - dev/rc: Use `<channel>-<commit SHA>`, for example, `dev-abcdef123456`.
-- Source code does not maintain the root `library.json`; releases generate it for old-client compatibility and include it in full artifacts.
+- Source code does not maintain the root `library.json`; releases generate it inside full artifacts for source traceability. It does not imply legacy uploads remain enabled.
 - All three v2 `datasetVersion` values remain content-derived, independent of stable tag versions.
 - Library deltas use the last successfully published apps index in the same channel, identified by that channel's published Appstore manifest. `fromVersion` is that index's library `datasetVersion`, not a Git SHA, release tag, or root Appstore version. Compare published and current app fingerprints to compute added, changed, and removed apps. Release tags still determine image-promotion baselines, not library dataset versions.
-- Baseline readers accept published apps indexes with schema 1 or 2, retaining compatibility with dev artifacts already labeled schema 2. New artifacts use schema 1; baseline compatibility is independent of the output schema. Unknown schemas and invalid channel/version/app fingerprints remain publication errors.
+- Baseline readers accept current or earlier positive integer contract versions with the validated index identity/fingerprint shape. A different contract discards the incremental baseline after validation, rebuilds every app package and sets `supportsPartialUpdate: false` with `fromVersion: initial`. Same-contract baselines retain incremental behavior. Future/malformed schemas and invalid channel/version/app fingerprints remain publication errors. Accepting an old index for rebuild planning does not imply consumer support for installing that contract.
 - Without a published baseline, build all app packages and set `supportsPartialUpdate: false`. Storage failures, malformed baselines, and checksum mismatches fail publishing rather than silently selecting a first publication.
 
 ### 6.2 CI Pipeline (`appstore-publish.yml`)
 
 ```
-1. For release, compare build-input hashes between the current tag and the preceding reachable lower-version tag of a published stable Release (bare tags are not baselines). Invoke docker.yml only for changed custom images; skip it if none changed. The first release selects all buildable apps. Only selected-app image failures block Appstore artifacts.
+1. Require explicit channel migration approval (section 7) before release planning or artifact publication. For release, compare build-input hashes between the current tag and the preceding reachable lower-version tag of a published stable Release (bare tags are not baselines). Invoke docker.yml only for changed custom images; skip it if none changed. The first release selects all buildable apps. Only selected-app image failures block Appstore artifacts.
 2. Check out the release tag (fetch-depth: 0), resolve channel/version; validate stable tag format and main ancestry for release.
 3. Read the channel's published Appstore manifest from R2, download its referenced library apps index and checksum, and verify version/channel/checksum. Pass it as --previous-apps-index. If no published manifest exists, select --all-apps without partial-update support.
 4. Fetch catalog source data from Contentful.
-5. Run `ci/scripts/library_publish.py` to build all artifacts (v2 + legacy), normalizing product distribution structures from repository variables.json.
+5. Run `ci/scripts/library_publish.py` to build current Appstore artifacts only, normalizing product distribution structures from repository variables.json. Do not fetch bundled legacy logos/screenshots or build legacy distribution ZIPs.
 6. Back up all R2 objects that this publication will overwrite; abort before any writes if backup fails.
-7. Upload v2 and legacy data packages and checksums, then component manifests, and finally the root manifest. Restore previous objects and delete newly created objects if any upload fails.
-8. Purge Cloudflare caches.
+7. Upload Appstore data packages and checksums, then component manifests, and finally the root manifest. Restore previous objects and delete newly created objects if any upload fails.
+8. Use the existing short CDN TTL for current artifacts; do not purge frozen legacy objects.
 9. Update the existing GitHub Release's generated changelog area and upload attachments, preserving manual notes.
 ```
 
@@ -642,33 +657,35 @@ After all stable-release uploads and the GitHub Release update succeed, send a W
 | v2 individual app packages | S3 SDK | `appstore/<channel>/library/apps/` |
 | dev app version index | S3 SDK | `appstore/dev/library/apps-verson.json` |
 | v2 manifests | S3 SDK | `appstore/<channel>/manifests/` |
-| legacy library | S3 SDK | `<channel>/websoft9/plugin/library/` |
-| legacy media | S3 SDK | `<channel>/websoft9/plugin/media/` |
+| retired legacy library | No writes | `<channel>/websoft9/plugin/library/` |
+| retired legacy media | No writes | `<channel>/websoft9/plugin/media/` |
 
 `ci/scripts/appstore_upload.py` performs one backup-and-rollback upload. Existing R2 paths and filenames remain unchanged.
 
-Before any writes, download every existing destination object in the upload plan and preserve its content headers and custom metadata. Only explicit not-found responses identify new objects; permission, storage, and backup-download failures abort publication. Credentials require object read, write, and delete access, as well as the existing baseline-listing permission.
+Before any remote operations, require all three manifests and their checksum files, and verify that each checksum matches its manifest bytes and filename. Missing, malformed or mismatched manifest checksums abort publication. Before any writes, download every existing destination object in the upload plan and preserve its content headers and custom metadata. Only explicit not-found responses identify new objects; permission, storage, and backup-download failures abort publication. Credentials require object read, write, and delete access, as well as the existing baseline-listing permission.
 
 Upload packages, data, and checksums before component manifests. Write the root manifest checksum immediately before the root manifest, which is the final object. V2 objects retain `Cache-Control: public, max-age=60`. Unchanged app packages and unrelated destination objects are not modified.
 
-On upload failure or a catchable interruption, restore every attempted existing object, including the failing upload, and delete attempted new objects. Any rollback failure is a publication failure, not success. The workflow retains the recovery journal and available old object copies in an `appstore-upload-backup-<channel>-<run>-<attempt>` diagnostic artifact for seven days. Cache purge and GitHub Release updates happen only after successful R2 upload; failures in those later steps do not roll back an already completed R2 publication.
+On upload failure or a catchable interruption, restore every attempted existing object, including the failing upload, and delete attempted new objects. Any rollback failure is a publication failure, not success. The workflow retains the recovery journal and available old object copies in an `appstore-upload-backup-<channel>-<run>-<attempt>` diagnostic artifact for seven days. GitHub Release updates happen only after successful R2 upload; failures in those later steps do not roll back an already completed R2 publication.
 
-This is compensating rollback, not an atomic multi-object transaction. Readers or CDN caches can still observe mixed versions during upload or rollback. A killed runner, an uncatchable termination, or a failed rollback can prevent restoration; diagnostic artifact upload also requires a live runner. Eliminating that window requires a separately agreed immutable-snapshot layout and single-entry-point activation. This change does not alter the consumer contract or add Contentful writes.
+This is compensating rollback, not an atomic multi-object transaction. Readers or CDN caches can still observe mixed versions during upload or rollback. A killed runner, an uncatchable termination, or a failed rollback can prevent restoration; diagnostic artifact upload also requires a live runner. Eliminating that window requires a separately agreed immutable-snapshot layout and single-entry-point activation. Consumers must reject inconsistent combinations and retain their prior snapshot. This change adds no Contentful writes.
 
 ---
 
 ## 7. Legacy Compatibility
 
-During the transition, legacy and v2 coexist through the **same workflow, using different R2 paths**:
+Legacy library/media publication is retired for all channels. The workflow builds and uploads only the current Appstore under `appstore/<channel>/`. Existing legacy objects remain at their paths without maintenance or old-client compatibility guarantees; the publisher neither overwrites nor deletes them. Even stale local `legacy/` output must never enter the upload plan:
 
 | Artifact | v2 Path | Legacy Path |
 |------|--------|------------|
 | catalog | `appstore/<channel>/catalog/` | `<channel>/websoft9/plugin/media/` (packaged as `media.zip`) |
 | library | `appstore/<channel>/library/` | `<channel>/websoft9/plugin/library/` (packaged as `library-*.zip`) |
 
-**Legacy `media.zip` retains the old format**: `json/` + `logos/` + `screenshots/`, with images downloaded from Contentful URLs and bundled. v2 directories contain no image binaries and use online URLs instead.
+Historical media packages bundled `json/` + `logos/` + `screenshots/`. Current Appstore directories contain no image binaries and use online URLs instead. No historical package restoration, certification or old-client test matrix is required to publish current artifacts. This retirement does not certify that any retained package is usable.
 
-Each push produces both artifact sets; retire legacy upload steps after the migration window closes.
+Publication fails closed unless the corresponding repository variable is exactly `true`: `APPSTORE_CONTRACT_V2_DEV_READY`, `APPSTORE_CONTRACT_V2_RC_READY`, or `APPSTORE_CONTRACT_V2_RELEASE_READY`. Enable each only after verifying consumer support for the published contracts in that channel. Release approval is checked before image promotion as well as before artifact publication. Enabling dev does not enable release.
+
+Deploy consumers implementing the newly published root/component contracts before publishing the new stable Appstore. Test unsupported schemas, cold start without cache, dictionary-only changes, cross-contract full activation when migrating supported snapshots, interrupted updates, mixed CDN versions and unchanged installed instances. Consumers must verify root/component/index versions and app hashes against the selected index before activation, with bounded retries on mixed versions. Checksums beside independently changing payloads alone do not prove a consistent combination. A verified compatible cached snapshot may remain usable after a failed update, but neither a compatibility failure nor a download failure may trigger a legacy download.
 
 ---
 
@@ -682,18 +699,18 @@ Releases must pass all checks below; abort on any failure:
 4. All checksums match actual files.
 5. Individual app artifacts can be generated (`latest.zip` + `.sha256` for every changed app).
 6. The root manifest is traceable to catalog and library.
-7. Legacy compatibility artifacts are complete.
+7. Legacy destinations are absent from the upload plan, and channel migration approval has been explicitly provided.
 
 ---
 
-## 9. Phase 1 Scope
+## 9. Current Scope
 
 | # | Item |
 |---|------|
-| 1 | Produce v2 and legacy in one workflow, with independent directory and naming rules |
+| 1 | Produce current Appstore only; preserve legacy destinations without writes |
 | 2 | Add `artifact/appstore/<channel>/{catalog,library,manifests}` |
 | 3 | Establish separate `schemaVersion` + `datasetVersion` at each of the three levels |
-| 4 | Bring legacy library/catalog build logic back into this project |
+| 4 | Gate each channel until consumer support for current contracts is verified |
 | 5 | Fix library update granularity at app level |
 | 6 | v2 catalog and library full packages output only `full/latest.zip`; individual app packages retain `latest.zip` |
 | 7 | Cover all artifacts with manifests and checksums |
@@ -719,13 +736,14 @@ This specification follows the **Static Artifact Repository** model (Helm Chart 
 
 ## 11. Consumer Guide
 
-Consumers need no additional state file: **the last successfully downloaded `appstore-manifest.json` is the complete state record**. Compare a newly downloaded manifest with the locally cached previous manifest when updating.
+Consumers need no additional version-state file: **the manifest of the last successfully verified and activated snapshot is the state record**. A downloaded but unactivated manifest must never replace it. Compare a newly downloaded manifest with that cached manifest when updating; active snapshot files must still exist and pass validation.
 
 ### 11.1 First Installation (Cold Start)
 
 ```
 1. Download appstore-manifest.json.
-2. Check schemaVersion compatibility -> abort if incompatible.
+2. Check root protocol, fetch consumed component manifests, verify root/reference agreement,
+   then check component contracts -> abort if incompatible.
 
 3. Download the full catalog:
    -> Download catalog/manifest.json.
@@ -736,9 +754,10 @@ Consumers need no additional state file: **the last successfully downloaded `app
 4. Download the full library:
   -> Download full/latest.zip (all app templates).
   -> Verify full/latest.zip.sha256.
-  -> Stage both library/apps/ and library/metadata/database-types.json in a temporary local snapshot.
+  -> Stage library/apps/ and library/metadata/ (including both shared dictionaries) in a temporary local snapshot.
 
 5. Download and cache apps-index-<datasetVersion>.json.
+  -> Verify its contract/version against the library manifest; verify extracted app hashes and dictionaries against the index.
   -> Read each app's updatedAt (last template-change time).
 
 6. Activate the validated snapshot, then save the downloaded appstore-manifest.json as the state record.
@@ -748,27 +767,30 @@ Consumers need no additional state file: **the last successfully downloaded `app
 
 ```
 1. Download the latest appstore-manifest.json.
+   Check supported contracts before the no-change fast path.
 
 2. Compare the new manifest with the locally cached previous one:
-   -> If catalog.datasetVersion differs:
+   -> If catalog (schemaVersion, datasetVersion) differs:
        Download catalog/manifest.json -> compare checksums -> download changed JSON files.
-   -> If library.datasetVersion differs:
-       Download library/manifest.json and verify that its datasetVersion matches the root manifest.
+   -> If library (schemaVersion, datasetVersion) differs:
+       Download library/manifest.json and verify that its contract and datasetVersion match the root reference.
        Download and stage apps-index-<datasetVersion>.json.
          (This is the only source of updatedAt for unchanged apps.)
-       if supportsPartialUpdate and the delta matches the cached and target library.datasetVersion:
+       if the library contract is unchanged and supportsPartialUpdate and the delta matches the cached and target library.datasetVersion:
          Download apps-delta -> stage changed/added app ZIPs and apply removals.
        else:
          Download and verify the full package; stage its apps/ and metadata/ together.
-       Independently compare metadata.databaseTypes.sha256 with the local dictionary.
-         Download metadata.databaseTypes.path when changed, missing, or corrupt.
-         Verify its SHA-256/checksum and stage it as metadata/database-types.json.
+       Independently compare each metadata dictionary's sha256 with its local copy.
+         Download its content-addressed path when changed, missing, or corrupt.
+         Verify its SHA-256/checksum and stage it at the corresponding metadata logical path.
          Do not skip this step when addedApps/changedApps/removedApps are all empty.
-   -> If both versions match:
+   -> If all consumed contract/content pairs match:
        Still repair a missing/corrupt local dictionary using the library manifest's metadata entry.
        Otherwise, finish without downloading app packages.
 
-3. Activate the validated app/dictionary/index snapshot together, then replace the cached manifest.
+3. Verify extracted app hashes against the selected index. Reject mixed root/component/payload versions
+   and retry with a bounded policy. Activate consumed catalog/library changes and their indexes/dictionaries
+   together, then replace the cached manifest.
 ```
 
 **Typical Request Costs**:
@@ -788,12 +810,12 @@ Consumers need no additional state file: **the last successfully downloaded `app
 If any incremental-update download or verification fails:
   -> Keep the last complete local snapshot and cached manifest unchanged.
   -> Optional fallback: Download and verify library/full/latest.zip into a temporary snapshot.
-  -> Restore both apps/ and metadata/database-types.json, never apps/ alone.
+  -> Restore apps/, indexes and all declared metadata dictionaries together, never apps/ alone.
   -> Activate and advance cached state only after the complete fallback passes validation.
 
-If schemaVersion is not locally supported:
+If a consumed schemaVersion is not locally supported:
   -> Do not update data; retain the previously cached manifest.
-  -> Prompt the user to upgrade the client.
+  -> Report the unsupported contract; offer an upgrade only when one is known to support it.
 ```
 
 ### 11.4 Recommended Cache Policy

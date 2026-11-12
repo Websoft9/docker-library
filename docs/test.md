@@ -16,6 +16,12 @@ Rules:
 
 Manual counterpart: `docs/runbook.md`.
 
+## Appstore Publishing
+
+- Run `.venv/bin/python -m pytest tests/build/test_library_publish.py tests/build/test_appstore_workflow.py tests/build/test_appstore_contracts.py -q` for publisher, uploader/rollback and migration-gate changes.
+- Cover central contract validation, root/component agreement, historical-index full transitions, same-contract delta updates, schema-only combination fingerprints, channel approvals and exclusion of stale legacy output.
+- Verify all channels exclude stale local legacy output, publish successfully without it, and leave existing remote legacy objects unchanged. These tests do not establish consumer readiness, which must be verified before enabling channel publication. Legacy publication is retired; certifying historical packages for old clients is not a release prerequisite. See [migration validation](appstore-release-spec.md#7-legacy-compatibility).
+
 ## Installation Secrets
 
 - `app-check --gate secrets` validates random-template formats, comma-separated lists, closed-vocabulary secret rules (`base64`, `fernet`, `jwt:<SECRET_KEY>`), and variable references; it does not generate keys, connect to an app, or rotate credentials.

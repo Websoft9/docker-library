@@ -34,10 +34,21 @@ Configure custom secrets under **Secrets and variables → Actions → Secrets**
 | WeCom notifications (maintenance scan, E2E and successful official releases) | `WECOM_WEBHOOK` |
 | Contentful | `CONTENTFUL_TOKEN`, `CONTENTFUL_GRAPHQLTOKEN` |
 | R2 publishing | `CLOUDFLARE_R2_SECRET_ID`, `CLOUDFLARE_R2_SECRET_KEY`, `CLOUDFLARE_ACCOUNT_ID` |
-| Cloudflare cache purge | `CLOUDFLARE_ZONE_ID`, `CLOUDFLARE_API_TOKEN` |
 | DockerHub publishing | `DOCKER_USERNAME`, `DOCKER_PASSWORD` |
 
 The maintenance workflow creates/updates the **Actions variable** `MAINTENANCE_SCAN_STATE`; it is not a secret.
+
+## Appstore migration approval
+
+The following repository Actions variables default to closed (unset or anything other than `true` fails publication):
+
+| Variable | Channel |
+| --- | --- |
+| `APPSTORE_CONTRACT_V2_DEV_READY` | dev |
+| `APPSTORE_CONTRACT_V2_RC_READY` | rc |
+| `APPSTORE_CONTRACT_V2_RELEASE_READY` | release, including pre-promotion planning |
+
+Enable each only after verifying that the consumer implements the published root/component contracts. Legacy library/media publication is retired; validating or restoring old packages is not a prerequisite. See [Appstore migration](appstore-release-spec.md#7-legacy-compatibility). These gates are rollout approvals, not client compatibility configuration. This repository does not enable them automatically.
 
 ## Verification
 

@@ -24,8 +24,7 @@ CHANNEL_PACKAGE_NAMES = {
     "release": "library-latest.zip",
 }
 V2_FULL_LATEST_NAME = "latest.zip"
-MIN_WEBSOFT9_VERSION = "2.4.2"
-LIBRARY_SCHEMA_VERSION = "1"
+CONTRACT_PATH = "metadata/appstore-schema.json"
 DATABASE_TYPES_PATH = "metadata/database-types.json"
 SECRET_RULES_PATH = "metadata/secret-rules.json"
 CATALOG_FILE_NAMES = (
@@ -34,6 +33,28 @@ CATALOG_FILE_NAMES = (
     "product_en.json",
     "product_zh.json",
 )
+
+
+def load_contracts() -> dict:
+    path = ROOT / CONTRACT_PATH
+    try:
+        contracts = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise SystemExit(f"invalid Appstore contract configuration: {exc}") from exc
+    if not isinstance(contracts, dict) or set(contracts) != {"schemaVersion", "catalog", "library"}:
+        raise SystemExit("invalid Appstore contract configuration: expected root, catalog and library versions")
+    for component in ("catalog", "library"):
+        entry = contracts[component]
+        if not isinstance(entry, dict) or set(entry) != {"schemaVersion"}:
+            raise SystemExit(f"invalid Appstore contract configuration: {component}")
+    for entry in (contracts, contracts["catalog"], contracts["library"]):
+        if not isinstance(entry["schemaVersion"], str) or not re.fullmatch(r"[1-9][0-9]*", entry["schemaVersion"]):
+            raise SystemExit("invalid Appstore contract configuration: versions must be positive integer strings")
+    return contracts
+
+
+def library_schema_version() -> str:
+    return load_contracts()["library"]["schemaVersion"]
 
 
 def parse_args() -> argparse.Namespace:
@@ -92,7 +113,9 @@ def load_previous_apps_index(path: str | None, channel: str) -> dict | None:
         raise SystemExit(f"invalid previous apps index: {exc}") from exc
     if (
         not isinstance(payload, dict)
-        or payload.get("schemaVersion") not in ("1", "2")
+        or not isinstance(payload.get("schemaVersion"), str)
+        or not re.fullmatch(r"[1-9][0-9]*", payload["schemaVersion"])
+        or int(payload["schemaVersion"]) > int(library_schema_version())
         or payload.get("channel") != channel
         or not isinstance(payload.get("datasetVersion"), str)
         or not re.fullmatch(r"[a-f0-9]{16}", payload["datasetVersion"])
@@ -119,13 +142,13 @@ def resolve_from_version(previous_apps_index: dict | None) -> str:
 
 
 def build_library_metadata(channel: str, library_version: str | None) -> dict:
-    """Generate legacy metadata without a source-controlled version file."""
+    """Generate source traceability metadata for the full library package."""
     if channel == "release":
         if not library_version or not re.fullmatch(r"(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)", library_version):
             raise SystemExit("release requires --library-version with a stable X.Y.Z tag")
     elif library_version is None:
         library_version = f"{channel}-{run_git('rev-parse', '--short=12', 'HEAD')}"
-    return {"Version": library_version, "schemaVersion": LIBRARY_SCHEMA_VERSION}
+    return {"Version": library_version, "schemaVersion": library_schema_version()}
 
 
 def write_json(path: Path, payload: object) -> None:
@@ -334,7 +357,7 @@ def build_apps_index(
         )
 
     return {
-        "schemaVersion": LIBRARY_SCHEMA_VERSION,
+        "schemaVersion": library_schema_version(),
         "channel": channel,
         "generatedAt": generated_at,
         "metadata": build_shared_metadata(),
@@ -423,7 +446,7 @@ def build_apps_delta(
     removed_apps = sorted(previous_apps - current_apps)
 
     return {
-        "schemaVersion": LIBRARY_SCHEMA_VERSION,
+        "schemaVersion": library_schema_version(),
         "channel": channel,
         "fromRef": from_ref,
         "fromVersion": from_version,
@@ -447,7 +470,7 @@ def build_library_manifest(
     supports_partial_update: bool = True,
 ) -> dict:
     return {
-        "schemaVersion": LIBRARY_SCHEMA_VERSION,
+        "schemaVersion": library_schema_version(),
         "datasetVersion": dataset_version,
         "channel": channel,
         "fullPackage": full_package_names,
@@ -463,7 +486,7 @@ def build_library_manifest(
 
 def build_catalog_manifest(dataset_version: str, checksum_names: dict, generated_at: str, full_package_name: str) -> dict:
     return {
-        "schemaVersion": "1",
+        "schemaVersion": load_contracts()["catalog"]["schemaVersion"],
         "datasetVersion": dataset_version,
         "source": "contentful",
         "fullPackage": full_package_name,
@@ -483,15 +506,16 @@ def build_appstore_manifest(
     catalog_dsv: str, library_dsv: str,
 ) -> dict:
     return {
-        "schemaVersion": "1",
+        "schemaVersion": load_contracts()["schemaVersion"],
         "datasetVersion": dataset_version,
         "channel": channel,
-        "minWebsoft9Version": MIN_WEBSOFT9_VERSION,
         "catalog": {
+            "schemaVersion": load_contracts()["catalog"]["schemaVersion"],
             "manifest": "catalog/manifest.json",
             "datasetVersion": catalog_dsv,
         },
         "library": {
+            "schemaVersion": library_schema_version(),
             "manifest": "library/manifest.json",
             "datasetVersion": library_dsv,
         },
@@ -589,6 +613,15 @@ def validate_library_artifacts(output_dir: Path, manifest: dict, changed_app_nam
             raise SystemExit(f"invalid apps delta structure: {key}")
 
     apps_index = json.loads((output_dir / manifest["appsIndex"]).read_text(encoding="utf-8"))
+    if (
+        apps_index.get("schemaVersion") != manifest["schemaVersion"]
+        or apps_index.get("datasetVersion") != manifest["datasetVersion"]
+        or apps_index.get("channel") != manifest["channel"]
+        or apps_delta.get("schemaVersion") != manifest["schemaVersion"]
+        or apps_delta.get("toVersion") != manifest["datasetVersion"]
+        or apps_delta.get("channel") != manifest["channel"]
+    ):
+        raise SystemExit("mismatched library index or delta contract")
     # Only validate per-app packages for apps that were actually (re)built
     # in this publish run.  Unchanged apps keep their existing packages on R2.
     validate_set = changed_app_names if changed_app_names is not None else {e["app"] for e in apps_index.get("apps", [])}
@@ -612,6 +645,29 @@ def validate_appstore_artifacts(appstore_dir: Path) -> None:
     for path in required_paths:
         if not path.exists():
             raise SystemExit(f"missing appstore artifact: {path}")
+        checksum = path.with_name(f"{path.name}.sha256")
+        if not checksum.is_file():
+            raise SystemExit(f"missing appstore manifest checksum: {checksum}")
+    root = load_json(required_paths[2])
+    contracts = load_contracts()
+    if root.get("schemaVersion") != contracts["schemaVersion"] or "minWebsoft9Version" in root:
+        raise SystemExit("invalid root Appstore contract")
+    for component in ("catalog", "library"):
+        manifest = load_json(appstore_dir / component / "manifest.json")
+        reference = root.get(component, {})
+        if (
+            reference.get("manifest") != f"{component}/manifest.json"
+            or reference.get("schemaVersion") != contracts[component]["schemaVersion"]
+            or manifest.get("schemaVersion") != reference.get("schemaVersion")
+            or manifest.get("datasetVersion") != reference.get("datasetVersion")
+            or (component == "library" and manifest.get("channel") != root.get("channel"))
+        ):
+            raise SystemExit(f"mismatched Appstore component: {component}")
+    if root.get("datasetVersion") != _hash_content(
+        json.dumps(contracts, sort_keys=True),
+        root["catalog"]["datasetVersion"], root["library"]["datasetVersion"],
+    ):
+        raise SystemExit("mismatched Appstore combination fingerprint")
 
 
 def build_output_paths(base_output_dir: Path, channel: str) -> tuple[Path, Path]:
@@ -699,6 +755,8 @@ def build_v2_appstore_artifacts(
     all_apps: bool = False,
     previous_apps_index: dict | None = None,
 ) -> dict:
+    if packaged_library_json.get("schemaVersion") != library_schema_version():
+        raise SystemExit("mismatched packaged library contract")
     catalog_dir = output_dir / "catalog"
     library_dir = output_dir / "library"
     manifests_dir = output_dir / "manifests"
@@ -758,6 +816,8 @@ def build_v2_appstore_artifacts(
     # ── library – compute index & delta BEFORE per-app zips ──
     app_updated_at = build_app_updated_at_map()
     apps_index, library_dsv = build_apps_index_with_version(channel, generated_at, app_updated_at)
+    if previous_apps_index is not None and previous_apps_index["schemaVersion"] != apps_index["schemaVersion"]:
+        previous_apps_index = None
     shared_metadata = apps_index["metadata"]
     dictionary_entry = shared_metadata["databaseTypes"]
     dictionary_output = library_dir / dictionary_entry["path"]
@@ -842,7 +902,9 @@ def build_v2_appstore_artifacts(
     write_checksum_file(library_dir / "manifest.json")
     validate_library_artifacts(library_dir, library_manifest, changed_app_names)
 
-    appstore_dsv = _hash_content(catalog_dsv, library_dsv)
+    appstore_dsv = _hash_content(
+        json.dumps(load_contracts(), sort_keys=True), catalog_dsv, library_dsv,
+    )
     appstore_manifest = build_appstore_manifest(appstore_dsv, channel, generated_at, catalog_dsv, library_dsv)
     write_json(manifests_dir / "appstore-manifest.json", appstore_manifest)
     appstore_manifest_checksum = write_checksum_file(manifests_dir / "appstore-manifest.json")
@@ -885,21 +947,12 @@ def main() -> int:
     dataset_version = format_dataset_version(now)
     from_ref = detect_from_ref(args.from_ref)
     previous_apps_index = load_previous_apps_index(getattr(args, "previous_apps_index", None), channel)
+    if previous_apps_index is not None and previous_apps_index["schemaVersion"] != library_schema_version():
+        previous_apps_index = None
     from_version = resolve_from_version(previous_apps_index)
     package_name = CHANNEL_PACKAGE_NAMES[channel]
 
-    legacy_library_output_dir, v2_appstore_output_dir = build_output_paths(output_root, channel)
-    legacy_media_output_dir = output_root / "legacy" / channel / "media"
-    legacy_library_artifacts = build_legacy_library_artifacts(
-        legacy_library_output_dir,
-        package_name,
-        packaged_library_json,
-    )
-    legacy_media_artifacts = build_legacy_media_artifacts(
-        legacy_media_output_dir,
-        catalog_source_dir,
-        channel,
-    )
+    _, v2_appstore_output_dir = build_output_paths(output_root, channel)
     v2_appstore_artifacts = build_v2_appstore_artifacts(
         output_dir=v2_appstore_output_dir,
         catalog_source_dir=catalog_source_dir,
@@ -918,13 +971,9 @@ def main() -> int:
         json.dumps(
             {
                 "channel": channel,
-                "datasetVersion": dataset_version,
+                "datasetVersion": v2_appstore_artifacts["appstore"]["datasetVersion"],
                 "fromRef": from_ref,
                 "fromVersion": from_version,
-                "legacy": {
-                    "library": legacy_library_artifacts,
-                    "media": legacy_media_artifacts,
-                },
                 "v2": v2_appstore_artifacts,
             },
             indent=2,

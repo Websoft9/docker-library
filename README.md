@@ -82,7 +82,7 @@ appstore/<channel>/
 └── manifests/appstore-manifest.json
 ```
 
-Start from `appstore-manifest.json`; it points to the catalog and library manifests. Legacy clients can continue to use `https://artifact.websoft9.com/<channel>/websoft9/plugin/library/`.
+Start from `appstore-manifest.json`; it points to the catalog and library manifests. Only consumers implementing the published contracts are supported. Legacy library and media publication under `https://artifact.websoft9.com/<channel>/websoft9/plugin/` is retired. Existing objects are left untouched, without maintenance or old-client compatibility guarantees; their verification is not a prerequisite for current publication. See [migration requirements](docs/appstore-release-spec.md#7-legacy-compatibility).
 
 ## AI-driven maintenance
 

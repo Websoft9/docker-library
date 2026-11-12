@@ -36,6 +36,14 @@ jobs:
       all_apps: ${{ steps.plan.outputs.all_apps }}
       range: ${{ steps.plan.outputs.range }}
     steps:
+      - name: Verify Appstore migration readiness
+        env:
+          MIGRATION_READY: ${{ vars.APPSTORE_CONTRACT_V2_RELEASE_READY }}
+        run: |
+          test "$MIGRATION_READY" = true || {
+            echo "::error::Validate consumer support for the published contracts before enabling APPSTORE_CONTRACT_V2_RELEASE_READY."
+            exit 1
+          }
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
@@ -83,6 +91,23 @@ jobs:
       channel: ${{ steps.resolve_channel.outputs.channel }}
 
     steps:
+      - name: Verify Appstore migration readiness
+        env:
+          CHANNEL: ${{ github.event_name == 'release' && 'release' || inputs.channel || 'dev' }}
+          DEV_READY: ${{ vars.APPSTORE_CONTRACT_V2_DEV_READY }}
+          RC_READY: ${{ vars.APPSTORE_CONTRACT_V2_RC_READY }}
+          RELEASE_READY: ${{ vars.APPSTORE_CONTRACT_V2_RELEASE_READY }}
+        run: |
+          case "$CHANNEL" in
+            dev) ready="$DEV_READY" ;;
+            rc) ready="$RC_READY" ;;
+            release) ready="$RELEASE_READY" ;;
+            *) echo "::error::Invalid Appstore channel"; exit 1 ;;
+          esac
+          test "$ready" = true || {
+            echo "::error::Appstore contract migration is not approved for $CHANNEL. See docs/appstore-release-spec.md."
+            exit 1
+          }
       - name: Check out code
         uses: actions/checkout@v7
         with:
@@ -149,32 +174,6 @@ jobs:
           python ci/scripts/fetch_catalog.py \
             --channel "${{ steps.resolve_channel.outputs.channel }}" \
             --output-dir dist/catalog-source
-
-      # ── legacy media assets (logos + screenshots, same as old media.yml) ──
-
-      - name: Download legacy logos from R2
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_SECRET_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
-          AWS_ENDPOINT_URL: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
-        run: |
-          mkdir -p dist/catalog-source/logos
-          aws s3 sync \
-            s3://libs/Websoft9/logo/product \
-            dist/catalog-source/logos \
-            --endpoint-url "$AWS_ENDPOINT_URL" || echo "Warning: logo sync failed (non-blocking)"
-
-      - name: Download legacy screenshots from Contentful
-        run: |
-          mkdir -p dist/catalog-source/screenshots
-          for f in dist/catalog-source/product_*.json; do
-            [ -f "$f" ] || continue
-            jq -r '.[].screenshots[]?.value // empty' "$f" 2>/dev/null | sort -u | while read -r url; do
-              name=$(basename "$url" | cut -d'?' -f1)
-              [ -z "$name" ] && name="$(echo "$url" | md5sum | cut -c1-12).png"
-              [ -f "dist/catalog-source/screenshots/$name" ] || wget -q "$url" -O "dist/catalog-source/screenshots/$name" || true
-            done
-          done
 
       - name: Resolve last published library baseline
         id: check_seed
@@ -276,26 +275,6 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
-      - name: Resolve legacy purge URLs
-        id: purge_urls
-        env:
-          CHANNEL: ${{ steps.resolve_channel.outputs.channel }}
-        run: |
-          case "$CHANNEL" in
-            dev) library=library-dev.zip; media=media-dev.zip ;;
-            rc) library=library-rc.zip; media=media-latest.zip ;;
-            release) library=library-latest.zip; media=media-latest.zip ;;
-            *) exit 1 ;;
-          esac
-          echo "urls=https://artifact.websoft9.com/$CHANNEL/websoft9/plugin/library/$library https://artifact.websoft9.com/$CHANNEL/websoft9/plugin/media/$media" >> "$GITHUB_OUTPUT"
-
-      - name: Purge legacy Cloudflare Cache
-        uses: NathanVaughn/actions-cloudflare-purge@v4.0.0
-        with:
-          cf_zone: ${{ secrets.CLOUDFLARE_ZONE_ID }}
-          cf_auth: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          files: ${{ steps.purge_urls.outputs.urls }}
-
       - name: Update published GitHub Release
         if: steps.resolve_channel.outputs.channel == 'release'
         env:
@@ -310,8 +289,8 @@ jobs:
           jq -n --rawfile body release-notes.md '{body: $body}' \
             | gh api --method PATCH "repos/$REPOSITORY/releases/$RELEASE_ID" --input -
           gh release upload "$RELEASE_TAG" --repo "$REPOSITORY" --clobber \
-            dist/appstore-publish/legacy/release/library/library.json \
-            dist/appstore-publish/legacy/release/library/library.json.sha256 \
+            dist/appstore-publish/appstore/release/manifests/appstore-manifest.json \
+            dist/appstore-publish/appstore/release/manifests/appstore-manifest.json.sha256 \
             dist/CHANGELOG_RELEASE.md
 
       - name: Notify WeCom that release was published

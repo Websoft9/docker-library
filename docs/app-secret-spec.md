@@ -4,7 +4,7 @@
 
 This specification covers startup key handling in current `apps/`, not external service provisioning, database account rotation, or Docker secrets. `variables.json` declares `env.secrets` entries using either plain variable names (shape-based generation) or single-key objects from the shared rule dictionary `metadata/secret-rules.json` (`base64`, `fernet`, `jwt:<SECRET_KEY>`). `metadata/secret-rules.json` is validated by `metadata/variables.schema.json` (`$defs.secretRules`), synced by `libs appstore-sync`, and published with Appstore library artifacts alongside `metadata/database-types.json`. All secret generation and persistence are executed by the Websoft9 consumer.
 
-The canonical declaration contract is [appstore-release-spec.md](appstore-release-spec.md#L172).
+The canonical declaration contract is [Declarative Secrets](appstore-release-spec.md#declarative-secrets-envsecrets); compatibility follows [Version Semantics](appstore-release-spec.md#2-version-semantics). The library contract declared in `metadata/appstore-schema.json` requires consumer implementation of these rules; downloading the dictionary does not implement them. Incompatible required generation behavior needs a new library contract, not a minimum Websoft9 product version. Store synchronization must never regenerate or replace existing instance secrets.
 
 ## Classification
 
