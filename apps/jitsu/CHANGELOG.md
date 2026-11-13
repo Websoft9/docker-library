@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-13
+
+- Added `env_file: .env` to the main `console` service (`${W9_ID}`) so runtime `W9_*` metadata variables are loaded on container startup.
+
 ## 2026-11-04
 
 - Declared internal PostgreSQL, MongoDB, and ClickHouse dependencies with their existing service environment sources; excluded Redpanda.

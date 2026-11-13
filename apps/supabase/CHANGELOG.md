@@ -1,3 +1,7 @@
+## 2026-11-13
+
+- Added `env_file: .env` to the main `api-gw` service (`${W9_ID}`) so runtime `W9_*` metadata variables are loaded on container startup (#2250).
+
 ## 2026-11-04
 
 - Declared the current base stack's single internal PostgreSQL instance with the main and _supabase databases.
