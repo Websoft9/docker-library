@@ -5,11 +5,6 @@ services:
   php:
     container_name: ${W9_ID}
     image: $W9_REPO:$W9_VERSION${DEPLOY_TIME}
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        PHP_VERSION: $W9_VERSION
     restart: unless-stopped
     command: /bin/bash -c "bash /usr/local/bin/cmd.sh && apache2-foreground"
     env_file: .env
