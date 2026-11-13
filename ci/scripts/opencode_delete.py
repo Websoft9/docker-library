@@ -1,96 +1,58 @@
 #!/usr/bin/env python3
-"""List and delete opencode sessions from the local opencode database.
-
-Sessions are selected by directory (or all directories), expanded to include
-child sessions, and removed in one transaction together with their messages,
-parts, events, and related rows.
-"""
+"""List and delete OpenCode sessions through the V2 API."""
 
 from __future__ import annotations
 
 import argparse
-import os
-import sqlite3
+import json
+import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-
-DB_FILENAME = "opencode.db"
-
-
-def default_db_path() -> Path:
-    data_dir = os.environ.get("OPENCODE_DATA_DIR")
-    if data_dir:
-        return Path(data_dir) / DB_FILENAME
-
-    home = Path.home()
-    if sys.platform == "win32":
-        base = Path(os.environ.get("LOCALAPPDATA", home / "AppData" / "Local"))
-        return base / "opencode" / DB_FILENAME
-    if sys.platform == "darwin":
-        return home / "Library" / "Application Support" / "opencode" / DB_FILENAME
-    return home / ".local" / "share" / "opencode" / DB_FILENAME
+from urllib.parse import quote, urlencode
 
 
-def connect(db_path: Path) -> sqlite3.Connection:
-    if not db_path.is_file():
-        raise FileNotFoundError(f"opencode database not found: {db_path}")
-    con = sqlite3.connect(db_path)
-    con.row_factory = sqlite3.Row
-    con.execute("PRAGMA foreign_keys = ON")
-    con.execute("PRAGMA busy_timeout = 5000")
-    return con
-
-
-def table_columns(con: sqlite3.Connection, table: str) -> set[str]:
-    quoted = table.replace('"', '""')
-    return {row["name"] for row in con.execute(f'PRAGMA table_info("{quoted}")')}
-
-
-def existing_tables(con: sqlite3.Connection) -> set[str]:
-    return {
-        row["name"]
-        for row in con.execute("SELECT name FROM sqlite_master WHERE type = 'table'")
-    }
-
-
-def select_sessions(con: sqlite3.Connection, directory: Path | None) -> list[sqlite3.Row]:
-    con.execute("DROP TABLE IF EXISTS temp.selected_session")
-    con.execute("CREATE TEMP TABLE selected_session (id TEXT PRIMARY KEY)")
-
-    query = "SELECT id FROM session"
-    params: tuple[str, ...] = ()
-    if directory is not None:
-        query += " WHERE directory = ?"
-        params = (str(directory),)
-    query += " ORDER BY time_created"
-
-    root_ids = [row["id"] for row in con.execute(query, params)]
-    con.executemany(
-        "INSERT OR IGNORE INTO selected_session (id) VALUES (?)",
-        ((session_id,) for session_id in root_ids),
-    )
-    con.execute(
-        """
-        WITH RECURSIVE tree (id) AS (
-            SELECT id FROM selected_session
-            UNION
-            SELECT child.id
-            FROM session AS child
-            JOIN tree ON child.parent_id = tree.id
+def api_request(*arguments: str) -> str:
+    try:
+        result = subprocess.run(
+            ["opencode", "api", *arguments],
+            check=False,
+            capture_output=True,
+            text=True,
         )
-        INSERT OR IGNORE INTO selected_session (id)
-        SELECT id FROM tree
-        """
-    )
-    return con.execute(
-        """
-        SELECT id, title, directory, parent_id, time_created
-        FROM session
-        WHERE id IN (SELECT id FROM selected_session)
-        ORDER BY time_created
-        """
-    ).fetchall()
+    except FileNotFoundError as error:
+        raise RuntimeError("opencode was not found in PATH") from error
+
+    if result.returncode:
+        detail = result.stderr.strip() or result.stdout.strip()
+        raise RuntimeError(detail or f"opencode api exited with {result.returncode}")
+    return result.stdout
+
+
+def list_sessions(directory: Path | None) -> list[dict]:
+    sessions: list[dict] = []
+    cursor: str | None = None
+    seen_cursors: set[str] = set()
+
+    while True:
+        params = {"limit": "100", "order": "asc", "parentID": "null"}
+        if directory is not None:
+            params["directory"] = str(directory)
+        if cursor:
+            if cursor in seen_cursors:
+                raise RuntimeError("OpenCode returned a repeated session cursor")
+            seen_cursors.add(cursor)
+            params["cursor"] = cursor
+
+        response = json.loads(api_request("get", f"/api/session?{urlencode(params)}"))
+        if not isinstance(response, dict) or not isinstance(response.get("data"), list):
+            raise RuntimeError("unexpected response from OpenCode session API")
+        sessions.extend(response["data"])
+
+        next_cursor = (response.get("cursor") or {}).get("next")
+        if not next_cursor:
+            return sessions
+        cursor = str(next_cursor)
 
 
 def shorten(value: str | None, width: int) -> str:
@@ -102,7 +64,7 @@ def shorten(value: str | None, width: int) -> str:
     return text[: width - 3] + "..."
 
 
-def print_sessions(sessions: list[sqlite3.Row], directory: Path | None) -> None:
+def print_sessions(sessions: list[dict], directory: Path | None) -> None:
     if not sessions:
         if directory is None:
             print("No sessions found.")
@@ -110,31 +72,37 @@ def print_sessions(sessions: list[sqlite3.Row], directory: Path | None) -> None:
             print(f"No sessions found for directory: {directory}")
         return
 
-    id_width = min(max(len("ID"), *(len(row["id"]) for row in sessions)), 28)
-    title_width = min(max(len("Session"), *(len(row["title"] or "") for row in sessions)), 48)
+    id_width = min(max(len("ID"), *(len(str(item.get("id", ""))) for item in sessions)), 28)
+    title_width = min(
+        max(len("Session"), *(len(str(item.get("title") or "")) for item in sessions)), 48
+    )
     show_directory = directory is None
-
     columns = [("Created", 16), ("ID", id_width), ("Session", title_width)]
     if show_directory:
         columns.append(("Directory", 36))
 
-    print(f"{len(sessions)} session(s)")
+    print(f"{len(sessions)} root session(s) (deleting a root also deletes its child sessions)")
     if directory is not None:
         print(f"Directory: {directory}")
     print("  ".join(name.ljust(width) for name, width in columns))
     print("  ".join("-" * width for _, width in columns))
 
-    for row in sessions:
-        created = datetime.fromtimestamp(
-            row["time_created"] / 1000, tz=timezone.utc
-        ).strftime("%Y-%m-%d %H:%M")
+    for item in sessions:
+        created = item.get("time", {}).get("created")
+        if isinstance(created, (int, float)):
+            created_text = datetime.fromtimestamp(created / 1000, tz=timezone.utc).strftime(
+                "%Y-%m-%d %H:%M"
+            )
+        else:
+            created_text = ""
         values = [
-            created.ljust(16),
-            shorten(row["id"], id_width).ljust(id_width),
-            shorten(row["title"], title_width).ljust(title_width),
+            created_text.ljust(16),
+            shorten(str(item.get("id", "")), id_width).ljust(id_width),
+            shorten(item.get("title"), title_width).ljust(title_width),
         ]
         if show_directory:
-            values.append(shorten(row["directory"], 36).ljust(36))
+            location = item.get("location") or {}
+            values.append(shorten(location.get("directory"), 36).ljust(36))
         print("  ".join(values))
 
 
@@ -143,44 +111,15 @@ def confirm(count: int) -> bool:
         print("Refusing to delete without --yes in a non-interactive shell.", file=sys.stderr)
         return False
     try:
-        answer = input(f"Delete these {count} session(s) and their data? [y/N] ")
+        answer = input(f"Delete these {count} root session(s) and their child sessions? [y/N] ")
     except (EOFError, KeyboardInterrupt):
         print()
         return False
     return answer.strip().lower() in {"y", "yes"}
 
 
-def delete_sessions(con: sqlite3.Connection) -> int:
-    tables = existing_tables(con)
-    child_tables = [
-        table
-        for table in sorted(tables)
-        if table != "session" and "session_id" in table_columns(con, table)
-    ]
-
-    with con:
-        if "event" in tables:
-            con.execute(
-                "DELETE FROM event WHERE aggregate_id IN (SELECT id FROM selected_session)"
-            )
-        if "event_sequence" in tables:
-            con.execute(
-                "DELETE FROM event_sequence WHERE aggregate_id IN (SELECT id FROM selected_session)"
-            )
-        for table in child_tables:
-            quoted = table.replace('"', '""')
-            con.execute(
-                f'DELETE FROM "{quoted}" WHERE session_id IN (SELECT id FROM selected_session)'
-            )
-        cursor = con.execute(
-            "DELETE FROM session WHERE id IN (SELECT id FROM selected_session)"
-        )
-    return cursor.rowcount
-
-
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="List and delete opencode sessions")
-    parser.add_argument("--db", type=Path, help="path to opencode.db (default: auto-detect)")
+    parser = argparse.ArgumentParser(description="List and delete OpenCode sessions")
     parser.add_argument(
         "--all",
         action="store_true",
@@ -202,19 +141,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
-    db_path = (args.db or default_db_path()).expanduser()
-    directory = None
-    if not args.all:
-        directory = (args.directory or Path.cwd()).expanduser().resolve()
+    directory = None if args.all else (args.directory or Path.cwd()).expanduser().resolve()
 
     try:
-        con = connect(db_path)
-    except (FileNotFoundError, sqlite3.Error) as error:
-        print(f"error: {error}", file=sys.stderr)
-        return 1
-
-    try:
-        sessions = select_sessions(con, directory)
+        sessions = list_sessions(directory)
         print_sessions(sessions, directory)
         if not sessions:
             return 0
@@ -225,14 +155,19 @@ def main(argv: list[str] | None = None) -> int:
             print("Aborted, nothing deleted.")
             return 0
 
-        deleted = delete_sessions(con)
-        print(f"Deleted {deleted} session(s) from {db_path}")
+        deleted = 0
+        for session in sessions:
+            session_id = quote(str(session["id"]), safe="")
+            try:
+                api_request("delete", f"/api/session/{session_id}")
+            except RuntimeError as error:
+                raise RuntimeError(f"{error} (already deleted {deleted} root session(s))") from error
+            deleted += 1
+        print(f"Deleted {deleted} root session(s) and their child sessions.")
         return 0
-    except sqlite3.Error as error:
+    except (RuntimeError, json.JSONDecodeError, KeyError) as error:
         print(f"error: {error}", file=sys.stderr)
         return 1
-    finally:
-        con.close()
 
 
 if __name__ == "__main__":
