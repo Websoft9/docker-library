@@ -84,6 +84,7 @@ services:
         condition: service_started
     ports:
       - "${W9_HTTP_PORT_SET}:3000" # Web Console
+    env_file: .env
     environment:
       NODE_ENV: development
       LOG_LEVEL: debug
