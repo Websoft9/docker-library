@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Fix `W9_HTTPS_PORT` from `443` to the container's real HTTPS port `8443`. The `web` container listens on `8000` (HTTP) and `8443` (HTTPS) only, so domain binding forwarded to a closed container port and the app failed to load through a bound domain.
+- Correct the domain guide: `PUBLIC_URL` must be `https://<your-domain>` when the app is reached through a bound domain.
+
 ## 2026-09-15
 
 - Update Jitsi Meet to `stable-11248` for `web`, `prosody`, `jicofo`, and `jvb`.

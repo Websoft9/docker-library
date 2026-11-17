@@ -11,7 +11,7 @@
 <!-- W9_GUIDE_START -->
 ### Usage
 
-1. Bind a domain to the server and set `PUBLIC_URL` in `.env` to `https://<your-domain>:${W9_HTTPS_PORT_SET}`.
+1. Bind a domain to the app. `PUBLIC_URL` follows `W9_URL`, so a bound domain resolves to `https://<your-domain>`; for a manual deployment set `PUBLIC_URL=https://<your-domain>` in `.env` instead of the published port.
 2. Open the Access URL in a browser, start a meeting, and share the room link.
 3. Sign in with the generated passwords only if authentication (`ENABLE_AUTH`) is enabled.
 
