@@ -45,6 +45,9 @@ x-shared-env: &shared-api-worker-env
   SQLALCHEMY_POOL_SIZE: ${SQLALCHEMY_POOL_SIZE:-30}
   SQLALCHEMY_POOL_RECYCLE: ${SQLALCHEMY_POOL_RECYCLE:-3600}
   SQLALCHEMY_ECHO: ${SQLALCHEMY_ECHO:-false}
+  AGENT_BACKEND_API_TOKEN: ${DIFY_AGENT_API_TOKEN}
+  AGENT_BACKEND_BASE_URL: ${AGENT_BACKEND_BASE_URL:-http://agent_backend:5050}
+  RESPECT_XFORWARD_HEADERS_ENABLED: ${RESPECT_XFORWARD_HEADERS_ENABLED:-true}
   POSTGRES_MAX_CONNECTIONS: ${POSTGRES_MAX_CONNECTIONS:-100}
   POSTGRES_SHARED_BUFFERS: ${POSTGRES_SHARED_BUFFERS:-128MB}
   POSTGRES_WORK_MEM: ${POSTGRES_WORK_MEM:-4MB}
@@ -213,6 +216,21 @@ x-shared-env: &shared-api-worker-env
   PIP_MIRROR_URL: ${PIP_MIRROR_URL:-}
 
 services:
+  init_permissions:
+    image: busybox:latest
+    command:
+      - sh
+      - -c
+      - |
+        FLAG_FILE="/app/api/storage/.init_permissions"
+        if [ -f "$${FLAG_FILE}" ]; then
+          exit 0
+        fi
+        chown -R 1001:1001 /app/api/storage && touch "$${FLAG_FILE}"
+    volumes:
+      - app-storage:/app/api/storage
+    restart: "no"
+
   # API service
   api:
     image: ${W9_REPO_API}:${W9_VERSION}
@@ -229,10 +247,45 @@ services:
       PLUGIN_MAX_PACKAGE_SIZE: ${PLUGIN_MAX_PACKAGE_SIZE:-52428800}
       INNER_API_KEY_FOR_PLUGIN: ${PLUGIN_DIFY_INNER_API_KEY:-QaHbTe77CtuXmsfyhR7+vRjI/+XbV1AaFy691iy+kGDv2Jvy0/eAh8Y1}
     depends_on:
-      - db
-      - redis
+      init_permissions:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      agent_backend:
+        condition: service_started
     volumes:
       - app-storage:/app/api/storage
+    networks:
+      - default
+      - agent_backend_network
+
+  api_websocket:
+    image: ${W9_REPO_API}:${W9_VERSION}
+    container_name: ${W9_ID}-api-websocket
+    restart: always
+    environment:
+      <<: *shared-api-worker-env
+      MODE: api
+      SERVER_WORKER_AMOUNT: ${API_WEBSOCKET_WORKER_AMOUNT:-1}
+      SERVER_WORKER_CLASS: ${API_WEBSOCKET_WORKER_CLASS:-geventwebsocket.gunicorn.workers.GeventWebSocketWorker}
+      SERVER_WORKER_CONNECTIONS: ${API_WEBSOCKET_WORKER_CONNECTIONS:-1000}
+      GUNICORN_TIMEOUT: ${API_WEBSOCKET_GUNICORN_TIMEOUT:-360}
+    depends_on:
+      init_permissions:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      agent_backend:
+        condition: service_started
+    volumes:
+      - app-storage:/app/api/storage
+    networks:
+      - default
+      - agent_backend_network
 
   # worker service
   worker:
@@ -248,10 +301,19 @@ services:
       PLUGIN_MAX_PACKAGE_SIZE: ${PLUGIN_MAX_PACKAGE_SIZE:-52428800}
       INNER_API_KEY_FOR_PLUGIN: ${PLUGIN_DIFY_INNER_API_KEY:-QaHbTe77CtuXmsfyhR7+vRjI/+XbV1AaFy691iy+kGDv2Jvy0/eAh8Y1}
     depends_on:
-      - db
-      - redis
+      init_permissions:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      agent_backend:
+        condition: service_started
     volumes:
       - app-storage:/app/api/storage
+    networks:
+      - default
+      - agent_backend_network
 
   # Frontend web application.
   web:
@@ -273,6 +335,7 @@ services:
       LOOP_NODE_MAX_COUNT: ${LOOP_NODE_MAX_COUNT:-100}
       MAX_TOOLS_NUM: ${MAX_TOOLS_NUM:-10}
       MAX_PARALLEL_LIMIT: ${MAX_PARALLEL_LIMIT:-10}
+      NEXT_PUBLIC_SOCKET_URL: ${NEXT_PUBLIC_SOCKET_URL:-wss://${W9_URL}}
 
   # The postgres database.
   db:
@@ -311,10 +374,13 @@ services:
     command: redis-server --requirepass ${REDIS_PASSWORD:-difyai123456}
     healthcheck:
       test: [ 'CMD', 'redis-cli', 'ping' ]
+    networks:
+      - default
+      - agent_backend_network
 
   # The DifySandbox
   sandbox:
-    image: langgenius/dify-sandbox:0.2.12
+    image: langgenius/dify-sandbox:0.2.15
     container_name: ${W9_ID}-sandbox
     restart: always
     environment:
@@ -333,7 +399,7 @@ services:
 
   # plugin daemon
   plugin_daemon:
-    image: langgenius/dify-plugin-daemon:0.3.3-local
+    image: langgenius/dify-plugin-daemon:0.6.14-local
     container_name: ${W9_ID}-plugin
     restart: always
     environment:
@@ -356,6 +422,56 @@ services:
       - plugin_daemon:/app/storage
     depends_on:
       - db
+    networks:
+      - default
+      - agent_backend_network
+
+  agent_backend:
+    image: langgenius/dify-agent-backend:${W9_VERSION}
+    container_name: ${W9_ID}-agent-backend
+    restart: always
+    environment:
+      DIFY_AGENT_API_TOKEN: ${DIFY_AGENT_API_TOKEN}
+      DIFY_AGENT_REDIS_URL: ${DIFY_AGENT_REDIS_URL:-redis://:${REDIS_PASSWORD}@${W9_ID}-redis:6379/2}
+      DIFY_AGENT_PLUGIN_DAEMON_URL: ${DIFY_AGENT_PLUGIN_DAEMON_URL:-http://${W9_ID}-plugin:5002}
+      DIFY_AGENT_PLUGIN_DAEMON_API_KEY: ${PLUGIN_DAEMON_KEY}
+      DIFY_AGENT_INNER_API_URL: ${DIFY_AGENT_INNER_API_URL:-http://${W9_ID}-api:5001}
+      DIFY_AGENT_INNER_API_KEY: ${PLUGIN_DIFY_INNER_API_KEY}
+      DIFY_AGENT_RUNTIME_BACKEND: local
+      DIFY_AGENT_LOCAL_SANDBOX_ENDPOINT: http://${W9_ID}-local-sandbox:5004
+      DIFY_AGENT_LOCAL_SANDBOX_AUTH_TOKEN: ${DIFY_AGENT_LOCAL_SANDBOX_AUTH_TOKEN}
+    depends_on:
+      redis:
+        condition: service_started
+      plugin_daemon:
+        condition: service_started
+    networks:
+      - default
+      - agent_backend_network
+      - agent_sandbox_network
+
+  local_sandbox:
+    image: langgenius/dify-agent-local-sandbox:${W9_VERSION}
+    container_name: ${W9_ID}-local-sandbox
+    command: ["shellctl", "serve", "--listen", "0.0.0.0:5004", "--require-auth-token"]
+    restart: always
+    environment:
+      SHELLCTL_AUTH_TOKEN: ${DIFY_AGENT_LOCAL_SANDBOX_AUTH_TOKEN}
+      HTTP_PROXY: http://agent_ssrf_proxy:${SSRF_HTTP_PORT:-3128}
+      HTTPS_PROXY: http://agent_ssrf_proxy:${SSRF_HTTP_PORT:-3128}
+      NO_PROXY: localhost,127.0.0.1
+    volumes:
+      - dify_agent_local_sandbox_home:/home/dify
+      - dify_agent_local_sandbox_workspace:/workspace
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5004/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - agent_sandbox_network
+      - local_sandbox_proxy_network
 
   # ssrf_proxy server
   # for more information, please refer to
@@ -374,6 +490,22 @@ services:
       REVERSE_PROXY_PORT: ${SSRF_REVERSE_PROXY_PORT:-8194}
       SANDBOX_HOST: ${SSRF_SANDBOX_HOST:-${W9_ID}-sandbox}
       SANDBOX_PORT: ${SANDBOX_PORT:-8194}
+
+  agent_ssrf_proxy:
+    image: ubuntu/squid:latest
+    container_name: ${W9_ID}-agent-ssrf
+    restart: always
+    volumes:
+      - ./src/agent_ssrf_proxy/squid.conf.template:/etc/squid/squid.conf.template
+      - ./src/ssrf_proxy/docker-entrypoint.sh:/docker-entrypoint-mount.sh
+    entrypoint: [ 'sh', '-c', "cp /docker-entrypoint-mount.sh /docker-entrypoint.sh && sed -i 's/\r$$//' /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh && /docker-entrypoint.sh" ]
+    environment:
+      HTTP_PORT: ${SSRF_HTTP_PORT:-3128}
+      COREDUMP_DIR: ${SSRF_COREDUMP_DIR:-/var/spool/squid}
+    networks:
+      - agent_backend_network
+      - local_sandbox_proxy_network
+      - agent_proxy_egress_network
 
   # The nginx reverse proxy.
   # used for reverse proxying the API service and Web service.
@@ -409,13 +541,14 @@ services:
       NGINX_ENABLE_CERTBOT_CHALLENGE: ${NGINX_ENABLE_CERTBOT_CHALLENGE:-false}
     depends_on:
       - api
+      - api_websocket
       - web
     ports:
       - '${W9_HTTP_PORT_SET}:${NGINX_PORT:-80}'
 
   # The Weaviate vector store.
   weaviate:
-    image: semitechnologies/weaviate:1.27.0
+    image: cr.weaviate.io/semitechnologies/weaviate:1.39.13
     container_name: ${W9_ID}-weaviate
     restart: always
     volumes:
@@ -438,6 +571,17 @@ networks:
   default:
     name: ${W9_NETWORK}
     external: true
+  agent_backend_network:
+    driver: bridge
+    internal: true
+  agent_sandbox_network:
+    driver: bridge
+    internal: true
+  local_sandbox_proxy_network:
+    driver: bridge
+    internal: true
+  agent_proxy_egress_network:
+    driver: bridge
 
 volumes:
   app-storage:
@@ -445,3 +589,5 @@ volumes:
   redis-data:
   weaviate:
   plugin_daemon:
+  dify_agent_local_sandbox_home:
+  dify_agent_local_sandbox_workspace:

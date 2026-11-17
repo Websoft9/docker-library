@@ -6,7 +6,7 @@
     {
       "dist": "community",
       "version": [
-        "1.9.2",
+        "1.19.0",
         "latest"
       ]
     }
@@ -83,6 +83,8 @@
       {
         "PLUGIN_DIFY_INNER_API_KEY": "base64"
       },
+      "DIFY_AGENT_API_TOKEN",
+      "DIFY_AGENT_LOCAL_SANDBOX_AUTH_TOKEN",
       "WEAVIATE_API_KEY"
     ]
   }
