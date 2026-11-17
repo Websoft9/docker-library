@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Updated the main image from `lobehub/lobehub:2.2.19` to `lobehub/lobehub:2.3.3`.
+
 ## 2026-11-04
 
 - Declared external PostgreSQL through the existing `DATABASE_URL`, retaining independent bundled initialization and internal Redis.
