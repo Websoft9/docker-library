@@ -310,10 +310,10 @@ def test_prepare_preview_refreshes_once_after_all_copies(repo_fixture, app_facto
         "demo", host="1.2.3.4", secret_path=str(key), container="custom", progress=progress.append,
     )
 
-    refresh_commands = [command for command in calls if "appstore reload --json" in command[-1]]
+    refresh_commands = [command for command in calls if "appstore reload --local --json" in command[-1]]
     assert len(refresh_commands) == 1
     assert refresh_commands[0] == calls[-1]
-    assert calls[-1][-1] == "docker exec custom websoft9 appstore reload --json"
+    assert calls[-1][-1] == "docker exec custom websoft9 appstore reload --local --json"
     assert any("docker cp" in command[-1] for command in calls[:-1])
     if has_catalog:
         assert "catalog/demo.json" in calls[-2][-1]
@@ -333,7 +333,7 @@ def test_prepare_preview_refresh_failure_is_not_reported_as_success(repo_fixture
     key.write_text("test fixture", encoding="utf-8")
 
     def fake_run(command, **kwargs):
-        if "appstore reload --json" in command[-1]:
+        if "appstore reload --local --json" in command[-1]:
             raise RuntimeError("app store refresh failed")
         return ""
 

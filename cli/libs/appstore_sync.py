@@ -397,7 +397,7 @@ def prepare_preview(
     _announce(progress, total, total, "refreshing app store catalogs")
     _run(
         ssh_base(host, user, key_path)
-        + [shlex.join(["docker", "exec", container, "websoft9", "appstore", "reload", "--json"])],
+        + [shlex.join(["docker", "exec", container, "websoft9", "appstore", "reload", "--local", "--json"])],
         progress=progress,
         verbose=verbose,
     )
