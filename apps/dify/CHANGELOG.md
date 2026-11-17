@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Updated Dify to 1.19.0 with the matching Agent backend, local sandbox, WebSocket API, plugin daemon, and code sandbox images.
+- Added the Agent sandbox authentication secrets, protected proxy path, and storage permission initialization required by the upstream deployment.
+- Updated bundled Weaviate to 1.39.13; existing installations must follow Dify's staged Weaviate upgrade path before starting this version.
+
 ## 2026-11-04
 
 - Declared one PostgreSQL component with main/plugin database names, authenticated internal Redis, and internal Weaviate; API keys are not account/password metadata.
@@ -10,4 +16,3 @@
 
 ## Release
 ### Fixes and Enhancements
-

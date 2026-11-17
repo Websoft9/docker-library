@@ -14,7 +14,20 @@ server {
       include proxy.conf;
     }
 
+    location /socket.io/ {
+      proxy_pass http://api_websocket:5001;
+      include proxy.conf;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
+      proxy_cache_bypass $http_upgrade;
+    }
+
     location /v1 {
+      proxy_pass http://api:5001;
+      include proxy.conf;
+    }
+
+    location /openapi {
       proxy_pass http://api:5001;
       include proxy.conf;
     }
@@ -32,6 +45,16 @@ server {
     location /e/ {
       proxy_pass http://plugin_daemon:5002;
       proxy_set_header Dify-Hook-Url $scheme://$host$request_uri;
+      include proxy.conf;
+    }
+
+    location /mcp {
+      proxy_pass http://api:5001;
+      include proxy.conf;
+    }
+
+    location /triggers {
+      proxy_pass http://api:5001;
       include proxy.conf;
     }
 

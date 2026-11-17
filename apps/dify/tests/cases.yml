@@ -1,0 +1,5 @@
+optional:
+  - id: collaboration-socket
+    type: web-access
+    path: /socket.io/?EIO=4&transport=polling
+    expect_status: 200
