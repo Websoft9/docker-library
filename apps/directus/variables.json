@@ -8,14 +8,14 @@
     "docs": [
       "https://directus.io/docs/self-hosting/quickstart",
       "https://directus.io/docs/configuration/general",
-      "https://github.com/directus/directus/releases/tag/v12.5.0"
+      "https://github.com/directus/directus/releases/tag/v12.6.0"
     ]
   },
   "edition": [
     {
       "dist": "community",
       "version": [
-        "12.5.0",
+        "12.6",
         "latest"
       ]
     }
