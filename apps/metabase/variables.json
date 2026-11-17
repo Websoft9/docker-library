@@ -14,7 +14,7 @@
     {
       "dist": "community",
       "version": [
-        "v0.64-lts",
+        "v0.65.x",
         "latest"
       ]
     }
