@@ -33,7 +33,6 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
           HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
-          AUTHOR: ${{ github.event.pull_request.user.login }}
           EVENT_NAME: ${{ github.event_name }}
           RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
@@ -48,21 +47,27 @@ jobs:
             '{name:"PR checks",head_sha:$sha,status:"in_progress",details_url:$url}')
           id=$(gh api --method POST "repos/$REPOSITORY/check-runs" --input - --jq '.id' <<< "$payload")
           echo "check_id=$id" >> "$GITHUB_OUTPUT"
-          if [ "$AUTHOR" = Copilot ] && [ "$EVENT_NAME" = pull_request_target ]; then
-            encoded=$(jq -rn --arg branch "$HEAD_BRANCH" '$branch | @uri')
-            for attempt in $(seq 1 12); do
-              run=$(gh api "repos/$REPOSITORY/actions/runs?branch=$encoded&event=dynamic&per_page=100" \
-                --jq '[.workflow_runs[] | select(.path == "dynamic/copilot-swe-agent/copilot")] | sort_by(.created_at) | last // empty')
-              if [ -n "$run" ] && [ "$(jq -r '.status' <<< "$run")" = completed ]; then
-                test "$(jq -r '.conclusion' <<< "$run")" = success
-                break
-              fi
-              if [ "$attempt" = 12 ]; then
-                echo 'Latest Copilot session has not completed successfully.' >&2
-                exit 1
-              fi
-              sleep 5
-            done
+          # A cloud agent session may commit and open its PR as the triggering user,
+          # so the handoff keys on the copilot/ branch instead of the PR author.
+          if [ "$EVENT_NAME" = pull_request_target ]; then
+            case "$HEAD_BRANCH" in
+              copilot/*)
+                encoded=$(jq -rn --arg branch "$HEAD_BRANCH" '$branch | @uri')
+                for attempt in $(seq 1 12); do
+                  run=$(gh api "repos/$REPOSITORY/actions/runs?branch=$encoded&event=dynamic&per_page=100" \
+                    --jq '[.workflow_runs[] | select(.path == "dynamic/copilot-swe-agent/copilot")] | sort_by(.created_at) | last // empty')
+                  if [ -n "$run" ] && [ "$(jq -r '.status' <<< "$run")" = completed ]; then
+                    test "$(jq -r '.conclusion' <<< "$run")" = success
+                    break
+                  fi
+                  if [ "$attempt" = 12 ]; then
+                    echo 'Latest Copilot session has not completed successfully.' >&2
+                    exit 1
+                  fi
+                  sleep 5
+                done
+                ;;
+            esac
           fi
 
   detect-buildable:
@@ -277,7 +282,10 @@ jobs:
           fi
 
       - name: Mark successful PR ready
-        if: github.event_name == 'pull_request_target' && github.event.pull_request.user.login == 'Copilot'
+        if: >-
+          github.event_name == 'pull_request_target' &&
+          github.event.pull_request.head.repo.full_name == github.repository &&
+          startsWith(github.event.pull_request.head.ref, 'copilot/')
         env:
           GH_TOKEN: ${{ secrets.COPILOT_ASSIGN_TOKEN || secrets.MAINTENANCE_STATE_TOKEN }}
           REPOSITORY: ${{ github.repository }}
@@ -306,7 +314,6 @@ jobs:
       needs.report-check.result == 'success' &&
       (needs.build-images.result == 'success' || needs.build-images.result == 'skipped') &&
       github.event_name == 'pull_request_target' &&
-      github.event.pull_request.user.login == 'Copilot' &&
       github.event.pull_request.head.repo.full_name == github.repository &&
       startsWith(github.event.pull_request.head.ref, 'copilot/')
     runs-on: ubuntu-latest

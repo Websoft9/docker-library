@@ -44,6 +44,6 @@ Appstore publication uses the normal workflow triggers and artifact validation, 
 
 ## Verification
 
-`PR checks` starts on PR creation, new commits, reopening, and Ready transitions for `main`, regardless of changed paths. The current commit-check handoff supports same-repository branches; fork PRs need a maintainer-owned branch before they can satisfy this gate. Basic validation uses a read-only token and no custom secrets. Same-repository non-draft PRs build candidates only when Dockerfile inputs change; cloud E2E remains limited to Copilot review handoff. Only a successful Copilot review handoff can automatically mark a draft Ready; human drafts stay draft.
+`PR checks` starts on PR creation, new commits, reopening, and Ready transitions for `main`, regardless of changed paths. The current commit-check handoff supports same-repository branches; fork PRs need a maintainer-owned branch before they can satisfy this gate. Basic validation uses a read-only token and no custom secrets. Same-repository non-draft PRs build candidates only when Dockerfile inputs change; cloud E2E remains limited to the review handoff on same-repository `copilot/` branches and never depends on the PR author. Only a successful handoff can automatically mark a draft Ready; other human drafts stay draft.
 
 One update issue normally produces assignment → agent → PR checks/E2E, followed by manual merge. If a GitHub API operation fails, inspect the exact step error and its job token permissions before changing settings or adding credentials.

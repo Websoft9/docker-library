@@ -81,10 +81,48 @@ def test_required_checks_cover_all_pr_changes_and_keep_e2e_at_handoff():
     assert workflow["jobs"]["pr-checks"]["permissions"] == {"contents": "read", "pull-requests": "read"}
     assert all("secrets." not in str(step) for step in workflow["jobs"]["pr-checks"]["steps"])
     assert "pull_request_target" in workflow["jobs"]["provision-e2e"]["if"]
+    assert "user.login" not in workflow["jobs"]["provision-e2e"]["if"]
+    assert "startsWith(github.event.pull_request.head.ref, 'copilot/')" in workflow["jobs"]["provision-e2e"]["if"]
     ready = next(step for step in workflow["jobs"]["report-check"]["steps"] if step["name"] == "Mark successful PR ready")
-    assert ready["if"] == "github.event_name == 'pull_request_target' && github.event.pull_request.user.login == 'Copilot'"
+    assert "pull_request_target" in ready["if"]
+    assert "user.login" not in ready["if"]
+    assert "startsWith(github.event.pull_request.head.ref, 'copilot/')" in ready["if"]
     assert "needs" not in workflow["jobs"]["pr-checks"]
     assert "needs" not in workflow["jobs"]["detect-buildable"]
+
+
+def test_handoff_verifies_agent_session_for_user_authored_copilot_branch(tmp_path):
+    mock_bin = tmp_path / "bin"
+    executable(
+        mock_bin / "gh",
+        'case "$*" in\n'
+        '  *"actions/runs?"*) printf "%s\\n" "$LATEST_RUN" ;;\n'
+        '  *"pulls/12"*) printf "abc123\\n" ;;\n'
+        '  *"check-runs"*) printf "99\\n" ;;\n'
+        '  *) exit 1 ;;\n'
+        'esac',
+    )
+    env = os.environ | {
+        "PATH": f"{mock_bin}:{os.environ['PATH']}",
+        "GH_TOKEN": "test",
+        "REPOSITORY": "Websoft9/docker-library",
+        "HEAD_BRANCH": "copilot/update-example",
+        "EVENT_NAME": "pull_request_target",
+        "HEAD_REPO": "Websoft9/docker-library",
+        "HEAD_SHA": "abc123",
+        "PR_NUMBER": "12",
+        "RUN_URL": "https://example.com/run",
+        "GITHUB_OUTPUT": str(tmp_path / "output"),
+        "LATEST_RUN": json.dumps({"id": 42, "status": "completed", "conclusion": "failure"}),
+    }
+    script = workflow_step(".github/workflows/pr-checks.yml", "handoff", "Confirm completed agent and start commit check")
+
+    result = subprocess.run(["bash", "-c", script], cwd=tmp_path, env=env, text=True, capture_output=True)
+    assert result.returncode != 0
+
+    env["LATEST_RUN"] = json.dumps({"id": 42, "status": "completed", "conclusion": "success"})
+    result = subprocess.run(["bash", "-c", script], cwd=tmp_path, env=env, text=True, capture_output=True)
+    assert result.returncode == 0, result.stderr
 
 
 def test_intermediate_copilot_push_does_not_wait_for_agent(tmp_path):
