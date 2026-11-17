@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Updated Gitea from `28.2` to `28.3`.
+- Back up the data volume and let Gitea run its automatic database migration on first start; do not roll back the image after the migration.
+
 ## 2026-10-30
 
 - Updated Gitea from `28.1` to `28.2`.
