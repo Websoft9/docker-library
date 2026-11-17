@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Updated Redpanda Console from `v3.12.0` to `v3.14.0`.
+
 ## 2026-09-13
 
 - Updated Redpanda Console from `v3.1.3` to `v3.12.0`.
