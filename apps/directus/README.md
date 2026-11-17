@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Directus**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -33,7 +34,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 12.5.0, latest.
+Supported versions: 12.6, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
@@ -81,7 +82,7 @@ Configuration files live inside the image; mount a single file read-only to over
 
 - [Official docs](https://directus.io/docs/configuration/general)
 
-- [GitHub docs](https://github.com/directus/directus/releases/tag/v12.5.0)
+- [GitHub docs](https://github.com/directus/directus/releases/tag/v12.6.0)
 
 
 <!-- W9_TROUBLESHOOT_START -->
