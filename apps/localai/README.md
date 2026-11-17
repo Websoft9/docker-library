@@ -34,7 +34,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: v4.6.2.
+Supported versions: v4.11.0.
 
 
 ### Ports

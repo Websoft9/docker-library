@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Updated the main image from `v4.6.2` to `v4.11.0`.
+
 ## 2026-10-12
 
 - Updated the main image from `localai/localai:latest` to `localai/localai:v4.6.2`.
