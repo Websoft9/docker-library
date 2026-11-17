@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+- Updated Metabase to the official `v0.65.x` Docker image tag.
+- Updated bundled PostgreSQL from the EOL 14 track to supported 17.
+
 ## 2026-11-03
 - Declared the PostgreSQL application database and existing native connection inputs, inheriting standard database and account sources.
 - Kept the fixed database type, runtime configuration, and image versions unchanged.
