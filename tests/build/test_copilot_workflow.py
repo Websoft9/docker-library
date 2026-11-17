@@ -299,9 +299,9 @@ def test_e2e_sync_reports_the_versions_deployed_to_the_server(tmp_path):
         'printf "%s\\n" "$*" >> "$SYNC_CALLS"',
     )
     (tmp_path / "apps/mattermost").mkdir(parents=True)
-    (tmp_path / "apps/mattermost/.env").write_text("W9_VERSION=12.1\n")
+    (tmp_path / "apps/mattermost/.env").write_text("W9_VERSION=\"12.1\"\n")
     (tmp_path / "apps/odoo").mkdir(parents=True)
-    (tmp_path / "apps/odoo/.env").write_text("W9_VERSION=18.0\n")
+    (tmp_path / "apps/odoo/.env").write_text("W9_VERSION='18.0'\n")
     candidate = tmp_path / "candidates/image-mattermost"
     candidate.mkdir(parents=True)
     (candidate / "candidate.json").write_text(json.dumps({
