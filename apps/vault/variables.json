@@ -1,5 +1,29 @@
 {
   "name": "vault",
+  "access": [
+    {
+      "id": "admin",
+      "service": "vault",
+      "port": 8200,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/ui/"
+        },
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/v1/"
+        }
+      ]
+    }
+  ],
   "trademark": "Vault",
   "release": true,
   "upstream": {
@@ -19,17 +43,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8200,
-      "path": "/"
-    },
-    "api": {
-      "port": 8200,
-      "path": "/v1/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

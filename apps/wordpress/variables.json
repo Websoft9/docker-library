@@ -21,17 +21,34 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
+  "access": [
+    {
+      "id": "http",
+      "service": "wordpress",
       "port": 80,
-      "path": "/"
-    },
-    "admin": {
-      "port": 80,
-      "path": "/wp-admin"
+      "public": true,
+      "rootUrl": [
+        "WP_HOME",
+        "WP_SITEURL"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        },
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/wp-admin"
+        }
+      ]
     }
-  },
+  ],
   "requirements": {
     "cpu": "1",
     "memory": "1",

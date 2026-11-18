@@ -1,5 +1,7 @@
 # Deploy Validation Checklist
 
+- [ ] Treat missing required access as a failed gate, not a passed unknown status; an empty array must be explicitly justified
+- [ ] Inspect `access_metadata` with `docs/app-access-spec.md` and `libs app-check --app <app> --gate access`; static port evidence is not live protocol/path evidence, and declaration-only edits do not require runtime deployment
 - [ ] Run `.venv/bin/libs app-check --app <app> --json` locally; stop on the first blocking error
 - [ ] Inspect `database_metadata` using `docs/app-database-connection-spec.md`; distinguish declaration validity, lifecycle findings and actual connectivity; declaration-only edits do not require runtime deployment
 - [ ] Inspect `secrets` using `docs/app-secret-spec.md`; for runtime secret changes verify Websoft9 generator support, authenticated use, retry reuse, and retained keys/data across recreation without exposing values; declaration-only checks are not runtime evidence

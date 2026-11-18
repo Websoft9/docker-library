@@ -7,7 +7,7 @@ services:
     env_file:
       - .env
     ports:
-      - "${W9_HTTP_PORT_SET}:3000" # Web Console
+      - "9003:3000" # Web Console
     depends_on:
       postgresql:
         condition: service_healthy

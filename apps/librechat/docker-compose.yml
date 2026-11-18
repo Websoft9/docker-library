@@ -4,7 +4,7 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - "${W9_HTTP_PORT_SET}:3080" # Web Console
+      - "9001:3080" # Web Console
     env_file: .env
     environment:
       - HOST=0.0.0.0
@@ -40,7 +40,7 @@ services:
     container_name: ${W9_ID}-admin-panel
     restart: unless-stopped
     ports:
-      - "${W9_ADMIN_GUI_PORT_SET}:3000" # Admin Panel
+      - "9002:3000" # Admin Panel
     depends_on:
       api:
         condition: service_started

@@ -22,6 +22,13 @@ Manual counterpart: `docs/runbook.md`.
 - Cover central contract validation, root/component agreement, historical-index full transitions, same-contract delta updates, schema-only combination fingerprints, publication without consumer approval and exclusion of stale legacy output.
 - Verify all channels exclude stale local legacy output, publish successfully without it, and leave existing remote legacy objects unchanged. These tests validate the publisher, not downstream implementations; consumers independently test and enforce their supported contracts. Legacy publication is retired; certifying historical packages for old clients is not a release prerequisite. See [consumer compatibility](appstore-release-spec.md#23-consumer-compatibility).
 
+## App Access
+
+- Run `.venv/bin/python -m pytest cli/tests/test_access.py cli/tests/test_consistency.py cli/tests/test_newapp.py cli/tests/test_appstore_sync.py tests/build/test_library_publish.py tests/skills -q` for access changes, then `make test` for repository delivery.
+- Validate dictionary shape and role/protocol cross-references, Schema and documented examples, ID/role ordering, service-scoped container port evidence, `.env`-only variables, duplicate targets, safe paths/query, app-info/report consistency and restore preflight rejection.
+- Assert absent access fails the access/full/report/publication gates, while an explicitly justified empty array is valid. Traverse every real active package with the access semantic validator; retain unverified warnings and never infer a live listener from ports/expose. Reject unused old formats without compatibility readers. Check full packages, content-addressed metadata, checksums, dictionary-only increments, corruption rejection, sync preflight and returned rollback commands.
+- Deploy changed runtime listeners/protocols/paths only. Instance scoping, ambiguous/inactive targets, actual public URL opening and domain binding belong to downstream tests, not this repository's static validator. See [App Access Spec](app-access-spec.md).
+
 ## Installation Secrets
 
 - `app-check --gate secrets` validates random-template formats, comma-separated lists, closed-vocabulary secret rules (`base64`, `fernet`, `jwt:<SECRET_KEY>`), and variable references; it does not generate keys, connect to an app, or rotate credentials.

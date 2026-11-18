@@ -8,7 +8,7 @@ services:
       - metabase-data:/metabase-data
       - metabase-plugins:/plugins
     ports:
-      - '${W9_HTTP_PORT_SET}:3000' # Web Console
+      - '9001:3000' # Web Console
     env_file: .env
     depends_on:
       - postgres

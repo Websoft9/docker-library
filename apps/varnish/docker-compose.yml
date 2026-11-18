@@ -4,7 +4,7 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - "${W9_HTTP_PORT_SET}:80" # Web
+      - "9001:80" # Web
     volumes:
       - ./src/default.vcl:/etc/varnish/default.vcl:ro
     env_file: .env

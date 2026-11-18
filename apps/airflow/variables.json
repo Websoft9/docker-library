@@ -1,5 +1,23 @@
 {
   "name": "airflow",
+  "access": [
+    {
+      "id": "web",
+      "service": "airflow-apiserver",
+      "port": 8080,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "web",
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Airflow",
   "release": true,
   "upstream": {
@@ -19,13 +37,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8080,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

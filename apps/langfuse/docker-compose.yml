@@ -15,7 +15,7 @@ services:
       minio:
         condition: service_healthy
     ports:
-      - "${W9_HTTP_PORT_SET}:3000" # Web Console
+      - "9004:3000" # Web Console
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/public/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 30s

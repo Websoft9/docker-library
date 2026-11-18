@@ -5,7 +5,7 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - "${W9_HTTP_PORT_SET}:8086" # InfluxDB HTTP API and UI
+      - "8086:8086" # InfluxDB HTTP API and UI
     env_file: .env
     volumes:
       - influxdb-data:/var/lib/influxdb2

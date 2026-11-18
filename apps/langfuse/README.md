@@ -18,7 +18,7 @@
 ### Configuration
 
 1. In the [Websoft9](https://www.websoft9.com) console, open the app's **Compose** tab.
-2. Update `NEXTAUTH_URL` / `W9_URL` and the shared secrets in `.env` as needed.
+2. Update `NEXTAUTH_URL` and the shared secrets in `.env` as needed.
 3. Rebuild the app.
 <!-- W9_GUIDE_END -->
 
@@ -29,7 +29,7 @@ Websoft9 packages this app from the official [Langfuse Docker image](https://hub
 <!-- W9_NOTE_START -->
 This package runs the Langfuse v4 docker-compose topology: `langfuse-web` and `langfuse-worker` with PostgreSQL 17, ClickHouse, Redis 7 and MinIO. Only the web console is published; the databases and object storage are internal to the app network. Media uploads that emit browser-side presigned URLs to MinIO may need MinIO exposed separately.
 
-`NEXTAUTH_URL` must match the exact URL users open in the browser. If you change the access URL, update `W9_URL` (or `NEXTAUTH_URL`) in `.env` and rebuild.
+`NEXTAUTH_URL` must match the exact URL users open in the browser. If you change it manually, update `.env` and recreate the containers.
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.

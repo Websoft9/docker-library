@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-10-26
 
 - Track upstream versions from GitHub tags instead of releases so Teleport patch and minor tags are visible to the maintenance scan.

@@ -1,5 +1,43 @@
 {
   "name": "rabbitmq",
+  "access": [
+    {
+      "id": "admin",
+      "service": "rabbitmq",
+      "port": 15672,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    },
+    {
+      "id": "amqp",
+      "service": "rabbitmq",
+      "port": 5672,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "mq"
+          ],
+          "scheme": "amqp"
+        }
+      ]
+    },
+    {
+      "id": "epmd",
+      "service": "rabbitmq",
+      "port": 4369,
+      "public": true,
+      "endpoints": []
+    }
+  ],
   "trademark": "RabbitMQ",
   "release": true,
   "upstream": {
@@ -29,12 +67,5 @@
       "RABBITMQ_DEFAULT_USER",
       "RABBITMQ_DEFAULT_PASS"
     ]
-  },
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 15672,
-      "path": "/"
-    }
   }
 }

@@ -12,8 +12,8 @@ services:
       redis:
         condition: service_healthy
     ports:
-      - "${W9_HTTP_PORT_SET}:8288" # Dashboard and API
-      - "${W9_WS_PORT_SET}:8289" # Connect WebSocket gateway
+      - "9002:8288" # Dashboard and API
+      - "9003:8289" # Connect WebSocket gateway
     healthcheck:
       test: ["CMD", "inngest", "alpha", "doctor", "healthcheck"]
       interval: 30s

@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Tomcat**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -90,5 +91,5 @@ Environment variables are defined in the app's `.env` file; see the reference se
 - Tomcat can take about 30 seconds to start; check `docker compose logs ${W9_ID}`.
 
 **Port not reachable?**
-- Confirm `W9_HTTP_PORT_SET` is free and allowed by the firewall / security group.
+- Confirm the published HTTP port is free and allowed by the firewall or security group.
 <!-- W9_TROUBLESHOOT_END -->

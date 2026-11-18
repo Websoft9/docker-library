@@ -1,5 +1,22 @@
 {
   "name": "trivy",
+  "access": [
+    {
+      "id": "api",
+      "service": "trivy",
+      "port": 4954,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Trivy",
   "release": true,
   "upstream": {
@@ -19,12 +36,6 @@
       ]
     }
   ],
-  "access": {
-    "api": {
-      "port": 4954,
-      "path": "/healthz"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

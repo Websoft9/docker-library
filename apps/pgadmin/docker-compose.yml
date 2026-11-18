@@ -6,7 +6,7 @@ services:
     volumes:
       - pgadmin:/var/lib/pgadmin
     ports:
-      - "${W9_HTTP_PORT_SET}:80" # Web Console
+      - "9090:80" # Web Console
     env_file: .env
 
 networks:

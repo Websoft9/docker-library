@@ -6,8 +6,8 @@ version: '3.8'
 
 services:
   elasticsearch:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
     cpu_percent: 80
     mem_limit: 4g
@@ -21,7 +21,7 @@ services:
     volumes:
       - elasticsearch:/usr/share/elasticsearch/data
     ports:
-      - ${W9_HTTP_PORT_SET}:9200 # api
+      - 9200:9200 # api
       #- 9300:9300  # cluster
     env_file: .env
 

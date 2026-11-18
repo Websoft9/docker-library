@@ -6,12 +6,13 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Vaultwarden**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
 ### Usage
 
-1. Open the Vaultwarden URL from the Websoft9 **Access** tab.
+1. Bind an HTTPS domain, then open the Vaultwarden URL from the Websoft9 **Access** tab. The container's plaintext listener is not published to the host by default.
 2. Create the first account in the web vault, then set `SIGNUPS_ALLOWED=false` in `.env` and rebuild to stop open registration.
 3. The admin page is at `/admin`; sign in with the `ADMIN_TOKEN` value from `.env`.
 

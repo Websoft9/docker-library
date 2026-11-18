@@ -81,7 +81,7 @@ npm run db:migrate
 #!/bin/bash
 set -euo pipefail
 cd "$APP_DIR"
-exec npm run start -- --hostname 0.0.0.0 --port "$W9_HTTP_PORT"
+exec npm run start -- --hostname 0.0.0.0 --port "$PORT"
 ```
 
 The start script must `exec` the server so it keeps receiving stop signals.
@@ -91,7 +91,7 @@ The start script must `exec` the server so it keeps receiving stop signals.
 | Variable | Meaning |
 | --- | --- |
 | `APP_DIR` | Project directory (`/usr/src/app`) |
-| `W9_HTTP_PORT` | Internal HTTP port the app must listen on (`3000`) |
+| `PORT` | Internal HTTP port the app must listen on (`3000`) |
 | `W9_VERSION` | Next.js version used by the default scaffold |
 | `NODE_IMAGE_TAG` | Node runtime image tag |
 | `PACKAGE_MANAGER` | Detected package manager (`npm`, `pnpm`, `yarn`) |

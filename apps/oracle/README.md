@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Oracle Database**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -23,7 +24,7 @@
 
 ## Configuration Reference
 
-Websoft9 packages this app from the official [Oracle Database Docker image](https://container-registry.oracle.com/ords/ocr/ba/database/express) and makes some improvements below.
+Websoft9 packages this app from the official [Oracle Database Docker image](https://container-registry.oracle.com/database/express) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
 
@@ -67,7 +68,7 @@ Configuration files live inside the image; mount a single file read-only to over
 
 - [Oracle Database Administrator Guide](https://support.websoft9.com/docs/oracle) by Websoft9
 
-- [Docker Hub image](https://container-registry.oracle.com/ords/ocr/ba/database/express)
+- [Docker Hub image](https://container-registry.oracle.com/database/express)
 
 
 <!-- W9_TROUBLESHOOT_START -->

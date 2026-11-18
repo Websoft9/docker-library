@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-10-09
 - migrate the package from legacy OpenHands 0.28 to Agent Canvas 1.26.0
 - switch to the official `ghcr.io/openhands/agent-canvas` image and current Docker persistence layout

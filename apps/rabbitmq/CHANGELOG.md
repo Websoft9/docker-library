@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-10-31
 - Updated the RabbitMQ image to `4.4-management`.
 - Documented that RabbitMQ 4.4 classic queue v2 files cannot be downgraded to 4.3.x or earlier.

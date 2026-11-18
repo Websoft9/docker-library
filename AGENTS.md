@@ -24,6 +24,7 @@ Read in this order:
 - Treat each `apps/<app>` directory as one deployable unit.
 - Start app work with `libs app-info --app <app> --json`. It returns version, database lifecycle, ports, images, credentials, and tests in one call; open app files only for details it does not cover.
 - Keep changes minimal and app-local unless the task is explicitly cross-cutting.
+- Access declarations are required and follow `docs/app-access-spec.md` and `metadata/access-types.json`; run `libs app-check --app <app> --gate access`. Missing declarations are unknown and fail validation/publishing; use empty `access: []` only for confirmed no network entry. Use verified current-default facts, not old surface keys or URL-helper inference. Static port evidence is not runtime reachability or proxy support.
 - Prefer official images or trusted upstream images.
 - If `docker-compose.yml` references `./src/...`, the file must exist.
 - Follow env conventions. The canonical `W9_*` reference is `docs/w9-env-spec.md` (semantics + decision rules); use `metadata/templates/new-app/.env.tmpl` for layout. Read both before editing `.env` or `docker-compose.yml`.

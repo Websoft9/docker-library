@@ -14,3 +14,9 @@
 - Replace the fragile setup-token `credentials.container-log` regex model with structured `setup.steps`.
 - Model the Portainer bootstrap flow as two login-prep steps: read the setup token from logs, then open the web setup screen.
 - Keep `help.login` focused on the final administrator sign-in after the wizard completes.
+
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
+- Remove the unconsumed `setup` block from `variables.json` and align first-run interactive administrator creation with `credentials.none=true` and `help.login`.

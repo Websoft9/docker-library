@@ -1,5 +1,25 @@
 {
   "name": "canvas",
+  "access": [
+    {
+      "id": "web",
+      "service": "web",
+      "port": 80,
+      "public": true,
+      "host": [
+        "CANVAS_HOST"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Canvas",
   "release": true,
   "upstream": {
@@ -21,13 +41,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 80,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "4",
     "memory": "8",

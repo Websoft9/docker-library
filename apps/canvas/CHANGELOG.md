@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-11-05
 
 - Remote fresh install and retained-data recreation passed using the published `websoft9dev/canvas:2026-05-20.143` image after removing unused completed-test images.

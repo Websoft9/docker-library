@@ -1,5 +1,22 @@
 {
   "name": "nextjs",
+  "access": [
+    {
+      "id": "http",
+      "service": "nextjs",
+      "port": "${PORT}",
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Next.js",
   "release": true,
   "upstream": {
@@ -21,12 +38,6 @@
       ]
     }
   ],
-  "access": {
-    "web": {
-      "port": 3000,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "2",

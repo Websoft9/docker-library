@@ -1,5 +1,36 @@
 {
   "name": "prometheus",
+  "access": [
+    {
+      "id": "web",
+      "service": "prometheus",
+      "port": 9090,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "dashboard"
+          ],
+          "scheme": "http",
+          "path": "/"
+        },
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/api/v1/"
+        },
+        {
+          "roles": [
+            "metrics"
+          ],
+          "scheme": "http",
+          "path": "/metrics"
+        }
+      ]
+    }
+  ],
   "trademark": "Prometheus",
   "release": true,
   "upstream": {
@@ -19,12 +50,6 @@
       ]
     }
   ],
-  "access": {
-    "web": {
-      "port": 9090,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "1",

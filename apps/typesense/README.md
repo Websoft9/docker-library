@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Typesense**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -89,7 +90,7 @@ Configuration files live inside the image; mount a single file read-only to over
 - Send the `X-TYPESENSE-API-KEY` header with the value of `W9_LOGIN_API_KEY` from `.env`.
 
 **Port not reachable?**
-- Confirm `W9_HTTP_PORT_SET` is free and allowed by the firewall / security group.
+- Confirm the published API port is free and allowed by the firewall or security group.
 
 **Upgrading an existing 29.x instance?**
 - v30 auto-migrates synonyms, overrides and analytics rules; take a snapshot before upgrading.

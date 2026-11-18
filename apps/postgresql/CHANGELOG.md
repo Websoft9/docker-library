@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-09-11
 - Updated the supported version list to `18` and `latest` only, dropping the older majors (`9.6`-`17`).
 - Changed the data volume to the official PostgreSQL 18 layout: mount `postgres` at `/var/lib/postgresql` and rely on the image default `PGDATA=/var/lib/postgresql/18/docker`.

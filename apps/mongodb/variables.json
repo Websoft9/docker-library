@@ -1,5 +1,21 @@
 {
   "name": "mongodb",
+  "access": [
+    {
+      "id": "db",
+      "service": "mongo",
+      "port": 27017,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "db"
+          ],
+          "scheme": "mongodb"
+        }
+      ]
+    }
+  ],
   "trademark": "MongoDB",
   "release": true,
   "edition": [

@@ -1,5 +1,25 @@
 {
   "name": "langfuse",
+  "access": [
+    {
+      "id": "web",
+      "service": "langfuse-web",
+      "port": 3000,
+      "public": true,
+      "rootUrl": [
+        "NEXTAUTH_URL"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Langfuse",
   "release": true,
   "upstream": {
@@ -22,13 +42,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 3000,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "4",
     "memory": "16",

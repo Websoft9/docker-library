@@ -6,12 +6,13 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Wazuh**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
 ### Usage
 
-1. Open the dashboard at `https://<host>:${W9_HTTPS_PORT_SET}` and accept the self-signed certificate.
+1. Open the dashboard at `https://<host>:9443` (default) and accept the self-signed certificate.
 2. Sign in with `admin` / `SecretPassword`.
 3. Deploy agents and point them at the manager: agent connection on port `1514`, enrollment on `1515`, syslog on `514/udp`.
 
@@ -112,7 +113,7 @@ Environment variables are defined in the app's `.env` file; see the reference se
 - Run `sudo sysctl -w vm.max_map_count=262144` on the host, then restart the stack.
 
 **Dashboard unreachable or certificate error?**
-- The dashboard is HTTPS-only. Use `https://<host>:${W9_HTTPS_PORT_SET}` and accept the self-signed certificate.
+- The dashboard is HTTPS-only. Use its published port (default `9443`) and accept the self-signed certificate.
 
 **App fails to start?**
 - Check `docker compose logs wazuh.indexer wazuh.manager wazuh.dashboard`.

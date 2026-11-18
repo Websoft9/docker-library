@@ -79,3 +79,13 @@ def test_each_report_template_anchors_to_gate_vocabulary():
     for template_path in sorted((REPO_ROOT / "skills").glob("*/report-template.md")):
         text = template_path.read_text(encoding="utf-8")
         assert any(anchor in text for anchor in gate_anchors), f"{template_path}: no gate anchor section"
+
+
+def test_access_workflows_use_the_single_supported_contract():
+    for name in ("new-app", "app-update", "restore-app", "deploy-validation"):
+        for filename in ("SKILL.md", "checklist.md", "prompt-fragments.md"):
+            path = REPO_ROOT / "skills" / name / filename
+            text = path.read_text(encoding="utf-8")
+            assert "docs/app-access-spec.md" in text, path
+            assert "--gate access" in text, path
+            assert "defaultScheme" not in text, path

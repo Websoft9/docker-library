@@ -4,7 +4,7 @@ services:
     container_name: ${W9_ID}
     env_file: .env
     ports:
-      - "${W9_HTTP_PORT_SET}:8500" # Web UI and HTTP API
+      - "9185:8500" # Web UI and HTTP API
     volumes:
       - ./src/consul-config:/consul/config
       - consul-data:/consul/data

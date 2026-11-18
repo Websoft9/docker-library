@@ -4,7 +4,9 @@ set -eu
 cert_dir="${UMBRACO_CERT_DIR:-/app/umbraco/certs}"
 cert_path="${UMBRACO_CERT_PATH:-${cert_dir}/umbraco-selfsigned.pfx}"
 host_file="${cert_dir}/.hostname"
-host_raw="${W9_URL:-localhost}"
+app_url_raw="${UMBRACO_APPLICATION_URL:-${Umbraco__CMS__WebRouting__UmbracoApplicationUrl:-localhost}}"
+host_raw="${app_url_raw#*://}"
+host_raw="${host_raw%%/*}"
 host_name="${host_raw%%:*}"
 cert_password="${ASPNETCORE_Kestrel__Certificates__Default__Password:-${UMBRACO_HTTPS_CERT_PASSWORD:-umbraco-selfsigned}}"
 

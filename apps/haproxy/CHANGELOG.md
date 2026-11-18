@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-11-09
 - Limited supported HAProxy versions to maintained LTS branches: 3.4, 3.2, 3.0, 2.8, and 2.6.
 - Regenerated the README.

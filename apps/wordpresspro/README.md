@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **WordPress Pro**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -26,7 +27,7 @@
 Websoft9 packages this app from the official [WordPress Pro Docker image](https://hub.docker.com/_/wordpress) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
-The package mounts `src/websoft9-url.php` with `auto_prepend_file` so `W9_URL` can override `WP_HOME` and `WP_SITEURL` at runtime. The published web entrypoint stays on the Varnish container, which bypasses admin and authenticated traffic while caching anonymous frontend requests.
+The package mounts `src/websoft9-url.php` with `auto_prepend_file` to read `WP_HOME` and `WP_SITEURL` from the environment. The published web entrypoint is Varnish, which bypasses admin and authenticated traffic while caching anonymous frontend requests.
 
 Varnish loads `src/run-varnish.sh` on startup: the script renders `src/default.vcl.template` into the effective VCL and replaces the `__WORDPRESS_BACKEND__` placeholder with the `${W9_ID}-wordpress` container name. This keeps the backend host instance-specific so multiple WordPress Pro instances on the same Docker host do not share a hard-coded backend name.
 

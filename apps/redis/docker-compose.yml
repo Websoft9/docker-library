@@ -6,7 +6,7 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - "${W9_DB_PORT_SET}:6379" # Redis
+      - "6379:6379" # Redis
     env_file: .env
     volumes:
       - redis_data:/data

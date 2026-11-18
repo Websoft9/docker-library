@@ -17,10 +17,10 @@ services:
       CANVAS_LMS_STATS_COLLECTION: ${CANVAS_LMS_STATS_COLLECTION}
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
       JWT_ENCRYPTION_KEY: ${JWT_ENCRYPTION_KEY}
-      CANVAS_HOST: ${W9_URL}
+      CANVAS_HOST: ${CANVAS_HOST}
     command: ["/usr/local/bin/entrypoint.sh", "web"]
     ports:
-      - "${W9_HTTP_PORT_SET}:80" # Web Console
+      - "9001:80" # Web Console
     volumes:
       - canvas_bundle:/usr/src/app/vendor/bundle
       - canvas_tmp:/usr/src/app/tmp
@@ -55,7 +55,7 @@ services:
       CANVAS_LMS_STATS_COLLECTION: ${CANVAS_LMS_STATS_COLLECTION}
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
       JWT_ENCRYPTION_KEY: ${JWT_ENCRYPTION_KEY}
-      CANVAS_HOST: ${W9_URL}
+      CANVAS_HOST: ${CANVAS_HOST}
       CANVAS_SKIP_BOOTSTRAP: "true"
     command: ["/usr/local/bin/entrypoint.sh", "jobs"]
     volumes:

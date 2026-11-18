@@ -2,6 +2,23 @@
   "name": "youtrack",
   "trademark": "YouTrack",
   "release": true,
+  "access": [
+    {
+      "id": "web",
+      "service": "youtrack",
+      "port": 8080,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "upstream": {
     "image": "https://hub.docker.com/r/jetbrains/youtrack",
     "docs": [
@@ -16,13 +33,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8080,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "1.5",

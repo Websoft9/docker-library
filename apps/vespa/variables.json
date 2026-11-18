@@ -1,5 +1,37 @@
 {
   "name": "vespa",
+  "access": [
+    {
+      "id": "deployment",
+      "service": "vespa",
+      "port": 19071,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/application/v2/"
+        }
+      ]
+    },
+    {
+      "id": "api",
+      "service": "vespa",
+      "port": 8080,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Vespa",
   "release": true,
   "edition": [
@@ -22,12 +54,5 @@
     "docs": [
       "https://docs.vespa.ai/en/operations/self-managed/docker-containers.html"
     ]
-  },
-  "access": {
-    "defaultScheme": "http",
-    "api": {
-      "port": 8080,
-      "path": "/"
-    }
   }
 }

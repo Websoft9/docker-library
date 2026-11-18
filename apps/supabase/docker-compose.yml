@@ -61,7 +61,7 @@ services:
       studio:
         condition: service_healthy
     ports:
-      - "${W9_HTTP_PORT_SET}:8000" # API Gateway / Studio
+      - "9001:8000" # API Gateway / Studio
     volumes:
       - ./src/api/envoy/envoy.yaml:/etc/envoy/envoy.yaml:ro
       - ./src/api/envoy/cds.yaml:/etc/envoy/cds.yaml:ro

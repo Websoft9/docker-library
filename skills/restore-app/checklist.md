@@ -1,5 +1,7 @@
 # Restore App Checklist
 
+- [ ] Repair missing required access before restore; missing declarations block movement, and empty entries require confirmed no network entry
+- [ ] Review access per `docs/app-access-spec.md`; replace unused old declarations with verified entries before restore, then run `libs app-check --app <app> --gate access`; do not infer unknown entry capabilities
 - [ ] Verify the app is archived via `.venv/bin/libs list --include-archived --json` (`status: archived`)
 - [ ] Confirm cadence and update policy with the user
 - [ ] Preview with `.venv/bin/libs app-restore --app <app> --dry-run --json`

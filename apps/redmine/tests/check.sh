@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-base="${BASE_URL:-http://localhost:${W9_HTTP_PORT_SET:-3000}}"
+base="${BASE_URL:-http://localhost:9003}"
 user="${W9_LOGIN_USER:-admin}"
 password="${W9_LOGIN_PASSWORD:-admin}"
 jar="$(mktemp)"

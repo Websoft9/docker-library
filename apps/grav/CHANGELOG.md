@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-10-15
 
 - Initial package based on the LinuxServer.io `linuxserver/grav` image, pinned to `W9_VERSION=2.2.8` (upstream publishes no `x.x` tag, so the full version tag is intentional).

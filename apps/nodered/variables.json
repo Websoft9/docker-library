@@ -1,5 +1,22 @@
 {
   "name": "nodered",
+  "access": [
+    {
+      "id": "web",
+      "service": "nodered",
+      "port": 1880,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Node-RED",
   "release": true,
   "edition": [
@@ -11,13 +28,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 1880,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

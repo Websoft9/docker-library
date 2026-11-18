@@ -6,13 +6,14 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Supabase**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
 ### Usage
 
 1. Open Supabase from the published web port and sign in to Studio with the dashboard basic auth credentials.
-2. The main entrypoint is the API gateway on port `8000`, exposed by `W9_HTTP_PORT_SET`; Studio, Auth, REST, Realtime, Storage, and Functions all sit behind that gateway.
+2. The main entrypoint is the API gateway on container port `8000`, published on host port `9001` by default. Studio, Auth, REST, Realtime, Storage, and Functions all sit behind it.
 3. Keep the bundled Postgres and Supavisor services internal. This package declares known database information only and does not offer external databases.
 
 ### Change Password
@@ -67,7 +68,7 @@ Supported versions: 0.8.1.
 Environment variables are defined in the app's `.env` file; see the reference section at the end of `.env` for supported variables.
 
 
-Note: `POSTGRES_PASSWORD` takes effect on first startup only; changing it does not rotate passwords in an initialized database.
+Note: `POSTGRES_PASSWORD` take effect on first startup only; changing them after deployment may not take effect until the app is re-initialized.
 
 
 ### Configuration Files
@@ -116,7 +117,7 @@ Note: `POSTGRES_PASSWORD` takes effect on first startup only; changing it does n
 - Check `docker compose logs` and verify the gateway, Studio, Auth, PostgREST, Storage, Realtime, Postgres, and Supavisor services all reach a healthy or running state. Supabase is a coordinated stack; one failed dependency can block the dashboard or API.
 
 **Dashboard not reachable?**
-- The user-facing entrypoint is the API gateway on `W9_HTTP_PORT_SET` (internal port `8000`), not the Studio container's internal `3000` port.
+- Use the published API gateway port (container port `8000`), not Studio's internal port `3000`.
 
 **Database password changed after first boot?**
 - Follow the upstream self-hosted database password rotation procedure for existing roles; changing `POSTGRES_PASSWORD` in the environment does not rotate an initialized database.

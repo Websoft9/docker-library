@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Kibana**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -26,7 +27,6 @@
 Websoft9 packages this app from the official [Kibana Docker image](https://hub.docker.com/_/kibana) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
-
 Elasticsearch is external and is not bundled. The `ELASTICSEARCH_HOSTS` example in `.env` is disabled by default; it does not identify a configured backend. For a single target, use the native JSON array format:
 
 ```dotenv
@@ -34,7 +34,6 @@ ELASTICSEARCH_HOSTS='["https://your-elasticsearch.example.com:9200"]'
 ```
 
 Configure authentication and TLS using the [official Kibana settings](https://www.elastic.co/docs/deploy-manage/deploy/self-managed/install-kibana-with-docker). A service-account token is not a database password; changing the host does not provision Elasticsearch or its credentials.
-
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.

@@ -5,7 +5,7 @@ services:
     container_name: ${W9_ID}  
     restart: unless-stopped
     ports:
-      - ${W9_HTTP_PORT_SET}:3000 # Web console
+      - 9001:3000 # Web console
     volumes:
       - data:/var/lib/grafana
       - config:/etc/grafana

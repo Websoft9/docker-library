@@ -20,4 +20,4 @@ Add hooks under `/var/www/html/.w9/entrypoint.d/`:
 - new filename is inserted in filename order
 - override the start step with `/var/www/html/.w9/start.sh`
 
-Available variables: `APP_DIR`, `W9_HTTP_PORT`, `W9_VERSION`.
+Available variables: `APP_DIR`, `W9_VERSION`.

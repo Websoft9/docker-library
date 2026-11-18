@@ -1,5 +1,55 @@
 {
   "name": "kong",
+  "access": [
+    {
+      "id": "admin",
+      "service": "kong",
+      "port": 8002,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    },
+    {
+      "id": "gateway",
+      "service": "kong",
+      "port": 8000,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "gateway"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    },
+    {
+      "id": "api",
+      "service": "kong",
+      "port": 8001,
+      "public": true,
+      "rootUrl": [
+        "KONG_ADMIN_GUI_API_URL"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Kong Gateway (OSS)",
   "release": true,
   "upstream": {
@@ -20,21 +70,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8002,
-      "path": "/admin"
-    },
-    "admin": {
-      "port": 8000,
-      "path": "/"
-    },
-    "api": {
-      "port": 8001,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

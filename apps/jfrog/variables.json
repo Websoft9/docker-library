@@ -1,5 +1,22 @@
 {
   "name": "jfrog",
+  "access": [
+    {
+      "id": "web",
+      "service": "jfrog",
+      "port": 8082,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/ui/"
+        }
+      ]
+    }
+  ],
   "trademark": "JFrog Artifactory",
   "release": true,
   "upstream": {
@@ -12,16 +29,11 @@
   "edition": [
     {
       "dist": "community",
-      "version": ["7.161.26"]
+      "version": [
+        "7.161.26"
+      ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8082,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

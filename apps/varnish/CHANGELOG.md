@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-09-20
 - Updated Varnish to `9.0` (official `varnish` image, currently 9.0.4); the version list is now `9.0` and `latest` (the `stable` tag tracks the unrelated 6.0 LTS line).
 - Replaced the stale `src/default.vcl` (VCL 4.0 with an unresolvable backend that prevented the container from starting) with the upstream 9.0 default VCL; the backend is now configured through `VARNISH_BACKEND_HOST`.

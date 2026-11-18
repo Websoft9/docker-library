@@ -14,8 +14,8 @@ services:
         fi
         exec rethinkdb --bind all
     ports:
-      - "${W9_HTTP_PORT_SET}:8080" # Web admin console
-      - "${W9_DB_PORT_SET}:28015" # Database driver
+      - "9098:8080" # Web admin console
+      - "9099:28015" # Database driver
     volumes:
       - rethinkdb_data:/data
     healthcheck:

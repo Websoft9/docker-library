@@ -151,6 +151,7 @@ def scaffold(
         "fill any missing upstream metadata in variables.json (releases, compose, env) when official sources exist",
         "design compose: volumes, healthcheck, db service and its version",
         "declare verified database[] components using docs/app-database-connection-spec.md; omit database for apps without database components",
+        "replace the scaffold access port group with verified services, container ports, transport protocols, default publishing and endpoints using docs/app-access-spec.md; run libs app-check --app <app> --gate access",
         "register new translatable W9_* keys in i18n/translation.json",
         "run libs app-gen-readme --app <app> after editing variables.json",
         "run the deploy-validation skill",

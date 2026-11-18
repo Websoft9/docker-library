@@ -1,5 +1,22 @@
 {
   "name": "registry",
+  "access": [
+    {
+      "id": "api",
+      "service": "registry",
+      "port": 5000,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/v2/"
+        }
+      ]
+    }
+  ],
   "trademark": "Docker Registry",
   "release": true,
   "upstream": {
@@ -23,12 +40,5 @@
     "cpu": "2",
     "memory": "4",
     "disk": "1"
-  },
-  "access": {
-    "defaultScheme": "http",
-    "api": {
-      "port": 5000,
-      "path": "/v2/"
-    }
   }
 }

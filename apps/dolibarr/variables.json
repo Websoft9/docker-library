@@ -1,5 +1,25 @@
 {
   "name": "dolibarr",
+  "access": [
+    {
+      "id": "web",
+      "service": "dolibarr",
+      "port": 80,
+      "public": true,
+      "rootUrl": [
+        "DOLI_URL_ROOT"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Dolibarr",
   "release": true,
   "upstream": {
@@ -19,16 +39,6 @@
       ]
     }
   ],
-  "access": {
-    "web": {
-      "port": 80,
-      "path": "/"
-    },
-    "admin": {
-      "port": 80,
-      "path": "/admin"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "1",

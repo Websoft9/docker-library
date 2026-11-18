@@ -522,3 +522,24 @@ def test_script_case_target_local_forces_local_execution(repo_fixture, app_facto
 
     assert result["ok"] is True
     assert "local-run target=local" in result["stdout"]
+
+
+def test_v2_https_and_variable_port_base_url_and_remote_script_rewrite(repo_fixture, app_factory):
+    app_factory(
+        "secureapp",
+        env="W9_ID=secureapp\nPORT=8443\n",
+        compose="services:\n  web:\n    ports:\n      - '9443:${PORT}'\n",
+        variables={
+            "access": [
+                {"id": "https", "service": "web", "port": "${PORT}", "public": True, "endpoints": [{"roles": ["web"], "scheme": "https"}]},
+            ]
+        },
+    )
+    env = app_tests.load_env("secureapp")
+
+    assert app_tests._base_url("secureapp", env, None, "local", None) == "https://localhost:9443"
+    assert app_tests._base_url("secureapp", env, None, "remote", "1.2.3.4") == "https://1.2.3.4:9443"
+    command = app_tests._remote_script_command(
+        {"app_target": "/opt/apps/secureapp"}, "secureapp", "smoke.sh", env, "https://1.2.3.4:9555"
+    )
+    assert "BASE_URL=https://localhost:9555" in command

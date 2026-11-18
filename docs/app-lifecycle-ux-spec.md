@@ -10,7 +10,9 @@
 
 ### 1. Entry First
 
-- every app must expose one primary access entry
+- supported package model: `variables.json.access` is an ordered array of port groups keyed by service, container port and transport; each group carries `id`, `service`, `port`, `public`, optional `requireDomain`/`requireHttps`, optional `rootUrl`/`host`/`mappedPort` native variable lists, and `endpoints`. An empty array means confirmed no network entry, while missing `access` is unknown; see [App Access Spec](app-access-spec.md)
+- package validation is implemented; this platform UX and instance resolution are separate downstream work
+- missing access blocks package validation and publishing; an unknown legacy record is not a completed migration
 - default UI should show the entry, not raw ports
 
 ### 2. Ports Are Secondary

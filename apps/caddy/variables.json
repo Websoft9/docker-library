@@ -1,5 +1,22 @@
 {
   "name": "caddy",
+  "access": [
+    {
+      "id": "gateway",
+      "service": "caddy",
+      "port": 80,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "gateway"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Caddy",
   "release": true,
   "edition": [
@@ -23,12 +40,5 @@
       "https://github.com/caddyserver/caddy/releases/tag/v2.11.7",
       "https://hub.docker.com/_/caddy"
     ]
-  },
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 80,
-      "path": "/"
-    }
   }
 }

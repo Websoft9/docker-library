@@ -3,21 +3,21 @@
 version: '3.8'
 services:
   mariadb:
-    image: $W9_REPO:$W9_VERSION
-    container_name: $W9_ID
+    image: ${W9_REPO}:${W9_VERSION}
+    container_name: ${W9_ID}
     restart: unless-stopped
     env_file: .env
     environment:
-     - MARIADB_ROOT_PASSWORD=$W9_LOGIN_PASSWORD
+     - MARIADB_ROOT_PASSWORD=${W9_LOGIN_PASSWORD}
     ports:
-     - $W9_DB_PORT_SET:3306
+     - "3306:3306" # MariaDB
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
      - data:/var/lib/mysql
      - ./src/conf.d/:/etc/mysql/conf.d
 networks:
   default:
-    name: $W9_NETWORK
+    name: ${W9_NETWORK}
     external: true
 
 volumes:

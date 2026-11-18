@@ -2,7 +2,21 @@
 
 Project-level changes only: architecture, delivery model, tooling, CI, and release machinery. App version updates and package fixes are recorded in `apps/<app>/CHANGELOG.md`.
 
-## 2026-10 — Unreleased
+## 2026-11
+
+### Added
+- Ordered `variables.json.access[]` port-group contract (`id`, `service`, `port`, `protocol`, `public`, `requireDomain`, `requireHttps`, `rootUrl`, `host`, `mappedPort`, `endpoints`), shared `metadata/access-types.json`, Schema and semantic/policy validation (`app-check --gate access`), and consistent `app-info`/report/README/deploy/test integration.
+- Access dictionary delivery in full and incremental library artifacts, content fingerprints/checksums, `appstore-sync` preflight and backup/rollback records, and restore-time validation.
+
+### Changed
+- Bumped Appstore `library.schemaVersion` from `"2"` to `"3"` in `metadata/appstore-schema.json` so unupgraded consumers reject incompatible access-migrated snapshots safely.
+- Migrated all 146 active apps to `access[]` declarations (`access: []` only for confirmed no-network-entry apps) with literal default Compose host ports and upstream native address/port variables; missing `access` now blocks Schema, CLI checks, restore, and publishing.
+- Aligned scaffolding, new/update/restore/deploy skills, canonical access documentation, and regression tests.
+
+### Removed
+- Removed deprecated platform port/URL/path variables (`W9_*_PORT_SET`, `W9_HTTP_PORT`, `W9_HTTPS_PORT`, `W9_DB_PORT`, `W9_API_PORT`, `W9_URL`, `W9_URL_REPLACE`, `W9_URL_WITH_PORT`, `W9_ADMIN_PATH`, `W9_LOGIN_ConnectURL`) from all active packages and templates, and removed unconsumed `variables.json.setup` metadata.
+
+## 2026-10
 
 ### Added
 - Staged initial/login credential metadata in `variables.json`.

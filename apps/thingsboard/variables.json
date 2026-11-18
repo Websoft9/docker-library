@@ -1,5 +1,22 @@
 {
   "name": "thingsboard",
+  "access": [
+    {
+      "id": "web",
+      "service": "thingsboard-ce",
+      "port": 8080,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "dashboard"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "ThingsBoard",
   "release": true,
   "upstream": {
@@ -19,13 +36,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8080,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

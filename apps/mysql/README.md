@@ -43,7 +43,7 @@ The `latest` tag is not guaranteed to remain valid; pin a specific version for p
 
 | Purpose | Port |
 | --- | --- |
-| W9_DB_PORT_SET | 3306 |
+| MySQL | 3306 |
 
 
 ### Data Directory

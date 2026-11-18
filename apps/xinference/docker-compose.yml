@@ -15,7 +15,7 @@ services:
               count: all
               capabilities: [gpu]
     ports:
-      - "${W9_HTTP_PORT_SET}:9997" # Web UI / API
+      - "9001:9997" # Web UI / API
     volumes:
       - xinference_home:/root/.xinference
       - huggingface_cache:/root/.cache/huggingface

@@ -1,5 +1,36 @@
 {
   "name": "milvus",
+  "access": [
+    {
+      "id": "db",
+      "service": "standalone",
+      "port": 19530,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "db"
+          ],
+          "scheme": "grpc"
+        }
+      ]
+    },
+    {
+      "id": "metrics",
+      "service": "standalone",
+      "port": 9091,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "metrics"
+          ],
+          "scheme": "http",
+          "path": "/metrics"
+        }
+      ]
+    }
+  ],
   "trademark": "Milvus",
   "release": true,
   "upstream": {
@@ -22,13 +53,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 9091,
-      "path": "/webui"
-    }
-  },
   "requirements": {
     "cpu": "8",
     "memory": "32",

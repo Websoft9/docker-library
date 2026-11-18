@@ -7,7 +7,7 @@ services:
     entrypoint: ["/bin/bash", "/usr/local/bin/websoft9-entrypoint.sh"]
     command: ["apache2-foreground"]
     ports:
-      - "${W9_HTTP_PORT_SET}:80" # Web Console
+      - "9001:80" # Web Console
     volumes:
       - ./src/entrypoint.sh:/usr/local/bin/websoft9-entrypoint.sh:ro
       - typo3fileadmin:/var/www/html/fileadmin

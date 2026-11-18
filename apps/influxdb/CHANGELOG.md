@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-11-18
+
+- Kept InfluxDB 3 Core as a standalone Compose deployment on `8181` instead of advertising it with the incompatible InfluxDB 2.x App Store access declaration.
+
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-09-14
 - Updated InfluxDB to `2.9`; `latest` now resolves to the 2.9 line.
 - Added a main-container healthcheck on `/health`.

@@ -8,7 +8,7 @@ services:
       - teamcity-mysql
     env_file: .env
     ports:
-      - "${W9_HTTP_PORT_SET}:8111" # Web Console
+      - "8111:8111" # Web Console
     volumes:
       - teamcity_data:/data/teamcity_server/datadir
       - teamcity_logs:/opt/teamcity/logs

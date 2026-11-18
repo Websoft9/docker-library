@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Budibase**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -23,12 +24,10 @@
 
 ## Configuration Reference
 
-Websoft9 packages this app from the official [Budibase Docker image](https://hub.docker.com/r/budibase/proxy) and makes some improvements below.
+Websoft9 packages this app from the official [Budibase Docker image](https://hub.docker.com/r/budibase/apps) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
-
 This package does not offer external databases. Database metadata describes the bundled CouchDB, authenticated Redis, and LiteLLM PostgreSQL services using their existing configuration sources. It does not rewrite connection settings, separate initialization inputs, migrate data, or rotate passwords; MinIO and helper services are not database components.
-
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.
@@ -76,7 +75,7 @@ Configuration is overridden by mounting `./src/litellm_config.yaml` to `/app/con
 
 - [Budibase Administrator Guide](https://support.websoft9.com/docs/budibase) by Websoft9
 
-- [Docker Hub image](https://hub.docker.com/r/budibase/proxy)
+- [Docker Hub image](https://hub.docker.com/r/budibase/apps)
 
 - [Releases](https://github.com/Budibase/budibase/releases)
 

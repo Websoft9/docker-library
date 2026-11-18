@@ -1,5 +1,29 @@
 {
   "name": "strapi",
+  "access": [
+    {
+      "id": "admin",
+      "service": "strapi",
+      "port": 1337,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/admin/"
+        },
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/api/"
+        }
+      ]
+    }
+  ],
   "trademark": "Strapi",
   "release": true,
   "upstream": {
@@ -20,16 +44,6 @@
       ]
     }
   ],
-  "access": {
-    "web": {
-      "port": 1337,
-      "path": "/"
-    },
-    "api": {
-      "port": 1337,
-      "path": "/api"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

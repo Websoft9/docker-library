@@ -2,7 +2,7 @@
 set -eu
 
 data_dir="${POCKETBASE_DIR:-/pb_data}"
-http_port="${W9_HTTP_PORT:-8090}"
+http_port="${POCKETBASE_PORT:-8090}"
 
 mkdir -p "${data_dir}"
 

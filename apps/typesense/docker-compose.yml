@@ -9,7 +9,7 @@ services:
         max-file: "5"
         max-size: 10m
     ports:
-      - "${W9_HTTP_PORT_SET}:8108" # Typesense HTTP API
+      - "8109:8108" # Typesense HTTP API
     volumes:
       - typesense:/data
     env_file: .env

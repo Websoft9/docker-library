@@ -19,13 +19,38 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "https",
-    "api": {
+  "access": [
+    {
+      "id": "web",
+      "service": "opensearch-dashboards",
+      "port": 5601,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "dashboard"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    },
+    {
+      "id": "api",
+      "service": "opensearch",
       "port": 9200,
-      "path": "/"
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "https",
+          "path": "/"
+        }
+      ]
     }
-  },
+  ],
   "requirements": {
     "cpu": "2",
     "memory": "8",

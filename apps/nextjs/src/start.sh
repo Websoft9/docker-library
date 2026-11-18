@@ -3,7 +3,7 @@ set -euo pipefail
 
 APP_DIR="${APP_DIR:-/usr/src/app}"
 PACKAGE_MANAGER="${PACKAGE_MANAGER:-npm}"
-PORT="${W9_HTTP_PORT:-3000}"
+PORT="${PORT:-3000}"
 
 cd "${APP_DIR}"
 

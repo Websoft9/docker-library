@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Graylog**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -32,9 +33,7 @@
 Websoft9 packages this app from the official [Graylog Docker image](https://hub.docker.com/r/graylog/graylog) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
-
 This package does not offer external databases. Metadata records the known bundled MongoDB service and the `graylog` database used by both Graylog and Data Node, without changing runtime files. The managed Data Node search endpoint, TLS, and credentials remain unknown; commented ports, the 8999 management API, and Graylog login credentials are not search connection evidence. This partial declaration does not claim complete storage information, live credential validity, or perform configuration writes.
-
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.
@@ -48,6 +47,16 @@ Supported versions: 7.2.
 
 | Purpose | Port |
 | --- | --- |
+| Web Console and API | 9000 |
+| Beats | 5044 |
+| Syslog UDP | 5140/udp |
+| Syslog | 5140 |
+| RAW TCP | 5555 |
+| RAW UDP | 5555/udp |
+| GELF TCP | 12201 |
+| GELF UDP | 12201/udp |
+| Forwarder data | 13301 |
+| Forwarder config | 13302 |
 
 
 ### Data Directory

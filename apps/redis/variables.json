@@ -1,5 +1,21 @@
 {
   "name": "redis",
+  "access": [
+    {
+      "id": "db",
+      "service": "redis",
+      "port": 6379,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "db"
+          ],
+          "scheme": "redis"
+        }
+      ]
+    }
+  ],
   "trademark": "Redis",
   "release": true,
   "edition": [

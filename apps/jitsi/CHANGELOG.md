@@ -1,9 +1,14 @@
 # CHANGELOG
 
+## 2026-11-18
+
+- Explicitly exempted JVB media UDP `10000` from access management while preserving its default published binding.
+
 ## 2026-11-17
 
-- Fix `W9_HTTPS_PORT` from `443` to the container's real HTTPS port `8443`. The `web` container listens on `8000` (HTTP) and `8443` (HTTPS) only, so domain binding forwarded to a closed container port and the app failed to load through a bound domain.
-- Correct the domain guide: `PUBLIC_URL` must be `https://<your-domain>` when the app is reached through a bound domain.
+- Migrated `access` to the V2 port-group array (`web:8443` HTTPS with `requireDomain: true` and `rootUrl: ["PUBLIC_URL"]`).
+- Fixed the legacy HTTPS target to match the container listener on `8443` (#2310); the V2 declaration now carries the same target without the deprecated port and URL aliases. The default HTTPS mapping remains `9443:8443`.
+- Documented that `PUBLIC_URL` must be `https://<your-domain>` when reached through a bound domain.
 
 ## 2026-09-15
 

@@ -1,5 +1,22 @@
 {
   "name": "chroma",
+  "access": [
+    {
+      "id": "db",
+      "service": "chromadb",
+      "port": 8000,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "db"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Chroma",
   "release": true,
   "edition": [
@@ -27,12 +44,5 @@
       "https://docs.trychroma.com/reference/server-env-vars",
       "https://github.com/chroma-core/chroma/releases/tag/1.5.9"
     ]
-  },
-  "access": {
-    "defaultScheme": "http",
-    "api": {
-      "port": 8000,
-      "path": "/"
-    }
   }
 }

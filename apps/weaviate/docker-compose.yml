@@ -10,8 +10,8 @@ services:
     - --scheme
     - http
     ports:
-      - "${W9_HTTP_PORT_SET}:8080" # HTTP API
-      - "${W9_GRPC_PORT_SET}:50051" # gRPC API
+      - "8080:8080" # HTTP API
+      - "50051:50051" # gRPC API
     volumes:
       - weaviate_data:/var/lib/weaviate
     restart: unless-stopped

@@ -5,7 +5,7 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     ports:
-      - "${W9_HTTP_PORT_SET}:80" # Web Console
+      - "9001:80" # Web Console
     volumes:
       - zentao:/data
     env_file:

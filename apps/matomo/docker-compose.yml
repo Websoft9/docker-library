@@ -9,7 +9,7 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     ports:
-      - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}' # Web Console
+      - '9001:80' # Web Console
     env_file: .env
     environment:
       - MATOMO_DATABASE_HOST=${MATOMO_DATABASE_HOST}

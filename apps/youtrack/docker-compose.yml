@@ -11,7 +11,7 @@ services:
       - logs:/opt/youtrack/logs
       - backups:/opt/youtrack/backups
     ports:
-      - "${W9_HTTP_PORT_SET}:8080" # Web Console
+      - "9001:8080" # Web Console
     env_file:
       - .env
 

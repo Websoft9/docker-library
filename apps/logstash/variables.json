@@ -1,5 +1,22 @@
 {
   "name": "logstash",
+  "access": [
+    {
+      "id": "api",
+      "service": "logstash",
+      "port": 9600,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "logstash",
   "release": true,
   "edition": [
@@ -17,12 +34,5 @@
   },
   "upstream": {
     "image": "https://hub.docker.com/_/logstash"
-  },
-  "access": {
-    "defaultScheme": "http",
-    "api": {
-      "port": 9600,
-      "path": "/"
-    }
   }
 }

@@ -1,26 +1,85 @@
-# Mautic on Docker  
+# Mautic on Docker
 
-This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Mautic:
+## Quick Start
+
+### Deploy Verification
+
+1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Mautic**.
+2. In the **Access** tab, get the login URL and credentials.
+
+3. Open the login URL in a browser and sign in to confirm the app works.
+
+<!-- W9_GUIDE_START -->
+### Usage
+
+1. Make sure you are signed in to the Mautic admin console.
+2. Try a core feature.
+
+### Change Password
+
+1. In the [Websoft9](https://www.websoft9.com) console, open the app's **Compose** tab.
+2. Update the password in `.env` and save.
+3. Rebuild the app.
+<!-- W9_GUIDE_END -->
+
+## Configuration Reference
+
+Websoft9 packages this app from the official [Mautic Docker image](https://hub.docker.com/r/mautic/mautic) and makes some improvements below.
+
+<!-- W9_NOTE_START -->
+
+<!-- W9_NOTE_END -->
+
+Apps run as containers; rebuild after any configuration change.
+
+### Version Support
+
+Supported versions: 6-apache.
 
 
- - community:  5.2-apache
+### Ports
+
+| Purpose | Port |
+| --- | --- |
+| Web Console | 80 |
 
 
-## System Requirements
+### Data Directory
 
-The following are the minimal [recommended requirements](https://www.mautic.org/docs/user_guide/en/install-requirements.html):
 
-* **RAM**: 1 GB or more
-* **CPU**: 1 cores or higher
-* **Disk**: at least 4 GB of free space
-* **bandwidth**: more fluent experience over 100M  
+- `mautic-config` → `/var/www/html/config`
+- `mautic-logs` → `/var/www/html/var/logs`
+- `mautic-media-files` → `/var/www/html/docroot/media/files`
+- `mautic-media-images` → `/var/www/html/docroot/media/images`
+- `mautic-cron` → `/opt/mautic/cron`
+- `mysql-data` → `/var/lib/mysql`
 
-## Install
 
-You can install this Mautic by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
 
-If you want use Mautic with **Websoft9 Business Support** free, you can [subscribe Mautic](https://www.websoft9.com/apps) on Cloud platform
+### Environment Variables
 
-## Documentation
+Environment variables are defined in the app's `.env` file; see the reference section at the end of `.env` for supported variables.
 
-[Mautic Administrator Guide](https://support.websoft9.com/docs/mautic) powered by Websoft9
+
+### Configuration Files
+
+
+Configuration files live inside the image; mount a single file read-only to override, and never replace the whole directory.
+
+
+## References
+
+- [Mautic Administrator Guide](https://support.websoft9.com/docs/mautic) by Websoft9
+
+- [Docker Hub image](https://hub.docker.com/r/mautic/mautic)
+
+
+<!-- W9_TROUBLESHOOT_START -->
+## Troubleshooting
+
+**App fails to start?**
+- Check `docker compose logs`.
+
+**Port not reachable?**
+- Ensure the firewall / security group allows the port.
+<!-- W9_TROUBLESHOOT_END -->

@@ -1,5 +1,22 @@
 {
   "name": "springboot",
+  "access": [
+    {
+      "id": "api",
+      "service": "springboot",
+      "port": 8080,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Spring Boot",
   "release": true,
   "upstream": {
@@ -19,12 +36,6 @@
       ]
     }
   ],
-  "access": {
-    "web": {
-      "port": 8080,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

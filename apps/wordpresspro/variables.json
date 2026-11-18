@@ -1,5 +1,33 @@
 {
   "name": "wordpresspro",
+  "access": [
+    {
+      "id": "web",
+      "service": "varnish",
+      "port": 80,
+      "public": true,
+      "rootUrl": [
+        "WP_HOME",
+        "WP_SITEURL"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        },
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/wp-admin/"
+        }
+      ]
+    }
+  ],
   "trademark": "WordPress Pro",
   "release": true,
   "upstream": {
@@ -20,16 +48,6 @@
       ]
     }
   ],
-  "access": {
-    "web": {
-      "port": 80,
-      "path": "/"
-    },
-    "admin": {
-      "port": 80,
-      "path": "/wp-admin"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

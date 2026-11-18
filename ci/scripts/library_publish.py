@@ -27,6 +27,7 @@ V2_FULL_LATEST_NAME = "latest.zip"
 CONTRACT_PATH = "metadata/appstore-schema.json"
 DATABASE_TYPES_PATH = "metadata/database-types.json"
 SECRET_RULES_PATH = "metadata/secret-rules.json"
+ACCESS_TYPES_PATH = "metadata/access-types.json"
 CATALOG_FILE_NAMES = (
     "catalog_en.json",
     "catalog_zh.json",
@@ -255,6 +256,7 @@ def copy_package_contents(package_dir: Path, packaged_library_json: dict) -> Non
     (package_dir / "metadata").mkdir(exist_ok=True)
     shutil.copy2(ROOT / DATABASE_TYPES_PATH, package_dir / DATABASE_TYPES_PATH)
     shutil.copy2(ROOT / SECRET_RULES_PATH, package_dir / SECRET_RULES_PATH)
+    shutil.copy2(ROOT / ACCESS_TYPES_PATH, package_dir / ACCESS_TYPES_PATH)
     write_json(package_dir / "library.json", packaged_library_json)
 
 
@@ -323,11 +325,16 @@ def build_shared_metadata() -> dict:
     secret_source = ROOT / SECRET_RULES_PATH
     if not secret_source.is_file():
         raise SystemExit(f"missing shared secret rules dictionary: {SECRET_RULES_PATH}")
+    access_source = ROOT / ACCESS_TYPES_PATH
+    if not access_source.is_file():
+        raise SystemExit(f"missing shared access dictionary: {ACCESS_TYPES_PATH}")
     db_digest = sha256_file(db_source)
     secret_digest = sha256_file(secret_source)
+    access_digest = sha256_file(access_source)
     return {
         "databaseTypes": {"path": f"metadata/database-types-{db_digest}.json", "sha256": db_digest},
         "secretRules": {"path": f"metadata/secret-rules-{secret_digest}.json", "sha256": secret_digest},
+        "accessTypes": {"path": f"metadata/access-types-{access_digest}.json", "sha256": access_digest},
     }
 
 
@@ -341,6 +348,11 @@ def build_apps_index(
     for app_dir in sorted(path for path in APPS_DIR.iterdir() if path.is_dir()):
         variables = load_variables_json(app_dir)
         app_name = app_dir.name
+        access = variables.get("access")
+        if not isinstance(access, list):
+            raise SystemExit(
+                f"app {app_name} requires an access port-group array before publishing; run libs app-check --gate access"
+            )
         apps.append(
             {
                 "app": app_name,
@@ -830,6 +842,11 @@ def build_v2_appstore_artifacts(
     secret_rules_output.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(ROOT / SECRET_RULES_PATH, secret_rules_output)
     write_checksum_file(secret_rules_output)
+    access_types_entry = shared_metadata["accessTypes"]
+    access_types_output = library_dir / access_types_entry["path"]
+    access_types_output.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT / ACCESS_TYPES_PATH, access_types_output)
+    write_checksum_file(access_types_output)
     full_latest_name = V2_FULL_LATEST_NAME
 
     with tempfile.TemporaryDirectory() as tmp_dir_name:
@@ -885,6 +902,7 @@ def build_v2_appstore_artifacts(
         "appsDelta": write_checksum_file(library_dir / apps_delta_name),
         "databaseTypes": f"{dictionary_entry['path']}.sha256",
         "secretRules": f"{secret_rules_entry['path']}.sha256",
+        "accessTypes": f"{access_types_entry['path']}.sha256",
     }
 
     library_manifest = build_library_manifest(

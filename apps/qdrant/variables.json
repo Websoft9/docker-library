@@ -20,22 +20,44 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "api": {
+  "access": [
+    {
+      "id": "web",
+      "service": "qdrant",
       "port": 6333,
-      "path": "/"
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/dashboard"
+        },
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
     },
-    "web": {
-      "port": 6333,
-      "path": "/dashboard"
-    },
-    "grpc": {
+    {
+      "id": "grpc",
+      "service": "qdrant",
       "port": 6334,
-      "scheme": "grpc",
-      "path": "/"
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "grpc"
+        }
+      ]
     }
-  },
+  ],
   "requirements": {
     "cpu": "1",
     "memory": "2",

@@ -1,11 +1,11 @@
 services:
 
   influxdb:
-    image: ${W9_REPO}:${W9_VERSION}
+    image: ${W9_REPO}:3-core
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - "${W9_HTTP_PORT_SET}:8181" # InfluxDB 3 Core HTTP API
+      - "8181:8181" # InfluxDB 3 Core HTTP API
     env_file: .env
     command:
       - influxdb3

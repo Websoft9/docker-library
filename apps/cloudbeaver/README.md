@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **CloudBeaver**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -27,7 +28,7 @@
 Websoft9 packages this app from the official [CloudBeaver Docker image](https://hub.docker.com/r/dbeaver/cloudbeaver) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
-The package passes the server name, the public server URL, and the initial administrator credentials through `.env` (`CB_*`). The administrator account is created on first start, and `CB_SERVER_URL` is wired to `W9_URL`.
+The package passes the server name, the public server URL (`CB_SERVER_URL`), and the initial administrator credentials through `.env`. The administrator account is created on first start.
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.

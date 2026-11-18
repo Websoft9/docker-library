@@ -1,5 +1,29 @@
 {
   "name": "haproxy",
+  "access": [
+    {
+      "id": "stats",
+      "service": "haproxy",
+      "port": 80,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "dashboard"
+          ],
+          "scheme": "http",
+          "path": "/stats"
+        },
+        {
+          "roles": [
+            "gateway"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "HAProxy",
   "release": true,
   "upstream": {
@@ -17,17 +41,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 80,
-      "path": "/"
-    },
-    "admin": {
-      "port": 80,
-      "path": "/stats"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "1",

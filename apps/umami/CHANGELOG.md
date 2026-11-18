@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-11-03
 
 - Declared the PostgreSQL dependency and existing DATABASE_URL input, keeping the fixed database type out of connection mappings.

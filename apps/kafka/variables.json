@@ -1,5 +1,24 @@
 {
   "name": "kafka",
+  "access": [
+    {
+      "id": "mq",
+      "service": "kafka",
+      "port": 9092,
+      "public": true,
+      "mappedPort": [
+        "KAFKA_ADVERTISED_PORT"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "mq"
+          ],
+          "scheme": "kafka"
+        }
+      ]
+    }
+  ],
   "trademark": "Kafka",
   "release": true,
   "upstream": {

@@ -4,7 +4,7 @@ services:
     restart: unless-stopped
     container_name: ${W9_ID}
     ports:
-      - "${W9_DB_PORT_SET}:27017" # MongoDB
+      - "27017:27017" # MongoDB
     env_file: .env
     command: --wiredTigerCacheSizeGB 2 --config /etc/mongod.conf
     volumes:

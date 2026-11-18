@@ -1,5 +1,29 @@
 {
   "name": "litellm",
+  "access": [
+    {
+      "id": "admin",
+      "service": "litellm",
+      "port": 4000,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/ui/"
+        },
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "LiteLLM",
   "release": true,
   "upstream": {
@@ -19,17 +43,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 4000,
-      "path": "/ui"
-    },
-    "admin": {
-      "port": 4000,
-      "path": "/ui"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

@@ -17,17 +17,42 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
+  "access": [
+    {
+      "id": "grid",
+      "service": "app",
       "port": 4444,
-      "path": "/"
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "dashboard"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
     },
-    "admin": {
+    {
+      "id": "novnc",
+      "service": "app",
       "port": 7900,
-      "path": "/?autoconnect=1&resize=scale"
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "remote-desktop"
+          ],
+          "scheme": "http",
+          "path": "/",
+          "query": {
+            "autoconnect": "1",
+            "resize": "scale"
+          }
+        }
+      ]
     }
-  },
+  ],
   "credentials": {
     "password": {
       "source": "container-env",

@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **ERPNext**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -26,18 +27,16 @@
 Websoft9 packages this app from the official [ERPNext Docker image](https://hub.docker.com/r/frappe/erpnext) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
-
 This package keeps MariaDB and both Redis services internal and does not offer external databases. Database metadata records known internal services and the root provisioning account; Frappe generates site database names and business accounts, which are not guessed in metadata.
 
 Site creation uses the bundled MariaDB password seed `W9_POWER_PASSWORD`; `W9_LOGIN_PASSWORD` remains the ERPNext administrator password. Existing sites retain their saved credentials. The declaration does not rewrite shared site configuration, migrate data, or rotate passwords.
-
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: v16, v16.34.2.
+Supported versions: v16.
 
 
 ### Ports

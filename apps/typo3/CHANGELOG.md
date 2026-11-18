@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-11-04
 
 - Added the missing `W9_LOGIN_USER=admin` source for the existing native administrator username reference, restoring the login variable pair without rotating passwords.

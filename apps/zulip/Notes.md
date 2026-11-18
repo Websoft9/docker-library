@@ -10,8 +10,8 @@
 - The package now creates a default organization and owner account automatically on the first successful startup.
 - The organization name, optional subdomain, owner full name, and owner email/password come from `W9_ZULIP_REALM_NAME`, `W9_ZULIP_REALM_STRING_ID`, `W9_ZULIP_ADMIN_FULL_NAME`, `W9_LOGIN_USER`, and `W9_LOGIN_PASSWORD`.
 - These values are first-start only; changing them later does not modify an existing Zulip database.
-- `SETTING_FAKE_EMAIL_DOMAIN=zulip.example.com` is required because `W9_URL` may resolve to an IP address; Zulip rejects an IP as the fake email domain during owner creation.
-- Admin entry is declared as `W9_ADMIN_PATH=/login/`; the app store `access` block mirrors it (web `/`, admin `/login/` on port 443).
+- Keep `SETTING_FAKE_EMAIL_DOMAIN` a valid domain name: Zulip rejects an IP as the fake email domain during owner creation.
+- Login is at `/login/`; the declared web entry at `/` redirects unauthenticated users there.
 
 ## Manual organization creation
 ```

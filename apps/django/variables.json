@@ -1,5 +1,25 @@
 {
   "name": "django",
+  "access": [
+    {
+      "id": "admin",
+      "service": "django",
+      "port": 8000,
+      "public": true,
+      "rootUrl": [
+        "CSRF_TRUSTED_ORIGINS"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/admin/"
+        }
+      ]
+    }
+  ],
   "trademark": "Django",
   "release": true,
   "upstream": {
@@ -21,20 +41,6 @@
       ]
     }
   ],
-  "access": {
-    "web": {
-      "port": 8000,
-      "path": "/"
-    },
-    "admin": {
-      "port": 8000,
-      "path": "/admin/"
-    },
-    "api": {
-      "port": 8000,
-      "path": "/mcp"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "2",

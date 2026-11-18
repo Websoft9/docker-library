@@ -22,12 +22,23 @@
       ]
     }
   ],
-  "access": {
-    "web": {
+  "access": [
+    {
+      "id": "web",
+      "service": "umami",
       "port": 3000,
-      "path": "/"
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
     }
-  },
+  ],
   "requirements": {
     "cpu": "1",
     "memory": "1",

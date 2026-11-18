@@ -1,5 +1,29 @@
 {
   "name": "dify",
+  "access": [
+    {
+      "id": "web",
+      "service": "nginx",
+      "port": 80,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        },
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/v1"
+        }
+      ]
+    }
+  ],
   "trademark": "Dify",
   "release": true,
   "edition": [
@@ -11,13 +35,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 80,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",
