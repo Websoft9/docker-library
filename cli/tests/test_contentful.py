@@ -5,6 +5,7 @@ from pathlib import Path
 import sys
 import types
 
+import pytest
 from typer.testing import CliRunner
 
 from libs import contentful, main
@@ -58,6 +59,23 @@ def test_build_machine_fields_title_falls_back_to_name():
     fields = contentful.build_machine_fields({"name": "demo"})
 
     assert fields["title"] == "demo"
+
+
+@pytest.mark.parametrize(("memory", "expected"), [("1.5", 2), (1.5, 2), ("2.0", 2), (2, 2)])
+def test_build_machine_fields_rounds_fractional_memory_up(memory, expected):
+    variables = {"name": "youtrack", "requirements": {"memory": memory}}
+
+    fields = contentful.build_machine_fields(variables)
+
+    assert fields["memory"] == expected
+    assert isinstance(fields["memory"], int)
+    assert variables["requirements"]["memory"] == memory
+
+
+@pytest.mark.parametrize("memory", ["invalid", "NaN", "Infinity", 0, -1, True])
+def test_build_machine_fields_rejects_invalid_memory_with_app_context(memory):
+    with pytest.raises(ValueError, match=r"demo: requirements\.memory must be a positive, finite number"):
+        contentful.build_machine_fields({"name": "demo", "requirements": {"memory": memory}})
 
 
 def test_build_machine_fields_hides_archived_and_internal_apps():

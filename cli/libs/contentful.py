@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from decimal import Decimal, InvalidOperation, ROUND_CEILING
 
 from libs import catalog
 from libs.credentials import resolve_secret
@@ -26,6 +27,17 @@ def load_draft(app_name: str, drafts_dir: str) -> dict:
     return catalog.load_catalog(app_name, drafts_dir)
 
 
+def _catalog_memory(value: object, app_name: str) -> int:
+    error = f"{app_name}: requirements.memory must be a positive, finite number"
+    try:
+        memory = Decimal(str(value))
+    except InvalidOperation as exc:
+        raise ValueError(error) from exc
+    if not memory.is_finite() or memory <= 0:
+        raise ValueError(error)
+    return int(memory.to_integral_value(rounding=ROUND_CEILING))
+
+
 def build_machine_fields(variables: dict, active: bool = True) -> dict:
     requirements = variables.get("requirements") or {}
     visible = active and variables.get("scope", "public") != "internal"
@@ -38,7 +50,7 @@ def build_machine_fields(variables: dict, active: bool = True) -> dict:
             if edition.get("dist")
         ],
         "vcpu": int(requirements.get("cpu", 1)),
-        "memory": int(requirements.get("memory", 1)),
+        "memory": _catalog_memory(requirements.get("memory", 1), variables.get("name") or "<unknown app>"),
         "storage": int(requirements.get("disk", 1)),
         "appStore": visible,
         "production": bool(variables.get("release", False)) and visible,
