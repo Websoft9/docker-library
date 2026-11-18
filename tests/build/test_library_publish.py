@@ -423,6 +423,9 @@ def test_workflow_downloads_verified_published_baseline(tmp_path, scenario):
     executable.write_text(
         f"#!{sys.executable}\n"
         "import os, pathlib, shutil, sys\n"
+        "args = sys.argv[1:]\n"
+        "region = args[args.index('--region') + 1] if '--region' in args else os.environ['AWS_DEFAULT_REGION']\n"
+        "if region != 'auto': sys.exit('R2 rejected signing region: ' + region)\n"
         "scenario = os.environ['SCENARIO']\n"
         "if scenario == 'unavailable': sys.exit(42)\n"
         "if sys.argv[1] == 's3api':\n"
@@ -433,13 +436,17 @@ def test_workflow_downloads_verified_published_baseline(tmp_path, scenario):
     executable.chmod(0o755)
     output = tmp_path / "outputs"
     env = dict(os.environ, PATH=f"{executable_dir}:{os.environ['PATH']}", CHANNEL="dev",
-               AWS_ENDPOINT_URL="https://unused.invalid", GITHUB_OUTPUT=str(output),
+               AWS_ENDPOINT_URL="https://unused.invalid", AWS_DEFAULT_REGION="us-west-2", GITHUB_OUTPUT=str(output),
                SCENARIO=scenario, SOURCE=str(source))
 
     result = subprocess.run(["bash", "-c", step["run"]], cwd=tmp_path, env=env, capture_output=True, text=True)
 
-    if scenario in {"corrupt", "unavailable"}:
+    if scenario == "unavailable":
+        assert result.returncode == 42, result.stderr
+        assert not output.exists()
+    elif scenario == "corrupt":
         assert result.returncode != 0
+        assert "FAILED" in result.stdout, result.stderr
         assert not output.exists()
     else:
         assert result.returncode == 0, result.stderr
