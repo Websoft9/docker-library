@@ -356,6 +356,8 @@ Thus `dev` is a broader, richer dataset, while `release` is narrower and product
 
 `production` derives from `release` in `apps/<app>/variables.json`; `appStore` derives from whether the app is active and public in scope. `catalog-push --apply` writes both fields when creating or updating Contentful entries, so they need not be repeated in `metadata/catalog/<app>.json`.
 
+The Contentful `memory` payload uses whole units. `catalog-push` rounds a positive fractional `requirements.memory` up (for example, `"1.5"` becomes `2`) without changing the app's declaration. Invalid or non-positive values fail validation.
+
 Changes to `metadata/catalog/*.json` receive dry-run validation in PRs. After merging to `main`, the `Sync data to Contentful` workflow runs `catalog-push --apply`.
 
 ### 3.3 Additional Product Fields
