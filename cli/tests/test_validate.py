@@ -31,13 +31,13 @@ def test_container_port_resolves_project_environment_only(entry, env, expected):
 
 
 def test_access_ports_resolve_quoted_project_values_not_shell_environment(app_factory, monkeypatch):
-    monkeypatch.setenv("W9_HTTP_PORT", "9999")
-    target = app_factory("ports", env="W9_HTTP_PORT='80'\nW9_HTTP_PORT_SET=9001\n", compose=(
-        "services:\n  web:\n    ports:\n      - '${W9_HTTP_PORT_SET}:${W9_HTTP_PORT}'\n"
-    ), variables={"access": {"web": {"port": 80}}})
-    result = validate._policy_result(target)
-    assert result["access_ports_ok"] is True
-    assert result["access_missing_ports"] == []
+    monkeypatch.setenv("APP_PORT", "9999")
+    target = app_factory("ports", env="W9_ID=ports\nAPP_PORT='80'\n", compose=(
+        "services:\n  web:\n    ports:\n      - '9001:${APP_PORT}'\n"
+    ), variables={"access": [{"id": "web", "service": "web", "port": 80, "public": True, "endpoints": [{"roles": ["web"], "scheme": "http"}]}]})
+    result = validate.access_metadata(target)
+    assert result["ok"] is True
+    assert result["entries"][0]["container_port"] == 80
 
 
 @pytest.mark.parametrize("database,status", [
@@ -141,7 +141,7 @@ def test_structure_result_detects_missing_files_and_missing_src_mount(repo_fixtu
     assert result["missing_src"] == ["src/init.sh"]
 
 
-def test_policy_result_checks_translations_login_pair_and_url_replace(repo_fixture, app_factory):
+def test_policy_result_checks_translations_login_pair_and_deprecated_access_vars(repo_fixture, app_factory):
     app_path = app_factory(
         "demo",
         env=(
@@ -158,62 +158,26 @@ def test_policy_result_checks_translations_login_pair_and_url_replace(repo_fixtu
     assert result["ok"] is False
     assert result["missing_translation_keys"] == ["W9_NAME_SET", "W9_LOGIN_USER"]
     assert result["login_pair_ok"] is False
-    assert result["url_declared_ok"] is False
-    assert result["url_replace_ok"] is False
-    assert result["url_replace_required"] is False
-    assert result["url_replace_required_ok"] is True
+    assert result["deprecated_access_env_keys"] == ["W9_URL_REPLACE"]
 
 
-def test_policy_result_requires_url_replace_when_app_url_uses_w9_url(repo_fixture, app_factory):
-    app_path = app_factory(
-        "demo",
-        env=(
-            "W9_URL=appname.example.com\n"
-            "W9_URL_REPLACE=false\n"
-            "APP_URL=http://${W9_URL}\n"
-        ),
+def test_policy_result_rejects_deprecated_w9_port_and_url_keys_while_allowing_business_set(repo_fixture, app_factory):
+    (repo_fixture / "i18n" / "translation.json").write_text(json.dumps({"W9_DEEPSEEK_API_KEY_SET": ["", ""]}) + "\n", encoding="utf-8")
+    dirty = app_factory(
+        "dirty",
+        env="W9_ID=dirty\nW9_HTTP_PORT_SET=9001\nW9_URL=app.example.com\nW9_ADMIN_PATH=/admin\n",
     )
+    dirty_result = validate._policy_result(dirty)
+    assert dirty_result["ok"] is False
+    assert dirty_result["deprecated_access_env_keys"] == ["W9_HTTP_PORT_SET", "W9_URL", "W9_ADMIN_PATH"]
 
-    result = validate._policy_result(app_path)
-
-    assert result["ok"] is False
-    assert result["url_declared_ok"] is True
-    assert result["url_replace_required"] is True
-    assert result["url_replace_required_ok"] is False
-
-
-def test_policy_result_accepts_url_replace_for_app_url(repo_fixture, app_factory):
-    app_path = app_factory(
-        "demo",
-        env=(
-            "W9_URL=appname.example.com\n"
-            "W9_URL_REPLACE=true\n"
-            "ROOT_URL=http://${W9_URL}\n"
-        ),
+    clean = app_factory(
+        "clean",
+        env="W9_ID=clean\nW9_DEEPSEEK_API_KEY_SET=''\nAPP_URL=http://localhost:9001\n",
     )
-
-    result = validate._policy_result(app_path)
-
-    assert result["url_replace_required"] is True
-    assert result["url_replace_required_ok"] is True
-
-
-def test_policy_result_accepts_braced_url_replace_form(repo_fixture, app_factory):
-    app_path = app_factory(
-        "demo",
-        env=(
-            "W9_URL=appname.example.com\n"
-            "W9_URL_REPLACE=true\n"
-            "ROOT_URL=http://${W9_URL}\n"
-        ),
-    )
-
-    result = validate._policy_result(app_path)
-
-    assert result["ok"] is True
-    assert result["url_replace_required"] is True
-    assert result["url_replace_required_ok"] is True
-    assert result["url_replace_ok"] is True
+    clean_result = validate._policy_result(clean)
+    assert clean_result["ok"] is True
+    assert clean_result["deprecated_access_env_keys"] == []
 
 
 def test_policy_result_rejects_hard_pinned_dependency_patch_tag(repo_fixture, app_factory):
@@ -259,7 +223,7 @@ def test_policy_result_flags_access_port_missing_from_compose(repo_fixture, app_
             "services:\n"
             "  web:\n"
             "    ports:\n"
-            '      - "${W9_HTTP_PORT_SET}:8080"\n'
+            '      - "9001:8080"\n'
         ),
         variables={
             "name": "demo",
@@ -267,15 +231,17 @@ def test_policy_result_flags_access_port_missing_from_compose(repo_fixture, app_
             "release": True,
             "edition": [{"dist": "community", "version": ["1.0"]}],
             "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
-            "access": {"web": {"port": 8080}, "admin": {"port": 3000}},
+            "access": [
+                {"id": "web", "service": "web", "port": 8080, "public": True, "endpoints": [{"roles": ["web"], "scheme": "http"}]},
+                {"id": "admin", "service": "web", "port": 3000, "public": True, "endpoints": [{"roles": ["admin"], "scheme": "http"}]},
+            ],
         },
     )
 
-    result = validate._policy_result(app_path)
+    result = validate.access_metadata(app_path)
 
     assert result["ok"] is False
-    assert result["access_ports_ok"] is False
-    assert result["access_missing_ports"] == [{"key": "admin", "port": 3000}]
+    assert any("target service port configuration" in error for error in result["errors"])
 
 
 def test_policy_result_accepts_access_port_present_in_compose(repo_fixture, app_factory):
@@ -285,10 +251,10 @@ def test_policy_result_accepts_access_port_present_in_compose(repo_fixture, app_
             "services:\n"
             "  web:\n"
             "    ports:\n"
-            '      - "${W9_HTTP_PORT_SET}:3080"\n'
+            '      - "9001:3080"\n'
             "  admin:\n"
             "    ports:\n"
-            '      - "${W9_ADMIN_GUI_PORT_SET}:3000"\n'
+            '      - "9002:3000"\n'
         ),
         variables={
             "name": "demo",
@@ -296,14 +262,17 @@ def test_policy_result_accepts_access_port_present_in_compose(repo_fixture, app_
             "release": True,
             "edition": [{"dist": "community", "version": ["1.0"]}],
             "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
-            "access": {"web": {"port": 3080}, "admin": {"port": 3000}},
+            "access": [
+                {"id": "web", "service": "web", "port": 3080, "public": True, "endpoints": [{"roles": ["web"], "scheme": "http"}]},
+                {"id": "admin", "service": "admin", "port": 3000, "public": True, "endpoints": [{"roles": ["admin"], "scheme": "http"}]},
+            ],
         },
     )
 
-    result = validate._policy_result(app_path)
+    result = validate.access_metadata(app_path)
 
-    assert result["access_ports_ok"] is True
-    assert result["access_missing_ports"] == []
+    assert result["ok"] is True
+    assert len(result["entries"]) == 2
 
 
 def test_policy_result_requires_declared_secrets_present_and_non_empty(repo_fixture, app_factory):
@@ -483,90 +452,6 @@ def test_secret_gate_is_exposed_by_app_check(repo_fixture, app_factory):
     assert validate.check_app("demo", gate="all")["ok"] is False
 
 
-def test_policy_result_flags_invalid_setup_access_service_and_duplicate_ids(repo_fixture, app_factory):
-    app_path = app_factory(
-        "demo",
-        compose=(
-            "services:\n"
-            "  app:\n"
-            "    ports:\n"
-            '      - "${W9_HTTP_PORT_SET}:8080"\n'
-        ),
-        variables={
-            "name": "demo",
-            "trademark": "Demo",
-            "release": True,
-            "edition": [{"dist": "community", "version": ["1.0"]}],
-            "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
-            "access": {"web": {"port": 8080, "path": "/"}},
-            "setup": {
-                "steps": [
-                    {
-                        "id": "setup-token",
-                        "text": "Read logs.",
-                        "action": {"type": "show-log", "service": "missing", "tail": 50},
-                    },
-                    {
-                        "id": "setup-token",
-                        "text": "Open setup.",
-                        "action": {"type": "open", "access": "admin", "path": "/setup"},
-                    },
-                ]
-            },
-        },
-    )
-
-    result = validate._policy_result(app_path)
-
-    assert result["ok"] is False
-    assert result["setup_ok"] is False
-    assert result["setup_missing_services"] == [{"step": "setup-token", "service": "missing"}]
-    assert result["setup_missing_access"] == [{"step": "setup-token", "access": "admin"}]
-    assert result["setup_duplicate_ids"] == ["setup-token"]
-
-
-def test_policy_result_accepts_valid_setup_steps(repo_fixture, app_factory):
-    app_path = app_factory(
-        "demo",
-        compose=(
-            "services:\n"
-            "  app:\n"
-            "    ports:\n"
-            '      - "${W9_HTTP_PORT_SET}:8080"\n'
-        ),
-        variables={
-            "name": "demo",
-            "trademark": "Demo",
-            "release": True,
-            "edition": [{"dist": "community", "version": ["1.0"]}],
-            "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
-            "access": {"web": {"port": 8080, "path": "/"}},
-            "setup": {
-                "steps": [
-                    {
-                        "id": "setup-token",
-                        "text": "Read logs.",
-                        "action": {"type": "show-log", "service": "app", "tail": 50},
-                    },
-                    {
-                        "id": "setup-wizard",
-                        "text": "Open setup.",
-                        "action": {"type": "open", "access": "web", "path": "/setup"},
-                    },
-                ]
-            },
-        },
-    )
-
-    result = validate._policy_result(app_path)
-
-    assert result["ok"] is True
-    assert result["setup_ok"] is True
-    assert result["setup_missing_services"] == []
-    assert result["setup_missing_access"] == []
-    assert result["setup_duplicate_ids"] == []
-
-
 def test_check_app_returns_gate_specific_payload(repo_fixture, app_factory):
     app_factory("demo")
 
@@ -577,6 +462,11 @@ def test_check_app_returns_gate_specific_payload(repo_fixture, app_factory):
     assert structure["gate"] == "structure"
     assert policy["gate"] == "policy"
     assert all_result["ok"] is True
+
+
+@pytest.mark.parametrize("repository", ["postgrest/postgrest", "supabase/postgres-meta", "registry.example/clickhouse/admin-panel"])
+def test_database_engine_does_not_match_adjacent_images(repository):
+    assert validate._db_engine(repository) is None
 
 
 def test_database_result_flags_eol_bundled_database(repo_fixture, app_factory):

@@ -1,5 +1,25 @@
 {
   "name": "activepieces",
+  "access": [
+    {
+      "id": "web",
+      "service": "activepieces",
+      "port": 80,
+      "public": true,
+      "rootUrl": [
+        "AP_FRONTEND_URL"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Activepieces",
   "release": true,
   "upstream": {
@@ -24,13 +44,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 80,
-      "path": "/"
-    }
-  },
   "database": [
     {
       "id": "rds",

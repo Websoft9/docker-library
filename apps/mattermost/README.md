@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Mattermost**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -41,6 +42,8 @@ Supported versions: 12.1.
 | Purpose | Port |
 | --- | --- |
 | Mattermost web UI and REST API | 8065 |
+| Mattermost Calls (TCP) | 8443 |
+| Mattermost Calls (UDP) | 8443/udp |
 
 
 ### Data Directory

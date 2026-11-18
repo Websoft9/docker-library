@@ -6,7 +6,7 @@ services:
     env_file: .env
     working_dir: /usr/src/app
     ports:
-      - "${W9_HTTP_PORT_SET}:3000" # Web Console
+      - "9001:${PORT}" # Web Console
     volumes:
       - nextjs_app:/usr/src/app
       - ./src/entrypoint.sh:/opt/websoft9/entrypoint.sh:ro
@@ -17,7 +17,7 @@ services:
       - /opt/websoft9/entrypoint.sh
     environment:
       NODE_ENV: production
-      PORT: "${W9_HTTP_PORT}"
+      PORT: "${PORT}"
       HOSTNAME: 0.0.0.0
       HOME: /usr/src/app
     healthcheck:
@@ -26,7 +26,7 @@ services:
           "CMD",
           "node",
           "-e",
-          "require('http').get('http://127.0.0.1:3000/', (res) => process.exit(res.statusCode < 500 ? 0 : 1)).on('error', () => process.exit(1))"
+          "require('http').get('http://127.0.0.1:' + (process.env.PORT || 3000) + '/', (res) => process.exit(res.statusCode < 500 ? 0 : 1)).on('error', () => process.exit(1))"
         ]
       interval: 30s
       timeout: 10s

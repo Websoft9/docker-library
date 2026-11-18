@@ -4,7 +4,7 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - "${W9_HTTP_PORT_SET}:80" # Web Console
+      - "9001:80" # Web Console
     volumes:
       - nextcloud:/var/www/html
       - nextcloud-data:/var/www/html/data

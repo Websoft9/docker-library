@@ -20,6 +20,7 @@ def build_fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
                 "name": "demo",
                 "trademark": "Demo App",
                 "release": True,
+                "access": [],
                 "edition": [{"dist": "community", "version": ["1.0", "latest"]}],
             }
         )
@@ -31,6 +32,7 @@ def build_fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     shutil.copy2(REPO_ROOT / "metadata" / "appstore-schema.json", tmp_path / "metadata" / "appstore-schema.json")
     shutil.copy2(REPO_ROOT / "metadata" / "database-types.json", tmp_path / "metadata" / "database-types.json")
     shutil.copy2(REPO_ROOT / "metadata" / "secret-rules.json", tmp_path / "metadata" / "secret-rules.json")
+    shutil.copy2(REPO_ROOT / "metadata" / "access-types.json", tmp_path / "metadata" / "access-types.json")
     (tmp_path / "metadata" / "maintenance.yaml").write_text(
         yaml.safe_dump(
             {

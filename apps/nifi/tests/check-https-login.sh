@@ -6,7 +6,7 @@ trap 'rm -f "${tmp_file}"' EXIT
 
 base_url="${BASE_URL:-}"
 if [ -z "${base_url}" ]; then
-    base_url="https://localhost:${W9_HTTPS_PORT_SET}"
+    base_url="https://localhost:9001"
 fi
 
 curl -ksSL "${base_url}" -o "${tmp_file}"

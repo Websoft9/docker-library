@@ -1,5 +1,22 @@
 {
   "name": "kibana",
+  "access": [
+    {
+      "id": "web",
+      "service": "kibana",
+      "port": 5601,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "dashboard"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Kibana",
   "release": true,
   "upstream": {
@@ -17,13 +34,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 5601,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

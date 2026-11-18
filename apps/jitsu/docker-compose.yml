@@ -83,7 +83,7 @@ services:
       redpanda:
         condition: service_started
     ports:
-      - "${W9_HTTP_PORT_SET}:3000" # Web Console
+      - "9001:3000" # Web Console
     env_file: .env
     environment:
       NODE_ENV: development
@@ -217,7 +217,7 @@ services:
       rotor:
         condition: service_healthy
     ports:
-      - "${W9_API_PORT_SET}:3049" # Ingest API
+      - "9002:3049" # Ingest API
     environment:
       LOG_LEVEL: debug
       INGEST_PUBLIC_URL: ${JITSU_INGEST_PUBLIC_URL}/

@@ -1,5 +1,36 @@
 {
   "name": "rethinkdb",
+  "access": [
+    {
+      "id": "admin",
+      "service": "rethinkdb",
+      "port": 8080,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    },
+    {
+      "id": "db",
+      "service": "rethinkdb",
+      "port": 28015,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "db"
+          ],
+          "scheme": "rethinkdb"
+        }
+      ]
+    }
+  ],
   "trademark": "RethinkDB",
   "release": true,
   "upstream": {
@@ -19,13 +50,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8080,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "1",

@@ -411,7 +411,7 @@ services:
       - api
       - web
     ports:
-      - '${W9_HTTP_PORT_SET}:${NGINX_PORT:-80}'
+      - '9001:${NGINX_PORT:-80}' # Web Console
 
   # The Weaviate vector store.
   weaviate:

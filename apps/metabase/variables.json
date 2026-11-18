@@ -1,5 +1,22 @@
 {
   "name": "metabase",
+  "access": [
+    {
+      "id": "web",
+      "service": "metabase",
+      "port": 3000,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "dashboard"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Metabase",
   "release": true,
   "upstream": {
@@ -19,13 +36,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 3000,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "1",

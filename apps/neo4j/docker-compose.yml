@@ -5,8 +5,8 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     env_file: .env
     ports:
-      - '${W9_HTTP_PORT_SET}:7474' # Web Console
-      - '${W9_DB_PORT_SET}:7687' # Bolt
+      - '9001:7474' # Web Console
+      - '7687:7687' # Bolt
     restart: unless-stopped
     volumes:
       - neo4j:/data

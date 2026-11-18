@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-09-17
 
 - Updated `W9_VERSION` from `25.2.2` to `26.2` and aligned `variables.json.edition` with the current upstream `x.x` tag.

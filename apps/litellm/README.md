@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **LiteLLM**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -58,7 +59,7 @@ Environment variables are defined in the app's `.env` file; see the reference se
 ### Configuration Files
 
 
-Configuration is overridden by mounting `./src/proxy_server_config.yaml` to `/app/proxy_server_config.yaml`.
+Configuration is overridden by mounting `./src/proxy_server_config.yaml` to `/tmp/proxy_server_config.yaml`.
 
 
 ## References

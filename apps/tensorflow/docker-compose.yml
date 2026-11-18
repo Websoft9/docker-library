@@ -5,8 +5,8 @@ services:
     restart: unless-stopped
     command: ["bash", "/usr/local/bin/w9-tensorflow-entrypoint.sh"]
     ports:
-      - "${W9_HTTP_PORT_SET}:8888" # JupyterLab
-      - "${W9_GUI_PORT_SET}:6006" # TensorBoard
+      - "8888:8888" # JupyterLab
+      - "6006:6006" # TensorBoard
     env_file: .env
     environment:
       JUPYTER_TOKEN: ${JUPYTER_TOKEN}

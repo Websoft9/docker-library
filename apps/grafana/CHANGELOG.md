@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-11-18
+
+- Fixed the Enterprise variant's default `9001:3000` mapping after removal of legacy access variables.
+
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-10-28
 
 - Updated Grafana to 13.3, which includes upstream security fixes.

@@ -1,5 +1,22 @@
 {
   "name": "jenkins",
+  "access": [
+    {
+      "id": "web",
+      "service": "jenkins",
+      "port": 8080,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Jenkins",
   "release": true,
   "upstream": {
@@ -20,13 +37,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8080,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

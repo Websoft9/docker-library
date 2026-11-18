@@ -1,5 +1,22 @@
 {
   "name": "php",
+  "access": [
+    {
+      "id": "web",
+      "service": "php",
+      "port": 80,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "PHP",
   "release": true,
   "edition": [
@@ -19,13 +36,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 80,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "1",

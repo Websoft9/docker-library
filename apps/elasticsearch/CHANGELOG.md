@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-10-13
 - Updated Elasticsearch community to `9.5.5` (full patch tag, since upstream publishes no `9.5` alias).
 - Corrected the access scheme to `http`: the official image serves the REST API as plain HTTP on `9200` (TLS is terminated by the platform), so declaring `https` made the platform expose a broken HTTPS URL.

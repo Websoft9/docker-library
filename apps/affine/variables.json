@@ -1,5 +1,25 @@
 {
   "name": "affine",
+  "access": [
+    {
+      "id": "web",
+      "service": "affine",
+      "port": 3010,
+      "public": true,
+      "rootUrl": [
+        "AFFINE_SERVER_EXTERNAL_URL"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "AFFiNE",
   "release": true,
   "upstream": {
@@ -22,17 +42,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 3010,
-      "path": "/"
-    },
-    "admin": {
-      "port": 3010,
-      "path": "/admin"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

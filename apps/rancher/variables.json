@@ -1,5 +1,22 @@
 {
   "name": "rancher",
+  "access": [
+    {
+      "id": "web",
+      "service": "rancher",
+      "port": 443,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "https",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Rancher",
   "release": true,
   "upstream": {
@@ -18,13 +35,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "https",
-    "web": {
-      "port": 443,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

@@ -45,7 +45,7 @@ def repo_fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
         encoding="utf-8",
     )
     (tmp_path / "i18n" / "translation.json").write_text("{}\n", encoding="utf-8")
-    for name in ("variables.schema.json", "database-types.json", "secret-rules.json"):
+    for name in ("variables.schema.json", "database-types.json", "secret-rules.json", "access-types.json"):
         shutil.copy2(Path(__file__).resolve().parents[2] / "metadata" / name, tmp_path / "metadata" / name)
     monkeypatch.chdir(tmp_path)
     return tmp_path
@@ -56,11 +56,12 @@ def app_factory(repo_fixture: Path):
     def create_app(
         name: str,
         *,
-        env: str = "W9_URL=''\n",
+        env: str = "W9_ID=demo\n",
         compose: str = "services: {}\n",
         variables: dict | None = None,
         readme: str = "# README\n",
         archived: bool = False,
+        declare_access: bool = True,
     ) -> Path:
         root = repo_fixture / ("archive/apps" if archived else "apps") / name
         root.mkdir(parents=True, exist_ok=True)
@@ -74,6 +75,8 @@ def app_factory(repo_fixture: Path):
                 "upstream": {"image": "https://hub.docker.com/_/example/tags"},
                 "edition": [{"dist": "community", "version": ["1.0"]}],
             }
+        if declare_access:
+            variables.setdefault("access", [])
         (root / "variables.json").write_text(json.dumps(variables, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         (root / "README.md").write_text(readme, encoding="utf-8")
         (root / "CHANGELOG.md").write_text("# CHANGELOG\n", encoding="utf-8")

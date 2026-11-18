@@ -1,5 +1,22 @@
 {
   "name": "typesense",
+  "access": [
+    {
+      "id": "api",
+      "service": "typesense",
+      "port": 8108,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Typesense",
   "release": true,
   "edition": [
@@ -10,13 +27,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "api": {
-      "port": 8108,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

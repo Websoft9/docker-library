@@ -19,7 +19,7 @@ services:
     volumes:
       - opensearch-data:/usr/share/opensearch/data
     ports:
-      - "${W9_HTTPS_PORT_SET}:9200" # HTTPS API
+      - "9001:9200" # HTTPS API
     healthcheck:
       test: ["CMD-SHELL", "curl -skf https://127.0.0.1:9200 >/dev/null || exit 1"]
       interval: 30s
@@ -33,7 +33,7 @@ services:
     depends_on:
       - opensearch
     ports:
-      - "${W9_DASHBOARD_PORT_SET}:5601" # Dashboards
+      - "9002:5601" # Dashboards
     expose:
       - '5601'
     environment:

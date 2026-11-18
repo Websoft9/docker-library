@@ -56,7 +56,7 @@ cd "${APP_DIR}"
 
 export APP_DIR
 export W9_VERSION="${W9_VERSION:-latest}"
-export W9_HTTP_PORT="${W9_HTTP_PORT:-3000}"
+export PORT="${PORT:-3000}"
 export NODE_IMAGE_TAG="${NODE_IMAGE_TAG:-}"
 export PACKAGE_MANAGER="$(detect_package_manager)"
 

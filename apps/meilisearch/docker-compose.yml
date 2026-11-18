@@ -4,10 +4,10 @@
 services:
   meilisearch:
     image: getmeili/meilisearch:${W9_VERSION}
-    container_name: $W9_ID
+    container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - ${W9_HTTP_PORT_SET}:7700
+      - "9001:7700" # HTTP API and Search UI
     env_file: .env
     environment:
       - MEILI_ENV=${MEILI_ENV}

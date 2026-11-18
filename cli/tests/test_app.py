@@ -174,13 +174,13 @@ def test_collect_app_info_includes_operational_facts(repo_fixture, app_factory):
     )
     app = app_factory(
         "demo",
-        env="W9_ID=demo\nW9_VERSION=1.0\nW9_HTTP_PORT_SET=9001\nW9_DB_VERSION=8.4\n",
+        env="W9_ID=demo\nW9_VERSION=1.0\nW9_DB_VERSION=8.4\n",
         compose=(
             "services:\n"
             "  demo:\n"
             "    image: demo:1\n"
             "    ports:\n"
-            "      - \"${W9_HTTP_PORT_SET}:80\" # Web Console\n"
+            "      - \"9001:80\" # Web Console\n"
             "  mysql:\n"
             "    image: mysql:${W9_DB_VERSION}\n"
         ),
@@ -190,6 +190,7 @@ def test_collect_app_info_includes_operational_facts(repo_fixture, app_factory):
             "release": True,
             "upstream": {"image": "https://hub.docker.com/_/demo/tags"},
             "edition": [{"dist": "community", "version": ["1.0"]}],
+            "access": [{"id": "http", "service": "demo", "port": 80, "public": True, "endpoints": [{"roles": ["web"], "scheme": "http"}]}],
             "credentials": {"none": True},
         },
     )
@@ -200,8 +201,8 @@ def test_collect_app_info_includes_operational_facts(repo_fixture, app_factory):
     result = app_module.collect_app_info("demo")
 
     assert result["version"] == {"w9_version": "1.0", "declared": ["1.0"]}
-    assert result["ports"][0]["published"] == "${W9_HTTP_PORT_SET}:80"
-    assert result["published_ports"] == [{"service": "demo", "env": "W9_HTTP_PORT_SET", "published": 9001, "target": 80}]
+    assert result["ports"][0]["published"] == "9001:80"
+    assert result["published_ports"] == [{"service": "demo", "env": None, "published": 9001, "target": 80}]
     assert result["services"] == ["demo", "mysql"]
     assert result["credentials"] == {"none": True}
     assert result["database"]["status"] == "ok"

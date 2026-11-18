@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **GoCD**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -40,7 +41,7 @@ Supported versions: v26.1.0.
 
 | Purpose | Port |
 | --- | --- |
-| W9_HTTP_PORT_SET | 8153 |
+| Web Console | 8153 |
 
 
 ### Data Directory

@@ -9,7 +9,7 @@ changing the cluster means editing `W9_KAFKA_BROKERS_SET` and recreating the con
 
 - `W9_KAFKA_BROKERS_SET` holds the broker address reachable on the `websoft9` network.
 - For the Websoft9 Kafka package use the internal listener `kafka:19092`.
-  Do not use the external listener (`${W9_URL}:9092`); its advertised address is host-facing.
+  Do not use the published host-facing listener; use the broker's internal listener instead.
 - If the Kafka app instance is renamed, update `W9_KAFKA_BROKERS_SET` to match.
 
 ## Startup behavior

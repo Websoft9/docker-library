@@ -1,5 +1,25 @@
 {
   "name": "ckan",
+  "access": [
+    {
+      "id": "web",
+      "service": "ckan-base",
+      "port": 5000,
+      "public": true,
+      "rootUrl": [
+        "CKAN_SITE_URL"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Ckan",
   "release": true,
   "edition": [
@@ -10,13 +30,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 5000,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

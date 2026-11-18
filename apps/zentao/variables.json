@@ -1,5 +1,22 @@
 {
   "name": "zentao",
+  "access": [
+    {
+      "id": "web",
+      "service": "zentao",
+      "port": 80,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "ZenTao",
   "release": true,
   "edition": [
@@ -11,13 +28,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 80,
-      "path": "/"
-    }
-  },
   "credentials": {},
   "requirements": {
     "cpu": "1",

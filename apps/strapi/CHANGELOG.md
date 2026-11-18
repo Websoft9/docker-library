@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-09-22
 - Rebuild the Strapi package from the official Strapi 5 npm distribution because upstream no longer publishes official container images.
 - Replace the legacy Strapi 3 + MySQL package with a self-built Strapi 5.54.0 application on Node 22.

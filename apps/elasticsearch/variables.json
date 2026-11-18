@@ -1,5 +1,22 @@
 {
   "name": "elasticsearch",
+  "access": [
+    {
+      "id": "db",
+      "service": "elasticsearch",
+      "port": 9200,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "db"
+          ],
+          "scheme": "https",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Elasticsearch",
   "release": true,
   "edition": [
@@ -10,13 +27,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "api": {
-      "port": 9200,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

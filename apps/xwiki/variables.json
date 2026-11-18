@@ -1,5 +1,22 @@
 {
   "name": "xwiki",
+  "access": [
+    {
+      "id": "web",
+      "service": "xwiki",
+      "port": 8080,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/bin/view/Main/"
+        }
+      ]
+    }
+  ],
   "trademark": "XWiki",
   "release": true,
   "upstream": {
@@ -23,12 +40,6 @@
       ]
     }
   ],
-  "access": {
-    "web": {
-      "port": 8080,
-      "path": "/xwiki/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

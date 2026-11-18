@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **LibreChat**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -26,9 +27,7 @@
 Websoft9 packages this app from the official [LibreChat Docker image](https://hub.docker.com/r/librechat/librechat) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
-
 This package does not offer external databases. Metadata describes the bundled MongoDB, Meilisearch, and RAG PostgreSQL services using their existing environment and command sources. MongoDB explicitly runs without authentication; Meilisearch API keys are not database account passwords. The admin-panel image is not a ClickHouse database. Declarations do not rewrite configuration, migrate data, or rotate credentials.
-
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.

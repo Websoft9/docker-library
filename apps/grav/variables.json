@@ -1,5 +1,22 @@
 {
   "name": "grav",
+  "access": [
+    {
+      "id": "web",
+      "service": "grav",
+      "port": 80,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Grav CMS",
   "release": true,
   "upstream": {
@@ -13,20 +30,12 @@
   "edition": [
     {
       "dist": "community",
-      "version": ["2.2.8", "latest"]
+      "version": [
+        "2.2.8",
+        "latest"
+      ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 80,
-      "path": "/"
-    },
-    "admin": {
-      "port": 80,
-      "path": "/admin"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "1",

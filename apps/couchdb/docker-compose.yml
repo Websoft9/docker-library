@@ -5,7 +5,7 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - "${W9_HTTP_PORT_SET}:5984" # Web Console and API
+      - "5984:5984" # Web Console and API
     volumes:
       - couchdb_data:/opt/couchdb/data
       - couchdb_config:/opt/couchdb/etc/local.d

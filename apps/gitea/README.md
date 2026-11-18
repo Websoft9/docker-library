@@ -44,6 +44,7 @@ The `latest` tag is not guaranteed to remain valid; pin a specific version for p
 | Purpose | Port |
 | --- | --- |
 | Web UI | 3000 |
+| Git SSH | 22 |
 
 
 ### Data Directory

@@ -1,5 +1,22 @@
 {
   "name": "redmine",
+  "access": [
+    {
+      "id": "web",
+      "service": "redmine",
+      "port": 3000,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Redmine",
   "release": true,
   "upstream": {
@@ -19,13 +36,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 3000,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "1",

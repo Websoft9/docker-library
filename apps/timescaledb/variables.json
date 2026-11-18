@@ -1,5 +1,21 @@
 {
   "name": "timescaledb",
+  "access": [
+    {
+      "id": "db",
+      "service": "timescaledb",
+      "port": 5432,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "db"
+          ],
+          "scheme": "postgresql"
+        }
+      ]
+    }
+  ],
   "trademark": "Timescale",
   "release": true,
   "upstream": {

@@ -1,5 +1,21 @@
 {
   "name": "pgvector",
+  "access": [
+    {
+      "id": "db",
+      "service": "pgvector",
+      "port": 5432,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "db"
+          ],
+          "scheme": "postgresql"
+        }
+      ]
+    }
+  ],
   "trademark": "pgvector",
   "release": true,
   "upstream": {

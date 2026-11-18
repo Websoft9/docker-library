@@ -1,5 +1,29 @@
 {
   "name": "arangodb",
+  "access": [
+    {
+      "id": "admin",
+      "service": "arangodb",
+      "port": 8529,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/_db/_system/_admin/aardvark/index.html"
+        },
+        {
+          "roles": [
+            "db"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "ArangoDB",
   "release": true,
   "upstream": {
@@ -19,13 +43,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8529,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "1",

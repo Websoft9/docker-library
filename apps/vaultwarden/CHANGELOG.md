@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 2026-11-18
+
+- Removed the default plaintext host mapping; access requires an HTTPS gateway.
+
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array (`vaultwarden:80` with `requireDomain: true`, `requireHttps: true`, and `rootUrl: ["DOMAIN"]`).
+- Removed `W9_HTTP_PORT_SET`, `W9_HTTP_PORT`, `W9_URL`, `W9_URL_REPLACE`, and `W9_URL_WITH_PORT`; switched `docker-compose.yml` to literal default port mapping `"9001:80"` and native `DOMAIN` configuration.
+
 ## 2026-11-03
 
 - Declared the MariaDB dependency with MySQL/MariaDB external providers and the existing mysql:// DATABASE_URL mapping.

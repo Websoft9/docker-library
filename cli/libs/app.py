@@ -146,12 +146,14 @@ def collect_app_info(app_name: str) -> dict:
     compose_summary = _compose_summary(target / "docker-compose.yml")
 
     from libs.app_deploy import _compose_published_ports
+    from libs.access import access_metadata
     from libs.secret_audit import check_secret_templates
     from libs.validate import _database_metadata_result, _database_result
 
     database_lifecycle = _database_result(target)
     database_connections = variables.get("database")
     declared_secrets = (variables.get("env") or {}).get("secrets")
+    access = access_metadata(target)
 
     return {
         "name": app_name,
@@ -178,6 +180,9 @@ def collect_app_info(app_name: str) -> dict:
         "ports": compose_summary["ports"],
         "published_ports": _compose_published_ports(target, env_values),
         "services": compose_summary["services"],
+        "access": variables.get("access") if access["ok"] else None,
+        "access_metadata": access,
+        "kinds": sorted({kind for entry in access["entries"] for kind in entry["kinds"]}, key={"ui": 0, "api": 1, "infra": 2}.get),
         "images": compose_summary["images"],
         "credentials": variables.get("credentials"),
         "secrets": declared_secrets if isinstance(declared_secrets, list) else [],
@@ -296,7 +301,11 @@ def restore_app(app_name: str, cadence: str = "monthly", update_policy: str = "p
             "dry_run": dry_run,
         }
         from libs.validate import _database_metadata_result
+        from libs.access import access_metadata
 
+        actions["access_metadata"] = access_metadata(source)
+        if not actions["access_metadata"]["ok"]:
+            raise ValueError("Invalid access metadata; declare verified access port groups before restoring, using an empty array only for confirmed no network entry.")
         actions["database_metadata"] = _database_metadata_result(source)
         if actions["database_metadata"]["status"] == "legacy":
             actions["todo"] = ["Migrate database to database[] and run libs app-check before publishing."]

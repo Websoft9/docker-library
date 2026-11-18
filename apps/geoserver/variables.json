@@ -1,5 +1,32 @@
 {
   "name": "geoserver",
+  "access": [
+    {
+      "id": "admin",
+      "service": "geoserver",
+      "port": 8080,
+      "public": true,
+      "rootUrl": [
+        "GEOSERVER_PUBLIC_URL"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/geoserver/web/"
+        },
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/geoserver/rest/"
+        }
+      ]
+    }
+  ],
   "trademark": "GeoServer",
   "release": true,
   "edition": [
@@ -11,17 +38,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8080,
-      "path": "/geoserver/web"
-    },
-    "admin": {
-      "port": 8080,
-      "path": "/geoserver/web"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

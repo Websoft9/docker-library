@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-10-13
 - Verified the upstream stable line remains ArangoDB 3.12 and refreshed the package metadata for the current stable release notes.
 - Updated the app package to the current `.env` layout and metadata rules, including credential and first-startup-only declarations.

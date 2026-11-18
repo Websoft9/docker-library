@@ -1,5 +1,22 @@
 {
   "name": "grafana",
+  "access": [
+    {
+      "id": "web",
+      "service": "grafana",
+      "port": 3000,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "dashboard"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Grafana",
   "release": true,
   "upstream": {
@@ -14,13 +31,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 3000,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

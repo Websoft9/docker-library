@@ -1,5 +1,29 @@
 {
   "name": "keycloak",
+  "access": [
+    {
+      "id": "admin",
+      "service": "keycloak",
+      "port": 8080,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/admin/"
+        },
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Keycloak",
   "release": true,
   "upstream": {
@@ -14,13 +38,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8080,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

@@ -1,5 +1,36 @@
 {
   "name": "neo4j",
+  "access": [
+    {
+      "id": "web",
+      "service": "neo4j",
+      "port": 7474,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "dashboard"
+          ],
+          "scheme": "http",
+          "path": "/browser/"
+        }
+      ]
+    },
+    {
+      "id": "db",
+      "service": "neo4j",
+      "port": 7687,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "db"
+          ],
+          "scheme": "bolt"
+        }
+      ]
+    }
+  ],
   "trademark": "Neo4j",
   "release": true,
   "edition": [
@@ -13,13 +44,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 7474,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

@@ -25,17 +25,17 @@
       "version": ["{{ version }}", "latest"]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
+  "access": [
+    {
+      "id": "http",
+      "service": "{{ name }}",
       "port": 80,
-      "path": "/"
-    },
-    "admin": {
-      "port": 80,
-      "path": "/admin"
+      "public": true,
+      "endpoints": [
+        {"roles": ["web"], "scheme": "http", "path": "/"}
+      ]
     }
-  },
+  ],
   "requirements": {
     "cpu": "1",
     "memory": "1",

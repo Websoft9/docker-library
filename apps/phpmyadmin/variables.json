@@ -1,5 +1,22 @@
 {
   "name": "phpmyadmin",
+  "access": [
+    {
+      "id": "web",
+      "service": "phpmyadmin",
+      "port": 80,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "phpMyAdmin",
   "release": true,
   "edition": [
@@ -11,12 +28,6 @@
       ]
     }
   ],
-  "access": {
-    "web": {
-      "port": 80,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

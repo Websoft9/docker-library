@@ -1,5 +1,11 @@
 # Prompt Fragments
 
+## Access Rule
+
+Missing access blocks validation and publishing. Every package requires verified entries or confirmed no network entry; never use an empty array to disguise missing research.
+
+Use `docs/app-access-spec.md` and run `libs app-check --app <app> --gate access`. Replace the scaffold port group with verified services, container ports, transport protocols, default publishing and endpoints. Empty entries mean confirmed no network entry; omission is unknown. Validate safe public paths/query, keep the primary group first, and never infer groups from URL helper variables or claim proxy support. Host ports and public URLs belong to native variables referenced by `rootUrl`, `host` and `mappedPort`, not to `W9_*_PORT_SET`, `W9_HTTP_PORT`, `W9_HTTPS_PORT`, `W9_URL`, `W9_URL_REPLACE` or `W9_ADMIN_PATH`.
+
 ## Exists Check Rule
 
 Before anything else, load the CLI venv (`make install` if `.venv/` missing) and run `.venv/bin/libs list --include-archived --json`. If `<app>` is in the full list (active, archived, or internal), stop and report its key attributes (status, scope, cadence, update_policy), then ask the user to re-input a different name or terminate; existing apps go through the app-update or restore-app skill.

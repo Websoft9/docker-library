@@ -1,5 +1,22 @@
 {
   "name": "tomcat",
+  "access": [
+    {
+      "id": "web",
+      "service": "tomcat",
+      "port": 8080,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Tomcat",
   "release": true,
   "edition": [
@@ -21,13 +38,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8080,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

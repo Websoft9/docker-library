@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-10-13
 
 - Rebuilt the package as a standalone GeoServer deployment. The previous package was a WordPress + MariaDB stack mislabeled as GeoServer (`.env`/`docker-compose.yml` carried `WORDPRESS_*` variables and the compose mounted a missing `./src/php_exra.ini`), and `src/` shipped an unrelated GeoServer Cloud microservice stack.

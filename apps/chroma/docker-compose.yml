@@ -5,7 +5,7 @@ services:
     volumes:
       - chroma_data:/data
     ports:
-      - "${W9_HTTP_PORT_SET}:8000" # Chroma API
+      - "9065:8000" # Chroma API
     env_file: .env
     restart: unless-stopped
     healthcheck:

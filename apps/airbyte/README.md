@@ -1,42 +1,91 @@
 # Airbyte on Docker
 
-This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) for [Airbyte](https://airbyte.com).
+## Quick Start
 
-It uses a two-container pattern:
+### Deploy Verification
 
-- `airbyte`: a privileged single-node k3s runtime running inside Docker
-- `airbyte-installer`: a one-shot Helm installer that deploys Airbyte into the inner cluster and waits for the real health endpoint
+1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Airbyte**.
+2. In the **Access** tab, get the login URL and credentials.
 
-Version model:
+3. Open the login URL in a browser and sign in to confirm the app works.
 
-- `W9_VERSION` is the Helm chart version passed to `helm upgrade --install --version ...`
-- `AIRBYTE_K3S_IMAGE` is the outer runtime image version and is independent from `W9_VERSION`
+<!-- W9_GUIDE_START -->
+### Usage
 
-## System Requirements
+1. Make sure you are signed in to the Airbyte admin console.
+2. Try a core feature.
 
-The following are the minimal recommended requirements for this package:
+### Change Password
 
-- **RAM**: 8 GB or more
-- **CPU**: 4 cores or higher
-- **Disk**: at least 20 GB of free space
-- **Docker**: Docker Engine with Compose v2 and support for privileged containers
+1. In the [Websoft9](https://www.websoft9.com) console, open the app's **Compose** tab.
+2. Update the password in `.env` and save.
+3. Rebuild the app.
+<!-- W9_GUIDE_END -->
 
-## Install
+## Configuration Reference
 
-You can install this Airbyte package by following [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).
+Websoft9 packages this app from the official [Airbyte Docker image](https://hub.docker.com/r/airbyte/server) and makes some improvements below.
 
-After `docker compose up -d`, the k3s runtime starts first, then Airbyte is installed into the inner cluster. Initial bootstrap may take several minutes, and the app should be considered ready only after the Helm deployment completes and `/api/v1/health` returns success.
+<!-- W9_NOTE_START -->
+This package uses a two-container k3s-in-Docker architecture (`airbyte` single-node k3s runtime + `airbyte-installer` one-shot Helm V2 installer) without relying on a host Docker socket:
 
-## Architecture Notes
+- `W9_VERSION` tracks the Airbyte Helm chart version, while `AIRBYTE_K3S_IMAGE` controls the outer k3s runtime image independently.
+- The installer exposes the Airbyte server service as a NodePort (`AIRBYTE_NODE_PORT`, default `30080`) inside k3s and maps the published host port to that NodePort.
+- Initial bootstrap may take several minutes; treat the instance as ready after Helm deployment completes and `/api/v1/health` succeeds.
+<!-- W9_NOTE_END -->
 
-- The package does **not** rely on a host Docker socket.
-- Kubernetes runs inside the `airbyte` container via k3s.
-- Airbyte is installed by Helm chart V2 from `https://airbytehq.github.io/charts`.
-- The installer configures the Airbyte server service as a NodePort inside the inner k3s runtime and maps host port `${W9_HTTP_PORT_SET}` to that NodePort.
-- Authentication stays enabled. The initial password is predefined through environment variables before Helm install.
-- The outer runtime container enforces a single Docker memory cap through `AIRBYTE_RUNTIME_MEMORY_LIMIT`.
+Apps run as containers; rebuild after any configuration change.
 
-## Documentation
+### Version Support
 
-- [Deploying Airbyte](https://docs.airbyte.com/platform/deploying-airbyte)
-- [Upgrade to Helm chart V2 (Core)](https://docs.airbyte.com/platform/deploying-airbyte/chart-v2-community)
+Supported versions: 2.2.0.
+
+
+### Ports
+
+| Purpose | Port |
+| --- | --- |
+| Web Console | 30080 |
+
+
+### Data Directory
+
+
+- `kubeconfig` → `/shared`
+- `k3s-data` → `/var/lib/rancher/k3s`
+
+
+
+### Environment Variables
+
+Environment variables are defined in the app's `.env` file; see the reference section at the end of `.env` for supported variables.
+
+
+### Configuration Files
+
+
+Configuration is overridden by mounting `./src/installer/entrypoint.sh` to `/usr/local/bin/airbyte-installer.sh`.
+
+
+## References
+
+- [Airbyte Administrator Guide](https://support.websoft9.com/docs/airbyte) by Websoft9
+
+- [Docker Hub image](https://hub.docker.com/r/airbyte/server)
+
+- [Releases](https://github.com/airbytehq/airbyte/releases)
+
+- [Official docs](https://docs.airbyte.com/platform/deploying-airbyte)
+
+- [Official docs](https://docs.airbyte.com/platform/deploying-airbyte/chart-v2-community)
+
+
+<!-- W9_TROUBLESHOOT_START -->
+## Troubleshooting
+
+**App fails to start?**
+- Check `docker compose logs`.
+
+**Port not reachable?**
+- Ensure the firewall / security group allows the port.
+<!-- W9_TROUBLESHOOT_END -->

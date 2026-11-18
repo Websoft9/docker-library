@@ -4,7 +4,7 @@ services:
     container_name: ${W9_ID}
     env_file: .env
     ports:
-      - "${W9_HTTP_PORT_SET}:8000" # Web Console
+      - "9001:8000" # Web Console
     volumes:
       - jupyterhub:/srv/jupyterhub
       - /var/run/docker.sock:/var/run/docker.sock

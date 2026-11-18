@@ -1,5 +1,38 @@
 {
   "name": "inngest",
+  "access": [
+    {
+      "id": "web",
+      "service": "inngest",
+      "port": 8288,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "dashboard",
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    },
+    {
+      "id": "connect",
+      "service": "inngest",
+      "port": 8289,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "gateway"
+          ],
+          "scheme": "ws",
+          "path": "/v0/connect"
+        }
+      ]
+    }
+  ],
   "trademark": "Inngest",
   "release": true,
   "upstream": {
@@ -22,13 +55,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8288,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

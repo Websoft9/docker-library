@@ -13,8 +13,8 @@
 ### Usage
 
 1. Open GitLab from the published web port and sign in as `root`.
-2. Before first startup, set `W9_URL` to the exact host or host:port users will open in their browser, so GitLab generates the correct web links and clone URLs.
-3. Use the published SSH port for Git over SSH; the package maps `${W9_SSH_PORT_SET}` on the host to port `22` inside the container.
+2. Set `GITLAB_EXTERNAL_URL` in `.env` to the full external URL (`http://...` or `https://...`) users open in their browser so GitLab generates accurate web links and HTTP clone URLs.
+3. Use the published SSH port for Git over SSH (`GITLAB_SSH_PORT` in `.env`, mapped to port `22` inside the container).
 4. This package does not start GitLab Runner by default. Start it only when needed with `docker compose --profile runner up -d`, then register it against your GitLab instance.
 
 ### Change Password
@@ -32,7 +32,7 @@ This package uses the official single-container GitLab Docker deployment and kee
 
 GitLab official upgrade guidance requires stepped upgrade stops across `18.2`, `18.5`, `18.8`, `18.11`, and `19.2` before later `19.x` versions; `19.5` is the next required stop. This package tracks `19.5.1-ce.0`, the latest patch for that stop.
 
-For browser access and generated clone URLs to stay correct, set `W9_URL` to the real externally used host or host:port before the first container startup.
+For browser access and generated clone URLs to stay accurate, keep `GITLAB_EXTERNAL_URL` and `GITLAB_SSH_PORT` aligned with the externally reachable URL and mapped SSH port; internal Omnibus Nginx stays on plaintext port `80` (`nginx['listen_https'] = false`) so an external TLS gateway can terminate HTTPS cleanly.
 
 GitLab Runner is kept behind an optional compose profile and follows the official single-container pattern: one runner container plus a persistent configuration volume. It is not started by default. Because `config.toml` is created by `gitlab-runner register` rather than by the runner's first start, the container logs `Failed to load config ... config.toml` until it is registered; this is expected upstream behavior and stops after registration.
 <!-- W9_NOTE_END -->
@@ -50,6 +50,8 @@ The `latest` tag is not guaranteed to remain valid; pin a specific version for p
 
 | Purpose | Port |
 | --- | --- |
+| Web Console | 80 |
+| Git SSH | 22 |
 
 
 ### Data Directory
@@ -101,7 +103,7 @@ Configuration files live inside the image; mount a single file read-only to over
 - Check `docker compose logs` and wait for the Omnibus initialization to finish; GitLab can take several minutes on first boot, and the web port can briefly return `502` before Rails is fully ready.
 
 **Git clone URLs show the wrong host or port?**
-- Make sure `W9_URL` matches the actual browser entry address and `W9_SSH_PORT_SET` matches the published host SSH port before first startup.
+- Make sure `GITLAB_EXTERNAL_URL` matches the actual browser URL and `GITLAB_SSH_PORT` matches the published host SSH port.
 
 **Forgot the root password?**
 - Reset it from inside the container with `gitlab-rake "gitlab:password:reset[root]"`; changing `W9_LOGIN_PASSWORD` in `.env` does not reset an existing installation.

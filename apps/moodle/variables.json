@@ -1,5 +1,25 @@
 {
   "name": "moodle",
+  "access": [
+    {
+      "id": "web",
+      "service": "moodle",
+      "port": 80,
+      "public": true,
+      "rootUrl": [
+        "MOODLE_HOST"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Moodle",
   "release": true,
   "upstream": {
@@ -19,16 +39,6 @@
       ]
     }
   ],
-  "access": {
-    "web": {
-      "port": 80,
-      "path": "/"
-    },
-    "admin": {
-      "port": 80,
-      "path": "/admin/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

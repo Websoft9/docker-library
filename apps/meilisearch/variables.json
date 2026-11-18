@@ -1,5 +1,22 @@
 {
   "name": "meilisearch",
+  "access": [
+    {
+      "id": "api",
+      "service": "meilisearch",
+      "port": 7700,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Meilisearch",
   "release": true,
   "edition": [
@@ -18,12 +35,5 @@
   },
   "upstream": {
     "image": "https://hub.docker.com/r/getmeili/meilisearch"
-  },
-  "access": {
-    "defaultScheme": "http",
-    "api": {
-      "port": 7700,
-      "path": "/"
-    }
   }
 }

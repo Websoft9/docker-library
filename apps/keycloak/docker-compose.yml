@@ -4,7 +4,7 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - "${W9_HTTP_PORT_SET}:8080" # Web Console
+      - "9001:8080" # Web Console
     env_file: .env
     command: start-dev
     volumes:

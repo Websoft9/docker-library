@@ -1,5 +1,22 @@
 {
   "name": "gocd",
+  "access": [
+    {
+      "id": "web",
+      "service": "gocd-server",
+      "port": 8153,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/go/"
+        }
+      ]
+    }
+  ],
   "trademark": "GoCD",
   "release": true,
   "edition": [
@@ -10,13 +27,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8153,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

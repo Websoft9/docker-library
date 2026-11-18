@@ -17,6 +17,10 @@ Supporting files in this skill:
 
 ## Inputs
 
+Access declarations are required. Missing access blocks restore before movement as well as checks and publishing. Repair the archived metadata from verified facts first; an empty array is not an unknown-state fallback.
+
+Access follows `docs/app-access-spec.md`. The restore preview returns `access_metadata`; missing access, unused legacy access or invalid declarations block before files move. Migrate the archived package to the `access` port-group array from verified upstream/Compose facts, never automatically translate old keys or use an empty array without confirming no network entry. Preserve valid group IDs, remove deprecated `W9_*` port/URL aliases when migrating to `access[]`, and review unverified evidence before delivery. Run `libs app-check --app <app> --gate access` after restore; the command does not implement instance opening or domain binding.
+
 Follow `docs/app-database-connection-spec.md` for archived database declarations. Inspect the restore preview's `database_metadata` and `todo`: legacy objects may be restored unchanged, but must be migrated from verified Compose/native sources and checked with `libs app-check --app <app> --gate database-metadata` before publishing. Do not automatically translate legacy fields or mass-rewrite archives. An invalid new declaration blocks restore before files are moved.
 
 - app name (required)

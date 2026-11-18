@@ -1,5 +1,40 @@
 {
   "name": "mattermost",
+  "access": [
+    {
+      "id": "web",
+      "service": "mattermost",
+      "port": 8065,
+      "public": true,
+      "rootUrl": [
+        "MM_SERVICESETTINGS_SITEURL"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    },
+    {
+      "id": "calls-tcp",
+      "service": "mattermost",
+      "port": 8443,
+      "public": true,
+      "endpoints": []
+    },
+    {
+      "id": "calls-udp",
+      "service": "mattermost",
+      "port": 8443,
+      "protocol": "udp",
+      "public": true,
+      "endpoints": []
+    }
+  ],
   "trademark": "Mattermost",
   "release": true,
   "upstream": {
@@ -18,13 +53,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8065,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

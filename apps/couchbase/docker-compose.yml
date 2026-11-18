@@ -7,7 +7,7 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - "${W9_HTTP_PORT_SET}:8091" # Web Console
+      - "9027:8091" # Web Console
     env_file: .env
 
 networks:

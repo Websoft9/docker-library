@@ -39,9 +39,8 @@ See `src/README.md` for details.
 
 ## Websoft9 specifics
 
-- `MOODLE_HOST` is `http://${W9_URL}`. Moodle validates `wwwroot` strictly, so the platform must
-  substitute `internet_ip` with the real host (`W9_URL_REPLACE=true`). An underscore placeholder
-  such as `internet_ip` is rejected by Moodle's URL validation.
+- `MOODLE_HOST` must be the full browser URL before first startup. Moodle validates `wwwroot`
+  strictly; do not use placeholder hostnames containing underscores.
 - The elestio image sets `$CFG->sslproxy = true` for its TLS proxy. This package serves plain HTTP,
   so `src/disable-sslproxy.sh` removes that line after install.
 

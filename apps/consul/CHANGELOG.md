@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-11-10
 - Update Consul to 2.1. The official image now uses `nftables` rather than `iptables` for transparent-proxy traffic redirection.
 

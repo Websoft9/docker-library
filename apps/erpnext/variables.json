@@ -1,5 +1,22 @@
 {
   "name": "erpnext",
+  "access": [
+    {
+      "id": "web",
+      "service": "frontend",
+      "port": 8080,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "ERPNext",
   "release": true,
   "edition": [
@@ -10,12 +27,6 @@
       ]
     }
   ],
-  "access": {
-    "web": {
-      "port": 8080,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "8",

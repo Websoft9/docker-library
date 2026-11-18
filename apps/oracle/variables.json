@@ -1,5 +1,36 @@
 {
   "name": "oracle",
+  "access": [
+    {
+      "id": "admin",
+      "service": "oracleex",
+      "port": 5500,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "https",
+          "path": "/em/"
+        }
+      ]
+    },
+    {
+      "id": "db",
+      "service": "oracleex",
+      "port": 1521,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "db"
+          ],
+          "scheme": "oracle"
+        }
+      ]
+    }
+  ],
   "trademark": "Oracle Database",
   "release": true,
   "upstream": {
@@ -15,17 +46,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "https",
-    "web": {
-      "port": 5500,
-      "path": "/"
-    },
-    "admin": {
-      "port": 5500,
-      "path": "/em"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "8",

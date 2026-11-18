@@ -7,7 +7,7 @@ services:
     env_file:
       - .env
     ports:
-      - "${W9_HTTP_PORT_SET}:3080" # Web Console
+      - "9001:3080" # Web Console
     volumes:
       - dsh_home:${DSH_HOME}
       - dsh_workspace:${DSH_WORKSPACE}

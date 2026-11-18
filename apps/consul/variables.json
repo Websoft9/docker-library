@@ -1,5 +1,29 @@
 {
   "name": "consul",
+  "access": [
+    {
+      "id": "web",
+      "service": "consul-server",
+      "port": 8500,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "dashboard"
+          ],
+          "scheme": "http",
+          "path": "/ui/"
+        },
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/v1/"
+        }
+      ]
+    }
+  ],
   "trademark": "Consul",
   "release": true,
   "upstream": {
@@ -19,13 +43,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8500,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

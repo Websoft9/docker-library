@@ -151,3 +151,24 @@ def test_readme_renders_no_preset_credentials_note(repo_fixture, app_factory, mo
     readme.render_readme("demo")
 
     assert (repo_fixture / "apps" / "demo" / "README.md").read_text(encoding="utf-8") == "NO_PRESET\n"
+
+
+def test_compose_ports_parses_single_quotes_literals_and_tcp_udp_suffixes():
+    ports = readme._compose_ports(
+        """
+services:
+  app:
+    ports:
+      - '9001:80' # Web Console
+      - "9002:9000/tcp" # Web and API
+      - "5140:5140/udp" # Syslog UDP
+      - "127.0.0.1:3001:${PORT}" # Local App
+"""
+    )
+
+    assert ports == [
+        {"purpose": "Web Console", "port": "80"},
+        {"purpose": "Web and API", "port": "9000"},
+        {"purpose": "Syslog UDP", "port": "5140/udp"},
+        {"purpose": "Local App", "port": "PORT"},
+    ]

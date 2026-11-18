@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-09-20
 - Rebuild the Umbraco package from the official Umbraco Docker guidance as a self-contained app.
 - Build the Umbraco CMS 18.2.0 image from `Umbraco.Templates` on `mcr.microsoft.com/dotnet/aspnet:10.0` via `Dockerfile`.

@@ -1,5 +1,98 @@
 {
   "name": "graylog",
+  "access": [
+    {
+      "id": "http",
+      "service": "graylog",
+      "port": 9000,
+      "public": true,
+      "rootUrl": [
+        "GRAYLOG_EXTERNAL_URL"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "dashboard"
+          ],
+          "scheme": "http",
+          "path": "/"
+        },
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/api/"
+        }
+      ]
+    },
+    {
+      "id": "beats",
+      "service": "graylog",
+      "port": 5044,
+      "public": true,
+      "endpoints": []
+    },
+    {
+      "id": "syslog-tcp",
+      "service": "graylog",
+      "port": 5140,
+      "public": true,
+      "endpoints": []
+    },
+    {
+      "id": "syslog-udp",
+      "service": "graylog",
+      "port": 5140,
+      "protocol": "udp",
+      "public": true,
+      "endpoints": []
+    },
+    {
+      "id": "raw-tcp",
+      "service": "graylog",
+      "port": 5555,
+      "public": true,
+      "endpoints": []
+    },
+    {
+      "id": "raw-udp",
+      "service": "graylog",
+      "port": 5555,
+      "protocol": "udp",
+      "public": true,
+      "endpoints": []
+    },
+    {
+      "id": "gelf-tcp",
+      "service": "graylog",
+      "port": 12201,
+      "public": true,
+      "endpoints": []
+    },
+    {
+      "id": "gelf-udp",
+      "service": "graylog",
+      "port": 12201,
+      "protocol": "udp",
+      "public": true,
+      "endpoints": []
+    },
+    {
+      "id": "forwarder-data",
+      "service": "graylog",
+      "port": 13301,
+      "public": true,
+      "endpoints": []
+    },
+    {
+      "id": "forwarder-config",
+      "service": "graylog",
+      "port": 13302,
+      "public": true,
+      "endpoints": []
+    }
+  ],
   "trademark": "Graylog",
   "release": true,
   "upstream": {
@@ -17,13 +110,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 9000,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

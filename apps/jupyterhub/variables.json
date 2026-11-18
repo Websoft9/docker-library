@@ -1,5 +1,22 @@
 {
   "name": "jupyterhub",
+  "access": [
+    {
+      "id": "web",
+      "service": "jupyterhub",
+      "port": 8000,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "notebook"
+          ],
+          "scheme": "http",
+          "path": "/hub/"
+        }
+      ]
+    }
+  ],
   "trademark": "JupyterHub",
   "release": true,
   "edition": [
@@ -11,12 +28,6 @@
       ]
     }
   ],
-  "access": {
-    "web": {
-      "port": 8000,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "1",

@@ -1,5 +1,22 @@
 {
   "name": "teamcity",
+  "access": [
+    {
+      "id": "web",
+      "service": "teamcity-server",
+      "port": 8111,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "TeamCity",
   "release": true,
   "upstream": {
@@ -20,13 +37,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8111,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

@@ -1,5 +1,21 @@
 {
   "name": "postgresql",
+  "access": [
+    {
+      "id": "db",
+      "service": "postgres",
+      "port": 5432,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "db"
+          ],
+          "scheme": "postgresql"
+        }
+      ]
+    }
+  ],
   "trademark": "PostgreSQL",
   "release": true,
   "edition": [

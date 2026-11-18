@@ -21,4 +21,4 @@ Add hooks under `/app/.w9/entrypoint.d/`:
 - new filename is inserted in filename order
 - override the start step with `/app/.w9/start.sh`
 
-Hooks run as UID 1000 with `APP_DIR` as the working directory. Available variables: `APP_DIR`, `W9_HTTP_PORT`, `W9_VERSION`, `DJANGO_SETTINGS_MODULE`.
+Hooks run as UID 1000 with `APP_DIR` as the working directory. Available variables: `APP_DIR`, `PORT`, `W9_VERSION`, `DJANGO_SETTINGS_MODULE`.

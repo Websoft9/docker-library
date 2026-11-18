@@ -13,8 +13,8 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     ports:
-      - "${W9_HTTP_PORT_SET}:3000" # Web UI
-      - "${W9_SSH_PORT_SET}:${W9_SSH_PORT_SET}" # Git SSH
+      - "3001:3000" # Web UI
+      - "222:22" # Git SSH
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/healthz"]
       interval: 30s

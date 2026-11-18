@@ -6,7 +6,7 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - "${W9_HTTP_PORT_SET}:3000" # Redmine web console
+      - "9003:3000" # Redmine web console
     volumes:
       - redmine_files:/usr/src/redmine/files
       - ./src/configuration.yml:/usr/src/redmine/config/configuration.yml

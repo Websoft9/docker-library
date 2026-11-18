@@ -18,7 +18,7 @@ def _json_output(result) -> dict | list:
 def test_list_info_scan_plan_only_and_drift_contracts(repo_fixture, app_factory):
     app_factory(
         "wordpress",
-        env="W9_URL=''\n",
+        env="W9_ID=wordpress\n",
         compose="services:\n  wordpress:\n    image: wordpress:6.9\n",
         variables={
             "name": "wordpress",

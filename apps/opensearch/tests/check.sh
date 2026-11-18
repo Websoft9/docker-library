@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 set -uo pipefail
 
-port="${W9_DASHBOARD_PORT_SET:-9002}"
-base="${BASE_URL:-http://localhost:${port}}"
+base="${BASE_URL:-http://localhost:9002}"
 deadline=$((SECONDS + 300))
 code="000"
 

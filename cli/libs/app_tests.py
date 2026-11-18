@@ -90,16 +90,59 @@ def _target_mode(target: str | None, ssh_host: str | None) -> str:
     return remote.default_target()
 
 
-def _base_url(env: dict, explicit: str | None, target: str, ssh_host: str | None) -> str | None:
+def _declared_public_endpoint(app_name: str, env: dict) -> tuple[str, str] | None:
+    """Resolve (scheme, host_port) of the first URL-capable access group."""
+    from libs.access import URL_SCHEMES
+    from libs.app_deploy import _access_groups, _compose_port_bindings
+
+    target = app_dir(app_name)
+    if not target:
+        return None
+    try:
+        groups = _access_groups(target, env)
+        bindings = _compose_port_bindings(target, env)
+    except (OSError, ValueError):
+        return None
+    for group in groups:
+        url_schemes = [
+            endpoint.get("scheme")
+            for endpoint in (group.get("endpoints") or [])
+            if isinstance(endpoint, dict) and endpoint.get("scheme") in URL_SCHEMES
+        ]
+        if not url_schemes:
+            continue
+        for row in bindings:
+            if (
+                row["service"] == group.get("service")
+                and row["target"] == group["resolved_port"]
+                and row["protocol"] == group["protocol"]
+            ):
+                scheme = "https" if url_schemes[0] in {"https", "wss"} else "http"
+                return scheme, str(row["published"])
+    return None
+
+
+def _declared_public_port(app_name: str, env: dict) -> str | None:
+    endpoint = _declared_public_endpoint(app_name, env)
+    return endpoint[1] if endpoint else None
+
+
+def _base_url(app_name: str, env: dict, explicit: str | None, target: str, ssh_host: str | None) -> str | None:
     if explicit:
         return explicit.rstrip("/")
-    port = env.get("W9_HTTP_PORT_SET")
-    if not port:
+    declared = _declared_public_endpoint(app_name, env)
+    if declared:
+        scheme, port = declared
+    elif env.get("W9_HTTP_PORT_SET"):
+        scheme, port = "http", env["W9_HTTP_PORT_SET"]
+    elif env.get("W9_HTTPS_PORT_SET"):
+        scheme, port = "https", env["W9_HTTPS_PORT_SET"]
+    else:
         return None
     resolved_ssh_host = ssh_host or (remote.ssh_host() if target == "remote" else None)
     if resolved_ssh_host:
-        return f"http://{resolved_ssh_host}:{port}"
-    return f"http://localhost:{port}"
+        return f"{scheme}://{resolved_ssh_host}:{port}"
+    return f"{scheme}://localhost:{port}"
 
 
 def _run_subprocess(command: list[str]) -> subprocess.CompletedProcess:
@@ -235,15 +278,24 @@ def _remote_script_command(remote_ctx: dict, app_name: str, script_name: str, en
     """
     app_target = remote_ctx["app_target"]
     remote_base_url = base_url or ""
-    env_port = env.get("W9_HTTP_PORT_SET")
-    if base_url and env_port:
+    declared = _declared_public_endpoint(app_name, env)
+    fallback_scheme = (
+        declared[0]
+        if declared
+        else ("https" if not env.get("W9_HTTP_PORT_SET") and env.get("W9_HTTPS_PORT_SET") else "http")
+    )
+    fallback_port = env.get("W9_HTTP_PORT_SET") or env.get("W9_HTTPS_PORT_SET") or (declared[1] if declared else None)
+    if base_url and fallback_port:
         try:
-            port = urlsplit(base_url).port or env_port
+            parsed = urlsplit(base_url)
+            scheme = parsed.scheme or fallback_scheme
+            port = parsed.port or fallback_port
         except ValueError:
-            port = env_port
-        remote_base_url = f"http://localhost:{port}"
-    elif not base_url and env_port:
-        remote_base_url = f"http://localhost:{env_port}"
+            scheme = fallback_scheme
+            port = fallback_port
+        remote_base_url = f"{scheme}://localhost:{port}"
+    elif not base_url and fallback_port:
+        remote_base_url = f"{fallback_scheme}://localhost:{fallback_port}"
     script_rel = f"tests/{script_name}"
     return (
         f"cd {shlex.quote(app_target)} && "
@@ -362,7 +414,7 @@ def run_app_tests(
     cases = load_cases(app_name)
     compose = load_compose(app_name)
     mode = _target_mode(target, ssh_host)
-    resolved_base_url = _base_url(env, base_url, mode, ssh_host)
+    resolved_base_url = _base_url(app_name, env, base_url, mode, ssh_host)
     remote_ctx = _remote_context(app_name, mode, ssh_host, ssh_user, ssh_secret_path, deploy_root)
 
     skip_ids = {item["id"] for item in (cases.get("skip") or [])}

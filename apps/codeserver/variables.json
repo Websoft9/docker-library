@@ -1,5 +1,22 @@
 {
   "name": "codeserver",
+  "access": [
+    {
+      "id": "web",
+      "service": "code-server",
+      "port": 8443,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "CodeServer",
   "release": true,
   "upstream": {
@@ -14,13 +31,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8443,
-      "path": "/"
-    }
-  },
   "credentials": {
     "password": {
       "source": "container-env",

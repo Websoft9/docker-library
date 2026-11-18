@@ -77,12 +77,12 @@ services:
         soft: 655360
         hard: 655360
     ports:
-      - "${W9_AGENT_PORT_SET}:1514" # Agent Connection
-      - "${W9_ENROLLMENT_PORT_SET}:1515" # Agent Enrollment
+      - "1514:1514" # Agent Connection
+      - "1515:1515" # Agent Enrollment
       # Uncomment to collect syslog from external devices:
-      # - "${W9_SYSLOG_UDP_PORT_SET}:514/udp" # Syslog Collection
+      # - "514:514/udp" # Syslog Collection
       # Uncomment to expose the Wazuh REST API to external automation:
-      # - "${W9_API_PORT_SET}:55000" # Manager API
+      # - "55000:55000" # Manager API
     volumes:
       - wazuh_api_configuration:/var/ossec/api/configuration
       - wazuh_etc:/var/ossec/etc
@@ -112,7 +112,7 @@ services:
       wazuh.manager:
         condition: service_started
     ports:
-      - "${W9_HTTPS_PORT_SET}:5601" # Web Console
+      - "9443:5601" # Web Console
     volumes:
       - ./src/wazuh_indexer_ssl_certs:/usr/share/wazuh-dashboard/certs
       - ./src/opensearch_dashboards.yml:/usr/share/wazuh-dashboard/config/opensearch_dashboards.yml

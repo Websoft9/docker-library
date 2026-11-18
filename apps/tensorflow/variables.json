@@ -18,17 +18,38 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
+  "access": [
+    {
+      "id": "notebook",
+      "service": "tensorflow",
       "port": 8888,
-      "path": "/"
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "notebook"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
     },
-    "metrics": {
+    {
+      "id": "tensorboard",
+      "service": "tensorflow",
       "port": 6006,
-      "path": "/"
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "dashboard"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
     }
-  },
+  ],
   "requirements": {
     "cpu": "1",
     "memory": "1",

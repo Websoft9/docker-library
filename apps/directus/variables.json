@@ -1,5 +1,32 @@
 {
   "name": "directus",
+  "access": [
+    {
+      "id": "admin",
+      "service": "directus",
+      "port": 8055,
+      "public": true,
+      "rootUrl": [
+        "PUBLIC_URL"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/admin/"
+        },
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Directus",
   "release": true,
   "upstream": {
@@ -20,13 +47,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8055,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

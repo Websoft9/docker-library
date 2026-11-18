@@ -1,5 +1,36 @@
 {
   "name": "weaviate",
+  "access": [
+    {
+      "id": "db",
+      "service": "weaviate",
+      "port": 8080,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "db"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    },
+    {
+      "id": "grpc",
+      "service": "weaviate",
+      "port": 50051,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "db"
+          ],
+          "scheme": "grpc"
+        }
+      ]
+    }
+  ],
   "trademark": "Weaviate",
   "release": false,
   "edition": [
@@ -11,13 +42,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "api": {
-      "port": 8080,
-      "path": "/v1/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

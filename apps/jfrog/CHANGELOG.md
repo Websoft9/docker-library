@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-10-15
 - Switch the main image from the Pro edition to the open source `releases-docker.jfrog.io/jfrog/artifactory-oss`; Artifactory OSS requires no license.
 - Update `.env` (`W9_REPO`), `variables.json` (`upstream.image`, `help.login`), and `README.md` (image references, remove license notes).

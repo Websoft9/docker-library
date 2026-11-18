@@ -1,5 +1,22 @@
 {
   "name": "odoo",
+  "access": [
+    {
+      "id": "web",
+      "service": "odoo",
+      "port": 8069,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Odoo",
   "release": true,
   "upstream": {
@@ -25,13 +42,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8069,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

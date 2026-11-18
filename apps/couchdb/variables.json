@@ -1,5 +1,29 @@
 {
   "name": "couchdb",
+  "access": [
+    {
+      "id": "admin",
+      "service": "couchdb",
+      "port": 5984,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/_utils/"
+        },
+        {
+          "roles": [
+            "db"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "CouchDB",
   "release": true,
   "upstream": {
@@ -21,17 +45,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 5984,
-      "path": "/"
-    },
-    "admin": {
-      "port": 5984,
-      "path": "/_utils"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

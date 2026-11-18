@@ -19,20 +19,54 @@
       ]
     }
   ],
-  "access": {
-    "web": {
+  "access": [
+    {
+      "id": "web",
+      "service": "gitea",
       "port": 3000,
-      "path": "/"
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        },
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/-/admin"
+        },
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/api/v1"
+        }
+      ]
     },
-    "admin": {
-      "port": 3000,
-      "path": "/-/admin"
-    },
-    "api": {
-      "port": 3000,
-      "path": "/api/v1"
+    {
+      "id": "ssh",
+      "service": "gitea",
+      "port": 22,
+      "public": true,
+      "mappedPort": [
+        "SSH_PORT"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "ssh"
+          ],
+          "scheme": "ssh"
+        }
+      ]
     }
-  },
+  ],
   "requirements": {
     "cpu": "1",
     "memory": "1",

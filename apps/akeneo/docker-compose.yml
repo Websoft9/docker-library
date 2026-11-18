@@ -27,7 +27,7 @@ services:
     container_name: ${W9_ID}
     command: ["web"]
     ports:
-      - "${W9_HTTP_PORT_SET}:80" # Web Console
+      - "9001:80" # Web Console
     depends_on:
       - mysql
       - elasticsearch

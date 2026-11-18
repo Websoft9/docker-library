@@ -6,8 +6,8 @@ services:
     volumes:
       - data:/opt/oracle/oradata
     ports:
-      - "${W9_DB_PORT_SET}:1521" # Oracle database listener (SQL*Net)
-      - "${W9_HTTPS_PORT_SET}:5500" # Oracle Enterprise Manager (EM) console
+      - "1521:1521" # Oracle database listener (SQL*Net)
+      - "5500:5500" # Oracle Enterprise Manager (EM) console
     restart: unless-stopped
 
 networks:

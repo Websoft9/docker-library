@@ -1,5 +1,22 @@
 {
   "name": "couchbase",
+  "access": [
+    {
+      "id": "admin",
+      "service": "couchbase-server",
+      "port": 8091,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Couchbase",
   "release": true,
   "edition": [
@@ -10,13 +27,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8091,
-      "path": "/"
-    }
-  },
   "credentials": {},
   "env": {
     "first_startup_only": []

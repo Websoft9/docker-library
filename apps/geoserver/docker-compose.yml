@@ -4,7 +4,7 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - "${W9_HTTP_PORT_SET}:8080" # Web UI and OGC services
+      - "9001:8080" # Web UI and OGC services
     env_file: .env
     volumes:
       - geoserver_data:/opt/geoserver_data

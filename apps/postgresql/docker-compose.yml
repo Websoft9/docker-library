@@ -6,7 +6,7 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - "${W9_DB_PORT_SET}:5432" # PostgreSQL
+      - "5432:5432" # PostgreSQL
     volumes:
       # PostgreSQL 18+ data path; for PostgreSQL 17 and below mount at /var/lib/postgresql/data.
       - postgres:/var/lib/postgresql

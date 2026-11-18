@@ -9,6 +9,9 @@ Gate 1: Policy
 - URL and login variables are used correctly
 - new `W9_*_SET` or `W9_LOGIN*` keys are registered in `i18n/translation.json`
 - yaml and json are valid
+- access declarations pass `app-check --gate access`; unknown or unverified facts remain explicitly reported rather than inferred
+- missing access fails the declaration gate and publishing; every active app provides verified entries or an explicitly justified empty array
+- access dictionary changes pass Schema, role/protocol reference, semantic, safety, template, full/incremental publishing and appstore-sync tests per `docs/app-access-spec.md`
 - new or changed secret declarations/inputs pass `app-check --gate secrets`
 - secret generation profile changes pass dictionary Schema, documented-example consistency, parameter-validation, and shared-metadata delivery tests; application-specific lengths/formats require upstream evidence, not inference from examples alone
 
@@ -20,6 +23,7 @@ Gate 2: Deploy
 Gate 3: AI Verification
 - homepage or main port is reachable
 - initialization path is checked when possible
+- changed runnable access behavior verifies the actual service listener, protocol and path; declaration-only edits require static access evidence, not a fabricated deployment result
 - logs show no blocking error
 - AI writes a report with evidence and risk
 - secret runtime changes verify generated values against an authenticated app path and retain matching keys/data on recreation; template-only validation is not authentication or rotation proof

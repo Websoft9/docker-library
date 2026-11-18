@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **InfluxDB**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -31,14 +32,14 @@ Configuration is declared in `src/config.yml`, mounted to `/etc/influxdb2/config
 
 InfluxDB 2.8 introduced hashed API tokens and a BoltDB schema upgrade. Upgrading from 2.7 or earlier is supported, but downgrading back below 2.8 erases all API tokens, so keep backups before moving an existing instance.
 
-InfluxDB 3.x is available as the `3-core` variant: selecting the `3-core` version deploys `influxdb:3-core` with `docker-compose.3-core.yml` and `.env.3-core` (HTTP API on port `8181`, data in the `influxdb3-data` volume, no built-in UI). The `2.9` and `latest` variants use InfluxDB 2.x with the built-in UI on `8086`.
+InfluxDB 3 Core is a manual Compose variant, not an App Store version: run `docker compose -f docker-compose.3-core.yml up -d` from this directory. It serves the HTTP API on port `8181`, uses a separate Compose volume, and has no built-in UI. The App Store package uses the InfluxDB 2.x UI and API on `8086`. Do not switch an existing 2.x instance to 3 Core by replacing only its image tag.
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 2.9, latest, 3-core.
+Supported versions: 2.9, latest.
 
 The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
@@ -53,7 +54,7 @@ The `latest` tag is not guaranteed to remain valid; pin a specific version for p
 ### Data Directory
 
 
-Data is persisted in the `influxdb2-data` volume, mounted at `/var/lib/influxdb2`.
+Data is persisted in the `influxdb-data` volume, mounted at `/var/lib/influxdb2`.
 
 
 ### Environment Variables

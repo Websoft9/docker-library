@@ -1,3 +1,10 @@
+# CHANGELOG
+
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array (`http` on port `80` with `rootUrl: ["GITLAB_EXTERNAL_URL"]`, and `ssh` on port `22` with `mappedPort: ["GITLAB_SSH_PORT"]`).
+- Removed `W9_HTTP_PORT`, `W9_HTTP_PORT_SET`, `W9_SSH_PORT_SET`, `W9_URL`, `W9_URL_REPLACE`, and the invalid `hostname: "${W9_URL}"` container setting; switched to literal default port mappings (`9001:80`, `9002:22`), native `GITLAB_EXTERNAL_URL` / `GITLAB_SSH_PORT` variables, and `nginx['listen_https'] = false` so Omnibus Nginx stays on port `80` even when `GITLAB_EXTERNAL_URL` uses `https://`.
+
 ## 2026-10-27
 
 - Updated GitLab Community Edition from `19.4.2-ce.0` to `19.5.1-ce.0`, including upstream security fixes.

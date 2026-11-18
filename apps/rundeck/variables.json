@@ -1,5 +1,25 @@
 {
   "name": "rundeck",
+  "access": [
+    {
+      "id": "web",
+      "service": "rundeck",
+      "port": 4440,
+      "public": true,
+      "rootUrl": [
+        "RUNDECK_GRAILS_URL"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Rundeck",
   "release": true,
   "upstream": {
@@ -19,13 +39,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 4440,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

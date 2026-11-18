@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     env_file: .env
     ports:
-      - "${W9_HTTP_PORT_SET}:80" # Web Console
+      - "9001:80" # Web Console
     volumes:
       - dolibarr_html:/var/www/html
       - dolibarr_documents:/var/www/documents

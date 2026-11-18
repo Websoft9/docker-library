@@ -103,7 +103,7 @@ services:
       - sites:/home/frappe/frappe-bench/sites
       - logs:/home/frappe/frappe-bench/logs
     ports:
-      - "${W9_HTTP_PORT_SET}:8080" # Web Console
+      - "9001:8080" # Web Console
 
   queue-long:
     image: ${W9_REPO}:${W9_VERSION}

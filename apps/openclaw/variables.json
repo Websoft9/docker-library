@@ -1,5 +1,40 @@
 {
   "name": "openclaw",
+  "access": [
+    {
+      "id": "web",
+      "service": "openclaw-gateway",
+      "port": 18789,
+      "public": true,
+      "rootUrl": [
+        "OPENCLAW_PUBLIC_ORIGIN"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web",
+            "gateway"
+          ],
+          "scheme": "http",
+          "path": "/"
+        },
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "ws",
+          "path": "/"
+        }
+      ]
+    },
+    {
+      "id": "bridge",
+      "service": "openclaw-gateway",
+      "port": 18790,
+      "public": true,
+      "endpoints": []
+    }
+  ],
   "trademark": "OpenClaw",
   "release": true,
   "upstream": {
@@ -17,13 +52,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 18789,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "2",
@@ -34,6 +62,6 @@
     "first_startup_only": []
   },
   "help": {
-    "db": "No bundled database. The Gateway token is seeded from W9_LOGIN_PASSWORD; the package derives the external Control UI origin from OPENCLAW_PUBLIC_ORIGIN or OPENCLAW_PUBLIC_SCHEME plus W9_URL, and applies OPENCLAW_TRUSTED_PROXIES for reverse-proxy forwarded-header attribution on each recreate."
+    "db": "No bundled database. The Gateway token is seeded from W9_LOGIN_PASSWORD. The package reads OPENCLAW_PUBLIC_ORIGIN and OPENCLAW_TRUSTED_PROXIES for reverse-proxy access on each recreate."
   }
 }

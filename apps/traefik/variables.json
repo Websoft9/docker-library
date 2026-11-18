@@ -1,5 +1,37 @@
 {
   "name": "traefik",
+  "access": [
+    {
+      "id": "admin",
+      "service": "traefik",
+      "port": 8080,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "dashboard"
+          ],
+          "scheme": "http",
+          "path": "/dashboard/"
+        }
+      ]
+    },
+    {
+      "id": "gateway",
+      "service": "traefik",
+      "port": 80,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "gateway"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Traefik",
   "release": true,
   "upstream": {
@@ -19,21 +51,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8080,
-      "path": "/"
-    },
-    "admin": {
-      "port": 8080,
-      "path": "/dashboard/"
-    },
-    "api": {
-      "port": 8080,
-      "path": "/api/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "1",

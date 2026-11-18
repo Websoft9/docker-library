@@ -1,5 +1,22 @@
 {
   "name": "sonarqube",
+  "access": [
+    {
+      "id": "web",
+      "service": "app",
+      "port": 9000,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "dashboard"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "SonarQube",
   "release": true,
   "upstream": {
@@ -22,16 +39,6 @@
       ]
     }
   ],
-  "access": {
-    "web": {
-      "port": 9000,
-      "path": "/"
-    },
-    "api": {
-      "port": 9000,
-      "path": "/api"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

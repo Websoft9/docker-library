@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **WooCommerce**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -29,7 +30,7 @@ Websoft9 packages this app from the official [WooCommerce Docker image](https://
 <!-- W9_NOTE_START -->
 The package is based on the official WordPress image and ships a `woocommerce-bootstrap` helper. After the first WordPress site install finishes, the helper installs and activates the WooCommerce plugin, so the store features are enabled by default. The plugin version is controlled by `WOOCOMMERCE_VERSION`.
 
-The package mounts `src/websoft9-url.php` with `auto_prepend_file` so `W9_URL` can override `WP_HOME` and `WP_SITEURL` at runtime when needed. It also ships `src/nginx-proxy.conf`, which the Websoft9 Gateway reads and injects into the Proxy Host `server{}` block to raise the gateway upload limit and apply the platform client rate/concurrency limits.
+The package mounts `src/websoft9-url.php` with `auto_prepend_file` to read `WP_HOME` and `WP_SITEURL` from the environment. It also ships `src/nginx-proxy.conf` for the Websoft9 Gateway's upload and client rate/concurrency limits.
 <!-- W9_NOTE_END -->
 
 Apps run as containers; rebuild after any configuration change.

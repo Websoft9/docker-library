@@ -17,11 +17,12 @@ When examples in existing apps conflict with this document, prefer this document
 Typical uses:
 
 - declare the main image and version
-- expose user-editable ports
+- expose non-port user-editable business parameters (`W9_*_SET`)
 - describe app identity and networking
 - model login credentials when the app has built-in auth
-- model external URL replacement when the app needs a public URL during install or startup
 - describe bundled dependency shape such as the main database type
+
+> Host port publishing, public URLs, and admin paths are NOT modeled via `W9_*` variables. Declare them in `variables.json.access` using literal default Compose ports and upstream native variables per [App Access Spec](app-access-spec.md).
 
 ## Always Read First
 
@@ -48,24 +49,15 @@ Rules:
 - use `x.x.x` only when upstream has no usable `x.x` tag or exact patch pinning is required
 - keep `upstream.image` in `variables.json` as the single version source reference
 
-### User-Editable Ports
+### User-Editable Business Inputs (`W9_*_SET`)
 
-These variables end with `_SET` and are intended for owner/user adjustment.
-
-| Variable | Meaning | Typical use |
-| --- | --- | --- |
-| `W9_HTTP_PORT_SET` | External HTTP port | `- "${W9_HTTP_PORT_SET}:80" # Web Console` |
-| `W9_HTTPS_PORT_SET` | External HTTPS port | `- "${W9_HTTPS_PORT_SET}:443" # HTTPS` |
-| `W9_DB_PORT_SET` | External DB port for DB products | database packages only |
-| `W9_MQ_PORT_SET` | External MQ port | MQ products |
-| `W9_SSH_PORT_SET` | Extra SSH port | apps like GitLab |
+Non-port user-editable install parameters end with `_SET` (for example `W9_DEEPSEEK_API_KEY_SET` or `W9_KAFKA_BROKERS_SET`).
 
 Rules:
 
-- expose only ports that users are expected to access directly
-- do not publish bundled web-app dependency ports such as PostgreSQL or Redis unless the app itself is a database/service product
-- every published port line in `docker-compose.yml` must carry an inline `# purpose` comment
-- `_SET` keys are translatable and must exist in `i18n/translation.json`
+- use `W9_*_SET` only for non-port business inputs collected at install time; host ports, public URLs, and admin paths live in `variables.json.access` (`W9_*_PORT_SET`, `W9_HTTP_PORT`, `W9_HTTPS_PORT`, `W9_URL`, `W9_URL_REPLACE`, `W9_URL_WITH_PORT`, and `W9_ADMIN_PATH` are prohibited)
+- every published port line in `docker-compose.yml` must use a literal default host port (such as `"9001:80"`) or an upstream native port variable declared in `mappedPort`, and must carry an inline `# purpose` comment
+- active `W9_*_SET` keys are translatable and must exist in `i18n/translation.json`
 
 ### Internal Identity And Network
 
@@ -73,8 +65,6 @@ Rules:
 | --- | --- | --- |
 | `W9_ID` | App instance identifier | main container name and dependency host prefix |
 | `W9_NETWORK` | Shared Docker network name | always `websoft9` unless workflow explicitly says otherwise |
-| `W9_HTTP_PORT` | Internal HTTP port | optional metadata/helper var |
-| `W9_HTTPS_PORT` | Internal HTTPS port | optional metadata/helper var |
 
 Rules:
 
@@ -90,13 +80,10 @@ networks:
     external: true
 ```
 
-### URL And Login
+### Login Credentials
 
 | Variable | Meaning | Typical use |
 | --- | --- | --- |
-| `W9_URL` | Public host or host:port for the app | external URL placeholder |
-| `W9_URL_REPLACE` | Enables init-time URL substitution when config references `${W9_URL}` | URL-aware apps |
-| `W9_ADMIN_PATH` | Admin path suffix | `/admin`, `/wp-admin` |
 | `W9_LOGIN_USER` | Built-in login username | admin/default-user apps |
 | `W9_LOGIN_PASSWORD` | Built-in login password | paired with `W9_LOGIN_USER` |
 
@@ -104,25 +91,7 @@ Rules:
 
 - declare `W9_LOGIN_USER` and `W9_LOGIN_PASSWORD` only when the app has built-in administrator credentials controlled by the package
 - never declare only one of the login pair
-- declare `W9_URL` for web apps
-- use a domain-style placeholder for `W9_URL`, for example `appname.example.com` or `example.youdomain.com`
-- do NOT use the legacy `internet_ip:${W9_HTTP_PORT_SET}` form; host substitution is the consumer's concern, not this repository's
-- set `W9_URL_REPLACE=true` only when app config or env actively references `${W9_URL}`
-- typical URL-aware upstream keys include `ROOT_URL`, `BASE_URL`, `SITE_URL`, `APP_URL`, `PUBLIC_URL`, `EXTERNAL_URL`, `HOST`, `DOMAIN`, `PUBLIC_URI`
-
-Examples:
-
-```env
-W9_URL=appname.example.com
-W9_URL_REPLACE=true
-ROOT_URL=http://${W9_URL}
-```
-
-```env
-W9_URL=appname.example.com
-W9_URL_REPLACE=true
-AFFINE_SERVER_EXTERNAL_URL=http://${W9_URL}
-```
+- when an application requires its public URL or hostname at runtime, declare the upstream native variable (for example `APP_URL`, `ROOT_URL`, `DOMAIN`) in `.env` with a runnable localhost/placeholder default and bind it via `rootUrl` or `host` in `variables.json.access` per [App Access Spec](app-access-spec.md)
 
 ### Password And Crypto Helpers
 
@@ -198,16 +167,16 @@ Recommended order:
 
 1. image identity: `W9_REPO`, `W9_DIST`, `W9_VERSION`
 2. optional password seed such as `W9_POWER_PASSWORD` when the package truly controls passwords
-3. protected appstore-facing block: `W9_ID`, internal ports, `_SET` ports, `W9_DB_*`, `W9_LOGIN*`, `W9_URL*`, `W9_ADMIN_PATH`, `W9_NETWORK`
+3. protected appstore-facing block: `W9_ID`, `W9_DB_*`, `W9_LOGIN*`, optional non-port `W9_*_SET`, `W9_NETWORK`
 4. upstream app environment variables under the bannered “image environment variables” section
 
 Rules:
 
 - keep the section banner and single Docs URL in the image env section
-- the “Used by docker-compose.yml” subsection should contain only variables actively passed to containers
+- the “Used by docker-compose.yml” subsection should contain only variables actively passed to containers (or mapped via `access` `rootUrl` / `host` / `mappedPort`)
 - keep “Not used by default” to at most 5 commented variables
 - app/upstream variables should come after `W9_*` variables
-- keep `W9_HTTP_PORT`, `W9_HTTP_PORT_SET`, `W9_URL`, `W9_URL_REPLACE`, `W9_ADMIN_PATH`, and `W9_LOGIN*` inside the protected block because current appstore parsing expects them there
+- keep `W9_ID`, `W9_LOGIN*`, and `W9_NETWORK` inside the protected block
 - if `docker-compose.yml` mounts `./src/...`, the corresponding file must exist
 
 ## Variable Reference Style
@@ -218,35 +187,14 @@ Examples:
 
 - `image: ${W9_REPO}:${W9_VERSION}`
 - `container_name: ${W9_ID}`
-- `- "${W9_HTTP_PORT_SET}:80" # Web Console`
+- `- "9001:80" # Web Console`
 - `name: ${W9_NETWORK}`
-- `ROOT_URL=http://${W9_URL}`
 - `W9_LOGIN_PASSWORD=${W9_POWER_PASSWORD}`
 
 Rules:
 
 - use `${VAR}` for every variable reference in `.env`, `docker-compose.yml`, and mounted config templates
 - whenever `.env`, `docker-compose.yml`, or a mounted config template is edited, convert **every** variable reference in the whole file to the braced form `${VAR}`; do not leave bare `$VAR` on old, otherwise-untouched lines of an edited file
-- the policy gate still accepts the legacy bare `$W9_URL` form, so untouched existing packages pass without churn
-
-## `W9_URL_REPLACE` Decision Rule
-
-Use `W9_URL_REPLACE=true` when both are true:
-
-1. the app needs a correct public URL during install, first startup, or URL generation
-2. the package actively references `${W9_URL}` in upstream env/config wiring
-
-Do not use it when:
-
-- the app has no web URL concept
-- the app is web-based but no packaged config references `${W9_URL}`
-- the app URL is discovered externally and not wired through the package
-
-Machine policy is enforced by `cli/libs/validate.py`:
-
-- if `W9_URL_REPLACE` is set, `W9_URL` must also exist
-- if `W9_URL_REPLACE` is set, `${W9_URL}` must appear in compose text or in an env value (the gate also accepts the legacy bare `$W9_URL` form)
-- if a non-`W9_*` URL-aware key references `${W9_URL}`, `W9_URL_REPLACE` must be `true`
 
 ## `validate.py` Rule Mapping
 
@@ -258,7 +206,7 @@ Source: `TRANSLATABLE_ENV_RE = ^(W9_.*_SET|W9_LOGIN.*)$`
 
 Meaning:
 
-- every `W9_*_SET` key must exist in `i18n/translation.json`
+- every non-port `W9_*_SET` key must exist in `i18n/translation.json`
 - every `W9_LOGIN*` key must exist in `i18n/translation.json`
 - if a new key matches this regex, add the translation entry in the same change
 
@@ -272,37 +220,14 @@ Meaning:
 - do not add only `W9_LOGIN_USER`
 - do not add only `W9_LOGIN_PASSWORD`
 
-### URL Declaration
+### Deprecated Access Variables Rejected
 
-Source: `url_declared_ok = "W9_URL_REPLACE" not in env_map or "W9_URL" in env_map`
-
-Meaning:
-
-- if you set `W9_URL_REPLACE`, you must also declare `W9_URL`
-
-### URL Replace Detection
-
-Source:
-
-- `url_replace_required` becomes true when a non-`W9_*` URL-aware key references `${W9_URL}`
-- `url_replace_required` also becomes true when compose text contains `${W9_URL}` (the legacy bare `$W9_URL` form is also matched)
+Source: `deprecated_access_env_keys = [key for key in env_keys if is_deprecated_w9_access_key(key)]`
 
 Meaning:
 
-- examples such as `ROOT_URL=http://${W9_URL}`, `APP_URL=http://${W9_URL}`, `AFFINE_SERVER_EXTERNAL_URL=http://${W9_URL}`, or compose values/comments containing `${W9_URL}` make URL replacement an active contract
-
-### URL Replace Enforcement
-
-Source:
-
-- if `W9_URL_REPLACE` is set, then `${W9_URL}` must appear in compose text or an env value
-- if `url_replace_required` is true, then `W9_URL_REPLACE` must equal `true`
-
-Meaning:
-
-- do not declare `W9_URL_REPLACE=true` unless the package really references `${W9_URL}`
-- if the package references `${W9_URL}`, do not forget `W9_URL_REPLACE=true`
-- for URL-aware file-mounted config, keep at least one explicit `${W9_URL}` reference in `.env` or compose so the gate can detect the contract
+- `.env`, `docker-compose.yml`, and `src/` must not contain `W9_*_PORT_SET`, `W9_HTTP_PORT`, `W9_HTTPS_PORT`, `W9_DB_PORT`, `W9_API_PORT`, `W9_URL`, `W9_URL_REPLACE`, `W9_URL_WITH_PORT`, `W9_ADMIN_PATH`, or `W9_LOGIN_ConnectURL`
+- declare port groups, domain constraints, and native variable bindings (`rootUrl`, `host`, `mappedPort`) in `variables.json.access` per [App Access Spec](app-access-spec.md)
 
 ### Dependency Tag Policy
 
@@ -355,14 +280,12 @@ Treat this as a complex login:
 - `help.login` is required for a complex login, not optional: when a front end only renders the final
   account and password from `.env`, users still need `help.login` to know how the initial bootstrap step
   works
-- when the app also requires non-credential pre-login workflow steps (for example, viewing raw logs without
-  a stable extraction pattern and opening a wizard), you may optionally declare `variables.json.setup.steps`
 
 ## Translation Rule
 
 Keys requiring entries in `i18n/translation.json`:
 
-- `W9_*_SET`
+- non-port `W9_*_SET`
 - `W9_LOGIN*`
 
 Keys that normally do not require translation entries:
@@ -374,8 +297,6 @@ Keys that normally do not require translation entries:
 - `W9_NETWORK`
 - `W9_DB_VERSION`
 - `W9_DB_EXPOSE`
-- `W9_URL`
-- `W9_URL_REPLACE`
 
 ## Common Scenarios
 
@@ -383,19 +304,16 @@ Keys that normally do not require translation entries:
 
 Use:
 
-- `W9_HTTP_PORT_SET`
-- `W9_URL`
-- `W9_URL_REPLACE` only when app config references `${W9_URL}`
 - `W9_LOGIN_USER`
 - `W9_LOGIN_PASSWORD`
+- upstream native public URL / host variable in `.env` (only when required by the app) bound via `rootUrl` or `host` in `variables.json.access`
 
 ### Web App With Interactive First Admin Setup
 
 Use:
 
-- `W9_HTTP_PORT_SET`
-- `W9_URL`
-- `W9_URL_REPLACE` only when config/env references `${W9_URL}`
+- `W9_ID`, `W9_NETWORK`, and image identity keys in `.env`
+- port groups and endpoints in `variables.json.access`
 
 Do not add login pair unless the package really controls it.
 
@@ -418,8 +336,7 @@ Usually add:
 Usually add:
 
 - image identity variables
-- only the relevant `_SET` ports
-- no `W9_URL`
+- infrastructure port groups in `variables.json.access`
 - no login pair unless the service really has built-in credentials
 
 ## Pre-Edit Checklist For Agents
@@ -428,7 +345,7 @@ Before editing `.env` or `docker-compose.yml`:
 
 1. read this document
 2. read `metadata/templates/new-app/.env.tmpl`
-3. check whether the app needs `W9_URL_REPLACE`
+3. read `docs/app-access-spec.md` and keep host ports, public URLs and admin paths out of `.env`
 4. check whether login is package-controlled or interactive
 5. once you edit a file, use `${VAR}` for **all** variable references in it (never bare `$VAR`, even on lines you did not otherwise change)
 6. scan the edited files for remaining bare `$VAR` references before handoff

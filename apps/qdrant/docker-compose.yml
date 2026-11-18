@@ -4,8 +4,8 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - "${W9_HTTP_PORT_SET}:6333" # HTTP API and Web UI
-      - "${W9_GRPC_PORT_SET}:6334" # gRPC API
+      - "6333:6333" # HTTP API and Web UI
+      - "6334:6334" # gRPC API
     volumes:
       - qdrant:/qdrant/storage
     env_file: .env

@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-11-06
 - Update Mattermost Team Edition from `12.0` to `12.1` and PostgreSQL from `14.0` to `15.0` to meet Mattermost 12.1's minimum database requirement.
 

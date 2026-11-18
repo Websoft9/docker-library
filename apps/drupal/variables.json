@@ -1,5 +1,22 @@
 {
   "name": "drupal",
+  "access": [
+    {
+      "id": "web",
+      "service": "drupal",
+      "port": 80,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Drupal",
   "release": true,
   "edition": [
@@ -11,13 +28,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 80,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "1",

@@ -1,3 +1,3 @@
 # CouchDB
 
-GUI: http://${W9_URL}:${W9_HTTP_PORT_SET}/_utils/#login
+GUI: `http://<host>:<published-port>/_utils/#login`

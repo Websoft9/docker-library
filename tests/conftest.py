@@ -50,7 +50,7 @@ def skill_repo_fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     )
 
     shutil.copy2(REPO_ROOT / "metadata" / "new-app.schema.json", tmp_path / "metadata" / "new-app.schema.json")
-    for name in ("variables.schema.json", "database-types.json", "secret-rules.json"):
+    for name in ("variables.schema.json", "database-types.json", "secret-rules.json", "access-types.json"):
         shutil.copy2(REPO_ROOT / "metadata" / name, tmp_path / "metadata" / name)
     shutil.copytree(REPO_ROOT / "metadata" / "templates", tmp_path / "metadata" / "templates", dirs_exist_ok=True)
     shutil.copy2(REPO_ROOT / "i18n" / "translation.json", tmp_path / "i18n" / "translation.json")
@@ -64,11 +64,12 @@ def skill_app_factory(skill_repo_fixture: Path):
     def create_app(
         name: str,
         *,
-        env: str = "W9_URL=''\nW9_DB_VERSION=8.0\n",
+        env: str = "W9_ID=demo\nW9_VERSION=1.0\nW9_DB_VERSION=8.0\n",
         compose: str = "services: {}\n",
         variables: dict | None = None,
         readme: str = "# README\n",
         archived: bool = False,
+        declare_access: bool = True,
     ) -> Path:
         root = skill_repo_fixture / ("archive/apps" if archived else "apps") / name
         root.mkdir(parents=True, exist_ok=True)
@@ -82,6 +83,8 @@ def skill_app_factory(skill_repo_fixture: Path):
                 "upstream": {"image": "https://hub.docker.com/_/example/tags"},
                 "edition": [{"dist": "community", "version": ["1.0"]}],
             }
+        if declare_access:
+            variables.setdefault("access", [])
         (root / "variables.json").write_text(json.dumps(variables, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         (root / "README.md").write_text(readme, encoding="utf-8")
         (root / "CHANGELOG.md").write_text("# CHANGELOG\n", encoding="utf-8")

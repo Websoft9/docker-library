@@ -7,7 +7,7 @@ services:
     command: server --listen 0.0.0.0:4954
     env_file: .env
     ports:
-      - "${W9_HTTP_PORT_SET}:4954" # Trivy Server API
+      - "4954:4954" # Trivy Server API
     volumes:
       - trivy_cache:/root/.cache/trivy
     healthcheck:

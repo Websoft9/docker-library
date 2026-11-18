@@ -1,5 +1,22 @@
 {
   "name": "opendesign",
+  "access": [
+    {
+      "id": "web",
+      "service": "opendesign",
+      "port": 7456,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "OpenDesign",
   "release": true,
   "upstream": {
@@ -23,13 +40,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 7456,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",
