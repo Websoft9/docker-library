@@ -558,6 +558,7 @@ Version sources:
 - Library deltas use the last successfully published apps index in the same channel, identified by that channel's published Appstore manifest. `fromVersion` is that index's library `datasetVersion`, not a Git SHA, release tag, or root Appstore version. Compare published and current app fingerprints to compute added, changed, and removed apps. Release tags still determine image-promotion baselines, not library dataset versions.
 - Baseline readers accept current or earlier positive integer contract versions with the validated index identity/fingerprint shape. A different contract discards the incremental baseline after validation, rebuilds every app package and sets `supportsPartialUpdate: false` with `fromVersion: initial`. Same-contract baselines retain incremental behavior. Future/malformed schemas and invalid channel/version/app fingerprints remain publication errors. Accepting an old index for rebuild planning does not imply consumer support for installing that contract.
 - Without a published baseline, build all app packages and set `supportsPartialUpdate: false`. Storage failures, malformed baselines, and checksum mismatches fail publishing rather than silently selecting a first publication.
+- Baseline lookups and downloads explicitly use the Cloudflare R2 signing region `auto`, independent of the runner's default AWS region.
 
 ### 6.2 CI Pipeline (`appstore-publish.yml`)
 
