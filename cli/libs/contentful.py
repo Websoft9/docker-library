@@ -13,6 +13,7 @@ CONTENT_TYPE = "product"
 CATALOG_CONTENT_TYPE = "catalog"
 DEFAULT_DRAFTS_DIR = catalog.DEFAULT_CATALOG_DIR
 DRAFT_FIELD_KEYS = catalog.CATALOG_FIELD_KEYS
+FIELD_ALIASES = {"appStore": "app_store"}
 
 
 def load_variables(app_name: str) -> dict:
@@ -52,7 +53,7 @@ def build_machine_fields(variables: dict, active: bool = True) -> dict:
         "vcpu": int(requirements.get("cpu", 1)),
         "memory": _catalog_memory(requirements.get("memory", 1), variables.get("name") or "<unknown app>"),
         "storage": int(requirements.get("disk", 1)),
-        "appStore": visible,
+        "app_store": visible,
         "production": bool(variables.get("release", False)) and visible,
     }
 
@@ -149,9 +150,19 @@ def sync_app(
     drafts_dir: str,
     apply: bool,
     update_machine: bool,
+    overwrite: bool = False,
     token: str | None = None,
     env_file: str | None = None,
 ) -> dict:
+    """Seed one app's repo catalog fields into Contentful.
+
+    Contentful is the catalog's source of truth. The repo file only seeds an
+    entry that does not exist yet; existing entries keep their Contentful-authored
+    content and only get derived machine fields refreshed. Rewriting content
+    fields requires ``overwrite``.
+    """
+    if overwrite and update_machine:
+        raise ValueError("--overwrite cannot be combined with --update-machine")
     variables = load_variables(app_name)
     draft = load_draft(app_name, drafts_dir)
     machine_fields = build_machine_fields(variables, active=repo_path("apps", app_name).exists())
@@ -162,6 +173,7 @@ def sync_app(
         "app": app_name,
         "environment": environment,
         "dry_run": not apply,
+        "overwrite": overwrite,
         "machine_fields": machine_fields,
         "draft_fields": draft_fields,
         "catalog_bindings": catalog_bindings,
@@ -174,25 +186,30 @@ def sync_app(
         if client is None:
             payload["action"] = "create"
             payload["exists_unknown"] = True
+            payload["note"] = "missing access token: entry existence was not checked"
         else:
             existing = find_existing_entry(client, environment, app_name)
-            payload["action"] = "update" if existing else "create"
+            if existing:
+                payload["action"] = "update" if overwrite else "update-machine"
+            else:
+                payload["action"] = "create"
             payload["exists"] = bool(existing)
         return payload
 
     client = _load_client(token, env_file)
     existing = find_existing_entry(client, environment, app_name)
-    catalog_links = build_catalog_links(client, environment, catalog_bindings) if catalog_bindings else None
     if existing:
-        if update_machine:
-            update_machine_fields(existing, machine_fields)
-            payload["action"] = "update-machine"
-        else:
+        if overwrite:
+            catalog_links = build_catalog_links(client, environment, catalog_bindings) if catalog_bindings else None
             update_entry_fields(existing, machine_fields, draft_fields, catalog_links)
             payload["action"] = "updated"
+        else:
+            update_machine_fields(existing, machine_fields)
+            payload["action"] = "update-machine"
         payload["dry_run"] = False
         return payload
 
+    catalog_links = build_catalog_links(client, environment, catalog_bindings) if catalog_bindings else None
     fields = localized({**machine_fields, **draft_fields})
     if catalog_links is not None:
         fields["catalog"] = {"en-US": catalog_links}
@@ -211,6 +228,7 @@ def update_fields(
     token: str | None = None,
     env_file: str | None = None,
 ) -> dict:
+    fields = {FIELD_ALIASES.get(key, key): value for key, value in fields.items()}
     payload = {
         "app": app_name,
         "environment": environment,

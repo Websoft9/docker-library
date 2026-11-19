@@ -345,20 +345,24 @@ Thus `dev` is a broader, richer dataset, while `release` is narrower and product
 
 ### 3.2 Contentful Visibility Flags
 
-`appStore` and `production` are independent visibility flags:
+`app_store` (exposed as `appStore` in GraphQL) and `production` are independent visibility flags:
 
-| App State | `appStore` | `production` | Result |
+| App State | `app_store` | `production` | Result |
 |---|---|---|---|
 | Active public, ready for release | `true` | `true` | Visible in dev + release |
 | Active public, development only (`variables.json.release=false`) | `true` | `false` | Visible only in dev |
 | Internal (`scope=internal`) | `false` | `false` | Not visible in appstore |
 | Archived | `false` | `false` | Not visible in appstore |
 
-`production` derives from `release` in `apps/<app>/variables.json`; `appStore` derives from whether the app is active and public in scope. `catalog-push --apply` writes both fields when creating or updating Contentful entries, so they need not be repeated in `metadata/catalog/<app>.json`.
+`production` derives from `release` in `apps/<app>/variables.json`; `app_store` derives from whether the app is active and public in scope. `catalog-push --apply` writes both fields when creating an entry and refreshes them on every later run, so they need not be repeated in `metadata/.catalog/<app>.json`.
 
 The Contentful `memory` payload uses whole units. `catalog-push` rounds a positive fractional `requirements.memory` up (for example, `"1.5"` becomes `2`) without changing the app's declaration. Invalid or non-positive values fail validation.
 
-Changes to `metadata/catalog/*.json` receive dry-run validation in PRs. After merging to `main`, the `Sync data to Contentful` workflow runs `catalog-push --apply`.
+`metadata/.catalog/<app>.json` is a gitignored local working copy, not a repository-managed catalog. Contentful is the source of truth: read the live entry back with `libs catalog-pull --app <app> --apply` (or `--from artifact` for the last published snapshot), edit locally, then push with `libs catalog-push --app <app> --apply`. Never commit `metadata/.catalog/`.
+
+`catalog-push --apply` seeds an entry that does not exist and refreshes derived machine fields on existing entries; it never rewrites content fields of an existing entry. Deliberate content replacement requires `--overwrite`.
+
+After merging to `main`, the `Sync data to Contentful` workflow runs `catalog-push --apply` for apps whose `apps/*/variables.json` changed.
 
 ### 3.3 Additional Product Fields
 

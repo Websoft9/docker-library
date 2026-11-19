@@ -20,11 +20,18 @@ def write_catalog_schema(repo_fixture):
     target.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
 
 
+def write_catalog_draft(repo_fixture, payload):
+    write_catalog_schema(repo_fixture)
+    catalog_dir = repo_fixture / "metadata" / ".catalog"
+    catalog_dir.mkdir(parents=True, exist_ok=True)
+    (catalog_dir / "demo.json").write_text(json.dumps(payload) + "\n", encoding="utf-8")
+
+
 def make_args(**overrides):
     defaults = {
         "app": "demo",
         "environment": "master",
-        "drafts_dir": "metadata/catalog",
+        "drafts_dir": "metadata/.catalog",
         "apply": False,
         "update_machine": False,
     }
@@ -50,7 +57,7 @@ def test_build_machine_fields_from_variables():
         "vcpu": 2,
         "memory": 4,
         "storage": 20,
-        "appStore": True,
+        "app_store": True,
         "production": True,
     }
 
@@ -84,16 +91,16 @@ def test_build_machine_fields_hides_archived_and_internal_apps():
     archived = contentful.build_machine_fields(variables, active=False)
     internal = contentful.build_machine_fields({**variables, "scope": "internal"})
 
-    assert archived["appStore"] is False
+    assert archived["app_store"] is False
     assert archived["production"] is False
-    assert internal["appStore"] is False
+    assert internal["app_store"] is False
     assert internal["production"] is False
 
 
 def test_build_machine_fields_allows_dev_only_public_app():
     fields = contentful.build_machine_fields({"name": "demo", "release": False})
 
-    assert fields["appStore"] is True
+    assert fields["app_store"] is True
     assert fields["production"] is False
 
 
@@ -128,11 +135,12 @@ def test_sync_app_dry_run_preview(repo_fixture, app_factory):
         "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
     })
 
-    payload = contentful.sync_app("demo", "master", "metadata/catalog", apply=False, update_machine=False)
+    payload = contentful.sync_app("demo", "master", "metadata/.catalog", apply=False, update_machine=False)
 
     assert payload["action"] == "create"
     assert payload["dry_run"] is True
     assert payload["exists_unknown"] is True
+    assert "note" in payload
     assert payload["machine_fields"]["key"] == "demo"
     assert payload["machine_fields"]["production"] is False
 
@@ -143,9 +151,9 @@ def test_sync_app_dry_run_probes_existing_entry(repo_fixture, app_factory, monke
     fake_client = FakeClient(existing=FakeEntry())
     monkeypatch.setitem(sys.modules, "contentful_management", types.SimpleNamespace(Client=lambda token: fake_client))
 
-    payload = contentful.sync_app("demo", "master", "metadata/catalog", apply=False, update_machine=False)
+    payload = contentful.sync_app("demo", "master", "metadata/.catalog", apply=False, update_machine=False)
 
-    assert payload["action"] == "update"
+    assert payload["action"] == "update-machine"
     assert payload["dry_run"] is True
     assert payload["exists"] is True
 
@@ -156,7 +164,7 @@ def test_sync_app_dry_run_probes_missing_entry(repo_fixture, app_factory, monkey
     fake_client = FakeClient()
     monkeypatch.setitem(sys.modules, "contentful_management", types.SimpleNamespace(Client=lambda token: fake_client))
 
-    payload = contentful.sync_app("demo", "master", "metadata/catalog", apply=False, update_machine=False)
+    payload = contentful.sync_app("demo", "master", "metadata/.catalog", apply=False, update_machine=False)
 
     assert payload["action"] == "create"
     assert payload["dry_run"] is True
@@ -192,7 +200,7 @@ def test_sync_app_apply_requires_token(repo_fixture, app_factory, monkeypatch):
     monkeypatch.delenv("CONTENTFUL_ACCESS_TOKEN", raising=False)
 
     with __import__("pytest").raises(FileNotFoundError, match="CONTENTFUL_ACCESS_TOKEN"):
-        contentful.sync_app("demo", "master", "metadata/catalog", apply=True, update_machine=False)
+        contentful.sync_app("demo", "master", "metadata/.catalog", apply=True, update_machine=False)
 
 
 def test_sync_app_apply_accepts_explicit_token(repo_fixture, app_factory, monkeypatch):
@@ -207,7 +215,7 @@ def test_sync_app_apply_accepts_explicit_token(repo_fixture, app_factory, monkey
     monkeypatch.setitem(sys.modules, "contentful_management", types.SimpleNamespace(Client=fake_client_factory))
 
     payload = contentful.sync_app(
-        "demo", "master", "metadata/catalog", apply=True, update_machine=False, token="explicit-token"
+        "demo", "master", "metadata/.catalog", apply=True, update_machine=False, token="explicit-token"
     )
 
     assert payload["action"] == "created"
@@ -230,7 +238,7 @@ def test_sync_app_apply_uses_default_contentful_env_file(repo_fixture, app_facto
 
     monkeypatch.setitem(sys.modules, "contentful_management", types.SimpleNamespace(Client=fake_client_factory))
 
-    payload = contentful.sync_app("demo", "master", "metadata/catalog", apply=True, update_machine=False)
+    payload = contentful.sync_app("demo", "master", "metadata/.catalog", apply=True, update_machine=False)
 
     assert payload["action"] == "created"
     assert captured["token"] == "file-token"
@@ -280,11 +288,11 @@ def test_contentful_create_cli_accepts_catalog_dir(repo_fixture, app_factory, mo
 
     result = runner.invoke(
         main.app,
-        ["catalog-push", "--app", "demo", "--catalog-dir", "metadata/catalog", "--json"],
+        ["catalog-push", "--app", "demo", "--catalog-dir", "metadata/.catalog", "--json"],
     )
 
     assert result.exit_code == 0
-    assert calls["drafts_dir"] == "metadata/catalog"
+    assert calls["drafts_dir"] == "metadata/.catalog"
 
 
 def test_catalog_push_cli_forwards_catalog_dir(repo_fixture, app_factory, monkeypatch):
@@ -298,19 +306,18 @@ def test_catalog_push_cli_forwards_catalog_dir(repo_fixture, app_factory, monkey
 
     result = runner.invoke(
         main.app,
-        ["catalog-push", "--app", "demo", "--catalog-dir", "metadata/catalog", "--json"],
+        ["catalog-push", "--app", "demo", "--catalog-dir", "metadata/.catalog", "--json"],
     )
 
     assert result.exit_code == 0
-    assert calls["drafts_dir"] == "metadata/catalog"
+    assert calls["drafts_dir"] == "metadata/.catalog"
 
 
 def test_update_fields_dry_run_preview(repo_fixture, app_factory):
     payload = contentful.update_fields("demo", "master", {"appStore": False, "production": False}, apply=False)
-
     assert payload["action"] == "update"
     assert payload["dry_run"] is True
-    assert payload["fields"] == {"appStore": False, "production": False}
+    assert payload["fields"] == {"app_store": False, "production": False}
 
 
 def test_update_fields_apply_updates_existing_entry(repo_fixture, app_factory, monkeypatch):
@@ -323,7 +330,7 @@ def test_update_fields_apply_updates_existing_entry(repo_fixture, app_factory, m
 
     assert payload["action"] == "updated"
     assert payload["dry_run"] is False
-    assert entry.fields_data["appStore"] is False
+    assert entry.fields_data["app_store"] is False
     assert entry.fields_data["production"] is False
 
 
@@ -432,7 +439,7 @@ def test_sync_app_apply_creates_entry_when_absent(repo_fixture, app_factory, mon
     fake_client = FakeClient()
     monkeypatch.setitem(sys.modules, "contentful_management", types.SimpleNamespace(Client=lambda token: fake_client))
 
-    payload = contentful.sync_app("demo", "master", "metadata/catalog", apply=True, update_machine=False)
+    payload = contentful.sync_app("demo", "master", "metadata/.catalog", apply=True, update_machine=False)
 
     entries = fake_client.entries_map["master"]
     assert payload["action"] == "created"
@@ -440,7 +447,7 @@ def test_sync_app_apply_creates_entry_when_absent(repo_fixture, app_factory, mon
     assert entries.created[1]["content_type_id"] == "product"
     assert entries.created[1]["fields"]["key"]["en-US"] == "demo"
     assert entries.created[1]["fields"]["title"]["en-US"] == "Demo"
-    assert entries.created[1]["fields"]["appStore"]["en-US"] is True
+    assert entries.created[1]["fields"]["app_store"]["en-US"] is True
     assert entries.created[1]["fields"]["production"]["en-US"] is False
 
 
@@ -457,10 +464,10 @@ def test_sync_app_apply_creates_archived_entry_hidden(repo_fixture, app_factory,
     fake_client = FakeClient()
     monkeypatch.setitem(sys.modules, "contentful_management", types.SimpleNamespace(Client=lambda token: fake_client))
 
-    contentful.sync_app("demo", "master", "metadata/catalog", apply=True, update_machine=False)
+    contentful.sync_app("demo", "master", "metadata/.catalog", apply=True, update_machine=False)
 
     fields = fake_client.entries_map["master"].created[1]["fields"]
-    assert fields["appStore"]["en-US"] is False
+    assert fields["app_store"]["en-US"] is False
     assert fields["production"]["en-US"] is False
 
 
@@ -478,8 +485,8 @@ def test_sync_app_apply_creates_entry_with_catalog_links(repo_fixture, app_facto
     )
     metadata_dir = repo_fixture / "metadata"
     write_catalog_schema(repo_fixture)
-    (metadata_dir / "catalog").mkdir(exist_ok=True)
-    (metadata_dir / "catalog" / "demo.json").write_text(
+    (repo_fixture / "metadata" / ".catalog").mkdir(parents=True, exist_ok=True)
+    (repo_fixture / "metadata" / ".catalog" / "demo.json").write_text(
         json.dumps(
             {
                 "trademark": "Demo",
@@ -512,7 +519,7 @@ def test_sync_app_apply_creates_entry_with_catalog_links(repo_fixture, app_facto
     fake_client = FakeClient(catalogs={"document": FakeEntry("doc-entry-id")})
     monkeypatch.setitem(sys.modules, "contentful_management", types.SimpleNamespace(Client=lambda token: fake_client))
 
-    payload = contentful.sync_app("demo", "master", "metadata/catalog", apply=True, update_machine=False)
+    payload = contentful.sync_app("demo", "master", "metadata/.catalog", apply=True, update_machine=False)
 
     entries = fake_client.entries_map["master"]
     assert payload["action"] == "created"
@@ -526,8 +533,8 @@ def test_sync_app_preview_validates_catalog_bindings_against_taxonomy(repo_fixtu
     app_factory("demo")
     metadata_dir = repo_fixture / "metadata"
     write_catalog_schema(repo_fixture)
-    (metadata_dir / "catalog").mkdir(exist_ok=True)
-    (metadata_dir / "catalog" / "demo.json").write_text(
+    (repo_fixture / "metadata" / ".catalog").mkdir(parents=True, exist_ok=True)
+    (repo_fixture / "metadata" / ".catalog" / "demo.json").write_text(
         json.dumps(
             {
                 "trademark": "Demo",
@@ -558,18 +565,65 @@ def test_sync_app_preview_validates_catalog_bindings_against_taxonomy(repo_fixtu
     )
 
     with __import__("pytest").raises(ValueError, match="invalid catalogBindings"):
-        contentful.sync_app("demo", "master", "metadata/catalog", apply=False, update_machine=False)
+        contentful.sync_app("demo", "master", "metadata/.catalog", apply=False, update_machine=False)
 
 
-def test_sync_app_apply_skips_when_entry_exists(repo_fixture, app_factory, monkeypatch):
+def test_sync_app_apply_refreshes_machine_fields_only(repo_fixture, app_factory, monkeypatch):
     app_factory("demo")
+    write_catalog_draft(repo_fixture, {"trademark": "Demo", "summary": "Seed summary"})
     monkeypatch.setenv("CONTENTFUL_ACCESS_TOKEN", "token")
     existing = FakeEntry()
+    existing.fields_data["summary"] = "Edited in Contentful"
+    existing.fields_data["key"] = "demo"
     fake_client = FakeClient(existing=existing)
     monkeypatch.setitem(sys.modules, "contentful_management", types.SimpleNamespace(Client=lambda token: fake_client))
 
-    payload = contentful.sync_app("demo", "master", "metadata/catalog", apply=True, update_machine=False)
+    payload = contentful.sync_app("demo", "master", "metadata/.catalog", apply=True, update_machine=False)
+
+    assert payload["action"] == "update-machine"
+    assert fake_client.entries_map["master"].created is None
+    assert existing.fields_data["summary"] == "Edited in Contentful"
+    assert existing.fields_data["key"] == "demo"
+    assert existing.fields_data["title"] == "Demo"
+
+
+def test_sync_app_apply_overwrite_rewrites_content(repo_fixture, app_factory, monkeypatch):
+    app_factory("demo")
+    write_catalog_draft(repo_fixture, {"trademark": "Demo", "summary": "Seed summary"})
+    monkeypatch.setenv("CONTENTFUL_ACCESS_TOKEN", "token")
+    existing = FakeEntry()
+    existing.fields_data["summary"] = "Edited in Contentful"
+    fake_client = FakeClient(existing=existing)
+    monkeypatch.setitem(sys.modules, "contentful_management", types.SimpleNamespace(Client=lambda token: fake_client))
+
+    payload = contentful.sync_app(
+        "demo", "master", "metadata/.catalog", apply=True, update_machine=False, overwrite=True
+    )
 
     assert payload["action"] == "updated"
-    assert fake_client.entries_map["master"].created is None
-    assert existing.fields_data["key"] == "demo"
+    assert existing.fields_data["summary"] == "Seed summary"
+
+
+def test_sync_app_rejects_overwrite_with_update_machine(repo_fixture, app_factory):
+    app_factory("demo")
+
+    with __import__("pytest").raises(ValueError, match="cannot be combined"):
+        contentful.sync_app(
+            "demo", "master", "metadata/.catalog", apply=True, update_machine=True, overwrite=True
+        )
+
+
+def test_catalog_push_cli_forwards_overwrite(repo_fixture, app_factory, monkeypatch):
+    calls = {}
+
+    def fake_sync_app(**kwargs):
+        calls.update(kwargs)
+        return {"app": kwargs["app_name"], "action": "updated", "dry_run": False}
+
+    monkeypatch.setattr(contentful, "sync_app", fake_sync_app)
+
+    result = runner.invoke(main.app, ["catalog-push", "--app", "demo", "--apply", "--overwrite", "--json"])
+
+    assert result.exit_code == 0
+    assert calls["overwrite"] is True
+    assert calls["apply"] is True

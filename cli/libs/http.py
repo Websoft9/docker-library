@@ -223,6 +223,42 @@ def get(url: str, params: dict | None = None, timeout: tuple[float, float] | Non
     return requests.get(url, params=params, timeout=timeout, headers=headers)
 
 
+def post(
+    url: str,
+    json_body: dict | None = None,
+    timeout: tuple[float, float] | None = None,
+    headers: dict | None = None,
+):
+    if timeout is None:
+        timeout = default_timeout()
+    return requests.post(url, json=json_body, timeout=timeout, headers=headers)
+
+
+def post_with_retries(
+    url: str,
+    json_body: dict | None = None,
+    headers: dict | None = None,
+    timeout: tuple[float, float] | None = None,
+):
+    """POST JSON with the same bounded retry policy as ``get``."""
+    timeout = _bounded_timeout(timeout)
+    response = None
+    for attempt in range(3):
+        response = post(url, json_body=json_body, timeout=timeout, headers=headers)
+        if response.status_code not in {429, 500, 502, 503, 504}:
+            return response
+        if attempt == 2:
+            return response
+        delay = _retry_delay(response, attempt)
+        remaining = _remaining_budget()
+        if remaining is not None:
+            if remaining <= 0.2:
+                return response
+            delay = min(delay, max(0.0, remaining - 0.1))
+        time.sleep(delay)
+    return response
+
+
 @dataclass(frozen=True)
 class Reachability:
     """Result of a fast reachability probe.
