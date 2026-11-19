@@ -241,7 +241,7 @@ libs app-check --app <name> --gate deploy
 libs app-check --app <name> --gate reachability
 libs new --app <name>
 libs docs-readme --app <name>
-libs contentful-sync --app <name>
+libs catalog-push --app <name>
 libs publish-build --channel dev
 ```
 

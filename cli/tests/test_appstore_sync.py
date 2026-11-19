@@ -23,8 +23,8 @@ def write_catalog_schema(repo_fixture):
 def write_catalog_support(repo_fixture, app_name: str, payload: dict, taxonomy: dict | None = None):
     write_catalog_schema(repo_fixture)
     metadata_dir = repo_fixture / "metadata"
-    (metadata_dir / "catalog").mkdir(exist_ok=True)
-    (metadata_dir / "catalog" / f"{app_name}.json").write_text(json.dumps(payload) + "\n", encoding="utf-8")
+    (repo_fixture / "metadata" / ".catalog").mkdir(parents=True, exist_ok=True)
+    (repo_fixture / "metadata" / ".catalog" / f"{app_name}.json").write_text(json.dumps(payload) + "\n", encoding="utf-8")
     if taxonomy is None:
         taxonomy = {
             "version": 1,
@@ -77,7 +77,7 @@ def test_appstore_sync_cli_contract(monkeypatch):
             "deploy_dir": "/websoft9/library/apps",
             "catalog_dir": "/websoft9/library/metadata/catalog",
             "app_target": "/websoft9/library/apps/demo",
-            "catalog_source": "metadata/catalog/demo.json",
+            "catalog_source": "metadata/.catalog/demo.json",
             "catalog_target": "/websoft9/library/metadata/catalog/demo.json",
             "backup_dir": "/tmp/backup-demo",
             "rollback": ["cmd1", "cmd2"],
@@ -201,7 +201,7 @@ def test_sync_catalog_file_scp_then_docker_cp(repo_fixture, app_factory, monkeyp
         backup_dir="/tmp/backup-demo",
     )
 
-    assert catalog_rel == "metadata/catalog/demo.json"
+    assert catalog_rel == "metadata/.catalog/demo.json"
 
     prepare = " ".join(calls[0])
     assert "mkdir -p /tmp/websoft9-appstore-staging-demo" in prepare
@@ -210,7 +210,7 @@ def test_sync_catalog_file_scp_then_docker_cp(repo_fixture, app_factory, monkeyp
 
     scp_call = calls[1]
     assert scp_call[0] == "scp"
-    assert any(arg.endswith("/metadata/catalog/demo.json") for arg in scp_call)
+    assert any(arg.endswith("/metadata/.catalog/demo.json") for arg in scp_call)
     assert scp_call[-1] == "root@1.2.3.4:/tmp/websoft9-appstore-staging-demo/"
 
     apply_ssh = " ".join(calls[2])
@@ -237,7 +237,7 @@ def test_sync_catalog_file_missing_catalog_data_raises(repo_fixture, app_factory
             backup_dir="/tmp/backup-demo",
         )
     except FileNotFoundError as error:
-        assert "metadata/catalog/demo.json" in str(error)
+        assert "metadata/.catalog/demo.json" in str(error)
     else:
         raise AssertionError("expected FileNotFoundError for missing catalog data")
 
@@ -288,7 +288,7 @@ def test_prepare_preview_with_catalog_syncs_both(repo_fixture, app_factory, monk
     )
 
     assert payload["catalog_synced"] is True
-    assert payload["catalog_source"] == "metadata/catalog/demo.json"
+    assert payload["catalog_source"] == "metadata/.catalog/demo.json"
     assert payload["catalog_target"] == "/websoft9/library/metadata/catalog/demo.json"
     assert len(payload["rollback"]) == 5
     assert payload["database_types_target"] == "/websoft9/library/metadata/database-types.json"

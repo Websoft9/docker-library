@@ -217,20 +217,6 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: make i18n-check ARGS="--base $BASE_SHA --head $HEAD_SHA --github-annotations --warn-only"
 
-      - name: Validate changed catalog files
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          files=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- 'metadata/catalog/*.json')
-          apps=$(printf '%s\n' "$files" | while IFS= read -r file; do
-            [ -n "$file" ] && basename "$file" .json
-          done | sort -u)
-          for app in $apps; do
-            echo "Validating catalog for $app"
-            python -m libs catalog-push --app "$app" --json
-          done
-
       - name: Verify AI command adapters are up to date
         run: make build-ai-commands ARGS="--check"
 
@@ -366,21 +352,16 @@ jobs:
           if len(roots) != 1:
               raise SystemExit("Expected one root directory in the PR source archive")
           source_root = roots[0]
-          for relative in (Path("apps"), Path("metadata/catalog")):
-              root = source_root / relative
-              if root.exists():
-                  for path in root.rglob("*"):
-                      if path.is_symlink():
-                          raise SystemExit(f"Symlinks are not allowed in PR package data: {path}")
+          apps_root = source_root / "apps"
+          if apps_root.exists():
+              for path in apps_root.rglob("*"):
+                  if path.is_symlink():
+                      raise SystemExit(f"Symlinks are not allowed in PR package data: {path}")
           Path("pr-source-root.txt").write_text(str(source_root), encoding="utf-8")
           PY
           source_root=$(<pr-source-root.txt)
           mkdir -p apps
           cp -a "$source_root/apps/." ./apps/
-          if [ -d "$source_root/metadata/catalog" ]; then
-            mkdir -p metadata/catalog
-            cp -a "$source_root/metadata/catalog/." metadata/catalog/
-          fi
 
       - name: Detect changed applications
         id: apps
@@ -596,7 +577,7 @@ jobs:
           - commit: $HEAD_SHA
           - server IP: $HOST
           - expires: $EXPIRES
-          - synced: PR application packages and catalog data
+          - synced: PR application packages
 
           The environment is temporary and will be released automatically. Complete the Websoft9 installation, login, and core workflow checks, then record the result in this PR.
           EOF

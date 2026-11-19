@@ -21,7 +21,7 @@ from libs.repo import repo_path
 
 DEFAULT_CONTAINER = "websoft9"
 DEFAULT_APP_DEPLOY_DIR = "/websoft9/library/apps"
-DEFAULT_CATALOG_DIR = "/websoft9/library/metadata/catalog"
+DEFAULT_CONTAINER_CATALOG_DIR = "/websoft9/library/metadata/catalog"
 DEFAULT_METADATA_DIR = "/websoft9/library/metadata"
 DEFAULT_KEY = ".secrets/ssh/default.pem"
 
@@ -176,9 +176,9 @@ def _sync_catalog_file(
     progress: ProgressWriter | None = None,
     verbose: bool = False,
 ) -> str:
-    source = repo_path("metadata", "catalog", f"{app_name}.json")
+    source = repo_path(catalog.DEFAULT_CATALOG_DIR, f"{app_name}.json")
     if not source.exists():
-        raise FileNotFoundError(f"repo catalog data not found: metadata/catalog/{app_name}.json")
+        raise FileNotFoundError(f"catalog working copy not found: {catalog.DEFAULT_CATALOG_DIR}/{app_name}.json")
     catalog.load_catalog(app_name)
 
     staging_dir = f"/tmp/websoft9-appstore-staging-{app_name}"
@@ -343,7 +343,7 @@ def prepare_preview(
     user: str | None = None,
     secret_path: str | None = None,
     container: str = DEFAULT_CONTAINER,
-    catalog_dir: str = DEFAULT_CATALOG_DIR,
+    catalog_dir: str = DEFAULT_CONTAINER_CATALOG_DIR,
     version: str | None = None,
     progress: ProgressWriter | None = None,
     verbose: bool = False,
@@ -387,7 +387,7 @@ def prepare_preview(
         secret_check = check_secret_templates(app_target_dir)
         if not secret_check["ok"]:
             raise ValueError("Invalid secret declaration; run libs app-check --gate secrets before appstore-sync.")
-    catalog_source = repo_path("metadata", "catalog", f"{app_name}.json")
+    catalog_source = repo_path(catalog.DEFAULT_CATALOG_DIR, f"{app_name}.json")
     has_catalog = catalog_source.exists()
     if has_catalog:
         catalog.load_catalog(app_name)

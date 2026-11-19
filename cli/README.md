@@ -75,14 +75,18 @@ py -m venv .venv
 - `libs app-new --name <name> --trademark <brand> --dry-run` - preview a new app scaffold
 - `libs app-new --name <name> --trademark <brand> --upstream-releases <url> --upstream-compose <url> --upstream-env <url>` - prefill optional upstream sources used by scan, drift, and README generation
 - `libs app-gen-readme --app <name>` - regenerate one app's README from variables.json
-- `libs catalog-push --app <name>` - preview pushing repo catalog + machine fields to Contentful (use `--apply` to write)
-- `libs catalog-update --app <name> --fields '<json>'` - preview updating fields on an existing Contentful product entry (use `--apply` to write); e.g. `--fields '{"appStore": false, "production": false}'`
-  - Direct `libs` invocation: single-quote the JSON and use real double quotes inside, e.g. `--fields '{"appStore": false}'`
-  - `make libs ARGS="..."` wrapper: the outer double quotes need escapes, e.g. `make libs ARGS="catalog-update --app <name> --fields '{\"appStore\": false}'"`
+- `libs catalog-pull --app <name> [--from contentful|artifact]` - read one app's commercial data into the local `metadata/.catalog/<name>.json` working copy (live Contentful by default); `--apply` writes, `--only-diff` compares only
+- `libs catalog-push --app <name>` - preview seeding the local `metadata/.catalog/<name>.json` working copy into Contentful (use `--apply` to write)
+  - existing entries only get derived machine fields refreshed; content fields are never rewritten unless `--overwrite` is passed
+  - `--overwrite` - rewrite content fields of an existing entry (owner action)
+  - `metadata/.catalog/` is gitignored; Contentful is the source of truth
+- `libs catalog-update --app <name> --fields '<json>'` - preview updating fields on an existing Contentful product entry (use `--apply` to write); e.g. `--fields '{"app_store": false, "production": false}'`; camelCase aliases such as `appStore` are accepted
+  - Direct `libs` invocation: single-quote the JSON and use real double quotes inside, e.g. `--fields '{"app_store": false}'`
+  - `make libs ARGS="..."` wrapper: the outer double quotes need escapes, e.g. `make libs ARGS="catalog-update --app <name> --fields '{\"app_store\": false}'"`
 - `libs app-deploy --app <name> [--ssh-host <ip>] [--progress] [--verbose]` - deploy one app locally or remotely; `--progress` prints step headers to stderr and `--verbose` also prints raw command output
 - `libs app-deploy --app <name> --version <tag>` - deploy a specific image tag by overriding `W9_VERSION` without modifying the repo `.env`
 - `libs app-down --app <name> [--ssh-host <ip>] [--progress] [--json]` - tear one app down with `docker compose down -v`
-- `libs appstore-sync --app <name> --ssh-host <ip> [--version <tag>] [--progress] [--verbose]` - validate declarations before remote writes, then sync `metadata/database-types.json`, `metadata/secret-rules.json`, and `metadata/access-types.json` with checksum verification and backup, followed by the app directory and optional `metadata/catalog/<app>.json`. Finally run `websoft9 appstore reload --local --json`, which records a `localOverlay` marker the next official sync replaces. Reload failure fails the command; success returns dictionary hashes and targets, `catalog_refreshed: true`, and manual rollback commands. `--version` overrides only the synced copy. Confirm downstream support for local reload, database declarations, secret generators, and the new access contract; syncing dictionaries does not implement those capabilities.
+- `libs appstore-sync --app <name> --ssh-host <ip> [--version <tag>] [--progress] [--verbose]` - validate declarations before remote writes, then sync `metadata/database-types.json`, `metadata/secret-rules.json`, and `metadata/access-types.json` with checksum verification and backup, followed by the app directory and optional `.catalog/<app>.json` working copy. Finally run `websoft9 appstore reload --local --json`, which records a `localOverlay` marker the next official sync replaces. Reload failure fails the command; success returns dictionary hashes and targets, `catalog_refreshed: true`, and manual rollback commands. `--version` overrides only the synced copy. Confirm downstream support for local reload, database declarations, secret generators, and the new access contract; syncing dictionaries does not implement those capabilities.
 - `libs appstore-deploy --app <name> --ssh-host <ip> [--progress] [--verbose]` - deploy one app into a websoft9 container appstore (not implemented yet; pending the websoft9 container CLI)
 - remote-aware commands suppress the routine `known hosts` add warning from ephemeral SSH targets; real stderr still passes through
 - `libs proxy` - show, save, or clear the saved proxy

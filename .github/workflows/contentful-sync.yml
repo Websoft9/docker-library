@@ -1,5 +1,7 @@
 # workflow_dispatch mode syncs active and archived applications.
-# push trigger mode only syncs apps whose variables or catalog files changed.
+# push trigger mode only syncs apps whose variables.json changed.
+# Contentful is the catalog source of truth: catalog-push seeds missing entries
+# and refreshes derived machine fields, but never rewrites existing content.
 
 name: Sync data to Contentful
 
@@ -9,7 +11,6 @@ on:
     branches: [main]
     paths:
       - "apps/*/variables.json"
-      - "metadata/catalog/*.json"
 
 permissions:
   contents: read
@@ -38,11 +39,10 @@ jobs:
         if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
           apps=$(printf '%s\n' apps/*/ archive/apps/*/ | awk -F/ '{print $2 == "apps" ? $3 : $2}' | sed '/^$/d' | sort -u)
         else
-          files=$(git diff --name-only "$BEFORE_SHA" "$AFTER_SHA" -- 'apps/*/variables.json' 'metadata/catalog/*.json')
+          files=$(git diff --name-only "$BEFORE_SHA" "$AFTER_SHA" -- 'apps/*/variables.json')
           apps=$(printf '%s\n' "$files" | while IFS= read -r file; do
             case "$file" in
               apps/*/variables.json) basename "$(dirname "$file")" ;;
-              metadata/catalog/*.json) basename "$file" .json ;;
             esac
           done | sed '/^$/d' | sort -u)
         fi

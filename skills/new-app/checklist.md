@@ -22,4 +22,4 @@
 - [ ] Run `.venv/bin/libs appstore-sync --app <app>` after validation when `websoft9` is reachable (preflight <= 10s; skip when absent)
 - [ ] Produce a short test report
 - [ ] Assign cadence/update policy by writing the app into `metadata/maintenance.yaml` buckets, and state it in the report
-- [ ] Write repo catalog fields: copy `metadata/templates/catalog.json` to `metadata/catalog/<app>.json`; fill `catalogBindings` from `metadata/catalog-taxonomy.json` when applicable; owner reviews before `.venv/bin/libs catalog-push --app <app> --apply`
+- [ ] Write the catalog working copy: copy `metadata/templates/catalog.json` to `metadata/.catalog/<app>.json`; fill `catalogBindings` from `metadata/catalog-taxonomy.json` when applicable; owner seeds with `.venv/bin/libs catalog-push --app <app> --apply`; do not commit `metadata/.catalog/`

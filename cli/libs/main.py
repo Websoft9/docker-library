@@ -502,17 +502,25 @@ def catalog_refresh_command(
 @app.command("catalog-pull")
 def catalog_pull_command(
     app_name: str = typer.Option(..., "--app", help="App name"),
-    product_url: str = typer.Option(catalog.DEFAULT_PRODUCT_URL, "--product-url", help="Published product artifact URL"),
-    catalog_dir: str = typer.Option(catalog.DEFAULT_CATALOG_DIR, "--catalog-dir", help="Repo catalog directory"),
+    source: str = typer.Option("contentful", "--from", help="Data source: contentful (live) or artifact (published snapshot)"),
+    locale: str = typer.Option("en-US", "--locale", help="Contentful locale used by --from contentful"),
+    product_url: str = typer.Option(catalog.DEFAULT_PRODUCT_URL, "--product-url", help="Published product artifact URL used by --from artifact"),
+    catalog_dir: str = typer.Option(catalog.DEFAULT_CATALOG_DIR, "--catalog-dir", help="Catalog working-copy directory"),
+    token: str | None = typer.Option(None, "--token", help="Contentful GraphQL token; highest-priority override"),
+    env_file: str | None = typer.Option(None, "--env-file", help="Contentful env file; overrides default .secrets/contentful.env"),
     only_diff: bool = typer.Option(False, "--only-diff", help="Show differences only; do not include incoming payload"),
     apply: bool = typer.Option(False, "--apply", help="Write the pulled catalog data instead of previewing"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
 ) -> None:
-    """Pull one app's published commercial data into metadata/catalog, or show a diff only."""
+    """Pull one app's commercial data from Contentful into the local catalog working copy."""
     try:
         payload = catalog.pull_catalog(
             app_name=app_name,
+            source=source,
+            locale=locale,
             product_url=product_url,
+            token=token,
+            env_file=env_file,
             catalog_dir=catalog_dir,
             apply=apply,
             only_diff=only_diff,
@@ -530,14 +538,15 @@ def catalog_pull_command(
 def catalog_push_command(
     app_name: str = typer.Option(..., "--app", help="App name"),
     environment: str = typer.Option("master", "--environment", help="Contentful environment"),
-    catalog_dir: str = typer.Option(catalog.DEFAULT_CATALOG_DIR, "--catalog-dir", help="Repo catalog directory"),
+    catalog_dir: str = typer.Option(catalog.DEFAULT_CATALOG_DIR, "--catalog-dir", help="Catalog working-copy directory"),
     token: str | None = typer.Option(None, "--token", help="Contentful access token; highest-priority override"),
     env_file: str | None = typer.Option(None, "--env-file", help="Contentful env file; overrides default .secrets/contentful.env"),
     apply: bool = typer.Option(False, "--apply", help="Write to Contentful instead of previewing"),
-    update_machine: bool = typer.Option(False, "--update-machine", help="When the entry exists, refresh machine fields only"),
+    update_machine: bool = typer.Option(False, "--update-machine", help="Deprecated alias: existing entries already refresh machine fields only"),
+    overwrite: bool = typer.Option(False, "--overwrite", help="Rewrite content fields of an existing entry from the working copy"),
     as_json: bool = typer.Option(False, "--json", help="Machine-readable output"),
 ) -> None:
-    """Push one app's repo catalog data and machine fields to Contentful; previews by default."""
+    """Seed one app's working-copy catalog data into Contentful; previews by default."""
     try:
         payload = contentful.sync_app(
             app_name=app_name,
@@ -545,6 +554,7 @@ def catalog_push_command(
             drafts_dir=catalog_dir,
             apply=apply,
             update_machine=update_machine,
+            overwrite=overwrite,
             token=token,
             env_file=env_file,
         )
@@ -563,7 +573,7 @@ def catalog_update_command(
     fields_json: str = typer.Option(
         ...,
         "--fields",
-        help='JSON object of fields to update, e.g. \'{"appStore": false, "production": false}\'',
+        help='JSON object of fields to update, e.g. \'{"app_store": false, "production": false}\'; camelCase aliases such as appStore are accepted',
     ),
     environment: str = typer.Option("master", "--environment", help="Contentful environment"),
     token: str | None = typer.Option(None, "--token", help="Contentful access token; highest-priority override"),
@@ -604,7 +614,7 @@ def appstore_sync_command(
     ssh_user: str | None = typer.Option(None, "--ssh-user", help="Remote SSH user (default root)"),
     ssh_secret_path: str | None = typer.Option(None, "--ssh-secret-path", help="SSH secret path (key or password file)"),
     container: str | None = typer.Option(None, "--container", help="Remote websoft9 container name (default: CONTAINER in .secrets/remote.env, else websoft9)"),
-    catalog_dir: str = typer.Option(appstore_sync.DEFAULT_CATALOG_DIR, "--catalog-dir", help="Catalog metadata directory inside the container"),
+    catalog_dir: str = typer.Option(appstore_sync.DEFAULT_CONTAINER_CATALOG_DIR, "--catalog-dir", help="Catalog metadata directory inside the container"),
     version: str | None = typer.Option(None, "--version", help="Override W9_VERSION in the synced copy only (e.g. dev-abc1234); the repo .env is untouched"),
     progress: bool = typer.Option(False, "--progress", help="Show step progress on stderr"),
     verbose: bool = typer.Option(False, "--verbose", help="Show step progress and raw subprocess output on stderr"),

@@ -26,7 +26,7 @@ Supporting files in this skill:
 2. Move each target app from `apps/` to `archive/apps/`.
 3. Update `metadata/maintenance.yaml` if needed.
 4. Update `metadata/archive.yaml`.
-5. Set Contentful retirement flags: for each archived app, preview `.venv/bin/libs catalog-update --app <app> --fields '{"appStore": false, "production": false}'` and include the exact owner `--apply` command in the report.
+5. Set Contentful retirement flags: for each archived app, preview `.venv/bin/libs catalog-update --app <app> --fields '{"app_store": false, "production": false}'` and include the exact owner `--apply` command in the report.
 6. Produce a short archive report.
 
 ## Permanent delete
@@ -52,4 +52,4 @@ If the issue explicitly requests permanent deletion, do not move the app to arch
 - Archive is the default. Permanent deletion is an explicit exception: follow the delete scope in the issue, default to removing app files and archive metadata, and never rewrite Git history unless explicitly requested.
 - To bring an archived app back, use the `restore-app` skill, not this one.
 - Contentful updates use the `contentful_management` Python SDK (installed by `make install`). AI previews `catalog-update`; only the owner runs it with `--apply`.
-- Contentful retirement flags for archive are `appStore` and `production`, both set to `false`.
+- Contentful retirement flags for archive are `app_store` and `production`, both set to `false`. Use the Contentful field ID `app_store`; GraphQL exposes it as `appStore`.

@@ -33,7 +33,7 @@ Follow `docs/app-database-connection-spec.md` for archived database declarations
 2. Confirm cadence and update policy with the user (defaults: monthly / patch-minor).
 3. Preview with `.venv/bin/libs app-restore --app <app> --cadence <c> --update-policy <p> --dry-run --json` and show the actions.
 4. Run the real restore with the same command without `--dry-run`.
-5. Restore Contentful listing flags: for the restored app, preview `.venv/bin/libs catalog-update --app <app> --fields '{"appStore": true, "production": true}'` and hand the `--apply` run to the owner.
+5. Restore Contentful listing flags: for the restored app, preview `.venv/bin/libs catalog-update --app <app> --fields '{"app_store": true, "production": true}'` and hand the `--apply` run to the owner.
 6. Run a stale-version assessment: check `W9_VERSION` in `apps/<app>/.env` against the upstream image; if outdated, hand over to the `app-update` skill.
 7. Run the `deploy-validation` skill and produce a short test report.
 8. Recommend running `release-readiness-check` before publishing; owner E2E decides.
@@ -54,4 +54,4 @@ Follow `docs/app-database-connection-spec.md` for archived database declarations
 - One app per issue unless the batch shares the same cadence and policy.
 - Do not delete app history.
 - Contentful updates use the `contentful_management` Python SDK (installed by `make install`). AI previews `catalog-update`; only the owner runs it with `--apply`.
-- Contentful listing flags for restore are `appStore` and `production`, both set to `true`.
+- Contentful listing flags for restore are `app_store` and `production`, both set to `true`. Use the Contentful field ID `app_store`; GraphQL exposes it as `appStore`.
