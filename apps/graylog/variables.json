@@ -30,14 +30,14 @@
       "id": "beats",
       "service": "graylog",
       "port": 5044,
-      "public": true,
+      "public": false,
       "endpoints": []
     },
     {
       "id": "syslog-tcp",
       "service": "graylog",
       "port": 5140,
-      "public": true,
+      "public": false,
       "endpoints": []
     },
     {
@@ -45,14 +45,14 @@
       "service": "graylog",
       "port": 5140,
       "protocol": "udp",
-      "public": true,
+      "public": false,
       "endpoints": []
     },
     {
       "id": "raw-tcp",
       "service": "graylog",
       "port": 5555,
-      "public": true,
+      "public": false,
       "endpoints": []
     },
     {
@@ -60,14 +60,14 @@
       "service": "graylog",
       "port": 5555,
       "protocol": "udp",
-      "public": true,
+      "public": false,
       "endpoints": []
     },
     {
       "id": "gelf-tcp",
       "service": "graylog",
       "port": 12201,
-      "public": true,
+      "public": false,
       "endpoints": []
     },
     {
@@ -75,21 +75,21 @@
       "service": "graylog",
       "port": 12201,
       "protocol": "udp",
-      "public": true,
+      "public": false,
       "endpoints": []
     },
     {
       "id": "forwarder-data",
       "service": "graylog",
       "port": 13301,
-      "public": true,
+      "public": false,
       "endpoints": []
     },
     {
       "id": "forwarder-config",
       "service": "graylog",
       "port": 13302,
-      "public": true,
+      "public": false,
       "endpoints": []
     }
   ],

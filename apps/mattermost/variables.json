@@ -23,7 +23,7 @@
       "id": "calls-tcp",
       "service": "mattermost",
       "port": 8443,
-      "public": true,
+      "public": false,
       "endpoints": []
     },
     {
@@ -31,7 +31,7 @@
       "service": "mattermost",
       "port": 8443,
       "protocol": "udp",
-      "public": true,
+      "public": false,
       "endpoints": []
     }
   ],

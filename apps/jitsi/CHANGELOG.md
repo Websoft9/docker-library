@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-20
+
+- Restored install-time configurability for the JVB media port. The UDP port is now declared as an `access` group (`jvb`, `protocol: "udp"`, `port: "${JVB_PORT}"`, `mappedPort: ["JVB_PORT"]`) instead of an `x-websoft9-unmanaged-ports` exemption, and `JVB_PORT` drives the host mapping, the container listener and the advertised SDP port so users can move it away from a contended `10000/udp`.
+
 ## 2026-11-18
 
 - Explicitly exempted JVB media UDP `10000` from access management while preserving its default published binding.

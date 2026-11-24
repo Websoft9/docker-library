@@ -200,12 +200,13 @@ def test_query_order_and_default_path_do_not_create_duplicate_targets(app_factor
     assert check(app_factory, [first, second])["ok"] is False
 
 
-def test_public_must_match_repository_default_mapping(app_factory):
+def test_public_is_a_platform_policy_not_a_compose_mirror(app_factory):
+    """``public`` states the platform default; upstream compose keeps its own mappings."""
     published = "services:\n  app:\n    ports: ['9001:80']\n"
     unpublished = "services:\n  app:\n    expose: [80]\n"
     assert check(app_factory, [entry()], compose=published)["ok"] is True
-    assert check(app_factory, [entry(public=False)], compose=published)["ok"] is False
-    assert check(app_factory, [entry()], compose=unpublished)["ok"] is False
+    assert check(app_factory, [entry(public=False)], compose=published)["ok"] is True
+    assert check(app_factory, [entry()], compose=unpublished)["ok"] is True
     assert check(app_factory, [entry(public=False)], compose=unpublished)["ok"] is True
 
 

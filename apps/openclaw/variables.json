@@ -31,7 +31,7 @@
       "id": "bridge",
       "service": "openclaw-gateway",
       "port": 18790,
-      "public": true,
+      "public": false,
       "endpoints": []
     }
   ],

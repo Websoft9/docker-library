@@ -87,7 +87,12 @@
 
 ### 2.3 唯一性、排序与组合约束
 
-- **数组优先级排序（默认域名绑定目标）**：`access` 为有序数组。当应用存在多个可绑定域名的端口组（如同时具备独立 Web UI 端口与独立 API 端口）时，必须将用户最主要访问的端口组（优先主 Web UI）排在数组首位；安装界面的默认快捷域名输入自动绑定至**第一个含 `http`/`https`/`ws`/`wss` 入口的端口组**，无需在顶层额外声明主容器字段。
+- **数组优先级排序（主域名绑定目标）**：`access` 为有序数组，数组顺序即优先级，不设顶层 `primary` 或主容器字段。安装界面的**主域名**默认绑定至推荐集合中的第一个端口组（推荐规则见第 9.5 节）；若应用不含任何 `ui` 类角色，则取第一个含 `http`/`https`/`ws`/`wss` 入口的端口组；排在其前但只有 `ssh`、`grpc`、`amqp`、`bolt` 或空 `endpoints` 的端口组不参与该选择。非推荐的可绑域名端口组默认不绑定域名，可在安装高级项或安装后手动开启。
+- **首位端口组的判定口径**：首位必须是用户装完后**用浏览器直接打开就有内容**的端口组，按以下顺序判定：
+  1. 可浏览界面（`ui` 类角色，如 `web`、`admin`、`dashboard`、`notebook`、`remote-desktop`）优先；
+  2. 多个 `ui` 时，取用户日常最常打开的主界面（如 Kong 的 Kong Manager、Traefik 的 dashboard），而非仅承载转发、打开即空响应或 JSON 错误的管理 API／业务网关端口；
+  3. 无任何 `ui` 角色时，取面向业务的 `api`／`gateway` 端口组；
+  4. 纯转发端口（如 Kong 的 `8000`、Traefik 的 `80`）和无界面应用的 API 端口，默认域名绑定价值有限，应排在管理界面之后，由用户在高级项或安装后按需绑定业务域名。
 - **端口组唯一**：同一应用内 `(service, resolved_port, protocol)` 必须唯一；同一端口号的 TCP 与 UDP（如 `5140/tcp` 与 `5140/udp`）须拆分为两个独立端口组。
 - **组内入口唯一**：同一端口组内 `(scheme, path, query)` 必须唯一（比较时缺省 `path` 为 `"/"`、缺省 `query` 为 `{}`，键顺序无关）；相同访问目标的多重用途合并到同一入口的 `roles` 中。
 - **写入变量无冲突**：同一环境变量名不得同时出现在多个端口组的 `rootUrl`、`host` 或 `mappedPort` 中，也不得在同一端口组的 `rootUrl`、`host`、`mappedPort` 之间重复出现。
@@ -125,13 +130,52 @@
 
 | 端口类别 | 典型场景 | `access` 声明 | 仓库 `docker-compose.yml` | 安装界面行为 |
 | --- | --- | --- | --- | --- |
-| **纯内部依赖端口** | Web 应用自带的 `mysql:3306`、`redis:6379`、内部 worker 端口 | **不声明** | 不写 `ports` | 不展示，禁止用户误开内部依赖端口 |
-| **默认开放端口** | 主 Web 端口 `80`、数据库产品服务端口 `5432`、Git SSH `22` | 声明，`"public": true` | 写字面默认映射（如 `"9001:80"`、`"5140:5140/udp"`） | 开关默认开启，外部端口输入框默认取 Compose 映射左侧端口 |
-| **按需开放端口** | RabbitMQ `4369`、附带对象存储控制台 `9001` | 声明，`"public": false` | **不写 `ports`**（保证手动启动默认也不暴露） | 开关默认关闭；用户手动开启时由用户输入或系统分配外部端口 |
+| **纯内部依赖端口** | Web 应用自带的 `mysql:3306`、`redis:6379`、内部 worker 端口 | **不声明** | 保持上游原样（上游本就不发布宿主机端口） | 不展示，禁止用户误开内部依赖端口 |
+| **默认开放端口** | 主 Web 端口 `80`、数据库产品服务端口 `5432`、Git SSH `22` | 声明，`"public": true` | 保持上游/官方 `ports` 映射（如 `"9001:80"`、`"5140:5140/udp"`） | 开关默认开启，外部端口输入框默认取 Compose 映射左侧端口 |
+| **按需开放端口** | RabbitMQ `4369`、Graylog 采集端口 | 声明，`"public": false` | **同样保持上游 `ports` 原样，不为 `public` 改写 compose** | 开关默认关闭；用户开启时才生成宿主机映射 |
 
-默认启用的服务所发布的端口必须与 `access` 对应。确需发布但不属于访问入口的传输端口（例如 Jitsi WebRTC 媒体）在服务上用 `x-websoft9-unmanaged-ports` 明确列出，键为容器 `port/protocol`，值为豁免原因。部署保留其原始映射并考虑冲突，不把它当作域名或入口；若固定宿主端口已被占用，需先释放它，不能盲目自动改号。
+`variables.json` 是访问策略的唯一 DSL，`docker-compose.yml` 尽量保持上游原样：`public` 只表达「平台安装与部署时的默认发布行为」，与仓库 compose 是否写了 `ports` 无关。消费端部署实例时按 `public` 生成 override：`true` 保留映射，`false` 移除映射；直接 `docker compose up` 会按仓库 `ports` 原样暴露，属于单机自测行为，不代表平台默认。
+
+`access` 声明的端口必须在目标服务的 `ports` 或 `expose` 中有监听证据；`public` 是平台默认发布策略，不要求与仓库 compose 的映射一致。若某个端口的宿主机映射、容器监听与应用对外通告必须取**同一个值**（例如 Jitsi JVB 的 WebRTC UDP 媒体端口），应声明为 `protocol: "udp"` 的 `access` 端口组：`port` 引用该变量、`endpoints` 为空、`mappedPort` 列出同一变量，使 Compose 的 `- "${JVB_PORT}:${JVB_PORT}/udp"`、容器内监听与 SDP 通告保持三方一致，用户仍可在安装时修改。只有确实无法由用户配置、且不属于任何访问入口的固定传输端口，才在服务上用 `x-websoft9-unmanaged-ports` 明确列出，键为容器 `port/protocol`，值为豁免原因。部署保留其原始映射并考虑冲突，不把它当作域名或入口；若固定宿主端口已被占用，需先释放它，不能盲目自动改号。
 
 `access` 描述默认 Compose 拓扑；不同监听端口、协议或入口的版本不能只作为镜像标签列入同一商店包。尚未支持按版本选择声明时，把这类变体作为手动 Compose 文件交付并记录启动方法（如 InfluxDB 3 Core），不使用默认声明发布它。
+
+### 4.2 `public` 默认值判定规则
+
+安装目标只有一个：**装完立刻能用**。安装界面不应预设一堆需要额外配置才有意义的端口，也不应为了"以后可能要用"扩大公网暴露面和安全组放通范围。装完后用户随时可以在「我的应用 → 访问」中开启任何已声明但默认关闭的端口，因此默认值按「装完是否需要立即可用」判定，而不是按「技术上能不能访问」判定。
+
+**`public: true` — 满足任一条件才允许**
+
+1. 该端口组是应用的主浏览器界面（`endpoints` 含 `kind == ui` 的角色，如 `web`、`admin`、`dashboard`、`notebook`、`remote-desktop`）；
+2. 该端口组是数据库 / 缓存 / 消息队列 / 搜索 / 向量产品**自身的主服务端口**（PostgreSQL `5432`、MySQL `3306`、Redis `6379`、MongoDB `27017`、RabbitMQ `5672`、Kafka `9092`、Elasticsearch `9200` 等）；
+3. 该端口组是应用核心功能在安装后**立即必需**且只能由外部直连的端口（GitLab / Gitea / Jihu 的 SSH、Kong / Traefik 的主代理端口、Jitsi JVB 的 WebRTC 媒体端口）。
+
+**`public: false` — 出现任一情形必须关闭**
+
+1. 采集或接收类辅助端口（Graylog 的 `beats` / `syslog-*` / `raw-*` / `gelf-*` / `forwarder-*`、Wazuh 的 `agent` / `enrollment`）；
+2. 需要用户在应用内先完成配置才生效的端口（先创建 Input、先启用插件、先绑定 Agent、先部署应用包）；
+3. 内部协调、集群或调试端口（RabbitMQ `epmd` `4369`、Erlang 分布式端口、内部 Bridge 端口）；
+4. 监控指标端口（`metrics`）；
+5. 次要或维护入口（`novnc`、`tensorboard`、`deployment` 部署 API）。
+
+**一句话自查**
+
+| 判断 | 结论 |
+| --- | --- |
+| 用户装完、不做任何配置就会访问它 | `true` |
+| 必须先做另一件事它才有意义 | `false` |
+| 打开它只是多暴露一个端口给公网和安全组 | `false` |
+
+**与 `docker-compose.yml` 的关系**
+
+`variables.json` 只表达意图，不要求为了 `public` 去改动上游 compose：
+
+- 仓库 `docker-compose.yml` 保持上游/官方原样，包括它自带的 `ports` 映射；
+- `public: true` 表示消费端部署时**保留**该映射，`public: false` 表示部署时**生成 override 移除**该映射；
+- `libs app-check` 只校验 `(service, port, protocol)` 在目标服务的 `ports` 或 `expose` 中有监听证据，不再要求 `public` 与仓库映射一致；
+- 直接 `docker compose up` 会按仓库 `ports` 原样暴露端口，这是单机自测行为，不代表平台默认。
+
+**例外**：`requireDomain: true` 且 `public: false` 的端口组，必须确认其入口能通过绑定域名或容器网络交付（如 Vaultwarden 的明文 `80` 仅经 TLS 网关访问）。
 
 ### 4.2 平台变量移除与替代规则
 
@@ -167,7 +211,7 @@
 - **与宿主机端口发布解耦**：网关反代通过容器网络直连实例的 `(service, port)`，**不要求 `public: true`**；用户可在关闭宿主机端口映射的同时通过域名安全访问应用。
 - **绑定粒度（绑一次 vs 绑多次）**：域名绑定挂载在端口组 `id` 上：
   - **同端口多路径（绑一次共享）**：同一端口组下的多个 `endpoints`（如 WordPress 的 `/` 与 `/wp-admin`，或 Graylog 的 `/` 与 `/api/`）只需对该端口组绑定一次域名，所有入口路径天然共用该组域名；`endpoints[].path` 仅用于生成访问快捷链接，不代表反代路径重写规则。
-  - **不同端口/不同服务（各自独立绑定）**：位于不同端口组的服务（如 OpenSearch 的 `5601` 界面与 `9200` API，或 Kong 的 `8002` 管理界面、`8001` 管理 API 与 `8000` 业务网关）无法靠同一域名根路径区分，按需为各端口组分别绑定独立域名；安装期默认快捷域名自动绑定到 `access` 数组中排在首位的候选端口组，其余候选端口组可在高级选项或安装后按需绑定。
+  - **不同端口/不同服务（各自独立绑定）**：位于不同端口组的服务（如 OpenSearch 的 `5601` 界面与 `9200` API，或 Kong 的 `8002` 管理界面、`8001` 管理 API 与 `8000` 业务网关）无法靠同一域名根路径区分，需为各端口组分别绑定独立域名；安装期只为**推荐集合**（含 `ui` 类角色的端口组；应用无 UI 时取首个候选组）生成默认域名并默认启用，其余候选组默认不绑定，可在高级项或安装后手动开启，详见第 9.5 节。
 - **协议独立与强制 HTTPS**：容器上游 `scheme` 为 `"http"` 或 `"ws"` 可绑定公网 HTTPS/WSS 域名；写入 `rootUrl` 的协议取公网实际访问协议（例如 `http` 入口绑定 HTTPS 证书输出 `https://...`，纯 `ws` 入口绑定 HTTPS 证书输出 `wss://...`）。当组内入口存在 `scheme` 为 `"https"` / `"wss"` **或**端口组显式声明 `requireHttps: true` 时，反代对内仍按实际容器监听协议（`https` 用于 `https`/`wss`，`http` 用于 `http`/`ws`）转发，对外域名必须强制启用 TLS 证书（未选证书时自动申请或挂载内置自签证书兜底）并开启 HTTP 强跳 HTTPS（`ssl_forced=true`），禁止创建纯明文域名。
 - **强制绑定域名（`requireDomain: true`）**：声明 `requireDomain: true` 的端口组在安装界面将域名设为必填项，禁止裸 IP 安装；运行期删除域名时必须保留至少一个有效域名。
 - **禁止发布需要 TLS 的明文入口**：`requireHttps: true` 若用于容器内明文监听器，必须声明 `public: false`，消费端也不得开启该明文直连映射；应通过 TLS 网关交付。`requireDomain` 本身不禁止发布已经使用 TLS 的监听器。
@@ -309,26 +353,26 @@
 {
   "access": [
     {
-      "id": "proxy",
+      "id": "admin",
+      "service": "kong",
+      "port": 8002,
+      "public": true,
+      "endpoints": [{"roles": ["admin"], "scheme": "http"}]
+    },
+    {
+      "id": "gateway",
       "service": "kong",
       "port": 8000,
       "public": true,
       "endpoints": [{"roles": ["gateway"], "scheme": "http"}]
     },
     {
-      "id": "admin-api",
+      "id": "api",
       "service": "kong",
       "port": 8001,
       "public": true,
       "rootUrl": ["KONG_ADMIN_GUI_API_URL"],
       "endpoints": [{"roles": ["api"], "scheme": "http"}]
-    },
-    {
-      "id": "manager",
-      "service": "kong",
-      "port": 8002,
-      "public": true,
-      "endpoints": [{"roles": ["admin"], "scheme": "http"}]
     },
     {
       "id": "status",
@@ -341,7 +385,8 @@
 }
 ```
 
-- `proxy`、`admin-api`、`manager` 三个 HTTP 端口组可分别独立控制端口开关、各自绑定不同域名；`admin-api` 无论使用 IP:端口还是独立域名，其生效主地址均自动同步至 `KONG_ADMIN_GUI_API_URL`。`status` 默认 `public: false`，仓库 Compose 默认不发布宿主机端口，用户可按需开启。
+- 顺序即优先级：`admin`（Kong Manager，含 `ui` 角色）是**唯一被推荐**的默认域名端口组，其域名作为实例主域名；`gateway`（纯业务转发，`gateway` 角色）与 `api`（管理 API，`api` 角色）不含 `ui` 角色，默认不生成域名绑定，需要时可在高级区手动开启或安装后绑定。
+- `admin`、`gateway`、`api` 三个 HTTP 端口组可分别独立控制端口开关、各自绑定不同域名；`api` 无论使用 IP:端口还是独立域名，其生效主地址均自动同步至 `KONG_ADMIN_GUI_API_URL`。上例中的 `status` 用于演示 `public: false` 按需开放端口模式（仓库当前实现未声明该端口组），仓库 Compose 默认不发布宿主机端口，用户可按需开启。
 
 ### 8.6 Web 主地址 + SSH 外部端口同步（GitLab）
 
@@ -433,7 +478,7 @@
 - **现状**：依赖扫描 `.env` 中的 `W9_*_SET` 生成 `settings`，依赖 `"W9_URL" in env_values` 判断 `is_web_app`，依赖旧 `access.defaultScheme` 或 `W9_HTTPS_PORT` 推导 `default_scheme`，未向前端透传 `access`。
 - **改造建议**：
   1. 解析仓库默认 `docker-compose.yml` 的 `ports`（及行尾 `# purpose` 注释），结合 `variables.json.access` 输出规范化的有序端口组模型（含 `id`、`service`、`port`、`protocol`、`public`、默认宿主机端口 `default_mapped_port`、`requireDomain`、`requireHttps`、能否绑定域名 `can_bind_domain`、`endpoints` 及可选的 `purpose` 说明）。
-  2. `settings` 仅收集非端口类 `W9_*_SET` 业务输入项（如 API Key）；不再依赖 `W9_URL` 判断域名能力（只要任一端口组含 `http`/`https`/`ws`/`wss` 入口即具备域名反代能力，数组中首个候选端口组作为安装默认快捷域名绑定目标）。
+  2. `settings` 仅收集非端口类 `W9_*_SET` 业务输入项（如 API Key）；不再依赖 `W9_URL` 判断域名能力（只要任一端口组含 `http`/`https`/`ws`/`wss` 入口即具备域名反代能力）；并按候选端口组数量向安装表单透传可生成默认域名的端口组列表（首个为主域名，其余为附属域名）。
 
 ### 9.2 安装接口与部署编排（`schemas/appInstall.py`、`app_manager.py`、`runtime_install.py`）
 
@@ -466,7 +511,18 @@
 - **安装时显示哪些端口与默认值**：
   1. `access: []`（如纯命令行工具）：隐藏端口与域名配置区块。
   2. `access` 非空时：按 `access[]` 数组顺序驱动端口列表。单端口组应用直接展示主端口开关（初始值为 `group.public`）与宿主机端口输入框（初始值为 `default_mapped_port`，若宿主机端口冲突可自动推荐空闲端口）；多端口组应用在首屏展示首个主端口组，其余端口组（如 `ssh`、日志采集端口）收纳在“端口与高级设置”中按序展开。
-  3. 快捷域名输入框默认关联首个 `can_bind_domain: true` 的端口组（`requireDomain: true` 标为必填，`requireHttps: true` 或 `scheme` 为 `https`/`wss` 提示强制 HTTPS）；次要可绑域名端口组在高级区提供独立域名输入。
+  3. 域名区域只为**推荐集合**渲染默认启用行，其余可绑域名端口组收纳在「端口与域名（高级）」内默认关闭：推荐集合中的第一行是主域名，预填 `{app}.{根域名}`，其生效地址写入该组 `rootUrl`；其余推荐行预填派生建议 `{app}-{group.id}.{根域名}`（`group.id` 中的 `_` 规范化为 `-`）；非推荐的组由用户在高级区打开后才预填同样规则并创建绑定；`requireDomain: true` 的行无论是否推荐都强制启用且必填、不可关闭；`requireHttps: true` 或组内 `scheme` 为 `https`/`wss` 的行提示强制 HTTPS。
+- **哪些端口组默认推荐绑定域名（推荐集合）**：
+  1. **主规则**：端口组内任一端口的 `roles` 含 `kind == ui` 的角色（`web`、`admin`、`dashboard`、`notebook`、`remote-desktop`）→ 推荐。用户会用浏览器直接打开这些入口，不绑域名就只能靠 `IP:端口` 访问。
+  2. **回退规则**：应用**完全没有** `ui` 类角色（如 `vespa`、`weaviate`、`milvus` 等无浏览器界面的服务）→ 仅取首个域名候选组推荐，保证装完至少有一个可解析入口；其余组不推荐。
+  3. **不推荐**：纯 `gateway`（如 Kong `8000`、Traefik `80`）、`metrics`（如 Milvus `metrics`、Kong `status`）、以及仅作内部管理/监控用的 `api` 端口组。原因：这些入口要么承载用户自有业务域名（平台快捷域名占用会与业务域名冲突），要么由程序调用而非浏览器访问，默认绑域名只增加证书与 DNS 负担。
+  4. **强制例外**：`requireDomain: true` 的组不受上述筛选约束，永远默认启用且必填。
+- **“默认域名”的数量语义**：
+  1. **默认域名数量 = 推荐集合大小，可以为 0、1 或多个**：纯 TCP/UDP 或无任何 HTTP 入口的应用（如 `redis`、`rabbitmq` 的 `amqp`）为 0，不渲染域名区域；`kong`、`opensearch`、`traefik` 等为 1；`librechat`（`web` + `admin`）、`selenium`（`grid` + `novnc`）、`tensorflow`（`notebook` + `tensorboard`）为 2。
+  2. **主域名：唯一**。推荐集合中的第一行为主域名（其地址写入该组 `rootUrl`），其余为附属域名；切换主域名不影响其他端口组已绑定的域名。
+  3. **必须绑定域名：可以多个**。契约未限制 `requireDomain: true` 的端口组数量；**每个**声明该字段的端口组都必须各自提供域名才能提交安装，且该行不可关闭。
+  4. **同一实例内域名唯一**，跨行不得重复；主域名被修改后，仍保持自动派生值（未被手动编辑过）的行按同一规则重算，已被手动编辑的行保持不变。
+  5. 未推荐但被用户手动开启的组，与推荐组行为一致：可绑定多域名、可按 `rootUrl` / `host` 决定是否同步 `.env`；关闭后回退为 `http(s)://<host>:<published_port>`（要求其 `public: true`）。
 - **端口名称中英文显示机制（无需依赖 `i18n/translation.json` 或在 `variables.json` 塞入双语文案）**：
   `console` 前端复用并升级内置 `resources.ts` 国际化字典，按以下三级规则确定性渲染端口标签，并统一附带 `(<port>/<TCP|UDP>)` 技术标识消歧：
   1. **标准端口组 `id` / 首选入口 `role` 精确映射**：如 `web`/`http` → `HTTP 访问端口` / `HTTP Port`，`https` → `HTTPS 访问端口` / `HTTPS Port`，`admin` → `管理后台端口` / `Admin Port`，`dashboard`/`studio` → `控制台端口` / `Dashboard Port`，`api` → `API 端口` / `API Port`，`db` → `数据库端口` / `Database Port`，`ssh` → `SSH 端口` / `SSH Port`，`gateway` → `网关端口` / `Gateway Port`，`grpc` → `gRPC 端口` / `gRPC Port`，`metrics` → `监控指标端口` / `Metrics Port`，`notebook` → `Notebook 端口` / `Notebook Port`，`novnc`/`remote-desktop` → `远程桌面端口` / `Remote Desktop Port`。

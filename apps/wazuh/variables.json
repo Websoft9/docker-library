@@ -20,14 +20,14 @@
       "id": "agent",
       "service": "wazuh.manager",
       "port": 1514,
-      "public": true,
+      "public": false,
       "endpoints": []
     },
     {
       "id": "enrollment",
       "service": "wazuh.manager",
       "port": 1515,
-      "public": true,
+      "public": false,
       "endpoints": []
     }
   ],

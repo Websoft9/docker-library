@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-20
+
+- Set the `metrics` port group (container `9091`, metrics/WebUI) to `public: false` per `docs/app-access-spec.md` section 4.2, so only the `19530` gRPC endpoint is published by default. The upstream compose port mappings are left unchanged.
+
 ## 2026-11-17
 
 - Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.

@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-20
+
+- Set the `agent` (`1514`) and `enrollment` (`1515`) port groups to `public: false` per `docs/app-access-spec.md` section 4.2, so agent ports are enabled on demand once agents are ready to enroll. The upstream compose port mappings are left unchanged.
+
 ## 2026-11-17
 
 - Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.

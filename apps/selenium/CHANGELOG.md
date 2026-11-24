@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-20
+
+- Set the `novnc` port group (`7900`) to `public: false` per `docs/app-access-spec.md` section 4.2, so the Grid endpoint remains the only default-published port. The upstream compose port mappings are left unchanged.
+
 ## 2026-11-17
 
 - Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.

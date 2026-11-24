@@ -19,7 +19,7 @@
       "id": "metrics",
       "service": "standalone",
       "port": 9091,
-      "public": true,
+      "public": false,
       "endpoints": [
         {
           "roles": [

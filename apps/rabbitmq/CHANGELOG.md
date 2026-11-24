@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-20
+
+- Changed the Erlang distribution port `4369` (epmd) from default-published to on-demand via `public: false` per `docs/app-access-spec.md` section 4.2, so the platform no longer publishes it by default. The upstream compose port mappings are left unchanged.
+
 ## 2026-11-17
 
 - Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.

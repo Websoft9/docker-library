@@ -38,7 +38,7 @@
       "id": "tensorboard",
       "service": "tensorflow",
       "port": 6006,
-      "public": true,
+      "public": false,
       "endpoints": [
         {
           "roles": [

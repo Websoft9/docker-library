@@ -473,10 +473,8 @@ services:
         image: ghcr.io/jitsi/jvb:${W9_VERSION}
         container_name: ${W9_ID}-jvb
         restart: unless-stopped
-        x-websoft9-unmanaged-ports:
-            "10000/udp": "WebRTC media; preserve the fixed binding and advertised port"
         ports:
-            - '10000:10000/udp' # JVB media (UDP)
+            - '${JVB_PORT}:${JVB_PORT}/udp' # JVB media (UDP)
         #     - '127.0.0.1:${JVB_COLIBRI_PORT:-8080}:8080'
         volumes:
             - jvb_config:/config:Z
@@ -508,7 +506,6 @@ services:
             - JVB_DISABLE_STUN
             - JVB_DISABLE_XMPP
             - JVB_INSTANCE_ID
-            - JVB_PORT=10000
             - JVB_MUC_NICKNAME
             - JVB_STUN_SERVERS
             - JVB_LOG_FILE
@@ -517,6 +514,7 @@ services:
             - JVB_OCTO_RELAY_ID
             - JVB_REQUIRE_VALID_ADDRESS
             - JVB_USE_USRSCTP
+            - JVB_PORT=${JVB_PORT}
             - JVB_WS_DOMAIN
             - JVB_WS_SERVER_ID
             - JVB_WS_TLS

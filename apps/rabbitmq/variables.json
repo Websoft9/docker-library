@@ -34,7 +34,7 @@
       "id": "epmd",
       "service": "rabbitmq",
       "port": 4369,
-      "public": true,
+      "public": false,
       "endpoints": []
     }
   ],
