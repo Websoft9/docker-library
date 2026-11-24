@@ -37,7 +37,7 @@
       "id": "novnc",
       "service": "app",
       "port": 7900,
-      "public": true,
+      "public": false,
       "endpoints": [
         {
           "roles": [

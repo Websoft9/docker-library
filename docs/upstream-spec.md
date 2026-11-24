@@ -377,8 +377,11 @@ The library does not infer port groups or implement the downstream instance reso
 ```
 
 - `access` is an ordered array of port groups (`[]` when the package exposes no network entry).
-  Order it so the primary user-facing group comes first: install binds the quick domain to the
-  first URL-capable group. See [app-access-spec.md](app-access-spec.md).
+  Order it so the browser-facing groups (`kind == ui`) come first and the main one leads: install
+  pre-fills a default domain for every group whose `endpoints[].roles` include a `ui` role, and the
+  first of them becomes the instance primary domain. When the app has no `ui` role at all, the first
+  URL-capable group is used instead. Pure `gateway`, `metrics` and internal `api` groups belong after
+  the `ui` groups because they are not default domain targets. See [app-access-spec.md](app-access-spec.md).
 - Each group requires `id`, `service`, `port`, `public`, and `endpoints`. `id` is the stable
   reference used by instance port settings, domain bindings and per-group gateway configuration.
 - `port` is a container port and `protocol` (default `tcp`) is the transport; the same numeric

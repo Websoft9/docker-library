@@ -233,14 +233,13 @@ def access_metadata(target: Path) -> dict:
             errors.append(f"{prefix}: duplicate access port group target")
         seen_group_targets.add(target_key)
         evidence = "unverified"
-        published: set[tuple[int, str]] = set()
         unresolved = False
         if isinstance(service, dict):
             try:
-                resolved, published, unresolved = _service_ports(service, env)
+                resolved, _published, unresolved = _service_ports(service, env)
             except (TypeError, ValueError):
                 errors.append(f"{prefix}/port: invalid target service port configuration")
-                resolved, published, unresolved = set(), set(), True
+                resolved, unresolved = set(), True
             if (port, protocol) in resolved:
                 evidence = "matched"
             elif resolved and not unresolved:
@@ -248,11 +247,6 @@ def access_metadata(target: Path) -> dict:
         if evidence == "unverified":
             warnings.append(f"{prefix}/port: listener evidence unverified; deployment test required")
         public = group.get("public")
-        if evidence == "matched":
-            if public is True and (port, protocol) not in published:
-                errors.append(f"{prefix}/public: default host mapping missing from docker-compose.yml")
-            elif public is False and (port, protocol) in published:
-                errors.append(f"{prefix}/public: docker-compose.yml publishes a port declared private")
         endpoints = group.get("endpoints") or []
         identities: set = set()
         kinds_all: list[str] = []

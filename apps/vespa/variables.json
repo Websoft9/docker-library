@@ -2,21 +2,6 @@
   "name": "vespa",
   "access": [
     {
-      "id": "deployment",
-      "service": "vespa",
-      "port": 19071,
-      "public": true,
-      "endpoints": [
-        {
-          "roles": [
-            "api"
-          ],
-          "scheme": "http",
-          "path": "/application/v2/"
-        }
-      ]
-    },
-    {
       "id": "api",
       "service": "vespa",
       "port": 8080,
@@ -28,6 +13,21 @@
           ],
           "scheme": "http",
           "path": "/"
+        }
+      ]
+    },
+    {
+      "id": "deployment",
+      "service": "vespa",
+      "port": 19071,
+      "public": false,
+      "endpoints": [
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/application/v2/"
         }
       ]
     }

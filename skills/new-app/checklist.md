@@ -13,6 +13,7 @@
 - [ ] Use braced `${VAR}` form for all environment variable references in `.env`, `docker-compose.yml`, and config templates
 - [ ] Decide env groups: enable password group (DB/login apps) and web group (web apps); delete unused groups
 - [ ] Apply `docs/w9-env-spec.md` decision rules for `W9_LOGIN*` and dependency helpers, and `docs/app-access-spec.md` for the access port-group array; never add `W9_*_PORT_SET`, `W9_HTTP_PORT`, `W9_HTTPS_PORT`, `W9_URL`, `W9_URL_REPLACE` or `W9_ADMIN_PATH`
+- [ ] Set each group's `public` per `docs/app-access-spec.md` section 4.2 (install must stay minimal): `true` only for the main UI, the product's own service port, or a core port needed immediately; `false` for receiver/collection ports, ports needing in-app setup, internal/cluster ports, `metrics` and secondary entries. Keep the upstream compose `ports` mappings unchanged; `public` is a deployment policy, not a compose edit
 - [ ] Fill `.env` "image environment variables" section: single Docs URL, used vars, up to 5 unused vars commented out
 - [ ] Declare pre-startup internal secrets in `variables.json` `env.secrets` (plain `"KEY"` or a single-key object selecting `base64`, `fernet`, or `jwt:<SECRET_KEY>`) per `docs/app-secret-spec.md`; verify lengths/encodings against upstream references, confirm Websoft9 generator support, and run `.venv/bin/libs app-check --app <app> --gate secrets`
 - [ ] Write `CHANGELOG.md` with the pure-date heading `## YYYY-MM-DD` for the initial change batch

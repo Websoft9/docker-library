@@ -19,6 +19,17 @@
           "path": "/"
         }
       ]
+    },
+    {
+      "id": "jvb",
+      "service": "jvb",
+      "port": "${JVB_PORT}",
+      "protocol": "udp",
+      "public": true,
+      "mappedPort": [
+        "JVB_PORT"
+      ],
+      "endpoints": []
     }
   ],
   "trademark": "Jitsi",

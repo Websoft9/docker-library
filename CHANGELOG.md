@@ -13,6 +13,8 @@ Project-level changes only: architecture, delivery model, tooling, CI, and relea
 - Bumped Appstore `library.schemaVersion` from `"2"` to `"3"` in `metadata/appstore-schema.json` so unupgraded consumers reject incompatible access-migrated snapshots safely.
 - Migrated all 146 active apps to `access[]` declarations (`access: []` only for confirmed no-network-entry apps) with literal default Compose host ports and upstream native address/port variables; missing `access` now blocks Schema, CLI checks, restore, and publishing.
 - Aligned scaffolding, new/update/restore/deploy skills, canonical access documentation, and regression tests.
+- Defined the `public` default-publish policy in `docs/app-access-spec.md` section 4.2: publish only what works immediately after install. Optional receiver, monitoring and maintenance ports in 10 apps are now declared `public: false`, and `public` is a `variables.json` deployment policy only, so upstream compose port mappings stay untouched and consumers apply it with a deploy-time override.
+- Restored install-time configurability of the Jitsi JVB media port by driving the host mapping, container listener and advertised SDP port from a single `JVB_PORT` variable.
 - Catalog sync is now seed-only: `catalog-push --apply` creates missing entries and refreshes derived machine fields but never rewrites content fields of an existing entry; deliberate replacement requires `--overwrite`. `metadata/catalog/` is no longer tracked, the Contentful sync workflow triggers only on `apps/*/variables.json`, and PR-time catalog diff validation was removed.
 
 ### Removed
