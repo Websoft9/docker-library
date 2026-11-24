@@ -49,8 +49,8 @@ jobs:
         run: |
           set -euo pipefail
           git fetch origin --prune '+refs/heads/main:refs/remotes/origin/main' '+refs/heads/hotfix/*:refs/remotes/origin/hotfix/*'
-          branches=$(git branch -r --contains HEAD)
-          grep -qE 'origin/(main|hotfix/)' <<<"$branches"
+          refs=$(git for-each-ref --contains HEAD --format='%(refname:short)' refs/remotes/origin/)
+          grep -qE '^origin/(main|hotfix/)' <<<"$refs"
           gh api --paginate --slurp "repos/$REPOSITORY/releases?per_page=100" > releases.json
           python3 ci/scripts/image_release.py --release-tag "$RELEASE_TAG" --releases-file releases.json --output "$GITHUB_OUTPUT"
 
@@ -106,8 +106,8 @@ jobs:
               exit 1
             fi
             git fetch origin --prune '+refs/heads/main:refs/remotes/origin/main' '+refs/heads/hotfix/*:refs/remotes/origin/hotfix/*'
-            branches=$(git branch -r --contains HEAD)
-            if ! grep -qE 'origin/(main|hotfix/)' <<<"$branches"; then
+            refs=$(git for-each-ref --contains HEAD --format='%(refname:short)' refs/remotes/origin/)
+            if ! grep -qE '^origin/(main|hotfix/)' <<<"$refs"; then
               echo "::error::Release tags must point to a commit on origin/main or an origin/hotfix/* branch."
               exit 1
             fi

@@ -20,7 +20,7 @@ def run_step(tmp_path, name, *, job="publish", **values):
         '#!/bin/bash\n'
         'case "$1" in\n'
         '  fetch) exit 0 ;;\n'
-        '  merge-base) exit "${ON_MAIN:-0}" ;;\n'
+        '  for-each-ref) printf "%s\\n" ${CONTAINS_REFS:-origin/main} ;;\n'
         '  rev-parse) printf "abcdef123456\\n" ;;\n'
         '  tag) printf "%s\\n" "${TAGS:-}" ;;\n'
         '  *) exit 1 ;;\n'
@@ -47,11 +47,26 @@ def test_release_channel_uses_main_tag_as_version(tmp_path):
     assert output == {"channel": "release", "version": "0.9.0"}
 
 
-@pytest.mark.parametrize("tag,on_main", [("0.9.0-rc.1", "0"), ("0.9.0", "1")])
-def test_release_rejects_nonstable_tag_or_off_main_commit(tmp_path, tag, on_main):
-    result, output = run_step(tmp_path, "Resolve publish channel", EVENT_NAME="release", RELEASE_TAG=tag, ON_MAIN=on_main)
+@pytest.mark.parametrize("tag,contains", [
+    ("0.9.0-rc.1", "origin/main"),
+    ("0.9.0", "origin/feature/unreleased"),
+])
+def test_release_rejects_nonstable_tag_or_off_main_commit(tmp_path, tag, contains):
+    result, output = run_step(
+        tmp_path, "Resolve publish channel", EVENT_NAME="release",
+        RELEASE_TAG=tag, CONTAINS_REFS=contains,
+    )
     assert result.returncode != 0
     assert output == {}
+
+
+def test_release_accepts_hotfix_branch_commit(tmp_path):
+    result, output = run_step(
+        tmp_path, "Resolve publish channel", EVENT_NAME="release",
+        RELEASE_TAG="0.8.9", CONTAINS_REFS="origin/hotfix/0.8.9-odoo-db",
+    )
+    assert result.returncode == 0, result.stderr
+    assert output == {"channel": "release", "version": "0.8.9"}
 
 
 @pytest.mark.parametrize("event,channel", [("push", "dev"), ("workflow_dispatch", "dev"), ("workflow_dispatch", "rc")])
