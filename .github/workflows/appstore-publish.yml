@@ -48,8 +48,9 @@ jobs:
           REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
-          git fetch origin main
-          git merge-base --is-ancestor HEAD origin/main
+          git fetch origin --prune '+refs/heads/main:refs/remotes/origin/main' '+refs/heads/hotfix/*:refs/remotes/origin/hotfix/*'
+          refs=$(git for-each-ref --contains HEAD --format='%(refname:short)' refs/remotes/origin/)
+          grep -qE '^origin/(main|hotfix/)' <<<"$refs"
           gh api --paginate --slurp "repos/$REPOSITORY/releases?per_page=100" > releases.json
           python3 ci/scripts/image_release.py --release-tag "$RELEASE_TAG" --releases-file releases.json --output "$GITHUB_OUTPUT"
 
@@ -104,9 +105,10 @@ jobs:
               echo "::error::Official release tags must use stable X.Y.Z format (for example 0.9.0)."
               exit 1
             fi
-            git fetch origin main
-            if ! git merge-base --is-ancestor HEAD origin/main; then
-              echo "::error::Release tags must point to a commit on main."
+            git fetch origin --prune '+refs/heads/main:refs/remotes/origin/main' '+refs/heads/hotfix/*:refs/remotes/origin/hotfix/*'
+            refs=$(git for-each-ref --contains HEAD --format='%(refname:short)' refs/remotes/origin/)
+            if ! grep -qE '^origin/(main|hotfix/)' <<<"$refs"; then
+              echo "::error::Release tags must point to a commit on origin/main or an origin/hotfix/* branch."
               exit 1
             fi
             channel="release"
@@ -162,7 +164,7 @@ jobs:
           manifest_key="appstore/$CHANNEL/manifests/appstore-manifest.json"
           existing=$(aws s3api list-objects-v2 --bucket artifact --prefix "$manifest_key" \
             --query "Contents[?Key=='$manifest_key'].Key | [0]" --output text \
-            --endpoint-url "$AWS_ENDPOINT_URL")
+            --endpoint-url "$AWS_ENDPOINT_URL" --region auto)
           if [[ "$existing" == None || -z "$existing" ]]; then
             echo "No published manifest; build all app packages without an incremental baseline"
             echo "seed=true" >> "$GITHUB_OUTPUT"
@@ -170,13 +172,13 @@ jobs:
             test "$existing" = "$manifest_key"
             mkdir -p dist/previous-library
             aws s3 cp "s3://artifact/$manifest_key" dist/previous-library/appstore-manifest.json \
-              --endpoint-url "$AWS_ENDPOINT_URL"
+              --endpoint-url "$AWS_ENDPOINT_URL" --region auto
             version=$(jq -er '.library.datasetVersion | select(type == "string" and test("^[a-f0-9]{16}$"))' \
               dist/previous-library/appstore-manifest.json)
             index="apps-index-$version.json"
             for name in "$index" "$index.sha256"; do
               aws s3 cp "s3://artifact/appstore/$CHANNEL/library/$name" "dist/previous-library/$name" \
-                --endpoint-url "$AWS_ENDPOINT_URL"
+                --endpoint-url "$AWS_ENDPOINT_URL" --region auto
             done
             pushd dist/previous-library > /dev/null
             sha256sum --strict --check "$index.sha256"
