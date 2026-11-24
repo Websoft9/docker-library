@@ -48,8 +48,9 @@ jobs:
           REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
-          git fetch origin main
-          git merge-base --is-ancestor HEAD origin/main
+          git fetch origin --prune '+refs/heads/main:refs/remotes/origin/main' '+refs/heads/hotfix/*:refs/remotes/origin/hotfix/*'
+          branches=$(git branch -r --contains HEAD)
+          grep -qE 'origin/(main|hotfix/)' <<<"$branches"
           gh api --paginate --slurp "repos/$REPOSITORY/releases?per_page=100" > releases.json
           python3 ci/scripts/image_release.py --release-tag "$RELEASE_TAG" --releases-file releases.json --output "$GITHUB_OUTPUT"
 
@@ -104,9 +105,10 @@ jobs:
               echo "::error::Official release tags must use stable X.Y.Z format (for example 0.9.0)."
               exit 1
             fi
-            git fetch origin main
-            if ! git merge-base --is-ancestor HEAD origin/main; then
-              echo "::error::Release tags must point to a commit on main."
+            git fetch origin --prune '+refs/heads/main:refs/remotes/origin/main' '+refs/heads/hotfix/*:refs/remotes/origin/hotfix/*'
+            branches=$(git branch -r --contains HEAD)
+            if ! grep -qE 'origin/(main|hotfix/)' <<<"$branches"; then
+              echo "::error::Release tags must point to a commit on origin/main or an origin/hotfix/* branch."
               exit 1
             fi
             channel="release"
