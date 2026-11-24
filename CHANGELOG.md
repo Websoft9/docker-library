@@ -2,7 +2,25 @@
 
 Project-level changes only: architecture, delivery model, tooling, CI, and release machinery. App version updates and package fixes are recorded in `apps/<app>/CHANGELOG.md`.
 
-## 2026-10 — Unreleased
+## 2026-11
+
+### Added
+- Ordered `variables.json.access[]` port-group contract (`id`, `service`, `port`, `protocol`, `public`, `requireDomain`, `requireHttps`, `rootUrl`, `host`, `mappedPort`, `endpoints`), shared `metadata/access-types.json`, Schema and semantic/policy validation (`app-check --gate access`), and consistent `app-info`/report/README/deploy/test integration.
+- Access dictionary delivery in full and incremental library artifacts, content fingerprints/checksums, `appstore-sync` preflight and backup/rollback records, and restore-time validation.
+- Local catalog working copy at `metadata/.catalog/` (gitignored) and live `libs catalog-pull --from contentful`, with `--from artifact` kept for published snapshots.
+
+### Changed
+- Bumped Appstore `library.schemaVersion` from `"2"` to `"3"` in `metadata/appstore-schema.json` so unupgraded consumers reject incompatible access-migrated snapshots safely.
+- Migrated all 146 active apps to `access[]` declarations (`access: []` only for confirmed no-network-entry apps) with literal default Compose host ports and upstream native address/port variables; missing `access` now blocks Schema, CLI checks, restore, and publishing.
+- Aligned scaffolding, new/update/restore/deploy skills, canonical access documentation, and regression tests.
+- Defined the `public` default-publish policy in `docs/app-access-spec.md` section 4.2: publish only what works immediately after install. Optional receiver, monitoring and maintenance ports in 10 apps are now declared `public: false`, and `public` is a `variables.json` deployment policy only, so upstream compose port mappings stay untouched and consumers apply it with a deploy-time override.
+- Restored install-time configurability of the Jitsi JVB media port by driving the host mapping, container listener and advertised SDP port from a single `JVB_PORT` variable.
+- Catalog sync is now seed-only: `catalog-push --apply` creates missing entries and refreshes derived machine fields but never rewrites content fields of an existing entry; deliberate replacement requires `--overwrite`. `metadata/catalog/` is no longer tracked, the Contentful sync workflow triggers only on `apps/*/variables.json`, and PR-time catalog diff validation was removed.
+
+### Removed
+- Removed deprecated platform port/URL/path variables (`W9_*_PORT_SET`, `W9_HTTP_PORT`, `W9_HTTPS_PORT`, `W9_DB_PORT`, `W9_API_PORT`, `W9_URL`, `W9_URL_REPLACE`, `W9_URL_WITH_PORT`, `W9_ADMIN_PATH`, `W9_LOGIN_ConnectURL`) from all active packages and templates, and removed unconsumed `variables.json.setup` metadata.
+
+## 2026-10
 
 ### Added
 - Staged initial/login credential metadata in `variables.json`.

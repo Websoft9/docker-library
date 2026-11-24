@@ -1,4 +1,4 @@
-# The Elasticsearch API is served over plain HTTP on W9_HTTP_PORT_SET; the
+# The Elasticsearch API is served over plain HTTP on its published port; the
 # platform terminates TLS in front of it. Besides the adaptive web-access check,
 # verify the cluster is actually healthy with an authenticated HTTP call.
 custom:

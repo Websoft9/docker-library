@@ -4,21 +4,63 @@ import json
 from pathlib import Path
 
 import jsonschema
+import requests
 
 from libs import http
+from libs.credentials import resolve_secret
 from libs.repo import repo_path
 
 
 DEFAULT_CATALOG_URL = "https://artifact.websoft9.com/appstore/release/catalog/catalog_en.json"
 DEFAULT_PRODUCT_URL = "https://artifact.websoft9.com/appstore/release/catalog/product_en.json"
 DEFAULT_TAXONOMY_OUTPUT = "metadata/catalog-taxonomy.json"
-DEFAULT_CATALOG_DIR = "metadata/catalog"
+DEFAULT_CATALOG_DIR = "metadata/.catalog"
+CONTENTFUL_GRAPHQL_URL = "https://graphql.contentful.com/content/v1/spaces/ffrhttfighww"
+CONTENTFUL_GRAPHQL_TOKEN_ENV = "CONTENTFUL_GRAPHQL_TOKEN"
 
 CATALOG_FIELD_KEYS = ("trademark", "summary", "overview", "description", "websiteurl", "screenshots")
+
+PRODUCT_ENTRY_QUERY = """
+query($locale: String!, $key: String!) {
+  productCollection(locale: $locale, where: {key: $key}, limit: 1) {
+    items {
+      sys { id }
+      key
+      trademark
+      summary
+      overview
+      description
+      websiteurl
+      screenshots
+      catalogCollection(limit: 15) {
+        items {
+          key
+          title
+          catalogCollection(limit: 5) {
+            items {
+              key
+              title
+              position
+            }
+          }
+        }
+      }
+    }
+  }
+}
+"""
 
 
 def _read_json(path: Path) -> dict | list:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _display_path(path: Path) -> str:
+    """Return a repo-relative path when possible, else the absolute path."""
+    try:
+        return str(path.relative_to(repo_path()))
+    except ValueError:
+        return str(path)
 
 
 def catalog_schema() -> dict:
@@ -37,7 +79,7 @@ def validate_catalog_data(app_name: str, data: dict) -> None:
             f"{'.'.join(str(part) for part in error.path) or 'catalog'}: {error.message}"
             for error in errors
         )
-        raise ValueError(f"invalid metadata/catalog/{app_name}.json: {joined}")
+        raise ValueError(f"invalid catalog file for {app_name}: {joined}")
 
 
 def load_catalog(app_name: str, catalog_dir: str = DEFAULT_CATALOG_DIR) -> dict:
@@ -46,7 +88,7 @@ def load_catalog(app_name: str, catalog_dir: str = DEFAULT_CATALOG_DIR) -> dict:
         return {}
     payload = _read_json(path)
     if not isinstance(payload, dict):
-        raise ValueError(f"invalid metadata/catalog/{app_name}.json: root must be an object")
+        raise ValueError(f"invalid catalog file for {app_name}: root must be an object")
     validate_catalog_data(app_name, payload)
     return payload
 
@@ -56,7 +98,7 @@ def write_catalog(app_name: str, payload: dict, catalog_dir: str = DEFAULT_CATAL
     path = repo_path(*Path(catalog_dir).parts, f"{app_name}.json")
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    return str(path.relative_to(repo_path()))
+    return _display_path(path)
 
 
 def taxonomy_path(path_value: str = DEFAULT_TAXONOMY_OUTPUT) -> Path:
@@ -206,17 +248,65 @@ def validate_product_entries(entries: list[dict]) -> dict:
     }
 
 
+def fetch_product_entry(
+    app_name: str,
+    locale: str = "en-US",
+    token: str | None = None,
+    env_file: str | None = None,
+) -> dict:
+    """Fetch one published product entry live from Contentful GraphQL."""
+    resolved = resolve_secret(CONTENTFUL_GRAPHQL_TOKEN_ENV, "contentful", token, env_file)
+    if not resolved:
+        raise FileNotFoundError(
+            f"missing {CONTENTFUL_GRAPHQL_TOKEN_ENV}; set the env var, add .secrets/contentful.env, or pass --token"
+        )
+    try:
+        response = http.post_with_retries(
+            CONTENTFUL_GRAPHQL_URL,
+            json_body={"query": PRODUCT_ENTRY_QUERY, "variables": {"locale": locale, "key": app_name}},
+            headers={"Content-Type": "application/json", "Authorization": f"Bearer {resolved}"},
+            timeout=(5.0, 60.0),
+        )
+        response.raise_for_status()
+    except requests.exceptions.RequestException as error:
+        status = getattr(getattr(error, "response", None), "status_code", None)
+        if status in {401, 403}:
+            raise ValueError(
+                f"Contentful rejected the token (HTTP {status}); {CONTENTFUL_GRAPHQL_TOKEN_ENV} must be a "
+                "Content Delivery/GraphQL API token, not the Management token used by catalog-push"
+            ) from error
+        raise ValueError(f"Contentful request failed: {error}") from error
+    payload = response.json()
+    if payload.get("errors"):
+        raise ValueError(f"Contentful GraphQL error: {json.dumps(payload['errors'], ensure_ascii=False)}")
+    items = ((payload.get("data") or {}).get("productCollection") or {}).get("items") or []
+    if not items:
+        raise FileNotFoundError(f"app not found in Contentful: {app_name} ({locale})")
+    return items[0]
+
+
 def pull_catalog(
     app_name: str,
+    source: str = "contentful",
     product_url: str = DEFAULT_PRODUCT_URL,
+    locale: str = "en-US",
+    token: str | None = None,
+    env_file: str | None = None,
     catalog_dir: str = DEFAULT_CATALOG_DIR,
     apply: bool = False,
     only_diff: bool = False,
 ) -> dict:
-    entries = fetch_product(product_url)
-    entry = next((item for item in entries if isinstance(item, dict) and item.get("key") == app_name), None)
-    if not entry:
-        raise FileNotFoundError(f"app not found in published product artifact: {app_name}")
+    if source == "contentful":
+        entry = fetch_product_entry(app_name, locale=locale, token=token, env_file=env_file)
+        source_ref = f"{CONTENTFUL_GRAPHQL_URL} ({locale})"
+    elif source == "artifact":
+        entries = fetch_product(product_url)
+        entry = next((item for item in entries if isinstance(item, dict) and item.get("key") == app_name), None)
+        if not entry:
+            raise FileNotFoundError(f"app not found in published product artifact: {app_name}")
+        source_ref = product_url
+    else:
+        raise ValueError(f"unsupported catalog pull source: {source}")
 
     incoming = _extract_repo_catalog_fields(entry)
     current = load_catalog(app_name, catalog_dir)
@@ -228,8 +318,9 @@ def pull_catalog(
 
     payload = {
         "app": app_name,
-        "source": product_url,
-        "catalog_path": str(repo_path(*Path(catalog_dir).parts, f"{app_name}.json").relative_to(repo_path())),
+        "source": source_ref,
+        "source_kind": source,
+        "catalog_path": _display_path(repo_path(*Path(catalog_dir).parts, f"{app_name}.json")),
         "dry_run": not apply,
         "changed": bool(diff),
         "diff": diff,

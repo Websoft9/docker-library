@@ -10,7 +10,7 @@ This repository keeps local secrets and remote execution defaults outside git.
 | --- | --- |
 | `.secrets/remote.env` | Remote execution profile written by `make remote` (TARGET, SSH_HOST, SSH_USER, SSH_SECRET_PATH, DEPLOY_ROOT, CONTAINER). Template: `metadata/templates/remote.env.example` |
 | `.secrets/ssh/default.pem` | Default SSH key for remote deploy-validation (chmod 600) |
-| `.secrets/contentful.env` | Contentful token file for `libs catalog-push --apply` (`CONTENTFUL_ACCESS_TOKEN=...`) |
+| `.secrets/contentful.env` | Contentful token file for `libs catalog-pull` (`CONTENTFUL_GRAPHQL_TOKEN=...`, same value as the CI secret `CONTENTFUL_GRAPHQLTOKEN`) and `libs catalog-push --apply` (`CONTENTFUL_ACCESS_TOKEN=...`) |
 | `.secrets/cloudflare.env` | Cloudflare token file for CLI or publish operations (`CLOUDFLARE_API_TOKEN=...`) |
 | `.secrets/dockerhub.env` | Docker Hub credentials for the controlled `libs app-build --push` backdoor (`DOCKERHUB_USERNAME=...` and `DOCKERHUB_TOKEN=...`, optional `DOCKERHUB_ORG=...` default push namespace) |
 | `.secrets/dns.env` | DNS credentials for `make dns-bind` / `make dns-delete` (`DNS_PROVIDER=...` such as `aliyun`, `DNS_KEY_ID=...`, `DNS_KEY_SECRET=...`, optional `DNS_DOMAIN=...` wildcard base such as `libs.websoft9.cn`) |

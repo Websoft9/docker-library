@@ -22,7 +22,7 @@ services:
       - --write-kubeconfig=/shared/kubeconfig.yaml
       - --write-kubeconfig-mode=644
     ports:
-      - "${W9_HTTP_PORT_SET}:${AIRBYTE_NODE_PORT}" # Web Console
+      - "9001:${AIRBYTE_NODE_PORT}" # Web Console
     tmpfs:
       - /run
       - /var/run

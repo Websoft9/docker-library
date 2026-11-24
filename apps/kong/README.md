@@ -1,26 +1,91 @@
-# Kong Gateway (OSS) on Docker  
+# Kong Gateway (OSS) on Docker
 
-This is an **[Docker Compose template](https://github.com/Websoft9/docker-library)** powered by [Websoft9](https://www.websoft9.com) based on Docker for Kong Gateway (OSS):
+## Quick Start
+
+### Deploy Verification
+
+1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Kong Gateway (OSS)**.
+2. In the **Access** tab, get the login URL and credentials.
+
+3. Open the login URL in a browser and sign in to confirm the app works.
+
+<!-- W9_GUIDE_START -->
+### Usage
+
+1. Make sure you are signed in to the Kong Gateway (OSS) admin console.
+2. Try a core feature.
+
+### Change Password
+
+1. In the [Websoft9](https://www.websoft9.com) console, open the app's **Compose** tab.
+2. Update the password in `.env` and save.
+3. Rebuild the app.
+<!-- W9_GUIDE_END -->
+
+## Configuration Reference
+
+Websoft9 packages this app from the official [Kong Gateway (OSS) Docker image](https://hub.docker.com/_/kong) and makes some improvements below.
+
+<!-- W9_NOTE_START -->
+
+<!-- W9_NOTE_END -->
+
+Apps run as containers; rebuild after any configuration change.
+
+### Version Support
+
+Supported versions: 3.9, latest.
+
+The `latest` tag is not guaranteed to remain valid; pin a specific version for production.
 
 
- - community:  3.9, latest
+### Ports
+
+| Purpose | Port |
+| --- | --- |
+| Proxy | 8000 |
+| Admin API | 8001 |
+| Kong Manager | 8002 |
 
 
-## System Requirements
+### Data Directory
 
-The following are the minimal [recommended requirements](https://konghq.com/install/#kong-community):
 
-* **RAM**: 2 GB or more
-* **CPU**: 1 cores or higher
-* **Disk**: at least 1 GB of free space
-* **bandwidth**: more fluent experience over 100M  
+Data is persisted in the `kong_tmp_vol` volume, mounted at `/tmp`.
 
-## Install
 
-You can install this Kong Gateway (OSS) by [How to use it?](https://github.com/Websoft9/docker-library#how-to-use-it).   
+### Environment Variables
 
-If you want use Kong Gateway (OSS) with **Websoft9 Business Support** free, you can [subscribe Kong Gateway (OSS)](https://www.websoft9.com/apps) on Cloud platform
+Environment variables are defined in the app's `.env` file; see the reference section at the end of `.env` for supported variables.
 
-## Documentation
 
-[Kong Gateway (OSS) Administrator Guide](https://support.websoft9.com/docs/kong) powered by Websoft9
+### Configuration Files
+
+
+Configuration is overridden by mounting `./src/config` to `/opt/kong`.
+
+
+## References
+
+- [Kong Gateway (OSS) Administrator Guide](https://support.websoft9.com/docs/kong) by Websoft9
+
+- [Docker Hub image](https://hub.docker.com/_/kong)
+
+- [Releases](https://github.com/Kong/kong/releases)
+
+- [Official docs](https://docs.konghq.com/gateway/latest/install/docker/)
+
+- [Official docs](https://docs.konghq.com/gateway/latest/production/environment-variables/)
+
+- [GitHub docs](https://github.com/Kong/docker-kong/tree/master/compose)
+
+
+<!-- W9_TROUBLESHOOT_START -->
+## Troubleshooting
+
+**App fails to start?**
+- Check `docker compose logs`.
+
+**Port not reachable?**
+- Ensure the firewall / security group allows the port.
+<!-- W9_TROUBLESHOOT_END -->

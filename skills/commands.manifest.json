@@ -58,7 +58,7 @@
     },
     {
       "id": "libs-catalog-seed",
-      "description": "Create or update one app catalog file and preview Contentful push.",
+      "description": "Pull, edit and push one app's catalog working copy to Contentful.",
       "skill": "catalog-seed",
       "argument_hint": "<app name>",
       "usage": "/libs-catalog-seed <app name>"

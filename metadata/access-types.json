@@ -1,0 +1,206 @@
+{
+    "roles": {
+        "web": {
+            "kind": "ui",
+            "schemes": [
+                "http",
+                "https"
+            ],
+            "description": "Main browser interface."
+        },
+        "admin": {
+            "kind": "ui",
+            "schemes": [
+                "http",
+                "https"
+            ],
+            "description": "Additional administration interface."
+        },
+        "dashboard": {
+            "kind": "ui",
+            "schemes": [
+                "http",
+                "https"
+            ],
+            "description": "Browser dashboard."
+        },
+        "notebook": {
+            "kind": "ui",
+            "schemes": [
+                "http",
+                "https"
+            ],
+            "description": "Interactive browser notebook."
+        },
+        "remote-desktop": {
+            "kind": "ui",
+            "schemes": [
+                "http",
+                "https"
+            ],
+            "description": "Browser remote desktop."
+        },
+        "api": {
+            "kind": "api",
+            "schemes": [
+                "http",
+                "https",
+                "grpc",
+                "grpcs",
+                "ws",
+                "wss"
+            ],
+            "description": "Application programming interface."
+        },
+        "metrics": {
+            "kind": "api",
+            "schemes": [
+                "http",
+                "https"
+            ],
+            "description": "Metrics collection interface."
+        },
+        "gateway": {
+            "kind": "api",
+            "schemes": [
+                "http",
+                "https",
+                "ws",
+                "wss"
+            ],
+            "description": "Gateway application traffic."
+        },
+        "db": {
+            "kind": "infra",
+            "schemes": [
+                "http",
+                "https",
+                "grpc",
+                "grpcs",
+                "mysql",
+                "postgresql",
+                "mongodb",
+                "rethinkdb",
+                "redis",
+                "mssql",
+                "oracle",
+                "bolt"
+            ],
+            "description": "Database client connection."
+        },
+        "mq": {
+            "kind": "infra",
+            "schemes": [
+                "amqp",
+                "kafka",
+                "stomp",
+                "openwire"
+            ],
+            "description": "Message queue client connection."
+        },
+        "ssh": {
+            "kind": "infra",
+            "schemes": [
+                "ssh"
+            ],
+            "description": "SSH client connection."
+        }
+    },
+    "schemes": {
+        "http": {
+            "address": "url",
+            "allowPathQuery": true,
+            "description": "HTTP."
+        },
+        "https": {
+            "address": "url",
+            "allowPathQuery": true,
+            "description": "HTTP over TLS."
+        },
+        "ws": {
+            "address": "url",
+            "allowPathQuery": true,
+            "description": "WebSocket."
+        },
+        "wss": {
+            "address": "url",
+            "allowPathQuery": true,
+            "description": "WebSocket over TLS."
+        },
+        "grpc": {
+            "address": "hostport",
+            "allowPathQuery": false,
+            "description": "gRPC."
+        },
+        "grpcs": {
+            "address": "hostport",
+            "allowPathQuery": false,
+            "description": "gRPC over TLS."
+        },
+        "ssh": {
+            "address": "hostport",
+            "allowPathQuery": false,
+            "description": "Secure Shell."
+        },
+        "mysql": {
+            "address": "hostport",
+            "allowPathQuery": false,
+            "description": "MySQL wire protocol."
+        },
+        "postgresql": {
+            "address": "hostport",
+            "allowPathQuery": false,
+            "description": "PostgreSQL wire protocol."
+        },
+        "mongodb": {
+            "address": "hostport",
+            "allowPathQuery": false,
+            "description": "MongoDB wire protocol."
+        },
+        "rethinkdb": {
+            "address": "hostport",
+            "allowPathQuery": false,
+            "description": "RethinkDB driver protocol."
+        },
+        "redis": {
+            "address": "hostport",
+            "allowPathQuery": false,
+            "description": "Redis protocol."
+        },
+        "mssql": {
+            "address": "hostport",
+            "allowPathQuery": false,
+            "description": "SQL Server wire protocol."
+        },
+        "oracle": {
+            "address": "hostport",
+            "allowPathQuery": false,
+            "description": "Oracle database protocol."
+        },
+        "bolt": {
+            "address": "hostport",
+            "allowPathQuery": false,
+            "description": "Bolt protocol."
+        },
+        "amqp": {
+            "address": "hostport",
+            "allowPathQuery": false,
+            "description": "Advanced Message Queuing Protocol."
+        },
+        "kafka": {
+            "address": "hostport",
+            "allowPathQuery": false,
+            "description": "Kafka client protocol."
+        },
+        "stomp": {
+            "address": "hostport",
+            "allowPathQuery": false,
+            "description": "STOMP messaging protocol."
+        },
+        "openwire": {
+            "address": "hostport",
+            "allowPathQuery": false,
+            "description": "ActiveMQ OpenWire protocol."
+        }
+    }
+}

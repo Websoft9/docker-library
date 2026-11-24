@@ -4,7 +4,7 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - "${W9_HTTP_PORT_SET}:3010" # Web Console
+      - "3010:3010" # Web Console
     env_file: .env
     depends_on:
       affine-migration:

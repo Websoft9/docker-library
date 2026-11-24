@@ -8,8 +8,8 @@ services:
     command: ["configserver,services"]
     restart: unless-stopped
     ports:
-      - "${W9_HTTP_PORT_SET}:8080" # HTTP API (query/document)
-      - "${W9_API_PORT_SET}:19071" # Config server (deployment API)
+      - "9001:8080" # HTTP API (query/document)
+      - "9002:19071" # Config server (deployment API)
     volumes:
       - vespa-var:/opt/vespa/var
       - vespa-logs:/opt/vespa/logs

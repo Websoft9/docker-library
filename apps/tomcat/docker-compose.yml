@@ -9,7 +9,7 @@ services:
     environment:
       - APP_DIR=/usr/local/tomcat
     ports:
-      - "${W9_HTTP_PORT_SET}:8080" # Tomcat HTTP
+      - "8080:8080" # Tomcat HTTP
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost:8080/ >/dev/null"]
       interval: 30s

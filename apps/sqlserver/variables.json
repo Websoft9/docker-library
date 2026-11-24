@@ -1,5 +1,21 @@
 {
   "name": "sqlserver",
+  "access": [
+    {
+      "id": "db",
+      "service": "sqlserver",
+      "port": 1433,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "db"
+          ],
+          "scheme": "mssql"
+        }
+      ]
+    }
+  ],
   "trademark": "SQL Server",
   "release": true,
   "edition": [

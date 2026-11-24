@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Spring Boot**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -68,7 +69,9 @@ Environment variables are defined in the app's `.env` file; see the reference se
 ### Configuration Files
 
 
-- `./src/entrypoint.sh` → `/entrypoint.sh`
+- `./src/entrypoint.sh` → `/opt/websoft9/entrypoint.sh`
+- `./src/entrypoint.d` → `/opt/websoft9/entrypoint.d`
+- `./src/start.sh` → `/opt/websoft9/start.sh`
 - `./src/template` → `/opt/template`
 
 

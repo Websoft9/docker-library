@@ -1,5 +1,64 @@
 {
   "name": "activemq",
+  "access": [
+    {
+      "id": "admin",
+      "service": "activemq",
+      "port": 8161,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/admin/"
+        }
+      ]
+    },
+    {
+      "id": "amqp",
+      "service": "activemq",
+      "port": 5672,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "mq"
+          ],
+          "scheme": "amqp"
+        }
+      ]
+    },
+    {
+      "id": "openwire",
+      "service": "activemq",
+      "port": 61616,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "mq"
+          ],
+          "scheme": "openwire"
+        }
+      ]
+    },
+    {
+      "id": "stomp",
+      "service": "activemq",
+      "port": 61613,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "mq"
+          ],
+          "scheme": "stomp"
+        }
+      ]
+    }
+  ],
   "trademark": "ActiveMQ",
   "release": true,
   "upstream": {
@@ -19,13 +78,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8161,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

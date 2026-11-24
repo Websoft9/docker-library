@@ -83,6 +83,7 @@ The environment variables of the container is the interface between the containe
 The environments begin with **APP\_** is core environment variables. Generally speaking, developers only define and use them.
 
 For the canonical repository reference of `W9_*` variables, their decision rules, and common scenarios, read `docs/w9-env-spec.md` first.
+Declare access port groups, default publishing toggles, and native public address/port mappings in `variables.json.access` per [App Access Spec](app-access-spec.md). Run `libs app-check --app <app> --gate access` and keep unverified evidence distinct from deployment results. Legacy access variables (`W9_*_PORT_SET`, `W9_HTTP_PORT`, `W9_HTTPS_PORT`, `W9_URL`, `W9_URL_REPLACE`, `W9_ADMIN_PATH`) are removed and rejected by validation.
 
 We will list and explain commonly used environmental variables as following table:
 
@@ -92,22 +93,11 @@ We will list and explain commonly used environmental variables as following tabl
 | W9_DIST     | The edition of main application                                       | no        |
 | W9_VERSION            | The version of this application, the image's tag of main container                                                                                                   | yes       |
 | W9_POWER_PASSWORD         | Original Password, all containers password in the Docker Compose are setted to this password, make all container passwords the same                                  | no        |
-| W9_HTTP_PORT_SET     | The main port of this web application, you can access this application by http://ip:W9_HTTP_PORT_SET                                                                      | no        |
-| W9_HTTPS_PORT_SET     | The main port of this web application, you can access this application by https://ip:W9_HTTPs_PORT_SET                                                                      | no        |
-| W9_DB_PORT_SET          | The database's port when application is a Database | no        |
-| W9_MQ_PORT_SET          | The MQ's port when application is a MQ | no        |
-| W9_SSH_PORT_SET         | The extra ssh port of a aplication, such as gitlab | no        |
-| W9_ID               | The name of this application, main container also named by **W9_NAME's** value                                                                                      | yes       |\
-| W9_NAME               | The application name,such as wordpress,mysql                                             | yes       |
-| W9_URL_REPLACE        | You must modify W9_URL on init when it is true                                                                                                                      | no        |
-| W9_URL                | It is used when the application APP needs to set an external URL, which can be IP(or domain), IP:PORT, http(s)://IP:POR                                              | no        |
-| W9_ADMIN_PATH         | Application's background access address is main url and this suffix                                                                                                  | no        |
+| W9_ID               | The name of this application, main container also named by `W9_ID`                                                                                      | yes       |
 | W9_LOGIN_USER               | Application's login username                                                                                                                                         | no        |
 | W9_LOGIN_PASSWORD           | Application's login password                                                                                                                                         | no        |
 | W9_ENCRYPT_PASSWORD   | Some application must use password with encryption                                                                                                                   | no        |
 | W9_DB_EXPOSE  | Main database of application                                                                                            | no        |
-| W9_HTTP_PORT     | Main container internal http port                                                                                                                              | no        |
-| W9_HTTPS_PORT     | Main container internal https port                                                                                                        | no        |
 | W9_NETWORK            | We have uniformly created a network named constant **websoft9**, which ensures that multiple applications can easily access it through the container name if needed  | yes       |
 
 
@@ -182,17 +172,16 @@ Create a new application with `libs app-new` from `metadata/templates/new-app/`,
 - Use after declaring volumes
 - The configuration file volumes uses the absolute path reference of src
 - Do not write upstream reference comments in docker-compose.yml; upstream references live only in `variables.json` `upstream`
-- Every published port line must carry an inline `# purpose` comment, e.g. `- "${W9_HTTP_PORT_SET}:80" # Web Console`
+- Every published port line must carry an inline `# purpose` comment, e.g. `- "9001:80" # Web Console`
 
 2. .env
 
 - Custom environment variables start with W9
 - Place the environment variables of the container itself last of .env
-- All exposed ports are marked with End of _SET, users can modify them
+- Users configure published ports through the `access` groups, not `.env` aliases.
 - These variables must be included in .env: W9_REPO, W9_DIST, W9_VERSION, W9_ID
-- W9_URL is an identifier that distinguishes web applications
-- If the app has an install-time or first-startup external URL setting such as `root_url`, `base_url`, `public_url`, `site_url`, `app_url`, `host`, or `domain`, declare `W9_URL` and set `W9_URL_REPLACE=true`
-- There are two internal ports in the web application container: W9_HTTP_PORT, W9_HTTPS_PORT
+- Do not add `W9_*_PORT_SET`, `W9_HTTP_PORT`, `W9_HTTPS_PORT`, `W9_URL`, `W9_URL_REPLACE` or `W9_ADMIN_PATH`; declare host ports, public URLs and admin paths in `variables.json.access` and map upstream native variables through `rootUrl` / `host` / `mappedPort`
+- Keep the container listener and the default host mapping literal in `docker-compose.yml`; do not reuse one variable for both sides of the mapping
 - The user's main database type is W9_ DB_ EXPOSE to determine
 
 #### Which environments added to .env file?

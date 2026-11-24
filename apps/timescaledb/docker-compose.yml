@@ -4,7 +4,7 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - "${W9_DB_PORT_SET}:5432" # PostgreSQL
+      - "5432:5432" # PostgreSQL
     volumes:
       - timescaledb:/home/postgres/pgdata
     env_file: .env

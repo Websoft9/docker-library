@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-11-04
 
 - Moved the optional database root password to `MYSQL_ROOT_PASSWORD` backed by `W9_POWER_PASSWORD`, preserving the existing default without rotating installed credentials.

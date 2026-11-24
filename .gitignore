@@ -33,6 +33,9 @@ node_modules/
 ## Local config
 cli/proxy.conf
 
+## Catalog working copy (Contentful is the source of truth)
+metadata/.catalog/
+
 ## Secrets (never commit)
 .secrets/
 *.pem

@@ -61,7 +61,7 @@ services:
     container_name: ${W9_ID}
     command: api-server
     ports:
-      - "${W9_HTTP_PORT_SET}:8080" # Web Console
+      - "8080:8080" # Web Console
     env_file: .env
     healthcheck:
       test: [ "CMD", "curl", "--fail", "http://localhost:8080/api/v2/version" ]

@@ -22,5 +22,21 @@
   },
   "upstream": {
     "image": "https://hub.docker.com/_/mysql"
-  }
+  },
+  "access": [
+    {
+      "id": "db",
+      "service": "mysql",
+      "port": 3306,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "db"
+          ],
+          "scheme": "mysql"
+        }
+      ]
+    }
+  ]
 }

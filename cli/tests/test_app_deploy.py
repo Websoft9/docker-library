@@ -4,6 +4,7 @@ import json
 import types
 from pathlib import Path
 
+import pytest
 import typer
 
 from libs import app_deploy, main
@@ -244,6 +245,7 @@ def test_app_deploy_local_auto_port_overrides_temp_env(monkeypatch, repo_fixture
         "demo",
         env="W9_ID=demo\nW9_VERSION='1.0'\nW9_HTTP_PORT_SET=9001\n",
         compose="services:\n  demo:\n    image: demo:1\n    ports:\n      - \"${W9_HTTP_PORT_SET}:80\"\n",
+        declare_access=False,
     )
     captured = {}
 
@@ -261,3 +263,118 @@ def test_app_deploy_local_auto_port_overrides_temp_env(monkeypatch, repo_fixture
     assert payload["port_overrides"] == {"W9_HTTP_PORT_SET": "9002"}
     assert payload["base_url"] == "http://localhost:9002"
     assert "W9_HTTP_PORT_SET=9002" in captured["text"]
+
+
+@pytest.mark.parametrize(("occupied", "ssh_port"), [({9001}, 9002), ({9001, 9002}, 9004)])
+def test_app_deploy_local_literal_port_override_and_mapped_port_sync(monkeypatch, repo_fixture, app_factory, occupied, ssh_port):
+    app_factory(
+        "gitlab",
+        env="W9_ID=gitlab\nW9_VERSION='1.0'\nGITLAB_SSH_PORT=9002\nGITLAB_EXTERNAL_URL=http://localhost:9001\n",
+        compose=(
+            "services:\n"
+            "  gitlab:\n"
+            "    image: gitlab:1\n"
+            "    env_file: .env\n"
+            "    ports:\n"
+            "      - '9001:80'\n"
+            "      - '9002:22'\n"
+        ),
+        variables={
+            "name": "gitlab",
+            "trademark": "GitLab",
+            "release": True,
+            "edition": [{"dist": "community", "version": ["1.0"]}],
+            "access": [
+                {"id": "http", "service": "gitlab", "port": 80, "public": True, "rootUrl": ["GITLAB_EXTERNAL_URL"], "endpoints": [{"roles": ["web"], "scheme": "http"}]},
+                {"id": "ssh", "service": "gitlab", "port": 22, "public": True, "mappedPort": ["GITLAB_SSH_PORT"], "endpoints": [{"roles": ["ssh"], "scheme": "ssh"}]},
+            ],
+        },
+    )
+    captured = {}
+
+    def fake_run(command, *, progress=None, verbose=False):
+        if "--env-file" in command:
+            env_path = Path(command[command.index("--env-file") + 1])
+            captured["env_path"] = env_path
+            captured["env_text"] = env_path.read_text(encoding="utf-8")
+        if "-f" in command:
+            compose_path = Path(command[command.index("-f") + 1])
+            captured["compose_path"] = compose_path
+            captured["compose_text"] = compose_path.read_text(encoding="utf-8")
+        return types.SimpleNamespace(returncode=0, stdout="", stderr="")
+
+    monkeypatch.setattr(app_deploy, "_run", fake_run)
+    monkeypatch.setattr(app_deploy, "_occupied_ports_local", lambda prefixes=None: occupied)
+
+    payload = app_deploy.deploy("gitlab", target="local")
+
+    expected = {"gitlab:80": "9003"}
+    if ssh_port != 9002:
+        expected.update({"gitlab:22": "9004", "GITLAB_SSH_PORT": "9004"})
+    assert payload["port_overrides"] == expected
+    assert payload["base_url"] == "http://localhost:9003"
+    assert "GITLAB_EXTERNAL_URL=http://localhost:9003" in captured["env_text"]
+    assert f"GITLAB_SSH_PORT={ssh_port}" in captured["env_text"]
+    assert "9003:80" in captured["compose_text"]
+    assert f"{ssh_port}:22" in captured["compose_text"]
+    assert not captured["env_path"].exists()
+    assert not captured["compose_path"].exists()
+
+
+def test_base_url_uses_first_url_access_group_and_https_scheme(repo_fixture, app_factory):
+    graylog = app_factory(
+        "graylog",
+        env="W9_ID=graylog\n",
+        compose=(
+            "services:\n"
+            "  graylog:\n"
+            "    ports:\n"
+            "      - '5044:5044/tcp'\n"
+            "      - '9001:9000/tcp'\n"
+        ),
+        variables={
+            "access": [
+                {"id": "http", "service": "graylog", "port": 9000, "public": True, "endpoints": [{"roles": ["dashboard"], "scheme": "http"}]},
+                {"id": "beats", "service": "graylog", "port": 5044, "public": True, "endpoints": []},
+            ]
+        },
+    )
+    assert app_deploy._base_url(graylog, {}, {}, "10.0.0.5") == "http://10.0.0.5:9001"
+
+    jitsi = app_factory(
+        "jitsi",
+        env="W9_ID=jitsi\n",
+        compose="services:\n  web:\n    ports:\n      - '9443:8443'\n",
+        variables={
+            "access": [
+                {"id": "https", "service": "web", "port": 8443, "public": True, "endpoints": [{"roles": ["web"], "scheme": "https"}]},
+            ]
+        },
+    )
+    assert app_deploy._base_url(jitsi, {}, {}, None) == "https://localhost:9443"
+
+
+def test_base_url_does_not_infer_http_for_database(app_factory):
+    target = app_factory(
+        "db",
+        compose="services:\n  db:\n    ports: ['3306:3306']\n",
+        variables={"access": [
+            {"id": "db", "service": "db", "port": 3306, "public": True,
+             "endpoints": [{"roles": ["db"], "scheme": "mysql"}]},
+        ]},
+    )
+    assert app_deploy._base_url(target, {}, {}, None) is None
+
+
+def test_port_planner_leaves_exempt_media_and_profile_bindings_unchanged(app_factory):
+    target = app_factory(
+        "video",
+        compose=(
+            "services:\n  web:\n    ports: ['9001:80']\n"
+            "  media:\n    ports: ['9002:10000/udp']\n"
+            "    x-websoft9-unmanaged-ports: {'10000/udp': 'WebRTC media'}\n"
+            "  optional:\n    profiles: ['optional']\n    ports: ['9003:8080']\n"
+        ),
+    )
+    _, ports, _ = app_deploy._plan_port_overrides(target, {}, {9001, 9002})
+    assert ports == {("web", 80, "tcp"): 9003}

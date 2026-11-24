@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-09-21
 
 - Update Tomcat from the floating `10` major tag to `11.0-jdk21-temurin` (Tomcat 11 stable line with JDK21 LTS).

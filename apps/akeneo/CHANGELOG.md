@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-11-05
 
 - Limited final image-build and post-initialization ownership changes to the writable `var` directory; source and frontend dependencies already belong to `www-data`.

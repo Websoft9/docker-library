@@ -235,84 +235,6 @@ OH_SECRET_KEY=Pv5Rt8Wy2Nk7Mc4Xb1Lz6Df0Gh3Jq9Ue
 }
 ```
 
-### Pre-Login Steps (`setup.steps`)
-
-Some applications require prerequisite actions before final login: viewing a one-time token in container logs,
-reading an initialization password from a container file, running an official read-only CLI for bootstrap information, or opening an initialization wizard.
-
-`variables.json` provides the `setup` object for these steps:
-
-```json
-{
-  "setup": {
-    "summary": "Optional overall summary",
-    "steps": [
-      {
-        "id": "setup-token",
-        "text": "View the container logs and copy the one-time setup token.",
-        "action": {
-          "type": "show-log",
-          "service": "portainer",
-          "tail": 50
-        }
-      },
-      {
-        "id": "setup-wizard",
-        "text": "Open the page and complete the initialization wizard.",
-        "action": {
-          "type": "open",
-          "access": "web"
-        }
-      }
-    ]
-  }
-}
-```
-
-Frontend rendering order:
-
-- The `setup` area must precede the login/credentials area.
-- `setup.summary` is an optional overall summary.
-- `setup.steps[].text` contains human-readable instructions for each step.
-
-Supported v1 `action` types (closed vocabulary):
-
-- `show-log`: Display the raw container logs of a Compose service; fields: `service`, optional `tail`.
-- `show-env`: Display a container runtime environment variable; field: `name`.
-- `show-file`: Display a container file or read a structured value; fields: `path`, optional `format=text|json|env`, and `jsonPath` / `key`.
-- `show-cli`: Run an official read-only CLI in the container and display its output; fields: `argv`, optional `format=text|json|env`, and `jsonPath` / `key`.
-- `open`: Open an application entry point; fields: `access`, optional `path`.
-
-Container target rules:
-
-- `show-env` / `show-file` / `show-cli` target the main application container (`${W9_ID}`) by default, consistent with existing `credentials` retrieval rules.
-- `show-log` explicitly declares `service` because logs usually need to distinguish Compose services.
-
-Unified `open` and `access` rules:
-
-- `open` does not define its own host/port/scheme.
-- `access` must reference an existing key in `variables.json.access` (for example, `web` / `admin` / `api`).
-- The final URL's scheme/port come from `access[<key>]`.
-- If declared, `action.path` overrides that access entry's default path; otherwise use `access[<key>].path` (default `/`).
-
-Boundaries and non-goals:
-
-- No `pattern` / `group` support.
-- No arbitrary shell or host commands.
-- No automatic execution of commands with side effects; v1 only renders instructions, displays values, and opens pages.
-- No conditional branches, multi-result workflows, or state machines.
-
-Responsibilities relative to `credentials`:
-
-- `setup`: Noncredential instructions or page-entry guidance to view or complete before login (for example, opening a wizard).
-- `credentials`: Credential retrieval declarations, using `credentials.initial` and `credentials.login` for distinct stages or top-level `username` / `password` / `token` for a single stage.
-
-Migration guidance:
-
-- When both one-time initialization credentials and fixed final login credentials exist (for example, `graylog`), prefer `credentials.initial` + `credentials.login` to distinguish them directly.
-- When logs are unsuitable for regex credential extraction and only need displaying alongside wizard steps, use `setup.steps[].action.type=show-log`.
-- Retain `help.login` to explain initialization and final login.
-
 ### Responsibility Boundaries
 
 | This Project Owns | This Project Does Not Own |
@@ -342,7 +264,9 @@ The release system distinguishes three version concepts at the `catalog`, `libra
 
 Maintainers edit `metadata/appstore-schema.json`; it is the sole source of current root/catalog/library contract numbers. The publisher reads it, and publisher tests derive expected current versions from it rather than repeating literals. The manifest examples below illustrate the migration, not a second version configuration. Routine compatible content updates change only generated fingerprints. A contract bump requires documenting the incompatible behavior; consumers implement it on their own upgrade schedule before accepting that contract. It does not require updating generic test expectations or every documentation example.
 
-Root protocol 2 removes the product-version gate and requires component declarations and checks. The new library contract covers template declarations, `.env` conventions, shared dictionaries, and required installation behavior, including string/object `env.secrets`, random-shape generation, Base64/Fernet/JWT generation, reference resolution and instance-persistent keys. See [the secret contract](app-secret-spec.md). This migration uses library 2; historical code also used index 2 experimentally before reverting to 1. That experimental number alone does not establish compatibility with the current contract. Only consumers verified to implement the current contract are supported; historical clients are not maintained by this publication.
+Root protocol 2 removes the product-version gate and requires component declarations and checks. Library contract 2 introduced template declarations, `.env` conventions, shared dictionaries, and required secret-generation behavior, including string/object `env.secrets`, random-shape generation, Base64/Fernet/JWT generation, reference resolution and instance-persistent keys; see [the secret contract](app-secret-spec.md).
+
+Library contract 3 replaces legacy `.env` access variables (`W9_*_PORT_SET`, `W9_HTTP_PORT`, `W9_HTTPS_PORT`, `W9_URL`, `W9_URL_REPLACE`, `W9_URL_WITH_PORT`, `W9_ADMIN_PATH`, `W9_LOGIN_ConnectURL`) with the ordered `variables.json.access[]` port-group contract and shared `metadata/access-types.json` dictionary; see [the access contract](app-access-spec.md). Consumers accepting library 3 must derive install-time port switches and default host ports from `access[]` and `docker-compose.yml`, manage per-port-group domain bindings, and inject resolved public addresses and host ports into upstream native variables declared via `rootUrl`, `host`, and `mappedPort`. Unupgraded library-2 clients must reject library-3 manifests and retain their verified local library-2 snapshot rather than installing packages whose legacy `W9_*` port/URL placeholders have been removed. Only consumers verified to implement the current contract are supported; historical clients are not maintained by this publication.
 
 Release tags identify the source release, not consumer compatibility. Content fingerprints are generated; compatibility changes require an explicit maintainer decision. Once distributed, including to dev consumers, a contract must not gain incompatible requirements without a new version.
 
@@ -368,7 +292,7 @@ Upgrade only when one of the following occurs:
 
 Publisher sequence: Document the incompatible change -> bump the affected contract -> validate and publish artifacts. Consumers independently implement and verify support before accepting the new contract; their deployment does not gate publication. Parallel publication of legacy formats is not required.
 
-Optional database declarations were introduced under historical schema 1 without replacing an active product contract. Publication uses the configured library contract consistently in the library manifest, apps-index, apps-delta and embedded `library.json`. Root references repeat each component's schema and dataset versions; the publisher and consumer must verify agreement with the component manifest. New access formats or removal of required password conventions need another contract change; the current contract does not predeclare support for future proposals.
+Optional database declarations were introduced under historical schema 1 without replacing an active product contract. Publication uses the configured library contract consistently in the library manifest, apps-index, apps-delta and embedded `library.json`. Root references repeat each component's schema and dataset versions; the publisher and consumer must verify agreement with the component manifest. Access entries replace unused development placeholders, not an enabled legacy contract; dictionary delivery does not imply downstream runtime support. Future breaking changes to enabled contracts require an explicit contract change.
 
 ### 2.3 Consumer Compatibility
 
@@ -421,18 +345,24 @@ Thus `dev` is a broader, richer dataset, while `release` is narrower and product
 
 ### 3.2 Contentful Visibility Flags
 
-`appStore` and `production` are independent visibility flags:
+`app_store` (exposed as `appStore` in GraphQL) and `production` are independent visibility flags:
 
-| App State | `appStore` | `production` | Result |
+| App State | `app_store` | `production` | Result |
 |---|---|---|---|
 | Active public, ready for release | `true` | `true` | Visible in dev + release |
 | Active public, development only (`variables.json.release=false`) | `true` | `false` | Visible only in dev |
 | Internal (`scope=internal`) | `false` | `false` | Not visible in appstore |
 | Archived | `false` | `false` | Not visible in appstore |
 
-`production` derives from `release` in `apps/<app>/variables.json`; `appStore` derives from whether the app is active and public in scope. `catalog-push --apply` writes both fields when creating or updating Contentful entries, so they need not be repeated in `metadata/catalog/<app>.json`.
+`production` derives from `release` in `apps/<app>/variables.json`; `app_store` derives from whether the app is active and public in scope. `catalog-push --apply` writes both fields when creating an entry and refreshes them on every later run, so they need not be repeated in `metadata/.catalog/<app>.json`.
 
-Changes to `metadata/catalog/*.json` receive dry-run validation in PRs. After merging to `main`, the `Sync data to Contentful` workflow runs `catalog-push --apply`.
+The Contentful `memory` payload uses whole units. `catalog-push` rounds a positive fractional `requirements.memory` up (for example, `"1.5"` becomes `2`) without changing the app's declaration. Invalid or non-positive values fail validation.
+
+`metadata/.catalog/<app>.json` is a gitignored local working copy, not a repository-managed catalog. Contentful is the source of truth: read the live entry back with `libs catalog-pull --app <app> --apply` (or `--from artifact` for the last published snapshot), edit locally, then push with `libs catalog-push --app <app> --apply`. Never commit `metadata/.catalog/`.
+
+`catalog-push --apply` seeds an entry that does not exist and refreshes derived machine fields on existing entries; it never rewrites content fields of an existing entry. Deliberate content replacement requires `--overwrite`.
+
+After merging to `main`, the `Sync data to Contentful` workflow runs `catalog-push --apply` for apps whose `apps/*/variables.json` changed.
 
 ### 3.3 Additional Product Fields
 
@@ -568,6 +498,10 @@ Consumers download this single file, check supported root/component contracts, t
     "secretRules": {
       "path": "metadata/secret-rules-<sha256>.json",
       "sha256": "<sha256>"
+    },
+    "accessTypes": {
+      "path": "metadata/access-types-<sha256>.json",
+      "sha256": "<sha256>"
     }
   },
   "checksum": {
@@ -575,7 +509,8 @@ Consumers download this single file, check supported root/component contracts, t
     "appsIndex": "apps-index-85f687824c03ef93.json.sha256",
     "appsDelta": "apps-delta-7ee7a10b7da49f38-to-85f687824c03ef93.json.sha256",
     "databaseTypes": "metadata/database-types-<sha256>.json.sha256",
-    "secretRules": "metadata/secret-rules-<sha256>.json.sha256"
+    "secretRules": "metadata/secret-rules-<sha256>.json.sha256",
+    "accessTypes": "metadata/access-types-<sha256>.json.sha256"
   },
   "generatedAt": "2026-06-09T12:00:00Z"
 }
@@ -598,9 +533,9 @@ Consumers download this single file, check supported root/component contracts, t
 
 Clients compare the `hash` field to detect app changes.
 
-The apps-index root includes the same `metadata` dictionary fingerprints as the library manifest. Full packages retain the installation paths `library/metadata/database-types.json` and `library/metadata/secret-rules.json`. Content-addressed filenames serve incremental distribution without changing the installation paths. The removed `database-defaults.json` draft is not used for publishing or declaration resolution.
+The apps-index root includes the same `metadata` dictionary fingerprints as the library manifest. Full packages retain the installation paths `library/metadata/database-types.json`, `library/metadata/secret-rules.json`, and `library/metadata/access-types.json`. Content-addressed filenames serve incremental distribution without changing the installation paths. The removed `database-defaults.json` draft is not used for publishing or declaration resolution.
 
-The library `datasetVersion` hashes the index's content fields, including app fingerprints and shared metadata, but excludes root `generatedAt`, app `updatedAt`, and the version field itself. Republishing identical content preserves the version; changing only the database or secret-rule dictionary changes it. Consumers must still check local shared metadata for missing or corrupt files even when the cached dataset version matches.
+The library `datasetVersion` hashes the index's content fields, including app fingerprints and shared metadata, but excludes root `generatedAt`, app `updatedAt`, and the version field itself. Republishing identical content preserves the version; changing only the database, secret-rule or access dictionary changes it. Consumers must still check local shared metadata for missing or corrupt files even when the cached dataset version matches. Publishing access declarations does not implement instance resolution, browser opening or domain binding; downstream consumers must confirm support separately.
 
 `updatedAt` is the last content-change time for the entire application template directory (`apps/<app>`), taken from the Git commit's author date in UTC. It is display-only ("last updated"), not an incremental-update input. Without usable Git history, fall back to this release's `generatedAt`.
 
@@ -627,6 +562,7 @@ Version sources:
 - Library deltas use the last successfully published apps index in the same channel, identified by that channel's published Appstore manifest. `fromVersion` is that index's library `datasetVersion`, not a Git SHA, release tag, or root Appstore version. Compare published and current app fingerprints to compute added, changed, and removed apps. Release tags still determine image-promotion baselines, not library dataset versions.
 - Baseline readers accept current or earlier positive integer contract versions with the validated index identity/fingerprint shape. A different contract discards the incremental baseline after validation, rebuilds every app package and sets `supportsPartialUpdate: false` with `fromVersion: initial`. Same-contract baselines retain incremental behavior. Future/malformed schemas and invalid channel/version/app fingerprints remain publication errors. Accepting an old index for rebuild planning does not imply consumer support for installing that contract.
 - Without a published baseline, build all app packages and set `supportsPartialUpdate: false`. Storage failures, malformed baselines, and checksum mismatches fail publishing rather than silently selecting a first publication.
+- Baseline lookups and downloads explicitly use the Cloudflare R2 signing region `auto`, independent of the runner's default AWS region.
 
 ### 6.2 CI Pipeline (`appstore-publish.yml`)
 

@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **MLflow**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -23,7 +24,7 @@
 
 ## Configuration Reference
 
-Websoft9 packages this app from the official [MLflow Docker image](https://github.com/mlflow/mlflow/pkgs/container/mlflow) and makes some improvements below.
+Websoft9 packages this app from the official [MLflow Docker image](https://ghcr.io/mlflow/mlflow) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
 
@@ -66,7 +67,7 @@ Configuration files live inside the image; mount a single file read-only to over
 
 - [MLflow Administrator Guide](https://support.websoft9.com/docs/mlflow) by Websoft9
 
-- [Docker Hub image](https://github.com/mlflow/mlflow/pkgs/container/mlflow)
+- [GHCR image](https://ghcr.io/mlflow/mlflow)
 
 - [Releases](https://github.com/mlflow/mlflow/releases)
 

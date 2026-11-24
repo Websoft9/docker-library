@@ -14,6 +14,44 @@ from libs.maintenance import load_maintenance_metadata
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
+def test_all_active_apps_have_valid_access_declarations():
+    from libs.access import access_metadata
+
+    for app_dir in sorted((REPO_ROOT / "apps").iterdir()):
+        if app_dir.is_dir():
+            result = access_metadata(app_dir)
+            assert result["ok"], f"{app_dir.name}: {result['status']} {result['errors']}"
+
+
+@pytest.mark.parametrize("name,entry_id,service,port,scheme,path,roles", [
+    ("youtrack", "web", "youtrack", 8080, "http", "/", ["web"]),
+    ("codeserver", "web", "code-server", 8443, "http", "/", ["web"]),
+    ("elasticsearch", "db", "elasticsearch", 9200, "https", "/", ["db"]),
+    ("couchdb", "admin", "couchdb", 5984, "http", "/_utils/", ["admin"]),
+    ("pocketbase", "admin", "pocketbase", 8090, "http", "/_/", ["admin"]),
+    ("haproxy", "stats", "haproxy", 80, "http", "/stats", ["dashboard"]),
+    ("ollama", "api", "app-nogpu", 11434, "http", "/", ["api"]),
+    ("umbraco", "admin", "umbraco", 8443, "https", "/umbraco/", ["admin"]),
+    ("milvus", "db", "standalone", 19530, "grpc", None, ["db"]),
+    ("weaviate", "grpc", "weaviate", 50051, "grpc", None, ["db"]),
+])
+def test_access_migration_preserves_distinct_entry_semantics(name, entry_id, service, port, scheme, path, roles):
+    variables = json.loads((REPO_ROOT / "apps" / name / "variables.json").read_text(encoding="utf-8"))
+    raw = variables["access"]
+    entries = raw if isinstance(raw, list) else raw["entries"]
+    entry = next(item for item in entries if item["id"] == entry_id)
+    if isinstance(raw, list):
+        assert (entry["service"], entry["port"]) == (service, port)
+        assert any(
+            endpoint["scheme"] == scheme
+            and endpoint.get("path", "/") == (path or "/")
+            and endpoint["roles"] == roles
+            for endpoint in entry["endpoints"]
+        )
+    else:
+        assert (entry["service"], entry["port"], entry["scheme"], entry.get("path"), entry["roles"]) == (service, port, scheme, path, roles)
+
+
 def test_database_types_match_machine_schema():
     schema = json.loads((REPO_ROOT / "metadata" / "variables.schema.json").read_text(encoding="utf-8"))
     database_types = json.loads((REPO_ROOT / "metadata" / "database-types.json").read_text(encoding="utf-8"))
@@ -240,6 +278,7 @@ def test_variables_schema_accepts_env_secrets():
         "release": True,
         "edition": [{"dist": "community", "version": ["1.0"]}],
         "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
+        "access": [],
         "env": {
             "secrets": [
                 "APP_KEY",
@@ -276,36 +315,7 @@ def test_variables_schema_rejects_unknown_env_keys():
         jsonschema.Draft202012Validator(schema).validate(sample)
 
 
-def test_variables_schema_accepts_setup_steps():
-    schema = json.loads((REPO_ROOT / "metadata" / "variables.schema.json").read_text(encoding="utf-8"))
-    sample = {
-        "name": "demo",
-        "trademark": "Demo",
-        "release": True,
-        "edition": [{"dist": "community", "version": ["1.0"]}],
-        "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
-        "access": {"web": {"port": 8080, "path": "/"}},
-        "setup": {
-            "summary": "Bootstrap this app first.",
-            "steps": [
-                {
-                    "id": "setup-token",
-                    "text": "Read the one-time token from logs.",
-                    "action": {"type": "show-log", "service": "app", "tail": 50},
-                },
-                {
-                    "id": "setup-wizard",
-                    "text": "Open the setup screen.",
-                    "action": {"type": "open", "access": "web", "path": "/setup"},
-                },
-            ],
-        },
-    }
-
-    jsonschema.Draft202012Validator(schema).validate(sample)
-
-
-def test_variables_schema_rejects_setup_pattern_group_model():
+def test_variables_schema_rejects_unconsumed_setup_field():
     import pytest
 
     schema = json.loads((REPO_ROOT / "metadata" / "variables.schema.json").read_text(encoding="utf-8"))
@@ -315,17 +325,12 @@ def test_variables_schema_rejects_setup_pattern_group_model():
         "release": True,
         "edition": [{"dist": "community", "version": ["1.0"]}],
         "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
+        "access": [],
         "setup": {
             "steps": [
                 {
                     "id": "setup-token",
-                    "text": "Bad old pattern model.",
-                    "action": {
-                        "type": "show-log",
-                        "service": "app",
-                        "pattern": "token=(.+)",
-                        "group": 1,
-                    },
+                    "text": "Unconsumed intermediate setup block.",
                 }
             ]
         },
@@ -343,6 +348,7 @@ def test_variables_schema_accepts_staged_credentials():
         "release": True,
         "edition": [{"dist": "community", "version": ["1.0"]}],
         "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
+        "access": [],
         "credentials": {
             "initial": {
                 "username": {"source": "inline", "value": "admin"},
@@ -625,7 +631,7 @@ def test_thingsboard_native_database_inputs_and_file_marker_initialization():
     assert not any("bootstrap-state" in volume for volume in services["thingsboard-ce"]["volumes"])
     assert services["tb-web-report"]["image"] == "thingsboard/tb-web-report:${W9_VERSION}"
     assert services["tb-web-report"]["environment"]["HTTP_BIND_PORT"] == 8383
-    assert services["thingsboard-ce"]["ports"] == ["${W9_HTTP_PORT_SET}:8080"]
+    assert services["thingsboard-ce"]["ports"] == ["9009:8080"]
     assert "/data/.tb-installed" in services["thingsboard-ce"]["healthcheck"]["test"][-1]
     assert not any(service.get("ports") for name, service in services.items() if name != "thingsboard-ce")
     assert "REPORTS_SERVER_ENDPOINT_URL=http://${W9_ID}-web-report:8383" in services["thingsboard-ce"]["environment"]
@@ -2257,6 +2263,7 @@ def test_variables_schema_accepts_explicit_no_credentials():
         "release": True,
         "edition": [{"dist": "community", "version": ["1.0"]}],
         "requirements": {"cpu": "1", "memory": "1", "disk": "1"},
+        "access": [],
         "credentials": {"none": True},
     }
 

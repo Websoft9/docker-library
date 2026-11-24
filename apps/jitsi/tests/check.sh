@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 set -uo pipefail
 
-port="${W9_HTTPS_PORT_SET:-9443}"
-base="${BASE_URL:-https://localhost:${port}}"
+base="${BASE_URL:-https://localhost:9443}"
 deadline=$((SECONDS + 120))
 code="000"
 

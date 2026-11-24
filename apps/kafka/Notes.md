@@ -6,19 +6,16 @@ broker and controller) using the official `apache/kafka` image. ZooKeeper is not
 ## Client access
 
 - In-cluster clients connect to `kafka:19092` (`PLAINTEXT`).
-- External clients connect to `${KAFKA_ADVERTISED_HOST}:${W9_MQ_PORT_SET}` (`PLAINTEXT_HOST`).
+- External clients connect to `${KAFKA_ADVERTISED_HOST}:${KAFKA_ADVERTISED_PORT}` (`PLAINTEXT_HOST`).
 - `KAFKA_ADVERTISED_HOST` defaults to `localhost`. Set it to the server IP or domain
   so remote clients can reach the broker.
 - Advertised listeners are read once at broker startup, so changing
   `KAFKA_ADVERTISED_HOST` requires recreating the container.
 
-### Do not declare W9_URL here
+### Broker access
 
-Kafka is not a web app and must **not** declare `W9_URL` or `W9_URL_REPLACE`.
-The Websoft9 platform treats any app with `W9_URL` as a web app: it rewrites `W9_URL`
-and then tries to create an nginx proxy using `W9_HTTP_PORT` / `W9_HTTPS_PORT`.
-Kafka has neither, so declaring `W9_URL` makes the platform fail during install with
-`Initialize repo error`. Use `KAFKA_ADVERTISED_HOST` instead.
+The Kafka endpoint is a broker connection, not an HTTP reverse-proxy target.
+Use `KAFKA_ADVERTISED_HOST` and `KAFKA_ADVERTISED_PORT` to advertise a reachable broker address.
 
 ## Running a 3-node cluster
 
@@ -43,7 +40,7 @@ Differences from this package:
 
 This package already parameterizes the cluster-relevant values through
 `KAFKA_NODE_ID`, `KAFKA_CONTROLLER_QUORUM_VOTERS`, and `KAFKA_ADVERTISED_LISTENERS`
-(referencing `${W9_ID}`, `${KAFKA_ADVERTISED_HOST}`, and `${W9_MQ_PORT_SET}`), so a cluster file can
+(referencing `${W9_ID}`, `${KAFKA_ADVERTISED_HOST}`, and `${KAFKA_ADVERTISED_PORT}`), so a cluster file can
 reuse the same conventions.
 
 ## Operational notes

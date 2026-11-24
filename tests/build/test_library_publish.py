@@ -423,6 +423,9 @@ def test_workflow_downloads_verified_published_baseline(tmp_path, scenario):
     executable.write_text(
         f"#!{sys.executable}\n"
         "import os, pathlib, shutil, sys\n"
+        "args = sys.argv[1:]\n"
+        "region = args[args.index('--region') + 1] if '--region' in args else os.environ['AWS_DEFAULT_REGION']\n"
+        "if region != 'auto': sys.exit('R2 rejected signing region: ' + region)\n"
         "scenario = os.environ['SCENARIO']\n"
         "if scenario == 'unavailable': sys.exit(42)\n"
         "if sys.argv[1] == 's3api':\n"
@@ -433,13 +436,17 @@ def test_workflow_downloads_verified_published_baseline(tmp_path, scenario):
     executable.chmod(0o755)
     output = tmp_path / "outputs"
     env = dict(os.environ, PATH=f"{executable_dir}:{os.environ['PATH']}", CHANNEL="dev",
-               AWS_ENDPOINT_URL="https://unused.invalid", GITHUB_OUTPUT=str(output),
+               AWS_ENDPOINT_URL="https://unused.invalid", AWS_DEFAULT_REGION="us-west-2", GITHUB_OUTPUT=str(output),
                SCENARIO=scenario, SOURCE=str(source))
 
     result = subprocess.run(["bash", "-c", step["run"]], cwd=tmp_path, env=env, capture_output=True, text=True)
 
-    if scenario in {"corrupt", "unavailable"}:
+    if scenario == "unavailable":
+        assert result.returncode == 42, result.stderr
+        assert not output.exists()
+    elif scenario == "corrupt":
         assert result.returncode != 0
+        assert "FAILED" in result.stdout, result.stderr
         assert not output.exists()
     else:
         assert result.returncode == 0, result.stderr
@@ -674,6 +681,7 @@ def test_full_publish_without_source_library_json(build_fixture, monkeypatch, ca
         assert json.loads(archive.read("library/library.json")) == expected
         assert archive.read("library/metadata/database-types.json") == (build_fixture / "metadata" / "database-types.json").read_bytes()
         assert archive.read("library/metadata/secret-rules.json") == (build_fixture / "metadata" / "secret-rules.json").read_bytes()
+        assert archive.read("library/metadata/access-types.json") == (build_fixture / "metadata" / "access-types.json").read_bytes()
     library_dir = output / "appstore" / channel / "library"
     manifest = json.loads((library_dir / "manifest.json").read_text())
     assert manifest["schemaVersion"] == LIBRARY_SCHEMA
@@ -684,6 +692,9 @@ def test_full_publish_without_source_library_json(build_fixture, monkeypatch, ca
     secret_rules = manifest["metadata"]["secretRules"]
     assert library_publish.sha256_file(library_dir / secret_rules["path"]) == secret_rules["sha256"]
     assert (library_dir / manifest["checksum"]["secretRules"]).is_file()
+    access_types = manifest["metadata"]["accessTypes"]
+    assert library_publish.sha256_file(library_dir / access_types["path"]) == access_types["sha256"]
+    assert (library_dir / manifest["checksum"]["accessTypes"]).is_file()
     assert (output / "appstore" / channel / "library" / "apps" / "demo" / "latest.zip").exists()
     versions_path = output / "appstore" / channel / "apps-verson.json"
     if channel == "dev":
@@ -695,6 +706,7 @@ def test_full_publish_without_source_library_json(build_fixture, monkeypatch, ca
 @pytest.mark.parametrize("filename,metadata_key,profile,field,value", [
     ("database-types.json", "databaseTypes", "postgresql", "port", 5433),
     ("secret-rules.json", "secretRules", "base64", "description", "Updated generation profile."),
+    ("access-types.json", "accessTypes", "roles", "web", {"kind": "ui", "schemes": ["http", "https"], "description": "Updated access purpose."}),
 ])
 def test_dictionary_only_change_updates_dataset_without_changing_app_hash(
     build_fixture, monkeypatch, filename, metadata_key, profile, field, value,
@@ -712,9 +724,42 @@ def test_dictionary_only_change_updates_dataset_without_changing_app_hash(
     assert baseline["metadata"][metadata_key] != current["metadata"][metadata_key]
 
 
+@pytest.mark.parametrize("access", [None, {"web": {"port": 80}}, {"entries": {}}, {"entries": []}])
+def test_missing_access_blocks_publication(build_fixture, monkeypatch, access):
+    monkeypatch.setattr(library_publish, "ROOT", build_fixture)
+    monkeypatch.setattr(library_publish, "APPS_DIR", build_fixture / "apps")
+    path = build_fixture / "apps" / "demo" / "variables.json"
+    variables = json.loads(path.read_text())
+    variables.pop("access")
+    if access is not None:
+        variables["access"] = access
+    path.write_text(json.dumps(variables))
+    with pytest.raises(SystemExit, match="requires an access port-group array"):
+        library_publish.build_apps_index("dev", "2026-11-16T00:00:00Z")
+
+
+@pytest.mark.parametrize(
+    "access",
+    [
+        [],
+        [{"id": "web", "service": "web", "port": 80, "public": True, "endpoints": [{"roles": ["web"], "scheme": "http"}]}],
+    ],
+)
+def test_declared_access_shapes_support_publication(build_fixture, monkeypatch, access):
+    monkeypatch.setattr(library_publish, "ROOT", build_fixture)
+    monkeypatch.setattr(library_publish, "APPS_DIR", build_fixture / "apps")
+    path = build_fixture / "apps" / "demo" / "variables.json"
+    variables = json.loads(path.read_text())
+    variables["access"] = access
+    path.write_text(json.dumps(variables))
+    index = library_publish.build_apps_index("dev", "2026-11-16T00:00:00Z")
+    assert [item["app"] for item in index["apps"]] == ["demo"]
+
+
 @pytest.mark.parametrize("filename,metadata_key,profile,field,value", [
     ("database-types.json", "databaseTypes", "postgresql", "port", 5433),
     ("secret-rules.json", "secretRules", "base64", "description", "Updated generation profile."),
+    ("access-types.json", "accessTypes", "roles", "web", {"kind": "ui", "schemes": ["http", "https"], "description": "Updated access purpose."}),
 ])
 def test_dictionary_only_increment_delivers_shared_file_without_rebuilding_apps(
     build_fixture, monkeypatch, filename, metadata_key, profile, field, value,

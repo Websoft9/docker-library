@@ -4,13 +4,13 @@
 # The API is plain HTTP with basic auth; TLS is terminated by the platform.
 set -u
 
-port="${W9_HTTP_PORT_SET:-9200}"
+base="${BASE_URL:-https://localhost:9200}"
 user="${W9_LOGIN_USER:-elastic}"
 pass="${W9_LOGIN_PASSWORD:-${W9_POWER_PASSWORD:-}}"
 
 code=""
 for _ in $(seq 1 30); do
-  code="$(curl -s -o /dev/null -w '%{http_code}' -u "${user}:${pass}" "http://localhost:${port}/_cluster/health" 2>/dev/null || true)"
+  code="$(curl -k -s -o /dev/null -w '%{http_code}' -u "${user}:${pass}" "${base}/_cluster/health" 2>/dev/null || true)"
   if [ "${code}" = "200" ]; then
     echo "elasticsearch cluster health ok"
     exit 0

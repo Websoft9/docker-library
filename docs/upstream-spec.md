@@ -196,9 +196,8 @@ Rules:
 - required variables
 - URL or login related config
 
-Note: `W9_URL` uses a domain-style placeholder (for example `appname.example.com` or
-`example.youdomain.com`). Do not use `internet_ip:${W9_HTTP_PORT_SET}`; host substitution is the
-consumer's concern, not this repository's. The canonical rule lives in `docs/w9-env-spec.md`.
+Public address settings use native variables declared in `variables.json.access`. Default
+templates must not rely on the consumer substituting legacy URL or port aliases.
 
 ## AI Fallback Boundary
 
@@ -339,58 +338,88 @@ Rules:
 
 ## Access Metadata
 
-`variables.json` access metadata declares how a user reaches the app. It separates
-the logical surface (which entry) from the transport (scheme / port / path).
+`variables.json` access metadata declares how a user reaches the app. It records static
+facts only: which entries exist, which Compose service and container port each targets,
+and which wire protocol it speaks. It does not record hosts, domains, certificates,
+reachability, or proxy capability.
 
-Current shape:
+Existing access values are unused development placeholders, not an enabled runtime contract.
+They may be replaced or removed without preserving old keys or supporting both formats.
+The Schema and CLI require the port-group shape below. Undeclared access remains unknown and
+fails the access gate and publication; it must not be replaced with an unjustified empty array.
+The library does not infer port groups or implement the downstream instance resolver.
+
+### Supported Shape
 
 ```json
 {
-  "access": {
-    "defaultScheme": "https",
-    "web": {
-      "port": 8443,
-      "path": "/"
+  "access": [
+    {
+      "id": "notebook",
+      "service": "tensorflow",
+      "port": 8888,
+      "public": true,
+      "endpoints": [
+        {"roles": ["notebook"], "scheme": "http", "path": "/"}
+      ]
     },
-    "admin": {
-      "port": 8443,
-      "path": "/umbraco"
-    },
-    "ws": {
-      "scheme": "wss",
-      "port": 6001,
-      "path": "/socket"
+    {
+      "id": "tensorboard",
+      "service": "tensorflow",
+      "port": 6006,
+      "public": true,
+      "endpoints": [
+        {"roles": ["dashboard"], "scheme": "http", "path": "/"}
+      ]
     }
-  }
+  ]
 }
 ```
 
-Rules:
+- `access` is an ordered array of port groups (`[]` when the package exposes no network entry).
+  Order it so the browser-facing groups (`kind == ui`) come first and the main one leads: install
+  pre-fills a default domain for every group whose `endpoints[].roles` include a `ui` role, and the
+  first of them becomes the instance primary domain. When the app has no `ui` role at all, the first
+  URL-capable group is used instead. Pure `gateway`, `metrics` and internal `api` groups belong after
+  the `ui` groups because they are not default domain targets. See [app-access-spec.md](app-access-spec.md).
+- Each group requires `id`, `service`, `port`, `public`, and `endpoints`. `id` is the stable
+  reference used by instance port settings, domain bindings and per-group gateway configuration.
+- `port` is a container port and `protocol` (default `tcp`) is the transport; the same numeric
+  port on TCP and UDP is two groups. Only default-active long-running services belong here, not
+  one-shot `init` containers or disabled mutually exclusive profiles.
+- `public` is the default host-publishing switch and must agree with the repository default
+  `docker-compose.yml` mapping. `requireDomain` / `requireHttps` mark groups that cannot be
+  reached by bare IP or must always use TLS.
+- `rootUrl`, `host` and `mappedPort` list native environment variable names that receive the
+  group's effective public URL, public host form and host port. Each name must be declared in
+  `.env` and written by exactly one declaration. They are not platform aliases.
+- Each endpoint requires `roles` and `scheme`. `roles` (functional purpose) and `scheme` (wire
+  protocol) are orthogonal and validated against `metadata/access-types.json`; every role must
+  allow that `scheme`. Order roles by `kind` (`ui` → `api` → `infra`). Merge roles when the
+  service, resolved port, scheme, path and query describe the same endpoint.
+  Kinds are role-derived groups for display and filtering, not connection methods or proxy
+  capabilities.
+- `service` is a Compose service name. Consumers resolve targets from the configuration used by
+  the running instance, not unapplied `.env` changes. Compose-only mappings are expected
+  configuration, not proof of a live address. Runtime lookup is scoped to the app instance,
+  service, and enabled configuration. Inactive or absent containers are not ready; ambiguous
+  targets are errors, not first-match choices.
+- `path` and `query` are allowed only for path-capable schemes; `path` is an access path,
+  not a proxy routing or rewrite rule.
+- For reverse proxying, `http`, `https`, `ws` and `wss` endpoints are domain-binding candidates
+  regardless of role or UI. The platform confirms proxy and app support and chooses routing;
+  service/port equality does not prescribe how many domains to use.
+- Do not declare internal cluster ports or WebRTC media transports as app access endpoints.
+  Published media transports must be explicitly exempted in Compose per the access spec.
+  Optional collection inputs intended for operator use can be declared with empty `endpoints`.
+  Internal database dependencies belong to the `database` contract.
+- `defaultScheme` and legacy fixed surface keys are rejected.
+- Static checks compare target-service `ports` / `expose` evidence, per transport, from the
+  default `.env`; explicit conflicts fail, missing evidence is reported as unverified.
+  Deployment tests verify actual listeners, protocols, and access paths. Published mappings
+  alone do not prove them.
+- Endpoint paths follow the safety rules in the access spec.
+  Query credential-field checks supplement, but cannot replace, review of public static values.
 
-- `defaultScheme` is the scheme applied to every surface unless that surface overrides it.
-  It should be `http` or `https`; omit only for untouched legacy apps.
-- Use `scheme: https` when the package default entry is HTTPS-only or when the documented
-  default access expects HTTPS first.
-- Surface keys are a closed vocabulary:
-  `web` (primary browser entry), `admin` (additional management entry), `api` (programmatic API),
-  `ws` (WebSocket), `ssh` (shell), `metrics` (monitoring).
-  Add a custom key only when none applies, and document its meaning.
-- `web` and `admin` describe the role of an entry, not the privilege level at the path.
-  - The primary browser entry is always `web`, even when its path is not `/`. A unique
-    entry such as `/admin`, `/console`, `/app`, or `/web/login` is still `web`.
-  - `admin` is only for an additional management entry that is distinct from `web` and
-    worth exposing on its own, for example `/wp-admin`, `/umbraco`, `/_utils`, `/dashboard/`.
-  - Do not declare `admin` merely because the entry requires login, is called `admin`, or
-    is the only entry.
-- Default binding rule: the primary URL binding is `web` by convention. Extra bindings
-  also default to `web` when they are browser entries. Non-browser surfaces such as
-  `api`, `ws`, `ssh`, and `metrics` must be declared explicitly and never default to `web`.
-  The default applies to the surface role only; `port`, `path`, and `scheme` still have to
-  be declared.
-- A surface may override `defaultScheme` with its own `scheme` (for example `wss` for a
-  WebSocket surface, or `ssh` for a shell surface).
-- `path` and `port` keep their existing meaning per surface.
-- Do not use `protocol` at the access level. Reserve `protocol` for the transport layer
-  (`tcp` / `udp`) in port mappings.
-- The per-surface `scheme` form is still valid as an override, so legacy apps remain valid
-  and migrate only when touched.
+Structure and validation rules: [app-access-spec.md](app-access-spec.md).
+Run `libs app-check --app <app> --gate access`; `app-info` and reports expose `access_metadata`.

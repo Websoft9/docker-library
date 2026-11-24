@@ -1,5 +1,25 @@
 {
   "name": "umbraco",
+  "access": [
+    {
+      "id": "admin",
+      "service": "umbraco",
+      "port": 8443,
+      "public": true,
+      "rootUrl": [
+        "UMBRACO_APPLICATION_URL"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "https",
+          "path": "/umbraco/"
+        }
+      ]
+    }
+  ],
   "trademark": "Umbraco",
   "release": true,
   "upstream": {
@@ -18,17 +38,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "https",
-    "web": {
-      "port": 8443,
-      "path": "/"
-    },
-    "admin": {
-      "port": 8443,
-      "path": "/umbraco"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

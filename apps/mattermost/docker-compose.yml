@@ -6,9 +6,9 @@ services:
     security_opt:
       - no-new-privileges:true
     ports:
-      - "${W9_HTTP_PORT_SET}:8065" # Mattermost web UI and REST API
-      - "${W9_TCP_PORT_SET}:8443/tcp" # Mattermost Calls (TCP)
-      - "${W9_UDP_PORT_SET}:8443/udp" # Mattermost Calls (UDP)
+      - "9001:8065" # Mattermost web UI and REST API
+      - "8443:8443/tcp" # Mattermost Calls (TCP)
+      - "8443:8443/udp" # Mattermost Calls (UDP)
     volumes:
       - mattermost_config:/mattermost/config:rw
       - mattermost_data:/mattermost/data:rw

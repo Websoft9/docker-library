@@ -1,5 +1,25 @@
 {
   "name": "espocrm",
+  "access": [
+    {
+      "id": "web",
+      "service": "espocrm",
+      "port": 80,
+      "public": true,
+      "rootUrl": [
+        "ESPOCRM_SITE_URL"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "EspoCRM",
   "release": true,
   "edition": [
@@ -54,12 +74,5 @@
     "docs": [
       "https://docs.espocrm.com/administration/docker/installation/#install-espocrm-with-docker-compose"
     ]
-  },
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 80,
-      "path": "/"
-    }
   }
 }

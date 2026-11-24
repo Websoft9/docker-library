@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **JFrog Artifactory**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -23,11 +24,11 @@
 
 ## Configuration Reference
 
-Websoft9 packages this app from the official [JFrog Artifactory Docker image](releases-docker.jfrog.io/jfrog/artifactory-oss) and makes some improvements below.
+Websoft9 packages this app from the official [JFrog Artifactory Docker image](https://releases-docker.jfrog.io/jfrog/artifactory-oss) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
 - This package runs the official JFrog Artifactory OSS image and uses the bundled embedded Derby database, so no external database service is required. Artifactory OSS is open source and requires no license.
-- The Platform web console listens on port `8082` inside the container and is published through `W9_HTTP_PORT_SET`.
+- The Platform web console listens on container port `8082`; use the published port shown in Access.
 - The first sign-in uses the built-in `admin` / `password`; Artifactory forces a new administrator password on first sign-in, so changing that default here does not change the running instance.
 - Set the external base URL inside the UI (**Administration → General → JFrog URL / Base URL**) because the package does not configure it through environment variables.
 - Artifactory can take several minutes to start on the first boot.
@@ -68,7 +69,7 @@ Configuration files live inside the image; mount a single file read-only to over
 
 - [JFrog Artifactory Administrator Guide](https://support.websoft9.com/docs/jfrog) by Websoft9
 
-- [Docker Hub image](releases-docker.jfrog.io/jfrog/artifactory-oss)
+- [Docker Hub image](https://releases-docker.jfrog.io/jfrog/artifactory-oss)
 
 - [Official docs](https://www.jfrogchina.com/docs/docker-install-artifactory-1)
 

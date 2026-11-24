@@ -1,20 +1,15 @@
-# image: https://container-registry.oracle.com/ords/f?p=113:10::::::
-# docs: http://docs.oracle.com/en/database/
-
-version: '3.8'
-
 services:
   oracle:
     image: container-registry.oracle.com/database/enterprise:${W9_VERSION}
-    container_name: ${W9_ID}  
+    container_name: ${W9_ID}
     env_file: .env
     volumes:
       - data:/opt/oracle/oradata
       - startup:/opt/oracle/scripts/startup
-      - setup:/opt/oracle/scripts/setup 
+      - setup:/opt/oracle/scripts/setup
     ports:
-      -  ${W9_DB_PORT_SET}:1521
-      -  ${W9_HTTPS_PORT_SET}:5500
+      - "1521:1521" # Oracle database listener (SQL*Net)
+      - "5500:5500" # Oracle Enterprise Manager console
     restart: unless-stopped
 
 

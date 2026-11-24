@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **OpenClaw**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -26,7 +27,7 @@
 Websoft9 packages this app from the official [OpenClaw Docker image](https://ghcr.io/openclaw/openclaw) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
-- Leave `OPENCLAW_PUBLIC_SCHEME` and `OPENCLAW_PUBLIC_ORIGIN` empty for direct IP/LAN access. For domain access, set `OPENCLAW_PUBLIC_SCHEME=https` to derive the exact browser origin from `W9_URL`, or set `OPENCLAW_PUBLIC_ORIGIN` to an exact override before recreating the app.
+- Leave `OPENCLAW_PUBLIC_ORIGIN` empty for direct IP/LAN access. For domain access, set it to the exact browser origin (for example `https://openclaw.example.com`) before recreating the app.
 - When a reverse proxy terminates the request, set `OPENCLAW_TRUSTED_PROXIES` to the proxy source IP(s) the Gateway sees (space- or comma-separated). Without it, forwarded headers are rejected with `proxy_attribution_required`; keep the list narrow and make the proxy overwrite `X-Forwarded-*`.
 - The package re-applies `gateway.publicOrigin`, `gateway.controlUi.allowedOrigins`, and `gateway.trustedProxies` on every recreate through `openclaw-init`, so domain-related config changes do not get stuck in the persisted volume.
 <!-- W9_NOTE_END -->

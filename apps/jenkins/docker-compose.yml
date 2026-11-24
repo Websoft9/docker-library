@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     user: root
     ports:
-      - "${W9_HTTP_PORT_SET}:8080" # Web Console
+      - "9001:8080" # Web Console
     env_file: .env
     volumes:
       - jenkins:/var/jenkins_home

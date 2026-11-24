@@ -1,5 +1,22 @@
 {
   "name": "superset",
+  "access": [
+    {
+      "id": "web",
+      "service": "superset",
+      "port": 8088,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "dashboard"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Superset",
   "release": true,
   "upstream": {
@@ -19,12 +36,6 @@
       ]
     }
   ],
-  "access": {
-    "web": {
-      "port": 8088,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "8",

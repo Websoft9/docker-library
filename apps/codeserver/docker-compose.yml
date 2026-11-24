@@ -8,7 +8,7 @@ services:
     volumes:
       - "code:/config"
     ports:
-      - "${W9_HTTP_PORT_SET}:8443" # Web Console
+      - "9001:8443" # Web Console
       #- "9003:3000" # App preview during development
     restart: unless-stopped
 

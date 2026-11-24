@@ -1,5 +1,25 @@
 {
   "name": "jellyfin",
+  "access": [
+    {
+      "id": "web",
+      "service": "jellyfin",
+      "port": 8096,
+      "public": true,
+      "rootUrl": [
+        "JELLYFIN_PublishedServerUrl"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Jellyfin",
   "release": true,
   "edition": [
@@ -11,13 +31,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8096,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "8",

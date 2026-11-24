@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-11-18
+
+- Fixed the Enterprise variant's default SQL*Net and Enterprise Manager host ports.
+
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-10-14
 
 - No new upstream Oracle XE release is available; `container-registry.oracle.com/database/express` still publishes only `21.3.0-xe`, `18.4.0-xe`, and `latest`.

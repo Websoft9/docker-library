@@ -10,7 +10,6 @@ services:
     environment:
       - HOME=/home/node
       - OPENCLAW_CONFIG_PATH=/home/node/.openclaw/openclaw.json
-      - OPENCLAW_PUBLIC_SCHEME=${OPENCLAW_PUBLIC_SCHEME:-}
       - OPENCLAW_PUBLIC_ORIGIN=${OPENCLAW_PUBLIC_ORIGIN:-}
       - OPENCLAW_TRUSTED_PROXIES=${OPENCLAW_TRUSTED_PROXIES:-}
     entrypoint:
@@ -22,9 +21,7 @@ services:
         rm -f /tmp/w9-origin.json5 /tmp/w9-proxies.json5
         node -e '
         const fs = require("fs");
-        const scheme = process.env.OPENCLAW_PUBLIC_SCHEME || "";
-        const host = process.env.W9_URL || "";
-        const origin = (process.env.OPENCLAW_PUBLIC_ORIGIN || "").trim() || (scheme && host ? scheme + "://" + host : "");
+        const origin = (process.env.OPENCLAW_PUBLIC_ORIGIN || "").trim();
         if (origin) fs.writeFileSync("/tmp/w9-origin.json5", JSON.stringify({ gateway: { publicOrigin: origin, controlUi: { allowedOrigins: [origin] } } }));
         const proxies = (process.env.OPENCLAW_TRUSTED_PROXIES || "").split(/[\s,]+/).filter(Boolean);
         if (proxies.length) fs.writeFileSync("/tmp/w9-proxies.json5", JSON.stringify({ gateway: { trustedProxies: proxies } }));
@@ -55,8 +52,8 @@ services:
         condition: service_completed_successfully
     command: [ "node", "dist/index.js", "gateway", "--allow-unconfigured", "--bind", "${OPENCLAW_GATEWAY_BIND:-lan}", "--port", "18789" ]
     ports:
-      - "${W9_HTTP_PORT_SET}:18789" # Gateway Control UI and WebSocket API
-      - "${W9_BRIDGE_PORT_SET}:18790" # Browser/bridge control service
+      - "9001:18789" # Gateway Control UI and WebSocket API
+      - "18790:18790" # Browser/bridge control service
     env_file: .env
     environment:
       - HOME=/home/node

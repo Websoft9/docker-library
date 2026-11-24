@@ -10,7 +10,7 @@ services:
     env_file: .env
     command: ["sh", "/opt/qwenpaw/hub-entrypoint.sh"]
     ports:
-      - "${W9_HTTP_PORT_SET}:8000" # QwenPaw Hub console
+      - "9001:8000" # QwenPaw Hub console
     volumes:
       - qwenpaw_data:/app/working
       - ./src/hub-entrypoint.sh:/opt/qwenpaw/hub-entrypoint.sh:ro

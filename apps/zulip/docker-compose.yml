@@ -61,7 +61,7 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - "${W9_HTTPS_PORT_SET}:443" # HTTPS
+      - "9443:443" # HTTPS
     env_file: .env
     volumes:
       - "zulip:/data:rw"

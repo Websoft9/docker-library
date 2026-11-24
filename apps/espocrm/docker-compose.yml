@@ -26,7 +26,7 @@ services:
       - espocrm-custom-client:/var/www/html/client/custom
     restart: unless-stopped
     ports:
-      - "${W9_HTTP_PORT_SET}:80" # Web Console
+      - "9001:80" # Web Console
     depends_on:
       - mariadb
 

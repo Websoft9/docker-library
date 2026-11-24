@@ -21,7 +21,7 @@ services:
     container_name: ${W9_ID}
     command: ["zammad-nginx"]
     ports:
-      - "${W9_HTTP_PORT_SET}:8080" # Web Console
+      - "9001:8080" # Web Console
     depends_on:
       zammad-railsserver:
         condition: service_healthy

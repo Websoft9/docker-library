@@ -23,8 +23,8 @@ def write_catalog_schema(repo_fixture):
 def write_catalog_support(repo_fixture, app_name: str, payload: dict, taxonomy: dict | None = None):
     write_catalog_schema(repo_fixture)
     metadata_dir = repo_fixture / "metadata"
-    (metadata_dir / "catalog").mkdir(exist_ok=True)
-    (metadata_dir / "catalog" / f"{app_name}.json").write_text(json.dumps(payload) + "\n", encoding="utf-8")
+    (repo_fixture / "metadata" / ".catalog").mkdir(parents=True, exist_ok=True)
+    (repo_fixture / "metadata" / ".catalog" / f"{app_name}.json").write_text(json.dumps(payload) + "\n", encoding="utf-8")
     if taxonomy is None:
         taxonomy = {
             "version": 1,
@@ -77,7 +77,7 @@ def test_appstore_sync_cli_contract(monkeypatch):
             "deploy_dir": "/websoft9/library/apps",
             "catalog_dir": "/websoft9/library/metadata/catalog",
             "app_target": "/websoft9/library/apps/demo",
-            "catalog_source": "metadata/catalog/demo.json",
+            "catalog_source": "metadata/.catalog/demo.json",
             "catalog_target": "/websoft9/library/metadata/catalog/demo.json",
             "backup_dir": "/tmp/backup-demo",
             "rollback": ["cmd1", "cmd2"],
@@ -201,7 +201,7 @@ def test_sync_catalog_file_scp_then_docker_cp(repo_fixture, app_factory, monkeyp
         backup_dir="/tmp/backup-demo",
     )
 
-    assert catalog_rel == "metadata/catalog/demo.json"
+    assert catalog_rel == "metadata/.catalog/demo.json"
 
     prepare = " ".join(calls[0])
     assert "mkdir -p /tmp/websoft9-appstore-staging-demo" in prepare
@@ -210,7 +210,7 @@ def test_sync_catalog_file_scp_then_docker_cp(repo_fixture, app_factory, monkeyp
 
     scp_call = calls[1]
     assert scp_call[0] == "scp"
-    assert any(arg.endswith("/metadata/catalog/demo.json") for arg in scp_call)
+    assert any(arg.endswith("/metadata/.catalog/demo.json") for arg in scp_call)
     assert scp_call[-1] == "root@1.2.3.4:/tmp/websoft9-appstore-staging-demo/"
 
     apply_ssh = " ".join(calls[2])
@@ -237,7 +237,7 @@ def test_sync_catalog_file_missing_catalog_data_raises(repo_fixture, app_factory
             backup_dir="/tmp/backup-demo",
         )
     except FileNotFoundError as error:
-        assert "metadata/catalog/demo.json" in str(error)
+        assert "metadata/.catalog/demo.json" in str(error)
     else:
         raise AssertionError("expected FileNotFoundError for missing catalog data")
 
@@ -264,7 +264,7 @@ def test_prepare_preview_missing_catalog_still_syncs_app_dir(repo_fixture, app_f
     assert payload["catalog_synced"] is False
     assert payload["catalog_source"] is None
     assert payload["app_target"] == "/websoft9/library/apps/demo"
-    assert len(payload["rollback"]) == 3
+    assert len(payload["rollback"]) == 4
     assert payload["database_types_synced"] is True
     assert payload["catalog_refreshed"] is True
 
@@ -288,11 +288,12 @@ def test_prepare_preview_with_catalog_syncs_both(repo_fixture, app_factory, monk
     )
 
     assert payload["catalog_synced"] is True
-    assert payload["catalog_source"] == "metadata/catalog/demo.json"
+    assert payload["catalog_source"] == "metadata/.catalog/demo.json"
     assert payload["catalog_target"] == "/websoft9/library/metadata/catalog/demo.json"
-    assert len(payload["rollback"]) == 4
+    assert len(payload["rollback"]) == 5
     assert payload["database_types_target"] == "/websoft9/library/metadata/database-types.json"
     assert payload["secret_rules_target"] == "/websoft9/library/metadata/secret-rules.json"
+    assert payload["access_types_target"] == "/websoft9/library/metadata/access-types.json"
 
 
 @pytest.mark.parametrize("has_catalog", [False, True])
@@ -310,10 +311,10 @@ def test_prepare_preview_refreshes_once_after_all_copies(repo_fixture, app_facto
         "demo", host="1.2.3.4", secret_path=str(key), container="custom", progress=progress.append,
     )
 
-    refresh_commands = [command for command in calls if "appstore reload --json" in command[-1]]
+    refresh_commands = [command for command in calls if "appstore reload --local --json" in command[-1]]
     assert len(refresh_commands) == 1
     assert refresh_commands[0] == calls[-1]
-    assert calls[-1][-1] == "docker exec custom websoft9 appstore reload --json"
+    assert calls[-1][-1] == "docker exec custom websoft9 appstore reload --local --json"
     assert any("docker cp" in command[-1] for command in calls[:-1])
     if has_catalog:
         assert "catalog/demo.json" in calls[-2][-1]
@@ -325,6 +326,7 @@ def test_prepare_preview_refreshes_once_after_all_copies(repo_fixture, app_facto
     assert "secret-rules.json.bak.missing" in secret_rollback
     assert "docker cp" in secret_rollback
     assert "docker exec custom rm -f /websoft9/library/metadata/secret-rules.json" in secret_rollback
+    assert "access-types.json.bak.missing" in payload["rollback"][3]
 
 
 def test_prepare_preview_refresh_failure_is_not_reported_as_success(repo_fixture, app_factory, monkeypatch):
@@ -333,7 +335,7 @@ def test_prepare_preview_refresh_failure_is_not_reported_as_success(repo_fixture
     key.write_text("test fixture", encoding="utf-8")
 
     def fake_run(command, **kwargs):
-        if "appstore reload --json" in command[-1]:
+        if "appstore reload --local --json" in command[-1]:
             raise RuntimeError("app store refresh failed")
         return ""
 
@@ -395,6 +397,58 @@ def test_sync_secret_rules_dictionary_validates_and_replaces(repo_fixture, monke
     (repo_fixture / "metadata" / "secret-rules.json").write_text('{"base64": {}}', encoding="utf-8")
     with pytest.raises(ValueError, match="Invalid shared secret rules dictionary"):
         appstore_sync._sync_secret_rules("demo", "1.2.3.4", "root", repo_fixture / "key.pem", "websoft9", "/tmp/backup")
+    assert calls == []
+
+
+def test_sync_access_dictionary_validates_and_replaces(repo_fixture, monkeypatch):
+    calls = []
+    (repo_fixture / "key.pem").write_text("-----BEGIN OPENSSH PRIVATE KEY-----\n", encoding="utf-8")
+    monkeypatch.setattr(appstore_sync, "_run", lambda command, **kwargs: calls.append(command) or "")
+    digest = appstore_sync._sync_access_types(
+        "demo", "1.2.3.4", "root", repo_fixture / "key.pem", "websoft9", "/tmp/backup-demo",
+    )
+    assert digest == hashlib.sha256((repo_fixture / "metadata" / "access-types.json").read_bytes()).hexdigest()
+    assert "access-types.json.bak.missing" in calls[0][-1]
+    assert "sha256sum -c - && mv" in calls[2][-1]
+    assert f".access-types-{digest}.tmp" in calls[2][-1]
+
+
+@pytest.mark.parametrize("missing", [False, True])
+def test_prepare_preview_rejects_access_dictionary_before_remote_writes(repo_fixture, app_factory, monkeypatch, missing):
+    app_factory("demo")
+    key = repo_fixture / "key.pem"
+    key.write_text("test fixture", encoding="utf-8")
+    dictionary = repo_fixture / "metadata" / "access-types.json"
+    if missing:
+        dictionary.unlink()
+    else:
+        dictionary.write_text('{"roles": {}, "schemes": {}}', encoding="utf-8")
+    calls = []
+    monkeypatch.setattr(appstore_sync, "_run", lambda *args, **kwargs: calls.append(args))
+    with pytest.raises((FileNotFoundError, ValueError), match="access"):
+        appstore_sync.prepare_preview("demo", host="1.2.3.4", secret_path=str(key))
+    assert calls == []
+
+
+def test_prepare_preview_rejects_old_access_before_remote_writes(repo_fixture, app_factory, monkeypatch):
+    app_factory("demo", variables={"access": {"web": {"port": 80}}})
+    key = repo_fixture / "key.pem"
+    key.write_text("test fixture", encoding="utf-8")
+    calls = []
+    monkeypatch.setattr(appstore_sync, "_run", lambda *args, **kwargs: calls.append(args))
+    with pytest.raises(ValueError, match="Invalid access declaration"):
+        appstore_sync.prepare_preview("demo", host="1.2.3.4", secret_path=str(key))
+    assert calls == []
+
+
+def test_prepare_preview_rejects_missing_access_before_remote_writes(repo_fixture, app_factory, monkeypatch):
+    app_factory("demo", declare_access=False)
+    key = repo_fixture / "key.pem"
+    key.write_text("test fixture", encoding="utf-8")
+    calls = []
+    monkeypatch.setattr(appstore_sync, "_run", lambda *args, **kwargs: calls.append(args))
+    with pytest.raises(ValueError, match="Invalid access declaration"):
+        appstore_sync.prepare_preview("demo", host="1.2.3.4", secret_path=str(key))
     assert calls == []
 
 

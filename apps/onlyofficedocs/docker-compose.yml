@@ -7,7 +7,7 @@ services:
       - .env
     cpu_percent: 50
     ports:
-      - "${W9_HTTP_PORT_SET}:80" # Web Console
+      - "9002:80" # Web Console
     expose:
       - '80'
       - '443'

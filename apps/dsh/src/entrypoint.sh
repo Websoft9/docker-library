@@ -1,12 +1,10 @@
 #!/bin/sh
 set -eu
 
-: "${W9_HTTP_PORT:=3080}"
 : "${DSH_INTERNAL_PORT:=3081}"
 : "${DSH_HOME:=/var/lib/dsh}"
 : "${DSH_WORKSPACE:=/workspace}"
 : "${DSH_FORCE_LOOPBACK_UI:=true}"
-: "${W9_URL:=}"
 : "${DSH_TRUSTED_HOSTS:=}"
 
 mkdir -p "${DSH_HOME}" "${DSH_WORKSPACE}"
@@ -14,13 +12,6 @@ mkdir -p "${DSH_HOME}" "${DSH_WORKSPACE}"
 cd "${DSH_WORKSPACE}"
 
 trusted_host_args=""
-if [ -n "${W9_URL}" ]; then
-  trusted_host=$(printf '%s' "${W9_URL}" | sed -E 's#^[a-zA-Z]+://##; s#/.*$##')
-  if [ -n "${trusted_host}" ]; then
-    trusted_host_args="--trusted-host ${trusted_host}"
-  fi
-fi
-
 if [ -n "${DSH_TRUSTED_HOSTS}" ]; then
   OLD_IFS=${IFS}
   IFS=,

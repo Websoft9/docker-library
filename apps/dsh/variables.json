@@ -1,5 +1,25 @@
 {
   "name": "dsh",
+  "access": [
+    {
+      "id": "web",
+      "service": "dsh",
+      "port": 3080,
+      "public": true,
+      "host": [
+        "DSH_TRUSTED_HOSTS"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "DeepSeek Harness",
   "release": true,
   "upstream": {
@@ -20,13 +40,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 3080,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

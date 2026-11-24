@@ -6,7 +6,7 @@ services:
       host.docker.internal: host-gateway
     restart: unless-stopped
     ports:
-      - "${W9_HTTP_PORT_SET}:8000" # Web Console
+      - "9001:8000" # Web Console
     env_file:
       - .env
     volumes:

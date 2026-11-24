@@ -11,8 +11,8 @@ services:
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
     ports:
-      - "${W9_HTTP_PORT_SET}:8080" # Web Console
-      - "${W9_API_PORT_SET}:80" # HTTP Entrypoint
+      - "9002:8080" # Web Console
+      - "9003:80" # HTTP Entrypoint
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./src/traefik.yml:/etc/traefik/traefik.yml

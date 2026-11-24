@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-11-03
 - Declared the MySQL dependency and existing native `WORDPRESS_DB_*` mappings for external MySQL/MariaDB connections, inheriting database names and accounts from the shared dictionary.
 - Declared the internal Redis dependency without credentials and recorded the existing `WP_REDIS_HOST`, `WP_REDIS_PORT`, and `WP_REDIS_DATABASE` sources used by WordPress and its bootstrap helper.

@@ -38,7 +38,7 @@ services:
     restart: unless-stopped
     command: ["/app/docker/docker-bootstrap.sh", "app-gunicorn"]
     ports:
-      - "${W9_HTTP_PORT_SET}:8088" # Web Console
+      - "9001:8088" # Web Console
     user: root
     depends_on:
       superset-init:

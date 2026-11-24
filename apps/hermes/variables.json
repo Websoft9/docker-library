@@ -1,5 +1,37 @@
 {
   "name": "hermes",
+  "access": [
+    {
+      "id": "web",
+      "service": "hermes",
+      "port": 9119,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "dashboard"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    },
+    {
+      "id": "api",
+      "service": "hermes",
+      "port": 8642,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/v1"
+        }
+      ]
+    }
+  ],
   "trademark": "Hermes Agent",
   "release": true,
   "upstream": {
@@ -23,16 +55,6 @@
       ]
     }
   ],
-  "access": {
-    "web": {
-      "port": 9119,
-      "path": "/"
-    },
-    "api": {
-      "port": 8642,
-      "path": "/v1"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

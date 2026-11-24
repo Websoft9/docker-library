@@ -4,7 +4,7 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - "${W9_HTTP_PORT_SET}:3001" # Web Console
+      - "9001:3001" # Web Console
     env_file: .env
     volumes:
       - uptime-kuma:/app/data

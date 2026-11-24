@@ -1,5 +1,25 @@
 {
   "name": "openwebui",
+  "access": [
+    {
+      "id": "web",
+      "service": "app",
+      "port": 8080,
+      "public": true,
+      "rootUrl": [
+        "WEBUI_URL"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Open WebUI",
   "release": true,
   "upstream": {
@@ -20,17 +40,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8080,
-      "path": "/"
-    },
-    "admin": {
-      "port": 8080,
-      "path": "/admin"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

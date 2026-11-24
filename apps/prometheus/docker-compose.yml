@@ -9,7 +9,7 @@ services:
       - ./src/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus:/prometheus
     ports:
-      - "${W9_HTTP_PORT_SET}:9090" # Web Console
+      - "9001:9090" # Web Console
 
   prometheus-pushgateway:
     image: prom/pushgateway:v1.11.3

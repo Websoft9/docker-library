@@ -5,7 +5,9 @@
 ### Deploy Verification
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Symfony**.
-2. Open the app's Access URL and confirm the starter page loads.
+2. In the **Access** tab, get the login URL and credentials.
+
+3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
 ### Usage
@@ -16,7 +18,7 @@
 
 ## Configuration Reference
 
-This package runs the Symfony framework from its [official source repository](https://github.com/symfony/symfony) on the [Server Side Up PHP 8.5 FrankenPHP image](https://hub.docker.com/r/serversideup/php).
+Websoft9 packages this app from the official [Symfony Docker image](https://github.com/symfony/symfony) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
 ### Database
@@ -56,13 +58,16 @@ Environment variables are defined in the app's `.env` file; see the reference se
 
 - `./src/entrypoint.sh` → `/opt/websoft9/entrypoint.sh`
 - `./src/entrypoint.d` → `/opt/websoft9/entrypoint.d`
+- `./src/favicon.ico` → `/opt/websoft9/favicon.ico`
 
 
 
 ## References
 
-- [Symfony framework repository](https://github.com/symfony/symfony)
-- [Server Side Up PHP image](https://hub.docker.com/r/serversideup/php)
+- [Symfony Administrator Guide](https://support.websoft9.com/docs/symfony) by Websoft9
+
+- [Docker Hub image](https://github.com/symfony/symfony)
+
 - [Releases](https://github.com/symfony/symfony/releases)
 
 - [GitHub docs](https://github.com/symfony/symfony)

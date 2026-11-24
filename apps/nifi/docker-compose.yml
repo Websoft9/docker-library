@@ -2,12 +2,11 @@ services:
   nifi:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
-    hostname: ${W9_URL}
     restart: unless-stopped
     env_file:
       - .env
     ports:
-      - "${W9_HTTPS_PORT_SET}:8443" # Web Console (HTTPS)
+      - "9001:8443" # Web Console (HTTPS)
     volumes:
       - nifi_conf:/opt/nifi/nifi-current/conf
       - nifi_state:/opt/nifi/nifi-current/state

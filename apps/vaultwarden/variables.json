@@ -1,5 +1,35 @@
 {
   "name": "vaultwarden",
+  "access": [
+    {
+      "id": "http",
+      "service": "vaultwarden",
+      "port": 80,
+      "public": false,
+      "requireDomain": true,
+      "requireHttps": true,
+      "rootUrl": [
+        "DOMAIN"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web",
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/"
+        },
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/admin"
+        }
+      ]
+    }
+  ],
   "trademark": "Vaultwarden",
   "release": true,
   "edition": [
@@ -11,17 +41,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 80,
-      "path": "/"
-    },
-    "admin": {
-      "port": 80,
-      "path": "/admin"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

@@ -5,9 +5,9 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - "${W9_ER_PORT_SET}:4369" # Erlang distribution (epmd)
-      - "${W9_MQ_PORT_SET}:5672" # AMQP 0-9-1
-      - "${W9_HTTP_PORT_SET}:15672" # Management UI
+      - "4369:4369" # Erlang distribution (epmd)
+      - "5672:5672" # AMQP 0-9-1
+      - "15672:15672" # Management UI
     env_file: .env
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq

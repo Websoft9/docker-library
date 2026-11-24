@@ -1,5 +1,22 @@
 {
   "name": "clickhouse",
+  "access": [
+    {
+      "id": "db",
+      "service": "clickhouse",
+      "port": 8123,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "db"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "ClickHouse",
   "release": true,
   "upstream": {
@@ -19,12 +36,6 @@
       ]
     }
   ],
-  "access": {
-    "web": {
-      "port": 8123,
-      "path": "/play"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "1",

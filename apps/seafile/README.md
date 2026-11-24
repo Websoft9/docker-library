@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Seafile**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -28,7 +29,7 @@ Websoft9 packages this app from the official [Seafile Docker image](https://hub.
 <!-- W9_NOTE_START -->
 Notes:
 
-- Domain mode: set `W9_URL` and `SEAFILE_SERVER_PROTOCOL=https` when the app is served behind an HTTPS gateway. A wrong protocol makes the web UI render blank.
+- Domain mode: set `SEAFILE_EXTERNAL_HOSTPORT` to the public host and `SEAFILE_SERVER_PROTOCOL=https` when using an HTTPS gateway. A wrong protocol can make the web UI render blank.
 - No-domain mode: set `SEAFILE_EXTERNAL_HOSTPORT` to a reachable `IP:port`, for example `203.0.113.10:9001`.
 - The package ships `src/nginx-proxy.conf`, which the Websoft9 Gateway injects to disable response buffering for Seafile's chunked assets. This fixes `ERR_INCOMPLETE_CHUNKED_ENCODING` and blank admin pages behind a domain.
 - SeaDoc is not bundled. `.sdoc` is a Seafile-specific format; use OnlyOffice for online editing of office files. OnlyOffice is configured directly in `seahub_settings.py`.
@@ -81,6 +82,8 @@ Configuration files live inside the image; mount a single file read-only to over
 - [Official docs](https://manual.seafile.com/latest/extension/only_office/)
 
 - [Official docs](https://manual.seafile.com/latest/upgrade/upgrade_notes_for_13.0.x/)
+
+- [Official docs](https://manual.seafile.com/latest/setup/use_other_reverse_proxy/)
 
 
 <!-- W9_TROUBLESHOOT_START -->

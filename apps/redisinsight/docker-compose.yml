@@ -7,7 +7,7 @@ services:
     env_file:
       - .env
     ports:
-      - "${W9_HTTP_PORT_SET}:5540" # RedisInsight web console
+      - "9091:5540" # RedisInsight web console
     volumes:
       - redisinsight:/data
     restart: unless-stopped

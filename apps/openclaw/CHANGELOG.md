@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-11-20
+
+- Set the internal `bridge` port group (`18790`) to `public: false` per `docs/app-access-spec.md` section 4.2. The upstream compose port mappings are left unchanged.
+
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-09-24
 - Update the OpenClaw community package from `2026.3.13-1` to `2026.9.6` (`ghcr.io/openclaw/openclaw`).
 - Normalize `.env` and `docker-compose.yml` to current repository policy: braced `${VAR}` references, inline port purpose comments, and removal of inline image/docs source comments.

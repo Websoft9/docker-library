@@ -1,5 +1,33 @@
 {
   "name": "supabase",
+  "access": [
+    {
+      "id": "studio",
+      "service": "api-gw",
+      "port": 8000,
+      "public": true,
+      "rootUrl": [
+        "SUPABASE_PUBLIC_URL"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "admin",
+            "gateway"
+          ],
+          "scheme": "http",
+          "path": "/"
+        },
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/rest/v1/"
+        }
+      ]
+    }
+  ],
   "trademark": "Supabase",
   "release": true,
   "upstream": {
@@ -23,17 +51,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8000,
-      "path": "/"
-    },
-    "api": {
-      "port": 8000,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

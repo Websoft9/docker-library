@@ -162,7 +162,7 @@ jobs:
           manifest_key="appstore/$CHANNEL/manifests/appstore-manifest.json"
           existing=$(aws s3api list-objects-v2 --bucket artifact --prefix "$manifest_key" \
             --query "Contents[?Key=='$manifest_key'].Key | [0]" --output text \
-            --endpoint-url "$AWS_ENDPOINT_URL")
+            --endpoint-url "$AWS_ENDPOINT_URL" --region auto)
           if [[ "$existing" == None || -z "$existing" ]]; then
             echo "No published manifest; build all app packages without an incremental baseline"
             echo "seed=true" >> "$GITHUB_OUTPUT"
@@ -170,13 +170,13 @@ jobs:
             test "$existing" = "$manifest_key"
             mkdir -p dist/previous-library
             aws s3 cp "s3://artifact/$manifest_key" dist/previous-library/appstore-manifest.json \
-              --endpoint-url "$AWS_ENDPOINT_URL"
+              --endpoint-url "$AWS_ENDPOINT_URL" --region auto
             version=$(jq -er '.library.datasetVersion | select(type == "string" and test("^[a-f0-9]{16}$"))' \
               dist/previous-library/appstore-manifest.json)
             index="apps-index-$version.json"
             for name in "$index" "$index.sha256"; do
               aws s3 cp "s3://artifact/appstore/$CHANNEL/library/$name" "dist/previous-library/$name" \
-                --endpoint-url "$AWS_ENDPOINT_URL"
+                --endpoint-url "$AWS_ENDPOINT_URL" --region auto
             done
             pushd dist/previous-library > /dev/null
             sha256sum --strict --check "$index.sha256"

@@ -6,12 +6,13 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Jitsi**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
 ### Usage
 
-1. Bind a domain to the server and set `PUBLIC_URL` in `.env` to `https://<your-domain>:${W9_HTTPS_PORT_SET}`.
+1. Bind an HTTPS domain to the app. For manual deployment, set `PUBLIC_URL=https://<your-domain>` in `.env`, including the external port only if the browser uses a nonstandard HTTPS port.
 2. Open the Access URL in a browser, start a meeting, and share the room link.
 3. Sign in with the generated passwords only if authentication (`ENABLE_AUTH`) is enabled.
 
@@ -20,7 +21,7 @@
 ### Notes
 
 - HTTPS is required, and Jitsi cannot be reached by bare IP; use a real domain and a valid or self-signed certificate.
-- Meeting media uses UDP port `${W9_UDP_PORT_SET}` (default 10000); open it in the firewall/security group.
+- Meeting media uses UDP port `${JVB_PORT}` (default 10000); open it in the firewall/security group.
 - Change the component passwords in `.env` (`JICOFO_AUTH_PASSWORD`, `JVB_AUTH_PASSWORD`, ...) and rebuild.
 <!-- W9_GUIDE_END -->
 
@@ -44,6 +45,7 @@ Supported versions: stable-11248.
 | Purpose | Port |
 | --- | --- |
 | Web Console (HTTPS) | 8443 |
+| JVB media (UDP) | 10000/udp |
 
 
 ### Data Directory

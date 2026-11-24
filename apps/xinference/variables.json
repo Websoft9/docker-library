@@ -1,5 +1,29 @@
 {
   "name": "xinference",
+  "access": [
+    {
+      "id": "web",
+      "service": "xinference",
+      "port": 9997,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/ui/"
+        },
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/v1"
+        }
+      ]
+    }
+  ],
   "trademark": "Xinference",
   "release": false,
   "upstream": {
@@ -19,16 +43,12 @@
   "edition": [
     {
       "dist": "community",
-      "version": ["v4.0.0", "latest"]
+      "version": [
+        "v4.0.0",
+        "latest"
+      ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 9997,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "4",
     "memory": "8",

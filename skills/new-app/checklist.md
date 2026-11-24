@@ -1,5 +1,7 @@
 # New App Checklist
 
+- [ ] Confirm required access is present; missing declarations block validation/publishing, and empty entries must be justified rather than used for unknown facts
+- [ ] Replace scaffold access assumptions with verified access declarations per `docs/app-access-spec.md`; run `libs app-check --app <app> --gate access` and confirm empty vs unknown
 - [ ] Load CLI venv (`make install` if `.venv/` missing), run `.venv/bin/libs list --include-archived --json`
 - [ ] If `<app>` is in the full list (active/archived/internal), report its status, scope, cadence, update_policy and stop (re-input name or terminate)
 - [ ] Read the issue prose, extract name, trademark, and at least one official reference URL
@@ -10,7 +12,8 @@
 - [ ] Declare verified `database[]` components per `docs/app-database-connection-spec.md`; omit when not applicable; run `libs app-check --app <app> --gate database-metadata`
 - [ ] Use braced `${VAR}` form for all environment variable references in `.env`, `docker-compose.yml`, and config templates
 - [ ] Decide env groups: enable password group (DB/login apps) and web group (web apps); delete unused groups
-- [ ] Apply `docs/w9-env-spec.md` decision rules for `W9_URL`, `W9_URL_REPLACE`, `W9_LOGIN*`, `_SET` ports, and dependency helpers
+- [ ] Apply `docs/w9-env-spec.md` decision rules for `W9_LOGIN*` and dependency helpers, and `docs/app-access-spec.md` for the access port-group array; never add `W9_*_PORT_SET`, `W9_HTTP_PORT`, `W9_HTTPS_PORT`, `W9_URL`, `W9_URL_REPLACE` or `W9_ADMIN_PATH`
+- [ ] Set each group's `public` per `docs/app-access-spec.md` section 4.2 (install must stay minimal): `true` only for the main UI, the product's own service port, or a core port needed immediately; `false` for receiver/collection ports, ports needing in-app setup, internal/cluster ports, `metrics` and secondary entries. Keep the upstream compose `ports` mappings unchanged; `public` is a deployment policy, not a compose edit
 - [ ] Fill `.env` "image environment variables" section: single Docs URL, used vars, up to 5 unused vars commented out
 - [ ] Declare pre-startup internal secrets in `variables.json` `env.secrets` (plain `"KEY"` or a single-key object selecting `base64`, `fernet`, or `jwt:<SECRET_KEY>`) per `docs/app-secret-spec.md`; verify lengths/encodings against upstream references, confirm Websoft9 generator support, and run `.venv/bin/libs app-check --app <app> --gate secrets`
 - [ ] Write `CHANGELOG.md` with the pure-date heading `## YYYY-MM-DD` for the initial change batch
@@ -20,4 +23,4 @@
 - [ ] Run `.venv/bin/libs appstore-sync --app <app>` after validation when `websoft9` is reachable (preflight <= 10s; skip when absent)
 - [ ] Produce a short test report
 - [ ] Assign cadence/update policy by writing the app into `metadata/maintenance.yaml` buckets, and state it in the report
-- [ ] Write repo catalog fields: copy `metadata/templates/catalog.json` to `metadata/catalog/<app>.json`; fill `catalogBindings` from `metadata/catalog-taxonomy.json` when applicable; owner reviews before `.venv/bin/libs catalog-push --app <app> --apply`
+- [ ] Write the catalog working copy: copy `metadata/templates/catalog.json` to `metadata/.catalog/<app>.json`; fill `catalogBindings` from `metadata/catalog-taxonomy.json` when applicable; owner seeds with `.venv/bin/libs catalog-push --app <app> --apply`; do not commit `metadata/.catalog/`

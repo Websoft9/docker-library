@@ -1,5 +1,21 @@
 {
   "name": "mariadb",
+  "access": [
+    {
+      "id": "db",
+      "service": "mariadb",
+      "port": 3306,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "db"
+          ],
+          "scheme": "mysql"
+        }
+      ]
+    }
+  ],
   "trademark": "MariaDB",
   "release": true,
   "edition": [

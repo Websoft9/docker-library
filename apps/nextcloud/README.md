@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Nextcloud**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -28,7 +29,7 @@ Websoft9 packages this app from the official [Nextcloud Docker image](https://hu
 <!-- W9_NOTE_START -->
 This package keeps Nextcloud on the official single-node Apache image with a bundled MySQL database. The MySQL service is configured with `READ COMMITTED` isolation and row-based binlog format to match the current Nextcloud database requirements.
 
-The package keeps `NEXTCLOUD_TRUSTED_DOMAINS="*"` by default so first access through the published IP/port works during initial setup and validation. If you deploy behind a real domain or reverse proxy, enable `OVERWRITEHOST=${W9_URL}` and `OVERWRITEPROTOCOL=https` as needed.
+The package keeps `NEXTCLOUD_TRUSTED_DOMAINS="*"` by default so first access through the published IP/port works during initial setup and validation. If you deploy behind a reverse proxy, set `OVERWRITEHOST` to the browser's public host and `OVERWRITEPROTOCOL=https` as needed.
 
 When reinstalling or upgrading, keep the bundled MySQL version aligned with Nextcloud's supported database matrix, and confirm the host you use to access the site is accepted by Nextcloud's trusted domains list.
 <!-- W9_NOTE_END -->

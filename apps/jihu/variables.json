@@ -1,5 +1,56 @@
 {
   "name": "jihu",
+  "access": [
+    {
+      "id": "web",
+      "service": "jihu",
+      "port": 80,
+      "public": true,
+      "rootUrl": [
+        "GITLAB_EXTERNAL_URL"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        },
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/admin"
+        },
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/api/v4"
+        }
+      ]
+    },
+    {
+      "id": "ssh",
+      "service": "jihu",
+      "port": 22,
+      "public": true,
+      "mappedPort": [
+        "GITLAB_SSH_PORT"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "ssh"
+          ],
+          "scheme": "ssh"
+        }
+      ]
+    }
+  ],
   "trademark": "Jihu GitLab",
   "release": true,
   "edition": [
@@ -11,16 +62,6 @@
       ]
     }
   ],
-  "access": {
-    "web": {
-      "port": 80,
-      "path": "/"
-    },
-    "admin": {
-      "port": 80,
-      "path": "/admin"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "8",

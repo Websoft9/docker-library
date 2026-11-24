@@ -6,12 +6,13 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Umbraco**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
 ### Usage
 
-1. Open `https://<host>:${W9_HTTPS_PORT_SET}` from the **Access** tab and accept the self-signed certificate warning.
+1. Open the HTTPS address from the **Access** tab (default host port `9001`) and accept the self-signed certificate warning.
 2. Sign in to the backoffice at `/umbraco` with the credentials from the **Access** tab.
 3. Create your first content node to confirm the publishing flow.
 
@@ -26,15 +27,11 @@
 Websoft9 packages this app from the official [Umbraco Docker image](https://hub.docker.com/r/websoft9dev/umbraco) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
-
 - Umbraco runs HTTPS by default with a self-signed certificate generated on first start and stored in the `umbraco_data` volume.
 - Application logs are written to both `docker logs` and the persisted Umbraco log files under `/app/umbraco/Logs`.
-
 <!-- W9_NOTE_END -->
 
-`docker compose up` uses the prebuilt image `${W9_REPO}:${W9_VERSION}`. The local `Dockerfile` is kept for separate image build/publish workflows and is not invoked by the runtime compose file.
-
-Apps run as containers; recreate after any configuration change.
+Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
@@ -90,7 +87,7 @@ Configuration files live inside the image; mount a single file read-only to over
 - Check `docker compose logs`.
 
 **Certificate warning in the browser?**
-- The package serves a self-signed certificate by default. Open `https://<host>:${W9_HTTPS_PORT_SET}` and accept the warning, or replace it with your own certificate at the reverse proxy layer.
+- The package serves a self-signed certificate by default. Use the published HTTPS address, or terminate TLS with your own certificate at the reverse proxy.
 
 **Port not reachable?**
 - Ensure the firewall / security group allows the HTTPS port.

@@ -9,7 +9,7 @@ services:
       db:
         condition: service_healthy
     ports:
-      - "${W9_HTTP_PORT_SET}:9000" # Web Console
+      - "9001:9000" # Web Console
     env_file: .env
     tmpfs:
       - /tmp:size=256M,mode=1777

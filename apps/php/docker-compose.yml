@@ -4,12 +4,12 @@
 services:
   php:
     container_name: ${W9_ID}
-    image: $W9_REPO:$W9_VERSION${DEPLOY_TIME}
+    image: ${W9_REPO}:${W9_VERSION}${DEPLOY_TIME}
     restart: unless-stopped
     command: /bin/bash -c "bash /usr/local/bin/cmd.sh && apache2-foreground"
     env_file: .env
     ports:
-     - $W9_HTTP_PORT_SET:80
+     - "9001:80" # Web Server
     volumes: 
       - source:/var/www/html
       - ./src/000-default.conf:/etc/apache2/sites-available/000-default.conf

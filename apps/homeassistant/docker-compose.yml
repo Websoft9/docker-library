@@ -6,10 +6,10 @@
 version: '3.8'
 services:
   homeassistant:
-    container_name: $W9_ID
-    image: $W9_REPO:$W9_VERSION
+    container_name: ${W9_ID}
+    image: ${W9_REPO}:${W9_VERSION}
     ports:
-      - $W9_HTTP_PORT_SET:8123
+      - "9009:8123" # Web Console
     volumes:
       - hs_config:/config
       - /etc/localtime:/etc/localtime:ro
@@ -25,4 +25,4 @@ networks:
     external: true
 
 volumes:
-  hs_config: 
+  hs_config:

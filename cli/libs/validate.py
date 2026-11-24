@@ -10,6 +10,7 @@ import yaml
 import jsonschema
 from dotenv import dotenv_values
 
+from libs.access import access_metadata, is_deprecated_w9_access_key
 from libs.metadata import app_dir
 from libs.output import print_output
 from libs.repo import repo_path
@@ -33,15 +34,19 @@ DEPENDENCY_IMAGE_RE = re.compile(r"^(?P<repo>[^:@]+(?:/[^:@]+)*):(?P<tag>[^@\s]+
 PATCH_TAG_RE = re.compile(r"^\d+\.\d+\.\d+(?:[-_][A-Za-z0-9._-]+)?$")
 DEPENDENCY_TAG_HINT_RE = re.compile(r"(redis|postgres|postgresql|mysql|mariadb|pgvector)", re.IGNORECASE)
 ENV_REF_RE = re.compile(r"\$\{?([A-Z0-9_]+)\}?")
-IMAGE_ENGINE_HINTS = (
-    ("mariadb", "mariadb"),
-    ("mysql", "mysql"),
-    ("pgvector", "postgresql"),
-    ("postgres", "postgresql"),
-    ("redis", "redis"),
-    ("mongo", "mongodb"),
-    ("clickhouse", "clickhouse"),
-)
+IMAGE_ENGINES = {
+    "mariadb": "mariadb",
+    "mysql": "mysql",
+    "pgvector": "postgresql",
+    "postgres": "postgresql",
+    "postgresql": "postgresql",
+    "zulip-postgresql": "postgresql",
+    "redis": "redis",
+    "mongo": "mongodb",
+    "mongodb": "mongodb",
+    "clickhouse": "clickhouse",
+    "clickhouse-server": "clickhouse",
+}
 
 
 def _read_compose(path: Path) -> dict:
@@ -74,18 +79,6 @@ def _container_port(entry, env: dict | None = None) -> int | None:
         except ValueError:
             return None
     return None
-
-
-def _compose_container_ports(compose: dict, env: dict | None = None) -> set[int]:
-    ports: set[int] = set()
-    for service in (compose.get("services") or {}).values():
-        if not isinstance(service, dict):
-            continue
-        for entry in service.get("ports", []) or []:
-            port = _container_port(entry, env)
-            if port is not None:
-                ports.add(port)
-    return ports
 
 
 def _structure_result(target: Path) -> dict:
@@ -135,19 +128,6 @@ def _policy_result(target: Path) -> dict:
     missing_translation = [key for key in env_keys if TRANSLATABLE_ENV_RE.match(key) and key not in translation]
     login_keys = [key for key in ("W9_LOGIN_USER", "W9_LOGIN_PASSWORD") if key in env_map]
     login_pair_ok = len(login_keys) in (0, 2)
-    url_declared_ok = "W9_URL_REPLACE" not in env_map or "W9_URL" in env_map
-    url_replace_required = any(
-        not key.startswith("W9_") and URL_AWARE_KEY_RE.search(key) and URL_CONFIG_REF_RE.search(value)
-        for key, value in env_map.items()
-    ) or bool(URL_CONFIG_REF_RE.search(compose_text))
-    url_replace_ok = True
-    if "W9_URL_REPLACE" in env_map:
-        url_replace_ok = bool(URL_CONFIG_REF_RE.search(compose_text)) or any(
-            bool(URL_CONFIG_REF_RE.search(value)) for value in env_map.values()
-        )
-    url_replace_required_ok = True
-    if url_replace_required:
-        url_replace_required_ok = env_map.get("W9_URL_REPLACE", "").strip("'\"").lower() == "true"
     dependency_patch_tags = []
     for service_name, service in (compose.get("services") or {}).items():
         image = service.get("image")
@@ -164,29 +144,16 @@ def _policy_result(target: Path) -> dict:
             dependency_patch_tags.append({"service": service_name, "image": image})
     dependency_tag_policy_ok = not dependency_patch_tags
 
-    access_missing_ports = []
     secrets_declared: list[str] = []
     secrets_missing: list[str] = []
     secrets_empty: list[str] = []
-    setup_missing_access: list[dict] = []
-    setup_missing_services: list[dict] = []
-    setup_duplicate_ids: list[str] = []
     variables_path = target / "variables.json"
     if variables_path.exists():
         try:
-            variables = json.loads(variables_path.read_text(encoding="utf-8"))
+            loaded = json.loads(variables_path.read_text(encoding="utf-8"))
+            variables = loaded if isinstance(loaded, dict) else {}
         except json.JSONDecodeError:
             variables = {}
-        port_env = dotenv_values(env_path, interpolate=False) if env_path.exists() else {}
-        container_ports = _compose_container_ports(compose, port_env)
-        compose_services = set((compose.get("services") or {}).keys())
-        access_keys = set((variables.get("access") or {}).keys())
-        for key, entry in (variables.get("access") or {}).items():
-            if not isinstance(entry, dict):
-                continue
-            port = entry.get("port")
-            if isinstance(port, int) and port not in container_ports:
-                access_missing_ports.append({"key": key, "port": port})
         for item in (variables.get("env") or {}).get("secrets") or []:
             name = (
                 item
@@ -202,62 +169,27 @@ def _policy_result(target: Path) -> dict:
                 secrets_missing.append(name)
             elif env_map[name].strip().strip("'\"").strip() == "":
                 secrets_empty.append(name)
-        seen_setup_ids: set[str] = set()
-        for step in (variables.get("setup") or {}).get("steps") or []:
-            if not isinstance(step, dict):
-                continue
-            step_id = step.get("id")
-            if isinstance(step_id, str):
-                if step_id in seen_setup_ids:
-                    setup_duplicate_ids.append(step_id)
-                seen_setup_ids.add(step_id)
-            action = step.get("action")
-            if not isinstance(action, dict):
-                continue
-            action_type = action.get("type")
-            if action_type == "open":
-                access_key = action.get("access")
-                if isinstance(access_key, str) and access_key not in access_keys:
-                    setup_missing_access.append({"step": step_id, "access": access_key})
-            if action_type == "show-log":
-                service = action.get("service")
-                if isinstance(service, str) and service not in compose_services:
-                    setup_missing_services.append({"step": step_id, "service": service})
-    access_ports_ok = not access_missing_ports
     secrets_ok = not secrets_missing and not secrets_empty
-    setup_ok = not setup_missing_access and not setup_missing_services and not setup_duplicate_ids
+    deprecated_access_env_keys = [key for key in env_keys if is_deprecated_w9_access_key(key)]
 
     ok = (
         not missing_translation
         and login_pair_ok
-        and url_declared_ok
-        and url_replace_ok
-        and url_replace_required_ok
         and dependency_tag_policy_ok
-        and access_ports_ok
         and secrets_ok
-        and setup_ok
+        and not deprecated_access_env_keys
     )
     return {
         "ok": ok,
         "missing_translation_keys": missing_translation,
         "login_pair_ok": login_pair_ok,
-        "url_declared_ok": url_declared_ok,
-        "url_replace_ok": url_replace_ok,
-        "url_replace_required": url_replace_required,
-        "url_replace_required_ok": url_replace_required_ok,
         "dependency_patch_tags": dependency_patch_tags,
         "dependency_tag_policy_ok": dependency_tag_policy_ok,
-        "access_ports_ok": access_ports_ok,
-        "access_missing_ports": access_missing_ports,
         "secrets_ok": secrets_ok,
         "secrets_declared": secrets_declared,
         "secrets_missing": secrets_missing,
         "secrets_empty": secrets_empty,
-        "setup_ok": setup_ok,
-        "setup_missing_access": setup_missing_access,
-        "setup_missing_services": setup_missing_services,
-        "setup_duplicate_ids": setup_duplicate_ids,
+        "deprecated_access_env_keys": deprecated_access_env_keys,
     }
 
 
@@ -383,11 +315,7 @@ def _resolve_env_refs(value: str, env_map: dict[str, str]) -> str:
 
 
 def _db_engine(repository: str) -> str | None:
-    lowered = repository.lower()
-    for hint, engine in IMAGE_ENGINE_HINTS:
-        if hint in lowered:
-            return engine
-    return None
+    return IMAGE_ENGINES.get(repository.rsplit("/", 1)[-1].lower())
 
 
 def _db_track(engine: str, tag: str, tracks: list[dict]) -> dict | None:
@@ -478,6 +406,9 @@ def check_app(app_name: str, gate: str = "all") -> dict:
     from libs.secret_audit import check_secret_templates
 
     target = _resolve_app_or_exit(app_name)
+    if gate == "access":
+        result = access_metadata(target)
+        return {"app": app_name, "gate": gate, "result": result, "ok": result["ok"]}
     if gate == "secrets":
         result = check_secret_templates(target)
         return {"app": app_name, "gate": gate, "result": result, "ok": result["ok"]}
@@ -486,6 +417,7 @@ def check_app(app_name: str, gate: str = "all") -> dict:
     version = _version_result(target)
     database = _database_result(target)
     database_metadata = _database_metadata_result(target)
+    access = access_metadata(target)
     secrets = check_secret_templates(target)
 
     if gate == "structure":
@@ -506,8 +438,9 @@ def check_app(app_name: str, gate: str = "all") -> dict:
         "version": version,
         "database": database,
         "database_metadata": database_metadata,
+        "access_metadata": access,
         "secrets": secrets,
-        "ok": structure["ok"] and policy["ok"] and database_metadata["ok"] and secrets["ok"],
+        "ok": structure["ok"] and policy["ok"] and database_metadata["ok"] and access["ok"] and secrets["ok"],
     }
 
 

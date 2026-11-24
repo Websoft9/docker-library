@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **WordPress**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -26,7 +27,7 @@
 Websoft9 packages this app from the official [WordPress Docker image](https://hub.docker.com/_/wordpress) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
-The package mounts `src/websoft9-url.php` with `auto_prepend_file` so `W9_URL` can override `WP_HOME` and `WP_SITEURL` at runtime when needed.
+The package mounts `src/websoft9-url.php` with `auto_prepend_file` so `WP_HOME` and `WP_SITEURL` from `.env` can configure the public WordPress URLs at runtime when set.
 
 The package also ships `src/nginx-proxy.conf`, which the Websoft9 Gateway reads and injects into the Proxy Host `server{}` block. It raises the gateway upload limit to match the package PHP limits and applies the platform client rate/concurrency limits. It is not mounted into the container and is unrelated to `docker-compose.yml`.
 <!-- W9_NOTE_END -->

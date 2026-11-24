@@ -1,5 +1,22 @@
 {
   "name": "redisinsight",
+  "access": [
+    {
+      "id": "web",
+      "service": "redisinsight",
+      "port": 5540,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "RedisInsight",
   "release": true,
   "edition": [
@@ -11,13 +28,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 5540,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "1",

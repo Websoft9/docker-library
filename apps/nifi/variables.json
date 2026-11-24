@@ -1,5 +1,32 @@
 {
   "name": "nifi",
+  "access": [
+    {
+      "id": "web",
+      "service": "nifi",
+      "port": 8443,
+      "public": true,
+      "host": [
+        "NIFI_WEB_PROXY_HOST"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "https",
+          "path": "/nifi/"
+        },
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "https",
+          "path": "/nifi-api/"
+        }
+      ]
+    }
+  ],
   "trademark": "Apache NiFi",
   "release": true,
   "upstream": {
@@ -20,13 +47,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "https",
-    "web": {
-      "port": 8443,
-      "path": "/nifi"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

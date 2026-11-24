@@ -4,6 +4,10 @@
 
 - Stopped pre-creating an empty `odoo` database in the bundled PostgreSQL service. The empty database made Odoo adopt it and skip base initialisation, so every request failed with `relation "ir_module_module" does not exist`. Odoo now creates and initialises its own database on first visit.
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-11-03
 
 - Declared the PostgreSQL dependency with internal and external providers using the existing HOST, PORT, USER, and PASSWORD inputs.

@@ -92,11 +92,11 @@ fix it because Compose always registers the service name as a network alias.
 
 | Purpose | Host variable | Container |
 | --- | --- | --- |
-| Web Console (HTTPS) | `W9_HTTPS_PORT_SET` | 5601 |
-| Agent Connection | `W9_AGENT_PORT_SET` | 1514 |
-| Agent Enrollment | `W9_ENROLLMENT_PORT_SET` | 1515 |
-| Syslog Collection (optional) | `W9_SYSLOG_UDP_PORT_SET` | 514/udp |
-| Manager API (optional) | `W9_API_PORT_SET` | 55000 |
+| Web Console (HTTPS) | `9443` | 5601 |
+| Agent Connection | `1514` | 1514 |
+| Agent Enrollment | `1515` | 1515 |
+| Syslog Collection (optional) | Not published | 514/udp |
+| Manager API (optional) | Not published | 55000 |
 
 The syslog and API ports are commented out in `docker-compose.yml` (and their `_SET` vars are commented
 in `.env`). The dashboard reaches the manager API over the Docker network, so 55000 only needs to be
@@ -104,6 +104,6 @@ published for external automation; 514/udp only for external syslog sources.
 
 ## Known limits
 
-- The dashboard is HTTPS-only, so the package has no `W9_HTTP_PORT_SET`; the deploy test uses the
+- The dashboard is HTTPS-only; the deploy test uses the
   `tests/check.sh` HTTPS probe instead of the adaptive HTTP web-access check.
 - First startup takes a few minutes while the indexer builds its security index.

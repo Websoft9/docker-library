@@ -6,7 +6,7 @@ services:
         restart: unless-stopped
         env_file: .env
         ports:
-            - "${W9_HTTPS_PORT_SET}:8443" # Web Console (HTTPS)
+            - "9443:8443" # Web Console (HTTPS)
         volumes:
             - web_config:/config:Z
             - web_crontabs:/var/spool/cron/crontabs:Z
@@ -474,7 +474,7 @@ services:
         container_name: ${W9_ID}-jvb
         restart: unless-stopped
         ports:
-            - '${W9_UDP_PORT_SET:-10000}:${W9_UDP_PORT_SET:-10000}/udp' # JVB media (UDP)
+            - '${JVB_PORT}:${JVB_PORT}/udp' # JVB media (UDP)
         #     - '127.0.0.1:${JVB_COLIBRI_PORT:-8080}:8080'
         volumes:
             - jvb_config:/config:Z
@@ -506,7 +506,6 @@ services:
             - JVB_DISABLE_STUN
             - JVB_DISABLE_XMPP
             - JVB_INSTANCE_ID
-            - JVB_PORT=${W9_UDP_PORT_SET:-10000}
             - JVB_MUC_NICKNAME
             - JVB_STUN_SERVERS
             - JVB_LOG_FILE
@@ -515,6 +514,7 @@ services:
             - JVB_OCTO_RELAY_ID
             - JVB_REQUIRE_VALID_ADDRESS
             - JVB_USE_USRSCTP
+            - JVB_PORT=${JVB_PORT}
             - JVB_WS_DOMAIN
             - JVB_WS_SERVER_ID
             - JVB_WS_TLS

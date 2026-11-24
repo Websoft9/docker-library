@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-11-04
 
 - Declared one PostgreSQL component with main/plugin database names, authenticated internal Redis, and internal Weaviate; API keys are not account/password metadata.
@@ -10,4 +14,3 @@
 
 ## Release
 ### Fixes and Enhancements
-

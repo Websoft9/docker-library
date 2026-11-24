@@ -3,7 +3,6 @@ services:
   jihu:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: "${W9_ID}"
-    hostname: "${W9_URL}"
     logging:
       driver: "json-file"
       options:
@@ -13,16 +12,17 @@ services:
     environment:
       GITLAB_OMNIBUS_CONFIG: |
         # external_url rule: the protocol must be http://, can not use https://
-        external_url 'http://${W9_URL}'
+        external_url '${GITLAB_EXTERNAL_URL}'
         nginx['listen_port'] = 80
-        gitlab_rails['gitlab_shell_ssh_port'] = ${W9_SSH_PORT_SET}
+        nginx['listen_https'] = false
+        gitlab_rails['gitlab_shell_ssh_port'] = ${GITLAB_SSH_PORT}
         gitlab_rails['initial_root_password'] = '${W9_LOGIN_PASSWORD}'
         # Add any other gitlab.rb configuration here, each on its own line
     shm_size: '256m'
     restart: unless-stopped
     ports:
-      - "${W9_HTTP_PORT_SET}:80" # Web Console
-      - "${W9_SSH_PORT_SET}:22" # Git SSH
+      - "9001:80" # Web Console
+      - "23:22" # Git SSH
     volumes:
       - gitlab_config:/etc/gitlab
       - gitlab_logs:/var/log/gitlab

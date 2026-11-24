@@ -6,12 +6,13 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Teleport**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
 ### Usage
 
-1. Set `W9_URL` to the domain that resolves to this host, then rebuild or restart the app so the init service regenerates `src/config/teleport.yaml` before Teleport starts.
+1. Set `TELEPORT_PUBLIC_HOST` to the public domain, then recreate the app so the init service regenerates `src/config/teleport.yaml` before Teleport starts.
 2. Open `https://<host>:<port>/` and sign in with the username and password from the **Access** tab (`W9_LOGIN_USER` / `W9_LOGIN_PASSWORD` in `.env`). MFA is disabled; enable it later from the Web UI if needed.
 
 ### Change Password
@@ -32,7 +33,7 @@ Apps run as containers; rebuild after any configuration change.
 
 ### Version Support
 
-Supported versions: 18.10, 18.
+Supported versions: 18.10.
 
 
 ### Ports
@@ -56,7 +57,11 @@ Environment variables are defined in the app's `.env` file; see the reference se
 ### Configuration Files
 
 
-Configuration is overridden by mounting `./src/config` to `/etc/teleport`.
+- `./src/config` → `/work`
+- `./src/config/teleport.yaml.tmpl` → `/templates/teleport.yaml.tmpl`
+- `./src/config/bootstrap.yaml.tmpl` → `/templates/bootstrap.yaml.tmpl`
+- `./src/config` → `/etc/teleport`
+
 
 
 ## References
@@ -65,7 +70,7 @@ Configuration is overridden by mounting `./src/config` to `/etc/teleport`.
 
 - [Docker Hub image](https://gallery.ecr.aws/gravitational/teleport-distroless)
 
-- [Releases](https://github.com/gravitational/teleport/releases)
+- [Releases](https://github.com/gravitational/teleport)
 
 - [Official docs](https://goteleport.com/docs/installation/single-machine/docker/)
 

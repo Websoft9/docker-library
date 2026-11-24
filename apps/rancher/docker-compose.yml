@@ -8,7 +8,7 @@ services:
     env_file:
       - .env
     ports:
-      - "${W9_HTTPS_PORT_SET}:443" # Rancher web console (HTTPS)
+      - "9004:443" # Rancher web console (HTTPS)
     restart: unless-stopped
     volumes:
       - rancher:/var/lib/rancher

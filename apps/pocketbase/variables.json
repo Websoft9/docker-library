@@ -1,5 +1,29 @@
 {
   "name": "pocketbase",
+  "access": [
+    {
+      "id": "admin",
+      "service": "pocketbase",
+      "port": 8090,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/_/"
+        },
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/api/"
+        }
+      ]
+    }
+  ],
   "trademark": "PocketBase",
   "release": true,
   "upstream": {
@@ -20,17 +44,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8090,
-      "path": "/"
-    },
-    "admin": {
-      "port": 8090,
-      "path": "/_/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "1",

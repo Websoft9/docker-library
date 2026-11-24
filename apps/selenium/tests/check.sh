@@ -3,7 +3,9 @@ set -euo pipefail
 
 container="${W9_ID:?W9_ID is required}"
 password="${W9_POWER_PASSWORD:?W9_POWER_PASSWORD is required}"
-admin_port="${W9_ADMIN_PORT_SET:?W9_ADMIN_PORT_SET is required}"
+mapped="$(docker port "${container}" 7900/tcp 2>/dev/null | head -1 || true)"
+admin_port="${mapped##*:}"
+admin_port="${admin_port:-7900}"
 
 code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "http://localhost:${admin_port}/" || true)"
 if [ "${code}" != "200" ]; then

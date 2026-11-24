@@ -1,5 +1,22 @@
 {
   "name": "uptimekuma",
+  "access": [
+    {
+      "id": "web",
+      "service": "uptime-kuma",
+      "port": 3001,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "dashboard"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Uptime Kuma",
   "release": true,
   "upstream": {
@@ -18,12 +35,6 @@
       ]
     }
   ],
-  "access": {
-    "web": {
-      "port": 3001,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "1",

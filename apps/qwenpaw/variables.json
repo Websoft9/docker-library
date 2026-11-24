@@ -1,5 +1,25 @@
 {
   "name": "qwenpaw",
+  "access": [
+    {
+      "id": "web",
+      "service": "qwenpaw",
+      "port": 8000,
+      "public": true,
+      "rootUrl": [
+        "QWENPAW_HUB_PUBLIC_BASE_URL"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "QwenPaw",
   "release": true,
   "upstream": {
@@ -18,16 +38,12 @@
   "edition": [
     {
       "dist": "community",
-      "version": ["v2.2.2", "latest"]
+      "version": [
+        "v2.2.2",
+        "latest"
+      ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8000,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "4",
     "memory": "8",

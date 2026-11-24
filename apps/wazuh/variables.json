@@ -1,5 +1,36 @@
 {
   "name": "wazuh",
+  "access": [
+    {
+      "id": "web",
+      "service": "wazuh.dashboard",
+      "port": 5601,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "dashboard"
+          ],
+          "scheme": "https",
+          "path": "/"
+        }
+      ]
+    },
+    {
+      "id": "agent",
+      "service": "wazuh.manager",
+      "port": 1514,
+      "public": false,
+      "endpoints": []
+    },
+    {
+      "id": "enrollment",
+      "service": "wazuh.manager",
+      "port": 1515,
+      "public": false,
+      "endpoints": []
+    }
+  ],
   "trademark": "Wazuh",
   "release": true,
   "upstream": {
@@ -21,12 +52,6 @@
       ]
     }
   ],
-  "access": {
-    "web": {
-      "port": 5601,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

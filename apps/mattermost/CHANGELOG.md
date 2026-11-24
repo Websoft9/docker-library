@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-11-20
+
+- Set the `calls-tcp` and `calls-udp` port groups (`8443`) to `public: false` per `docs/app-access-spec.md` section 4.2, so the Calls ports are enabled on demand after Calls is turned on in the app. The upstream compose port mappings are left unchanged.
+
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-11-06
 - Update Mattermost Team Edition from `12.0` to `12.1` and PostgreSQL from `14.0` to `15.0` to meet Mattermost 12.1's minimum database requirement.
 

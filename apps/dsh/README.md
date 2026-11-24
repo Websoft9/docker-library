@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **DeepSeek Harness**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -14,8 +15,7 @@
 1. Open the Web UI from the **Access** tab.
 2. Add `/workspace` as the initial workspace directory.
 3. Configure a model provider in **Settings -> Models** before starting agent tasks.
-4. Set `W9_URL` to the real external hostname you use to open the app, otherwise DSH may reject browser API calls with HTTP 403.
-5. `DSH_TRUSTED_HOSTS` defaults to `${W9_URL}`. If the app is reachable by more than one browser authority, extend it as a comma-separated list.
+4. Set `DSH_TRUSTED_HOSTS` to the browser's hostname or `host:port`; otherwise DSH may reject browser API calls with HTTP 403. For multiple browser authorities, use a comma-separated list.
 6. Fill `W9_DEEPSEEK_API_KEY_SET` during installation if you want the built-in DeepSeek provider to work immediately after the first boot.
 7. This package enables `DSH_FORCE_LOOPBACK_UI=true` by default so the public Websoft9 URL can open the Models/settings pages without requiring an SSH tunnel.
 
@@ -47,7 +47,7 @@ ssh -N -L 3081:127.0.0.1:3081 root@YOUR_SERVER_IP
 
 ## Configuration Reference
 
-Websoft9 packages this app from the official [DeepSeek Harness Docker image](https://www.npmjs.com/package/@deepseek-ai/dsh) and makes some improvements below.
+Websoft9 packages this app from the official [DeepSeek Harness Docker image](https://github.com/deepseek-ai/deepseek-harness) and makes some improvements below.
 
 <!-- W9_NOTE_START -->
 ### Package Notes
@@ -58,7 +58,7 @@ Websoft9 packages this app from the official [DeepSeek Harness Docker image](htt
 - This package exposes `W9_DEEPSEEK_API_KEY_SET` as the install-time input and maps it to the container's `DEEPSEEK_API_KEY` environment variable.
 - Upstream marks DeepSeek Harness as experimental developer-preview software that has not completed a security audit.
 - The first browser login is token-based; the current token can be read from the container logs.
-- `W9_URL` is used as the trusted browser host for DSH's Host/Origin security checks and should match the real access domain or host:port.
+- `DSH_TRUSTED_HOSTS` controls DSH's Host/Origin checks and should match the real access domain or `host:port`.
 - `DSH_TRUSTED_HOSTS` can add extra allowed browser authorities when the app is accessed through multiple domains, IPs, or forwarded ports.
 - `DEEPSEEK_BASE_URL` is unrelated to browser access. It overrides the outbound LLM API endpoint used when DSH talks to a DeepSeek-compatible model provider.
 - This package patches the installed DSH web client so `DSH_FORCE_LOOPBACK_UI=true` treats the public browser page like a loopback management surface, enabling Host-backed settings such as Models/provider configuration.
@@ -102,7 +102,7 @@ Configuration files live inside the image; mount a single file read-only to over
 
 - [DeepSeek Harness Administrator Guide](https://support.websoft9.com/docs/dsh) by Websoft9
 
-- [Docker Hub image](https://www.npmjs.com/package/@deepseek-ai/dsh)
+- [Docker Hub image](https://github.com/deepseek-ai/deepseek-harness)
 
 - [Releases](https://github.com/deepseek-ai/deepseek-harness/releases)
 
@@ -126,7 +126,7 @@ Configuration files live inside the image; mount a single file read-only to over
 - Copy the latest `token=` login URL from `docker compose logs dsh` and open it through the published Websoft9 URL.
 
 **UI keeps showing Connecting or `/api/...` returns 403?**
-- Set `W9_URL` to the exact external hostname or `host:port` used by the browser, then redeploy so DSH trusts that Host/Origin.
+- Update `DSH_TRUSTED_HOSTS` to include the exact browser authority, then recreate the container.
 - If you use more than one access address, add all of them to `DSH_TRUSTED_HOSTS` and redeploy.
 
 **Models page says no API key for `deepseek-official`?**

@@ -1,5 +1,5 @@
 ---
-description: Create or update one app catalog file and preview Contentful push.
+description: Pull, edit and push one app's catalog working copy to Contentful.
 agent: build
 argument-hint: <app name>
 ---

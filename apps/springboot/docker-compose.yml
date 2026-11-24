@@ -8,7 +8,7 @@ services:
     working_dir: /workspace
     entrypoint: ["/bin/bash", "/opt/websoft9/entrypoint.sh"]
     ports:
-      - "${W9_HTTP_PORT_SET}:8080" # Web Console
+      - "9001:8080" # Web Console
     volumes:
       - springboot_workspace:/workspace
       - springboot_m2:/root/.m2

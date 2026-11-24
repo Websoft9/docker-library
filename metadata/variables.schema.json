@@ -1,13 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$comment": "Contract for apps/<app>/variables.json. Additions must stay backward compatible: new fields are optional.",
+  "$comment": "Contract for active apps/<app>/variables.json. Access is required; unused development access formats are not supported.",
   "type": "object",
   "required": [
     "name",
     "trademark",
     "release",
     "edition",
-    "requirements"
+    "requirements",
+    "access"
   ],
   "additionalProperties": false,
   "properties": {
@@ -88,38 +89,11 @@
       }
     },
     "access": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "defaultScheme": {
-          "type": "string",
-          "enum": [
-            "http",
-            "https"
-          ]
-        },
-        "web": {
-          "$ref": "#/$defs/accessEntry"
-        },
-        "admin": {
-          "$ref": "#/$defs/accessEntry"
-        },
-        "api": {
-          "$ref": "#/$defs/accessEntry"
-        },
-        "grpc": {
-          "$ref": "#/$defs/accessEntry"
-        },
-        "ws": {
-          "$ref": "#/$defs/accessEntry"
-        },
-        "ssh": {
-          "$ref": "#/$defs/accessEntry"
-        },
-        "metrics": {
-          "$ref": "#/$defs/accessEntry"
-        }
-      }
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/accessGroup"
+      },
+      "description": "Ordered port groups keyed by service, container port and transport."
     },
     "externalDB": {
       "type": "object",
@@ -225,26 +199,6 @@
         },
         "token": {
           "$ref": "#/$defs/credentialSource"
-        }
-      }
-    },
-    "setup": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "steps"
-      ],
-      "properties": {
-        "summary": {
-          "type": "string",
-          "minLength": 1
-        },
-        "steps": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "$ref": "#/$defs/setupStep"
-          }
         }
       }
     },
@@ -968,262 +922,198 @@
         }
       ]
     },
-    "setupStep": {
+    "accessEnvNames": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+      },
+      "description": "Native environment variable names that receive the group's effective public value."
+    },
+    "accessEndpoint": {
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "id",
-        "text"
+        "roles",
+        "scheme"
       ],
       "properties": {
-        "id": {
+        "roles": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "scheme": {
           "type": "string",
-          "pattern": "^[a-z0-9][a-z0-9-]*$"
-        },
-        "text": {
-          "type": "string",
-          "minLength": 1
-        },
-        "action": {
-          "$ref": "#/$defs/setupAction"
-        }
-      }
-    },
-    "setupAction": {
-      "oneOf": [
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "type",
-            "service"
-          ],
-          "properties": {
-            "type": {
-              "const": "show-log"
-            },
-            "service": {
-              "type": "string",
-              "minLength": 1
-            },
-            "tail": {
-              "type": "integer",
-              "minimum": 1
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "type",
-            "name"
-          ],
-          "properties": {
-            "type": {
-              "const": "show-env"
-            },
-            "name": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "type",
-            "path"
-          ],
-          "properties": {
-            "type": {
-              "const": "show-file"
-            },
-            "path": {
-              "type": "string",
-              "minLength": 1
-            },
-            "format": {
-              "type": "string",
-              "enum": [
-                "text",
-                "json",
-                "env"
-              ]
-            },
-            "jsonPath": {
-              "type": "string",
-              "minLength": 1
-            },
-            "key": {
-              "type": "string",
-              "minLength": 1
-            }
-          },
-          "allOf": [
-            {
-              "if": {
-                "properties": {
-                  "format": {
-                    "const": "json"
-                  }
-                },
-                "required": [
-                  "format"
-                ]
-              },
-              "then": {
-                "required": [
-                  "jsonPath"
-                ]
-              }
-            },
-            {
-              "if": {
-                "properties": {
-                  "format": {
-                    "const": "env"
-                  }
-                },
-                "required": [
-                  "format"
-                ]
-              },
-              "then": {
-                "required": [
-                  "key"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "type",
-            "argv"
-          ],
-          "properties": {
-            "type": {
-              "const": "show-cli"
-            },
-            "argv": {
-              "type": "array",
-              "minItems": 1,
-              "items": {
-                "type": "string",
-                "minLength": 1
-              }
-            },
-            "format": {
-              "type": "string",
-              "enum": [
-                "text",
-                "json",
-                "env"
-              ]
-            },
-            "jsonPath": {
-              "type": "string",
-              "minLength": 1
-            },
-            "key": {
-              "type": "string",
-              "minLength": 1
-            }
-          },
-          "allOf": [
-            {
-              "if": {
-                "properties": {
-                  "format": {
-                    "const": "json"
-                  }
-                },
-                "required": [
-                  "format"
-                ]
-              },
-              "then": {
-                "required": [
-                  "jsonPath"
-                ]
-              }
-            },
-            {
-              "if": {
-                "properties": {
-                  "format": {
-                    "const": "env"
-                  }
-                },
-                "required": [
-                  "format"
-                ]
-              },
-              "then": {
-                "required": [
-                  "key"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "type",
-            "access"
-          ],
-          "properties": {
-            "type": {
-              "const": "open"
-            },
-            "access": {
-              "type": "string",
-              "enum": [
-                "web",
-                "admin",
-                "api",
-                "grpc",
-                "ws",
-                "ssh",
-                "metrics"
-              ]
-            },
-            "path": {
-              "type": "string",
-              "pattern": "^/"
-            }
-          }
-        }
-      ]
-    },
-    "accessEntry": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "port"
-      ],
-      "properties": {
-        "port": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 65535,
-          "description": "Container port the service listens on (not the host port)."
+          "minLength": 1,
+          "description": "Upstream wire protocol, validated against access-types.json."
         },
         "path": {
           "type": "string",
           "pattern": "^/",
           "description": "URL path; omit for '/'."
         },
-        "scheme": {
+        "query": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "accessGroup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "service",
+        "port",
+        "public",
+        "endpoints"
+      ],
+      "properties": {
+        "id": {
           "type": "string",
-          "minLength": 1,
-          "description": "Optional per-surface scheme override, e.g. wss or ssh."
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "description": "Stable in-app identifier referenced by instance port settings, domain bindings and per-group gateway config."
+        },
+        "service": {
+          "type": "string",
+          "minLength": 1
+        },
+        "port": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            {
+              "type": "string",
+              "pattern": "^\\$\\{[A-Za-z_][A-Za-z0-9_]*\\}$"
+            }
+          ],
+          "description": "Container port the service listens on (not the host port)."
+        },
+        "protocol": {
+          "type": "string",
+          "enum": [
+            "tcp",
+            "udp"
+          ],
+          "default": "tcp",
+          "description": "Transport protocol; omitted means tcp."
+        },
+        "public": {
+          "type": "boolean",
+          "description": "Default host publishing switch, not a public reachability claim."
+        },
+        "requireDomain": {
+          "type": "boolean",
+          "default": false,
+          "description": "Install and runtime require at least one bound domain for this group."
+        },
+        "requireHttps": {
+          "type": "boolean",
+          "default": false,
+          "description": "External access must use TLS even when the container listener is plaintext."
+        },
+        "rootUrl": {
+          "$ref": "#/$defs/accessEnvNames",
+          "description": "Variables receiving the group's full public base URL."
+        },
+        "host": {
+          "$ref": "#/$defs/accessEnvNames",
+          "description": "Variables receiving the group's public host form."
+        },
+        "mappedPort": {
+          "$ref": "#/$defs/accessEnvNames",
+          "description": "Variables receiving the group's effective host port."
+        },
+        "endpoints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/accessEndpoint"
+          }
+        }
+      }
+    },
+    "accessTypes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "roles",
+        "schemes"
+      ],
+      "properties": {
+        "roles": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "schemes",
+              "description"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "ui",
+                  "api",
+                  "infra"
+                ]
+              },
+              "schemes": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "schemes": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "address",
+              "allowPathQuery",
+              "description"
+            ],
+            "properties": {
+              "address": {
+                "enum": [
+                  "url",
+                  "hostport"
+                ]
+              },
+              "allowPathQuery": {
+                "type": "boolean"
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
         }
       }
     }

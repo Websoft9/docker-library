@@ -4,7 +4,7 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - "${W9_HTTP_PORT_SET}:11434" # API
+      - "9001:11434" # API
     env_file:
       - .env
     volumes:
@@ -23,7 +23,7 @@ services:
               capabilities: [gpu]
     runtime: nvidia
     ports:
-      - "${W9_HTTP_PORT_SET}:11434" # API
+      - "9001:11434" # API
     env_file:
       - .env
     volumes:

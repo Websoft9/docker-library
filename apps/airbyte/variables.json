@@ -1,5 +1,25 @@
 {
   "name": "airbyte",
+  "access": [
+    {
+      "id": "web",
+      "service": "airbyte",
+      "port": 30080,
+      "public": true,
+      "rootUrl": [
+        "AIRBYTE_PUBLIC_URL"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Airbyte",
   "runtime": "k3s-helm",
   "release": false,
@@ -19,13 +39,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 30080,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "4",
     "memory": "8",

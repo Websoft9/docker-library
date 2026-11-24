@@ -8,7 +8,7 @@ services:
       - MSSQL_SA_PASSWORD=${W9_LOGIN_PASSWORD}
       - MSSQL_PID=${MSSQL_PID}
     ports:
-      - "${W9_DB_PORT_SET}:1433" # SQL Server
+      - "1433:1433" # SQL Server
     volumes:
       - mssql_data:/var/opt/mssql
     restart: unless-stopped

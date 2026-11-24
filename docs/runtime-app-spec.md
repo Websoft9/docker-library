@@ -39,7 +39,7 @@ Start:
 - `${APP_DIR}/.w9/start.sh` if present, otherwise the package `start.sh`.
 - The chosen start script must `exec` the server so it becomes PID 1 and receives signals.
 
-Environment available to hooks: `APP_DIR`, `W9_HTTP_PORT`, `W9_VERSION` (plus any app-specific variables).
+Environment available to hooks: `APP_DIR`, the app's native port variable (for example `PORT`), `W9_VERSION`, and any app-specific variables. `W9_HTTP_PORT` is a deprecated alias: runtime templates must expose the native variable and declare the listener through `access[].port`.
 
 ## DATABASE_URL
 

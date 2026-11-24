@@ -43,6 +43,7 @@ The `latest` tag is not guaranteed to remain valid; pin a specific version for p
 
 | Purpose | Port |
 | --- | --- |
+| Web Console | 3000 |
 
 
 ### Data Directory

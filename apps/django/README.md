@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Django**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -58,8 +59,7 @@ The `latest` tag is not guaranteed to remain valid; pin a specific version for p
 ### Data Directory
 
 
-- `django_app` → `/app`
-
+Data is persisted in the `django_app` volume, mounted at `/app`.
 
 
 ### Environment Variables
@@ -70,7 +70,10 @@ Environment variables are defined in the app's `.env` file; see the reference se
 ### Configuration Files
 
 
-Configuration is overridden by mounting `./src/entrypoint.sh` to `/entrypoint.sh`.
+- `./src/entrypoint.sh` → `/opt/websoft9/entrypoint.sh`
+- `./src/entrypoint.d` → `/opt/websoft9/entrypoint.d`
+- `./src/start.sh` → `/opt/websoft9/start.sh`
+
 
 
 ## References

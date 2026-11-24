@@ -7,7 +7,7 @@ services:
     volumes:
       - ./src/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
     ports:
-      - "${W9_HTTP_PORT_SET}:80" # Web Console
+      - "9001:80" # Web Console
 
   db:
     image: mariadb:10.3

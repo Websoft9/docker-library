@@ -1,5 +1,22 @@
 {
   "name": "varnish",
+  "access": [
+    {
+      "id": "gateway",
+      "service": "varnish",
+      "port": 80,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "gateway"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Varnish",
   "release": true,
   "edition": [

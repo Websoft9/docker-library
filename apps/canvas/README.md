@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Canvas**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -40,6 +41,7 @@ Supported versions: 2026-05-20.143.
 
 | Purpose | Port |
 | --- | --- |
+| Web Console | 80 |
 
 
 ### Data Directory
@@ -64,16 +66,7 @@ Note: `CANVAS_LMS_ADMIN_EMAIL`, `CANVAS_LMS_ADMIN_PASSWORD`, `CANVAS_LMS_ACCOUNT
 ### Configuration Files
 
 
-- `./src/database.yml` → `/usr/src/app/config/database.yml`
-- `./src/domain.yml` → `/usr/src/app/config/domain.yml`
-- `./src/redis.yml` → `/usr/src/app/config/redis.yml`
-- `./src/cache_store.yml` → `/usr/src/app/config/cache_store.yml`
-- `./src/security.yml` → `/usr/src/app/config/security.yml`
-- `./src/outgoing_mail.yml` → `/usr/src/app/config/outgoing_mail.yml`
-- `./src/dynamic_settings.yml` → `/usr/src/app/config/dynamic_settings.yml`
-- `./src/entrypoint.sh` → `/usr/local/bin/entrypoint.sh`
-- `./src/delayed_jobs.yml` → `/usr/src/app/config/delayed_jobs.yml`
-
+Configuration files live inside the image; mount a single file read-only to override, and never replace the whole directory.
 
 
 ## References

@@ -6,7 +6,7 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - "${W9_HTTP_PORT_SET}:2368" # Ghost web site and admin console
+      - "9001:2368" # Ghost web site and admin console
     env_file: .env
     volumes:
       - ghost:/var/lib/ghost

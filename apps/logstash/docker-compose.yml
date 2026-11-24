@@ -12,7 +12,7 @@ services:
     volumes:
       - ./src/pipeline:/usr/share/logstash/pipeline
     ports:
-      - ${W9_HTTP_PORT_SET}:9600 # for API
+      - 9001:9600 # for API
       #- 5000:5000  # for TCP/UDP
       #- 5044:5044 # for beate
     env_file: .env

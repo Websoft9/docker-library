@@ -3,7 +3,7 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     ports:
-      - "${W9_HTTP_PORT_SET}:1880" # Web Console
+      - "9001:1880" # Web Console
     volumes:
       - nodered_data:/data
       # - ./src/my_flows.json:/data/my_flows.json

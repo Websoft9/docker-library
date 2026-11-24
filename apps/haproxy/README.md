@@ -41,7 +41,7 @@ Supported versions: 3.4, 3.2, 3.0, 2.8, 2.6.
 
 | Purpose | Port |
 | --- | --- |
-| W9_HTTP_PORT_SET | 80 |
+| Gateway and Stats UI | 80 |
 
 
 ### Data Directory

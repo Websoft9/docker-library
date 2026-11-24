@@ -4,7 +4,7 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - "${W9_HTTP_PORT_SET}:7456" # Web Console and API
+      - "9001:7456" # Web Console and API
     env_file:
       - .env
     environment:
@@ -12,8 +12,8 @@ services:
       NODE_OPTIONS: ${NODE_OPTIONS}
       OD_BIND_HOST: ${OD_BIND_HOST}
       OD_ALLOWED_ORIGINS: ${OD_ALLOWED_ORIGINS}
-      OD_PORT: ${W9_HTTP_PORT}
-      OD_WEB_PORT: ${W9_HTTP_PORT}
+      OD_PORT: 7456
+      OD_WEB_PORT: 7456
       OD_API_TOKEN: ${W9_LOGIN_PASSWORD}
       OD_DISABLE_API_AUTH: ${OD_DISABLE_API_AUTH}
       OD_CODEX_SANDBOX: ${OD_CODEX_SANDBOX}

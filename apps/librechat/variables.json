@@ -23,14 +23,42 @@
       ]
     }
   ],
-  "access": {
-    "web": {
-      "port": 3080
+  "access": [
+    {
+      "id": "web",
+      "service": "api",
+      "port": 3080,
+      "public": true,
+      "rootUrl": [
+        "DOMAIN_CLIENT",
+        "DOMAIN_SERVER"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
     },
-    "admin": {
-      "port": 3000
+    {
+      "id": "admin",
+      "service": "admin-panel",
+      "port": 3000,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
     }
-  },
+  ],
   "requirements": {
     "cpu": "2",
     "memory": "4",

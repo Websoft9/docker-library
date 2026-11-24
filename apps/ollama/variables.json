@@ -1,5 +1,22 @@
 {
   "name": "ollama",
+  "access": [
+    {
+      "id": "api",
+      "service": "app-nogpu",
+      "port": 11434,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Ollama",
   "release": true,
   "upstream": {
@@ -22,12 +39,5 @@
     "cpu": "2",
     "memory": "4",
     "disk": "10"
-  },
-  "access": {
-    "defaultScheme": "http",
-    "api": {
-      "port": 11434,
-      "path": "/"
-    }
   }
 }

@@ -1,5 +1,32 @@
 {
   "name": "ghost",
+  "access": [
+    {
+      "id": "web",
+      "service": "ghost",
+      "port": 2368,
+      "public": true,
+      "rootUrl": [
+        "url"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        },
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/ghost/"
+        }
+      ]
+    }
+  ],
   "trademark": "Ghost",
   "release": true,
   "upstream": {
@@ -19,17 +46,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 2368,
-      "path": "/"
-    },
-    "admin": {
-      "port": 2368,
-      "path": "/ghost"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "1",

@@ -5,7 +5,7 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - "${W9_DB_PORT_SET}:5432" # PostgreSQL
+      - "5432:5432" # PostgreSQL
     volumes:
       - pgvector:/var/lib/postgresql
       - ./src/init-vector.sql:/docker-entrypoint-initdb.d/init-vector.sql:ro

@@ -1,5 +1,22 @@
 {
   "name": "matomo",
+  "access": [
+    {
+      "id": "web",
+      "service": "matomo",
+      "port": 80,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "dashboard"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Matomo",
   "release": true,
   "edition": [
@@ -11,13 +28,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 80,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "1",

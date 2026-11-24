@@ -1,3 +1,13 @@
+# CHANGELOG
+
+## 2026-11-20
+
+- Moved the query/document API (`8080`) ahead of the config-server deployment API so it becomes the primary entry, and set the `deployment` port group (`19071`) to `public: false` per `docs/app-access-spec.md` section 4.2. The upstream compose port mappings are left unchanged.
+
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 # Changelog
 
 ## 2026-09-20

@@ -1,5 +1,29 @@
 {
   "name": "influxdb",
+  "access": [
+    {
+      "id": "web",
+      "service": "influxdb",
+      "port": 8086,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "dashboard"
+          ],
+          "scheme": "http",
+          "path": "/"
+        },
+        {
+          "roles": [
+            "db"
+          ],
+          "scheme": "http",
+          "path": "/api/v2/"
+        }
+      ]
+    }
+  ],
   "trademark": "InfluxDB",
   "release": true,
   "upstream": {
@@ -18,18 +42,10 @@
       "dist": "community",
       "version": [
         "2.9",
-        "latest",
-        "3-core"
+        "latest"
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8086,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "1",

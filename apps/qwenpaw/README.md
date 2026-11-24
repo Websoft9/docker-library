@@ -30,7 +30,7 @@ Websoft9 packages this app from the official [QwenPaw Docker image](https://hub.
 
 <!-- W9_NOTE_START -->
 - This package runs **QwenPaw Hub**, the multi-user control plane, directly from the official `agentscope/qwenpaw` image. One web address serves an administrator and many per-user QwenPaw runtimes, each with separate workspaces, credentials, and conversations.
-- The Hub console listens on port `8000` inside the container and is published through `W9_HTTP_PORT_SET`. `QWENPAW_HUB_PUBLIC_BASE_URL` is derived from `W9_URL` and must match the address users open in their browsers.
+- The Hub console listens on container port `8000`. Set `QWENPAW_HUB_PUBLIC_BASE_URL` to the exact address users open in their browsers.
 - The official image is the single-user Console image, so the container installs the Hub control-plane `docker` SDK and `bubblewrap` on startup when they are missing. The Local runtime backend therefore requires `privileged: true`. The first start needs network access and takes longer while these packages install.
 - The first administrator is seeded from `W9_LOGIN_USER` / `W9_LOGIN_PASSWORD` on first startup only. Set `QWENPAW_HUB_REGISTRATION_MODE` (`open`, `invite`, or `closed`) to control self-registration; use `closed` and create accounts in **User Management** for a locked-down deployment.
 - The upstream project marks Hub as an early release intended for trusted teams only, not for mutually untrusted users.

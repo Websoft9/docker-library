@@ -1,128 +1,4 @@
 {
-    "W9_DB_PORT_SET": [
-        "Database Port",
-        "应用数据库端口"
-    ],
-    "W9_HTTP_PORT_SET": [
-        "App HTTP Port",
-        "应用 HTTP 端口"
-    ],
-    "W9_GRPC_PORT_SET": [
-        "GRPC PORT",
-        "应用 GRPC 端口"
-    ],
-    "W9_AGENT_PORT_SET": [
-        "App Agent Port",
-        "应用代理端口"
-    ],
-    "W9_ENROLLMENT_PORT_SET": [
-        "Enrollment Port",
-        "注册端口"
-    ],
-    "W9_SSH_PORT_SET": [
-        "App SSH Port",
-        "应用 SSH 端口"
-    ],
-    "W9_TCP_PORT_SET": [
-        "App TCP Port",
-        "应用 TCP 端口"
-    ],
-    "W9_API_PORT_SET": [
-        "App API Port",
-        "应用 API 端口"
-    ],
-    "W9_DB_KAFKA_PORT_SET": [
-        "KAFKA PORT",
-        "KAFKA 端口"
-    ],
-    "W9_EM_PORT_SET": [
-        "EMAIL PORT",
-        "邮件端口"
-    ],
-    "W9_SYSLOG_TCP_PORT_SET": [
-        "SYSLOG TCP PORT",
-        "系统日志 TCP 端口"
-    ],
-    "W9_SYSLOG_UDP_PORT_SET": [
-        "SYSLOG UDP PORT",
-        "系统日志 UDP 端口"
-    ],
-    "W9_GELE_TCP_PORT_SET": [
-        "GELE TCP PORT",
-        "GELE TCP 端口"
-    ],
-    "W9_GELE_UDP_PORT_SET": [
-        "GELE UDP PORT",
-        "GELE UDP 端口"
-    ],
-    "W9_TRANSFORM_PORT_SET": [
-        "TRANSFORM PORT",
-        "转换端口"
-    ],
-    "W9_SOLR_PORT_SET": [
-        "APACHE SOLR PORT",
-        "APACHE SOLR 端口"
-    ],
-    "W9_AMQP_PORT_SET": [
-        "AMQP PORT",
-        "消息队列服务端口"
-    ],
-    "W9_OPENWIRE_PORT_SET": [
-        "MQ OPENWIRE PORT",
-        "消息队列 OPENWIRE 端口"
-    ],
-    "W9_STOMP_PORT_SET": [
-        "MQ STOMP PORT",
-        "消息队列 STOMP 端口"
-    ],
-    "W9_HTTPS_PORT_SET": [
-        "App HTTPS Port",
-        "应用 HTTPS 端口"
-    ],
-    "W9_ZOOMKEEPER_PORT_SET": [
-        "ZOOMKEEPER PORT",
-        "ZOOMKEEPER 端口"
-    ],
-    "W9_GUI_PORT_SET": [
-        "GUI PORT",
-        "WEB页面端口"
-    ],
-    "W9_MQ_PORT_SET": [
-        "MQ PORT",
-        "消息队列端口"
-    ],
-    "W9_ER_PORT_SET": [
-        "ER_PORT",
-        "消息队列 ER 端口"
-    ],
-    "W9_DASHBOARD_PORT_SET": [
-        "DASHBOARD PORT",
-        "面板页面端口"
-    ],
-    "W9_DB_POSTGRES_PORT_SET": [
-        "POSTGRES PORT",
-        "POSTGRES 数据库端口"
-    ],
-    "W9_CLIENT_PORT_SET": [
-        "CLIENT PORT",
-        "客户端端口"
-    ],
-    "W9_CLUSTER_PORT_SET": [
-        "CLUSTER PORT",
-        "集群端口"
-    ],
-    "W9_MQTT_PORT_SET": [
-        "MQTT PORT",
-        "MQTT 端口"
-    ],
-    "W9_RPC_PORT_SET": [
-        "RPC PORT",
-        "RPC 端口"
-    ],
-    "W9_UDP2_PORT_SET": [
-        "UDP2 PORT",
-        "UDP2 端口"
-    ],
     "W9_LOGIN_USER": [
         "Administrator UserName",
         "管理员用户名"
@@ -163,22 +39,6 @@
         "SCAN PATH",
         "扫描路径"
     ],
-    "W9_Alpha_HTTP_PORT_SET": [
-        "Dgraph Alpha（Database） HTTP PORT",
-        "Dgraph Alpha （数据库） HTTP 端口"
-    ],
-    "W9_Zero_HTTP_PORT_SET": [
-        "Dgraph Zero(cluster) HTTP PORT",
-        "Dgraph Zero（集群）  HTTP 端口"
-    ],
-    "W9_Alpha_gRPC_PORT_SET": [
-        "Dgraph Alpha（Database） gRPC PORT",
-        "Dgraph Alpha （数据库） gRPC 端口"
-    ],
-    "W9_Zero_gRPC_PORT_SET": [
-        "Dgraph Zero(cluster) gRPC PORT",
-        "Dgraph Zero（集群） gRPC 端口"
-    ],
     "W9_LOGIN_ServerURL": [
         "LOGIN ServerURL",
         "登陆服务端地址"
@@ -190,18 +50,6 @@
     "W9_LOGIN_GET_PASSWORD": [
         "GET Administrator Password",
         "获取管理员密码"
-    ],
-    "W9_GELF_TCP_PORT_SET": [
-        "GELF TCP PORT",
-        "GELF TCP 端口"
-    ],
-    "W9_GELF_UDP_PORT_SET": [
-        "GELF UDP PORT",
-        "GELF UDP 端口"
-    ],
-    "W9_Kong_Manager_PORT_SET": [
-        "Kong Manager PORT",
-        "Kong 管理端口"
     ],
     "W9_LOGIN_APP_SECRET_TOKEN": [
         "APP SECRET TOKEN",
@@ -219,18 +67,6 @@
         "Oracle PDB",
         "Oracle PDB"
     ],
-    "W9_RTMP_PORT_SET": [
-        "RTMP PORT",
-        "RTMP 端口"
-    ],
-    "W9_REMOTE_PORT_SET": [
-        "REMOTE PORT",
-        "远程端口"
-    ],
-    "W9_FLV_PORT_SET": [
-        "FLV PORT",
-        "FLV 端口"
-    ],
     "W9_LOGIN_API_KEY": [
         "API KEY",
         "API 密钥"
@@ -247,37 +83,9 @@
         "SHOW LOGIN PASSWORD",
         "管理员密码获取方法"
     ],
-    "W9_UDP_PORT_SET": [
-        "UDP PORT",
-        "UDP 端口"
-    ],
-    "W9_KONG_ADMIN_LISTEN_PORT_SET": [
-        "KONG ADMIN LISTEN PORT",
-        "KONG 后台监听端口"
-    ],
-    "W9_KONG_MANAGER_LISTEN_PORT_SET": [
-        "KONG ADMIN LISTEN PORT",
-        "KONG 管理监听端口"
-    ],
-    "W9_ADMIN_API_PORT_SET": [
-        "ADMIN API PORT",
-        "管理 API 端口"
-    ],
-    "W9_ADMIN_GUI_PORT_SET": [
-        "ADMIN GUI PORT",
-        "管理页面端口"
-    ],
-    "W9_ADMIN_PORT_SET": [
-        "Admin Port",
-        "管理端口"
-    ],
     "W9_URI_SET": [
         "URI",
         "连接URI"
-    ],
-    "W9_TURN_PORT_SET": [
-        "TURN PORT",
-        "TURN 端口"
     ],
     "W9_TURN_PORT_RANGE_SET": [
         "TURN PORT RANGE",
@@ -319,10 +127,6 @@
         "KIBANA TOKEN",
         "KIBANA 令牌"
     ],
-    "W9_DHT_PORT_SET": [
-        "BT PORT",
-        "BT 端口"
-    ],
     "W9_LOGIN_RPC_SECRET_PASSWORD": [
         "RPC SECRET",
         "RPC 密钥"
@@ -347,10 +151,6 @@
         "KAFKA BROKERS",
         "KAFKA BROKERS"
     ],
-    "W9_WS_PORT_SET": [
-        "WEB SOCKET PORT",
-        "WEB SOCKET 端口"
-    ],
     "W9_BW_INSTALLATION_ID_SET": [
         "INSTALLATION ID",
         "安装 ID"
@@ -358,10 +158,6 @@
     "W9_BW_INSTALLATION_KEY_SET": [
         "INSTALLATION KEY",
         "安装 KEY"
-    ],
-    "W9_SEARCH_PORT_SET": [
-        "SEARCH PORT",
-        "搜索端口"
     ],
     "W9_LOGIN_ADMIN_PASSWORD": [
         "ADMIN PASSWORD",
@@ -379,57 +175,13 @@
         "GEMINI LOGIN KEY",
         "GEMINI 登陆密码"
     ],
-    "W9_PROXY_PORT_SET": [
-        "PROXY PORT",
-        "代理端口"
-    ],
-    "W9_PROXY_REMOTING_PORT_SET": [
-        "RocketMQ Proxy Remoting Port",
-        "RocketMQ Proxy Remoting 端口"
-    ],
-    "W9_PROXY_GRPC_PORT_SET": [
-        "RocketMQ Proxy gRPC Port",
-        "RocketMQ Proxy gRPC 端口"
-    ],
-    "W9_LOGIN_ConnectURL": [
-        "LOGIN OONNECT URL",
-        "登陆连接地址"
-    ],
-    "W9_BROKER_PORT_SET": [
-        "RocketMQ Broker Main Port",
-        "RocketMQ Broker 主端口"
-    ],
     "W9_CONTAINER_PT_INIT_SET": [
         "CONTAINER PORT NEED EXPOSED",
         "容器需暴露的端口"
     ],
-    "W9_BEATS_TCP_PORT_SET": [
-        "BEATS TCP PORT",
-        "BEATS TCP 端口"
-    ],
-    "W9_RAW_TCP_PORT_SET": [
-        "RAW TCP PORT",
-        "原始 TCP 端口"
-    ],
-    "W9_RAW_UDP_PORT_SET": [
-        "RAW UDP PORT",
-        "原始 UDP 端口"
-    ],
-    "W9_FORWARDER_DATA_TCP_PORT_SET": [
-        "DATA TCP PORT",
-        "数据 TCP 端口"
-    ],
-    "W9_FORWARDER_CONFIG_TCP_PORT_SET": [
-        "CONFIG TCP PORT",
-        "配置 TCP 端口"
-    ],
     "W9_LOGIN_TOKEN": [
         "LOGIN TOKEN",
         "登陆 TOKEN"
-    ],
-    "W9_SERVER_PORT_SET": [
-        "SERVER PORT",
-        "服务端口"
     ],
     "W9_HTTP_VNC_SET": [
         "HTTP VNC",
@@ -446,33 +198,5 @@
     "W9_NETWORKID_SET": [
         "NETWORK ID",
         "网络 ID"
-    ],
-    "W9_DNS_TCP_PORT_SET": [
-        "DNS TCP PORT",
-        "DNS TCP 端口"
-    ],
-    "W9_DNS_UDP_PORT_SET": [
-        "DNS UDP PORT",
-        "DNS UDP 端口"
-    ],
-    "W9_SMTP_PORT_SET": [
-        "SMTP PORT",
-        "SMTP 端口"
-    ],
-    "W9_BRIDGE_PORT_SET": [
-        "Bridge Control Port",
-        "桥接控制端口"
-    ],
-    "W9_NAMESRV_PORT_SET": [
-        "RocketMQ NameServer Port",
-        "RocketMQ NameServer 端口"
-    ],
-    "W9_BROKER_VIP_PORT_SET": [
-        "RocketMQ Broker VIP Port",
-        "RocketMQ Broker VIP 端口"
-    ],
-    "W9_BROKER_HA_PORT_SET": [
-        "RocketMQ Broker HA Port",
-        "RocketMQ Broker HA 端口"
     ]
 }

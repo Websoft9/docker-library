@@ -1,5 +1,22 @@
 {
   "name": "symfony",
+  "access": [
+    {
+      "id": "web",
+      "service": "symfony",
+      "port": 8080,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Symfony",
   "release": true,
   "upstream": {
@@ -15,16 +32,12 @@
   "edition": [
     {
       "dist": "community",
-      "version": ["8.1.11", "latest"]
+      "version": [
+        "8.1.11",
+        "latest"
+      ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8080,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "1",

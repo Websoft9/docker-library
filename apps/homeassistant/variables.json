@@ -1,5 +1,22 @@
 {
   "name": "homeassistant",
+  "access": [
+    {
+      "id": "web",
+      "service": "homeassistant",
+      "port": 8123,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Home Assistant",
   "release": true,
   "upstream": {
@@ -14,13 +31,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 8123,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "1",

@@ -1,5 +1,26 @@
 {
   "name": "n8n",
+  "access": [
+    {
+      "id": "web",
+      "service": "n8n",
+      "port": 5678,
+      "public": true,
+      "rootUrl": [
+        "N8N_EDITOR_BASE_URL",
+        "N8N_WEBHOOK_URL"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "n8n",
   "release": true,
   "upstream": {
@@ -20,13 +41,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 5678,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "1",

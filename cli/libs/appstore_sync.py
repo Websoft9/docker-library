@@ -21,7 +21,7 @@ from libs.repo import repo_path
 
 DEFAULT_CONTAINER = "websoft9"
 DEFAULT_APP_DEPLOY_DIR = "/websoft9/library/apps"
-DEFAULT_CATALOG_DIR = "/websoft9/library/metadata/catalog"
+DEFAULT_CONTAINER_CATALOG_DIR = "/websoft9/library/metadata/catalog"
 DEFAULT_METADATA_DIR = "/websoft9/library/metadata"
 DEFAULT_KEY = ".secrets/ssh/default.pem"
 
@@ -176,9 +176,9 @@ def _sync_catalog_file(
     progress: ProgressWriter | None = None,
     verbose: bool = False,
 ) -> str:
-    source = repo_path("metadata", "catalog", f"{app_name}.json")
+    source = repo_path(catalog.DEFAULT_CATALOG_DIR, f"{app_name}.json")
     if not source.exists():
-        raise FileNotFoundError(f"repo catalog data not found: metadata/catalog/{app_name}.json")
+        raise FileNotFoundError(f"catalog working copy not found: {catalog.DEFAULT_CATALOG_DIR}/{app_name}.json")
     catalog.load_catalog(app_name)
 
     staging_dir = f"/tmp/websoft9-appstore-staging-{app_name}"
@@ -269,7 +269,7 @@ def _sync_database_types(
     return digest
 
 
-def _sync_secret_rules(
+def _sync_shared_dictionary(
     app_name: str,
     host: str,
     user: str,
@@ -277,21 +277,25 @@ def _sync_secret_rules(
     container: str,
     backup_dir: str,
     *,
+    filename: str = "secret-rules.json",
+    definition: str = "secretRules",
+    label: str = "secret rules",
     progress: ProgressWriter | None = None,
     verbose: bool = False,
 ) -> str:
-    source = repo_path("metadata", "secret-rules.json")
+    source = repo_path("metadata", filename)
     try:
         definitions = json.loads(source.read_text(encoding="utf-8"))
         schema = json.loads(repo_path("metadata", "variables.schema.json").read_text(encoding="utf-8"))
-        jsonschema.Draft202012Validator({"$defs": schema["$defs"], "$ref": "#/$defs/secretRules"}).validate(definitions)
+        jsonschema.Draft202012Validator({"$defs": schema["$defs"], "$ref": f"#/$defs/{definition}"}).validate(definitions)
     except (ValueError, KeyError, jsonschema.ValidationError) as error:
-        raise ValueError("Invalid shared secret rules dictionary; repair it before syncing.") from error
+        raise ValueError(f"Invalid shared {label} dictionary; repair it before syncing.") from error
     digest = hashlib.sha256(source.read_bytes()).hexdigest()
-    staging = f"/tmp/websoft9-appstore-staging-{app_name}-secret-rules"
-    target = f"{DEFAULT_METADATA_DIR}/secret-rules.json"
-    temporary = f"{DEFAULT_METADATA_DIR}/.secret-rules-{digest}.tmp"
-    backup = f"{backup_dir}/secret-rules.json.bak"
+    stem = Path(filename).stem
+    staging = f"/tmp/websoft9-appstore-staging-{app_name}-{stem}"
+    target = f"{DEFAULT_METADATA_DIR}/{filename}"
+    temporary = f"{DEFAULT_METADATA_DIR}/.{stem}-{digest}.tmp"
+    backup = f"{backup_dir}/{filename}.bak"
     _run(
         ssh_base(host, user, secret_path) + [
             f"mkdir -p {shlex.quote(staging)} {shlex.quote(backup_dir)} && "
@@ -310,12 +314,27 @@ def _sync_secret_rules(
     )
     command = " && ".join([
         shlex.join(["docker", "exec", container, "mkdir", "-p", DEFAULT_METADATA_DIR]),
-        shlex.join(["docker", "cp", f"{staging}/secret-rules.json", f"{container}:{temporary}"]),
+        shlex.join(["docker", "cp", f"{staging}/{filename}", f"{container}:{temporary}"]),
         shlex.join(["docker", "exec", container, "sh", "-c", verify_and_replace]),
         f"rm -rf {shlex.quote(staging)}",
     ])
     _run(ssh_base(host, user, secret_path) + [command], progress=progress, verbose=verbose)
     return digest
+
+
+def _sync_secret_rules(*args, **kwargs) -> str:
+    return _sync_shared_dictionary(*args, **kwargs)
+
+
+def _sync_access_types(*args, **kwargs) -> str:
+    from libs.access import load_access_types
+
+    schema = json.loads(repo_path("metadata", "variables.schema.json").read_text(encoding="utf-8"))
+    try:
+        load_access_types(schema)
+    except (ValueError, KeyError) as error:
+        raise ValueError("Invalid shared access dictionary; repair it before syncing.") from error
+    return _sync_shared_dictionary(*args, filename="access-types.json", definition="accessTypes", label="access", **kwargs)
 
 
 def prepare_preview(
@@ -324,7 +343,7 @@ def prepare_preview(
     user: str | None = None,
     secret_path: str | None = None,
     container: str = DEFAULT_CONTAINER,
-    catalog_dir: str = DEFAULT_CATALOG_DIR,
+    catalog_dir: str = DEFAULT_CONTAINER_CATALOG_DIR,
     version: str | None = None,
     progress: ProgressWriter | None = None,
     verbose: bool = False,
@@ -344,6 +363,7 @@ def prepare_preview(
     backup_dir = f"/tmp/websoft9-appstore-sync-{app_name}-{timestamp}"
 
     from libs.secret_audit import check_secret_templates
+    from libs.access import access_metadata, load_access_types
     from libs.validate import _database_metadata_result
 
     app_target_dir = repo_path("apps", app_name)
@@ -354,22 +374,34 @@ def prepare_preview(
         raise FileNotFoundError("missing metadata/database-types.json")
     if not repo_path("metadata", "secret-rules.json").is_file():
         raise FileNotFoundError("missing metadata/secret-rules.json")
+    if not repo_path("metadata", "access-types.json").is_file():
+        raise FileNotFoundError("missing metadata/access-types.json")
+    try:
+        schema = json.loads(repo_path("metadata", "variables.schema.json").read_text(encoding="utf-8"))
+        load_access_types(schema)
+    except (ValueError, KeyError) as error:
+        raise ValueError("Invalid shared access dictionary; repair it before syncing.") from error
+    if (app_target_dir / "variables.json").is_file() and not access_metadata(app_target_dir)["ok"]:
+        raise ValueError("Invalid access declaration; run libs app-check --gate access before appstore-sync.")
     if (app_target_dir / "variables.json").is_file() and (app_target_dir / ".env").is_file():
         secret_check = check_secret_templates(app_target_dir)
         if not secret_check["ok"]:
             raise ValueError("Invalid secret declaration; run libs app-check --gate secrets before appstore-sync.")
-    catalog_source = repo_path("metadata", "catalog", f"{app_name}.json")
+    catalog_source = repo_path(catalog.DEFAULT_CATALOG_DIR, f"{app_name}.json")
     has_catalog = catalog_source.exists()
     if has_catalog:
         catalog.load_catalog(app_name)
 
     total = 4 if has_catalog else 3
 
-    _announce(progress, 1, total, "syncing shared database dictionary")
+    _announce(progress, 1, total, "syncing shared metadata dictionaries")
     database_types_sha256 = _sync_database_types(
         app_name, host, user, key_path, container, backup_dir, progress=progress, verbose=verbose,
     )
     secret_rules_sha256 = _sync_secret_rules(
+        app_name, host, user, key_path, container, backup_dir, progress=progress, verbose=verbose,
+    )
+    access_types_sha256 = _sync_access_types(
         app_name, host, user, key_path, container, backup_dir, progress=progress, verbose=verbose,
     )
 
@@ -397,7 +429,7 @@ def prepare_preview(
     _announce(progress, total, total, "refreshing app store catalogs")
     _run(
         ssh_base(host, user, key_path)
-        + [shlex.join(["docker", "exec", container, "websoft9", "appstore", "reload", "--json"])],
+        + [shlex.join(["docker", "exec", container, "websoft9", "appstore", "reload", "--local", "--json"])],
         progress=progress,
         verbose=verbose,
     )
@@ -406,6 +438,7 @@ def prepare_preview(
         f"{_ssh_shell_prefix(key_path)} {user}@{host} 'if test -f {backup_dir}/{app_name}.tgz; then docker exec {container} sh -c \"rm -rf {deploy_dir}/{app_name}\" && docker exec -i {container} sh -c \"tar xzf - -C {deploy_dir}\" < {backup_dir}/{app_name}.tgz; fi'",
         f"{_ssh_shell_prefix(key_path)} {user}@{host} 'if test -f {backup_dir}/database-types.json.bak; then docker cp {backup_dir}/database-types.json.bak {container}:{DEFAULT_METADATA_DIR}/database-types.json; elif test -f {backup_dir}/database-types.json.bak.missing; then docker exec {container} rm -f {DEFAULT_METADATA_DIR}/database-types.json; fi'",
         f"{_ssh_shell_prefix(key_path)} {user}@{host} 'if test -f {backup_dir}/secret-rules.json.bak; then docker cp {backup_dir}/secret-rules.json.bak {container}:{DEFAULT_METADATA_DIR}/secret-rules.json; elif test -f {backup_dir}/secret-rules.json.bak.missing; then docker exec {container} rm -f {DEFAULT_METADATA_DIR}/secret-rules.json; fi'",
+        f"{_ssh_shell_prefix(key_path)} {user}@{host} 'if test -f {backup_dir}/access-types.json.bak; then docker cp {backup_dir}/access-types.json.bak {container}:{DEFAULT_METADATA_DIR}/access-types.json; elif test -f {backup_dir}/access-types.json.bak.missing; then docker exec {container} rm -f {DEFAULT_METADATA_DIR}/access-types.json; fi'",
     ]
     if has_catalog:
         rollback.append(
@@ -430,6 +463,9 @@ def prepare_preview(
         "secret_rules_synced": True,
         "secret_rules_sha256": secret_rules_sha256,
         "secret_rules_target": f"{DEFAULT_METADATA_DIR}/secret-rules.json",
+        "access_types_synced": True,
+        "access_types_sha256": access_types_sha256,
+        "access_types_target": f"{DEFAULT_METADATA_DIR}/access-types.json",
         "catalog_target": f"{target_catalog_dir}/{app_name}.json",
         "backup_dir": backup_dir,
         "version_override": version,

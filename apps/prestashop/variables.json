@@ -1,5 +1,25 @@
 {
   "name": "prestashop",
+  "access": [
+    {
+      "id": "web",
+      "service": "prestashop",
+      "port": 80,
+      "public": true,
+      "host": [
+        "PS_DOMAIN"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Prestashop",
   "release": true,
   "upstream": {
@@ -24,17 +44,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 80,
-      "path": "/"
-    },
-    "admin": {
-      "port": 80,
-      "path": "/psadmin"
-    }
-  },
   "requirements": {
     "cpu": "1",
     "memory": "2",

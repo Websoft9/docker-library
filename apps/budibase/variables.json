@@ -1,5 +1,25 @@
 {
   "name": "budibase",
+  "access": [
+    {
+      "id": "web",
+      "service": "proxy-service",
+      "port": 10000,
+      "public": true,
+      "mappedPort": [
+        "MAIN_PORT"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Budibase",
   "release": true,
   "upstream": {
@@ -21,13 +41,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 10000,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "8",

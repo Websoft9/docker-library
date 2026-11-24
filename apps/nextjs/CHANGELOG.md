@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array (`nextjs` referencing native `"${PORT}"`).
+- Removed `W9_HTTP_PORT`, `W9_HTTP_PORT_SET`, and `W9_URL`; switched `docker-compose.yml`, `src/entrypoint.sh`, and `src/start.sh` to standard native `PORT` (`3000`) with literal default host port `9001`.
+
 ## 2026-11-03
 
 - Declared the optional external DATABASE_URL input for PostgreSQL/MySQL/MariaDB connections used by uploaded application code.

@@ -73,3 +73,17 @@ def test_scaffold_dry_run_and_write(repo_fixture, monkeypatch):
     assert (repo_fixture / "apps" / "demo" / "CHANGELOG.md").exists()
     assert written["check"] == {"app": "demo", "ok": True}
     assert "run libs app-gen-readme --app <app> after editing variables.json" in written["todo"]
+
+
+def test_real_scaffold_passes_v2_gates_without_deprecated_w9_vars(repo_fixture):
+    written = newapp.scaffold("demoapp", "Demo App", version="1.0", repo="nginx/nginx", dry_run=False)
+
+    assert written["check"]["ok"] is True
+    assert written["check"]["access_metadata"]["status"] == "ok"
+    assert written["check"]["access_metadata"]["migration"] == []
+    env_text = (repo_fixture / "apps" / "demoapp" / ".env").read_text(encoding="utf-8")
+    compose_text = (repo_fixture / "apps" / "demoapp" / "docker-compose.yml").read_text(encoding="utf-8")
+    assert "W9_HTTP_PORT" not in env_text
+    assert "W9_URL" not in env_text
+    assert "W9_HTTP_PORT_SET" not in compose_text
+    assert '"9001:80"' in compose_text

@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 2026-11-20
+
+- Set the nine ingestion and forwarder port groups (beats, syslog TCP/UDP, raw TCP/UDP, GELF TCP/UDP, forwarder data/config) to `public: false` per `docs/app-access-spec.md` section 4.2, so install only publishes the `9000` dashboard/API port and the collection ports are enabled on demand from the instance access panel. The upstream compose port mappings are left unchanged; `public` is a deployment policy.
+
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array covering the `graylog:9000` dashboard/API group (`rootUrl` mapped to `GRAYLOG_EXTERNAL_URL`) and the nine TCP/UDP ingestion and forwarder port groups.
+- Replaced all `W9_*_PORT_SET`, `W9_HTTP_PORT`, `W9_URL`, and `W9_URL_REPLACE` aliases with literal default Compose port mappings and native `GRAYLOG_EXTERNAL_URL` (appending `/` in `docker-compose.yml` for `GRAYLOG_HTTP_EXTERNAL_URI`).
+
 ## 2026-11-04
 
 - Declared only the known internal MongoDB service and graylog database used by Graylog and Data Node; no external databases are offered.

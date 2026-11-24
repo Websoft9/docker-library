@@ -1,5 +1,40 @@
 {
   "name": "jitsu",
+  "access": [
+    {
+      "id": "web",
+      "service": "console",
+      "port": 3000,
+      "public": true,
+      "endpoints": [
+        {
+          "roles": [
+            "admin"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    },
+    {
+      "id": "api",
+      "service": "ingest",
+      "port": 3049,
+      "public": true,
+      "rootUrl": [
+        "JITSU_INGEST_PUBLIC_URL"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "api"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Jitsu",
   "release": true,
   "upstream": {
@@ -23,15 +58,6 @@
       ]
     }
   ],
-  "access": {
-    "web": {
-      "port": 3000,
-      "path": "/"
-    },
-    "api": {
-      "port": 3049
-    }
-  },
   "requirements": {
     "cpu": "4",
     "memory": "8",

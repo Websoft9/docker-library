@@ -10,7 +10,7 @@ services:
       - postgres
       - redis
     ports:
-      - "${W9_HTTP_PORT_SET}:3000" # Web Console
+      - "9007:3000" # Web Console
     environment:
       - NODE_ENV=production
       - RAILS_ENV=production

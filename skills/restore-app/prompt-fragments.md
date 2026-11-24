@@ -1,5 +1,11 @@
 # Prompt Fragments
 
+## Access Rule
+
+Missing access blocks restore before movement; populate verified entries or confirm no network entry before retrying.
+
+Follow `docs/app-access-spec.md`: missing, invalid or unused old access blocks restore before movement. Replace the temporary declaration from verified facts, not automatic key translation; an empty array requires confirmed no network entry. Check `access_metadata` and run `libs app-check --app <app> --gate access` after restore. Unknown facts remain unknown and blocking.
+
 ## Restore Rule
 
 Restore only moves an archived app back to active maintenance; it does not release a new version. A stale version must go through the app-update skill first.

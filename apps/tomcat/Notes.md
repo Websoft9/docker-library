@@ -48,4 +48,4 @@ cd /usr/local/tomcat/webapps && wget https://tomcat.apache.org/tomcat-11.0-doc/a
 - `tests/cases.yml`: in addition to the default adaptive checks (compose-config / container-up / container-healthy / web-access `/`), it adds two `script` cases:
   - `smoke.sh`: verifies the welcome page content, proving the default applications from `10-webapps.sh` have been restored.
   - `war-deploy.sh`: builds a tiny WAR inside the container with `jar`, places it in `webapps/`, waits for auto-extraction, and verifies the context, validating the real WAR deployment path.
-- `script` cases run on the **deployment target** by default (over SSH when remote, see `docs/app-tests.md`), so `war-deploy.sh` can use remote `docker exec`; `BASE_URL` is rewritten on the remote to `http://localhost:${W9_HTTP_PORT_SET}`.
+- `script` cases run on the **deployment target** by default (over SSH when remote, see `docs/app-tests.md`). `war-deploy.sh` can use remote `docker exec`; `BASE_URL` uses the deployment's published port.

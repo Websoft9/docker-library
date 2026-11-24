@@ -6,6 +6,7 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Jitsu**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
@@ -50,9 +51,12 @@ Supported versions: 2.15.
 
 ### Data Directory
 
+
 - `postgres_data` → `/var/lib/postgresql/data`
 - `mongodb_data` → `/data/db`
 - `clickhouse_data` → `/var/lib/clickhouse`
+- `internal` → `//0.0.0.0:9092`
+- `internal` → `//redpanda:9092`
 - `redpanda_data` → `/var/lib/redpanda/data`
 
 

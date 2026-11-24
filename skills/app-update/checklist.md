@@ -1,5 +1,8 @@
 # App Update Checklist
 
+- [ ] Repair missing required access from verified default-version/configuration facts; never delete it or fill an unjustified empty array to pass checks/publishing
+- [ ] Validate changed access port groups using `docs/app-access-spec.md` and `libs app-check --app <app> --gate access`; preserve group IDs, report unverified evidence, keep host ports and public URLs in native variables (`rootUrl` / `host` / `mappedPort`), and deploy-test changed runtime listeners/protocols/paths
+- [ ] Re-check every group's `public` against `docs/app-access-spec.md` section 4.2; newly added receiver/collection ports, in-app-setup-dependent ports, internal or cluster ports, `metrics` and secondary entries must default to `false`, and upstream compose `ports` mappings stay untouched (the consumer enforces `public` with an override)
 - [ ] Confirm the update is approved for implementation
 - [ ] Read app-local files under `apps/<app>/`
 - [ ] Read `docs/w9-env-spec.md` before editing `.env` or `docker-compose.yml`

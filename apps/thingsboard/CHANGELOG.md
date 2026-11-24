@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-11-05
 
 - Adapted the official 4.4 Compose layout with its internal web-report service and license-data volume; kept the existing PostgreSQL volume and Web Console mapping. No additional device protocol ports are published.

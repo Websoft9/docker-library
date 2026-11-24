@@ -11,7 +11,7 @@ services:
     # Only the external listener is published. 19092 and 29093 intentionally stay on
     # the websoft9 network and must not be exposed to the host.
     ports:
-      - "${W9_MQ_PORT_SET}:9092" # Kafka broker (external clients)
+      - "9092:9092" # Kafka broker (external clients)
 
     env_file: .env
     volumes:

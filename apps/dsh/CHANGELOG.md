@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-09-28
 - Add the initial DeepSeek Harness app package.
 - Build a custom image from the official `node:22-slim` base image and the upstream `@deepseek-ai/dsh` npm package.

@@ -4,6 +4,7 @@ import json
 import re
 from pathlib import Path
 
+from dotenv import dotenv_values
 from jinja2 import Environment, FileSystemLoader
 
 from libs.metadata import app_dir
@@ -17,7 +18,12 @@ TROUBLE_START = "<!-- W9_TROUBLESHOOT_START -->"
 TROUBLE_END = "<!-- W9_TROUBLESHOOT_END -->"
 NOTE_START = "<!-- W9_NOTE_START -->"
 NOTE_END = "<!-- W9_NOTE_END -->"
-PORT_LINE_RE = re.compile(r'^\s*-\s*"?\$?\{?(?P<var>[A-Z0-9_]+)\}?:(?P<cport>\d+)"?\s*(?:#\s*(?P<note>.*))?$')
+PORT_TOKEN_PAT = r"(?:\$\{[A-Za-z_][A-Za-z0-9_]*(?::-?[^{}]*)?\}|\$[A-Za-z_][A-Za-z0-9_]*|\d+)"
+PORT_LINE_RE = re.compile(
+    rf"""^\s*-\s*['"]?(?:[\d.:a-fA-F\[\]]+:)?(?P<host>{PORT_TOKEN_PAT}):(?P<cport>{PORT_TOKEN_PAT})(?:/(?P<proto>tcp|udp))?['"]?\s*(?:#\s*(?P<note>.*))?$""",
+    re.IGNORECASE,
+)
+PORT_VAR_RE = re.compile(r"^\$\{([A-Za-z_][A-Za-z0-9_]*)(?:(:-|-)([^{}]*))?\}$|^\$([A-Za-z_][A-Za-z0-9_]*)$")
 VOLUME_LINE_RE = re.compile(r'^\s*-\s*(?P<src>[\w.\/-]+):(?P<dst>\/\S+?)(?::ro)?$')
 
 
@@ -37,15 +43,33 @@ def _extract_block(text: str, start: str, end: str) -> str:
     return text[s + len(start):e].strip("\n")
 
 
-def _compose_ports(text: str) -> list[dict]:
+def _resolve_port_token(token: str, env_map: dict | None = None) -> str:
+    match = PORT_VAR_RE.match(token)
+    if not match:
+        return token
+    name = match.group(1) or match.group(4)
+    modifier = match.group(2)
+    fallback = match.group(3)
+    value = (env_map or {}).get(name)
+    if value is not None and (value != "" or modifier != ":-"):
+        return str(value)
+    if modifier and fallback:
+        return fallback
+    return name
+
+
+def _compose_ports(text: str, env_map: dict | None = None) -> list[dict]:
     rows = []
     for line in text.splitlines():
         match = PORT_LINE_RE.match(line)
         if not match:
             continue
-        cport = match.group("cport")
-        note = (match.group("note") or match.group("var") or cport).strip()
-        rows.append({"purpose": note, "port": cport})
+        cport = _resolve_port_token(match.group("cport"), env_map)
+        proto = (match.group("proto") or "tcp").lower()
+        port_label = f"{cport}/udp" if proto == "udp" else cport
+        host_token = _resolve_port_token(match.group("host"), env_map)
+        note = (match.group("note") or host_token or port_label).strip()
+        rows.append({"purpose": note, "port": port_label})
     return rows
 
 
@@ -140,9 +164,11 @@ def render_readme(app_name: str) -> dict:
     compose_path = target / "docker-compose.yml"
     if compose_path.exists():
         compose_text = compose_path.read_text(encoding="utf-8")
+    env_path = target / ".env"
+    env_map = dotenv_values(env_path, interpolate=False) if env_path.exists() else {}
 
     data_dirs, config_overrides = _compose_volumes(compose_text)
-    ports = _compose_ports(compose_text)
+    ports = _compose_ports(compose_text, env_map)
     admin_port = next((p["port"] for p in ports if p["purpose"] in ("Web Console", "Admin", "Console")), None)
     admin_url = f"http://<host>:{admin_port}/admin" if admin_port else None
 

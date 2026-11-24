@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+
+- Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.
+
 ## 2026-11-04
 - Wired native database connection inputs through `.env`, preserving the adapter, table prefix and independent bundled initialization defaults.
 - Declared internal MySQL and external MySQL/MariaDB inputs; image versions are unchanged.
@@ -8,4 +12,3 @@
 
 ## Release
 ### Fixes and Enhancements
-

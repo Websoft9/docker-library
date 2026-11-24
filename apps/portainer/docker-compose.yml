@@ -4,7 +4,7 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - "${W9_HTTP_PORT_SET}:9000" # Portainer web UI and REST API
+      - "9001:9000" # Portainer web UI and REST API
     env_file: .env
     volumes:
       - portainer:/data

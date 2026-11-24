@@ -6,14 +6,15 @@
 
 1. In the [Websoft9](https://www.websoft9.com) console, open **My Apps** and select **Tensorflow**.
 2. In the **Access** tab, get the login URL and credentials.
+
 3. Open the login URL in a browser and sign in to confirm the app works.
 
 <!-- W9_GUIDE_START -->
 ### Usage
 
-1. Open `http://<host>:${W9_HTTP_PORT_SET}/lab` from the **Access** tab.
+1. Open JupyterLab from the **Access** tab (default `http://<host>:8888/lab`).
 2. Paste the token from the **Access** tab (`W9_LOGIN_PASSWORD`) into the JupyterLab login page. `W9_LOGIN_USER` is a display label only.
-3. Open TensorBoard at `http://<host>:${W9_GUI_PORT_SET}`. It starts automatically and reads logs from `/tf/notebooks/logs`.
+3. Open TensorBoard from the **Access** tab (default `http://<host>:6006`). It starts automatically and reads logs from `/tf/notebooks/logs`.
 4. On first start the package seeds a small `demo` run, so TensorBoard shows an `accuracy`/`loss` chart immediately even before you run any training.
 5. For real data, open the seeded `tensorboard_demo.py` in `/tf/notebooks`, run it, then refresh TensorBoard. To also embed it in a notebook, use `%load_ext tensorboard` and `%tensorboard --logdir /tf/notebooks/logs --bind_all`.
 
@@ -32,7 +33,7 @@ Websoft9 packages this app from the official [Tensorflow Docker image](https://h
 - The package uses the upstream Jupyter-enabled Tensorflow image and persists notebooks under `/tf/notebooks`.
 - JupyterLab runs from `/tf/notebooks`, so new notebooks and TensorBoard logs stay on the persisted volume by default.
 - The login token is fixed through `W9_LOGIN_PASSWORD`, which makes the Access tab usable without reading container logs.
-- TensorBoard is exposed on `${W9_GUI_PORT_SET}` and starts automatically with logdir `/tf/notebooks/logs` unless you override `TENSORBOARD_LOGDIR`.
+- TensorBoard is published on port `6006` by default and starts automatically with logdir `/tf/notebooks/logs` unless you override `TENSORBOARD_LOGDIR`.
 - On first start the package seeds a `demo` run (scalars, histogram, text) so TensorBoard is not empty. Set `TENSORBOARD_DEMO=false` in `.env` and recreate to skip it.
 - A sample training script is copied to `/tf/notebooks/tensorboard_demo.py` so you can generate real charts with the TensorBoard Keras callback.
 <!-- W9_NOTE_END -->

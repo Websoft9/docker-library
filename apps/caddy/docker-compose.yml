@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
     working_dir: /srv
     ports:
-      - "${W9_HTTP_PORT_SET}:80" # Web Console
+      - "9001:80" # Web Console
     volumes:
       - site:/srv # Add your html site
       - ./src/Caddyfile:/etc/caddy/Caddyfile

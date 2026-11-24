@@ -1,5 +1,25 @@
 {
   "name": "akeneo",
+  "access": [
+    {
+      "id": "web",
+      "service": "akeneo",
+      "port": 80,
+      "public": true,
+      "rootUrl": [
+        "AKENEO_PIM_URL"
+      ],
+      "endpoints": [
+        {
+          "roles": [
+            "web"
+          ],
+          "scheme": "http",
+          "path": "/"
+        }
+      ]
+    }
+  ],
   "trademark": "Akeneo",
   "release": true,
   "upstream": {
@@ -24,13 +44,6 @@
       ]
     }
   ],
-  "access": {
-    "defaultScheme": "http",
-    "web": {
-      "port": 80,
-      "path": "/"
-    }
-  },
   "requirements": {
     "cpu": "2",
     "memory": "4",

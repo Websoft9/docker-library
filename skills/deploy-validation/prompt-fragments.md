@@ -1,8 +1,14 @@
 # Prompt Fragments
 
+## Access Rule
+
+Missing access blocks the gate; `not_declared` is a failure, not validation evidence. Empty entries require confirmed no network entry.
+
+Follow `docs/app-access-spec.md` and run `libs app-check --app <app> --gate access`; retain `access_metadata` warnings. Ports/expose evidence is static only. Validate real service listeners, protocols and paths for runnable changes; declaration-only edits require metadata evidence, not a fabricated deploy/open/domain result.
+
 ## Remote Rule
 
-`.venv/bin/libs app-deploy` is the deployment primitive: it owns local vs remote target resolution, syncs only the `apps/<app>` directory, deploys into the isolated host path `<deploy_root>/<app>` (default `/opt/websoft9-test/apps/<app>`), creates the shared network, runs `config`, `up -d`, and collects `ps`. `appstore-sync` is a different command for syncing an app directory, the shared database dictionary and optional catalog commercial data into the websoft9 container, and is not part of generic deploy-validation.
+`.venv/bin/libs app-deploy` is the deployment primitive: it owns local vs remote target resolution, syncs only the `apps/<app>` directory, deploys into the isolated host path `<deploy_root>/<app>` (default `/opt/websoft9-test/apps/<app>`), creates the shared network, runs `config`, `up -d`, and collects `ps`. `appstore-sync` separately syncs the app directory, shared database/secret/access dictionaries and optional catalog data into the websoft9 container; it is not part of generic deploy-validation.
 
 The remote execution defaults come from `.secrets/remote.env` when the file exists; otherwise the workflow falls back to local execution. The SSH secret lives at `.secrets/ssh/default.pem` under the repository root (git-ignored, chmod 600) unless `--ssh-secret-path` overrides it. Detect the file type before connecting:
 - private key file -> use `ssh -i <path>`

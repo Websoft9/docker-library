@@ -4,8 +4,8 @@
 
 ### 访问方式
 
-- WebDriver API（web）：`http://<host>:${W9_HTTP_PORT_SET}`，健康检查 `http://<host>:${W9_HTTP_PORT_SET}/status`
-- noVNC 管理界面（admin）：`http://<host>:${W9_ADMIN_PORT_SET}/?autoconnect=1&resize=scale`，密码为 `.env` 中的 `W9_LOGIN_PASSWORD`（即 `W9_POWER_PASSWORD`）
+- WebDriver API：`http://<host>:9001`，健康检查 `http://<host>:9001/status`（默认端口）。
+- noVNC 管理界面：`http://<host>:7900/?autoconnect=1&resize=scale`（默认端口），密码为 `.env` 中的 `W9_LOGIN_PASSWORD`。
 
 ### 修改 noVNC 密码
 
@@ -16,7 +16,7 @@
 Selenium 只在创建 WebDriver 会话时才启动 Chrome；没有活动会话时虚拟桌面为空，因此 noVNC 显示黑屏。这是正常行为，不是故障。先创建一个会话即可在 noVNC 中看到浏览器：
 
 ```bash
-curl -s -X POST "http://<host>:${W9_HTTP_PORT_SET}/session" \
+curl -s -X POST "http://<host>:9001/session" \
   -H 'Content-Type: application/json' \
   -d '{"capabilities":{"alwaysMatch":{"browserName":"chrome"}}}'
 ```

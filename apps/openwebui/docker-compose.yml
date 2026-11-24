@@ -5,7 +5,7 @@ services:
     container_name: ${W9_ID}
     restart: unless-stopped
     ports:
-      - "${W9_HTTP_PORT_SET}:8080" # Web UI
+      - "9001:8080" # Web UI
     env_file: .env
     volumes:
       - open-webui:/app/backend/data

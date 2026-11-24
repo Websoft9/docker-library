@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-17
+- Migrated `access` to the V2 port-group array (`wordpress:80` carrying `/` and `/wp-admin`, with `rootUrl` mapped to `WP_HOME` and `WP_SITEURL`).
+- Replaced `W9_HTTP_PORT_SET`, `W9_HTTP_PORT`, `W9_URL`, `W9_URL_REPLACE`, and `W9_ADMIN_PATH` with literal default port mapping `"9001:80"` and native `WP_HOME` / `WP_SITEURL` runtime URL overrides in `src/websoft9-url.php`.
+
 ## 2026-11-03
 - Declared the bundled MySQL dependency and existing native `WORDPRESS_DB_*` mappings for external MySQL/MariaDB connections, inheriting database names and accounts from the shared dictionary.
 - Kept runtime configuration and image versions unchanged.

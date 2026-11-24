@@ -5,8 +5,8 @@ services:
     restart: unless-stopped
     shm_size: "2g"
     ports:
-      - "${W9_HTTP_PORT_SET}:4444" # Selenium WebDriver API
-      - "${W9_ADMIN_PORT_SET}:7900" # noVNC admin console
+      - "9001:4444" # Selenium WebDriver API
+      - "7900:7900" # noVNC admin console
     env_file: .env
 
 networks:

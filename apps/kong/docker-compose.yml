@@ -29,9 +29,9 @@ services:
     user: "${KONG_USER:-kong}"
     env_file: .env
     ports:
-      - "${W9_HTTP_PORT_SET}:8000" # Proxy
-      - "${W9_ADMIN_API_PORT_SET}:8001" # Admin API
-      - "${W9_ADMIN_GUI_PORT_SET}:8002" # Kong Manager
+      - "8010:8000" # Proxy
+      - "8011:8001" # Admin API
+      - "8012:8002" # Kong Manager
     healthcheck:
       test: [ "CMD", "kong", "health" ]
       interval: 10s
