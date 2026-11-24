@@ -568,7 +568,7 @@ Version sources:
 
 ```
 1. For release, compare build-input hashes between the current tag and the preceding reachable lower-version tag of a published stable Release (bare tags are not baselines). Invoke docker.yml only for changed custom images; skip it if none changed. The first release selects all buildable apps. Only selected-app image failures block Appstore artifacts.
-2. Check out the release tag (fetch-depth: 0), resolve channel/version; validate stable tag format and main ancestry for release.
+2. Check out the release tag (fetch-depth: 0), resolve channel/version; validate stable tag format and ancestry for release: the tagged commit must be reachable from `origin/main` or an `origin/hotfix/*` branch, so a patch release can ship an isolated fix without pulling unreleased main work into the stable channel.
 3. Read the channel's published Appstore manifest from R2, download its referenced library apps index and checksum, and verify version/channel/checksum. Pass it as --previous-apps-index. If no published manifest exists, select --all-apps without partial-update support.
 4. Fetch catalog source data from Contentful.
 5. Run `ci/scripts/library_publish.py` to build current Appstore artifacts only, normalizing product distribution structures from repository variables.json. Do not fetch bundled legacy logos/screenshots or build legacy distribution ZIPs.

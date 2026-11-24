@@ -5,6 +5,7 @@ Project-level changes only: architecture, delivery model, tooling, CI, and relea
 ## 2026-11
 
 ### Added
+- Hotfix release channel: official release tags may now point to a commit reachable from `origin/hotfix/*` as well as `origin/main`, so a patch release can ship an isolated fix without promoting unreleased main work. Documented in `docs/appstore-release-spec.md` section 6.2.
 - Ordered `variables.json.access[]` port-group contract (`id`, `service`, `port`, `protocol`, `public`, `requireDomain`, `requireHttps`, `rootUrl`, `host`, `mappedPort`, `endpoints`), shared `metadata/access-types.json`, Schema and semantic/policy validation (`app-check --gate access`), and consistent `app-info`/report/README/deploy/test integration.
 - Access dictionary delivery in full and incremental library artifacts, content fingerprints/checksums, `appstore-sync` preflight and backup/rollback records, and restore-time validation.
 - Local catalog working copy at `metadata/.catalog/` (gitignored) and live `libs catalog-pull --from contentful`, with `--from artifact` kept for published snapshots.
