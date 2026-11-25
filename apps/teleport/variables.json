@@ -6,7 +6,7 @@
       "service": "teleport",
       "port": 3080,
       "public": true,
-      "requireDomain": true,
+      "requireDomain": false,
       "host": [
         "TELEPORT_PUBLIC_HOST"
       ],

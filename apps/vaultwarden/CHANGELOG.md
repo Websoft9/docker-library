@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-25
+
+- Restored the literal host mapping `"9001:80"` so the compose file keeps upstream-style port publishing and stays usable for local self-test. `access` still declares `public: false`, `requireDomain: true`, and `requireHttps: true`, so deployment removes the mapping and serves the vault through an HTTPS gateway only.
+
 ## 2026-11-18
 
 - Removed the default plaintext host mapping; access requires an HTTPS gateway.
