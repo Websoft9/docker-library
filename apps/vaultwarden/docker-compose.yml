@@ -3,8 +3,8 @@ services:
     image: ${W9_REPO}:${W9_VERSION}
     container_name: ${W9_ID}
     restart: unless-stopped
-    expose:
-      - 80
+    ports:
+      - "9001:80" # Web vault and API
     env_file:
       - .env
     volumes:

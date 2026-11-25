@@ -6,7 +6,7 @@
       "service": "web",
       "port": 8443,
       "public": true,
-      "requireDomain": true,
+      "requireDomain": false,
       "rootUrl": [
         "PUBLIC_URL"
       ],

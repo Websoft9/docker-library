@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-25
+
+- Relaxed the web `access` group to `requireDomain: false`. The web container publishes an HTTPS port and upstream allows IP access with a self-signed certificate; mobile clients still require a trusted certificate, so a domain remains recommended for production.
+
 ## 2026-11-20
 
 - Restored install-time configurability for the JVB media port. The UDP port is now declared as an `access` group (`jvb`, `protocol: "udp"`, `port: "${JVB_PORT}"`, `mappedPort: ["JVB_PORT"]`) instead of an `x-websoft9-unmanaged-ports` exemption, and `JVB_PORT` drives the host mapping, the container listener and the advertised SDP port so users can move it away from a contended `10000/udp`.
