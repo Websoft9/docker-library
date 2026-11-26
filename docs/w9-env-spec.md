@@ -276,10 +276,14 @@ Treat this as a complex login:
   instead of copying the literal value, so it follows `.env`)
 - top-level `credentials.<slot>` remains valid as the shorthand when an app only needs a single credential
   set
-- keep `variables.json.help.login` as the sign-in note shown with the rendered credentials
-- `help.login` is required for a complex login, not optional: when a front end only renders the final
-  account and password from `.env`, users still need `help.login` to know how the initial bootstrap step
-  works
+- keep `variables.json.help.init` for the first-start steps (creating the administrator, reading a
+  temporary password, running a bootstrap command) and `variables.json.help.login` for how to sign in
+  once the credentials exist
+- `help.init` is required whenever `credentials.initial` is declared or a slot uses `container-log` /
+  `container-file`: when a front end renders only the final account and password from `.env`, users still
+  need `help.init` to know how the initial bootstrap step works
+- `help.login` is required whenever the app has a built-in account or token to sign in with, and must not
+  repeat the initialization steps owned by `help.init`
 
 ## Translation Rule
 

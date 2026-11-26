@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-26
+
+- Split installation guidance into `help.init` (read the temporary admin password from the container logs) and `help.login` (sign-in steps).
+
 ## 2026-11-20
 
 - Set the nine ingestion and forwarder port groups (beats, syslog TCP/UDP, raw TCP/UDP, GELF TCP/UDP, forwarder data/config) to `public: false` per `docs/app-access-spec.md` section 4.2, so install only publishes the `9000` dashboard/API port and the collection ports are enabled on demand from the instance access panel. The upstream compose port mappings are left unchanged; `public` is a deployment policy.

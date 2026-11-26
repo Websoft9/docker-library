@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-26
+
+- Removed the empty `help.db` entry; the schema now rejects empty help values.
+
 ## 2026-11-17
 
 - Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.

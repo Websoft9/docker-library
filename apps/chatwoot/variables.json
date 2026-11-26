@@ -86,7 +86,8 @@
     ]
   },
   "help": {
-    "login": "First run: open the site and create the administrator account in the Chatwoot setup flow, then sign in with those credentials.",
+    "init": "First run: open the site and create the administrator account in the Chatwoot setup flow, then sign in with those credentials.",
+    "login": "Sign in with the administrator account you created in the setup flow.",
     "db": "After each image upgrade, run `docker compose run --rm rails bundle exec rails db:chatwoot_prepare` before or immediately after restarting the stack so Chatwoot applies the required database migrations."
   }
 }

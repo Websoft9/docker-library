@@ -98,6 +98,7 @@
     ]
   },
   "help": {
-    "login": "Langfuse ships with no default account. Open the site, click Sign up to create the first user, then create your organization and project in the UI."
+    "init": "Langfuse ships with no default account. Open the site, click Sign up to create the first user, then create your organization and project in the UI.",
+    "login": "Sign in with the first user you created."
   }
 }

@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-26
+
+- Split installation guidance into `help.init` (first-start prerequisites) and `help.login` (sign-in steps).
+
 ## 2026-11-24
 
 - Stopped pre-creating an empty `odoo` database in the bundled PostgreSQL service. The empty database made Odoo adopt it and skip base initialisation, so every request failed with `relation "ir_module_module" does not exist`. Odoo now creates and initialises its own database on first visit.

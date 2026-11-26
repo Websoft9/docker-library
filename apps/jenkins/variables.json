@@ -48,5 +48,9 @@
       "path": "/var/jenkins_home/secrets/initialAdminPassword",
       "format": "text"
     }
+  },
+  "help": {
+    "init": "The initial administrator password is generated on first startup and stored at `/var/jenkins_home/secrets/initialAdminPassword` inside the container (`docker exec <container> cat /var/jenkins_home/secrets/initialAdminPassword`).",
+    "login": "Unlock Jenkins with that password, then create the first administrator account in the setup wizard."
   }
 }

@@ -42,6 +42,7 @@
   },
   "credentials": {},
   "help": {
-    "login": "Rancher prints the bootstrap password only after the container starts. Retrieve it manually with the official command `docker exec -it ${W9_ID} reset-password`, then use the printed password on the first login screen. The value is not available declaratively before runtime, so it is documented here instead of being modeled as machine-readable credentials."
+    "init": "Rancher prints the bootstrap password only after the container starts. Retrieve it manually with the official command `docker exec -it ${W9_ID} reset-password`, then use the printed password on the first login screen. The value is not available declaratively before runtime, so it is documented here instead of being modeled as machine-readable credentials.",
+    "login": "Sign in on the first login screen with the printed bootstrap password, then set a new administrator password."
   }
 }

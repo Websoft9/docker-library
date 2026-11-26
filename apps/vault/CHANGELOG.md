@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-26
+
+- Added `help.init` and `help.login` describing the dev-mode root token printed in the container logs and how to use it with the UI, CLI and API.
+
 ## 2026-11-17
 
 - Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.

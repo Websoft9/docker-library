@@ -82,6 +82,7 @@
   },
   "help": {
     "db": "Odoo 17-20 requires PostgreSQL (16.0+ for Odoo 20); this package includes PostgreSQL 16 and supports connecting to an external PostgreSQL server.",
-    "login": "First run: open the site, create the database in the database manager, then sign in with the administrator account you set there."
+    "init": "First run: open the site, create the database in the database manager, then sign in with the administrator account you set there.",
+    "login": "Sign in with the administrator account you created for the database."
   }
 }

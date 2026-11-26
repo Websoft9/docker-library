@@ -109,7 +109,8 @@
   },
   "help": {
     "db": "Bundled MariaDB and Redis are initialized from the package env on first deployment.",
-    "login": "The initial administrator account comes from W9_LOGIN_USER and W9_LOGIN_PASSWORD on first startup; later edits do not backfill existing data.",
+    "init": "The initial administrator account comes from W9_LOGIN_USER and W9_LOGIN_PASSWORD on first startup; later edits do not backfill existing data.",
+    "login": "Sign in with that administrator account.",
     "url": "Set SEAFILE_SERVER_PROTOCOL=https when the app is published behind an HTTPS gateway or domain, and set SEAFILE_EXTERNAL_HOSTPORT to a reachable IP:port when no domain is bound."
   },
   "upstream": {

@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-26
+
+- Split installation guidance into `help.init` (forced password change on first sign-in) and `help.login` (built-in admin account).
+
 ## 2026-11-17
 
 - Migrated `access` to the V2 port-group array and removed deprecated `W9_*` port/URL aliases in `.env` and `docker-compose.yml`.

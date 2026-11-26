@@ -57,6 +57,8 @@
     "first_startup_only": []
   },
   "help": {
-    "db": "No bundled database is required. DeepSeek Harness stores sessions, attachments, and local state in the dsh_home volume mounted at /var/lib/dsh. The dsh_workspace volume mounted at /workspace is the default project area exposed to the Web UI."
+    "db": "No bundled database is required. DeepSeek Harness stores sessions, attachments, and local state in the dsh_home volume mounted at /var/lib/dsh. The dsh_workspace volume mounted at /workspace is the default project area exposed to the Web UI.",
+    "init": "Read the one-time access token from the container logs (`docker logs <container>`) after the first start.",
+    "login": "Open the site and enter the token when prompted, or append it to the URL as `?token=<token>`."
   }
 }
