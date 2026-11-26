@@ -72,7 +72,8 @@
   },
   "help": {
     "db": "Bundled PostgreSQL, RabbitMQ, Redis, and Memcached credentials are initialized from the first-start settings on the initial deployment.",
-    "login": "On first startup the package creates a default Zulip organization and owner account from W9_ZULIP_REALM_* and W9_LOGIN_*; later edits do not backfill existing data."
+    "init": "On first startup the package creates a default Zulip organization and owner account from W9_ZULIP_REALM_* and W9_LOGIN_*; later edits do not backfill existing data.",
+    "login": "Sign in with the owner account created from W9_LOGIN_*."
   },
   "upstream": {
     "image": "https://ghcr.io/zulip/zulip-server",

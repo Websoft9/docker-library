@@ -62,7 +62,8 @@
     ]
   },
   "help": {
-    "login": "The initial `admin` password comes from `W9_POWER_PASSWORD` via `OPENSEARCH_INITIAL_ADMIN_PASSWORD` and is only applied when the data volume is empty.",
+    "init": "The initial `admin` password comes from `W9_POWER_PASSWORD` via `OPENSEARCH_INITIAL_ADMIN_PASSWORD` and is only applied when the data volume is empty.",
+    "login": "Sign in as `admin` with that initial password.",
     "db": "OpenSearch still requires the host kernel setting `vm.max_map_count=262144` before deployment."
   }
 }

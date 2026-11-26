@@ -55,5 +55,9 @@
       "pattern": "Root Token:\\s*(.+)",
       "group": 1
     }
+  },
+  "help": {
+    "init": "Vault runs in dev mode: the root token is printed once in the container logs at startup (`docker logs <container>`), and data is not persisted across restarts.",
+    "login": "Open the Vault UI and sign in with the root token, or export it as `VAULT_TOKEN` for the CLI and API."
   }
 }

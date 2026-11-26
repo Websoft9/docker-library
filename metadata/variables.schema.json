@@ -204,8 +204,18 @@
     },
     "help": {
       "type": "object",
+      "propertyNames": {
+        "enum": [
+          "db",
+          "init",
+          "login",
+          "url",
+          "runner"
+        ]
+      },
       "additionalProperties": {
-        "type": "string"
+        "type": "string",
+        "minLength": 1
       }
     }
   },

@@ -76,6 +76,7 @@
     }
   ],
   "help": {
-    "login": "First run: open /ghost and create the administrator account in the browser, then log in with those credentials."
+    "init": "First run: open /ghost and create the administrator account in the browser, then log in with those credentials.",
+    "login": "Log in at /ghost with the administrator account you created."
   }
 }

@@ -518,3 +518,45 @@ def test_database_gate_accepts_alive_lts(repo_fixture, app_factory):
 
     assert payload["ok"] is True
     assert payload["result"]["status"] == "ok"
+
+
+def test_policy_requires_help_init_for_runtime_credentials(repo_fixture, app_factory):
+    (repo_fixture / "i18n" / "translation.json").write_text("{}\n", encoding="utf-8")
+    missing = app_factory(
+        "missing-init",
+        env="W9_ID=missing\n",
+        compose="services: {}\n",
+        variables={
+            "credentials": {
+                "token": {"source": "container-log", "match": "regex", "pattern": "Token: (\\S+)", "group": 1}
+            }
+        },
+    )
+    result = validate._policy_result(missing)
+    assert result["ok"] is False
+    assert result["help_init_ok"] is False
+    assert result["runtime_credential_fields"] == ["token"]
+
+    ok_app = app_factory(
+        "has-init",
+        env="W9_ID=ok\n",
+        compose="services: {}\n",
+        variables={
+            "credentials": {"token": {"source": "container-log", "pattern": "Token"}},
+            "help": {"init": "Read the token from the container logs.", "login": "Paste it into the sign-in screen."},
+        },
+    )
+    assert validate._policy_result(ok_app)["ok"] is True
+
+
+def test_policy_rejects_unknown_help_keys(repo_fixture, app_factory):
+    (repo_fixture / "i18n" / "translation.json").write_text("{}\n", encoding="utf-8")
+    target = app_factory(
+        "bad-help",
+        env="W9_ID=bad\n",
+        compose="services: {}\n",
+        variables={"help": {"db": "ok", "setup": "not allowed"}},
+    )
+    result = validate._policy_result(target)
+    assert result["ok"] is False
+    assert result["unknown_help_keys"] == ["setup"]

@@ -40,6 +40,7 @@
     "none": true
   },
   "help": {
-    "login": "On first startup, check the portainer container logs if a one-time setup token is requested, then open Portainer to create the initial administrator account and sign in."
+    "init": "On first startup, check the portainer container logs if a one-time setup token is requested, then open Portainer to create the initial administrator account and sign in.",
+    "login": "Sign in with the administrator account you created in Portainer."
   }
 }

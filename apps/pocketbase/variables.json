@@ -67,6 +67,7 @@
     ]
   },
   "help": {
-    "login": "PocketBase is pre-1.0 and may require manual migration review on upgrades. The first startup creates the configured superuser inside the empty pb_data directory."
+    "init": "The first startup creates the configured superuser inside the empty `pb_data` directory. PocketBase is pre-1.0, so upgrades may require manual migration review.",
+    "login": "Sign in with that superuser account."
   }
 }

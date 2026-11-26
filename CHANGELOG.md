@@ -5,6 +5,7 @@ Project-level changes only: architecture, delivery model, tooling, CI, and relea
 ## 2026-11
 
 ### Added
+- Split installation guidance into `help.init` (first-start prerequisites) and `help.login` (how to sign in), restricted `help` to the keys `db`, `init`, `login`, `url` and `runner`, and required non-empty values.
 - Hotfix release channel: official release tags may now point to a commit reachable from `origin/hotfix/*` as well as `origin/main`, so a patch release can ship an isolated fix without promoting unreleased main work. Documented in `docs/appstore-release-spec.md` section 6.2.
 - Ordered `variables.json.access[]` port-group contract (`id`, `service`, `port`, `protocol`, `public`, `requireDomain`, `requireHttps`, `rootUrl`, `host`, `mappedPort`, `endpoints`), shared `metadata/access-types.json`, Schema and semantic/policy validation (`app-check --gate access`), and consistent `app-info`/report/README/deploy/test integration.
 - Access dictionary delivery in full and incremental library artifacts, content fingerprints/checksums, `appstore-sync` preflight and backup/rollback records, and restore-time validation.
@@ -16,6 +17,7 @@ Project-level changes only: architecture, delivery model, tooling, CI, and relea
 - Aligned scaffolding, new/update/restore/deploy skills, canonical access documentation, and regression tests.
 - Defined the `public` default-publish policy in `docs/app-access-spec.md` section 4.2: publish only what works immediately after install. Optional receiver, monitoring and maintenance ports in 10 apps are now declared `public: false`, and `public` is a `variables.json` deployment policy only, so upstream compose port mappings stay untouched and consumers apply it with a deploy-time override.
 - Restored install-time configurability of the Jitsi JVB media port by driving the host mapping, container listener and advertised SDP port from a single `JVB_PORT` variable.
+- `libs app-check --gate policy` now rejects unknown `help` keys and requires `help.init` whenever `credentials.initial` is declared or a credential slot reads from `container-log` / `container-file`.
 - Catalog sync is now seed-only: `catalog-push --apply` creates missing entries and refreshes derived machine fields but never rewrites content fields of an existing entry; deliberate replacement requires `--overwrite`. `metadata/catalog/` is no longer tracked, the Contentful sync workflow triggers only on `apps/*/variables.json`, and PR-time catalog diff validation was removed.
 
 ### Removed

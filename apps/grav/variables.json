@@ -42,6 +42,7 @@
     "disk": "1"
   },
   "help": {
-    "login": "First run: open /admin and create the administrator account in the browser, then log in with those credentials."
+    "init": "First run: open /admin and create the administrator account in the browser, then log in with those credentials.",
+    "login": "Log in at /admin with the administrator account you created."
   }
 }

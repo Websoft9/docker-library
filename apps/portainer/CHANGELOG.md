@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-26
+
+- Split installation guidance into `help.init` (first-start prerequisites) and `help.login` (sign-in steps).
+
 ## 2026-09-30
 
 - Update Portainer CE from `2.34.0` to `2.45.1` (latest stable upstream release; Portainer publishes no `x.x` tag, so exact `x.x.x` pinning is required).

@@ -102,8 +102,5 @@
       "INNGEST_EVENT_KEY",
       "INNGEST_SIGNING_KEY"
     ]
-  },
-  "help": {
-    "db": ""
   }
 }

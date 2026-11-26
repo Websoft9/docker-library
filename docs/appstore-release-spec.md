@@ -20,7 +20,7 @@
 
 ### Help Fields
 
-Help text in `variables.json` belongs in the `help` object (for example, `help.db`) for display in the interface:
+Help text in `variables.json` belongs in the `help` object for display in the interface. Supported keys: `db` (database notes), `init` (first-start prerequisites), `login` (how to sign in), plus the app-specific `url` and `runner`. No other keys are accepted.
 
 - These are human-readable strings, not computational inputs.
 - Computational facts come only from `.env` (for example, `W9_DB_VERSION`) and `metadata/`.
@@ -31,8 +31,10 @@ Rules for `help` fields:
 - Each key contains a single-sentence string.
 - State version-specific requirements in the same sentence, for example, `MySQL 8.0+ (7.0+ requires 8.4+)`.
 - Do not introduce version-keyed objects and their additional maintenance burden.
-- Complex login (for example, one-time initialization followed by fixed credentials) **must** declare `help.login`. The interface must display it **above** the credentials area so users read the instructions before logging in.
-- `help.login` must not be omitted: the credentials area shows only the final credentials, leaving users unaware of prerequisite initialization otherwise.
+- `help.init` explains what the user must do on first start before the app is usable or before credentials exist: create the administrator account, read a temporary password from the logs, run a bootstrap command, or accept a self-signed certificate. The interface must display it **above** the credentials area.
+- `help.login` explains how to sign in once credentials exist: the sign-in path, which account or token to use, and whether the default password must be changed. The interface must display it **below** the credentials area.
+- Whenever `credentials.initial` is declared, or any credential slot uses `container-log` / `container-file`, `help.init` is **required**: the credentials area otherwise shows nothing and leaves users unaware of the prerequisite step.
+- Both keys may be present for a two-stage app; keep each one to the part it owns instead of repeating the other.
 
 ### Credential Retrieval Metadata
 
@@ -41,7 +43,7 @@ Rules for `help` fields:
 - `credentials` is a structured declaration used by fixed consumer logic, not human-readable copy.
 - It does not replace existing literal credentials in `.env`; if `W9_LOGIN_PASSWORD` is fixed, continue using `.env` directly.
 - It supports stage groups (`initial` initialization credentials and `login` login credentials), as well as top-level single-stage slots (`username` / `password` / `token`, equivalent to `login` by default).
-- For complex login (one-time initialization followed by fixed final credentials), declare the initial credentials in `credentials.initial` (for example, a temporary password from `container-log` or an unlock password from `container-file`), and the final credentials in `credentials.login` (for example, `container-env` referencing `W9_LOGIN_PASSWORD`). Retain `.env` fields `W9_LOGIN_USER` / `W9_LOGIN_PASSWORD` for the current frontend, and use `help.login` to explain the relationship between initialization and regular login.
+- For complex login (one-time initialization followed by fixed final credentials), declare the initial credentials in `credentials.initial` (for example, a temporary password from `container-log` or an unlock password from `container-file`), and the final credentials in `credentials.login` (for example, `container-env` referencing `W9_LOGIN_PASSWORD`). Retain `.env` fields `W9_LOGIN_USER` / `W9_LOGIN_PASSWORD` for the current frontend, and use `help.init` for the initialization steps and `help.login` for the regular sign-in.
 - `credentials` describes only where to retrieve credentials; arbitrary host-level shell commands are not permitted in the repository.
 - If an installation wizard creates the administrator account rather than the image provisioning one, declare `credentials.none: true` and omit `W9_LOGIN_USER` / `W9_LOGIN_PASSWORD`.
 

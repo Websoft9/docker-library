@@ -47,5 +47,9 @@
   },
   "env": {
     "first_startup_only": []
+  },
+  "help": {
+    "init": "The first-run wizard token is written to `/opt/youtrack/conf/internal/services/configurationWizard/wizard_token.txt` inside the container once YouTrack has started.",
+    "login": "Open YouTrack, paste the wizard token into the setup screen, and create the first administrator account."
   }
 }

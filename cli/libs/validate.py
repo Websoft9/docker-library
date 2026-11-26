@@ -24,6 +24,8 @@ app = typer.Typer(
 
 REQUIRED_FILES = [".env", "docker-compose.yml", "variables.json", "README.md", "CHANGELOG.md"]
 TRANSLATABLE_ENV_RE = re.compile(r"^(W9_.*_SET|W9_LOGIN.*)$")
+HELP_KEYS = frozenset({"db", "init", "login", "url", "runner"})
+RUNTIME_CREDENTIAL_SOURCES = frozenset({"container-log", "container-file"})
 URL_CONFIG_REF_RE = re.compile(r"\$(?:\{)?W9_URL(?:\})?")
 URL_AWARE_KEY_RE = re.compile(
     r"(^|_)(ROOT_URL|BASE_URL|SITE_URL|APP_URL|PUBLIC_URL|WEBAPP_URL|HOMEPAGE_URL|EXTERNAL_URL|"
@@ -172,12 +174,36 @@ def _policy_result(target: Path) -> dict:
     secrets_ok = not secrets_missing and not secrets_empty
     deprecated_access_env_keys = [key for key in env_keys if is_deprecated_w9_access_key(key)]
 
+    help_block = variables.get("help") if isinstance(variables, dict) else None
+    help_block = help_block if isinstance(help_block, dict) else {}
+    unknown_help_keys = sorted(key for key in help_block if key not in HELP_KEYS)
+    runtime_credential_fields: list[str] = []
+    credentials = variables.get("credentials") if isinstance(variables, dict) else None
+    if isinstance(credentials, dict):
+        rules: list[tuple[str, dict]] = []
+        for stage in ("initial", "login"):
+            block = credentials.get(stage)
+            if isinstance(block, dict):
+                rules.extend(
+                    (f"{stage}.{field}", rule) for field, rule in block.items() if isinstance(rule, dict)
+                )
+        for slot in ("username", "password", "token"):
+            rule = credentials.get(slot)
+            if isinstance(rule, dict):
+                rules.append((slot, rule))
+        runtime_credential_fields = sorted(
+            name for name, rule in rules if rule.get("source") in RUNTIME_CREDENTIAL_SOURCES
+        )
+    help_init_ok = not runtime_credential_fields or bool(str(help_block.get("init") or "").strip())
+
     ok = (
         not missing_translation
         and login_pair_ok
         and dependency_tag_policy_ok
         and secrets_ok
         and not deprecated_access_env_keys
+        and not unknown_help_keys
+        and help_init_ok
     )
     return {
         "ok": ok,
@@ -190,6 +216,9 @@ def _policy_result(target: Path) -> dict:
         "secrets_missing": secrets_missing,
         "secrets_empty": secrets_empty,
         "deprecated_access_env_keys": deprecated_access_env_keys,
+        "unknown_help_keys": unknown_help_keys,
+        "help_init_ok": help_init_ok,
+        "runtime_credential_fields": runtime_credential_fields,
     }
 
 

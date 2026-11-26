@@ -53,6 +53,7 @@
     "disk": "10"
   },
   "help": {
-    "login": "Apache NiFi starts with HTTPS and single-user authentication. The browser will show a certificate warning on first access because the container generates a self-signed certificate by default."
+    "init": "Apache NiFi starts with HTTPS and single-user authentication. The browser will show a certificate warning on first access because the container generates a self-signed certificate by default.",
+    "login": "Sign in to the NiFi UI with the single-user credentials configured by this package, accepting the self-signed certificate."
   }
 }

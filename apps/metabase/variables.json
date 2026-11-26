@@ -67,6 +67,7 @@
     }
   ],
   "help": {
-    "login": "First run: open the site and create the administrator account in the Metabase setup wizard, then sign in with those credentials."
+    "init": "First run: open the site and create the administrator account in the Metabase setup wizard, then sign in with those credentials.",
+    "login": "Sign in with the administrator account you created in the setup wizard."
   }
 }
